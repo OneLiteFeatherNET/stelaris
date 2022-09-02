@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/util/constants.dart';
+import 'package:go_router/go_router.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
@@ -50,19 +50,29 @@ class _LandingPageState extends State<LandingPage> {
         ListTile(
           leading: const Icon(Icons.home_outlined),
           title: const Text('Dashboard'),
-          onTap: () {},
+          onTap: () {
+            GoRouter.of(context).go("/"); // Navigation
+          },
         ),
         const Divider(color: Colors.black12),
         ListTile(
           leading: const Icon(Icons.interpreter_mode),
           title: const Text('Items'),
-          onTap: () {},
+          onTap: () {
+          },
         ),
         const Divider(height: 0.05, color: Colors.black12),
         ListTile(
           leading: const Icon(Icons.energy_savings_leaf),
           title: const Text('Mobs'),
           onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.interpreter_mode),
+          title: const Text('Login'),
+          onTap: () {
+            GoRouter.of(context).go("/login");
+          },
         )
       ],
     )
