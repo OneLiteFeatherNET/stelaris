@@ -9,5 +9,6 @@ var lightMode = ThemeData(
 var darkMode = ThemeData(
   appBarTheme: AppBarTheme(
     backgroundColor: Colors.grey[900]
-  )
+  ),
+  backgroundColor: Colors.black
 );
