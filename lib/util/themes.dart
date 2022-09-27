@@ -8,7 +8,7 @@ var lightMode = ThemeData(
 
 var darkMode = ThemeData(
   appBarTheme: AppBarTheme(
-    backgroundColor: Colors.grey[900]
+    backgroundColor: Colors.purple[200]
   ),
-  backgroundColor: Colors.black
+  backgroundColor: Colors.purple[200]
 );
