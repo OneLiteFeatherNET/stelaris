@@ -7,13 +7,20 @@ final GoRouter router = GoRouter(routes: [
   GoRoute(
     path: '/',
     builder: (BuildContext context, GoRouterState state) {
-      return const LandingPage();
+      return const LandingPage(
+        child: LoginPage(),
+      );
     },
   ),
   GoRoute(
     path: '/login',
-    builder: (BuildContext context, GoRouterState state) {
-      return const LoginPage();
-    },
+    pageBuilder: (context, state) => CustomTransitionPage(
+        child: const LoginPage(),
+        key: state.pageKey,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+              opacity: animation,
+              child: child,
+            )),
   )
 ]);
