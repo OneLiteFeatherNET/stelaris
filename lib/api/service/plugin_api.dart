@@ -11,7 +11,7 @@ class PluginAPI {
   Future<Plugin> getPlugin() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/plugin/font');
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}api/plugin');
     final result = await apiClient.dio.getUri(uri).then((value) => Plugin.fromJson(value.data!));
     return result;
   }
