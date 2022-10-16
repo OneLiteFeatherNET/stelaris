@@ -6,31 +6,31 @@ import '../model/item_model.dart';
 import '../model/plugin_model.dart';
 
 class UpdateItemAction {
-  final Item item;
+  final ItemModel item;
 
   UpdateItemAction(this.item);
 }
 
 class UpdateNotificationAction {
-  final Notification notification;
+  final NotificationModel notification;
 
   UpdateNotificationAction(this.notification);
 }
 
 class UpdateFontAction {
-  final Font font;
+  final FontModel font;
 
   UpdateFontAction(this.font);
 }
 
 class UpdatePluginAction {
-  final Plugin plugin;
+  final PluginModel plugin;
 
   UpdatePluginAction(this.plugin);
 }
 
 class UpdateBlockAction {
-  final Block block;
+  final BlockModel block;
 
   UpdateBlockAction(this.block);
 }

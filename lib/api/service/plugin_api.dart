@@ -8,23 +8,23 @@ class PluginAPI {
 
   PluginAPI(this.apiClient);
 
-  Future<Plugin> getPlugin() async {
+  Future<PluginModel> getPlugin() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}api/plugin');
-    final result = await apiClient.dio.getUri(uri).then((value) => Plugin.fromJson(value.data!));
+    final result = await apiClient.dio.getUri(uri).then((value) => PluginModel.fromJson(value.data!));
     return result;
   }
 
-  Future<Plugin> addPlugin(Plugin plugin) async {
+  Future<PluginModel> addPlugin(PluginModel plugin) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/plugin/');
-    final result = await apiClient.dio.postUri(uri, data: plugin).then((value) => Plugin.fromJson(value.data!));
+    final result = await apiClient.dio.postUri(uri, data: plugin).then((value) => PluginModel.fromJson(value.data!));
     return result;
   }
 
-  Future<List<Plugin>> getAllFonts() async {
+  Future<List<PluginModel>> getAllFonts() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/plugin/getAll');
@@ -33,17 +33,17 @@ class PluginAPI {
   }
 }
 
-class StringToPlugin implements JsonConverter<List<Plugin>, List<dynamic>> {
+class StringToPlugin implements JsonConverter<List<PluginModel>, List<dynamic>> {
 
   const StringToPlugin();
 
   @override
-  List<Plugin> fromJson(List<dynamic> json) {
-    return json.map((e) => Plugin.fromJson(e)).toList();
+  List<PluginModel> fromJson(List<dynamic> json) {
+    return json.map((e) => PluginModel.fromJson(e)).toList();
   }
 
   @override
-  List<dynamic> toJson(List<Plugin> object) {
+  List<dynamic> toJson(List<PluginModel> object) {
     throw UnimplementedError();
   }
 }
