@@ -9,23 +9,23 @@ class NotificationAPI {
 
   NotificationAPI(this.apiClient);
 
-  Future<Notification> getNotification() async {
+  Future<NotificationModel> getNotification() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/api/notifications');
-    final result = await apiClient.dio.getUri(uri).then((value) => Notification.fromJson(value.data!));
+    final result = await apiClient.dio.getUri(uri).then((value) => NotificationModel.fromJson(value.data!));
     return result;
   }
 
-  Future<Notification> addNotification(Notification notification) async {
+  Future<NotificationModel> addNotification(NotificationModel notification) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/notification/');
-    final result = await apiClient.dio.postUri(uri, data: notification).then((value) => Notification.fromJson(value.data!));
+    final result = await apiClient.dio.postUri(uri, data: notification).then((value) => NotificationModel.fromJson(value.data!));
     return result;
   }
 
-  Future<List<Notification>> getAllNotifications() async {
+  Future<List<NotificationModel>> getAllNotifications() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/notification/getAll');
@@ -34,17 +34,17 @@ class NotificationAPI {
   }
 }
 
-class StringToNotifications implements JsonConverter<List<Notification>, List<dynamic>> {
+class StringToNotifications implements JsonConverter<List<NotificationModel>, List<dynamic>> {
 
   const StringToNotifications();
 
   @override
-  List<Notification> fromJson(List<dynamic> json) {
-    return json.map((e) => Notification.fromJson(e)).toList();
+  List<NotificationModel> fromJson(List<dynamic> json) {
+    return json.map((e) => NotificationModel.fromJson(e)).toList();
   }
 
   @override
-  List<dynamic> toJson(List<Notification> object) {
+  List<dynamic> toJson(List<NotificationModel> object) {
     throw UnimplementedError();
   }
 }

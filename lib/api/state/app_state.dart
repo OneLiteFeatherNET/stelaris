@@ -7,11 +7,11 @@ import '../model/item_model.dart';
 
 class AppState {
 
-  List<Item> items;
-  List<Notification> notifications;
-  List<Font> fonts;
-  List<Plugin> plugins;
-  List<Block> blocks;
+  List<ItemModel> items;
+  List<NotificationModel> notifications;
+  List<FontModel> fonts;
+  List<PluginModel> plugins;
+  List<BlockModel> blocks;
 
   AppState({
     this.items = const [],
