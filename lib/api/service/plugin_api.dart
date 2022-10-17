@@ -24,7 +24,7 @@ class PluginAPI {
     return result;
   }
 
-  Future<List<PluginModel>> getAllFonts() async {
+  Future<List<PluginModel>> getAllPlugins() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/plugin/getAll');
