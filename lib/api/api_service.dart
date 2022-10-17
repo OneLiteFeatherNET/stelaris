@@ -1,7 +1,11 @@
 
 
 import 'package:stelaris_ui/api/ApiClient.dart';
+import 'package:stelaris_ui/api/service/block_api.dart';
+import 'package:stelaris_ui/api/service/font_api.dart';
 import 'package:stelaris_ui/api/service/item_api.dart';
+import 'package:stelaris_ui/api/service/notification_api.dart';
+import 'package:stelaris_ui/api/service/plugin_api.dart';
 
 class ApiService {
 
@@ -14,6 +18,14 @@ class ApiService {
   late final ApiClient _apiClient = _createApiClient();
 
   late final ItemApi itemApi = ItemApi(_apiClient);
+
+  late final NotificationAPI notificationAPI = NotificationAPI(_apiClient);
+
+  late final FontAPI fontAPI = FontAPI(_apiClient);
+
+  late final BlockAPI blockAPI = BlockAPI(_apiClient);
+
+  late final PluginAPI pluginAPI = PluginAPI(_apiClient);
 
   ApiClient _createApiClient() {
     return ApiClient("");
