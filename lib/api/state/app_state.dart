@@ -1,3 +1,4 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
@@ -5,19 +6,21 @@ import 'package:stelaris_ui/api/model/plugin_model.dart';
 
 import '../model/item_model.dart';
 
-class AppState {
+part 'app_state.g.dart';
 
-  List<ItemModel> items;
-  List<NotificationModel> notifications;
-  List<FontModel> fonts;
-  List<PluginModel> plugins;
-  List<BlockModel> blocks;
+part 'app_state.freezed.dart';
 
-  AppState({
-    this.items = const [],
-    this.notifications = const [],
-    this.fonts = const [],
-    this.plugins = const [],
-    this.blocks = const []
-  });
+@freezed
+class AppState with _$AppState {
+  // Missing Json anno
+  const factory AppState({
+    @Default([]) List<ItemModel> items,
+    @Default([]) List<NotificationModel> notifications,
+    @Default([]) List<FontModel> fonts,
+    @Default([]) List<PluginModel> plugins,
+    @Default([]) List<BlockModel> blocks,
+  }) = _AppState;
+
+  factory AppState.fromJson(Map<String, dynamic> json) =>
+      _$AppStateFromJson(json);
 }
