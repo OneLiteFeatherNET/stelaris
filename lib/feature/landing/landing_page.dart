@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:stelaris_ui/api/api_service.dart';
+import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/util/navigation.dart';
 import 'package:stelaris_ui/feature/search/search.dart';
 
@@ -32,7 +35,6 @@ class _LandingPageState extends State<LandingPage> {
   Widget build(BuildContext context) {
     var items = List.generate(50, (index) => "Item - $index");
     var selected = 0;
-
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -56,6 +58,17 @@ class _LandingPageState extends State<LandingPage> {
                 ItemContent(items[selected]),
               ],
             ),
+            FutureBuilder<List<Item>>(
+              future: ApiService().itemApi.getAllItems(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<Item> items = snapshot.data!;
+                  if (kDebugMode) {
+                    print(items);
+                  }
+                }
+                return Container();
+            },),
             Align(
               alignment: const Alignment(0.99, 0.98),
               child: FloatingActionButton(
