@@ -4,16 +4,16 @@ part 'plugin_model.freezed.dart';
 part 'plugin_model.g.dart';
 
 @freezed
-class Plugin with _$PluginModel {
+class PluginModel with _$PluginModel {
 
-  const factory Plugin({
+  const factory PluginModel({
     @JsonKey(name: 'name') String? name,
     @JsonKey(name: 'version') String? version,
     @JsonKey(name: 'ref') String? ref
 }) = _PluginModel;
 
 
-  factory Plugin.fromJson(Map<String, dynamic> json) =>
+  factory PluginModel.fromJson(Map<String, dynamic> json) =>
       _$PluginModelFromJson(json);
 }
 

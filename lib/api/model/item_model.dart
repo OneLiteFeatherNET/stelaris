@@ -5,17 +5,17 @@ part 'item_model.g.dart';
 
 
 @freezed
-class Item with _$Item {
+class ItemModel with _$ItemModel {
 
-  const factory Item({
+  const factory ItemModel({
     @JsonKey(name: 'name') String? name,
     @JsonKey(name: "group") String? group,
     @JsonKey(name: "generator") String? generator,
     @JsonKey(name: 'material') String? material,
     @JsonKey(name: 'modelData') int? modelData,
     @JsonKey(name: 'amount') int? amount,
-}) = _Item;
+}) = _ItemModel;
 
 
-  factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
+  factory ItemModel.fromJson(Map<String, dynamic> json) => _$ItemModelFromJson(json);
 }

@@ -4,9 +4,9 @@ part 'notification_model.g.dart';
 part 'notification_model.freezed.dart';
 
 @freezed
-class Notification with _$Notification {
+class NotificationModel with _$NotificationModel {
 
-  const factory Notification({
+  const factory NotificationModel({
     @JsonKey(name: 'name') String? name,
     @JsonKey(name: "generator") String? generator,
     @JsonKey(name: 'material') String? material,
@@ -16,6 +16,6 @@ class Notification with _$Notification {
   }) = _Notification;
 
 
-  factory Notification.fromJson(Map<String, dynamic> json) =>
-      _$NotificationFromJson(json);
+  factory NotificationModel.fromJson(Map<String, dynamic> json) =>
+      _$NotificationModelFromJson(json);
 }
