@@ -1,7 +1,6 @@
-
+import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 class ApiClient {
 
@@ -13,23 +12,33 @@ class ApiClient {
         ..options.baseUrl = baseUrl
         ..interceptors.add(
           QueuedInterceptorsWrapper(
-            // Für token injection
             onRequest: (options, handler) async {
-
+              return handler.next(options);
+              /*final token = tokenProvider();
+              if (token != null) {
+                options.headers['Authorization'] = 'Bearer $token';
+                return handler.next(options);
+              } else {
+                return handler.reject(DioError(requestOptions: options));
+              }*/
             },
-              // Error Handlen
-            onError: (error, handler) {
-
-            }
-          )
+            onError: (err, handler) {
+              if (err.error is SocketException) {
+                handler.reject(err);
+              }
+              if (err.response?.statusCode != null &&
+                  err.response!.statusCode == 401) {
+                handler.reject(err);
+              }
+              handler.reject(err);
+            },
+          ),
         );
-    if (!kReleaseMode) {
-      dio.interceptors.add(
+    dio.interceptors.add(
         LogInterceptor(
-          requestBody: true,
-          responseBody: true
+            requestBody: true,
+            responseBody: true
         )
-      );
-    }
+    );
   }
 }
