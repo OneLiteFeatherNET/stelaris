@@ -1,5 +1,3 @@
-
-
 import 'package:stelaris_ui/api/ApiClient.dart';
 import 'package:stelaris_ui/api/service/block_api.dart';
 import 'package:stelaris_ui/api/service/font_api.dart';
@@ -28,6 +26,6 @@ class ApiService {
   late final PluginAPI pluginAPI = PluginAPI(_apiClient);
 
   ApiClient _createApiClient() {
-    return ApiClient("");
+    return ApiClient("http://localhost:8080");
   }
 }
