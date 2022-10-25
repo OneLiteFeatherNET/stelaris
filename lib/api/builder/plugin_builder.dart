@@ -26,8 +26,6 @@ class PluginBuilder extends BaseBuilder<PluginModel> {
 
   @override
   PluginModel toDTO() {
-    // TODO: implement toDTO
-    throw UnimplementedError();
+    return PluginModel(name: name, ref: ref, version: version);
   }
-
 }
