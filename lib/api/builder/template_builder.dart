@@ -1,20 +1,14 @@
-import 'package:flutter/material.dart';
+import 'package:stelaris_ui/api/builder/base_builder.dart';
 import 'package:stelaris_ui/api/model/template_model.dart';
 
-class TemplateBuilder {
+class TemplateBuilder extends BaseBuilder<TemplateModel> {
 
-  @protected
-  late String name;
-
-  @protected
   late String description;
-
-  @protected
   late Set<String> plugins = {};
 
-  TemplateBuilder setName(String name) {
-    this.name = name;
-    return this;
+  @override
+  BaseBuilder setGenerator(String generator) {
+    throw Exception("A template can't have an generator string");
   }
 
   TemplateBuilder setDescription(String description) {
@@ -29,6 +23,7 @@ class TemplateBuilder {
     return this;
   }
 
+  @override
   TemplateModel toDTO() {
     return TemplateModel(
         name: name, description: description, plugins: plugins.toList());
