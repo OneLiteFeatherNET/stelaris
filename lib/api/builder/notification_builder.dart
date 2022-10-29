@@ -4,6 +4,8 @@ import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 
 class NotificationBuilder extends BaseBuilder<NotificationModel>  {
 
+  static const String _generatorKey = "NotificationGenerator";
+
   late String material;
   late String title;
   late String description;
@@ -33,7 +35,7 @@ class NotificationBuilder extends BaseBuilder<NotificationModel>  {
   NotificationModel toDTO() {
     return NotificationModel(
         name: name,
-        generator: generator,
+        generator: _generatorKey,
         material: material,
         frameType: frameType.value,
         title: title,

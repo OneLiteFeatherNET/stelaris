@@ -7,11 +7,6 @@ class PluginBuilder extends BaseBuilder<PluginModel> {
   late String version;
   late String ref;
 
-  @override
-  BaseBuilder setGenerator(String generator) {
-    throw Exception("A plugin can't have an generator string");
-  }
-
   PluginBuilder setVersion(String version) {
     Checks.argCondition(version.trim().isEmpty, "The version can't be empty");
     this.version = version;

@@ -7,6 +7,8 @@ const int maximumAmount = 64;
 
 class ItemBuilder extends BaseBuilder<ItemModel> {
 
+  static const String _generatorKey = "ItemGenerator";
+
   late String group;
   late String material;
   late int modelData;
@@ -42,7 +44,7 @@ class ItemBuilder extends BaseBuilder<ItemModel> {
     return ItemModel(
       name: name,
       group: group,
-      generator: generator,
+      generator: _generatorKey,
       material: material,
       modelData: modelData,
       amount: amount

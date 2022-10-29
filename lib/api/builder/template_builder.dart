@@ -6,11 +6,6 @@ class TemplateBuilder extends BaseBuilder<TemplateModel> {
   late String description;
   late Set<String> plugins = {};
 
-  @override
-  BaseBuilder setGenerator(String generator) {
-    throw Exception("A template can't have an generator string");
-  }
-
   TemplateBuilder setDescription(String description) {
     this.description = description;
     return this;

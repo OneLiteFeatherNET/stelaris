@@ -6,6 +6,8 @@ import 'item_builder.dart';
 
 class BlockBuilder extends BaseBuilder<BlockModel> {
 
+  static const String _generatorKey = "BlockGenerator";
+
   late int modelData;
   late int amount;
 
@@ -28,7 +30,7 @@ class BlockBuilder extends BaseBuilder<BlockModel> {
   BlockModel toDTO() {
     return BlockModel(
         name: name,
-        generator: generator,
+        generator: _generatorKey,
         modelData: modelData,
         amount: amount
     );
