@@ -1,9 +1,11 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
+import 'package:stelaris_ui/feature/base/base_tab_view.dart';
 
 import '../../api/state/app_state.dart';
+import '../../util/constants.dart';
 
 class BlockList extends StatefulWidget {
 
@@ -15,7 +17,7 @@ class BlockList extends StatefulWidget {
   }
 }
 
-class BlockListState extends State<BlockList> {
+class BlockListState extends State<BlockList> implements BaseTabView<BlockModel> {
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,32 @@ class BlockListState extends State<BlockList> {
 
         );
       },
+    );
+  }
+
+  @override
+  Widget tabBarView(List<Widget> views) {
+    return Expanded(
+        child: Scaffold(
+          body: TabBarView(
+            children: views,
+          ),
+          appBar: AppBar(
+            title: appText,
+            bottom: getTabBar(),
+          ),
+        )
+    );
+  }
+
+  @override
+  TabBar getTabBar() {
+    return const TabBar(
+        tabs: [
+          Tab(
+              child: Text("General")
+          ),
+      ]
     );
   }
 }
