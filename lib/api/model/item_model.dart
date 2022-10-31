@@ -1,11 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:stelaris_ui/api/model/data_model.dart';
 
 part 'item_model.freezed.dart';
 part 'item_model.g.dart';
 
-
 @freezed
-class ItemModel with _$ItemModel {
+class ItemModel extends DataModel with _$ItemModel {
 
   const factory ItemModel({
     @JsonKey(name: 'name') String? name,

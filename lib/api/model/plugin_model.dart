@@ -1,10 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:stelaris_ui/api/model/data_model.dart';
 
 part 'plugin_model.freezed.dart';
 part 'plugin_model.g.dart';
 
 @freezed
-class PluginModel with _$PluginModel {
+class PluginModel extends DataModel with _$PluginModel {
 
   const factory PluginModel({
     @JsonKey(name: 'name') String? name,
