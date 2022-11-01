@@ -52,7 +52,6 @@ class BlockListState extends State<BlockList> implements BaseTabView<BlockModel>
             children: views,
           ),
           appBar: AppBar(
-            title: appText,
             bottom: getTabBar(),
             toolbarHeight: 0,
           ),
