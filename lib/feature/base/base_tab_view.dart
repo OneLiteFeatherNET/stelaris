@@ -8,4 +8,7 @@ abstract class BaseTabView<T extends DataModel> {
 
   @protected
   TabBar getTabBar();
+
+  @protected
+  List<Widget> getAttributes();
 }
