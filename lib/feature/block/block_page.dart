@@ -40,6 +40,11 @@ class BlockListState extends State<BlockList> implements BaseTabView<BlockModel>
   }
 
   @override
+  List<Widget> getAttributes() {
+    throw UnimplementedError();
+  }
+
+  @override
   Widget tabBarView(List<Widget> views) {
     return Expanded(
         child: Scaffold(
@@ -49,6 +54,7 @@ class BlockListState extends State<BlockList> implements BaseTabView<BlockModel>
           appBar: AppBar(
             title: appText,
             bottom: getTabBar(),
+            toolbarHeight: 0,
           ),
         )
     );
@@ -61,6 +67,9 @@ class BlockListState extends State<BlockList> implements BaseTabView<BlockModel>
           Tab(
               child: Text("General")
           ),
+          Tab(
+            child: Text("Metadata"),
+          )
       ]
     );
   }
