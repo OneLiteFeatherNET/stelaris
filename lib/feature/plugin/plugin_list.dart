@@ -1,8 +1,11 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/plugin_model.dart';
 import 'package:stelaris_ui/api/state/actions/plugin_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/feature/plugin/plugin_columns.dart';
+import 'package:stelaris_ui/feature/plugin/plugin_data.dart';
 
 class PluginList extends StatefulWidget {
   const PluginList({Key? key}) : super(key: key);
@@ -29,13 +32,22 @@ class PluginListState extends State<PluginList> {
             : List<String>.generate(1, (index) => "1");
         return Scaffold(
           body: Stack(
-              children: [
-                Container(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: getTable()
-                ),
-                getAddButton(context)
-              ]
+            children: [
+              Row(
+                children: [
+                  getSearchBar(),
+                  SizedBox(
+                    width: 150,
+                    height: 50,
+                    child: getAddButton(context),
+                  )
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.only(top: 100, left: 100, right: 100),
+                child: getTable()
+              )
+              ],
           ),
         );
       },
@@ -43,60 +55,76 @@ class PluginListState extends State<PluginList> {
   }
 
   Widget getAddButton(BuildContext context) {
-    return Align(
-      alignment: const Alignment(0.99, 0.97),
-      child: FloatingActionButton(
-        backgroundColor: Colors.lightGreen,
-        child: const Icon(Icons.add),
-        onPressed: () {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return Dialog(
-                    child: SizedBox(
-                        width: 400, height: 400, child: openPluginDialog()));
-              });
-        },
-      ),
+    return FloatingActionButton.extended(
+      label: const Text("Add"),
+      backgroundColor: Colors.black54,
+      icon: const Icon(Icons.add, size: 24.0),
+      onPressed: () {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Dialog(
+                  child: SizedBox(
+                      width: 400, height: 400, child: openPluginDialog()));
+            });
+      },
     );
   }
 
   Widget openPluginDialog() {
-    return Stepper(currentStep: 0, type: StepperType.horizontal, steps: [
-      Step(
-          title: const Text("Hallo"),
-          content: Container(child: const Text("Hallo")))
-    ]);
+    //TODO: Implement
+    return const Text("Implement feature");
   }
 
   //TODO: Check PaginatedDataSource
   Widget getTable() {
-    return DataTable(
-      columns: [
-        DataColumn(
-          label: Container(
-            padding: const EdgeInsets.all(12),
-            child: Text("Name"),
-          ),
+    var dataMap = Map<String, dynamic>();
+    dataMap.putIfAbsent("name", () => "Aves");
+    dataMap.putIfAbsent("version", () => "1.2,0-SNAPSHOT");
+    dataMap.putIfAbsent("ref", () => "ref-12313as");
+    List<PluginModel> model = [];
+    model.add(PluginModel.fromJson(dataMap));
+
+    PluginData _data = PluginData(plugins: model);
+
+    var values = PluginColumns.values;
+
+    List<DataColumn2> dataColumns = [];
+
+    for (var value in values) {
+      dataColumns.add(value.toColumn());
+    }
+
+    return PaginatedDataTable2(
+      columns: dataColumns,
+      source: _data,
+      fit: FlexFit.tight,
+      wrapInCard: false,
+      minWidth: 400,
+      empty: Container(
+          padding: const EdgeInsets.only(top: 150),
+          child: const Text("No Data"),
+      ),
+    );
+  }
+
+  Widget getSearchBar() {
+    return Container(
+      height: 50,
+      width: 600,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.grey
         ),
-        DataColumn(
-            label: Container(
-              padding: const EdgeInsets.all(12),
-              child: Text("Version"),
-            )),
-        DataColumn(
-            label: Container(
-              padding: const EdgeInsets.all(12),
-              child: Text("ref"),
-            )),
-      ],
-      rows: [
-        DataRow(cells: [
-          DataCell(Text("Aves")),
-          DataCell(Text("1.2.0-SNAPSHOT")),
-          DataCell(Text("abd23d"))
-        ])
-      ],
+        borderRadius: BorderRadius.circular(12)
+      ),
+      child: const TextField(
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: "Search for a plugin...",
+          prefixIcon: Icon(Icons.search)
+        ),
+      ),
     );
   }
 }
