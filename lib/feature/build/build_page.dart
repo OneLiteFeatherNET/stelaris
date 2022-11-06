@@ -26,12 +26,10 @@ class BuildPageState extends State<BuildPage> {
   }
 
   Widget getCreateWidget() {
-    return Container(
-      child: FloatingActionButton(
-        backgroundColor: Colors.lightGreen,
-        child: const Icon(Icons.add),
-        onPressed: () {},
-      ),
+    return FloatingActionButton(
+      backgroundColor: Colors.lightGreen,
+      child: const Icon(Icons.add),
+      onPressed: () {},
     );
   }
 
