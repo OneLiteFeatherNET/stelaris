@@ -18,6 +18,7 @@ dependencies:
   dio_cache_interceptor: ^3.3.1
   localstorage: ^4.0.0+1
   async_redux: 17.0.1
+  data_table_2: ^2.3.8
 
 dev_dependencies:
   flutter_test:
