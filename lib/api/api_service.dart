@@ -15,6 +15,8 @@ class ApiService {
 
   late final ApiClient _apiClient = _createApiClient();
 
+  late final ApiClient _generatorClient = _createGeneratorClient();
+
   late final ItemApi itemApi = ItemApi(_apiClient);
 
   late final NotificationAPI notificationAPI = NotificationAPI(_apiClient);
@@ -27,5 +29,9 @@ class ApiService {
 
   ApiClient _createApiClient() {
     return ApiClient("http://localhost:8080");
+  }
+
+  ApiClient _createGeneratorClient() {
+    return ApiClient("");
   }
 }
