@@ -6,6 +6,7 @@ enum NavigationEntry {
   items("Items", "/item", Icons.abc),
   entities("Entities", "/entities", Icons.add_moderator),
   quests("Quests", "/quests",Icons.access_time_filled_outlined),
+  notifications("Notifications", "/notifications", Icons.notification_add),
   build("Build", "/build", Icons.construction);
 
   final String display;

@@ -1,6 +1,8 @@
+import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:stelaris_ui/api/state/actions/block_actions.dart';
+import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/util/navigation.dart';
 import 'package:stelaris_ui/feature/search/search.dart';
 
@@ -30,42 +32,53 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    var items = List.generate(50, (index) => "Item - $index");
-    var selected = 0;
+    return StoreConnector<AppState, AppState>(
+      onInit: (store) {
+        store.dispatch(InitBlockAction());
+      },
+      converter: (store) {
+        return store.state;
+      },
+      builder: (context, vm) {
+        print(vm.blocks.length);
 
-    return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              navOpen = !navOpen;
-              setSidebarState();
-            },
-          ),
-          backgroundColor: Colors.deepPurple[300],
-          elevation: 0,
-          title: const Text('S T E L A R I S'),
-          centerTitle: true,
-        ),
-        body: Stack(
-          children: [
-            Row(
-              children: [
-                buildNavigation(),
-                ItemList(items),
-                ItemContent(items[selected]),
-              ],
-            ),
-            Align(
-              alignment: const Alignment(0.99, 0.98),
-              child: FloatingActionButton(
-                backgroundColor: Colors.lightGreen,
-                child: const Icon(Icons.add),
-                onPressed: () {},
+        var items = vm.blocks.isNotEmpty ? vm.blocks.map((e) => e.name ?? 'X').toList() : List<String>.generate(1, (index) => "1");
+        var selected = 0;
+        return Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  navOpen = !navOpen;
+                  setSidebarState();
+                },
               ),
-            )
-          ],
-        ));
+              backgroundColor: Colors.deepPurple[300],
+              elevation: 0,
+              title: const Text('S T E L A R I S'),
+              centerTitle: true,
+            ),
+            body: Stack(
+              children: [
+                Row(
+                  children: [
+                    buildNavigation(),
+                    ItemList(items),
+                    ItemContent(items[selected]),
+                  ],
+                ),
+                Align(
+                  alignment: const Alignment(0.99, 0.98),
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.lightGreen,
+                    child: const Icon(Icons.add),
+                    onPressed: () {},
+                  ),
+                )
+              ],
+            ));
+      },
+    );
   }
 
   Widget buildNavigation() {
@@ -73,7 +86,7 @@ class _LandingPageState extends State<LandingPage> {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 150),
-       curve: Curves.fastOutSlowIn,
+      curve: Curves.fastOutSlowIn,
       width: navOpen ? 180 : 60,
       child: Container(child: items),
     );
@@ -84,16 +97,17 @@ class _LandingPageState extends State<LandingPage> {
     return ListView.builder(
         itemCount: values.length,
         itemBuilder: (context, index) => ListTile(
-        onTap: () {
-          GoRouter.of(context).go(values[index].route); // Navigation
-        },
-        title: xOffset == maxXOffset ? Text(
-          values[index].display,
-          style: const TextStyle(fontSize: 16),
-        ) : null,
-        leading: Icon(values[index].data),
-      )
-    );
+              onTap: () {
+                GoRouter.of(context).go(values[index].route); // Navigation
+              },
+              title: xOffset == maxXOffset
+                  ? Text(
+                      values[index].display,
+                      style: const TextStyle(fontSize: 16),
+                    )
+                  : null,
+              leading: Icon(values[index].data),
+            ));
   }
 }
 
@@ -118,104 +132,84 @@ class ItemContentState extends State<ItemContent> {
                 title: Text("View ${index + 1}"),
               ),
               body: Center(
-                child: Column(
-                    children: [
-                      if(index == 0)...[
-                        _attributes(),
-                      ]else if (index == 1)...[
-                        _meta(),
-                      ] else ...[
-                        Text("Test"),
-                      ]
-                    ])
-              ),
+                  child: Column(children: [
+                if (index == 0) ...[
+                  _attributes(),
+                ] else if (index == 1) ...[
+                  _meta(),
+                ] else ...[
+                  Text("Test"),
+                ]
+              ])),
             ));
     return DefaultTabController(
       length: views.length,
       child: tabBarView(views),
     );
   }
-  
+
   Widget _meta() {
     return Column(
       children: [
         Card(
           color: Colors.purple[50],
           child: TextField(
-            decoration: InputDecoration(
-              labelText: "Name"
-            ),
+            decoration: InputDecoration(labelText: "Name"),
           ),
         ),
         Card(
           color: Colors.purple[50],
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: "ID"
-              ),
-            ),
+          child: TextField(
+            decoration: InputDecoration(labelText: "ID"),
+          ),
         )
       ],
     );
   }
-  
+
   Widget _attributes() {
     return Column(
       children: [
         Card(
           color: Colors.purple[50],
           child: TextField(
-            decoration: InputDecoration(
-                labelText: "Name"
-            ),
+            decoration: InputDecoration(labelText: "Name"),
           ),
         ),
         Card(
           color: Colors.purple[50],
           child: TextField(
-            decoration: InputDecoration(
-                labelText: "Namespace"
-            ),
+            decoration: InputDecoration(labelText: "Namespace"),
           ),
         ),
         Card(
           color: Colors.purple[50],
           child: TextField(
-            decoration: InputDecoration(
-                labelText: "Display name"
-            ),
+            decoration: InputDecoration(labelText: "Display name"),
           ),
         ),
         Card(
           color: Colors.purple[50],
           child: TextField(
-            decoration: InputDecoration(
-                labelText: "Flags"
-            ),
+            decoration: InputDecoration(labelText: "Flags"),
           ),
         ),
         Card(
           color: Colors.purple[50],
           child: TextField(
-            decoration: InputDecoration(
-                labelText: "Lore"
-            ),
+            decoration: InputDecoration(labelText: "Lore"),
           ),
         ),
         Card(
           color: Colors.purple[50],
           child: TextField(
-            decoration: InputDecoration(
-                labelText: "Amount"
-            ),
+            decoration: InputDecoration(labelText: "Amount"),
           ),
         ),
         Card(
           color: Colors.purple[50],
           child: TextField(
-            decoration: InputDecoration(
-                labelText: "Enchantments"
-            ),
+            decoration: InputDecoration(labelText: "Enchantments"),
           ),
         )
       ],
