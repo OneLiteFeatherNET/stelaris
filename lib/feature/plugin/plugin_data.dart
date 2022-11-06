@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/feature/plugin/plugins_actions.dart';
 
 import '../../api/model/plugin_model.dart';
 
@@ -9,21 +10,30 @@ class PluginData extends DataTableSource {
   PluginData({required this.plugins});
 
   @override
-  DataRow? getRow(int index) {
-    // TODO: implement getRow
-    throw UnimplementedError();
+  DataRow getRow(int index) {
+    return DataRow(cells: [
+      DataCell(Text(plugins[index].name.toString())),
+      const DataCell(Text("Description")),
+      DataCell(Text(plugins[index].version.toString())),
+      DataCell(Text(plugins[index].ref.toString())),
+      DataCell(Row(
+        children: [
+          PluginAction.edit.toButton((action) {
+          }),
+          PluginAction.remove.toButton((action) {
+
+          })
+        ],
+      )),
+    ]);
   }
 
   @override
-  // TODO: implement isRowCountApproximate
-  bool get isRowCountApproximate => throw UnimplementedError();
+  bool get isRowCountApproximate => false;
 
   @override
-  // TODO: implement rowCount
-  int get rowCount => throw UnimplementedError();
+  int get rowCount => plugins.length;
 
   @override
-  // TODO: implement selectedRowCount
-  int get selectedRowCount => throw UnimplementedError();
-
+  int get selectedRowCount => 0;
 }
