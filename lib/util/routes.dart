@@ -4,11 +4,13 @@ import 'package:stelaris_ui/api/util/navigation.dart';
 import 'package:stelaris_ui/feature/base/base_page.dart';
 import 'package:stelaris_ui/feature/login/login_page.dart';
 
+import '../feature/plugin/plugin_list.dart';
+
 final GoRouter router = GoRouter(routes: [
   GoRoute(
     path: '/',
     builder: (BuildContext context, GoRouterState state) {
-      return const BasePage(child: LoginPage());
+      return const BasePage(child: PluginList());
     },
   ),
   GoRoute(
