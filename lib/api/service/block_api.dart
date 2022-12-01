@@ -7,6 +7,8 @@ class BlockAPI {
 
   final ApiClient apiClient;
 
+  final StringToBlock _formatter = const StringToBlock();
+
   BlockAPI(this.apiClient);
 
   Future<BlockModel> getBlock() async {
@@ -29,7 +31,7 @@ class BlockAPI {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/block/getAll');
-    final result = await apiClient.dio.getUri(uri).then((value) => const StringToBlock().fromJson(value.data!));
+    final result = await apiClient.dio.getUri(uri).then((value) => _formatter.fromJson(value.data!));
     return result;
   }
 }

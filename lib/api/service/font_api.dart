@@ -6,6 +6,8 @@ class FontAPI {
 
   final ApiClient apiClient;
 
+  final StringToFont _formatter = const StringToFont();
+
   FontAPI(this.apiClient);
 
   Future<FontModel> getFont() async {
@@ -28,7 +30,7 @@ class FontAPI {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/font/getAll');
-    final result = await apiClient.dio.getUri(uri).then((value) => const StringToFont().fromJson(value.data!));
+    final result = await apiClient.dio.getUri(uri).then((value) => _formatter.fromJson(value.data!));
     return result;
   }
 }
