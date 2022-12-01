@@ -7,6 +7,8 @@ class NotificationAPI {
 
   final ApiClient apiClient;
 
+  final StringToNotifications _formatter = const StringToNotifications();
+
   NotificationAPI(this.apiClient);
 
   Future<NotificationModel> getNotification() async {
@@ -29,7 +31,7 @@ class NotificationAPI {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/notification/getAll');
-    final result = await apiClient.dio.getUri(uri).then((value) => const StringToNotifications().fromJson(value.data!));
+    final result = await apiClient.dio.getUri(uri).then((value) => _formatter.fromJson(value.data!));
     return result;
   }
 }

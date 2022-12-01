@@ -6,6 +6,8 @@ class PluginAPI {
 
   final ApiClient apiClient;
 
+  final StringToPlugin _formatter = const StringToPlugin();
+
   PluginAPI(this.apiClient);
 
   Future<PluginModel> getPlugin() async {
@@ -28,7 +30,7 @@ class PluginAPI {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/plugin/getAll');
-    final result = await apiClient.dio.getUri(uri).then((value) => const StringToPlugin().fromJson(value.data!));
+    final result = await apiClient.dio.getUri(uri).then((value) => _formatter.fromJson(value.data!));
     return result;
   }
 }

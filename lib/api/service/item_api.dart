@@ -5,6 +5,8 @@ import 'package:stelaris_ui/api/model/item_model.dart';
 class ItemApi {
   final ApiClient apiClient;
 
+  final StringToItems _formatter = const StringToItems();
+
   ItemApi(this.apiClient);
 
   Future<ItemModel> getItem() async {
@@ -27,7 +29,7 @@ class ItemApi {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/item/getAll');
-    final result = await apiClient.dio.getUri(uri).then((value) => const StringToItems().fromJson(value.data!));
+    final result = await apiClient.dio.getUri(uri).then((value) => _formatter.fromJson(value.data!));
     return result;
   }
 }
