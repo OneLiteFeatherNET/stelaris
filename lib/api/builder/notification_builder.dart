@@ -1,6 +1,5 @@
 import 'package:stelaris_ui/api/builder/base_builder.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
-import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 
 class NotificationBuilder extends BaseBuilder<NotificationModel>  {
 
@@ -9,7 +8,7 @@ class NotificationBuilder extends BaseBuilder<NotificationModel>  {
   late String material;
   late String title;
   late String description;
-  late FrameType frameType;
+  late String frameType;
 
   NotificationBuilder setMaterial(String material) {
     this.material = material;
@@ -26,7 +25,7 @@ class NotificationBuilder extends BaseBuilder<NotificationModel>  {
     return this;
   }
 
-  NotificationBuilder setFrameType(FrameType frameType) {
+  NotificationBuilder setFrameType(String frameType) {
     this.frameType = frameType;
     return this;
   }
@@ -37,7 +36,7 @@ class NotificationBuilder extends BaseBuilder<NotificationModel>  {
         name: name,
         generator: _generatorKey,
         material: material,
-        frameType: frameType.value,
+        frameType: frameType,
         title: title,
         description: description
     );

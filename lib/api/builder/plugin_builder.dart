@@ -6,6 +6,7 @@ class PluginBuilder extends BaseBuilder<PluginModel> {
 
   late String version;
   late String ref;
+  late String description;
 
   PluginBuilder setVersion(String version) {
     Checks.argCondition(version.trim().isEmpty, "The version can't be empty");
@@ -19,8 +20,18 @@ class PluginBuilder extends BaseBuilder<PluginModel> {
     return this;
   }
 
+  PluginBuilder setDescription(String description) {
+    Checks.argCondition(description.trim().isEmpty, "The description can't be empty");
+    this.description = description;
+    return this;
+  }
+
   @override
   PluginModel toDTO() {
-    return PluginModel(name: name, ref: ref, version: version);
+    return PluginModel(
+        name: name,
+        ref: ref,
+        versionsString: version,description: description
+    );
   }
 }

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/api/util/navigation.dart';
 import 'package:stelaris_ui/feature/base/base_page.dart';
-import 'package:stelaris_ui/feature/login/login_page.dart';
+import 'package:stelaris_ui/feature/item/item_page.dart';
 
-import '../feature/plugin/plugin_list.dart';
+import '../feature/login/login_page.dart';
 
 final GoRouter router = GoRouter(routes: [
   GoRoute(
     path: '/',
     builder: (BuildContext context, GoRouterState state) {
-      return const BasePage(child: PluginList());
+      return const BasePage(child: ItemPage());
     },
   ),
   GoRoute(
