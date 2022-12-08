@@ -3,12 +3,10 @@ import 'package:stelaris_ui/api/model/data_model.dart';
 
 abstract class BaseTabView<T extends DataModel> {
 
+  //TODO: Update this class
   @protected
   Widget tabBarView(List<Widget> views);
 
   @protected
-  TabBar getTabBar();
-
-  @protected
-  List<Widget> getAttributes();
+  List<Tab> getTabEntries();
 }

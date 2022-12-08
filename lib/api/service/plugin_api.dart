@@ -13,7 +13,7 @@ class PluginAPI {
   Future<PluginModel> getPlugin() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}api/plugin');
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/plugin');
     final result = await apiClient.dio.getUri(uri).then((value) => PluginModel.fromJson(value.data!));
     return result;
   }
@@ -22,7 +22,7 @@ class PluginAPI {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/plugin/');
-    final result = await apiClient.dio.postUri(uri, data: plugin).then((value) => PluginModel.fromJson(value.data!));
+    final result = await apiClient.dio.postUri(uri, data: plugin.toJson()).then((value) => PluginModel.fromJson(value.data!));
     return result;
   }
 

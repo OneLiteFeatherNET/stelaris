@@ -4,8 +4,37 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/plugin_model.dart';
 import 'package:stelaris_ui/api/state/actions/plugin_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/feature/dialogs/stepper/plugin_stepper.dart';
 import 'package:stelaris_ui/feature/plugin/plugin_columns.dart';
 import 'package:stelaris_ui/feature/plugin/plugin_data.dart';
+
+import '../base/button/add_button.dart';
+
+const Radius radius = Radius.circular(10);
+const BorderRadius borderRadius = BorderRadius.only(
+    topLeft: radius,
+    topRight: radius,
+    bottomLeft: radius,
+    bottomRight: radius
+);
+
+const SizedBox spaceBox = SizedBox(height: 10);
+const EdgeInsets top = EdgeInsets.only(top: 10);
+const EdgeInsets all = EdgeInsets.all(20);
+BoxDecoration boxDecoration = BoxDecoration(
+  color: Colors.white,
+  borderRadius: borderRadius,
+  boxShadow: [
+    BoxShadow(
+      color: Colors.grey.withOpacity(0.5),
+      blurRadius: 4,
+      offset: const Offset(4, 8), // changes position of shadow
+    ),
+  ],
+);
+
+const BorderSide side = BorderSide(
+color: Colors.black);
 
 class PluginList extends StatefulWidget {
   const PluginList({Key? key}) : super(key: key);
@@ -27,25 +56,18 @@ class PluginListState extends State<PluginList> {
         return store.state.plugins;
       },
       builder: (context, vm) {
-        var plugins = vm.isNotEmpty
-            ? vm.map((e) => e.name ?? 'X').toList()
-            : List<String>.generate(1, (index) => "1");
         return Scaffold(
           body: Stack(
             children: [
-              Row(
-                children: [
-                  getSearchBar(),
-                  SizedBox(
-                    width: 150,
-                    height: 50,
-                    child: getAddButton(context),
-                  )
-                ],
-              ),
               Container(
                 padding: const EdgeInsets.only(top: 100, left: 100, right: 100),
-                child: getTable()
+                child: SizedBox(
+                  height: 700,
+                  child: Container(
+                    decoration: boxDecoration,
+                    child: getTable(vm),
+                  ),
+                )
               )
               ],
           ),
@@ -54,38 +76,9 @@ class PluginListState extends State<PluginList> {
     );
   }
 
-  Widget getAddButton(BuildContext context) {
-    return FloatingActionButton.extended(
-      label: const Text("Add"),
-      backgroundColor: Colors.black54,
-      icon: const Icon(Icons.add, size: 24.0),
-      onPressed: () {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return Dialog(
-                  child: SizedBox(
-                      width: 400, height: 400, child: openPluginDialog()));
-            });
-      },
-    );
-  }
-
-  Widget openPluginDialog() {
-    //TODO: Implement
-    return const Text("Implement feature");
-  }
-
   //TODO: Check PaginatedDataSource
-  Widget getTable() {
-    var dataMap = Map<String, dynamic>();
-    dataMap.putIfAbsent("name", () => "Aves");
-    dataMap.putIfAbsent("version", () => "1.2,0-SNAPSHOT");
-    dataMap.putIfAbsent("ref", () => "ref-12313as");
-    List<PluginModel> model = [];
-    model.add(PluginModel.fromJson(dataMap));
-
-    PluginData _data = PluginData(plugins: model);
+  Widget getTable(List<PluginModel> plugins) {
+    PluginData data = PluginData(plugins: plugins);
 
     var values = PluginColumns.values;
 
@@ -96,34 +89,41 @@ class PluginListState extends State<PluginList> {
     }
 
     return PaginatedDataTable2(
+      border: const TableBorder(
+        top: side,
+        bottom: side,
+        left: side,
+        right: side,
+        horizontalInside: side,
+        verticalInside: side
+      ),
+      headingRowColor: MaterialStateProperty.all(Colors.blueAccent),
+      header: Row(
+        children: [
+          AddButton(
+              openFunction: () {
+                showDialog(context: context,
+                    useRootNavigator: false,
+                    builder: (BuildContext context) {
+                  return PluginStepper(finishCallback: (model) {
+                      StoreProvider.dispatch(context, InitPluginAction());
+                      Navigator.pop(context);
+                    return;
+                  },);
+                });
+              },
+              icon: const Icon(Icons.add, color: Colors.white)
+          ),
+        ],
+      ),
       columns: dataColumns,
-      source: _data,
+      source: data,
       fit: FlexFit.tight,
       wrapInCard: false,
       minWidth: 400,
       empty: Container(
           padding: const EdgeInsets.only(top: 150),
           child: const Text("No Data"),
-      ),
-    );
-  }
-
-  Widget getSearchBar() {
-    return Container(
-      height: 50,
-      width: 600,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey
-        ),
-        borderRadius: BorderRadius.circular(12)
-      ),
-      child: const TextField(
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: "Search for a plugin...",
-          prefixIcon: Icon(Icons.search)
-        ),
       ),
     );
   }

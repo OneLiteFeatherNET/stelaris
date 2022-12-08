@@ -1,6 +1,11 @@
+import 'dart:ffi';
+
 import 'package:stelaris_ui/api/builder/base_builder.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/util/checks.dart';
+import 'package:stelaris_ui/api/util/minecraft/enchantment.dart';
+
+import '../util/minecraft/item_flag.dart';
 
 const int negativeAmount = 0;
 const int maximumAmount = 64;
@@ -14,11 +19,37 @@ class ItemBuilder extends BaseBuilder<ItemModel> {
   late int modelData;
   late int amount;
 
+  final Set<ItemFlag> flags = {};
+  final Map<Enchantment, int> enchantmens = {};
+  List<String> lore = [];
+
   ItemBuilder setGroup(String group) {
     Checks.argCondition(group.trim().isEmpty, "The group can't be empty");
     this.group = group;
     return this;
   }
+
+  ItemBuilder addFlag(ItemFlag flag) {
+    flags.add(flag);
+    return this;
+  }
+
+  ItemBuilder addLore(List<String> lines) {
+    lore = lines;
+    return this;
+  }
+
+  ItemBuilder addLine(String line) {
+    lore.add(line);
+    return this;
+  }
+
+  ItemBuilder addEnchantment(Enchantment enchantment, int level) {
+    Checks.argCondition(level > enchantment.maxLevel, "The level is to high");
+    enchantmens[enchantment] = level;
+    return this;
+  }
+
 
   ItemBuilder setMaterial(String material) {
     Checks.argCondition(material.trim().isEmpty, "The material can't be empty");

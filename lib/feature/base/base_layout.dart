@@ -1,27 +1,162 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/model/data_model.dart';
+import 'package:flutter/services.dart';
+import 'package:stelaris_ui/util/constants.dart';
 
-class BaseLayout<E extends DataModel> extends StatefulWidget {
-  final List<E> items;
-  final EditItem<E> edit;
+const Radius radius = Radius.circular(10);
+const BorderRadius borderRadius = BorderRadius.only(
+    topLeft: radius,
+    topRight: radius,
+    bottomLeft: radius,
+    bottomRight: radius
+);
 
-  const BaseLayout({Key? key, required this.items, required this.edit}) : super(key: key);
+const SizedBox spaceBox = SizedBox(height: 10);
+const EdgeInsets top = EdgeInsets.only(top: 10);
+const EdgeInsets all = EdgeInsets.all(20);
+BoxDecoration boxDecoration = BoxDecoration(
+  color: Colors.white,
+  borderRadius: borderRadius,
+  boxShadow: [
+    BoxShadow(
+      color: Colors.grey.withOpacity(0.5),
+      blurRadius: 4,
+      offset: const Offset(4, 8), // changes position of shadow
+    ),
+  ],
+);
 
-  @override
-  State<BaseLayout> createState() => _BaseLayoutState<E>(items, edit);
-}
+const InputDecoration decoration = InputDecoration(
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.all(Radius.circular(2)),
+      borderSide: BorderSide(
+          color: Colors.grey,
+          width: 2
+      ),
+    )
+);
 
-class _BaseLayoutState<E> extends State<BaseLayout> {
+mixin BaseLayout {
 
-  final List<E> items;
-  final EditItem<E> edit;
+  Widget createDropDownContainer<E>(E type, String title, E value, E defaultValue, List<DropdownMenuItem<E>> items) {
+    return _constructContainer(
+      [
+        Text(title, textAlign: TextAlign.left),
+        spaceBox,
+        SizedBox(
+          width: 300,
+          height: 100,
+          child: DropdownButton<E>(
+              value: value ?? defaultValue,
+              items: items,
+              onChanged: (E? value) {}),
+          )
+      ]
+    );
+  }
 
-  _BaseLayoutState(this.items, this.edit);
+  Widget createInputContainer(String title, String? value) {
+    return _constructContainer(
+      [
+        Text(title, textAlign: TextAlign.left),
+        spaceBox,
+        SizedBox(
+          width: 300,
+          height: 100,
+          child: TextField(
+            controller: TextEditingController(
+                text: value ?? empty
+            ),
+            maxLength: 30,
+            decoration: decoration,
+          ),
+        )
+      ]
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container();
+  Widget createTypedInputContainer(String title, String? value, TextInputType type, List<TextInputFormatter>? formatter) {
+    return _constructContainer(
+        [
+          Text(title, textAlign: TextAlign.left),
+          spaceBox,
+          SizedBox(
+            width: 300,
+            height: 100,
+            child: TextField(
+              controller: TextEditingController(
+                text: value ?? empty,
+              ),
+              keyboardType: type,
+              autocorrect: false,
+              inputFormatters: formatter,
+              maxLength: 30,
+              decoration: decoration,
+            ),
+          )
+        ]
+    );
+  }
+
+  Widget createFormattedInputContainer(String title, String? value, List<TextInputFormatter> formatter) {
+    return _constructContainer(
+        [
+          Text(title, textAlign: TextAlign.left),
+          spaceBox,
+          SizedBox(
+            width: 300,
+            height: 100,
+            child: TextField(
+              controller: TextEditingController(
+                  text: value ?? empty,
+              ),
+              autocorrect: false,
+              inputFormatters: formatter,
+              maxLength: 30,
+              decoration: decoration,
+            ),
+          )
+        ]
+    );
+  }
+
+  Widget createNumberContainer(String title, String? value) {
+    return _constructContainer(
+      [
+        Text(title, textAlign: TextAlign.left),
+        spaceBox,
+        _constructSizedBox(
+          TextField(
+            keyboardType: TextInputType.number,
+            controller: TextEditingController(text: value ?? zero),
+            maxLength: 2,
+            decoration: decoration,
+          )
+        )
+      ]
+    );
+  }
+
+  Widget _constructSizedBox(Widget child) {
+    return SizedBox(
+      width: 400,
+      height: 100,
+      child: child,
+    );
+  }
+
+  Widget _constructContainer(List<Widget> children) {
+    return Container(
+        padding: top,
+        decoration: boxDecoration,
+        child: Column(
+          children: [
+            Container(
+              padding: all,
+              decoration: boxDecoration,
+              child: Column(children: children),
+            ),
+          ]
+        )
+    );
   }
 }
-
-typedef EditItem<E> = void Function(E item, int index);

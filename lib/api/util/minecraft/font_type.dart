@@ -3,7 +3,7 @@ enum FontType {
   legacyUnicode("Legacy Unicode"),
   ttf("TrueType | OpenType");
 
-  final String name;
+  final String displayName;
 
-  const FontType(this.name);
+  const FontType(this.displayName);
 }
