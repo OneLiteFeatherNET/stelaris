@@ -5,6 +5,9 @@ import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/util/navigation.dart';
 
+import '../../util/constants.dart';
+import 'button/theme_switcher_toggle.dart';
+
 const double maxXOffset = 180;
 const double minXOffset = 50;
 const navigationEntries = NavigationEntry.values;
@@ -30,6 +33,8 @@ class _BasePageState extends State<BasePage> {
     super.initState();
   }
 
+
+  bool nightMode = false;
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AppState>(onInit: (store) {
@@ -48,8 +53,23 @@ class _BasePageState extends State<BasePage> {
           ),
           backgroundColor: Colors.deepPurple[300],
           elevation: 0,
-          title: const Text('S T E L A R I S'),
+          title: appTitle,
           centerTitle: true,
+          actions: [
+            ThemeSwitcherToggle(),
+            spaceTenBox,
+            IconButton(onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text("You can find the wiki under LINK HERE"),
+                  backgroundColor: Colors.green,
+                  behavior: SnackBarBehavior.floating,
+                  width: 500.0,
+                  elevation: 0.0,
+                )
+              );
+            }, icon: const Icon(Icons.help_center)),
+          ],
         ),
         body: Flex(
           direction: Axis.horizontal,
@@ -67,6 +87,7 @@ class _BasePageState extends State<BasePage> {
     setState(() {
       _xOffset = _navOpen ? maxXOffset : minXOffset;
     });
+
   }
 
   Widget _buildNavigationContainer() {

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/feature/search/search_delegate.dart';
+import 'package:stelaris_ui/util/constants.dart';
+
+const Icon searchIcon = Icon(Icons.search, size: 20, color: Colors.red,);
 
 class SearchWidget extends StatefulWidget {
+
+  final String searchHintText;
+
+  const SearchWidget({Key? key, required this.searchHintText}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => SearchWidgetState();
 }
 
 class SearchWidgetState extends State<SearchWidget> {
-
-  OutlineInputBorder border = const OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(10)),
-      borderSide: BorderSide(color: Colors.red, width: 2)
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +23,14 @@ class SearchWidgetState extends State<SearchWidget> {
       width: 200,
       child: TextFormField(
         decoration: InputDecoration(
-          hintText: "Search...",
+          hintText: widget.searchHintText,
           floatingLabelBehavior: FloatingLabelBehavior.always,
-          prefixIcon: const Icon(Icons.search, size: 20, color: Colors.red,),
-          enabledBorder: border,
-          focusedBorder: border
+          prefixIcon: searchIcon,
+          enabledBorder: searchBorder,
+          focusedBorder: searchBorder
         ),
         onChanged: (value) {
+          //TODO: Yet that popup
           showSearch(context: context, delegate: ItemSearchDelegate());
         },
       ),

@@ -13,8 +13,8 @@ class PluginData extends DataTableSource {
   DataRow getRow(int index) {
     return DataRow(cells: [
       DataCell(Text(plugins[index].name.toString())),
-      const DataCell(Text("Description")),
-      DataCell(Text(plugins[index].version.toString())),
+      DataCell(Text(plugins[index].description.toString())),
+      DataCell(Text(plugins[index].versionsString.toString())),
       DataCell(Text(plugins[index].ref.toString())),
       DataCell(Row(
         children: [
