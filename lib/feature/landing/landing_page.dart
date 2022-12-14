@@ -40,8 +40,6 @@ class _LandingPageState extends State<LandingPage> {
         return store.state;
       },
       builder: (context, vm) {
-        print(vm.blocks.length);
-
         var items = vm.blocks.isNotEmpty ? vm.blocks.map((e) => e.name ?? 'X').toList() : List<String>.generate(1, (index) => "1");
         var selected = 0;
         return Scaffold(
@@ -276,7 +274,7 @@ class ItemListState extends State<ItemList> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10, top: 10),
-                  child: SearchWidget(),
+                  child: SearchWidget(searchHintText: 'Search...',),
                 ),
               ],
             ),
