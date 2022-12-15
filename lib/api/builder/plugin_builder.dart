@@ -27,11 +27,21 @@ class PluginBuilder extends BaseBuilder<PluginModel> {
   }
 
   @override
+  PluginBuilder clear() {
+    name = "";
+    ref = "";
+    version = "";
+    description = "";
+    return this;
+  }
+
+  @override
   PluginModel toDTO() {
     return PluginModel(
         name: name,
         ref: ref,
-        versionsString: version,description: description
+        versionsString: version,
+        description: description
     );
   }
 }

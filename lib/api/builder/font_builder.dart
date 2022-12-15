@@ -39,6 +39,16 @@ class FontBuilder extends BaseBuilder<FontModel> {
   }
 
   @override
+  FontBuilder clear() {
+    name = "";
+    fontType = FontType.bitmap;
+    chars.clear();
+    ascent = 0;
+    height = 0;
+    return this;
+  }
+
+  @override
   FontModel toDTO() {
     return FontModel(
         name: name,
