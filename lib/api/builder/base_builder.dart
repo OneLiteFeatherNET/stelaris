@@ -14,6 +14,8 @@ abstract class BaseBuilder<T extends DataModel> {
     return this;
   }
 
+  BaseBuilder clear();
+
   T toDTO();
 
 }
