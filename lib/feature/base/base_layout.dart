@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
+EdgeInsets padding = const EdgeInsets.only(top: 10, left: 10);
+
 const Radius radius = Radius.circular(10);
 const BorderRadius borderRadius = BorderRadius.only(
     topLeft: radius,
@@ -38,44 +40,29 @@ const InputDecoration decoration = InputDecoration(
 mixin BaseLayout {
 
   Widget createDropDownContainer<E>(E type, String title, E value, E defaultValue, List<DropdownMenuItem<E>> items) {
-    return _constructContainer(
-      [
-        Text(title, textAlign: TextAlign.left),
-        spaceBox,
-        SizedBox(
-          width: 300,
-          height: 100,
-          child: DropdownButton<E>(
-              value: value ?? defaultValue,
-              items: items,
-              onChanged: (E? value) {}),
-          )
-      ]
+    return Padding(
+      padding: padding,
+      child: _constructContainer(
+        [
+          Text(title, textAlign: TextAlign.left),
+          spaceBox,
+          SizedBox(
+            width: 300,
+            height: 100,
+            child: DropdownButton<E>(
+                value: value ?? defaultValue,
+                items: items,
+                onChanged: (E? value) {}),
+            )
+        ]
+      ),
     );
   }
 
   Widget createInputContainer(String title, String? value) {
-    return _constructContainer(
-      [
-        Text(title, textAlign: TextAlign.left),
-        spaceBox,
-        SizedBox(
-          width: 300,
-          height: 100,
-          child: TextField(
-            controller: TextEditingController(
-                text: value ?? empty
-            ),
-            maxLength: 30,
-            decoration: decoration,
-          ),
-        )
-      ]
-    );
-  }
-
-  Widget createTypedInputContainer(String title, String? value, TextInputType type, List<TextInputFormatter>? formatter) {
-    return _constructContainer(
+    return Padding(
+      padding: padding,
+      child: _constructContainer(
         [
           Text(title, textAlign: TextAlign.left),
           spaceBox,
@@ -84,16 +71,40 @@ mixin BaseLayout {
             height: 100,
             child: TextField(
               controller: TextEditingController(
-                text: value ?? empty,
+                  text: value ?? empty
               ),
-              keyboardType: type,
-              autocorrect: false,
-              inputFormatters: formatter,
               maxLength: 30,
               decoration: decoration,
             ),
           )
         ]
+      ),
+    );
+  }
+
+  Widget createTypedInputContainer(String title, String? value, TextInputType type, List<TextInputFormatter>? formatter) {
+    return Padding(
+      padding: padding,
+      child: _constructContainer(
+          [
+            Text(title, textAlign: TextAlign.left),
+            spaceBox,
+            SizedBox(
+              width: 300,
+              height: 100,
+              child: TextField(
+                controller: TextEditingController(
+                  text: value ?? empty,
+                ),
+                keyboardType: type,
+                autocorrect: false,
+                inputFormatters: formatter,
+                maxLength: 30,
+                decoration: decoration,
+              ),
+            )
+          ]
+      ),
     );
   }
 
@@ -146,7 +157,6 @@ mixin BaseLayout {
 
   Widget _constructContainer(List<Widget> children) {
     return Container(
-        padding: top,
         decoration: boxDecoration,
         child: Column(
           children: [
