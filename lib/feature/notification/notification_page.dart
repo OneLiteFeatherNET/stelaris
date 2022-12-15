@@ -69,38 +69,38 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
           return getGeneralContent(value);
         });
       case TabPages.additional:
-        return getOneIndex();
+        return const Text("Nothing to see here");
       case TabPages.meta:
-        return getOneIndex();
+        return const Text("Nothing to see here");
     }
   }
 
   Widget getGeneralContent(model) {
-    return Wrap(
-      children: [
-        createInputContainer("Name", model?.name),
-        createInputContainer("Material", model?.material),
-        createInputContainer("Title", model?.title),
-        createDropDownContainer(
-            FrameType, "FrameType", model?.frameType, defaultFrameType, getItems()),
-        createInputContainer("Description", model?.description),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0, left: 5.0),
+      child: Container(
+        color: Colors.lightGreen,
+        child: Wrap(
+          children: [
+            createInputContainer("Name", model?.name),
+            createInputContainer("Material", model?.material),
+            createInputContainer("Title", model?.title),
+            createDropDownContainer(
+                String, "FrameType", model?.frameType, defaultFrameType.value, getItems()),
+            createInputContainer("Description", model?.description),
+          ],
+        ),
+      ),
     );
   }
 
-  List<DropdownMenuItem<FrameType>> getItems() {
+  List<DropdownMenuItem<String>> getItems() {
     List<FrameType> values = FrameType.values;
     return List.generate(values.length, (index) =>
         DropdownMenuItem(
-          value: values[index],
+          value: values[index].value,
           child: Text(values[index].value),
         )
-    );
-  }
-
-  Widget getOneIndex() {
-    return Container(
-      child: Text("Index one"),
     );
   }
 }
