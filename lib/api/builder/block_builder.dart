@@ -9,7 +9,7 @@ class BlockBuilder extends BaseBuilder<BlockModel> {
   static const String _generatorKey = "BlockGenerator";
 
   late int modelData;
-  late int amount;
+  late int amount = 1;
 
   BlockBuilder setModelData(int modelData) {
     Checks.argCondition(modelData < 0, "The id can't be negative");
@@ -23,6 +23,14 @@ class BlockBuilder extends BaseBuilder<BlockModel> {
     Checks.argCondition(
         amount > maximumAmount, "The maximum allowed value is $maximumAmount");
     this.amount = amount;
+    return this;
+  }
+
+  @override
+  BlockBuilder clear() {
+    name = "";
+    modelData = 0;
+    amount = 1;
     return this;
   }
 

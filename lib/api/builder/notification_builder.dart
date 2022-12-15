@@ -1,5 +1,6 @@
 import 'package:stelaris_ui/api/builder/base_builder.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
+import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 
 class NotificationBuilder extends BaseBuilder<NotificationModel>  {
 
@@ -27,6 +28,16 @@ class NotificationBuilder extends BaseBuilder<NotificationModel>  {
 
   NotificationBuilder setFrameType(String frameType) {
     this.frameType = frameType;
+    return this;
+  }
+
+  @override
+  NotificationBuilder clear() {
+    name = "";
+    material = "";
+    frameType = FrameType.task.name;
+    title = "";
+    description = "";
     return this;
   }
 

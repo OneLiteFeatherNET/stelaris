@@ -4,6 +4,11 @@ import 'package:stelaris_ui/api/builder/base_builder.dart';
 class EntityBuilder extends BaseBuilder<Object> {
 
   @override
+  EntityBuilder clear() {
+    return this;
+  }
+
+  @override
   Object toDTO() {
     // TODO: implement toDTO
     throw UnimplementedError();

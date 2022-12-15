@@ -19,9 +19,20 @@ class TemplateBuilder extends BaseBuilder<TemplateModel> {
   }
 
   @override
+  TemplateBuilder clear() {
+    name = "";
+    description = "";
+    plugins.clear();
+    return this;
+  }
+
+  @override
   TemplateModel toDTO() {
     return TemplateModel(
-        name: name, description: description, plugins: plugins.toList());
+        name: name,
+        description: description,
+        plugins: plugins.toList()
+    );
   }
 }
 

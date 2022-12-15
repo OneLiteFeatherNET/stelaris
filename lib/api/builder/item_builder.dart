@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:stelaris_ui/api/builder/base_builder.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/util/checks.dart';
@@ -67,6 +65,19 @@ class ItemBuilder extends BaseBuilder<ItemModel> {
     Checks.argCondition(amount < negativeAmount, "The amount can't be negative");
     Checks.argCondition(amount > maximumAmount, "The maximum allowed value is $maximumAmount");
     this.amount = amount;
+    return this;
+  }
+
+  @override
+  ItemBuilder clear() {
+    name = "";
+    group = "";
+    material = "";
+    modelData = 0;
+    amount = 0;
+    flags.clear();
+    enchantmens.clear();
+    lore.clear();
     return this;
   }
 
