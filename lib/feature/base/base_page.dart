@@ -26,15 +26,12 @@ class _BasePageState extends State<BasePage> {
   bool _navOpen = true;
 
   double _xOffset = maxXOffset;
-  double _yOffset = 0;
 
   @override
   void initState() {
     super.initState();
   }
 
-
-  bool nightMode = false;
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AppState>(onInit: (store) {
@@ -51,24 +48,22 @@ class _BasePageState extends State<BasePage> {
               _toggleSidebarState();
             },
           ),
-          backgroundColor: Colors.deepPurple[300],
           elevation: 0,
           title: appTitle,
           centerTitle: true,
           actions: [
             ThemeSwitcherToggle(),
             spaceTenBox,
-            IconButton(onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
+            IconButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     content: Text("You can find the wiki under LINK HERE"),
-                  backgroundColor: Colors.green,
-                  behavior: SnackBarBehavior.floating,
-                  width: 500.0,
-                  elevation: 0.0,
-                )
-              );
-            }, icon: const Icon(Icons.help_center)),
+                    behavior: SnackBarBehavior.floating,
+                    width: 500.0,
+                    elevation: 0.0,
+                  ));
+                },
+                icon: const Icon(Icons.help_center)),
           ],
         ),
         body: Flex(
@@ -87,27 +82,34 @@ class _BasePageState extends State<BasePage> {
     setState(() {
       _xOffset = _navOpen ? maxXOffset : minXOffset;
     });
-
   }
 
   Widget _buildNavigationContainer() {
-    return ConstrainedBox(
-      constraints:
-          const BoxConstraints(minWidth: minXOffset, maxWidth: maxXOffset),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        curve: Curves.fastOutSlowIn,
-        width: _navOpen ? maxXOffset : minXOffset,
-        child: Expanded(
-          child: _buildNavigationView(),
-        ),
-      ),
+    final router = GoRouter.of(context);
+    final index = navigationEntries.indexWhere((element) {
+      return element.route == router.location;
+    });
+    return NavigationRail(
+      minExtendedWidth: maxXOffset,
+      extended: _navOpen,
+      onDestinationSelected: (index) {
+        router.push(navigationEntries[index].route);
+      },
+      labelType: NavigationRailLabelType.none,
+      destinations: _buildNavigationView(),
+      selectedIndex: index != -1 ? index : 0,
     );
   }
 
-  ListView _buildNavigationView() {
-    final router = GoRouter.of(context);
-    return ListView.builder(
+  List<NavigationRailDestination> _buildNavigationView() {
+    return List.generate(navigationEntries.length, (index) {
+      var display = navigationEntries[index].display;
+      var leadingIcon = Icon(navigationEntries[index].data);
+      return NavigationRailDestination(
+          icon: leadingIcon,
+          label: Text(display, style: navigationEntryTextStyle));
+    });
+    /*builder(
       itemCount: navigationEntries.length,
       itemBuilder: (context, index) {
         var display = navigationEntries[index].display;
@@ -126,6 +128,6 @@ class _BasePageState extends State<BasePage> {
           selected: selected,
         );
       },
-    );
+    );*/
   }
 }
