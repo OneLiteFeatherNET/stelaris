@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
-import 'package:stelaris_ui/feature/base/model_search_add.dart';
 import 'package:stelaris_ui/feature/dialogs/dismiss_dialog.dart';
 
 typedef MapToDataModelItem<E extends DataModel> = Widget Function(E value);
 
 class ModelList<E extends DataModel> extends StatefulWidget {
-
   final List<E> items;
   final MapToDataModelItem<E> mapToDataModelItem;
   final ValueNotifier<E?> selectedItem;
 
-  const ModelList({Key? key, required this.items, required this.mapToDataModelItem, required this.selectedItem}) : super(key: key);
+  const ModelList(
+      {Key? key,
+      required this.items,
+      required this.mapToDataModelItem,
+      required this.selectedItem})
+      : super(key: key);
 
   @override
-  State<ModelList> createState() => _ModelListState(items, mapToDataModelItem, selectedItem);
+  State<ModelList> createState() =>
+      _ModelListState(items, mapToDataModelItem, selectedItem);
 }
 
 class _ModelListState<E extends DataModel> extends State<ModelList> {
-
   final List<E> _items;
   final MapToDataModelItem<E> mapToDataModelItem;
   final ValueNotifier<E?> selectedItem;
@@ -29,52 +32,58 @@ class _ModelListState<E extends DataModel> extends State<ModelList> {
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).backgroundColor,
-      child: Column(
+      child: Stack(
         children: [
-          const ModelSearchAddControl(),
           Expanded(
               child: SizedBox(
-                width: 250,
-                child: ListView(
-                    children: _items
-                        .map((e) =>
-                        TextButton(
-                          onPressed: () {
-                            selectedItem.value = e;
-                      },
-                      child: Dismissible(
-                          direction: DismissDirection.endToStart,
-                          movementDuration:
-                          const Duration(milliseconds: 500),
-                          background: Container(color: Colors.green),
-                          confirmDismiss: (direction) {
-                            if (direction == DismissDirection.endToStart) {
-                              return showDialog(context: context, builder: (BuildContext context) {
-                                return DeleteDialog("header", context).getDeleteDialog();
-                              });
-                            } else {
-                              var dismiss = Future.value(true);
-                              return dismiss;
-                            }
-                          },
-                          secondaryBackground: Container(
-                            padding: const EdgeInsets.only(right: 15),
-                            alignment: Alignment.centerRight,
+            width: 250,
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 8),
+              child: ListView(
+                children: List<Widget>.generate(_items.length, (index) {
+                  final e = _items[index];
+                  final selected = e.hashCode == selectedItem.value.hashCode;
+                  final selectedCardShape = RoundedRectangleBorder(
+                          side: BorderSide(
+                              color: Theme.of(context).colorScheme.secondary), borderRadius: BorderRadius.circular(12.0));
+                  return InkWell(
+                    onTap: () {
+                      setState(() {
+                        selectedItem.value = e;
+                      });
+                    },
+                    child: Card(
+                      shape: selected ? selectedCardShape : null,
+                      child: ListTile(
+                        title: mapToDataModelItem(e),
+                        trailing: IconButton(
+                          icon: const Icon(
+                            Icons.delete_forever,
                             color: Colors.red,
-                            child: const Icon(Icons.cancel,
-                                color: Colors.white),
                           ),
-                          key: const Key("test"),
-                          child: Card(
-                              child: ListTile(
-                                title: mapToDataModelItem(e),
-                              )
-                          )
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return DeleteDialog("header", context)
+                                      .getDeleteDialog();
+                                });
+                          },
+                        ),
                       ),
-                    )).toList()
-                ),
-              )
-          ),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          )),
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: FloatingActionButton.extended(
+                label: Text("Add"), icon: Icon(Icons.add), onPressed: () {}),
+          )
         ],
       ),
     );
