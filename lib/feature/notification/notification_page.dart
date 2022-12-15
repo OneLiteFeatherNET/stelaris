@@ -76,20 +76,16 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
   }
 
   Widget getGeneralContent(model) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 5.0, left: 5.0),
-      child: Container(
-        color: Colors.lightGreen,
-        child: Wrap(
-          children: [
-            createInputContainer("Name", model?.name),
-            createInputContainer("Material", model?.material),
-            createInputContainer("Title", model?.title),
-            createDropDownContainer(
-                String, "FrameType", model?.frameType, defaultFrameType.value, getItems()),
-            createInputContainer("Description", model?.description),
-          ],
-        ),
+    return Container(
+      child: Wrap(
+        children: [
+          createInputContainer("Name", model?.name),
+          createInputContainer("Material", model?.material),
+          createInputContainer("Title", model?.title),
+          createDropDownContainer(
+              String, "FrameType", model?.frameType, defaultFrameType.value, getItems()),
+          createInputContainer("Description", model?.description),
+        ],
       ),
     );
   }
