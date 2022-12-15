@@ -16,26 +16,17 @@ const SizedBox spaceBox = SizedBox(height: 10);
 const EdgeInsets top = EdgeInsets.only(top: 10);
 const EdgeInsets all = EdgeInsets.all(20);
 BoxDecoration boxDecoration = BoxDecoration(
-  color: Colors.white,
+  // color: Colors.white,
   borderRadius: borderRadius,
   boxShadow: [
     BoxShadow(
-      color: Colors.grey.withOpacity(0.5),
+      // color: Colors.grey.withOpacity(0.5),
       blurRadius: 4,
       offset: const Offset(4, 8), // changes position of shadow
     ),
   ],
 );
 
-const InputDecoration decoration = InputDecoration(
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(2)),
-      borderSide: BorderSide(
-          color: Colors.grey,
-          width: 2
-      ),
-    )
-);
 
 mixin BaseLayout {
 
@@ -74,7 +65,6 @@ mixin BaseLayout {
                   text: value ?? empty
               ),
               maxLength: 30,
-              decoration: decoration,
             ),
           )
         ]
@@ -100,7 +90,6 @@ mixin BaseLayout {
                 autocorrect: false,
                 inputFormatters: formatter,
                 maxLength: 30,
-                decoration: decoration,
               ),
             )
           ]
@@ -123,7 +112,6 @@ mixin BaseLayout {
               autocorrect: false,
               inputFormatters: formatter,
               maxLength: 30,
-              decoration: decoration,
             ),
           )
         ]
@@ -140,7 +128,6 @@ mixin BaseLayout {
             keyboardType: TextInputType.number,
             controller: TextEditingController(text: value ?? zero),
             maxLength: 2,
-            decoration: decoration,
           )
         )
       ]
@@ -156,13 +143,13 @@ mixin BaseLayout {
   }
 
   Widget _constructContainer(List<Widget> children) {
-    return Container(
-        decoration: boxDecoration,
+    return Card(
+        // decoration: boxDecoration,
         child: Column(
           children: [
             Container(
               padding: all,
-              decoration: boxDecoration,
+              // decoration: boxDecoration,
               child: Column(children: children),
             ),
           ]
