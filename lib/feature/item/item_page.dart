@@ -45,7 +45,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
   }
 
   Widget mapDataToModelItem(ItemModel model) {
-    return Text(model.name ?? "Test");
+    return Text(model.name ?? "Test", overflow: TextOverflow.ellipsis,);
   }
   
   Widget mapPageToWidget<ItemModel>(TabPages e, ValueNotifier<ItemModel?> listenable) {
