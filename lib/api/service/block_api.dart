@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:stelaris_ui/api/ApiClient.dart';
+import 'package:stelaris_ui/api/api_client.dart';
 
 import '../model/block_model.dart';
 

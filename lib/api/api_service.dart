@@ -1,4 +1,4 @@
-import 'package:stelaris_ui/api/ApiClient.dart';
+import 'package:stelaris_ui/api/api_client.dart';
 import 'package:stelaris_ui/api/service/block_api.dart';
 import 'package:stelaris_ui/api/service/font_api.dart';
 import 'package:stelaris_ui/api/service/item_api.dart';
