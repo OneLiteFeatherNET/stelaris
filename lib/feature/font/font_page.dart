@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
+import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
+import 'package:stelaris_ui/feature/dialogs/stepper/font_stepper.dart';
 
 import '../../api/state/app_state.dart';
 import '../../api/tabs/tab_pages.dart';
@@ -41,11 +43,22 @@ class FontPageState extends State<FontPage> with BaseLayout {
         );
         var fonts = vm.isNotEmpty ? vm : [fallbackModel];
         return ModelContainerList(
-            items: fonts,
-            page: mapPageToWidget,
-            mapToDataModelItem: (e) {
-              return Text("Blob");
-            }
+          items: fonts,
+          page: mapPageToWidget,
+          mapToDataModelItem: (e) {
+            return Text("Blob");
+            },
+          openFunction: () {
+            showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (BuildContext context) {
+                  return FontStepper(finishStepper: (model) {
+                    StoreProvider.dispatch(context, InitFontAction());
+                    Navigator.pop(context);
+                  });
+                });
+          },
         );
       },
     );
