@@ -36,16 +36,16 @@ BoxDecoration boxDecoration = BoxDecoration(
 const BorderSide side = BorderSide(
 color: Colors.black);
 
-class PluginList extends StatefulWidget {
-  const PluginList({Key? key}) : super(key: key);
+class PluginPage extends StatefulWidget {
+  const PluginPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return PluginListState();
+    return PluginPageState();
   }
 }
 
-class PluginListState extends State<PluginList> {
+class PluginPageState extends State<PluginPage> {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<PluginModel>>(
@@ -112,7 +112,6 @@ class PluginListState extends State<PluginList> {
                   },);
                 });
               },
-              icon: const Icon(Icons.add, color: Colors.white)
           ),
         ],
       ),
