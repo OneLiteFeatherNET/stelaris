@@ -2,9 +2,11 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
+import 'package:stelaris_ui/api/state/actions/notification_actions.dart';
 import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
+import 'package:stelaris_ui/feature/dialogs/stepper/notification_stepper.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 import '../../api/state/app_state.dart';
@@ -53,6 +55,17 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
           items: notifications,
           page: mapPageToWidget,
           mapToDataModelItem: mapDataToModelItem,
+          openFunction: () {
+            showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (BuildContext context) {
+                  return NotificationStepper(finishStepper: (model) {
+                    StoreProvider.dispatch(context, InputNotificationAction());
+                    Navigator.pop(context);
+                  });
+                });
+          },
         );
       },
     );
