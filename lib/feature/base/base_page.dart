@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:stelaris_ui/api/state/actions/app_actions.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/util/navigation.dart';
@@ -23,9 +24,6 @@ class BasePage extends StatefulWidget {
 }
 
 class _BasePageState extends State<BasePage> {
-  bool _navOpen = true;
-
-  double _xOffset = maxXOffset;
 
   @override
   void initState() {
@@ -44,33 +42,20 @@ class _BasePageState extends State<BasePage> {
           leading: IconButton(
             icon: const Icon(Icons.menu),
             onPressed: () {
-              _navOpen = !_navOpen;
-              _toggleSidebarState();
+              _toggleSidebarState(vm.openNavigation);
             },
           ),
           elevation: 0,
           title: appTitle,
           centerTitle: true,
           actions: [
-            ThemeSwitcherToggle(),
-            spaceTenBox,
-            IconButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("You can find the wiki under LINK HERE"),
-                    behavior: SnackBarBehavior.floating,
-                    width: 500.0,
-                    elevation: 0.0,
-                  ));
-                },
-                icon: const Icon(Icons.help_center)),
           ],
         ),
         body: Flex(
           direction: Axis.horizontal,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildNavigationContainer(),
+            _buildNavigationContainer(vm.openNavigation),
             Expanded(child: widget.child)
           ],
         ),
@@ -78,26 +63,54 @@ class _BasePageState extends State<BasePage> {
     });
   }
 
-  void _toggleSidebarState() {
+  void _toggleSidebarState(bool openNavigation) {
     setState(() {
-      _xOffset = _navOpen ? maxXOffset : minXOffset;
+      StoreProvider.dispatch(context, UpdateNavigationAction(!openNavigation));
     });
   }
 
-  Widget _buildNavigationContainer() {
+  Widget _buildNavigationContainer(bool openNavigation) {
     final router = GoRouter.of(context);
     final index = navigationEntries.indexWhere((element) {
       return element.route == router.location;
     });
+    final actionChilds = [
+      ThemeSwitcherToggle(),
+      IconButton(
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("You can find the wiki under LINK HERE"),
+              behavior: SnackBarBehavior.floating,
+              width: 500.0,
+              elevation: 0.0,
+            ));
+          },
+          icon: const Icon(Icons.help_outline))
+    ];
     return NavigationRail(
       minExtendedWidth: maxXOffset,
-      extended: _navOpen,
+      extended: openNavigation,
       onDestinationSelected: (index) {
         router.push(navigationEntries[index].route);
       },
       labelType: NavigationRailLabelType.none,
       destinations: _buildNavigationView(),
       selectedIndex: index != -1 ? index : 0,
+      trailing: Expanded(
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: openNavigation ? Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: actionChilds,
+          ) : Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: actionChilds,
+          ),
+
+        ),
+      ),
     );
   }
 
@@ -109,25 +122,5 @@ class _BasePageState extends State<BasePage> {
           icon: leadingIcon,
           label: Text(display, style: navigationEntryTextStyle));
     });
-    /*builder(
-      itemCount: navigationEntries.length,
-      itemBuilder: (context, index) {
-        var display = navigationEntries[index].display;
-        var leadingIcon = Icon(navigationEntries[index].data);
-        var title = (_xOffset == maxXOffset
-            ? Text(
-                display,
-                style: navigationEntryTextStyle,
-              )
-            : Text(""));
-        var selected = router.location == navigationEntries[index].route;
-        return ListTile(
-          title: title,
-          dense: true,
-          leading: leadingIcon,
-          selected: selected,
-        );
-      },
-    );*/
   }
 }
