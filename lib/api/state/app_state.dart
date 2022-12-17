@@ -19,6 +19,7 @@ class AppState with _$AppState {
     @Default([]) List<FontModel> fonts,
     @Default([]) List<PluginModel> plugins,
     @Default([]) List<BlockModel> blocks,
+    @Default(true) bool openNavigation,
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, dynamic> json) =>
