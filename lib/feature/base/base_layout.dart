@@ -15,18 +15,6 @@ const BorderRadius borderRadius = BorderRadius.only(
 const SizedBox spaceBox = SizedBox(height: 10);
 const EdgeInsets top = EdgeInsets.only(top: 10);
 const EdgeInsets all = EdgeInsets.all(20);
-BoxDecoration boxDecoration = BoxDecoration(
-  // color: Colors.white,
-  borderRadius: borderRadius,
-  boxShadow: [
-    BoxShadow(
-      // color: Colors.grey.withOpacity(0.5),
-      blurRadius: 4,
-      offset: const Offset(4, 8), // changes position of shadow
-    ),
-  ],
-);
-
 
 mixin BaseLayout {
 
@@ -39,11 +27,10 @@ mixin BaseLayout {
           spaceBox,
           SizedBox(
             width: 300,
-            height: 100,
-            child: DropdownButton<E>(
-                value: value ?? defaultValue,
-                items: items,
-                onChanged: (E? value) {}),
+            child: DropdownButtonFormField<E>(
+              value: value ?? defaultValue,
+              items: items,
+              onChanged: (E? value) {}),
             )
         ]
       ),
@@ -68,6 +55,27 @@ mixin BaseLayout {
             ),
           )
         ]
+      ),
+    );
+  }
+
+  Widget createExpansionContainer(String title, List<Widget> value) {
+    return Padding(
+      padding: padding,
+      child: _constructContainer(
+          [
+            ConstrainedBox(
+              constraints: const BoxConstraints(
+                minWidth: 300,
+                minHeight: 100,
+                maxWidth: 300
+              ),
+              child: ExpansionTile(
+                controlAffinity: ListTileControlAffinity.leading, title: Text(title),
+                children: value,
+              ),
+            )
+          ]
       ),
     );
   }
