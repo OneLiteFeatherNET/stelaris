@@ -38,8 +38,11 @@ class BlockListState extends State<BlockList> with BaseLayout {
             amount: 1
         );
         var blocks = vm.isNotEmpty ? vm : [blocKModel];
-        return ModelContainerList<BlockModel>(items: blocks, page: mapPageToWidget, mapToDataModelItem: mapDataToModelItem
-
+        return ModelContainerList<BlockModel>(
+          items: blocks,
+          page: mapPageToWidget,
+          mapToDataModelItem: mapDataToModelItem,
+          openFunction: () {},
         );
       },
     );
