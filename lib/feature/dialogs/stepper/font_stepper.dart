@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/builder/font_builder.dart';
+import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 
+import '../../../api/api_service.dart';
 import '../../../util/constants.dart';
 
 const List<FontType> values = FontType.values;
@@ -14,8 +16,13 @@ List.generate(values.length, (index) =>
         child: Text(values[index].displayName))
 );
 
+typedef FinishStepper = void Function(FontModel model);
+
 class FontStepper extends StatefulWidget {
-  const FontStepper({Key? key}) : super(key: key);
+
+  final FinishStepper finishStepper;
+
+  const FontStepper({Key? key, required this.finishStepper}) : super(key: key);
 
   @override
   State<FontStepper> createState() => _FontStepperState();
@@ -24,7 +31,10 @@ class FontStepper extends StatefulWidget {
 class _FontStepperState extends State<FontStepper> {
   int _currentStep = 0;
 
+  final Map<int, Map<String, TextEditingController>> editingController = {};
+
   final FontBuilder _fontBuilder = FontBuilder();
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +58,20 @@ class _FontStepperState extends State<FontStepper> {
       ],
     );
   }
+
+  _continue() async {
+    bool isLastStep = _currentStep == getSteps().length - 1;
+
+    if (isLastStep) {
+      FontModel font = _fontBuilder.toDTO();
+      final model = await ApiService().fontAPI.addFont(font);
+      widget.finishStepper(model);
+      return null;
+    } else {
+      setState(() => _currentStep += 1);
+    }
+  }
+
 
   List<Step> getSteps() => [
         Step(
