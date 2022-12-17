@@ -6,7 +6,7 @@ const yesText = Text("Yes");
 
 class DeleteDialog {
 
-  String header;
+  List<TextSpan> header;
   BuildContext context;
 
   DeleteDialog(this.header, this.context);
@@ -14,7 +14,11 @@ class DeleteDialog {
   AlertDialog getDeleteDialog() {
     return AlertDialog(
       title: deleteTitle,
-      content: Text(header),
+      content: RichText(
+        text: TextSpan(
+          children: header
+        ),
+      ),
       actions: <Widget> [
         TextButton(
           style: TextButton.styleFrom(
