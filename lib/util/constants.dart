@@ -9,6 +9,7 @@ const String entityPage = "Entities";
 Text appText = const Text(appName);
 Text appTitle = const Text("S T E L A R I S");
 Text emptyText = const Text(empty);
+Text addText = const Text("Add");
 
 //Minecraft related values
 const String zero = "0";
