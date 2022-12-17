@@ -11,21 +11,17 @@ class BaseStepper<E extends DataModel> extends StatefulWidget {
   const BaseStepper({Key? key, required this.title, required this.steps}) : super(key: key);
 
   @override
-  State<BaseStepper> createState() => _BaseStepperState<E>(title, steps);
+  State<BaseStepper> createState() => _BaseStepperState<E>();
 }
 
 class _BaseStepperState<E extends DataModel> extends State<BaseStepper> {
 
   int currentStep = 0;
-  final List<Step> steps;
-  final Text title;
-
-  _BaseStepperState(this.title, this.steps);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: title,
+      title: widget.title,
       shape: rectangleBorder,
       actions: <Widget>[
         SizedBox(
@@ -34,7 +30,7 @@ class _BaseStepperState<E extends DataModel> extends State<BaseStepper> {
             child: Stepper(
               type: StepperType.horizontal,
               currentStep: currentStep,
-              steps: steps,
+              steps: widget.steps,
               onStepContinue: () {
                 //TODO Check if currentStep is over the global step amount
                 setState(() => currentStep += 1);

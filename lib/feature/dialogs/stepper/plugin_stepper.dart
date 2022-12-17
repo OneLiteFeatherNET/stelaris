@@ -28,6 +28,7 @@ class _PluginStepperState extends State<PluginStepper> {
     editingController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

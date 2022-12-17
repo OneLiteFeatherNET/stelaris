@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/builder/item_builder.dart';
+import 'package:stelaris_ui/api/model/item_model.dart';
+import 'package:stelaris_ui/util/constants.dart';
+
+import '../../../api/api_service.dart';
+
+typedef FinishStepper = void Function(ItemModel model);
+
+Text title = const Text(
+  "Create new item model",
+  textAlign: TextAlign.center,
+);
 
 class ItemStepper extends StatefulWidget {
-  const ItemStepper({Key? key}) : super(key: key);
+  final FinishStepper finishCallback;
+
+  const ItemStepper({Key? key, required this.finishCallback}) : super(key: key);
 
   @override
   State<ItemStepper> createState() => _ItemStepperState();
@@ -13,63 +26,101 @@ class _ItemStepperState extends State<ItemStepper> {
 
   final ItemBuilder _itemBuilder = ItemBuilder();
 
+  GlobalKey<_ItemStepperState> itemStepperKey = GlobalKey<_ItemStepperState>();
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController materialController = TextEditingController();
+  TextEditingController modelDataController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
+
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-        backgroundColor: Colors.lightGreen[200],
-        title: const SizedBox(
-          width: 100,
-          height: 20,
-          child: Text(
-            "Create new item model",
-            textAlign: TextAlign.center,
-          ),
+    final steps = getSteps();
+    return ListView(
+      shrinkWrap: true,
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      children: [
+        Container(
+          child: title,
+          padding: EdgeInsets.all(8),
         ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        actions: <Widget>[
-          SizedBox(
-              width: 600,
-              height: 250,
-              child: Stepper(
-                  type: StepperType.horizontal,
-                  currentStep: _currentStep,
-                  steps: getSteps(),
-                  onStepContinue: () {
-                    setState(() => _currentStep += 1);
-                  },
-                  onStepCancel: () {
-                    _currentStep > 0 ? setState(() => _currentStep -= 1) : "";
-                  })),
-        ]);
+        Stepper(
+            type: StepperType.vertical,
+            currentStep: _currentStep,
+            steps: steps,
+            controlsBuilder: (BuildContext context, ControlsDetails details) {
+              return Row(
+                children: [
+                  details.stepIndex == (steps.length - 1)
+                      ? TextButton(
+                          onPressed: details.onStepContinue,
+                          child: Text('Finish'),
+                        )
+                      : TextButton(
+                          onPressed: details.onStepContinue,
+                          child: Text('Continue'),
+                        ),
+                  TextButton(
+                    onPressed: details.onStepCancel,
+                    child: Text('Back'),
+                  )
+                ],
+              );
+            },
+            onStepContinue: () {
+              setState(() => _continue());
+            },
+            onStepCancel: () {
+              _currentStep > 0 ? setState(() => _currentStep -= 1) : "";
+            })
+      ],
+    );
+  }
+
+  _continue() async {
+    bool isLastStep = _currentStep == getSteps().length - 1;
+
+    if (isLastStep) {
+      ItemModel pluginModel = _itemBuilder.toDTO();
+      final item = await ApiService().itemApi.addItem(pluginModel);
+      widget.finishCallback(item);
+      return null;
+    } else {
+      setState(() => _currentStep += 1);
+    }
   }
 
   List<Step> getSteps() => [
         Step(
+            isActive: _currentStep == 0,
+            title: const Text("Name"),
+            content: Column(
+              children: [
+                SizedBox(
+                  width: 650,
+                  child: TextFormField(
+                      controller: nameController,
+                      decoration: const InputDecoration(labelText: 'Name')),
+                ),
+              ],
+            )),
+        Step(
             isActive: _currentStep == 1,
-            title: const Text("Adjust some general values"),
-            content: Form(
-              key: key,
-              child: Column(
-                children: [
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Name'),
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Material'),
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Amount'),
-                  ),
-                  TextFormField(
-                      decoration: const InputDecoration(labelText: 'Modeldata'))
-                ],
-              ),
-            ),
-            state: _currentStep >= 2 ? StepState.complete : StepState.disabled)
+            title: const Text("Description"),
+            content: Column(
+              children: [
+                spaceTenAndTenBox,
+                SizedBox(
+                  width: 650,
+                  child: TextFormField(
+                      controller: descriptionController,
+                      decoration:
+                          const InputDecoration(labelText: 'Description')),
+                ),
+              ],
+            )),
       ];
 }

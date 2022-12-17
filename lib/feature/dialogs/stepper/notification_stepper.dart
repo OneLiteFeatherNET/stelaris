@@ -3,6 +3,7 @@ import 'package:stelaris_ui/api/builder/notification_builder.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
 import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 
+import '../../../api/api_service.dart';
 import '../../../util/constants.dart';
 
 const List<FrameType> values = FrameType.values;
@@ -14,10 +15,13 @@ List.generate(values.length, (index) =>
         child: Text(values[index].value))
 );
 
+typedef FinishStepper = void Function(NotificationModel model);
 
 class NotificationStepper extends StatefulWidget {
 
-  const NotificationStepper({Key? key}) : super(key: key);
+  final FinishStepper finishStepper;
+
+  const NotificationStepper({Key? key, required this.finishStepper}) : super(key: key);
 
   @override
   State<NotificationStepper> createState() => _NotificationStepperState();
@@ -69,14 +73,13 @@ class _NotificationStepperState extends State<NotificationStepper> {
     );
   }
 
-  _continue() {
+  _continue() async {
     bool isLastStep = _currentStep == getSteps().length - 1;
 
     if (isLastStep) {
-      key.currentState!.save();
-      NotificationModel notificationModel = _notificationBuilder.toDTO();
-
-      print(notificationModel.toString());
+      NotificationModel notification = _notificationBuilder.toDTO();
+      final model = await ApiService().notificationAPI.addNotification(notification);
+      widget.finishStepper(model);
       return null;
     } else {
       setState(() => _currentStep += 1);
