@@ -59,7 +59,7 @@ mixin BaseLayout {
     );
   }
 
-  Widget createExpansionContainer(String title, List<Widget> value) {
+  Widget createExpansionContainer(String title, Widget? trailingWidget, List<Widget> value) {
     return Padding(
       padding: padding,
       child: _constructContainer(
@@ -71,7 +71,9 @@ mixin BaseLayout {
                 maxWidth: 300
               ),
               child: ExpansionTile(
-                controlAffinity: ListTileControlAffinity.leading, title: Text(title),
+                controlAffinity: ListTileControlAffinity.leading,
+                title: Text(title),
+                trailing: trailingWidget,
                 children: value,
               ),
             )
