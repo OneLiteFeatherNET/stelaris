@@ -6,25 +6,12 @@ import 'package:stelaris_ui/feature/item/item_page.dart';
 import 'package:stelaris_ui/feature/notification/notification_page.dart';
 import 'package:stelaris_ui/feature/plugin/plugin_list.dart';
 
-import '../feature/login/login_page.dart';
-
 final GoRouter router = GoRouter(routes: [
   GoRoute(
     path: '/',
     builder: (BuildContext context, GoRouterState state) {
       return const BasePage(child: NotificationPage());
     },
-  ),
-  GoRoute(
-    path: '/login',
-    pageBuilder: (context, state) => CustomTransitionPage(
-        child: const LoginPage(),
-        key: state.pageKey,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            FadeTransition(
-              opacity: animation,
-              child: child,
-            )),
   ),
   GoRoute(
     path: NavigationEntry.items.route,
