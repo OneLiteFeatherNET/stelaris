@@ -11,6 +11,9 @@ Text appTitle = const Text("S T E L A R I S");
 Text emptyText = const Text(empty);
 Text addText = const Text("Add");
 
+/// Formatter
+const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);
+
 //Minecraft related values
 const String zero = "0";
 const String empty = "";
@@ -33,6 +36,7 @@ const Text notificationStepperTitle = Text("Create a new notification", textAlig
 
 // Button
 Icon addModelIcon = const Icon(Icons.add);
+Icon deleteIcon = const Icon(Icons.delete_forever, color: Colors.red);
 
 // Boxes
 const SizedBox spaceFiveBox = SizedBox(width: 5);
