@@ -32,7 +32,6 @@ class _PluginStepperState extends State<PluginStepper> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        backgroundColor: Colors.lightGreen[200],
         title: const Text("Plugin builder"),
         actions: <Widget>[
           SizedBox(

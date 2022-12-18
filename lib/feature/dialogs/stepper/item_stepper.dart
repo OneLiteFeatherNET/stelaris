@@ -30,9 +30,6 @@ class _ItemStepperState extends State<ItemStepper> {
 
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  TextEditingController materialController = TextEditingController();
-  TextEditingController modelDataController = TextEditingController();
-  TextEditingController amountController = TextEditingController();
 
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
@@ -41,11 +38,11 @@ class _ItemStepperState extends State<ItemStepper> {
     final steps = getSteps();
     return ListView(
       shrinkWrap: true,
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       children: [
         Container(
+          padding: const EdgeInsets.all(8),
           child: title,
-          padding: EdgeInsets.all(8),
         ),
         Stepper(
             type: StepperType.vertical,
@@ -57,15 +54,15 @@ class _ItemStepperState extends State<ItemStepper> {
                   details.stepIndex == (steps.length - 1)
                       ? TextButton(
                           onPressed: details.onStepContinue,
-                          child: Text('Finish'),
+                          child: const Text('Finish'),
                         )
                       : TextButton(
                           onPressed: details.onStepContinue,
-                          child: Text('Continue'),
+                          child: const Text('Continue'),
                         ),
                   TextButton(
                     onPressed: details.onStepCancel,
-                    child: Text('Back'),
+                    child: const Text('Back'),
                   )
                 ],
               );
