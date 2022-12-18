@@ -141,19 +141,16 @@ class _NotificationStepperState extends State<NotificationStepper> {
           SizedBox(
             height: 50,
             width: 200,
-            child: Container(
-              //TODO: Add own state
-              child: DropdownButton(
-                  value: _defaultType,
-                  items: items,
-                  onChanged: (String? value) {
-                    setState(() {
-                      _defaultType = value!;
-                      _notificationBuilder.setFrameType(value);
-                    });
-                  },
-                isExpanded: true,
-              ),
+            child: DropdownButton(
+                value: _defaultType,
+                items: getItems(),
+                onChanged: (String? value) {
+                  setState(() {
+                    _defaultType = value!;
+                    _notificationBuilder.setFrameType(value);
+                  });
+                },
+              isExpanded: true,
             ),
           )
         ],
@@ -161,3 +158,10 @@ class _NotificationStepperState extends State<NotificationStepper> {
     ),
   ];
 }
+
+List<DropdownMenuItem<String>> getItems() => List.generate(values.length, (index) =>
+    DropdownMenuItem(
+        alignment: Alignment.center,
+        value: values[index].value,
+        child: Text(values[index].value))
+);
