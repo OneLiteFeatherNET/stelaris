@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
@@ -55,29 +56,11 @@ class BlockListState extends State<BlockList> with BaseLayout {
   Widget mapPageToWidget(TabPages e, ValueNotifier<DataModel?> test) {
     switch(e) {
       case TabPages.general:
-        return getOneIndex();
+        return nil;
       case TabPages.additional:
-        return getOneIndex();
+        return nil;
       case TabPages.meta:
-        return getOneIndex();
+        return nil;
     }
-  }
-
-  Widget getOneIndex() {
-    return Container(
-      child: Text("Index one"),
-    );
-  }
-
-  @override
-  List<Tab> getTabEntries() {
-    // TODO: implement getTabEntries
-    throw UnimplementedError();
-  }
-
-  @override
-  Widget tabBarView(List<Widget> views) {
-    // TODO: implement tabBarView
-    throw UnimplementedError();
   }
 }
