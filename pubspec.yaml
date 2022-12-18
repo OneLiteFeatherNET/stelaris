@@ -19,6 +19,7 @@ dependencies:
   localstorage: ^4.0.0+1
   async_redux: 17.0.1
   data_table_2: ^2.3.8
+  nil: ^1.1.1
 
 dev_dependencies:
   flutter_test:
