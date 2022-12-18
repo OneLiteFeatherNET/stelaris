@@ -1,13 +1,27 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:nil/nil.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
+import 'package:stelaris_ui/feature/dialogs/item_enchantments_dialog.dart';
+import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/item_stepper.dart';
+import 'package:stelaris_ui/util/constants.dart';
 
 import '../../api/state/app_state.dart';
+import '../../api/util/minecraft/item_flag.dart';
 import '../base/model_container_list.dart';
+
+const List<ItemFlag> flags = ItemFlag.values;
+List<DropdownMenuItem<String>> items =
+List.generate(flags.length, (index) =>
+    DropdownMenuItem(value: flags[index].display,child: Text(flags[index].display),)
+);
+
 
 class ItemPage extends StatefulWidget {
   const ItemPage({Key? key}) : super(key: key);
@@ -81,9 +95,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               return getGeneralContent(value);
             });
       case TabPages.additional:
-        return Container(
-            padding: const EdgeInsets.only(top: 100),
-            child: const Text("Nothing to see here"));
+        return nil;
       case TabPages.meta:
         return ValueListenableBuilder(
             valueListenable: listenable,
@@ -106,7 +118,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
         ],
       );
     }
-    return Container();
+    return nil;
   }
 
   Widget getMetaContent(model) {
@@ -114,15 +126,33 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
       return Wrap(
         clipBehavior: Clip.hardEdge,
         children: [
-          createExpansionContainer("Item Flags", IconButton(icon: Icon(Icons.add), onPressed: () {}),
-              model.flags?.map((e) => ListTile(title: Text(e), trailing: IconButton(icon: const Icon(Icons.delete_forever, color: Colors.red), onPressed: () {},),)).toList() ?? List.empty()),
-          createExpansionContainer("Enchantments", IconButton(icon: Icon(Icons.add), onPressed: () {}),
-            model.enchantments?.entries.map((e) => ListTile(title: Text("${e.key}, Level: ${e.value}"), trailing: IconButton(icon: const Icon(Icons.delete_forever, color: Colors.red), onPressed: () {},),)).toList() ?? List.empty()),
-          createExpansionContainer("Lore", IconButton(icon: Icon(Icons.add), onPressed: () {}),
-              model.lore?.map((e) => ListTile(title: Text(e), trailing: IconButton(icon: const Icon(Icons.delete_forever, color: Colors.red), onPressed: () {},),)).toList() ?? List.empty())
+          ExpandableDataCard(title: const Text("Flags"), buttonClick:() {
+            showDialog(context: context, builder: (BuildContext context) {
+              return EntryAddDialog(title: const Text("Add a flag", textAlign: TextAlign.center,), widget: getItemFlagSelection(),);
+            });
+          }, widgets: model.flags?.map((e) => ListTile(title: Text(e), trailing: IconButton(icon: deleteIcon, onPressed: () {},),)).toList() ?? List.empty()
+          ),
+          ExpandableDataCard(title: const Text("Enchantments"), buttonClick:() {
+            showDialog(context: context, builder: (BuildContext context) {
+              return ItemEnchantmentAddDialog();
+            });
+          }, widgets: model.enchantments?.entries.map((e) => ListTile(title: Text("${e.key}, Level: ${e.value}"), trailing: IconButton(icon: deleteIcon, onPressed: () {},),)).toList() ?? List.empty()),
+          ExpandableDataCard(title: const Text("Lore"), buttonClick: () {
+            showDialog(context: context, builder: (BuildContext context) {
+              return EntryAddDialog(title: const Text("Add new line"), widget: TextFormField(keyboardType: TextInputType.text));
+            });
+          }, widgets: model.lore?.map((e) => ListTile(title: Text(e), trailing: IconButton(icon: deleteIcon, onPressed: () {},),)).toList() ?? List.empty())
         ],
       );
     }
-    return Container();
+    return nil;
+  }
+
+  Widget getItemFlagSelection() {
+    return DropdownButtonFormField(
+      value: items[0].value,
+      items: items,
+      onChanged: (value) { },
+    );
   }
 }

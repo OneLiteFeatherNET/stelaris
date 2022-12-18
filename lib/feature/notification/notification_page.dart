@@ -1,10 +1,12 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/api/state/actions/notification_actions.dart';
 import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/notification_stepper.dart';
 import 'package:stelaris_ui/util/constants.dart';
@@ -79,27 +81,30 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
     switch(e) {
       case TabPages.general:
         return ValueListenableBuilder(valueListenable: test, builder: (BuildContext context, value, Widget? child) {
+          print("objeasasct");
           return getGeneralContent(value);
         });
       case TabPages.additional:
-        return const Text("Nothing to see here");
+        return nil;
       case TabPages.meta:
-        return const Text("Nothing to see here");
+        return nil;
     }
   }
 
   Widget getGeneralContent(model) {
-    return Container(
-      child: Wrap(
-        children: [
-          createInputContainer("Name", model?.name),
-          createInputContainer("Material", model?.material),
-          createInputContainer("Title", model?.title),
-          createDropDownContainer(
-              String, "FrameType", model?.frameType, defaultFrameType.value, getItems()),
-          createInputContainer("Description", model?.description),
-        ],
-      ),
+    return Wrap(
+      children: [
+        createInputContainer("Name", model?.name),
+        createInputContainer("Material", model?.material),
+        createInputContainer("Title", model?.title),
+        DropDownCard(
+            title: const Text("FrameType", textAlign: TextAlign.center),
+            items: getItems(),
+            valueUpdate: (String value) {
+            },
+        ),
+        createInputContainer("Description", model?.description),
+      ],
     );
   }
 
