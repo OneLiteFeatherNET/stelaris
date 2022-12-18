@@ -4,14 +4,6 @@ import 'package:stelaris_ui/util/constants.dart';
 
 EdgeInsets padding = const EdgeInsets.only(top: 10, left: 10);
 
-const Radius radius = Radius.circular(10);
-const BorderRadius borderRadius = BorderRadius.only(
-    topLeft: radius,
-    topRight: radius,
-    bottomLeft: radius,
-    bottomRight: radius
-);
-
 const SizedBox spaceBox = SizedBox(height: 10);
 const EdgeInsets top = EdgeInsets.only(top: 10);
 const EdgeInsets all = EdgeInsets.all(20);
@@ -21,7 +13,7 @@ mixin BaseLayout {
   Widget createDropDownContainer<E>(E type, String title, E value, E defaultValue, List<DropdownMenuItem<E>> items) {
     return Padding(
       padding: padding,
-      child: _constructContainer(
+      child: constructContainer(
         [
           Text(title, textAlign: TextAlign.left),
           spaceBox,
@@ -40,7 +32,7 @@ mixin BaseLayout {
   Widget createInputContainer(String title, String? value) {
     return Padding(
       padding: padding,
-      child: _constructContainer(
+      child: constructContainer(
         [
           Text(title, textAlign: TextAlign.left),
           spaceBox,
@@ -59,33 +51,10 @@ mixin BaseLayout {
     );
   }
 
-  Widget createExpansionContainer(String title, Widget? trailingWidget, List<Widget> value) {
-    return Padding(
-      padding: padding,
-      child: _constructContainer(
-          [
-            ConstrainedBox(
-              constraints: const BoxConstraints(
-                minWidth: 300,
-                minHeight: 100,
-                maxWidth: 300
-              ),
-              child: ExpansionTile(
-                controlAffinity: ListTileControlAffinity.leading,
-                title: Text(title),
-                trailing: trailingWidget,
-                children: value,
-              ),
-            )
-          ]
-      ),
-    );
-  }
-
   Widget createTypedInputContainer(String title, String? value, TextInputType type, List<TextInputFormatter>? formatter) {
     return Padding(
       padding: padding,
-      child: _constructContainer(
+      child: constructContainer(
           [
             Text(title, textAlign: TextAlign.left),
             spaceBox,
@@ -108,7 +77,7 @@ mixin BaseLayout {
   }
 
   Widget createFormattedInputContainer(String title, String? value, List<TextInputFormatter> formatter) {
-    return _constructContainer(
+    return constructContainer(
         [
           Text(title, textAlign: TextAlign.left),
           spaceBox,
@@ -129,7 +98,7 @@ mixin BaseLayout {
   }
 
   Widget createNumberContainer(String title, String? value) {
-    return _constructContainer(
+    return constructContainer(
       [
         Text(title, textAlign: TextAlign.left),
         spaceBox,
@@ -152,7 +121,7 @@ mixin BaseLayout {
     );
   }
 
-  Widget _constructContainer(List<Widget> children) {
+  Widget constructContainer(List<Widget> children) {
     return Card(
         // decoration: boxDecoration,
         child: Column(
