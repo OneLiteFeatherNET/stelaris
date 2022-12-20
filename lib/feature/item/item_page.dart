@@ -1,7 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:nil/nil.dart';
-import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
@@ -17,11 +16,12 @@ import '../../api/util/minecraft/item_flag.dart';
 import '../base/model_container_list.dart';
 
 const List<ItemFlag> flags = ItemFlag.values;
-List<DropdownMenuItem<String>> items =
-List.generate(flags.length, (index) =>
-    DropdownMenuItem(value: flags[index].display,child: Text(flags[index].display),)
-);
-
+List<DropdownMenuItem<String>> items = List.generate(
+    flags.length,
+    (index) => DropdownMenuItem(
+          value: flags[index].display,
+          child: Text(flags[index].display),
+        ));
 
 class ItemPage extends StatefulWidget {
   const ItemPage({Key? key}) : super(key: key);
@@ -33,32 +33,40 @@ class ItemPage extends StatefulWidget {
 }
 
 class ItemPageState extends State<ItemPage> with BaseLayout {
+  final ValueNotifier<ItemModel?> selectedItem = ValueNotifier(null);
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<ItemModel>>(
       onInit: (store) {
-        store.dispatch(InitItemAction());
+        if (store.state.items.isEmpty) {
+          store.dispatch(InitItemAction());
+        }
       },
       converter: (store) {
         return store.state.items;
       },
       builder: (context, vm) {
-        var model = const ItemModel(
-            name: "Test1234",
-            generator: "ItemGenerator",
-            group: "Test",
-            material: "minecraft:air",
-            modelData: 1,
-            amount: 1,
-            flags: {"YOLO", "YOLO2", "YOLO3"},
-            enchantments:  {'yolo':1, "yolo2": 2, "yolor3": 33},
-            lore: ["Test", "This is another line"]
-        );
-        List<ItemModel> items = vm.isNotEmpty ? vm : [model];
+        selectedItem.value ??= vm.first;
         return ModelContainerList<ItemModel>(
-            items: items,
+            mapToDeleteDialog: (value) {
+              return [
+                const TextSpan(
+                    text: "Will you delete ",
+                    style: TextStyle(color: Colors.white)),
+                TextSpan(
+                    text: value.name ?? "Unknown",
+                    style: const TextStyle(color: Colors.red))
+              ];
+            },
+            mapToDeleteSuccessfully: (value) {
+              StoreProvider.dispatch(context, RemoveItemAction(value));
+              return true;
+            },
+            items: vm,
             page: mapPageToWidget,
             mapToDataModelItem: mapDataToModelItem,
+            selectedItem: selectedItem,
             openFunction: () {
               showDialog(
                   context: context,
@@ -67,8 +75,9 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                     return Dialog(
                       child: Card(
                         child: ItemStepper(finishCallback: (model) {
-                          StoreProvider.dispatch(context, InitItemAction());
+                          StoreProvider.dispatch(context, AddItemAction(model));
                           Navigator.pop(context);
+                          selectedItem.value = model;
                         }),
                       ),
                     );
@@ -85,8 +94,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
     );
   }
 
-  Widget mapPageToWidget<ItemModel>(
-      TabPages e, ValueNotifier<ItemModel?> listenable) {
+  Widget mapPageToWidget(TabPages e, ValueNotifier<ItemModel?> listenable) {
     switch (e) {
       case TabPages.general:
         return ValueListenableBuilder(
@@ -94,10 +102,8 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
             builder: (BuildContext context, value, Widget? child) {
               return getGeneralContent(value);
             });
-      case TabPages.additional:
-        return nil;
       case TabPages.meta:
-        return ValueListenableBuilder(
+        return ValueListenableBuilder<ItemModel?>(
             valueListenable: listenable,
             builder: (BuildContext context, value, Widget? child) {
               return getMetaContent(value);
@@ -107,52 +113,153 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
 
   Widget getGeneralContent(model) {
     if (model is ItemModel) {
-      return Wrap(
+      return Stack(
         children: [
-          createInputContainer("Name", model.name),
-          createInputContainer("Material", model.material),
-          createTypedInputContainer("ModelData", model.modelData?.toString(),
-              const TextInputType.numberWithOptions(signed: true), null),
-          createTypedInputContainer("Amount", model.amount.toString(),
-              const TextInputType.numberWithOptions(signed: true), null),
+          Wrap(
+            children: [
+              createInputContainer("Name", model.name),
+              createInputContainer("Material", model.material),
+              createTypedInputContainer(
+                  "ModelData",
+                  model.modelData?.toString(),
+                  const TextInputType.numberWithOptions(signed: true),
+                  null),
+              createTypedInputContainer("Amount", model.amount?.toString(),
+                  const TextInputType.numberWithOptions(signed: true), null),
+            ],
+          ),
+          Positioned(
+              bottom: 25,
+              right: 25,
+              child: FloatingActionButton.extended(
+                onPressed: () {},
+                label: const Text("Save"),
+                icon: const Icon(Icons.save),
+              ))
         ],
       );
     }
     return nil;
   }
 
-  Widget getMetaContent(model) {
-    if (model is ItemModel) {
-      return Wrap(
-        clipBehavior: Clip.hardEdge,
-        children: [
-          ExpandableDataCard(title: const Text("Flags"), buttonClick:() {
-            showDialog(context: context, builder: (BuildContext context) {
-              return EntryAddDialog(title: const Text("Add a flag", textAlign: TextAlign.center,), widget: getItemFlagSelection(),);
-            });
-          }, widgets: model.flags?.map((e) => ListTile(title: Text(e), trailing: IconButton(icon: deleteIcon, onPressed: () {},),)).toList() ?? List.empty()
-          ),
-          ExpandableDataCard(title: const Text("Enchantments"), buttonClick:() {
-            showDialog(context: context, builder: (BuildContext context) {
-              return ItemEnchantmentAddDialog();
-            });
-          }, widgets: model.enchantments?.entries.map((e) => ListTile(title: Text("${e.key}, Level: ${e.value}"), trailing: IconButton(icon: deleteIcon, onPressed: () {},),)).toList() ?? List.empty()),
-          ExpandableDataCard(title: const Text("Lore"), buttonClick: () {
-            showDialog(context: context, builder: (BuildContext context) {
-              return EntryAddDialog(title: const Text("Add new line"), widget: TextFormField(keyboardType: TextInputType.text));
-            });
-          }, widgets: model.lore?.map((e) => ListTile(title: Text(e), trailing: IconButton(icon: deleteIcon, onPressed: () {},),)).toList() ?? List.empty())
-        ],
-      );
+  Widget getMetaContent(ItemModel? model) {
+    if (model == null) {
+      return nil;
     }
-    return nil;
+    return Wrap(
+      clipBehavior: Clip.hardEdge,
+      children: [
+        ExpandableDataCard(
+          title: const Text("Flags"),
+          buttonClick: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return EntryAddDialog(
+                  title: const Text(
+                    "Add a flag",
+                    textAlign: TextAlign.center,
+                  ),
+                  widget: getItemFlagSelection(),
+                );
+              },
+            );
+          },
+          widgets: model.flags
+                  ?.map(
+                    (e) => ListTile(
+                      title: Text(e),
+                      trailing: IconButton(
+                        icon: deleteIcon,
+                        onPressed: () {},
+                      ),
+                    ),
+                  )
+                  .toList() ??
+              List.empty(),
+        ),
+        ExpandableDataCard(
+          title: const Text("Enchantments"),
+          buttonClick: () {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  final oldEntry = model;
+                  return ItemEnchantmentAddDialog(
+                    addEnchantmentCallback: (selected, level) {
+                      final oldEnchantments =
+                          Map<String, int>.of(oldEntry.enchantments ?? {});
+                      oldEnchantments[selected.minecraftValue] = level;
+                      final newEntry =
+                          oldEntry.copyWith(enchantments: oldEnchantments);
+                      setState(() {
+                        Navigator.pop(context);
+                        StoreProvider.dispatch(
+                            context, UpdateItemAction(oldEntry, newEntry));
+                        selectedItem.value = newEntry;
+                      });
+                    },
+                  );
+                });
+          },
+          widgets:
+              List<Widget>.generate(model.enchantments?.length ?? 0, (index) {
+            final key = model.enchantments?.keys.elementAt(index);
+            final value = model.enchantments?.values.elementAt(index);
+            return ListTile(
+                title: Text("$key, Level: $value"),
+                trailing: IconButton(
+                  icon: deleteIcon,
+                  onPressed: () {
+                    final oldEntry = model;
+                    final oldEnchantments =
+                        Map<String, int>.of(oldEntry.enchantments ?? {});
+                    oldEnchantments.remove(key);
+                    final newEntry =
+                        oldEntry.copyWith(enchantments: oldEnchantments);
+                    setState(() {
+                      StoreProvider.dispatch(
+                          context, UpdateItemAction(oldEntry, newEntry));
+                      selectedItem.value = newEntry;
+                    });
+                  },
+                ));
+          }),
+        ),
+        ExpandableDataCard(
+          title: const Text("Lore"),
+          buttonClick: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return EntryAddDialog(
+                    title: const Text("Add new line"),
+                    widget: TextFormField(keyboardType: TextInputType.text));
+              },
+            );
+          },
+          widgets: model.lore
+                  ?.map(
+                    (e) => ListTile(
+                      title: Text(e),
+                      trailing: IconButton(
+                        icon: deleteIcon,
+                        onPressed: () {},
+                      ),
+                    ),
+                  )
+                  .toList() ??
+              List.empty(),
+        )
+      ],
+    );
   }
 
   Widget getItemFlagSelection() {
     return DropdownButtonFormField(
       value: items[0].value,
       items: items,
-      onChanged: (value) { },
+      onChanged: (value) {},
     );
   }
 }
