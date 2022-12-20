@@ -4,12 +4,17 @@ const deleteTitle = Text("Are you sure to delete that entry?");
 const cancelText = Text("Cancel");
 const yesText = Text("Yes");
 
-class DeleteDialog {
+
+typedef MapToDeleteSuccessfully<E> = bool Function(E value);
+
+class DeleteDialog<E> {
 
   List<TextSpan> header;
   BuildContext context;
+  final E value;
+  final MapToDeleteSuccessfully<E> successfully;
 
-  DeleteDialog(this.header, this.context);
+  DeleteDialog(this.header, this.context, this.value, this.successfully);
 
   AlertDialog getDeleteDialog() {
     return AlertDialog(
@@ -27,7 +32,9 @@ class DeleteDialog {
           ),
           child: yesText,
           onPressed: () {
-            Navigator.of(context).pop(true);
+            if (successfully(value)) {
+              Navigator.of(context).pop(true);
+            }
           },
         ),
         TextButton(
