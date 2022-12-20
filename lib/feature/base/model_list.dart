@@ -5,86 +5,78 @@ import 'package:stelaris_ui/feature/dialogs/dismiss_dialog.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 typedef MapToDataModelItem<E extends DataModel> = Widget Function(E value);
+typedef MapToDeleteDialog<E extends DataModel> = List<TextSpan> Function(E value);
 
 class ModelList<E extends DataModel> extends StatefulWidget {
   final List<E> items;
   final MapToDataModelItem<E> mapToDataModelItem;
   final ValueNotifier<E?> selectedItem;
   final VoidCallback openFunction;
+  final MapToDeleteDialog<E> mapToDeleteDialog;
+  final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
 
   const ModelList({
     Key? key,
     required this.items,
     required this.mapToDataModelItem,
     required this.selectedItem,
-    required this.openFunction
+    required this.openFunction,
+    required this.mapToDeleteDialog,
+    required this.mapToDeleteSuccessfully
   }) : super(key: key);
 
   @override
-  State<ModelList> createState() =>
-      _ModelListState(items, mapToDataModelItem, selectedItem);
+  State<ModelList<E>> createState() => _ModelListState<E>();
 }
 
-class _ModelListState<E extends DataModel> extends State<ModelList> {
-
-  final List<E> _items;
-  final MapToDataModelItem<E> mapToDataModelItem;
-  final ValueNotifier<E?> selectedItem;
-
-  _ModelListState(this._items, this.mapToDataModelItem, this.selectedItem);
-
+class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).backgroundColor,
       child: Stack(
         children: [
-          Expanded(
-              child: SizedBox(
+          SizedBox(
             width: 250,
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 8),
-              child: ListView.builder(
-                  itemCount: _items.length,
-                  itemBuilder: (context, index) {
-                    final e = _items[index];
-                    final selected = e.hashCode == selectedItem.value.hashCode;
-                    final selectedCardShape = RoundedRectangleBorder(
-                        side: BorderSide(
-                            color: Theme.of(context).colorScheme.secondary), borderRadius: BorderRadius.circular(12.0));
-                    return InkWell(
-                      onTap: () {
-                        setState(() {
-                          selectedItem.value = e;
-                        });
-                      },
-                      child: Card(
-                        shape: selected ? selectedCardShape : null,
-                        child: ListTile(
-                          title: mapToDataModelItem(e),
-                          trailing: IconButton(
-                            icon: deleteIcon,
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return DeleteDialog(
-                                        [
-                                          TextSpan(text: "Delete ", style: TextStyle(color: Colors.white)),
-                                          TextSpan(text: "asa ", style: TextStyle(color: Colors.red)),
-                                          TextSpan(text: "entry", style: TextStyle(color: Colors.white)),
-                                        ], context)
-                                        .getDeleteDialog();
-                                  });
-                            },
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                child: ListView.builder(
+                    itemCount: widget.items.length,
+                    itemBuilder: (context, index) {
+                      final e = widget.items[index];
+                      final selected = e.hashCode == widget.selectedItem.value.hashCode;
+                      final selectedCardShape = RoundedRectangleBorder(
+                          side: BorderSide(
+                              color: Theme.of(context).colorScheme.secondary), borderRadius: BorderRadius.circular(12.0));
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            widget.selectedItem.value = e;
+                          });
+                        },
+                        child: Card(
+                          shape: selected ? selectedCardShape : null,
+                          child: ListTile(
+                            title: widget.mapToDataModelItem(e),
+                            trailing: IconButton(
+                              icon: deleteIcon,
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return DeleteDialog(
+                                          widget.mapToDeleteDialog(e), context, e, widget.mapToDeleteSuccessfully)
+                                          .getDeleteDialog();
+                                    });
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  }
-              )
+                      );
+                    }
+                )
             ),
-          )),
+          ),
           Positioned(
             bottom: 20,
             left: 0,
