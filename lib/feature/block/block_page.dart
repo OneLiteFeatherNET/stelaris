@@ -22,6 +22,8 @@ class BlockList extends StatefulWidget {
 
 class BlockListState extends State<BlockList> with BaseLayout {
 
+  final ValueNotifier<BlockModel?> selectedItem = ValueNotifier(null);
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<BlockModel>>(
@@ -40,6 +42,11 @@ class BlockListState extends State<BlockList> with BaseLayout {
         );
         var blocks = vm.isNotEmpty ? vm : [blocKModel];
         return ModelContainerList<BlockModel>(
+          mapToDeleteDialog: (value) {
+            return [];
+          },
+          mapToDeleteSuccessfully: (value) => true,
+          selectedItem: selectedItem,
           items: blocks,
           page: mapPageToWidget,
           mapToDataModelItem: mapDataToModelItem,
@@ -56,8 +63,6 @@ class BlockListState extends State<BlockList> with BaseLayout {
   Widget mapPageToWidget(TabPages e, ValueNotifier<DataModel?> test) {
     switch(e) {
       case TabPages.general:
-        return nil;
-      case TabPages.additional:
         return nil;
       case TabPages.meta:
         return nil;
