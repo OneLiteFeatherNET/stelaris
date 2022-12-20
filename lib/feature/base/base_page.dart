@@ -24,7 +24,6 @@ class BasePage extends StatefulWidget {
 }
 
 class _BasePageState extends State<BasePage> {
-
   @override
   void initState() {
     super.initState();
@@ -32,9 +31,7 @@ class _BasePageState extends State<BasePage> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, AppState>(onInit: (store) {
-      store.dispatch(InitBlockAction());
-    }, converter: (store) {
+    return StoreConnector<AppState, AppState>(converter: (store) {
       return store.state;
     }, builder: (context, vm) {
       return Scaffold(
@@ -48,15 +45,14 @@ class _BasePageState extends State<BasePage> {
           elevation: 0,
           title: appTitle,
           centerTitle: true,
-          actions: [
-          ],
+          actions: [],
         ),
         body: Flex(
           direction: Axis.horizontal,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildNavigationContainer(vm.openNavigation),
-            Expanded(child: widget.child)
+            Expanded(flex: 1, child: widget.child)
           ],
         ),
       );
@@ -99,16 +95,17 @@ class _BasePageState extends State<BasePage> {
       trailing: Expanded(
         child: Align(
           alignment: Alignment.bottomCenter,
-          child: openNavigation ? Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: actionChilds,
-          ) : Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: actionChilds,
-          ),
-
+          child: openNavigation
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: actionChilds,
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: actionChilds,
+                ),
         ),
       ),
     );
