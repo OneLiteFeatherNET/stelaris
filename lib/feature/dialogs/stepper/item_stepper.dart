@@ -68,7 +68,7 @@ class _ItemStepperState extends State<ItemStepper> {
               );
             },
             onStepContinue: () {
-              setState(() => _continue());
+              _continue();
             },
             onStepCancel: () {
               _currentStep > 0 ? setState(() => _currentStep -= 1) : "";
@@ -81,9 +81,9 @@ class _ItemStepperState extends State<ItemStepper> {
     bool isLastStep = _currentStep == getSteps().length - 1;
 
     if (isLastStep) {
-      ItemModel pluginModel = _itemBuilder.toDTO();
-      final item = await ApiService().itemApi.addItem(pluginModel);
-      widget.finishCallback(item);
+      ItemModel pluginModel = ItemModel(name: nameController.value.text);
+      // final item = await ApiService().itemApi.addItem(pluginModel);
+      widget.finishCallback(pluginModel);
       return null;
     } else {
       setState(() => _currentStep += 1);
