@@ -2,17 +2,14 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
-import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/api/state/actions/notification_actions.dart';
+import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/notification_stepper.dart';
-import 'package:stelaris_ui/util/constants.dart';
-
-import '../../api/state/app_state.dart';
-import '../../api/tabs/tab_pages.dart';
 
 class NotificationPage extends StatefulWidget {
 
@@ -26,12 +23,11 @@ class NotificationPage extends StatefulWidget {
 
 class NotificationPageState extends State<NotificationPage> with BaseLayout {
 
+  final ValueNotifier<NotificationModel?> selectedItem = ValueNotifier(null);
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<NotificationModel>>(
-      onInit: (store) {
-        store.dispatch(InitBlockAction());
-      },
       converter: (store) {
         return store.state.notifications;
       },
@@ -54,6 +50,11 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
         );
         List<NotificationModel> notifications = vm.isNotEmpty ? vm : [fallBackModel, secondModel];
         return ModelContainerList<NotificationModel>(
+          mapToDeleteDialog: (value) {
+            return [];
+          },
+          mapToDeleteSuccessfully: (value) => true,
+          selectedItem: selectedItem,
           items: notifications,
           page: mapPageToWidget,
           mapToDataModelItem: mapDataToModelItem,
@@ -77,44 +78,52 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
     return Text(model.name ?? "Test");
   }
 
-  Widget mapPageToWidget<NotificationModel>(TabPages e, ValueNotifier<NotificationModel?> test) {
+  Widget mapPageToWidget(TabPages e, ValueNotifier<NotificationModel?> test) {
     switch(e) {
       case TabPages.general:
-        return ValueListenableBuilder(valueListenable: test, builder: (BuildContext context, value, Widget? child) {
-          print("objeasasct");
+        return ValueListenableBuilder<NotificationModel?>(valueListenable: test, builder: (BuildContext context, NotificationModel? value, Widget? child) {
           return getGeneralContent(value);
         });
-      case TabPages.additional:
-        return nil;
       case TabPages.meta:
         return nil;
     }
   }
 
-  Widget getGeneralContent(model) {
+  Widget getGeneralContent(NotificationModel? model) {
+    if (model == null) {
+      return nil;
+    }
     return Wrap(
       children: [
-        createInputContainer("Name", model?.name),
-        createInputContainer("Material", model?.material),
-        createInputContainer("Title", model?.title),
-        DropDownCard(
+        createInputContainer("Name", model.name),
+        createInputContainer("Material", model.material),
+        createInputContainer("Title", model.title),
+        DropDownCard<FrameType, NotificationModel>(
+            currentValue: model,
             title: const Text("FrameType", textAlign: TextAlign.center),
             items: getItems(),
-            valueUpdate: (String value) {
+            valueUpdate: (FrameType? value) {
             },
+          defaultValue: getDefaultValue,
         ),
-        createInputContainer("Description", model?.description),
+        createInputContainer("Description", model.description),
       ],
     );
   }
 
-  List<DropdownMenuItem<String>> getItems() {
+  List<DropdownMenuItem<FrameType>>? getItems() {
     List<FrameType> values = FrameType.values;
     return List.generate(values.length, (index) =>
         DropdownMenuItem(
-          value: values[index].value,
+          value: values[index],
           child: Text(values[index].value),
         )
     );
+  }
+
+
+
+  FrameType getDefaultValue(NotificationModel value) {
+    return FrameType.values.firstWhere((element) => element.name == value.frameType);
   }
 }
