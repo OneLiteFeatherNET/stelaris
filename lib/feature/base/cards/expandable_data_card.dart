@@ -28,9 +28,7 @@ class _ExpandableDataCardState extends State<ExpandableDataCard> with BaseLayout
       padding: padding,
       child: constructContainer(
           [
-            ConstrainedBox(
-              constraints: constraints,
-              child: ExpansionTile(
+            ExpansionTile(
                 controlAffinity: ListTileControlAffinity.leading,
                 title: widget.title,
                 trailing: IconButton(
@@ -38,7 +36,6 @@ class _ExpandableDataCardState extends State<ExpandableDataCard> with BaseLayout
                   icon: addModelIcon,
                 ),
                 children: widget.widgets
-              ),
             )
           ]
       ),
