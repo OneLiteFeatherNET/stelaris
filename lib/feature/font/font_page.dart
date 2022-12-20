@@ -27,11 +27,15 @@ class FontPage extends StatefulWidget {
 
 class FontPageState extends State<FontPage> with BaseLayout {
 
+  final ValueNotifier<FontModel?> selectedItem = ValueNotifier(null);
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<FontModel>>(
       onInit: (store) {
-        store.dispatch(InitBlockAction());
+        if (store.state.blocks.isEmpty) {
+          store.dispatch(InitFontAction());
+        }
       },
       converter: (store) {
         return store.state.fonts;
@@ -43,6 +47,11 @@ class FontPageState extends State<FontPage> with BaseLayout {
         );
         var fonts = vm.isNotEmpty ? vm : [fallbackModel];
         return ModelContainerList(
+          mapToDeleteDialog: (value) {
+            return [];
+          },
+          mapToDeleteSuccessfully: (value) => true,
+          selectedItem: selectedItem,
           items: fonts,
           page: mapPageToWidget,
           mapToDataModelItem: (e) {
@@ -71,8 +80,6 @@ class FontPageState extends State<FontPage> with BaseLayout {
   Widget mapPageToWidget(TabPages e, ValueNotifier<DataModel?> test) {
     switch(e) {
       case TabPages.general:
-        return getOneIndex(test.value);
-      case TabPages.additional:
         return getOneIndex(test.value);
       case TabPages.meta:
         return getOneIndex(test.value);
