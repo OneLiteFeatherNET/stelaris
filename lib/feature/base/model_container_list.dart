@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/feature/base/model_list.dart';
-import 'package:stelaris_ui/feature/dialogs/dismiss_dialog.dart';
+import 'package:stelaris_ui/util/typedefs.dart';
 
 import '../../api/tabs/tab_pages.dart';
 

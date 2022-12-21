@@ -3,6 +3,7 @@ import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/feature/base/button/add_button.dart';
 import 'package:stelaris_ui/feature/dialogs/dismiss_dialog.dart';
 import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris_ui/util/typedefs.dart';
 
 typedef MapToDataModelItem<E extends DataModel> = Widget Function(E value);
 typedef MapToDeleteDialog<E extends DataModel> = List<TextSpan> Function(E value);
