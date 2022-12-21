@@ -52,7 +52,8 @@ class _BasePageState extends State<BasePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildNavigationContainer(vm.openNavigation),
-            Expanded(flex: 1, child: widget.child)
+            Expanded(flex: 1, child: widget.child),
+            _buildNavigationContainer(vm.openNavigation),
           ],
         ),
       );
