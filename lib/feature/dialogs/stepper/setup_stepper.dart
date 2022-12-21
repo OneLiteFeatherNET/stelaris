@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/model/item_model.dart';
+import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
-typedef FinishStepper = void Function(ItemModel model);
+typedef FinishStepper<E extends DataModel> = void Function(E model);
+typedef BuildModel<E extends DataModel> = E Function(String name, String description);
 
-class ItemStepper extends StatefulWidget {
+class SetupStepper<E extends DataModel> extends StatefulWidget {
 
-  final FinishStepper finishCallback;
+  final FinishStepper<E> finishCallback;
+  final BuildModel<E> buildModel;
 
-  const ItemStepper({Key? key, required this.finishCallback}) : super(key: key);
+  const SetupStepper({Key? key, required this.finishCallback, required this.buildModel}) : super(key: key);
 
   @override
-  State<ItemStepper> createState() => _ItemStepperState();
+  State<SetupStepper<E>> createState() => _SetupStepperState<E>();
 }
 
-class _ItemStepperState extends State<ItemStepper> {
+class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
   int _currentStep = 0;
 
-  GlobalKey<_ItemStepperState> itemStepperKey = GlobalKey<_ItemStepperState>();
+  GlobalKey<_SetupStepperState<E>> itemStepperKey = GlobalKey<_SetupStepperState<E>>();
 
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -72,9 +74,7 @@ class _ItemStepperState extends State<ItemStepper> {
     bool isLastStep = _currentStep == getSteps().length - 1;
 
     if (isLastStep) {
-      ItemModel pluginModel = ItemModel(name: nameController.value.text);
-      // final item = await ApiService().itemApi.addItem(pluginModel);
-      widget.finishCallback(pluginModel);
+      widget.finishCallback(widget.buildModel(nameController.text, descriptionController.text));
       return null;
     } else {
       setState(() => _currentStep += 1);
