@@ -27,7 +27,7 @@ class BlockListState extends State<BlockList> with BaseLayout {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<BlockModel>>(
       onInit: (store) {
-        if (store.state.items.isEmpty) {
+        if (store.state.blocks.isEmpty) {
           store.dispatch(InitBlockAction());
         }
       },
