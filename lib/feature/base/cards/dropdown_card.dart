@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
-
-typedef ValueUpdate<E> = void Function(E? value);
-typedef DefaultValue<E,T> = E Function(T value);
+import 'package:stelaris_ui/util/typedefs.dart';
 
 class DropDownCard<E, T> extends StatefulWidget {
 
