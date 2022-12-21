@@ -9,10 +9,9 @@ import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
-import 'package:stelaris_ui/feature/dialogs/stepper/item_stepper.dart';
+import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
 
 class NotificationPage extends StatefulWidget {
-
   const NotificationPage({Key? key}) : super(key: key);
 
   @override
@@ -22,14 +21,13 @@ class NotificationPage extends StatefulWidget {
 }
 
 class NotificationPageState extends State<NotificationPage> with BaseLayout {
-
   final ValueNotifier<NotificationModel?> selectedItem = ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<NotificationModel>>(
       onInit: (store) {
-        if (store.state.items.isEmpty) {
+        if (store.state.notifications.isEmpty) {
           store.dispatch(InitNotificationAction());
         }
       },
@@ -62,10 +60,16 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                 context: context,
                 useRootNavigator: false,
                 builder: (BuildContext context) {
-                  return ItemStepper(finishCallback: (model) {
-                    StoreProvider.dispatch(context, InputNotificationAction());
-                    Navigator.pop(context);
-                  });
+                  return SetupStepper<NotificationModel>(
+                    finishCallback: (model) {
+                      StoreProvider.dispatch(
+                          context, InputNotificationAction());
+                      Navigator.pop(context);
+                    },
+                    buildModel: (String name, String description) {
+                      return NotificationModel(name: name);
+                    },
+                  );
                 });
           },
         );
@@ -78,11 +82,14 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
   }
 
   Widget mapPageToWidget(TabPages e, ValueNotifier<NotificationModel?> test) {
-    switch(e) {
+    switch (e) {
       case TabPages.general:
-        return ValueListenableBuilder<NotificationModel?>(valueListenable: test, builder: (BuildContext context, NotificationModel? value, Widget? child) {
-          return getGeneralContent(value);
-        });
+        return ValueListenableBuilder<NotificationModel?>(
+            valueListenable: test,
+            builder: (BuildContext context, NotificationModel? value,
+                Widget? child) {
+              return getGeneralContent(value);
+            });
       case TabPages.meta:
         return nil;
     }
@@ -92,37 +99,49 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
     if (model == null) {
       return nil;
     }
-    return Wrap(
+    return Stack(
       children: [
-        createInputContainer("Name", model.name),
-        createInputContainer("Material", model.material),
-        createInputContainer("Title", model.title),
-        DropDownCard<FrameType, NotificationModel>(
-            currentValue: model,
-            title: const Text("FrameType", textAlign: TextAlign.center),
-            items: getItems(),
-            valueUpdate: (FrameType? value) {
-            },
-          defaultValue: getDefaultValue,
+        Wrap(
+          children: [
+            createInputContainer("Name", model.name),
+            createInputContainer("Material", model.material),
+            createInputContainer("Title", model.title),
+            DropDownCard<FrameType, NotificationModel>(
+              currentValue: model,
+              title: const Text("FrameType", textAlign: TextAlign.center),
+              items: getItems(),
+              valueUpdate: (FrameType? value) {},
+              defaultValue: getDefaultValue,
+            ),
+            createInputContainer("Description", model.description),
+          ],
         ),
-        createInputContainer("Description", model.description),
+        Positioned(
+            bottom: 25,
+            right: 25,
+            child: FloatingActionButton.extended(
+              heroTag: UniqueKey(),
+              onPressed: () {},
+              label: const Text("Save"),
+              icon: const Icon(Icons.save),
+            )
+        )
       ],
     );
   }
 
   List<DropdownMenuItem<FrameType>>? getItems() {
     List<FrameType> values = FrameType.values;
-    return List.generate(values.length, (index) =>
-        DropdownMenuItem(
-          value: values[index],
-          child: Text(values[index].value),
-        )
-    );
+    return List.generate(
+        values.length,
+        (index) => DropdownMenuItem(
+              value: values[index],
+              child: Text(values[index].value),
+            ));
   }
 
-
-
   FrameType getDefaultValue(NotificationModel value) {
-    return FrameType.values.firstWhere((element) => element.name == value.frameType);
+    return FrameType.values
+        .firstWhere((element) => element.name == value.frameType);
   }
 }
