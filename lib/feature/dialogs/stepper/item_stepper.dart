@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/builder/item_builder.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
-import '../../../api/api_service.dart';
-
 typedef FinishStepper = void Function(ItemModel model);
 
-Text title = const Text(
-  "Create new item model",
-  textAlign: TextAlign.center,
-);
-
 class ItemStepper extends StatefulWidget {
+
   final FinishStepper finishCallback;
 
   const ItemStepper({Key? key, required this.finishCallback}) : super(key: key);
@@ -23,8 +16,6 @@ class ItemStepper extends StatefulWidget {
 
 class _ItemStepperState extends State<ItemStepper> {
   int _currentStep = 0;
-
-  final ItemBuilder _itemBuilder = ItemBuilder();
 
   GlobalKey<_ItemStepperState> itemStepperKey = GlobalKey<_ItemStepperState>();
 
@@ -42,7 +33,7 @@ class _ItemStepperState extends State<ItemStepper> {
       children: [
         Container(
           padding: const EdgeInsets.all(8),
-          child: title,
+          child: const Text("Create new model"),
         ),
         Stepper(
             type: StepperType.vertical,
