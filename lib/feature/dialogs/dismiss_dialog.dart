@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/util/typedefs.dart';
 
 const deleteTitle = Text("Are you sure to delete that entry?");
 const cancelText = Text("Cancel");
 const yesText = Text("Yes");
-
-
-typedef MapToDeleteSuccessfully<E> = bool Function(E value);
 
 class DeleteDialog<E> {
 

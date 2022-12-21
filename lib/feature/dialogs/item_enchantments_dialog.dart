@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/util/minecraft/enchantment.dart';
+import 'package:stelaris_ui/util/typedefs.dart';
 
 import '../../util/constants.dart';
 
@@ -8,8 +9,6 @@ List<DropdownMenuItem<Enchantment>> items =
 List.generate(enchantments.length, (index) =>
     DropdownMenuItem(value: enchantments[index],child: Text(enchantments[index].display),)
 );
-
-typedef AddEnchantmentCallback = void Function(Enchantment selected, int level);
 
 class ItemEnchantmentAddDialog extends StatelessWidget {
 
