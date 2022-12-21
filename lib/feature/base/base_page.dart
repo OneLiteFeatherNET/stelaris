@@ -2,7 +2,6 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/api/state/actions/app_actions.dart';
-import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/util/navigation.dart';
 
@@ -70,7 +69,7 @@ class _BasePageState extends State<BasePage> {
       return element.route == router.location;
     });
     final actionChild = [
-      ThemeSwitcherToggle(),
+      const ThemeSwitcherToggle(),
       IconButton(
           onPressed: () {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
