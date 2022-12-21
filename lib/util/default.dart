@@ -2,6 +2,7 @@ import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
+import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 
 var defaultItem = const ItemModel(
@@ -39,7 +40,8 @@ var blocKModel = const BlockModel(
     amount: 1
 );
 
-var fontModel = const FontModel(
+var fontModel = FontModel(
     name: "Font",
-    generator: "FontGenerator"
+    generator: "FontGenerator",
+    type: FontType.bitmap.displayName,
 );
