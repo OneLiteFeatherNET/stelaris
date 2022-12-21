@@ -13,9 +13,6 @@ var tabs = tabPagesValues
         ))
     .toList();
 
-typedef TabPageMapFunction<E extends DataModel> = Widget Function(
-    TabPages page, ValueNotifier<E?> notification);
-
 class ModelContainerList<E extends DataModel> extends StatefulWidget {
   final List<E> items;
   final TabPageMapFunction<E> page;
