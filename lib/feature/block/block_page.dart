@@ -2,7 +2,6 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
-import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
@@ -28,26 +27,32 @@ class BlockListState extends State<BlockList> with BaseLayout {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<BlockModel>>(
       onInit: (store) {
-        store.dispatch(InitBlockAction());
+        if (store.state.items.isEmpty) {
+          store.dispatch(InitBlockAction());
+        }
       },
       converter: (store) {
         return store.state.blocks;
       },
       builder: (context, vm) {
-        var blocKModel = const BlockModel(
-            name: "Test",
-            generator: "ItemGenerator",
-            modelData: 1,
-            amount: 1
-        );
-        var blocks = vm.isNotEmpty ? vm : [blocKModel];
+        selectedItem.value ??= vm.first;
         return ModelContainerList<BlockModel>(
           mapToDeleteDialog: (value) {
-            return [];
+            return [
+              const TextSpan(
+                  text: "Will you delete ",
+                  style: TextStyle(color: Colors.white)),
+              TextSpan(
+                  text: value.name ?? "Unknown",
+                  style: const TextStyle(color: Colors.red))
+            ];
           },
-          mapToDeleteSuccessfully: (value) => true,
+          mapToDeleteSuccessfully: (value) {
+            StoreProvider.dispatch(context, RemoveBlockAction(value));
+            return true;
+          },
           selectedItem: selectedItem,
-          items: blocks,
+          items: vm,
           page: mapPageToWidget,
           mapToDataModelItem: mapDataToModelItem,
           openFunction: () {},
@@ -60,12 +65,27 @@ class BlockListState extends State<BlockList> with BaseLayout {
     return Text(model.name ?? "Test");
   }
 
-  Widget mapPageToWidget(TabPages e, ValueNotifier<DataModel?> test) {
+  Widget mapPageToWidget(TabPages e, ValueNotifier<BlockModel?> test) {
     switch(e) {
       case TabPages.general:
-        return nil;
+        return ValueListenableBuilder<BlockModel?>(valueListenable: test, builder: (BuildContext context, BlockModel? value, Widget? child) {
+          return getGeneralContent(value);
+        });
       case TabPages.meta:
         return nil;
     }
+  }
+
+  Widget getGeneralContent(BlockModel? model) {
+    if (model == null) {
+      return nil;
+    }
+
+    return Wrap(
+      children: [
+        createInputContainer("Name", model.name),
+        createInputContainer("ModelData", model.modelData.toString())
+      ],
+    );
   }
 }

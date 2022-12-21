@@ -9,7 +9,7 @@ import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
-import 'package:stelaris_ui/feature/dialogs/stepper/notification_stepper.dart';
+import 'package:stelaris_ui/feature/dialogs/stepper/item_stepper.dart';
 
 class NotificationPage extends StatefulWidget {
 
@@ -28,34 +28,33 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<NotificationModel>>(
+      onInit: (store) {
+        if (store.state.items.isEmpty) {
+          store.dispatch(InitNotificationAction());
+        }
+      },
       converter: (store) {
         return store.state.notifications;
       },
       builder: (context, vm) {
-        var fallBackModel = NotificationModel(
-          material: "Holz",
-          generator: "NotificationGenerator",
-          name: "Test",
-          title: "Test Title",
-          description: "Lol",
-          frameType: FrameType.challenge.name
-        );
-        var secondModel = NotificationModel(
-            material: "Stein",
-            generator: "NotificationGenerator",
-            name: "Second",
-            title: "Test Title",
-            description: "Hui",
-            frameType: FrameType.goal.name
-        );
-        List<NotificationModel> notifications = vm.isNotEmpty ? vm : [fallBackModel, secondModel];
+        selectedItem.value ??= vm.first;
         return ModelContainerList<NotificationModel>(
           mapToDeleteDialog: (value) {
-            return [];
+            return [
+              const TextSpan(
+                  text: "Will you delete ",
+                  style: TextStyle(color: Colors.white)),
+              TextSpan(
+                  text: value.name ?? "Unknown",
+                  style: const TextStyle(color: Colors.red))
+            ];
           },
-          mapToDeleteSuccessfully: (value) => true,
+          mapToDeleteSuccessfully: (value) {
+            StoreProvider.dispatch(context, RemoveNotificationAction(value));
+            return true;
+          },
           selectedItem: selectedItem,
-          items: notifications,
+          items: vm,
           page: mapPageToWidget,
           mapToDataModelItem: mapDataToModelItem,
           openFunction: () {
@@ -63,7 +62,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                 context: context,
                 useRootNavigator: false,
                 builder: (BuildContext context) {
-                  return NotificationStepper(finishStepper: (model) {
+                  return ItemStepper(finishCallback: (model) {
                     StoreProvider.dispatch(context, InputNotificationAction());
                     Navigator.pop(context);
                   });
