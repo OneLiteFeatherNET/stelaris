@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/util/constants.dart';
-
-typedef FinishStepper<E extends DataModel> = void Function(E model);
-typedef BuildModel<E extends DataModel> = E Function(String name, String description);
+import 'package:stelaris_ui/util/typedefs.dart';
 
 class SetupStepper<E extends DataModel> extends StatefulWidget {
 
