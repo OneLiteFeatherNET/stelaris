@@ -1,6 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/model/data_model.dart';
+import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
@@ -58,7 +58,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
           items: vm,
           page: mapPageToWidget,
           mapToDataModelItem: (e) {
-            return Text("Blob");
+            return Text(e.name?? "Unknown");
           },
           openFunction: () {
             showDialog(
@@ -88,20 +88,27 @@ class FontPageState extends State<FontPage> with BaseLayout {
       case TabPages.general:
         return getOneIndex(test.value);
       case TabPages.meta:
-        return getOneIndex(test.value);
+        return nil;
     }
   }
 
-  Widget getOneIndex(model) {
-    return Wrap(
+  Widget getOneIndex(FontModel? model) {
+    if (model == null) {
+      return nil;
+    }
+    return Stack(
       children: [
-        createInputContainer("Name", model?.name),
-        createDropDownContainer(
-            String, "Type", model?.type, FontType.bitmap.toString(), items),
-        createTypedInputContainer("Ascent", model?.ascent?.toString(),
-            const TextInputType.numberWithOptions(signed: true), null),
-        createTypedInputContainer("Height", model?.height?.toString(),
-            const TextInputType.numberWithOptions(signed: true), null),
+        Wrap(
+          children: [
+            createInputContainer("Name", model.name),
+            createDropDownContainer(
+                String, "Type", model.type, FontType.bitmap.displayName, items),
+            createTypedInputContainer("Ascent", model.ascent?.toString(),
+                const TextInputType.numberWithOptions(signed: true), null),
+            createTypedInputContainer("Height", model.height?.toString(),
+                const TextInputType.numberWithOptions(signed: true), null)
+          ],
+        ),
         Positioned(
             bottom: 25,
             right: 25,
