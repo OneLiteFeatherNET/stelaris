@@ -81,11 +81,25 @@ class BlockListState extends State<BlockList> with BaseLayout {
       return nil;
     }
 
-    return Wrap(
+    return Stack(
       children: [
-        createInputContainer("Name", model.name),
-        createInputContainer("ModelData", model.modelData.toString())
-      ],
+        Wrap(
+          children: [
+            createInputContainer("Name", model.name),
+            createInputContainer("ModelData", model.modelData.toString())
+          ],
+        ),
+        Positioned(
+            bottom: 25,
+            right: 25,
+            child: FloatingActionButton.extended(
+              heroTag: UniqueKey(),
+              onPressed: () {},
+              label: const Text("Save"),
+              icon: const Icon(Icons.save),
+            )
+        )
+      ]
     );
   }
 }
