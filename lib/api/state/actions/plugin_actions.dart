@@ -20,8 +20,8 @@ class InitPluginAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    var plugins = await ApiService().pluginAPI.getAllPlugins();
-    return state.copyWith(plugins: plugins);
+    //var plugins = await ApiService().pluginAPI.getAllPlugins();
+    return state.copyWith(plugins: []);
   }
 
   InitPluginAction();

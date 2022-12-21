@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/plugin_model.dart';
 import 'package:stelaris_ui/api/state/actions/plugin_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/feature/dialogs/stepper/item_stepper.dart';
+import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
 import 'package:stelaris_ui/feature/plugin/plugin_columns.dart';
 import 'package:stelaris_ui/feature/plugin/plugin_data.dart';
 
@@ -50,7 +50,9 @@ class PluginPageState extends State<PluginPage> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<PluginModel>>(
       onInit: (store) {
-        store.dispatch(InitPluginAction());
+        if (store.state.plugins.isEmpty) {
+          store.dispatch(InitPluginAction());
+        }
       },
       converter: (store) {
         return store.state.plugins;
@@ -105,7 +107,11 @@ class PluginPageState extends State<PluginPage> {
                 showDialog(context: context,
                     useRootNavigator: false,
                     builder: (BuildContext context) {
-                  return ItemStepper(finishCallback: (model) {
+                  return SetupStepper<PluginModel>(
+                    buildModel: (name, description) {
+                      return PluginModel(name: name, description: description);
+                    },
+                    finishCallback: (model) {
                       StoreProvider.dispatch(context, InitPluginAction());
                       Navigator.pop(context);
                     return;
