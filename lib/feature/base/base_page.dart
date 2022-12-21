@@ -45,7 +45,6 @@ class _BasePageState extends State<BasePage> {
           elevation: 0,
           title: appTitle,
           centerTitle: true,
-          actions: [],
         ),
         body: Flex(
           direction: Axis.horizontal,
@@ -53,7 +52,6 @@ class _BasePageState extends State<BasePage> {
           children: [
             _buildNavigationContainer(vm.openNavigation),
             Expanded(flex: 1, child: widget.child),
-            _buildNavigationContainer(vm.openNavigation),
           ],
         ),
       );
@@ -71,7 +69,7 @@ class _BasePageState extends State<BasePage> {
     final index = navigationEntries.indexWhere((element) {
       return element.route == router.location;
     });
-    final actionChilds = [
+    final actionChild = [
       ThemeSwitcherToggle(),
       IconButton(
           onPressed: () {
@@ -100,12 +98,12 @@ class _BasePageState extends State<BasePage> {
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: actionChilds,
+                  children: actionChild,
                 )
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: actionChilds,
+                  children: actionChild,
                 ),
         ),
       ),
