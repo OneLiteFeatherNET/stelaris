@@ -6,7 +6,7 @@ import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
-import 'package:stelaris_ui/feature/dialogs/stepper/item_stepper.dart';
+import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
 
 import '../../api/state/app_state.dart';
 import '../../api/tabs/tab_pages.dart';
@@ -15,7 +15,6 @@ const List<FontType> values = FontType.values;
 List<DropdownMenuItem<String>> items = getItems();
 
 class FontPage extends StatefulWidget {
-
   const FontPage({Key? key}) : super(key: key);
 
   @override
@@ -25,14 +24,13 @@ class FontPage extends StatefulWidget {
 }
 
 class FontPageState extends State<FontPage> with BaseLayout {
-
   final ValueNotifier<FontModel?> selectedItem = ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<FontModel>>(
       onInit: (store) {
-        if (store.state.blocks.isEmpty) {
+        if (store.state.fonts.isEmpty) {
           store.dispatch(InitFontAction());
         }
       },
@@ -61,16 +59,18 @@ class FontPageState extends State<FontPage> with BaseLayout {
           page: mapPageToWidget,
           mapToDataModelItem: (e) {
             return Text("Blob");
-            },
+          },
           openFunction: () {
             showDialog(
                 context: context,
                 useRootNavigator: false,
                 builder: (BuildContext context) {
-                  return ItemStepper(
-                      finishCallback: (model) {
-                        StoreProvider.dispatch(context, InitFontAction());
-                        Navigator.pop(context);
+                  return SetupStepper<FontModel>(
+                      buildModel: (name, description) {
+                    return FontModel(name: name);
+                  }, finishCallback: (model) {
+                    StoreProvider.dispatch(context, InitFontAction());
+                    Navigator.pop(context);
                   });
                 });
           },
@@ -84,7 +84,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
   }
 
   Widget mapPageToWidget(TabPages e, ValueNotifier<FontModel?> test) {
-    switch(e) {
+    switch (e) {
       case TabPages.general:
         return getOneIndex(test.value);
       case TabPages.meta:
@@ -97,23 +97,20 @@ class FontPageState extends State<FontPage> with BaseLayout {
       children: [
         createInputContainer("Name", model?.name),
         createDropDownContainer(
-            String,
-            "Type",
-            model?.type,
-            FontType.bitmap.toString(),
-            items
-        ),
-        createTypedInputContainer(
-            "Ascent",
-            model?.ascent?.toString(),
-            const TextInputType.numberWithOptions(signed: true),
-            null
-        ),
-        createTypedInputContainer(
-            "Height",
-            model?.height?.toString(),
-            const TextInputType.numberWithOptions(signed: true),
-            null
+            String, "Type", model?.type, FontType.bitmap.toString(), items),
+        createTypedInputContainer("Ascent", model?.ascent?.toString(),
+            const TextInputType.numberWithOptions(signed: true), null),
+        createTypedInputContainer("Height", model?.height?.toString(),
+            const TextInputType.numberWithOptions(signed: true), null),
+        Positioned(
+            bottom: 25,
+            right: 25,
+            child: FloatingActionButton.extended(
+              heroTag: UniqueKey(),
+              onPressed: () {},
+              label: const Text("Save"),
+              icon: const Icon(Icons.save),
+            )
         )
       ],
     );
@@ -122,10 +119,10 @@ class FontPageState extends State<FontPage> with BaseLayout {
 
 List<DropdownMenuItem<String>> getItems() {
   List<FontType> values = FontType.values;
-  return List.generate(values.length, (index) =>
-      DropdownMenuItem(
-        value: values[index].displayName,
-        child: Text(values[index].displayName),
-      )
-  );
+  return List.generate(
+      values.length,
+      (index) => DropdownMenuItem(
+            value: values[index].displayName,
+            child: Text(values[index].displayName),
+          ));
 }
