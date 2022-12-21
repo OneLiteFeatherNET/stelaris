@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/plugin_model.dart';
 import 'package:stelaris_ui/api/state/actions/plugin_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/feature/dialogs/stepper/plugin_stepper.dart';
+import 'package:stelaris_ui/feature/dialogs/stepper/item_stepper.dart';
 import 'package:stelaris_ui/feature/plugin/plugin_columns.dart';
 import 'package:stelaris_ui/feature/plugin/plugin_data.dart';
 
@@ -105,7 +105,7 @@ class PluginPageState extends State<PluginPage> {
                 showDialog(context: context,
                     useRootNavigator: false,
                     builder: (BuildContext context) {
-                  return PluginStepper(finishCallback: (model) {
+                  return ItemStepper(finishCallback: (model) {
                       StoreProvider.dispatch(context, InitPluginAction());
                       Navigator.pop(context);
                     return;
