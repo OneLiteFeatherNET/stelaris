@@ -2,12 +2,11 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/api/model/font_model.dart';
-import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
-import 'package:stelaris_ui/feature/dialogs/stepper/font_stepper.dart';
+import 'package:stelaris_ui/feature/dialogs/stepper/item_stepper.dart';
 
 import '../../api/state/app_state.dart';
 import '../../api/tabs/tab_pages.dart';
@@ -41,18 +40,24 @@ class FontPageState extends State<FontPage> with BaseLayout {
         return store.state.fonts;
       },
       builder: (context, vm) {
-        var fallbackModel = const FontModel(
-          name: "Font",
-          generator: "FontGenerator"
-        );
-        var fonts = vm.isNotEmpty ? vm : [fallbackModel];
-        return ModelContainerList(
+        selectedItem.value ??= vm.first;
+        return ModelContainerList<FontModel>(
           mapToDeleteDialog: (value) {
-            return [];
+            return [
+              const TextSpan(
+                  text: "Will you delete ",
+                  style: TextStyle(color: Colors.white)),
+              TextSpan(
+                  text: value.name ?? "Unknown",
+                  style: const TextStyle(color: Colors.red))
+            ];
           },
-          mapToDeleteSuccessfully: (value) => true,
+          mapToDeleteSuccessfully: (value) {
+            StoreProvider.dispatch(context, RemoveFontsAction(value));
+            return true;
+          },
           selectedItem: selectedItem,
-          items: fonts,
+          items: vm,
           page: mapPageToWidget,
           mapToDataModelItem: (e) {
             return Text("Blob");
@@ -62,9 +67,10 @@ class FontPageState extends State<FontPage> with BaseLayout {
                 context: context,
                 useRootNavigator: false,
                 builder: (BuildContext context) {
-                  return FontStepper(finishStepper: (model) {
-                    StoreProvider.dispatch(context, InitFontAction());
-                    Navigator.pop(context);
+                  return ItemStepper(
+                      finishCallback: (model) {
+                        StoreProvider.dispatch(context, InitFontAction());
+                        Navigator.pop(context);
                   });
                 });
           },
@@ -77,7 +83,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
     return Text(model.name ?? "Test");
   }
 
-  Widget mapPageToWidget(TabPages e, ValueNotifier<DataModel?> test) {
+  Widget mapPageToWidget(TabPages e, ValueNotifier<FontModel?> test) {
     switch(e) {
       case TabPages.general:
         return getOneIndex(test.value);
