@@ -5,6 +5,7 @@ import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
+import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
 
 import '../../api/state/app_state.dart';
 import '../../api/tabs/tab_pages.dart';
@@ -55,7 +56,21 @@ class BlockListState extends State<BlockList> with BaseLayout {
           items: vm,
           page: mapPageToWidget,
           mapToDataModelItem: mapDataToModelItem,
-          openFunction: () {},
+          openFunction: () {
+            showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (BuildContext context) {
+                  return SetupStepper<BlockModel>(
+                      buildModel: (name, description) {
+                        return BlockModel(name: name);
+                      }, finishCallback: (model) {
+                    StoreProvider.dispatch(context, InitBlockAction());
+                    Navigator.pop(context);
+                    selectedItem.value = model;
+                  });
+                });
+          },
         );
       },
     );
