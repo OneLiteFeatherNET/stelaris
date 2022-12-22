@@ -60,15 +60,20 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                 context: context,
                 useRootNavigator: false,
                 builder: (BuildContext context) {
-                  return SetupStepper<NotificationModel>(
-                    finishCallback: (model) {
-                      StoreProvider.dispatch(
-                          context, InputNotificationAction());
-                      Navigator.pop(context);
-                    },
-                    buildModel: (String name, String description) {
-                      return NotificationModel(name: name);
-                    },
+                  return Dialog(
+                    child: Card(
+                      child: SetupStepper<NotificationModel>(
+                        finishCallback: (model) {
+                          StoreProvider.dispatch(
+                              context, InputNotificationAction(model));
+                          Navigator.pop(context);
+                          selectedItem.value = model;
+                        },
+                        buildModel: (String name, String description) {
+                          return NotificationModel(name: name, frameType: FrameType.goal.value);
+                        },
+                      ),
+                    ),
                   );
                 });
           },
