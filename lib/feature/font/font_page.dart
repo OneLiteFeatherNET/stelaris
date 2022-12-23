@@ -1,12 +1,15 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
+import 'package:stelaris_ui/util/constants.dart';
 
 import '../../api/state/app_state.dart';
 import '../../api/tabs/tab_pages.dart';
@@ -101,13 +104,36 @@ class FontPageState extends State<FontPage> with BaseLayout {
       children: [
         Wrap(
           children: [
-            createInputContainer("Name", model.name),
+            TextInputCard<String>(
+              title: const Text("Name"),
+              currentValue: model.name ?? "",
+              formatter: [FilteringTextInputFormatter.allow(stringPattern)],
+              valueUpdate: (value) {
+                if (value == model.name) return;
+                final oldModel = model;
+                final newEntry = oldModel.copyWith(name: value);
+                setState(() {
+                  StoreProvider.dispatch(context, UpdateFontAction(oldModel, newEntry));
+                  selectedItem.value = newEntry;
+                });
+              },
+            ),
             createDropDownContainer(
                 String, "Type", model.type, FontType.bitmap.displayName, items),
-            createTypedInputContainer("Ascent", model.ascent?.toString(),
-                const TextInputType.numberWithOptions(signed: true), null),
-            createTypedInputContainer("Height", model.height?.toString(),
-                const TextInputType.numberWithOptions(signed: true), null)
+            TextInputCard<String>(
+              title: const Text("Ascent"),
+              currentValue: model.ascent?.toString() ?? "0",
+              valueUpdate: (value) {},
+              inputType: numberInput,
+              formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+            ),
+            TextInputCard(
+                title: const Text("Height"),
+                currentValue: model.height?.toString() ?? "0",
+                valueUpdate: (value) {},
+                inputType: numberInput,
+                formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+            )
           ],
         ),
         Positioned(
