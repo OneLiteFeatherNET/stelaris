@@ -32,6 +32,14 @@ class ItemApi {
     final result = await apiClient.dio.getUri(uri).then((value) => _formatter.fromJson(value.data!));
     return result;
   }
+
+  Future<ItemModel> update(ItemModel itemModel) async {
+    final queryParams = <String, dynamic>{};
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/item/update');
+    final result = await apiClient.dio.postUri(uri, data: itemModel.toJson()).then((value) => ItemModel.fromJson(value.data!));
+    return result;
+  }
 }
 
 class StringToItems implements JsonConverter<List<ItemModel>, List<dynamic>> {
