@@ -8,8 +8,10 @@ import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
+import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
+import 'package:stelaris_ui/util/constants.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({Key? key}) : super(key: key);
@@ -108,9 +110,34 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
       children: [
         Wrap(
           children: [
-            createInputContainer("Name", model.name),
-            createInputContainer("Material", model.material),
-            createInputContainer("Title", model.title),
+            TextInputCard<String>(
+                title: const Text("Name"),
+                currentValue: model.name ?? empty,
+                valueUpdate: (value) {
+
+                }
+            ),
+            TextInputCard<String>(
+                title: const Text("Material"),
+                currentValue: model.material ?? empty,
+                valueUpdate: (value) {
+
+                }
+            ),
+            TextInputCard<String>(
+                title: const Text("Title"),
+                currentValue: model.title ?? empty,
+                valueUpdate: (value) {
+
+                }
+            ),
+            TextInputCard<String>(
+                title: const Text("Description"),
+                currentValue: model.description ?? empty,
+                valueUpdate: (value) {
+
+                }
+            ),
             DropDownCard<FrameType, NotificationModel>(
               currentValue: model,
               title: const Text("FrameType", textAlign: TextAlign.center),
@@ -118,7 +145,6 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
               valueUpdate: (FrameType? value) {},
               defaultValue: getDefaultValue,
             ),
-            createInputContainer("Description", model.description),
           ],
         ),
         Positioned(

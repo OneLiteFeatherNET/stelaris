@@ -1,11 +1,15 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nil/nil.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
+import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
+import 'package:stelaris_ui/feature/dialogs/enum_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_enchantments_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
@@ -16,10 +20,10 @@ import '../../api/util/minecraft/item_flag.dart';
 import '../base/model_container_list.dart';
 
 const List<ItemFlag> flags = ItemFlag.values;
-List<DropdownMenuItem<String>> items = List.generate(
+List<DropdownMenuItem<ItemFlag>> items = List.generate(
     flags.length,
     (index) => DropdownMenuItem(
-          value: flags[index].display,
+          value: flags[index],
           child: Text(flags[index].display),
         ));
 
@@ -125,15 +129,50 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
       children: [
         Wrap(
           children: [
-            createInputContainer("Name", model.name),
-            createInputContainer("Material", model.material),
-            createTypedInputContainer(
-                "ModelData",
-                model.modelData?.toString(),
-                const TextInputType.numberWithOptions(signed: true),
-                null),
-            createTypedInputContainer("Amount", model.amount?.toString(),
-                const TextInputType.numberWithOptions(signed: true), null),
+            TextInputCard<String>(
+                title: const Text("Name"),
+                currentValue: model.name ?? empty,
+                valueUpdate: (value) {
+                  if (value == model.name) return;
+                  final oldModel = model;
+                  final newEntry = oldModel.copyWith(name: value);
+                  setState(() {
+                    StoreProvider.dispatch(context, UpdateItemAction(oldModel, newEntry));
+                    selectedItem.value = newEntry;
+                  });
+              },
+            ),
+            TextInputCard<String>(
+              title: const Text("Material"),
+              currentValue: model.material ?? empty,
+              valueUpdate: (value) {
+                if (value == model.material) return;
+                final oldModel = model;
+                final newEntry = oldModel.copyWith(material: value);
+                setState(() {
+                  StoreProvider.dispatch(context, UpdateItemAction(oldModel, newEntry));
+                  selectedItem.value = newEntry;
+                });
+              },
+            ),
+            TextInputCard(
+                title: const Text("ModelData"),
+                currentValue: model.customModelId?.toString() ?? zero,
+                valueUpdate: (value) {
+
+                },
+                inputType: numberInput,
+                formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+            ),
+            TextInputCard(
+              title: const Text("ModelData"),
+              currentValue: model.amount?.toString() ?? "0",
+              valueUpdate: (value) {
+
+              },
+              inputType: numberInput,
+              formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+            ),
           ],
         ),
         Positioned(
@@ -141,7 +180,9 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
             right: 25,
             child: FloatingActionButton.extended(
               heroTag: UniqueKey(),
-              onPressed: () {},
+              onPressed: () {
+                ApiService().itemApi.update(model);
+              },
               label: const Text("Save"),
               icon: const Icon(Icons.save),
             ))
@@ -153,6 +194,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
     if (model == null) {
       return nil;
     }
+    final List<String> flags = model.flags!.toList();
     return Stack(
       children: [
           Wrap(
@@ -164,28 +206,45 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return EntryAddDialog(
-                      title: const Text(
-                        "Add a flag",
-                        textAlign: TextAlign.center,
-                      ),
-                      widget: getItemFlagSelection(),
+                    return EnumAddDialog<ItemFlag>(
+                      title: const Text("Add a flag", textAlign: TextAlign.center),
+                      items: items,
+                      valueUpdate: (value) {
+                        final oldEntry = model;
+                        Set<String> flags = Set.of(oldEntry.flags ?? {});
+                        flags.add(value!.minestomValue);
+                        final newEntry = oldEntry.copyWith(flags: flags);
+                        setState(() {
+                          StoreProvider.dispatch(context, UpdateItemAction(oldEntry, newEntry));
+                          Navigator.pop(context);
+                          selectedItem.value = newEntry;
+                        });
+                      }
                     );
                   },
                 );
               },
-              widgets: model.flags
-                  ?.map(
-                    (e) => ListTile(
-                  title: Text(e),
+              widgets: List<Widget>.generate(flags.length, (index) {
+                final key = flags[index];
+                return ListTile(
+                  title: Text(key),
                   trailing: IconButton(
                     icon: deleteIcon,
-                    onPressed: () {},
+                    onPressed: () {
+                      final oldEntry = model;
+                      Set<String> flags = Set.of(oldEntry.flags ?? {});
+                      flags.remove(key);
+                      final newEntry = oldEntry.copyWith(flags: flags);
+                      setState(() {
+                        StoreProvider.dispatch(
+                            context, UpdateItemAction(oldEntry, newEntry));
+                        selectedItem.value = newEntry;
+                      });
+                    },
                   ),
-                ),
-              )
-                  .toList() ??
-                  List.empty(),
+                );
+
+              })
             ),
             ExpandableDataCard(
               title: const Text("Enchantments"),
@@ -242,23 +301,42 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                   context: context,
                   builder: (BuildContext context) {
                     return EntryAddDialog(
-                        title: const Text("Add new line"),
-                        widget: TextFormField(keyboardType: TextInputType.text));
+                        controller: TextEditingController(),
+                        valueUpdate: ((value) {
+                          final oldEntry = model;
+                          List<String> oldLores = List.of(oldEntry.lore ?? []);
+                          oldLores.add(value);
+                          final newEntry = oldEntry.copyWith(lore: oldLores);
+                          setState(() {
+                            StoreProvider.dispatch(context, UpdateItemAction(oldEntry, newEntry));
+                            Navigator.pop(context);
+                            selectedItem.value = newEntry;
+                          });
+                        }),
+                        title: const Text("Add new line")
+                    );
                   },
                 );
               },
-              widgets: model.lore
-                  ?.map(
-                    (e) => ListTile(
-                  title: Text(e),
+              widgets: List<Widget>.generate(model.lore?.length ?? 0, (index) {
+                final e = model.lore?[index];
+                return ListTile(
+                  title: Text(e!),
                   trailing: IconButton(
                     icon: deleteIcon,
-                    onPressed: () {},
+                    onPressed: () {
+                      final oldEntry = model;
+                      List<String> oldLores = List.of(oldEntry.lore ?? []);
+                      oldLores.remove(e);
+                      final newEntry = oldEntry.copyWith(lore: oldLores);
+                      setState(() {
+                        StoreProvider.dispatch(context, UpdateItemAction(oldEntry, newEntry));
+                        selectedItem.value = newEntry;
+                      });
+                    },
                   ),
-                ),
-              )
-                  .toList() ??
-                  List.empty(),
+                );
+              }),
             ),
           ],
 
@@ -268,7 +346,10 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
             right: 25,
             child: FloatingActionButton.extended(
               heroTag: UniqueKey(),
-              onPressed: () {},
+              onPressed: () {
+                ApiService().itemApi.update(model);
+                print("Update");
+              },
               label: const Text("Save"),
               icon: const Icon(Icons.save),
             )
