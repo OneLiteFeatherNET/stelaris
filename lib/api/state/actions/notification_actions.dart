@@ -31,13 +31,16 @@ class UpdateNotificationAction extends ReduxAction<AppState> {
 
 class InputNotificationAction extends ReduxAction<AppState> {
 
+  final NotificationModel model;
+
+  InputNotificationAction(this.model);
+
   @override
   Future<AppState?> reduce() async {
-    var notifications = await ApiService().notificationAPI.getAllNotifications();
-    return state.copyWith(notifications: notifications);
+    final models = List.of(state.notifications, growable: true);
+    models.add(model);
+    return state.copyWith(notifications: models);
   }
-
-  InputNotificationAction();
 }
 
 class RemoveNotificationAction extends ReduxAction<AppState> {

@@ -5,23 +5,12 @@ import '../../api_service.dart';
 import '../../model/font_model.dart';
 import '../app_state.dart';
 
-class UpdateFontAction extends ReduxAction<AppState> {
-  final FontModel font;
-
-  UpdateFontAction(this.font);
-
-  @override
-  Future<AppState?> reduce() async {
-    return state.copyWith(fonts: [fontModel]);
-  }
-}
-
 class InitFontAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    var fonts = await ApiService().fontAPI.getAllFonts();
-    return state.copyWith(fonts: fonts);
+    //var fonts = await ApiService().fontAPI.getAllFonts();
+    return state.copyWith(fonts: [fontModel]);
   }
 
   InitFontAction();
@@ -38,5 +27,20 @@ class RemoveFontsAction extends ReduxAction<AppState> {
     final fonts = List.of(state.fonts, growable: true);
     fonts.remove(model);
     return state.copyWith(fonts: fonts);
+  }
+}
+
+class UpdateFontAction extends ReduxAction<AppState> {
+  final FontModel oldEntry;
+  final FontModel newEntry;
+
+  UpdateFontAction(this.oldEntry, this.newEntry);
+
+  @override
+  Future<AppState?> reduce() async {
+    final items = List.of(state.fonts, growable: true);
+    items.remove(oldEntry);
+    items.add(newEntry);
+    return state.copyWith(fonts: items);
   }
 }

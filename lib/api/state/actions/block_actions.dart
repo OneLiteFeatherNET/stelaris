@@ -5,14 +5,17 @@ import '../../model/block_model.dart';
 import '../app_state.dart';
 
 class UpdateBlockAction extends ReduxAction<AppState> {
-  final BlockModel block;
+  final BlockModel oldEntry;
+  final BlockModel newEntry;
 
-  UpdateBlockAction(this.block);
+  UpdateBlockAction(this.oldEntry, this.newEntry);
 
   @override
   Future<AppState?> reduce() async {
-    var blocks = await ApiService().blockAPI.getAllBlocks();
-    return state.copyWith(blocks: blocks);
+    final items = List.of(state.blocks, growable: true);
+    items.remove(oldEntry);
+    items.add(newEntry);
+    return state.copyWith(blocks: items);
   }
 }
 
