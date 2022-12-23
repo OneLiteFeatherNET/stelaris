@@ -5,7 +5,6 @@ import 'package:stelaris_ui/feature/base/base_page.dart';
 import 'package:stelaris_ui/feature/font/font_page.dart';
 import 'package:stelaris_ui/feature/item/item_page.dart';
 import 'package:stelaris_ui/feature/notification/notification_page.dart';
-import 'package:stelaris_ui/feature/plugin/plugin_list.dart';
 
 final GoRouter router = GoRouter(routes: [
   GoRoute(
