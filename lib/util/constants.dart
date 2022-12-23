@@ -11,6 +11,10 @@ Text appTitle = const Text("S T E L A R I S");
 Text emptyText = const Text(empty);
 Text addText = const Text("Add");
 
+/// Regs
+RegExp numberPattern = RegExp("[\\d+]");
+RegExp stringPattern = RegExp("[a-zA-Z]\\w*");
+
 /// Formatter
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);
 
