@@ -9,7 +9,6 @@ import '../../util/constants.dart';
 import 'button/theme_switcher_toggle.dart';
 
 const double maxXOffset = 180;
-const double minXOffset = 50;
 const navigationEntries = NavigationEntry.values;
 const navigationEntryTextStyle = TextStyle(fontSize: 16);
 
@@ -23,10 +22,6 @@ class BasePage extends StatefulWidget {
 }
 
 class _BasePageState extends State<BasePage> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,17 +88,20 @@ class _BasePageState extends State<BasePage> {
       trailing: Expanded(
         child: Align(
           alignment: Alignment.bottomCenter,
-          child: openNavigation
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: actionChild,
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: actionChild,
-                ),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 30),
+            child: openNavigation
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: actionChild,
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: actionChild,
+                  ),
+          ),
         ),
       ),
     );
