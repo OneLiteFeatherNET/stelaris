@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/util/minecraft/item_flag.dart';
+import 'package:flutter/services.dart';
+import 'package:stelaris_ui/util/constants.dart';
 
-const List<ItemFlag> flags = ItemFlag.values;
-List<DropdownMenuItem<String>> items =
-  List.generate(flags.length, (index) =>
-      DropdownMenuItem(value: flags[index].display,child: Text(flags[index].display),)
-  );
+typedef StringValueUpdate = void Function(String value);
 
 class EntryAddDialog extends StatelessWidget {
 
   final Text title;
-  final Widget widget;
+  final TextEditingController controller;
+  final StringValueUpdate valueUpdate;
 
-  const EntryAddDialog({Key? key, required this.title, required this.widget}) : super(key: key);
+  const EntryAddDialog({Key? key, required this.title, required this.controller, required this.valueUpdate}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +18,19 @@ class EntryAddDialog extends StatelessWidget {
       title: title,
       contentPadding: const EdgeInsets.all(20.0),
       children: [
-        widget,
+        TextFormField(
+          keyboardType: TextInputType.text,
+          controller: controller,
+          inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
+        ),
         const SizedBox(height: 25),
-        TextButton(onPressed: () {
-
-        }, child: const Text("Add"))
+        TextButton(
+            onPressed: () {
+              if (controller.value.text.isEmpty) return;
+              valueUpdate(controller.value.text);
+              },
+            child: addText
+        )
       ],
     );
   }
