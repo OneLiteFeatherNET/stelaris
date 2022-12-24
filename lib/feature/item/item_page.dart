@@ -183,8 +183,8 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               onPressed: () {
                 ApiService().itemApi.update(model);
               },
-              label: const Text("Save"),
-              icon: const Icon(Icons.save),
+              label: saveText,
+              icon: saveIcon,
             ))
       ],
     );
@@ -348,10 +348,9 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               heroTag: UniqueKey(),
               onPressed: () {
                 ApiService().itemApi.update(model);
-                print("Update");
               },
-              label: const Text("Save"),
-              icon: const Icon(Icons.save),
+              label: saveText,
+              icon: saveIcon,
             )
         )
       ],
