@@ -33,6 +33,14 @@ class FontAPI {
     final result = await apiClient.dio.getUri(uri).then((value) => _formatter.fromJson(value.data!));
     return result;
   }
+
+  Future<FontModel> update(FontModel model) async {
+    final queryParams = <String, dynamic>{};
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/font/update');
+    final result = await apiClient.dio.postUri(uri, data: model.toJson()).then((value) => FontModel.fromJson(value.data!));
+    return result;
+  }
 }
 
 class StringToFont implements JsonConverter<List<FontModel>, List<dynamic>> {
