@@ -22,11 +22,6 @@ class _TextInputCardState extends State<TextInputCard> with BaseLayout {
   final TextEditingController _editController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     _editController.dispose();
     super.dispose();
