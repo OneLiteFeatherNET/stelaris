@@ -9,8 +9,9 @@ class EntryAddDialog extends StatelessWidget {
   final Text title;
   final TextEditingController controller;
   final StringValueUpdate valueUpdate;
+  final List<TextInputFormatter>? formatters;
 
-  const EntryAddDialog({Key? key, required this.title, required this.controller, required this.valueUpdate}) : super(key: key);
+  const EntryAddDialog({Key? key, required this.title, required this.controller, required this.valueUpdate, this.formatters}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +22,9 @@ class EntryAddDialog extends StatelessWidget {
         TextFormField(
           keyboardType: TextInputType.text,
           controller: controller,
-          inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
+          inputFormatters: formatters,
         ),
-        const SizedBox(height: 25),
+        spaceTwentyFiveHeightBox,
         TextButton(
             onPressed: () {
               if (controller.value.text.isEmpty) return;
