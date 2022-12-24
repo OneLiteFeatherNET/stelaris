@@ -370,12 +370,4 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
       ],
     );
   }
-
-  Widget getItemFlagSelection() {
-    return DropdownButtonFormField(
-      value: items[0].value,
-      items: items,
-      onChanged: (value) {},
-    );
-  }
 }
