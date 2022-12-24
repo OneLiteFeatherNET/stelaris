@@ -143,6 +143,19 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               },
             ),
             TextInputCard<String>(
+              title: const Text("Description"),
+              currentValue: model.description ?? empty,
+              valueUpdate: (value) {
+                if (value == model.description) return;
+                final oldModel = model;
+                final newEntry = oldModel.copyWith(description: value);
+                setState(() {
+                  StoreProvider.dispatch(context, UpdateItemAction(oldModel, newEntry));
+                  selectedItem.value = newEntry;
+                });
+              },
+            ),
+            TextInputCard<String>(
               title: const Text("Material"),
               currentValue: model.material ?? empty,
               valueUpdate: (value) {
