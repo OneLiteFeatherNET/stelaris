@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/api/util/navigation.dart';
 import 'package:stelaris_ui/feature/base/base_page.dart';
+import 'package:stelaris_ui/feature/block/block_page.dart';
 import 'package:stelaris_ui/feature/font/font_page.dart';
 import 'package:stelaris_ui/feature/item/item_page.dart';
 import 'package:stelaris_ui/feature/notification/notification_page.dart';
@@ -25,9 +26,9 @@ final GoRouter router = GoRouter(routes: [
             )),
   ),
   GoRoute(
-    path: NavigationEntry.build.route,
+    path: NavigationEntry.blocks.route,
     pageBuilder: (context, state) => CustomTransitionPage(
-        child:  BasePage(child: Container()),
+        child: const BasePage(child: BlockPage()),
         key: state.pageKey,
         transitionsBuilder: (context, animation, secondaryAnimation, child) =>
             FadeTransition(
@@ -69,4 +70,15 @@ final GoRouter router = GoRouter(routes: [
               child: child,
             )),
   )*/
+  GoRoute(
+    path: NavigationEntry.build.route,
+    pageBuilder: (context, state) => CustomTransitionPage(
+        child:  BasePage(child: Container()),
+        key: state.pageKey,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+              opacity: animation,
+              child: child,
+            )),
+  ),
 ]);
