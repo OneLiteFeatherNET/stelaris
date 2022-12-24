@@ -16,15 +16,18 @@ class InitNotificationAction extends ReduxAction<AppState> {
   InitNotificationAction();
 }
 
-
 class UpdateNotificationAction extends ReduxAction<AppState> {
-  final NotificationModel notification;
+  final NotificationModel oldEntry;
+  final NotificationModel newEntry;
 
-  UpdateNotificationAction(this.notification);
+  UpdateNotificationAction(this.oldEntry, this.newEntry);
+
 
   @override
   Future<AppState?> reduce() async {
-    var notifications = await ApiService().notificationAPI.getAllNotifications();
+    final notifications = List.of(state.notifications, growable: true);
+    notifications.remove(oldEntry);
+    notifications.add(newEntry);
     return state.copyWith(notifications: notifications);
   }
 }
