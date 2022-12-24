@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/util/minecraft/enchantment.dart';
+import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
-
-import '../../util/constants.dart';
 
 const List<Enchantment> enchantments = Enchantment.values;
 List<DropdownMenuItem<Enchantment>> items =
@@ -25,6 +25,7 @@ class ItemEnchantmentAddDialog extends StatelessWidget {
       contentPadding: const EdgeInsets.all(20.0),
       children: [
         const Text("Enchantment"),
+        spaceFiveBox,
         const SizedBox(height: 5,),
         DropdownButtonFormField(
           value: items[0].value,
@@ -33,19 +34,20 @@ class ItemEnchantmentAddDialog extends StatelessWidget {
             _selected = value;
         },
         ),
-        const SizedBox(height: 25),
+        spaceTwentyFiveHeightBox,
         const Text("Level"),
         TextFormField(
           controller: levelController,
           autocorrect: false,
           keyboardType: numberInput,
+          inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
         ),
-        const SizedBox(height: 25),
+        spaceTwentyFiveHeightBox,
         TextButton(onPressed: () {
           if (_selected != null) {
             addEnchantmentCallback(_selected!, int.parse(levelController.value.text));
           }
-        }, child: const Text("Add"))
+        }, child: addText)
       ],
     );
   }
