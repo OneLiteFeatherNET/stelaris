@@ -10,6 +10,7 @@ Text appText = const Text(appName);
 Text appTitle = const Text("S T E L A R I S");
 Text emptyText = const Text(empty);
 Text addText = const Text("Add");
+Text saveText = const Text("Save");
 
 /// Regs
 RegExp numberPattern = RegExp("[\\d+]");
@@ -31,24 +32,16 @@ RoundedRectangleBorder stepperBorder = RoundedRectangleBorder(borderRadius: Bord
 const String templateStepperTitle = "Create a server template";
 
 // Font dialog
-const String fontStepperTitle = "Create a new font entry";
-
 const FrameType defaultFrameType = FrameType.task;
 
 // Text
-const Text notificationStepperTitle = Text("Create a new notification", textAlign: TextAlign.center);
-
 // Button
 Icon addModelIcon = const Icon(Icons.add);
 Icon deleteIcon = const Icon(Icons.delete_forever, color: Colors.red);
+Icon saveIcon = const Icon(Icons.save);
 
 // Boxes
 const SizedBox spaceFiveBox = SizedBox(width: 5);
 const SizedBox spaceTenAndTenBox = SizedBox(width: 10, height: 10);
 const SizedBox spaceTenBox = SizedBox(width: 10,);
-
-// Borders
-OutlineInputBorder searchBorder = const OutlineInputBorder(
-    borderRadius: BorderRadius.all(Radius.circular(10)),
-    borderSide: BorderSide(color: Colors.red, width: 2)
-);
+const SizedBox spaceTwentyFiveHeightBox = SizedBox(height: 25);
