@@ -13,7 +13,7 @@ Text addText = const Text("Add");
 Text saveText = const Text("Save");
 
 /// Regs
-RegExp numberPattern = RegExp("[\\d+]");
+RegExp numberPattern = RegExp("[1-9]\\d*");
 RegExp stringPattern = RegExp("[a-zA-Z]\\w*");
 
 /// Formatter
