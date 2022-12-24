@@ -4,41 +4,41 @@ import 'package:stelaris_ui/api/model/plugin_model.dart';
 
 class PluginAPI {
 
-  final ApiClient apiClient;
+  final ApiClient _apiClient;
 
   final StringToPlugin _formatter = const StringToPlugin();
 
-  PluginAPI(this.apiClient);
+  PluginAPI(this._apiClient);
 
   Future<PluginModel> getPlugin() async {
     final queryParams = <String, dynamic>{};
-    final baseUri = Uri.parse(apiClient.baseUrl);
+    final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/plugin');
-    final result = await apiClient.dio.getUri(uri).then((value) => PluginModel.fromJson(value.data!));
+    final result = await _apiClient.dio.getUri(uri).then((value) => PluginModel.fromJson(value.data!));
     return result;
   }
 
   Future<PluginModel> addPlugin(PluginModel plugin) async {
     final queryParams = <String, dynamic>{};
-    final baseUri = Uri.parse(apiClient.baseUrl);
+    final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/plugin/');
-    final result = await apiClient.dio.postUri(uri, data: plugin.toJson()).then((value) => PluginModel.fromJson(value.data!));
+    final result = await _apiClient.dio.postUri(uri, data: plugin.toJson()).then((value) => PluginModel.fromJson(value.data!));
     return result;
   }
 
   Future<List<PluginModel>> getAllPlugins() async {
     final queryParams = <String, dynamic>{};
-    final baseUri = Uri.parse(apiClient.baseUrl);
+    final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/plugin/getAll');
-    final result = await apiClient.dio.getUri(uri).then((value) => _formatter.fromJson(value.data!));
+    final result = await _apiClient.dio.getUri(uri).then((value) => _formatter.fromJson(value.data!));
     return result;
   }
 
   Future<PluginModel> update(PluginModel model) async {
     final queryParams = <String, dynamic>{};
-    final baseUri = Uri.parse(apiClient.baseUrl);
+    final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/plugin/update');
-    final result = await apiClient.dio.postUri(uri, data: model.toJson()).then((value) => PluginModel.fromJson(value.data!));
+    final result = await _apiClient.dio.postUri(uri, data: model.toJson()).then((value) => PluginModel.fromJson(value.data!));
     return result;
   }
 }
