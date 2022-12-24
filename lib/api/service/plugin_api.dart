@@ -33,6 +33,14 @@ class PluginAPI {
     final result = await apiClient.dio.getUri(uri).then((value) => _formatter.fromJson(value.data!));
     return result;
   }
+
+  Future<PluginModel> update(PluginModel model) async {
+    final queryParams = <String, dynamic>{};
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/plugin/update');
+    final result = await apiClient.dio.postUri(uri, data: model.toJson()).then((value) => PluginModel.fromJson(value.data!));
+    return result;
+  }
 }
 
 class StringToPlugin implements JsonConverter<List<PluginModel>, List<dynamic>> {
