@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 enum NavigationEntry {
 
   //dashboard("Dashboard", "/dashboard", Icons.abc_outlined),
-  items("Items", "/item", Icons.games),
+  items("Items", "/items", Icons.games),
+  blocks("Blocks", "/blocks", Icons.square),
   //entities("Entities", "/entities", Icons.add_moderator),
   //quests("Quests", "/quests",Icons.access_time_filled_outlined),
   notifications("Notifications", "/notifications", Icons.notification_add),
   font("Fonts", "/fonts", Icons.font_download_outlined),
   //plugins("Plugins", "/plugins", Icons.extension),
-  build("Build", "/build", Icons.construction);
+  build("Build", "/build", Icons.build);
 
   final String display;
   final String route;
