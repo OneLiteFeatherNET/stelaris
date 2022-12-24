@@ -34,6 +34,14 @@ class NotificationAPI {
     final result = await apiClient.dio.getUri(uri).then((value) => _formatter.fromJson(value.data!));
     return result;
   }
+
+  Future<NotificationModel> update(NotificationModel model) async {
+    final queryParams = <String, dynamic>{};
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/notification/update');
+    final result = await apiClient.dio.postUri(uri, data: model.toJson()).then((value) => NotificationModel.fromJson(value.data!));
+    return result;
+  }
 }
 
 class StringToNotifications implements JsonConverter<List<NotificationModel>, List<dynamic>> {
