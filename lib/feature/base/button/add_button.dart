@@ -12,7 +12,7 @@ class AddButton extends StatelessWidget {
     return FloatingActionButton.extended(
         onPressed: openFunction,
         label: addText,
-        icon: const Icon(Icons.add),
+        icon: addModelIcon,
     );
   }
 }
