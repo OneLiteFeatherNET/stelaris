@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:nil/nil.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
 import 'package:stelaris_ui/api/state/actions/notification_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
@@ -114,35 +115,66 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                 title: const Text("Name"),
                 currentValue: model.name ?? empty,
                 valueUpdate: (value) {
-
+                  if (value == model.name) return;
+                  final oldModel = model;
+                  final newEntry = oldModel.copyWith(name: value);
+                  setState(() {
+                    StoreProvider.dispatch(context, UpdateNotificationAction(oldModel, newEntry));
+                    selectedItem.value = newEntry;
+                  });
                 }
             ),
             TextInputCard<String>(
                 title: const Text("Material"),
                 currentValue: model.material ?? empty,
                 valueUpdate: (value) {
-
+                  if (value == model.material) return;
+                  final oldModel = model;
+                  final newEntry = oldModel.copyWith(material: value);
+                  setState(() {
+                    StoreProvider.dispatch(context, UpdateNotificationAction(oldModel, newEntry));
+                    selectedItem.value = newEntry;
+                  });
                 }
             ),
             TextInputCard<String>(
                 title: const Text("Title"),
                 currentValue: model.title ?? empty,
                 valueUpdate: (value) {
-
+                  if (value == model.title) return;
+                  final oldModel = model;
+                  final newEntry = oldModel.copyWith(title: value);
+                  setState(() {
+                    StoreProvider.dispatch(context, UpdateNotificationAction(oldModel, newEntry));
+                    selectedItem.value = newEntry;
+                  });
                 }
             ),
             TextInputCard<String>(
                 title: const Text("Description"),
                 currentValue: model.description ?? empty,
                 valueUpdate: (value) {
-
+                  if (value == model.description) return;
+                  final oldModel = model;
+                  final newEntry = oldModel.copyWith(description: value);
+                  setState(() {
+                    StoreProvider.dispatch(context, UpdateNotificationAction(oldModel, newEntry));
+                    selectedItem.value = newEntry;
+                  });
                 }
             ),
             DropDownCard<FrameType, NotificationModel>(
               currentValue: model,
               title: const Text("FrameType", textAlign: TextAlign.center),
               items: getItems(),
-              valueUpdate: (FrameType? value) {},
+              valueUpdate: (FrameType? value) {
+                if (value == getDefaultValue(model)) return;
+                final newEntry = model.copyWith(frameType: value?.value);
+                setState(() {
+                  StoreProvider.dispatch(context, UpdateNotificationAction(model, newEntry));
+                  selectedItem.value = newEntry;
+                });
+              },
               defaultValue: getDefaultValue,
             ),
           ],
@@ -152,7 +184,9 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
             right: 25,
             child: FloatingActionButton.extended(
               heroTag: UniqueKey(),
-              onPressed: () {},
+              onPressed: () {
+                ApiService().notificationAPI.update(model);
+              },
               label: saveText,
               icon: saveIcon,
             )
