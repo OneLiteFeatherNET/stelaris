@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nil/nil.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
@@ -147,14 +148,32 @@ class FontPageState extends State<FontPage> with BaseLayout {
             TextInputCard<String>(
               title: const Text("Ascent"),
               currentValue: model.ascent?.toString() ?? zero,
-              valueUpdate: (value) {},
+              valueUpdate: (value) {
+                if (value == model.ascent) return;
+                final oldModel = model;
+                final newAscent = int.parse(value);
+                final newEntry = oldModel.copyWith(ascent: newAscent);
+                setState(() {
+                  StoreProvider.dispatch(context, UpdateFontAction(oldModel, newEntry));
+                  selectedItem.value = newEntry;
+                });
+              },
               inputType: numberInput,
               formatter: [FilteringTextInputFormatter.allow(numberPattern)],
             ),
             TextInputCard(
                 title: const Text("Height"),
                 currentValue: model.height?.toString() ?? zero,
-                valueUpdate: (value) {},
+                valueUpdate: (value) {
+                  if (value == model.height) return;
+                  final oldModel = model;
+                  final newHeight = int.parse(value);
+                  final newEntry = oldModel.copyWith(height: newHeight);
+                  setState(() {
+                    StoreProvider.dispatch(context, UpdateFontAction(oldModel, newEntry));
+                    selectedItem.value = newEntry;
+                  });
+                },
                 inputType: numberInput,
                 formatter: [FilteringTextInputFormatter.allow(numberPattern)],
             ),
@@ -165,7 +184,9 @@ class FontPageState extends State<FontPage> with BaseLayout {
             right: 25,
             child: FloatingActionButton.extended(
               heroTag: UniqueKey(),
-              onPressed: () {},
+              onPressed: () {
+                ApiService().fontAPI.update(model);
+              },
               label: saveText,
               icon: saveIcon,
             )

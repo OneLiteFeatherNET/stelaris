@@ -159,16 +159,30 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                 title: const Text("ModelData"),
                 currentValue: model.customModelId?.toString() ?? zero,
                 valueUpdate: (value) {
-
+                  if (value == model.customModelId) return;
+                  final oldModel = model;
+                  final newID = int.parse(value);
+                  final newEntry = oldModel.copyWith(customModelId: newID);
+                  setState(() {
+                    StoreProvider.dispatch(context, UpdateItemAction(oldModel, newEntry));
+                    selectedItem.value = newEntry;
+                  });
                 },
                 inputType: numberInput,
                 formatter: [FilteringTextInputFormatter.allow(numberPattern)],
             ),
             TextInputCard(
-              title: const Text("ModelData"),
-              currentValue: model.amount?.toString() ?? "0",
+              title: const Text("Amount"),
+              currentValue: model.amount?.toString() ?? zero,
               valueUpdate: (value) {
-
+                if (value == model.amount) return;
+                final oldModel = model;
+                final newAmount = int.parse(value);
+                final newEntry = oldModel.copyWith(amount: newAmount);
+                setState(() {
+                  StoreProvider.dispatch(context, UpdateItemAction(oldModel, newEntry));
+                  selectedItem.value = newEntry;
+                });
               },
               inputType: numberInput,
               formatter: [FilteringTextInputFormatter.allow(numberPattern)],
