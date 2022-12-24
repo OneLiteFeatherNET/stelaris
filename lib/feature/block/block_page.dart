@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nil/nil.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
@@ -13,17 +14,17 @@ import 'package:stelaris_ui/util/constants.dart';
 import '../../api/state/app_state.dart';
 import '../../api/tabs/tab_pages.dart';
 
-class BlockList extends StatefulWidget {
+class BlockPage extends StatefulWidget {
 
-  const BlockList({Key? key}) : super(key: key);
+  const BlockPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return BlockListState();
+    return BlockPageState();
   }
 }
 
-class BlockListState extends State<BlockList> with BaseLayout {
+class BlockPageState extends State<BlockPage> with BaseLayout {
 
   final ValueNotifier<BlockModel?> selectedItem = ValueNotifier(null);
 
@@ -118,13 +119,14 @@ class BlockListState extends State<BlockList> with BaseLayout {
               },
             ),
             TextInputCard<String>(
-              title: const Text("Name"),
-              currentValue: model.name ?? "",
+              title: const Text("ModelData"),
+              currentValue: model.customModelId.toString(),
               formatter: [FilteringTextInputFormatter.allow(numberPattern)],
               valueUpdate: (value) {
-                if (value == model.modelData) return;
+                if (value == model.customModelId) return;
                 final oldModel = model;
-                final newEntry = oldModel.copyWith(modelData: value);
+                final newID = int.parse(value);
+                final newEntry = oldModel.copyWith(customModelId: newID);
                 setState(() {
                   StoreProvider.dispatch(context, UpdateBlockAction(oldModel, newEntry));
                   selectedItem.value = newEntry;
@@ -138,7 +140,9 @@ class BlockListState extends State<BlockList> with BaseLayout {
             right: 25,
             child: FloatingActionButton.extended(
               heroTag: UniqueKey(),
-              onPressed: () {},
+              onPressed: () {
+                ApiService().blockAPI.update(model);
+              },
               label: saveText,
               icon: saveIcon,
             )
