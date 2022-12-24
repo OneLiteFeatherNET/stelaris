@@ -139,8 +139,8 @@ class BlockListState extends State<BlockList> with BaseLayout {
             child: FloatingActionButton.extended(
               heroTag: UniqueKey(),
               onPressed: () {},
-              label: const Text("Save"),
-              icon: const Icon(Icons.save),
+              label: saveText,
+              icon: saveIcon,
             )
         )
       ]

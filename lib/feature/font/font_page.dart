@@ -166,8 +166,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
             child: FloatingActionButton.extended(
               heroTag: UniqueKey(),
               onPressed: () {},
-              label: const Text("Save"),
-              icon: const Icon(Icons.save),
+              label: saveText,
+              icon: saveIcon,
             )
         )
       ],
@@ -191,6 +191,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
                       return EntryAddDialog(
                           title: const Text("Add new char"),
                           controller: TextEditingController(),
+                          formatters: [FilteringTextInputFormatter.allow(stringPattern)],
                           valueUpdate: (value) {
                             final oldEntry = model;
                             List<String> chars = List.of(oldEntry.chars ?? []);
@@ -235,8 +236,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
             child: FloatingActionButton.extended(
               heroTag: UniqueKey(),
               onPressed: () {},
-              label: const Text("Save"),
-              icon: const Icon(Icons.save),
+              label: saveText,
+              icon: saveIcon,
             )
         )
       ],
