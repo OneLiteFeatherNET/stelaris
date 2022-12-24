@@ -35,9 +35,8 @@ var secondNotificationModel = NotificationModel(
 
 var blocKModel = const BlockModel(
     name: "Test",
-    generator: "ItemGenerator",
-    modelData: 1,
-    amount: 1
+    generator: "BlockGenerator",
+    customModelId: 1,
 );
 
 var fontModel = FontModel(
