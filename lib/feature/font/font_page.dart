@@ -7,6 +7,7 @@ import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
 import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
@@ -18,7 +19,6 @@ import '../../api/tabs/tab_pages.dart';
 import '../base/cards/expandable_data_card.dart';
 
 const List<FontType> values = FontType.values;
-List<DropdownMenuItem<String>> items = getItems();
 
 class FontPage extends StatefulWidget {
   const FontPage({Key? key}) : super(key: key);
@@ -143,8 +143,20 @@ class FontPageState extends State<FontPage> with BaseLayout {
                 });
               },
             ),
-            createDropDownContainer(
-                String, "Type", model.type, FontType.bitmap.displayName, items),
+            DropDownCard<FontType, FontModel>(
+              title: const Text("Type"),
+              items: getItems(),
+              currentValue: model,
+              defaultValue: getDefaultValue,
+              valueUpdate: (FontType? value) {
+                if (value == getDefaultValue(model)) return;
+                final newEntry = model.copyWith(type: value?.displayName);
+                setState(() {
+                  StoreProvider.dispatch(context, UpdateFontAction(model, newEntry));
+                  selectedItem.value = newEntry;
+                });
+              },
+            ),
             TextInputCard<String>(
               title: const Text("Ascent"),
               currentValue: model.ascent?.toString() ?? zero,
@@ -256,7 +268,9 @@ class FontPageState extends State<FontPage> with BaseLayout {
             right: 25,
             child: FloatingActionButton.extended(
               heroTag: UniqueKey(),
-              onPressed: () {},
+              onPressed: () {
+                ApiService().fontAPI.update(model);
+              },
               label: saveText,
               icon: saveIcon,
             )
@@ -264,14 +278,18 @@ class FontPageState extends State<FontPage> with BaseLayout {
       ],
     );
   }
-}
 
-List<DropdownMenuItem<String>> getItems() {
-  List<FontType> values = FontType.values;
-  return List.generate(
-      values.length,
-      (index) => DropdownMenuItem(
-            value: values[index].displayName,
-            child: Text(values[index].displayName),
-          ));
+  List<DropdownMenuItem<FontType>>? getItems() {
+    return List.generate(
+        values.length,
+            (index) => DropdownMenuItem(
+              value: values[index],
+              child: Text(values[index].displayName),
+        ));
+  }
+
+  FontType getDefaultValue(FontModel value) {
+    return FontType.values
+        .firstWhere((element) => element.name == value.type);
+  }
 }
