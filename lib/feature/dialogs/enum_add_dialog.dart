@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
 class EnumAddDialog<E> extends StatefulWidget {
@@ -38,7 +39,7 @@ class _EnumAddDialogState<E> extends State<EnumAddDialog<E>> {
         const SizedBox(height: 25),
         TextButton(onPressed: () {
           widget.valueUpdate(defaultValue);
-        }, child: const Text("Add"))
+        }, child: addText)
       ],
     );
   }
