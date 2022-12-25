@@ -9,6 +9,7 @@ import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
+import 'package:stelaris_ui/feature/dialogs/dismiss_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/enum_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_enchantments_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
@@ -56,11 +57,14 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
             mapToDeleteDialog: (value) {
               return [
                 const TextSpan(
-                    text: "Will you delete ",
+                    text: firstLine,
                     style: TextStyle(color: Colors.white)),
                 TextSpan(
-                    text: value.name ?? "Unknown",
-                    style: const TextStyle(color: Colors.red))
+                    text: value.name ?? unknownEntry,
+                    style: const TextStyle(color: Colors.red)),
+                const TextSpan(
+                    text: secondLine,
+                    style: TextStyle(color: Colors.white)),
               ];
             },
             mapToDeleteSuccessfully: (value) {
@@ -258,15 +262,37 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                   trailing: IconButton(
                     icon: deleteIcon,
                     onPressed: () {
-                      final oldEntry = model;
-                      Set<String> flags = Set.of(oldEntry.flags ?? {});
-                      flags.remove(key);
-                      final newEntry = oldEntry.copyWith(flags: flags);
-                      setState(() {
-                        StoreProvider.dispatch(
-                            context, UpdateItemAction(oldEntry, newEntry));
-                        selectedItem.value = newEntry;
-                      });
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return DeleteDialog(
+                                title: deleteTitle,
+                                header: [
+                                  const TextSpan(
+                                      text: firstLine,
+                                      style: TextStyle(color: Colors.white)),
+                                  TextSpan(
+                                      text: key,
+                                      style: const TextStyle(color: Colors.red)),
+                                  const TextSpan(
+                                      text: secondLine,
+                                      style: TextStyle(color: Colors.white)),
+                                ],
+                                context: context,
+                                value: key,
+                                successfully: (value) {
+                                  final oldEntry = model;
+                                  Set<String> oldFlags = Set.of(oldEntry.flags ?? []);
+                                  oldFlags.remove(key);
+                                  final newEntry = oldEntry.copyWith(flags: oldFlags);
+                                  setState(() {
+                                    StoreProvider.dispatch(context, UpdateItemAction(oldEntry, newEntry));
+                                    selectedItem.value = newEntry;
+                                  });
+                                  return true;
+                                }
+                            ).getDeleteDialog();
+                          });
                     },
                   ),
                 );
@@ -306,17 +332,40 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                     trailing: IconButton(
                       icon: deleteIcon,
                       onPressed: () {
-                        final oldEntry = model;
-                        final oldEnchantments =
-                        Map<String, int>.of(oldEntry.enchantments ?? {});
-                        oldEnchantments.remove(key);
-                        final newEntry =
-                        oldEntry.copyWith(enchantments: oldEnchantments);
-                        setState(() {
-                          StoreProvider.dispatch(
-                              context, UpdateItemAction(oldEntry, newEntry));
-                          selectedItem.value = newEntry;
-                        });
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return DeleteDialog(
+                                  title: deleteTitle,
+                                  header:  [
+                                    const TextSpan(
+                                        text: firstLine,
+                                        style: TextStyle(color: Colors.white)),
+                                    TextSpan(
+                                        text: key,
+                                        style: const TextStyle(color: Colors.red)),
+                                    const TextSpan(
+                                        text: secondLine,
+                                        style: TextStyle(color: Colors.white)),
+                                  ],
+                                  context: context,
+                                  value: key,
+                                  successfully: (value) {
+                                    final oldEntry = model;
+                                    final oldEnchantments =
+                                    Map<String, int>.of(oldEntry.enchantments ?? {});
+                                    oldEnchantments.remove(key);
+                                    final newEntry =
+                                    oldEntry.copyWith(enchantments: oldEnchantments);
+                                    setState(() {
+                                      StoreProvider.dispatch(
+                                          context, UpdateItemAction(oldEntry, newEntry));
+                                      selectedItem.value = newEntry;
+                                    });
+                                    return true;
+                                  }
+                              ).getDeleteDialog();
+                            });
                       },
                     ));
               }),
@@ -346,20 +395,43 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                 );
               },
               widgets: List<Widget>.generate(model.lore?.length ?? 0, (index) {
-                final e = model.lore?[index];
+                final key = model.lore?[index];
                 return ListTile(
-                  title: Text(e!),
+                  title: Text(key!),
                   trailing: IconButton(
                     icon: deleteIcon,
                     onPressed: () {
-                      final oldEntry = model;
-                      List<String> oldLores = List.of(oldEntry.lore ?? []);
-                      oldLores.remove(e);
-                      final newEntry = oldEntry.copyWith(lore: oldLores);
-                      setState(() {
-                        StoreProvider.dispatch(context, UpdateItemAction(oldEntry, newEntry));
-                        selectedItem.value = newEntry;
-                      });
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return DeleteDialog(
+                                title: deleteTitle,
+                                header:  [
+                                  const TextSpan(
+                                      text: firstLine,
+                                      style: TextStyle(color: Colors.white)),
+                                  TextSpan(
+                                      text: key,
+                                      style: const TextStyle(color: Colors.red)),
+                                  const TextSpan(
+                                      text: secondLine,
+                                      style: TextStyle(color: Colors.white)),
+                                ],
+                                context: context,
+                                value: key,
+                                successfully: (value) {
+                                  final oldEntry = model;
+                                  List<String> oldLores = List.of(oldEntry.lore ?? []);
+                                  oldLores.remove(key);
+                                  final newEntry = oldEntry.copyWith(lore: oldLores);
+                                  setState(() {
+                                    StoreProvider.dispatch(context, UpdateItemAction(oldEntry, newEntry));
+                                    selectedItem.value = newEntry;
+                                  });
+                                  return true;
+                                }
+                            ).getDeleteDialog();
+                          });
                     },
                   ),
                 );

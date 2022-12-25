@@ -63,9 +63,13 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
                                     context: context,
                                     builder: (context) {
                                       return DeleteDialog(
-                                          widget.mapToDeleteDialog(e), context, e, widget.mapToDeleteSuccessfully)
-                                          .getDeleteDialog();
-                                    });
+                                          title: deleteTitle,
+                                          header: widget.mapToDeleteDialog(e),
+                                          context: context,
+                                          value: e,
+                                          successfully: widget.mapToDeleteSuccessfully
+                                      ).getDeleteDialog();
+                                });
                               },
                             ),
                           ),
