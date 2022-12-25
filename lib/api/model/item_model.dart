@@ -17,7 +17,7 @@ class ItemModel extends DataModel with _$ItemModel {
     @JsonKey(name: 'customModelId') int? customModelId,
     @JsonKey(name: 'amount', defaultValue: 1) int? amount,
     @JsonKey(name: 'enchantments') Map<String, int>? enchantments,
-    @JsonKey(name: 'itemFlags') Set<String>? flags,
+    @JsonKey(name: 'flags') Set<String>? flags,
     @JsonKey(name: 'lore') List<String>? lore,
 }) = _ItemModel;
 
