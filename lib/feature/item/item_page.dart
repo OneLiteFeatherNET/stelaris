@@ -172,6 +172,19 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                 });
               },
             ),
+            TextInputCard<String>(
+              title: const Text("Displayname"),
+              currentValue: model.displayName ?? empty,
+              valueUpdate: (value) {
+                if (value == model.displayName) return;
+                final oldModel = model;
+                final newEntry = oldModel.copyWith(displayName: value);
+                setState(() {
+                  StoreProvider.dispatch(context, UpdateItemAction(oldModel, newEntry));
+                  selectedItem.value = newEntry;
+                });
+              },
+            ),
             TextInputCard(
                 title: const Text("ModelData"),
                 currentValue: model.customModelId?.toString() ?? zero,
@@ -282,7 +295,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                                 value: key,
                                 successfully: (value) {
                                   final oldEntry = model;
-                                  Set<String> oldFlags = Set.of(oldEntry.flags ?? []);
+                                  Set<String> oldFlags = Set.of(oldEntry.flags ?? {});
                                   oldFlags.remove(key);
                                   final newEntry = oldEntry.copyWith(flags: oldFlags);
                                   setState(() {
