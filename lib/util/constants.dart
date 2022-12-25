@@ -6,11 +6,18 @@ const String appName = "Stelaris";
 const String itemPage = "Items";
 const String entityPage = "Entities";
 
+const String unknownEntry = "Unknown";
+
+//// Deletedialog
+const String firstLine = "Do you really want to delete ";
+const String secondLine = " entry";
+
 Text appText = const Text(appName);
 Text appTitle = const Text("S T E L A R I S");
 Text emptyText = const Text(empty);
 Text addText = const Text("Add");
 Text saveText = const Text("Save");
+Text deleteTitle = const Text("Confirm deletion");
 
 /// Regs
 RegExp numberPattern = RegExp("[1-9]\\d*");
