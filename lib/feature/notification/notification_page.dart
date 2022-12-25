@@ -43,11 +43,14 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
           mapToDeleteDialog: (value) {
             return [
               const TextSpan(
-                  text: "Will you delete ",
+                  text: firstLine,
                   style: TextStyle(color: Colors.white)),
               TextSpan(
-                  text: value.name ?? "Unknown",
-                  style: const TextStyle(color: Colors.red))
+                  text: value.name ?? unknownEntry,
+                  style: const TextStyle(color: Colors.red)),
+              const TextSpan(
+                  text: secondLine,
+                  style: TextStyle(color: Colors.white)),
             ];
           },
           mapToDeleteSuccessfully: (value) {

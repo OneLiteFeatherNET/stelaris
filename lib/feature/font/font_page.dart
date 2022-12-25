@@ -10,6 +10,7 @@ import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
+import 'package:stelaris_ui/feature/dialogs/dismiss_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
 import 'package:stelaris_ui/util/constants.dart';
@@ -49,11 +50,14 @@ class FontPageState extends State<FontPage> with BaseLayout {
           mapToDeleteDialog: (value) {
             return [
               const TextSpan(
-                  text: "Will you delete ",
+                  text: firstLine,
                   style: TextStyle(color: Colors.white)),
               TextSpan(
-                  text: value.name ?? "Unknown",
-                  style: const TextStyle(color: Colors.red))
+                  text: value.name ?? unknownEntry,
+                  style: const TextStyle(color: Colors.red)),
+              const TextSpan(
+                  text: secondLine,
+                  style: TextStyle(color: Colors.white)),
             ];
           },
           mapToDeleteSuccessfully: (value) {
@@ -64,7 +68,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
           items: vm,
           page: mapPageToWidget,
           mapToDataModelItem: (e) {
-            return Text(e.name?? "Unknown");
+            return Text(e.name?? unknownEntry);
           },
           openFunction: () {
             showDialog(
@@ -87,7 +91,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
   }
 
   Widget mapDataToModelItem(FontModel model) {
-    return Text(model.name ?? "Test");
+    return Text(model.name ?? unknownEntry);
   }
 
   Widget mapPageToWidget(TabPages e, ValueNotifier<FontModel?> test) {
@@ -247,15 +251,38 @@ class FontPageState extends State<FontPage> with BaseLayout {
                     trailing: IconButton(
                       icon: deleteIcon,
                       onPressed: () {
-                        final oldEntry = model;
-                        List<String> chars = List.of(model.chars ?? []);
-                        chars.remove(key);
-                        final newEntry = oldEntry.copyWith(chars: chars);
-                        setState(() {
-                          StoreProvider.dispatch(
-                              context, UpdateFontAction(oldEntry, newEntry));
-                          selectedItem.value = newEntry;
-                        });
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return DeleteDialog(
+                                  title: deleteTitle,
+                                  header:  [
+                                    const TextSpan(
+                                        text: firstLine,
+                                        style: TextStyle(color: Colors.white)),
+                                    TextSpan(
+                                        text: key,
+                                        style: const TextStyle(color: Colors.red)),
+                                    const TextSpan(
+                                        text: secondLine,
+                                        style: TextStyle(color: Colors.white)),
+                                  ],
+                                  context: context,
+                                  value: key,
+                                  successfully: (value) {
+                                    final oldEntry = model;
+                                    List<String> chars = List.of(model.chars ?? []);
+                                    chars.remove(key);
+                                    final newEntry = oldEntry.copyWith(chars: chars);
+                                    setState(() {
+                                      StoreProvider.dispatch(
+                                          context, UpdateFontAction(oldEntry, newEntry));
+                                      selectedItem.value = newEntry;
+                                    });
+                                    return true;
+                                  }
+                              ).getDeleteDialog();
+                            });
                       },
                     ),
                   );
@@ -290,6 +317,6 @@ class FontPageState extends State<FontPage> with BaseLayout {
 
   FontType getDefaultValue(FontModel value) {
     return FontType.values
-        .firstWhere((element) => element.name == value.type);
+        .firstWhere((element) => element.displayName == value.type);
   }
 }
