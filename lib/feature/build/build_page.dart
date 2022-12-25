@@ -7,9 +7,7 @@ class BuildPage extends StatefulWidget {
   const BuildPage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return BuildPageState();
-  }
+  State<StatefulWidget> createState() => BuildPageState();
 }
 
 class BuildPageState extends State<BuildPage> {
@@ -21,19 +19,40 @@ class BuildPageState extends State<BuildPage> {
           return store.state;
         },
         builder: (context, vm) {
-          return Container();
+          return Expanded(
+              child: Scaffold(
+                endDrawer: getDrawer(),
+                appBar: ,
+                actions: <Widget>[
+                  Builder(
+                    builder: (context){
+                      return IconButton(
+                        icon: Icon(Icons.person),
+                        onPressed: (){
+                          Scaffold.of(context).openEndDrawer();
+                        },
+                      );
+                    },
+                  )
+                ],
+                body: Flex(
+                  direction: Axis.horizontal,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text("Hallo")
+                  ],
+                ),
+              )
+          );
         });
   }
 
-  Widget getCreateWidget() {
-    return FloatingActionButton(
-      backgroundColor: Colors.lightGreen,
-      child: const Icon(Icons.add),
-      onPressed: () {},
+  Drawer getDrawer() {
+    return Drawer(
+      elevation: 16.0,
+      child: Container(
+        child: Text("Test"),
+      ),
     );
-  }
-
-  Widget openTemplateDialog() {
-    return Stepper(steps: [],);
   }
 }
