@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 
 class BuildPage extends StatefulWidget {
@@ -19,30 +20,20 @@ class BuildPageState extends State<BuildPage> {
           return store.state;
         },
         builder: (context, vm) {
-          return Expanded(
-              child: Scaffold(
-                endDrawer: getDrawer(),
-                appBar: ,
-                actions: <Widget>[
-                  Builder(
-                    builder: (context){
-                      return IconButton(
-                        icon: Icon(Icons.person),
-                        onPressed: (){
-                          Scaffold.of(context).openEndDrawer();
-                        },
-                      );
-                    },
-                  )
-                ],
-                body: Flex(
-                  direction: Axis.horizontal,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+          return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Hallo")
+                    TextButton(
+                        onPressed: () {},
+                        child: const Text("Build")
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          ApiService().generateApi.download();
+                        },
+                        child: const Text("Download")
+                    )
                   ],
-                ),
-              )
           );
         });
   }
