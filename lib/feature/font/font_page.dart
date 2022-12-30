@@ -75,14 +75,18 @@ class FontPageState extends State<FontPage> with BaseLayout {
                 context: context,
                 useRootNavigator: false,
                 builder: (BuildContext context) {
-                  return SetupStepper<FontModel>(
-                      buildModel: (name, description) {
-                    return FontModel(name: name, type: FontType.bitmap.displayName);
-                  }, finishCallback: (model) {
-                    StoreProvider.dispatch(context, InitFontAction());
-                    Navigator.pop(context);
-                    selectedItem.value = model;
-                  });
+                  return Dialog(
+                    child: Card(
+                      child: SetupStepper<FontModel>(
+                          buildModel: (name, description) {
+                        return FontModel(name: name, type: FontType.bitmap.displayName);
+                      }, finishCallback: (model) {
+                        StoreProvider.dispatch(context, InitFontAction());
+                        Navigator.pop(context);
+                        selectedItem.value = model;
+                      }),
+                    ),
+                  );
                 });
           },
         );
