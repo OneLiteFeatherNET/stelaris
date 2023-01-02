@@ -238,7 +238,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
     if (model == null) {
       return nil;
     }
-    final List<String> flags = model.flags!.toList();
+    final List<String> flags = model.flags == null ? [] : model.flags!.toList();
     return Stack(
       children: [
           Wrap(
@@ -336,8 +336,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                       );
                     });
               },
-              widgets:
-              List<Widget>.generate(model.enchantments?.length ?? 0, (index) {
+              widgets: List<Widget>.generate(model.enchantments?.length ?? 0, (index) {
                 final key = model.enchantments?.keys.elementAt(index);
                 final value = model.enchantments?.values.elementAt(index);
                 return ListTile(
