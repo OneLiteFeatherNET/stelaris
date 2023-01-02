@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
-const BoxConstraints constraints = BoxConstraints(
-    minWidth: 300,
-    minHeight: 100,
-    maxWidth: 300
-);
-
 class ExpandableDataCard extends StatelessWidget with BaseLayout {
 
   final Text title;
