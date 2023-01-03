@@ -21,6 +21,7 @@ deploy:
     - flutter pub run build_runner build
     - flutter build web
     - mv build/web public
+    - chmod 777 -R public
   artifacts:
     paths:
       - public
