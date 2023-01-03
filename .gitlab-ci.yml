@@ -1,0 +1,29 @@
+image: cirrusci/flutter:stable
+
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - flutter pub get
+    - flutter pub run build_runner build
+    - flutter build web
+  only:
+    - merge_requests
+
+deploy:
+  stage: deploy
+  script:
+    - flutter pub get
+    - flutter pub run build_runner build
+    - flutter build web
+    - mv build/web public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == "feature/gitlab-ci"
+  environment: production
