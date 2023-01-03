@@ -6,7 +6,7 @@ before_script:
 pages:
   script:
     - flutter pub run build_runner build
-    - flutter build web --base-href stelaris-ui/
+    - flutter build web --base-href /stelaris-ui/
     - mv build/web public
     - chmod 777 -R public
   artifacts:
