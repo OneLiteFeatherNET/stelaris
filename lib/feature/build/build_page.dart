@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/feature/build/dialog/download_dialog.dart';
 
 class BuildPage extends StatefulWidget {
 
@@ -29,7 +30,12 @@ class BuildPageState extends State<BuildPage> {
                     ),
                     TextButton(
                         onPressed: () {
-                          ApiService().generateApi.download();
+                          showDialog(context: context, builder: (BuildContext context) {
+                            List<DropdownMenuItem<String>> branches = List.generate(3, (index) => DropdownMenuItem(
+                                value: "Branch $index",
+                                child: Text("Branch $index")));
+                              return DownloadDialog(branches: branches);
+                          });
                         },
                         child: const Text("Download")
                     )
