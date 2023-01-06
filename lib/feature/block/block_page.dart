@@ -84,7 +84,7 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
   }
 
   Widget mapDataToModelItem(BlockModel model) {
-    return Text(model.name ?? "Test");
+    return Text(model.name ?? unknownEntry);
   }
 
   Widget mapPageToWidget(TabPages e, ValueNotifier<BlockModel?> test) {
@@ -108,8 +108,9 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
         Wrap(
           children: [
             TextInputCard<String>(
-              title: const Text("Name"),
+              title: nameText,
               currentValue: model.name ?? "",
+              infoText: "Hier kann ich ein Mat setzen",
               formatter: [FilteringTextInputFormatter.allow(stringPattern)],
               valueUpdate: (value) {
                 if (value == model.name) return;
@@ -122,7 +123,8 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
               },
             ),
             TextInputCard<String>(
-              title: const Text("ModelData"),
+              title: modelDataText,
+              infoText: "Hier kann ich ein Mat setzen",
               currentValue: model.customModelId.toString(),
               formatter: [FilteringTextInputFormatter.allow(numberPattern)],
               valueUpdate: (value) {
