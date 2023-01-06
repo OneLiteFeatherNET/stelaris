@@ -134,7 +134,8 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
         Wrap(
           children: [
             TextInputCard<String>(
-                title: const Text("Name"),
+              infoText: "Hier kann ich ein Mat setzen",
+                title: nameText,
                 currentValue: model.name ?? empty,
                 valueUpdate: (value) {
                   if (value == model.name) return;
@@ -147,7 +148,8 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               },
             ),
             TextInputCard<String>(
-              title: const Text("Description"),
+              infoText: "Hier kann ich ein Mat setzen",
+              title: descriptionText,
               currentValue: model.description ?? empty,
               valueUpdate: (value) {
                 if (value == model.description) return;
@@ -160,7 +162,8 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               },
             ),
             TextInputCard<String>(
-              title: const Text("Material"),
+              infoText: "Hier kann ich ein Mat setzen",
+              title: materialText,
               currentValue: model.material ?? empty,
               valueUpdate: (value) {
                 if (value == model.material) return;
@@ -173,6 +176,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               },
             ),
             TextInputCard<String>(
+              infoText: "Hier kann ich ein Mat setzen",
               title: const Text("Displayname"),
               currentValue: model.displayName ?? empty,
               valueUpdate: (value) {
@@ -186,7 +190,8 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               },
             ),
             TextInputCard(
-                title: const Text("ModelData"),
+              infoText: "Hier kann ich ein Mat setzen",
+                title: modelDataText,
                 currentValue: model.customModelId?.toString() ?? zero,
                 valueUpdate: (value) {
                   if (value == model.customModelId) return;
@@ -202,6 +207,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                 formatter: [FilteringTextInputFormatter.allow(numberPattern)],
             ),
             TextInputCard(
+              infoText: "Hier kann ich ein Mat setzen",
               title: const Text("Amount"),
               currentValue: model.amount?.toString() ?? zero,
               valueUpdate: (value) {
