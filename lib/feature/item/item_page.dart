@@ -134,7 +134,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
         Wrap(
           children: [
             TextInputCard<String>(
-              infoText: "Hier kann ich ein Mat setzen",
+              infoText: nameToolTip,
                 title: nameText,
                 currentValue: model.name ?? empty,
                 valueUpdate: (value) {
@@ -148,7 +148,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               },
             ),
             TextInputCard<String>(
-              infoText: "Hier kann ich ein Mat setzen",
+              infoText: descriptionToolTip,
               title: descriptionText,
               currentValue: model.description ?? empty,
               valueUpdate: (value) {
@@ -162,7 +162,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               },
             ),
             TextInputCard<String>(
-              infoText: "Hier kann ich ein Mat setzen",
+              infoText: materialTooltip,
               title: materialText,
               currentValue: model.material ?? empty,
               valueUpdate: (value) {
@@ -176,7 +176,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               },
             ),
             TextInputCard<String>(
-              infoText: "Hier kann ich ein Mat setzen",
+              infoText: displayNameToolTip,
               title: const Text("Displayname"),
               currentValue: model.displayName ?? empty,
               valueUpdate: (value) {
@@ -190,7 +190,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               },
             ),
             TextInputCard(
-              infoText: "Hier kann ich ein Mat setzen",
+              infoText: modelDataToolTip,
                 title: modelDataText,
                 currentValue: model.customModelId?.toString() ?? zero,
                 valueUpdate: (value) {
