@@ -11,17 +11,45 @@ class TextInputCard<E> extends StatelessWidget with BaseLayout {
   final TextInputType? inputType;
   final List<TextInputFormatter>? formatter;
   final TextEditingController _editController = TextEditingController();
+  final IconData? infoIcon;
+  final String infoText;
 
-  TextInputCard({Key? key, required this.title, required this.currentValue, required this.valueUpdate, this.inputType, this.formatter}) : super(key: key);
+  TextInputCard(
+      {Key? key,
+      required this.title,
+      required this.currentValue,
+      required this.valueUpdate,
+      this.inputType,
+      this.formatter,
+      this.infoIcon,
+      required this.infoText})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     _editController.text = currentValue;
-    return Padding(
-      padding: padding,
-      child: constructContainer(
-        [
-          title,
+    return Card(
+      margin: const EdgeInsets.all(8.0),
+      child: Padding(
+        padding: padding,
+        child: constructContainer([
+          SizedBox(
+            width: 300,
+            height: 25,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: title,
+                ),
+                Tooltip(
+                  message: infoText,
+                  child: Icon(infoIcon ?? Icons.info),
+                ),
+              ],
+            ),
+          ),
           spaceBox,
           SizedBox(
             width: 300,
@@ -40,7 +68,7 @@ class TextInputCard<E> extends StatelessWidget with BaseLayout {
               },
             ),
           )
-        ]
+        ]),
       ),
     );
   }
