@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
+import '../../../util/constants.dart';
+
 class TextInputCard<E> extends StatelessWidget with BaseLayout {
 
   final Text title;
@@ -29,7 +31,7 @@ class TextInputCard<E> extends StatelessWidget with BaseLayout {
   Widget build(BuildContext context) {
     _editController.text = currentValue;
     return Card(
-      margin: const EdgeInsets.all(8.0),
+      margin: eightEdgeInsets,
       child: Padding(
         padding: padding,
         child: constructContainer([
