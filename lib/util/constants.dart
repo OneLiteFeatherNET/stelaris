@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 
-//Strings
+/// Strings
 const String appName = "Stelaris";
 const String itemPage = "Items";
 const String entityPage = "Entities";
 const String unknownEntry = "Unknown";
 
-//// Deletedialog
+
+/// EdgeInsets
+const EdgeInsets eightEdgeInsets = EdgeInsets.all(8.0);
+
+/// Deletedialog
 const String firstLine = "Do you really want to delete ";
 const String secondLine = " entry";
 
@@ -43,9 +47,6 @@ const String zero = "0";
 const String empty = "";
 const int maxItemSize = 64;
 const String defaultMaterial = "minecraft:dirt";
-
-// Dialog elements
-RoundedRectangleBorder stepperBorder = RoundedRectangleBorder(borderRadius: BorderRadius.circular(15));
 
 //Template Stepper
 const String templateStepperTitle = "Create a server template";
