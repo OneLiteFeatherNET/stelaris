@@ -5,7 +5,6 @@ import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 const String appName = "Stelaris";
 const String itemPage = "Items";
 const String entityPage = "Entities";
-
 const String unknownEntry = "Unknown";
 
 //// Deletedialog
@@ -25,6 +24,12 @@ Text descriptionText = const Text("Description");
 Text materialText = const Text("Material");
 Text modelDataText = const Text("Modeldata");
 
+/// Tooltips
+String materialTooltip = "Adjust the material";
+String nameToolTip = "Adjust the name";
+String modelDataToolTip = "Adjust the modeldata value";
+String descriptionToolTip = "Adjust the description";
+String displayNameToolTip = "Adjust the Displayname for the item";
 
 /// Regs
 RegExp numberPattern = RegExp("[1-9]\\d*");
