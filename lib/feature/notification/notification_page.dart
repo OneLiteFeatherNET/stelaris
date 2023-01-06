@@ -89,7 +89,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
   }
 
   Widget mapDataToModelItem(NotificationModel model) {
-    return Text(model.name ?? "Test");
+    return Text(model.name ?? unknownEntry);
   }
 
   Widget mapPageToWidget(TabPages e, ValueNotifier<NotificationModel?> test) {
@@ -116,7 +116,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
           children: [
             TextInputCard<String>(
                 title: nameText,
-                infoText: "Hier kann ich ein Mat setzen",
+                infoText: nameToolTip,
                 currentValue: model.name ?? empty,
                 valueUpdate: (value) {
                   if (value == model.name) return;
@@ -131,7 +131,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
             TextInputCard<String>(
                 title: materialText,
                 currentValue: model.material ?? empty,
-                infoText: "Hier kann ich ein Mat setzen",
+                infoText: materialTooltip,
                 valueUpdate: (value) {
                   if (value == model.material) return;
                   final oldModel = model;
@@ -159,7 +159,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
             TextInputCard<String>(
                 title: descriptionText,
                 currentValue: model.description ?? empty,
-                infoText: "Hier kann ich ein Mat setzen",
+                infoText: descriptionToolTip,
                 valueUpdate: (value) {
                   if (value == model.description) return;
                   final oldModel = model;

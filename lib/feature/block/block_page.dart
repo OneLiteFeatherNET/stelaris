@@ -110,7 +110,7 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
             TextInputCard<String>(
               title: nameText,
               currentValue: model.name ?? "",
-              infoText: "Hier kann ich ein Mat setzen",
+              infoText: nameToolTip,
               formatter: [FilteringTextInputFormatter.allow(stringPattern)],
               valueUpdate: (value) {
                 if (value == model.name) return;
@@ -124,7 +124,7 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
             ),
             TextInputCard<String>(
               title: modelDataText,
-              infoText: "Hier kann ich ein Mat setzen",
+              infoText: modelDataToolTip,
               currentValue: model.customModelId.toString(),
               formatter: [FilteringTextInputFormatter.allow(numberPattern)],
               valueUpdate: (value) {

@@ -124,7 +124,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
         Wrap(
           children: [
             TextInputCard<String>(
-              infoText: "Hier kann ich ein Mat setzen",
+              infoText: nameToolTip,
               title: nameText,
               currentValue: model.name ?? empty,
               formatter: [FilteringTextInputFormatter.allow(stringPattern)],
@@ -139,7 +139,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
               },
             ),
             TextInputCard<String>(
-              infoText: "Hier kann ich ein Mat setzen",
+              infoText: descriptionToolTip,
               title: descriptionText,
               currentValue: model.description ?? empty,
               formatter: [FilteringTextInputFormatter.allow(stringPattern)],
