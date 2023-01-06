@@ -1,5 +1,5 @@
-import '../api/util/minecraft/frame_type.dart';
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 
 //Strings
 const String appName = "Stelaris";
@@ -18,6 +18,13 @@ Text emptyText = const Text(empty);
 Text addText = const Text("Add");
 Text saveText = const Text("Save");
 Text deleteTitle = const Text("Confirm deletion");
+
+/// Card titles
+Text nameText = const Text("Name");
+Text descriptionText = const Text("Description");
+Text materialText = const Text("Material");
+Text modelDataText = const Text("Modeldata");
+
 
 /// Regs
 RegExp numberPattern = RegExp("[1-9]\\d*");
