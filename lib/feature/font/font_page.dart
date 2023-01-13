@@ -75,14 +75,18 @@ class FontPageState extends State<FontPage> with BaseLayout {
                 context: context,
                 useRootNavigator: false,
                 builder: (BuildContext context) {
-                  return SetupStepper<FontModel>(
-                      buildModel: (name, description) {
-                    return FontModel(name: name, type: FontType.bitmap.displayName);
-                  }, finishCallback: (model) {
-                    StoreProvider.dispatch(context, InitFontAction());
-                    Navigator.pop(context);
-                    selectedItem.value = model;
-                  });
+                  return Dialog(
+                    child: Card(
+                      child: SetupStepper<FontModel>(
+                          buildModel: (name, description) {
+                        return FontModel(name: name, type: FontType.bitmap.displayName);
+                      }, finishCallback: (model) {
+                        StoreProvider.dispatch(context, InitFontAction());
+                        Navigator.pop(context);
+                        selectedItem.value = model;
+                      }),
+                    ),
+                  );
                 });
           },
         );
@@ -120,7 +124,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
         Wrap(
           children: [
             TextInputCard<String>(
-              title: const Text("Name"),
+              infoText: nameToolTip,
+              title: nameText,
               currentValue: model.name ?? empty,
               formatter: [FilteringTextInputFormatter.allow(stringPattern)],
               valueUpdate: (value) {
@@ -134,7 +139,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
               },
             ),
             TextInputCard<String>(
-              title: const Text("Description"),
+              infoText: descriptionToolTip,
+              title: descriptionText,
               currentValue: model.description ?? empty,
               formatter: [FilteringTextInputFormatter.allow(stringPattern)],
               valueUpdate: (value) {
@@ -162,6 +168,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
               },
             ),
             TextInputCard<String>(
+              infoText: "Hier kann ich ein Mat setzen",
               title: const Text("Ascent"),
               currentValue: model.ascent?.toString() ?? zero,
               valueUpdate: (value) {
@@ -178,6 +185,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
               formatter: [FilteringTextInputFormatter.allow(numberPattern)],
             ),
             TextInputCard(
+              infoText: "Hier kann ich ein Mat setzen",
                 title: const Text("Height"),
                 currentValue: model.height?.toString() ?? zero,
                 valueUpdate: (value) {
