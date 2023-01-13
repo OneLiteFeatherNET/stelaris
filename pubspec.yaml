@@ -20,6 +20,7 @@ dependencies:
   async_redux: 17.0.1
   data_table_2: ^2.3.8
   nil: ^1.1.1
+  dropdown_search: ^5.0.5
 
 dev_dependencies:
   flutter_test:
