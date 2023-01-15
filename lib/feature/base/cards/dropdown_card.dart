@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
+import '../../../util/constants.dart';
+
 class DropDownCard<E, T> extends StatefulWidget {
 
   final Text title;
@@ -20,26 +22,29 @@ class _DropDownCardState<E, T> extends State<DropDownCard<E,T>> with BaseLayout 
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: padding,
-      child: constructContainer(
-          [
-            widget.title,
-            spaceBox,
-            SizedBox(
-              width: 300,
-              child: DropdownButtonFormField<E>(
-                items: widget.items,
-                value: widget.defaultValue(widget.currentValue),
-                onChanged: (E? value) {
-                  if (value == null) return;
-                  setState(() {
-                    widget.valueUpdate(value);
-                  });
-                },
+    return Card(
+      margin: eightEdgeInsets,
+      child: Padding(
+        padding: padding,
+        child: constructContainer(
+            [
+              widget.title,
+              spaceBox,
+              SizedBox(
+                width: 300,
+                child: DropdownButtonFormField<E>(
+                  items: widget.items,
+                  value: widget.defaultValue(widget.currentValue),
+                  onChanged: (E? value) {
+                    if (value == null) return;
+                    setState(() {
+                      widget.valueUpdate(value);
+                    });
+                  },
+                )
               )
-            )
-          ]
+            ]
+        ),
       ),
     );
   }
