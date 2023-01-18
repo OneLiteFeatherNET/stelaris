@@ -30,48 +30,45 @@ class TextInputCard<E> extends StatelessWidget with BaseLayout {
   @override
   Widget build(BuildContext context) {
     _editController.text = currentValue;
-    return Card(
-      margin: eightEdgeInsets,
-      child: Padding(
-        padding: padding,
-        child: constructContainer([
-          SizedBox(
-            width: 300,
-            height: 25,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: title,
-                ),
-                Tooltip(
-                  message: infoText,
-                  child: Icon(infoIcon ?? Icons.info),
-                ),
-              ],
-            ),
-          ),
-          spaceBox,
-          SizedBox(
-            width: 300,
-            height: 100,
-            child: Focus(
-              child: TextFormField(
-                autocorrect: false,
-                controller: _editController,
-                keyboardType: inputType,
-                inputFormatters: formatter,
+    return Padding(
+      padding: padding,
+      child: constructContainer([
+        SizedBox(
+          width: 300,
+          height: 25,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: title,
               ),
-              onFocusChange: (focus) {
-                if (!focus) {
-                  valueUpdate(_editController.value.text);
-                }
-              },
+              Tooltip(
+                message: infoText,
+                child: Icon(infoIcon ?? Icons.info),
+              ),
+            ],
+          ),
+        ),
+        spaceBox,
+        SizedBox(
+          width: 300,
+          height: 100,
+          child: Focus(
+            child: TextFormField(
+              autocorrect: false,
+              controller: _editController,
+              keyboardType: inputType,
+              inputFormatters: formatter,
             ),
-          )
-        ]),
-      ),
+            onFocusChange: (focus) {
+              if (!focus) {
+                valueUpdate(_editController.value.text);
+              }
+            },
+          ),
+        )
+      ]),
     );
   }
 }
