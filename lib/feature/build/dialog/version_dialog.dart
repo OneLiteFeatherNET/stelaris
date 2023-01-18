@@ -17,14 +17,21 @@ class _VersionDialogState extends State<VersionDialog> {
   String group = "Release";
   String oldVersion = "32.16.5";
 
-  TextEditingController _newVersionController = TextEditingController();
+  final TextEditingController _newVersionController = TextEditingController();
 
-  TextEditingController _currentVersionController = TextEditingController();
+  final TextEditingController _currentVersionController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _currentVersionController.text = oldVersion;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _newVersionController.dispose();
+    _currentVersionController.dispose();
   }
 
   @override
@@ -102,8 +109,6 @@ class _VersionDialogState extends State<VersionDialog> {
 
   _getNewVersion(String currentVersion, Version version) {
     var stringParts = currentVersion.split(dotPattern);
-    print(stringParts);
-
     switch (version) {
       case Version.major:
         _newVersionController.text = '${int.parse(stringParts[0]) + 1}.0.0';
