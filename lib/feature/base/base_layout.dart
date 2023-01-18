@@ -10,25 +10,6 @@ const EdgeInsets all = EdgeInsets.all(20);
 
 mixin BaseLayout {
 
-  Widget createDropDownContainer<E>(E type, String title, E value, E defaultValue, List<DropdownMenuItem<E>> items) {
-    return Padding(
-      padding: padding,
-      child: constructContainer(
-        [
-          Text(title, textAlign: TextAlign.left),
-          spaceBox,
-          SizedBox(
-            width: 300,
-            child: DropdownButtonFormField<E>(
-              value: value ?? defaultValue,
-              items: items,
-              onChanged: (E? value) {}),
-            )
-        ]
-      ),
-    );
-  }
-
   Widget createInputContainer(String title, String? value) {
     return Padding(
       padding: padding,
@@ -123,12 +104,11 @@ mixin BaseLayout {
 
   Widget constructContainer(List<Widget> children) {
     return Card(
-        // decoration: boxDecoration,
+        margin: eightEdgeInsets,
         child: Column(
           children: [
             Container(
               padding: all,
-              // decoration: boxDecoration,
               child: Column(children: children),
             ),
           ]
