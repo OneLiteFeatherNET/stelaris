@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 
 /// Strings
 const String appName = "Stelaris";

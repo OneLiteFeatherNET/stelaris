@@ -17,7 +17,6 @@ typedef MapToDeleteSuccessfully<E> = bool Function(E value);
 /// Enchantmentdialog functions
 typedef AddEnchantmentCallback = void Function(Enchantment selected, int level);
 
-
 /// ModeList functions
 typedef MapToDataModelItem<E extends DataModel> = Widget Function(E value);
 typedef MapToDeleteDialog<E extends DataModel> = List<TextSpan> Function(E value);

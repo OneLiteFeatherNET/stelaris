@@ -1,7 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris_ui/util/default.dart';
 
-import '../../api_service.dart';
 import '../../model/notification_model.dart';
 import '../app_state.dart';
 
