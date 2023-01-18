@@ -22,29 +22,26 @@ class _DropDownCardState<E, T> extends State<DropDownCard<E,T>> with BaseLayout 
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: eightEdgeInsets,
-      child: Padding(
-        padding: padding,
-        child: constructContainer(
-            [
-              widget.title,
-              spaceBox,
-              SizedBox(
-                width: 300,
-                child: DropdownButtonFormField<E>(
-                  items: widget.items,
-                  value: widget.defaultValue(widget.currentValue),
-                  onChanged: (E? value) {
-                    if (value == null) return;
-                    setState(() {
-                      widget.valueUpdate(value);
-                    });
-                  },
-                )
+    return Padding(
+      padding: padding,
+      child: constructContainer(
+          [
+            widget.title,
+            spaceBox,
+            SizedBox(
+              width: 300,
+              child: DropdownButtonFormField<E>(
+                items: widget.items,
+                value: widget.defaultValue(widget.currentValue),
+                onChanged: (E? value) {
+                  if (value == null) return;
+                  setState(() {
+                    widget.valueUpdate(value);
+                  });
+                },
               )
-            ]
-        ),
+            )
+          ]
       ),
     );
   }
