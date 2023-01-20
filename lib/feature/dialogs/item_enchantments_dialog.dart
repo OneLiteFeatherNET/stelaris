@@ -25,8 +25,7 @@ class ItemEnchantmentAddDialog extends StatelessWidget {
       contentPadding: const EdgeInsets.all(20.0),
       children: [
         const Text("Enchantment"),
-        spaceFiveBox,
-        const SizedBox(height: 5,),
+        spaceTenBox,
         DropdownButtonFormField(
           value: items[0].value,
           items: items,
