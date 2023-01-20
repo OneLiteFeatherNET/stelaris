@@ -5,7 +5,6 @@ import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/build/dialog/download_dialog.dart';
 import 'package:stelaris_ui/feature/build/dialog/version_dialog.dart';
 
-
 class BuildPage extends StatefulWidget {
   const BuildPage({Key? key}) : super(key: key);
 
@@ -46,22 +45,32 @@ class BuildPageState extends State<BuildPage> {
                   },
                 ),
               ),
-            ]
-            ),
+            ]),
             Positioned(
                 bottom: 25,
                 right: 25,
                 child: FloatingActionButton.extended(
                   heroTag: UniqueKey(),
                   onPressed: () {
-                    showDialog(context: context, builder: (BuildContext context) {
-                      return DownloadDialog(branches: List.generate(3, (index) => DropdownMenuItem(value: "$index", child: Text("Branch $index"))));
-                    });
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return DownloadDialog(
+                            branches: List.generate(
+                                3,
+                                (index) => DropdownMenuItem(
+                                    value: "$index",
+                                    child: Text("Branch $index"))
+                            ),
+                            branchUpdate: (value) {
+                              print("Value is $value");
+                            },
+                          );
+                        });
                   },
                   label: const Text("Download"),
                   icon: const Icon(Icons.download),
-                )
-            )
+                ))
           ],
         );
       },
