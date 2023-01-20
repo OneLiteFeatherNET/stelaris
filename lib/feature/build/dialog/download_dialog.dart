@@ -1,15 +1,14 @@
-import 'dart:convert';
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris_ui/util/typedefs.dart';
 
 class DownloadDialog extends StatefulWidget {
   final List<DropdownMenuItem<String>> branches;
+  final ValueUpdate<String> branchUpdate;
 
-  const DownloadDialog({Key? key, required this.branches}) : super(key: key);
+  const DownloadDialog({Key? key, required this.branches, required this.branchUpdate}) : super(key: key);
 
   @override
   State<DownloadDialog> createState() => _DownloadDialogState();
@@ -34,7 +33,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
         ),
         spaceTwentyFiveHeightBox,
         SizedBox(
-            width: 300,
+          width: 300,
             child: DropdownButtonFormField<String>(
               items: widget.branches,
               value: defaultValue,
@@ -42,24 +41,15 @@ class _DownloadDialogState extends State<DownloadDialog> {
                 if (value == null) return;
                 defaultValue = value;
               },
-            )),
+            )
+        ),
         spaceTwentyFiveHeightBox,
         TextButton(
-            onPressed: () async {
-              if (defaultValue != null) {
-                final data =
-                    await ApiService().generateApi.download(defaultValue!);
-                final content = base64Encode(data);
-                final anchor = AnchorElement(
-                    href: "data:application/octet-stream;base64,$content")
-                  ..setAttribute("download", "generated.zip")
-                  ..click();
-                if (mounted) {
-                  context.pop();
-                }
-              }
+            onPressed: () {
+              widget.branchUpdate(defaultValue);
             },
-            child: const Text("Download"))
+            child: const Text("Download")
+        )
       ],
     );
   }
