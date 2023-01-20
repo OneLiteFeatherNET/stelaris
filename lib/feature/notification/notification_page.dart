@@ -43,14 +43,12 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
           mapToDeleteDialog: (value) {
             return [
               const TextSpan(
-                  text: firstLine,
-                  style: TextStyle(color: Colors.white)),
+                  text: firstLine, style: TextStyle(color: Colors.white)),
               TextSpan(
                   text: value.name ?? unknownEntry,
                   style: const TextStyle(color: Colors.red)),
               const TextSpan(
-                  text: secondLine,
-                  style: TextStyle(color: Colors.white)),
+                  text: secondLine, style: TextStyle(color: Colors.white)),
             ];
           },
           mapToDeleteSuccessfully: (value) {
@@ -63,11 +61,15 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
           mapToDataModelItem: mapDataToModelItem,
           openFunction: () {
             showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: (BuildContext context) {
-                  return Dialog(
+              context: context,
+              useRootNavigator: false,
+              builder: (BuildContext context) {
+                return Dialog(
+                  child: SizedBox(
+                    width: 500,
+                    height: 350,
                     child: Card(
+                      elevation: 0.8,
                       child: SetupStepper<NotificationModel>(
                         finishCallback: (model) {
                           StoreProvider.dispatch(
@@ -76,12 +78,15 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                           selectedItem.value = model;
                         },
                         buildModel: (String name, String description) {
-                          return NotificationModel(name: name, frameType: FrameType.goal.value);
+                          return NotificationModel(
+                              name: name, frameType: FrameType.goal.value);
                         },
                       ),
                     ),
-                  );
-                });
+                  ),
+                );
+              },
+            );
           },
         );
       },
@@ -123,11 +128,11 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                   final oldModel = model;
                   final newEntry = oldModel.copyWith(name: value);
                   setState(() {
-                    StoreProvider.dispatch(context, UpdateNotificationAction(oldModel, newEntry));
+                    StoreProvider.dispatch(
+                        context, UpdateNotificationAction(oldModel, newEntry));
                     selectedItem.value = newEntry;
                   });
-                }
-            ),
+                }),
             TextInputCard<String>(
                 title: materialText,
                 currentValue: model.material ?? empty,
@@ -137,11 +142,11 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                   final oldModel = model;
                   final newEntry = oldModel.copyWith(material: value);
                   setState(() {
-                    StoreProvider.dispatch(context, UpdateNotificationAction(oldModel, newEntry));
+                    StoreProvider.dispatch(
+                        context, UpdateNotificationAction(oldModel, newEntry));
                     selectedItem.value = newEntry;
                   });
-                }
-            ),
+                }),
             TextInputCard<String>(
                 title: const Text("Title"),
                 currentValue: model.title ?? empty,
@@ -151,11 +156,11 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                   final oldModel = model;
                   final newEntry = oldModel.copyWith(title: value);
                   setState(() {
-                    StoreProvider.dispatch(context, UpdateNotificationAction(oldModel, newEntry));
+                    StoreProvider.dispatch(
+                        context, UpdateNotificationAction(oldModel, newEntry));
                     selectedItem.value = newEntry;
                   });
-                }
-            ),
+                }),
             TextInputCard<String>(
                 title: descriptionText,
                 currentValue: model.description ?? empty,
@@ -165,11 +170,11 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                   final oldModel = model;
                   final newEntry = oldModel.copyWith(description: value);
                   setState(() {
-                    StoreProvider.dispatch(context, UpdateNotificationAction(oldModel, newEntry));
+                    StoreProvider.dispatch(
+                        context, UpdateNotificationAction(oldModel, newEntry));
                     selectedItem.value = newEntry;
                   });
-                }
-            ),
+                }),
             DropDownCard<FrameType, NotificationModel>(
               currentValue: model,
               title: const Text("FrameType", textAlign: TextAlign.center),
@@ -178,7 +183,8 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                 if (value == getDefaultValue(model)) return;
                 final newEntry = model.copyWith(frameType: value?.value);
                 setState(() {
-                  StoreProvider.dispatch(context, UpdateNotificationAction(model, newEntry));
+                  StoreProvider.dispatch(
+                      context, UpdateNotificationAction(model, newEntry));
                   selectedItem.value = newEntry;
                 });
               },
@@ -196,8 +202,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
               },
               label: saveText,
               icon: saveIcon,
-            )
-        )
+            ))
       ],
     );
   }

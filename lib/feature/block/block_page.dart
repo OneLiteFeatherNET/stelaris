@@ -15,7 +15,6 @@ import '../../api/state/app_state.dart';
 import '../../api/tabs/tab_pages.dart';
 
 class BlockPage extends StatefulWidget {
-
   const BlockPage({Key? key}) : super(key: key);
 
   @override
@@ -25,7 +24,6 @@ class BlockPage extends StatefulWidget {
 }
 
 class BlockPageState extends State<BlockPage> with BaseLayout {
-
   final ValueNotifier<BlockModel?> selectedItem = ValueNotifier(null);
 
   @override
@@ -45,14 +43,12 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
           mapToDeleteDialog: (value) {
             return [
               const TextSpan(
-                  text: firstLine,
-                  style: TextStyle(color: Colors.white)),
+                  text: firstLine, style: TextStyle(color: Colors.white)),
               TextSpan(
                   text: value.name ?? unknownEntry,
                   style: const TextStyle(color: Colors.red)),
               const TextSpan(
-                  text: secondLine,
-                  style: TextStyle(color: Colors.white)),
+                  text: secondLine, style: TextStyle(color: Colors.white)),
             ];
           },
           mapToDeleteSuccessfully: (value) {
@@ -65,18 +61,28 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
           mapToDataModelItem: mapDataToModelItem,
           openFunction: () {
             showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: (BuildContext context) {
-                  return SetupStepper<BlockModel>(
-                      buildModel: (name, description) {
+              context: context,
+              useRootNavigator: false,
+              builder: (BuildContext context) {
+                return Dialog(
+                  child: SizedBox(
+                    width: 500,
+                    height: 350,
+                    child: Card(
+                      elevation: 0.8,
+                      child: SetupStepper<BlockModel>(
+                          buildModel: (name, description) {
                         return BlockModel(name: name);
                       }, finishCallback: (model) {
-                    StoreProvider.dispatch(context, InitBlockAction());
-                    Navigator.pop(context);
-                    selectedItem.value = model;
-                  });
-                });
+                        StoreProvider.dispatch(context, InitBlockAction());
+                        Navigator.pop(context);
+                        selectedItem.value = model;
+                      }),
+                    ),
+                  ),
+                );
+              },
+            );
           },
         );
       },
@@ -88,11 +94,13 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
   }
 
   Widget mapPageToWidget(TabPages e, ValueNotifier<BlockModel?> test) {
-    switch(e) {
+    switch (e) {
       case TabPages.general:
-        return ValueListenableBuilder<BlockModel?>(valueListenable: test, builder: (BuildContext context, BlockModel? value, Widget? child) {
-          return getGeneralContent(value);
-        });
+        return ValueListenableBuilder<BlockModel?>(
+            valueListenable: test,
+            builder: (BuildContext context, BlockModel? value, Widget? child) {
+              return getGeneralContent(value);
+            });
       case TabPages.meta:
         return nil;
     }
@@ -103,56 +111,55 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
       return nil;
     }
 
-    return Stack(
-      children: [
-        Wrap(
-          children: [
-            TextInputCard<String>(
-              title: nameText,
-              currentValue: model.name ?? "",
-              infoText: nameToolTip,
-              formatter: [FilteringTextInputFormatter.allow(stringPattern)],
-              valueUpdate: (value) {
-                if (value == model.name) return;
-                final oldModel = model;
-                final newEntry = oldModel.copyWith(name: value);
-                setState(() {
-                  StoreProvider.dispatch(context, UpdateBlockAction(oldModel, newEntry));
-                  selectedItem.value = newEntry;
-                });
-              },
-            ),
-            TextInputCard<String>(
-              title: modelDataText,
-              infoText: modelDataToolTip,
-              currentValue: model.customModelId.toString(),
-              formatter: [FilteringTextInputFormatter.allow(numberPattern)],
-              valueUpdate: (value) {
-                if (value == model.customModelId) return;
-                final oldModel = model;
-                final newID = int.parse(value);
-                final newEntry = oldModel.copyWith(customModelId: newID);
-                setState(() {
-                  StoreProvider.dispatch(context, UpdateBlockAction(oldModel, newEntry));
-                  selectedItem.value = newEntry;
-                });
-              },
-            ),
-          ],
-        ),
-        Positioned(
-            bottom: 25,
-            right: 25,
-            child: FloatingActionButton.extended(
-              heroTag: UniqueKey(),
-              onPressed: () {
-                ApiService().blockAPI.update(model);
-              },
-              label: saveText,
-              icon: saveIcon,
-            )
-        )
-      ]
-    );
+    return Stack(children: [
+      Wrap(
+        children: [
+          TextInputCard<String>(
+            title: nameText,
+            currentValue: model.name ?? "",
+            infoText: nameToolTip,
+            formatter: [FilteringTextInputFormatter.allow(stringPattern)],
+            valueUpdate: (value) {
+              if (value == model.name) return;
+              final oldModel = model;
+              final newEntry = oldModel.copyWith(name: value);
+              setState(() {
+                StoreProvider.dispatch(
+                    context, UpdateBlockAction(oldModel, newEntry));
+                selectedItem.value = newEntry;
+              });
+            },
+          ),
+          TextInputCard<String>(
+            title: modelDataText,
+            infoText: modelDataToolTip,
+            currentValue: model.customModelId.toString(),
+            formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+            valueUpdate: (value) {
+              if (value == model.customModelId) return;
+              final oldModel = model;
+              final newID = int.parse(value);
+              final newEntry = oldModel.copyWith(customModelId: newID);
+              setState(() {
+                StoreProvider.dispatch(
+                    context, UpdateBlockAction(oldModel, newEntry));
+                selectedItem.value = newEntry;
+              });
+            },
+          ),
+        ],
+      ),
+      Positioned(
+          bottom: 25,
+          right: 25,
+          child: FloatingActionButton.extended(
+            heroTag: UniqueKey(),
+            onPressed: () {
+              ApiService().blockAPI.update(model);
+            },
+            label: saveText,
+            icon: saveIcon,
+          ))
+    ]);
   }
 }
