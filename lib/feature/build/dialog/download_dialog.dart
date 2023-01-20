@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris_ui/util/typedefs.dart';
 
 class DownloadDialog extends StatefulWidget {
 
   final List<DropdownMenuItem<String>> branches;
+  final ValueUpdate<String> branchUpdate;
 
-  const DownloadDialog({Key? key, required this.branches}) : super(key: key);
+  const DownloadDialog({Key? key, required this.branches, required this.branchUpdate}) : super(key: key);
 
   @override
   State<DownloadDialog> createState() => _DownloadDialogState();
@@ -37,7 +39,9 @@ class _DownloadDialogState extends State<DownloadDialog> {
         ),
         spaceTwentyFiveHeightBox,
         TextButton(
-            onPressed: () {},
+            onPressed: () {
+              widget.branchUpdate(defaultValue);
+            },
             child: const Text("Download")
         )
       ],
