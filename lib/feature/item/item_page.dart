@@ -81,17 +81,22 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                   useRootNavigator: false,
                   builder: (BuildContext context) {
                     return Dialog(
-                      child: Card(
-                        child: SetupStepper<ItemModel>(
-                          buildModel: (name, description) {
-                            return ItemModel(name: name);
-                          },
-                          finishCallback: (model) {
-                            StoreProvider.dispatch(
-                                context, AddItemAction(model));
-                            Navigator.pop(context);
-                            selectedItem.value = model;
-                          },
+                      child: SizedBox(
+                        width: 500,
+                        height: 350,
+                        child: Card(
+                          elevation: 0.8,
+                          child: SetupStepper<ItemModel>(
+                            buildModel: (name, description) {
+                              return ItemModel(name: name);
+                            },
+                            finishCallback: (model) {
+                              StoreProvider.dispatch(
+                                  context, AddItemAction(model));
+                              Navigator.pop(context);
+                              selectedItem.value = model;
+                            },
+                          ),
                         ),
                       ),
                     );
