@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/build/dialog/download_dialog.dart';
@@ -53,9 +54,10 @@ class BuildPageState extends State<BuildPage> {
                 right: 25,
                 child: FloatingActionButton.extended(
                   heroTag: UniqueKey(),
-                  onPressed: () {
+                  onPressed: () async {
+                    final branches = await ApiService().generateApi.branches();
                     showDialog(context: context, builder: (BuildContext context) {
-                      return DownloadDialog(branches: List.generate(3, (index) => DropdownMenuItem(value: "$index", child: Text("Branch $index"))));
+                      return DownloadDialog(branches: branches.map((e) => DropdownMenuItem(value: e, child: Text("Branch $e"))).toList());
                     });
                   },
                   label: const Text("Download"),

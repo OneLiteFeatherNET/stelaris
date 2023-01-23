@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class DownloadDialog extends StatefulWidget {
@@ -37,7 +38,11 @@ class _DownloadDialogState extends State<DownloadDialog> {
         ),
         spaceTwentyFiveHeightBox,
         TextButton(
-            onPressed: () {},
+            onPressed: () async {
+              if (defaultValue != null) {
+                await ApiService().generateApi.download(defaultValue!);
+              }
+            },
             child: const Text("Download")
         )
       ],
