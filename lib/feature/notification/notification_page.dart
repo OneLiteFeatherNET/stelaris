@@ -89,7 +89,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
   }
 
   Widget mapDataToModelItem(NotificationModel model) {
-    return Text(model.name ?? "Test");
+    return Text(model.name ?? unknownEntry);
   }
 
   Widget mapPageToWidget(TabPages e, ValueNotifier<NotificationModel?> test) {
@@ -115,7 +115,8 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
         Wrap(
           children: [
             TextInputCard<String>(
-                title: const Text("Name"),
+                title: nameText,
+                infoText: nameToolTip,
                 currentValue: model.name ?? empty,
                 valueUpdate: (value) {
                   if (value == model.name) return;
@@ -128,8 +129,9 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                 }
             ),
             TextInputCard<String>(
-                title: const Text("Material"),
+                title: materialText,
                 currentValue: model.material ?? empty,
+                infoText: materialTooltip,
                 valueUpdate: (value) {
                   if (value == model.material) return;
                   final oldModel = model;
@@ -143,6 +145,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
             TextInputCard<String>(
                 title: const Text("Title"),
                 currentValue: model.title ?? empty,
+                infoText: "Hier kann ich ein Mat setzen",
                 valueUpdate: (value) {
                   if (value == model.title) return;
                   final oldModel = model;
@@ -154,8 +157,9 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                 }
             ),
             TextInputCard<String>(
-                title: const Text("Description"),
+                title: descriptionText,
                 currentValue: model.description ?? empty,
+                infoText: descriptionToolTip,
                 valueUpdate: (value) {
                   if (value == model.description) return;
                   final oldModel = model;

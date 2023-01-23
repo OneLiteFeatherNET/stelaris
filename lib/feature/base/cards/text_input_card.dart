@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
+import '../../../util/constants.dart';
+
 class TextInputCard<E> extends StatelessWidget with BaseLayout {
 
   final Text title;
@@ -11,37 +13,62 @@ class TextInputCard<E> extends StatelessWidget with BaseLayout {
   final TextInputType? inputType;
   final List<TextInputFormatter>? formatter;
   final TextEditingController _editController = TextEditingController();
+  final IconData? infoIcon;
+  final String infoText;
 
-  TextInputCard({Key? key, required this.title, required this.currentValue, required this.valueUpdate, this.inputType, this.formatter}) : super(key: key);
+  TextInputCard(
+      {Key? key,
+      required this.title,
+      required this.currentValue,
+      required this.valueUpdate,
+      this.inputType,
+      this.formatter,
+      this.infoIcon,
+      required this.infoText})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     _editController.text = currentValue;
     return Padding(
       padding: padding,
-      child: constructContainer(
-        [
-          title,
-          spaceBox,
-          SizedBox(
-            width: 300,
-            height: 100,
-            child: Focus(
-              child: TextFormField(
-                autocorrect: false,
-                controller: _editController,
-                keyboardType: inputType,
-                inputFormatters: formatter,
+      child: constructContainer([
+        SizedBox(
+          width: 300,
+          height: 25,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: title,
               ),
-              onFocusChange: (focus) {
-                if (!focus) {
-                  valueUpdate(_editController.value.text);
-                }
-              },
+              Tooltip(
+                message: infoText,
+                child: Icon(infoIcon ?? Icons.info),
+              ),
+            ],
+          ),
+        ),
+        spaceBox,
+        SizedBox(
+          width: 300,
+          height: 100,
+          child: Focus(
+            child: TextFormField(
+              autocorrect: false,
+              controller: _editController,
+              keyboardType: inputType,
+              inputFormatters: formatter,
             ),
-          )
-        ]
-      ),
+            onFocusChange: (focus) {
+              if (!focus) {
+                valueUpdate(_editController.value.text);
+              }
+            },
+          ),
+        )
+      ]),
     );
   }
 }

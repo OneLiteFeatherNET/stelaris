@@ -1,14 +1,16 @@
-import '../api/util/minecraft/frame_type.dart';
 import 'package:flutter/material.dart';
 
-//Strings
+/// Strings
 const String appName = "Stelaris";
 const String itemPage = "Items";
 const String entityPage = "Entities";
-
 const String unknownEntry = "Unknown";
 
-//// Deletedialog
+
+/// EdgeInsets
+const EdgeInsets eightEdgeInsets = EdgeInsets.all(8.0);
+
+/// Deletedialog
 const String firstLine = "Do you really want to delete ";
 const String secondLine = " entry";
 
@@ -19,27 +21,35 @@ Text addText = const Text("Add");
 Text saveText = const Text("Save");
 Text deleteTitle = const Text("Confirm deletion");
 
+/// Card titles
+Text nameText = const Text("Name");
+Text descriptionText = const Text("Description");
+Text materialText = const Text("Material");
+Text modelDataText = const Text("Modeldata");
+
+/// Tooltips
+String materialTooltip = "Adjust the material";
+String nameToolTip = "Adjust the name";
+String modelDataToolTip = "Adjust the modeldata value";
+String descriptionToolTip = "Adjust the description";
+String displayNameToolTip = "Adjust the Displayname for the item";
+
 /// Regs
 RegExp numberPattern = RegExp("[1-9]\\d*");
 RegExp stringPattern = RegExp("[a-zA-Z]\\w*");
+RegExp dotPattern = RegExp("\\.");
 
 /// Formatter
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);
 
-//Minecraft related values
+/// Minecraft related values
 const String zero = "0";
 const String empty = "";
 const int maxItemSize = 64;
 const String defaultMaterial = "minecraft:dirt";
 
-// Dialog elements
-RoundedRectangleBorder stepperBorder = RoundedRectangleBorder(borderRadius: BorderRadius.circular(15));
-
 //Template Stepper
 const String templateStepperTitle = "Create a server template";
-
-// Font dialog
-const FrameType defaultFrameType = FrameType.task;
 
 // Text
 // Button
