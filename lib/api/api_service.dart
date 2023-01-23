@@ -31,10 +31,10 @@ class ApiService {
   late final PluginAPI pluginAPI = PluginAPI(_apiClient);
 
   ApiClient _createApiClient() {
-    return ApiClient("http://localhost:8080");
+    return ApiClient("https://vulpes.volans.builders/api");
   }
 
   ApiClient _createGeneratorClient() {
-    return ApiClient("http://localhost:9090");
+    return ApiClient("https://vulpes.volans.builders/generator");
   }
 }
