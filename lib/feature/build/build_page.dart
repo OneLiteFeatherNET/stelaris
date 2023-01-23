@@ -56,8 +56,9 @@ class BuildPageState extends State<BuildPage> {
                   heroTag: UniqueKey(),
                   onPressed: () async {
                     final branches = await ApiService().generateApi.branches();
+                    final finalBranches = branches.map((e) => DropdownMenuItem(value: e, child: Text("Branch $e"))).toList();
                     showDialog(context: context, builder: (BuildContext context) {
-                      return DownloadDialog(branches: branches.map((e) => DropdownMenuItem(value: e, child: Text("Branch $e"))).toList());
+                      return DownloadDialog(branches: finalBranches);
                     });
                   },
                   label: const Text("Download"),
