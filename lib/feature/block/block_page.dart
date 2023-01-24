@@ -36,7 +36,9 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
         return store.state.blocks;
       },
       builder: (context, vm) {
-        selectedItem.value ??= vm.first;
+        if (vm.isNotEmpty) {
+          selectedItem.value ??= vm.first;
+        }
         return ModelContainerList<BlockModel>(
           mapToDeleteDialog: (value) {
             return [

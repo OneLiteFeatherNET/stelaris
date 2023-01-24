@@ -43,7 +43,9 @@ class FontPageState extends State<FontPage> with BaseLayout {
         return store.state.fonts;
       },
       builder: (context, vm) {
-        selectedItem.value ??= vm.first;
+        if (vm.isNotEmpty) {
+          selectedItem.value ??= vm.first;
+        }
         return ModelContainerList<FontModel>(
           mapToDeleteDialog: (value) {
             return [
