@@ -25,8 +25,12 @@ class BuildPageState extends State<BuildPage> {
       builder: (context, vm) {
         return Stack(
           children: [
+            Center(
+              child: Text('Nothing to see / WIP'),
+            ),
             Wrap(clipBehavior: Clip.hardEdge, children: [
-              ExpandableDataCard(
+
+              /*ExpandableDataCard(
                 title: const Text("Version"),
                 buttonClick: () {
                   showDialog(
@@ -46,7 +50,7 @@ class BuildPageState extends State<BuildPage> {
                     );
                   },
                 ),
-              ),
+              ),*/
             ]),
             Positioned(
                 bottom: 25,
