@@ -8,6 +8,7 @@ part 'item_model.g.dart';
 class ItemModel extends DataModel with _$ItemModel {
 
   const factory ItemModel({
+    @JsonKey(name: 'id') String? id,
     @JsonKey(name: 'name') String? name,
     @JsonKey(name: 'description') String? description,
     @JsonKey(name: 'displayName') String? displayName,
