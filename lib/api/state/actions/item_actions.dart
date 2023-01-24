@@ -1,5 +1,5 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:stelaris_ui/util/default.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 
 import '../../model/item_model.dart';
 import '../app_state.dart';
@@ -24,8 +24,8 @@ class InitItemAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    // var items = await ApiService().itemApi.getAllItems();
-    return state.copyWith(items: [defaultItem]);
+    var items = await ApiService().itemApi.getAllItems();
+    return state.copyWith(items: items);
   }
 
   InitItemAction();
