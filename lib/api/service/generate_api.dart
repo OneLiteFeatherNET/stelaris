@@ -8,14 +8,15 @@ class GenerateApi {
   const GenerateApi(this._apiClient);
 
 
-  Future<void> generate() async {
-    final queryParams = <String, dynamic>{};
+  Future<Response> generate(String branch) async {
+    final queryParams = <String, dynamic>{
+      "branch": branch
+    };
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/generate');
     //final result = await _apiClient.dio.getUri(uri).then((value) => ItemModel.fromJson(value.data!));
-    final data = await _apiClient.dio.getUri(uri).then((value) => value.data!);
-    final uriStream = Uri.dataFromBytes(data);
-
+    final data = await _apiClient.dio.getUri(uri).then((value) => value);
+    return data;
   }
 
   Future<List<String>> branches() async {
