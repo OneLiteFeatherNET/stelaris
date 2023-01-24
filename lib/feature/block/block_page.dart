@@ -9,6 +9,7 @@ import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 import '../../api/state/app_state.dart';
@@ -42,8 +43,8 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
         return ModelContainerList<BlockModel>(
           mapToDeleteDialog: (value) {
             return [
-              const TextSpan(
-                  text: firstLine, style: TextStyle(color: Colors.white)),
+              TextSpan(
+                  text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
               TextSpan(
                   text: value.name ?? unknownEntry,
                   style: const TextStyle(color: Colors.red)),
