@@ -36,7 +36,9 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
         return store.state.notifications;
       },
       builder: (context, vm) {
-        selectedItem.value ??= vm.first;
+        if (vm.isNotEmpty) {
+          selectedItem.value ??= vm.first;
+        }
         return ModelContainerList<NotificationModel>(
           mapToDeleteDialog: (value) {
             return [
