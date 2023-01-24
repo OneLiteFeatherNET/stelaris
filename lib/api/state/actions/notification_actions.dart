@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/util/default.dart';
 
 import '../../model/notification_model.dart';
@@ -8,8 +9,8 @@ class InitNotificationAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    // var items = await ApiService().itemApi.getAllItems();
-    return state.copyWith(notifications: [firstNotificationModel, secondNotificationModel]);
+    var notifications = await ApiService().notificationAPI.getAllNotifications();
+    return state.copyWith(notifications: notifications);
   }
 
   InitNotificationAction();
