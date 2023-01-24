@@ -4,6 +4,7 @@ import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/build/dialog/download_dialog.dart';
+import 'package:stelaris_ui/feature/build/dialog/generate_dialog.dart';
 import 'package:stelaris_ui/feature/build/dialog/version_dialog.dart';
 
 class BuildPage extends StatefulWidget {
@@ -87,7 +88,7 @@ class BuildPageState extends State<BuildPage> {
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return DownloadDialog(branches: finalBranches);
+                                return GenerateDialog(branches: finalBranches);
                               });
                         },
                         label: const Text("Generate"),
