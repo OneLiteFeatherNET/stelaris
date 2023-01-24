@@ -53,8 +53,8 @@ class RemoveItemAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final items = List.of(state.items, growable: true);
-    items.remove(model);
+    await ApiService().itemApi.remove(model);
+    var items = await ApiService().itemApi.getAllItems();
     return state.copyWith(items: items);
   }
 }

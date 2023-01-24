@@ -38,8 +38,8 @@ class RemoveBlockAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final blocks = List.of(state.blocks, growable: true);
-    blocks.remove(model);
+    await ApiService().blockAPI.remove(model);
+    var blocks = await ApiService().blockAPI.getAllBlocks();
     return state.copyWith(blocks: blocks);
   }
 }
