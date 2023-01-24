@@ -13,6 +13,7 @@ import 'package:stelaris_ui/feature/base/model_container_list.dart';
 import 'package:stelaris_ui/feature/dialogs/dismiss_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 import '../../api/state/app_state.dart';
@@ -49,9 +50,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
         return ModelContainerList<FontModel>(
           mapToDeleteDialog: (value) {
             return [
-              const TextSpan(
-                  text: firstLine,
-                  style: TextStyle(color: Colors.white)),
+              TextSpan(
+                  text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
               TextSpan(
                   text: value.name ?? unknownEntry,
                   style: const TextStyle(color: Colors.red)),
@@ -270,9 +270,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
                               return DeleteDialog(
                                   title: deleteTitle,
                                   header:  [
-                                    const TextSpan(
-                                        text: firstLine,
-                                        style: TextStyle(color: Colors.white)),
+                                    TextSpan(
+                                        text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
                                     TextSpan(
                                         text: key,
                                         style: const TextStyle(color: Colors.red)),

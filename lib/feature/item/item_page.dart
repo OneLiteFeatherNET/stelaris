@@ -14,6 +14,7 @@ import 'package:stelaris_ui/feature/dialogs/enum_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_enchantments_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 import '../../api/state/app_state.dart';
@@ -56,9 +57,8 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
         return ModelContainerList<ItemModel>(
             mapToDeleteDialog: (value) {
               return [
-                const TextSpan(
-                    text: firstLine,
-                    style: TextStyle(color: Colors.white)),
+              TextSpan(
+                  text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
                 TextSpan(
                     text: value.name ?? unknownEntry,
                     style: const TextStyle(color: Colors.red)),
@@ -292,9 +292,8 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                             return DeleteDialog(
                                 title: deleteTitle,
                                 header: [
-                                  const TextSpan(
-                                      text: firstLine,
-                                      style: TextStyle(color: Colors.white)),
+                                  TextSpan(
+                                      text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
                                   TextSpan(
                                       text: key,
                                       style: const TextStyle(color: Colors.red)),
@@ -361,9 +360,8 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                               return DeleteDialog(
                                   title: deleteTitle,
                                   header:  [
-                                    const TextSpan(
-                                        text: firstLine,
-                                        style: TextStyle(color: Colors.white)),
+                              TextSpan(
+                              text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
                                     TextSpan(
                                         text: key,
                                         style: const TextStyle(color: Colors.red)),
@@ -430,9 +428,8 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                             return DeleteDialog(
                                 title: deleteTitle,
                                 header:  [
-                                  const TextSpan(
-                                      text: firstLine,
-                                      style: TextStyle(color: Colors.white)),
+                                  TextSpan(
+                                      text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
                                   TextSpan(
                                       text: key,
                                       style: const TextStyle(color: Colors.red)),

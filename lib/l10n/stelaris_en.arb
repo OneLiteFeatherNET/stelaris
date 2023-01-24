@@ -1,3 +1,4 @@
 {
-  "pushCounterText": "You have pushed the button this many times:"
+  "delete_dialog_firstline": "Do you really want to delete ",
+  "delete_dialog_entry": " entry"
 }
