@@ -42,6 +42,14 @@ class BlockAPI {
     final result = await _apiClient.dio.postUri(uri, data: model.toJson()).then((value) => BlockModel.fromJson(value.data!));
     return result;
   }
+
+  Future<BlockModel> remove(BlockModel model) async {
+    final queryParams = <String, dynamic>{};
+    final baseUri = Uri.parse(_apiClient.baseUrl);
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/block/delete/${model.id}');
+    final result = await _apiClient.dio.deleteUri(uri).then((value) => BlockModel.fromJson(value.data!));
+    return result;
+  }
 }
 
 class StringToBlock implements JsonConverter<List<BlockModel>, List<dynamic>> {
