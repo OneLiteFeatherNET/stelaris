@@ -44,9 +44,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<ItemModel>>(
       onInit: (store) {
-        if (store.state.items.isEmpty) {
-          store.dispatch(InitItemAction());
-        }
+        store.dispatch(InitItemAction());
       },
       converter: (store) {
         return store.state.items;
