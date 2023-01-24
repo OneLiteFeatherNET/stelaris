@@ -30,9 +30,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<NotificationModel>>(
       onInit: (store) {
-        if (store.state.notifications.isEmpty) {
-          store.dispatch(InitNotificationAction());
-        }
+        store.dispatch(InitNotificationAction());
       },
       converter: (store) {
         return store.state.notifications;

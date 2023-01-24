@@ -30,9 +30,7 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<BlockModel>>(
       onInit: (store) {
-        if (store.state.blocks.isEmpty) {
-          store.dispatch(InitBlockAction());
-        }
+        store.dispatch(InitBlockAction());
       },
       converter: (store) {
         return store.state.blocks;

@@ -37,9 +37,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<FontModel>>(
       onInit: (store) {
-        if (store.state.fonts.isEmpty) {
-          store.dispatch(InitFontAction());
-        }
+        store.dispatch(InitFontAction());
       },
       converter: (store) {
         return store.state.fonts;
