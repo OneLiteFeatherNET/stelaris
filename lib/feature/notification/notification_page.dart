@@ -73,8 +73,10 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                       elevation: 0.8,
                       child: SetupStepper<NotificationModel>(
                         finishCallback: (model) {
+                          ApiService().notificationAPI.addNotification(model);
                           StoreProvider.dispatch(
-                              context, InputNotificationAction(model));
+                              context, NotificationAddAction(model));
+
                           Navigator.pop(context);
                           selectedItem.value = model;
                         },

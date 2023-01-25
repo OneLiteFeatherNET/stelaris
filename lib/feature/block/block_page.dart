@@ -75,7 +75,7 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
                           buildModel: (name, description) {
                         return BlockModel(name: name);
                       }, finishCallback: (model) {
-                        StoreProvider.dispatch(context, InitBlockAction());
+                        StoreProvider.dispatch(context, AddBlockAction(model));
                         Navigator.pop(context);
                         selectedItem.value = model;
                       }),
