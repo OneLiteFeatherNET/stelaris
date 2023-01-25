@@ -14,7 +14,7 @@ class BlockAPI {
   Future<BlockModel> getBlock() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/api/block');
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/block');
     final result = await _apiClient.dio.getUri(uri).then((value) => BlockModel.fromJson(value.data!));
     return result;
   }
@@ -22,7 +22,7 @@ class BlockAPI {
   Future<BlockModel> addBlock(BlockModel block) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/block/');
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/block');
     final result = await _apiClient.dio.postUri(uri, data: block).then((value) => BlockModel.fromJson(value.data!));
     return result;
   }
