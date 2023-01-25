@@ -30,6 +30,21 @@ class RemoveFontsAction extends ReduxAction<AppState> {
   }
 }
 
+class AddFontAction extends ReduxAction<AppState> {
+
+  final FontModel _model;
+
+  AddFontAction(this._model);
+
+  @override
+  Future<AppState?> reduce() async {
+    await ApiService().fontAPI.addFont(_model);
+    var fonts = await ApiService().fontAPI.getAllFonts();
+    return state.copyWith(fonts: fonts);
+  }
+}
+
+
 class UpdateFontAction extends ReduxAction<AppState> {
   final FontModel oldEntry;
   final FontModel newEntry;

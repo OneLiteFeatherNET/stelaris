@@ -33,17 +33,18 @@ class InitItemAction extends ReduxAction<AppState> {
 
 class AddItemAction extends ReduxAction<AppState> {
 
-  final ItemModel model;
+  final ItemModel _model;
 
-  AddItemAction(this.model);
+  AddItemAction(this._model);
 
   @override
   Future<AppState?> reduce() async {
-    final items = List.of(state.items, growable: true);
-    items.add(model);
+    await ApiService().itemApi.addItem(_model);
+    var items = await ApiService().itemApi.getAllItems();
     return state.copyWith(items: items);
   }
 }
+
 
 class RemoveItemAction extends ReduxAction<AppState> {
 

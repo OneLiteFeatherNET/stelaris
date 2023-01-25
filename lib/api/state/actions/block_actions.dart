@@ -30,6 +30,21 @@ class InitBlockAction extends ReduxAction<AppState> {
   InitBlockAction();
 }
 
+class AddBlockAction extends ReduxAction<AppState> {
+
+  final BlockModel _model;
+
+  AddBlockAction(this._model);
+
+  @override
+  Future<AppState?> reduce() async {
+    await ApiService().blockAPI.addBlock(_model);
+    var blocks = await ApiService().blockAPI.getAllBlocks();
+    return state.copyWith(blocks: blocks);
+  }
+}
+
+
 class RemoveBlockAction extends ReduxAction<AppState> {
 
   final BlockModel model;
