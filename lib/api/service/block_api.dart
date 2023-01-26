@@ -46,7 +46,7 @@ class BlockAPI {
   Future<BlockModel> remove(BlockModel model) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/block/delete/${model.id}');
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/block/remove/${model.id}');
     final result = await _apiClient.dio.deleteUri(uri).then((value) => BlockModel.fromJson(value.data!));
     return result;
   }
