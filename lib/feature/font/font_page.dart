@@ -13,6 +13,7 @@ import 'package:stelaris_ui/feature/base/model_container_list.dart';
 import 'package:stelaris_ui/feature/dialogs/dismiss_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 import '../../api/state/app_state.dart';
@@ -37,27 +38,26 @@ class FontPageState extends State<FontPage> with BaseLayout {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<FontModel>>(
       onInit: (store) {
-        if (store.state.fonts.isEmpty) {
-          store.dispatch(InitFontAction());
-        }
+        store.dispatch(InitFontAction());
       },
       converter: (store) {
         return store.state.fonts;
       },
       builder: (context, vm) {
-        selectedItem.value ??= vm.first;
+        if (vm.isNotEmpty) {
+          selectedItem.value ??= vm.first;
+        }
         return ModelContainerList<FontModel>(
           mapToDeleteDialog: (value) {
             return [
-              const TextSpan(
-                  text: firstLine,
+              TextSpan(
+                  text: context.l10n.delete_dialog_firstline,
                   style: TextStyle(color: Colors.white)),
               TextSpan(
                   text: value.name ?? unknownEntry,
                   style: const TextStyle(color: Colors.red)),
               const TextSpan(
-                  text: secondLine,
-                  style: TextStyle(color: Colors.white)),
+                  text: secondLine, style: TextStyle(color: Colors.white)),
             ];
           },
           mapToDeleteSuccessfully: (value) {
@@ -68,31 +68,33 @@ class FontPageState extends State<FontPage> with BaseLayout {
           items: vm,
           page: mapPageToWidget,
           mapToDataModelItem: (e) {
-            return Text(e.name?? unknownEntry);
+            return Text(e.name ?? unknownEntry);
           },
           openFunction: () {
             showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: (BuildContext context) {
-                  return Dialog(
-                    child: SizedBox(
-                      width: 500,
-                      height: 350,
-                      child: Card(
-                        elevation: 0.8,
-                        child: SetupStepper<FontModel>(
-                            buildModel: (name, description) {
-                          return FontModel(name: name, type: FontType.bitmap.displayName);
-                        }, finishCallback: (model) {
-                          StoreProvider.dispatch(context, InitFontAction());
-                          Navigator.pop(context);
-                          selectedItem.value = model;
-                        }),
-                      ),
+              context: context,
+              useRootNavigator: false,
+              builder: (BuildContext context) {
+                return Dialog(
+                  child: SizedBox(
+                    width: 500,
+                    height: 350,
+                    child: Card(
+                      elevation: 0.8,
+                      child: SetupStepper<FontModel>(
+                          buildModel: (name, description) {
+                        return FontModel(
+                            name: name, type: FontType.bitmap.displayName);
+                      }, finishCallback: (model) {
+                        StoreProvider.dispatch(context, AddFontAction(model));
+                        Navigator.pop(context);
+                        selectedItem.value = model;
+                      }),
                     ),
-                  );
-                });
+                  ),
+                );
+              },
+            );
           },
         );
       },
@@ -138,7 +140,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
                 final oldModel = model;
                 final newEntry = oldModel.copyWith(name: value);
                 setState(() {
-                  StoreProvider.dispatch(context, UpdateFontAction(oldModel, newEntry));
+                  StoreProvider.dispatch(
+                      context, UpdateFontAction(oldModel, newEntry));
                   selectedItem.value = newEntry;
                 });
               },
@@ -153,7 +156,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
                 final oldModel = model;
                 final newEntry = oldModel.copyWith(description: value);
                 setState(() {
-                  StoreProvider.dispatch(context, UpdateFontAction(oldModel, newEntry));
+                  StoreProvider.dispatch(
+                      context, UpdateFontAction(oldModel, newEntry));
                   selectedItem.value = newEntry;
                 });
               },
@@ -167,7 +171,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
                 if (value == getDefaultValue(model)) return;
                 final newEntry = model.copyWith(type: value?.displayName);
                 setState(() {
-                  StoreProvider.dispatch(context, UpdateFontAction(model, newEntry));
+                  StoreProvider.dispatch(
+                      context, UpdateFontAction(model, newEntry));
                   selectedItem.value = newEntry;
                 });
               },
@@ -182,7 +187,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
                 final newAscent = int.parse(value);
                 final newEntry = oldModel.copyWith(ascent: newAscent);
                 setState(() {
-                  StoreProvider.dispatch(context, UpdateFontAction(oldModel, newEntry));
+                  StoreProvider.dispatch(
+                      context, UpdateFontAction(oldModel, newEntry));
                   selectedItem.value = newEntry;
                 });
               },
@@ -191,20 +197,21 @@ class FontPageState extends State<FontPage> with BaseLayout {
             ),
             TextInputCard(
               infoText: "Hier kann ich ein Mat setzen",
-                title: const Text("Height"),
-                currentValue: model.height?.toString() ?? zero,
-                valueUpdate: (value) {
-                  if (value == model.height) return;
-                  final oldModel = model;
-                  final newHeight = int.parse(value);
-                  final newEntry = oldModel.copyWith(height: newHeight);
-                  setState(() {
-                    StoreProvider.dispatch(context, UpdateFontAction(oldModel, newEntry));
-                    selectedItem.value = newEntry;
-                  });
-                },
-                inputType: numberInput,
-                formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+              title: const Text("Height"),
+              currentValue: model.height?.toString() ?? zero,
+              valueUpdate: (value) {
+                if (value == model.height) return;
+                final oldModel = model;
+                final newHeight = int.parse(value);
+                final newEntry = oldModel.copyWith(height: newHeight);
+                setState(() {
+                  StoreProvider.dispatch(
+                      context, UpdateFontAction(oldModel, newEntry));
+                  selectedItem.value = newEntry;
+                });
+              },
+              inputType: numberInput,
+              formatter: [FilteringTextInputFormatter.allow(numberPattern)],
             ),
           ],
         ),
@@ -218,8 +225,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
               },
               label: saveText,
               icon: saveIcon,
-            )
-        )
+            ))
       ],
     );
   }
@@ -241,23 +247,26 @@ class FontPageState extends State<FontPage> with BaseLayout {
                       return EntryAddDialog(
                           title: const Text("Add new char"),
                           controller: TextEditingController(),
-                          formatters: [FilteringTextInputFormatter.allow(stringPattern)],
+                          formatters: [
+                            FilteringTextInputFormatter.allow(stringPattern)
+                          ],
                           valueUpdate: (value) {
                             final oldEntry = model;
                             List<String> chars = List.of(oldEntry.chars ?? []);
                             chars.add(value);
                             final newEntry = oldEntry.copyWith(chars: chars);
                             setState(() {
-                              StoreProvider.dispatch(context, UpdateFontAction(oldEntry, newEntry));
+                              StoreProvider.dispatch(context,
+                                  UpdateFontAction(oldEntry, newEntry));
                               Navigator.pop(context);
                               selectedItem.value = newEntry;
                             });
-                          }
-                      );
+                          });
                     },
                   );
                 },
-                widgets: List<Widget>.generate(model.chars?.length ?? 0, (index) {
+                widgets:
+                    List<Widget>.generate(model.chars?.length ?? 0, (index) {
                   final key = model.chars![index];
                   return ListTile(
                     title: Text(key),
@@ -269,13 +278,15 @@ class FontPageState extends State<FontPage> with BaseLayout {
                             builder: (context) {
                               return DeleteDialog(
                                   title: deleteTitle,
-                                  header:  [
-                                    const TextSpan(
-                                        text: firstLine,
+                                  header: [
+                                    TextSpan(
+                                        text: context
+                                            .l10n.delete_dialog_firstline,
                                         style: TextStyle(color: Colors.white)),
                                     TextSpan(
                                         text: key,
-                                        style: const TextStyle(color: Colors.red)),
+                                        style:
+                                            const TextStyle(color: Colors.red)),
                                     const TextSpan(
                                         text: secondLine,
                                         style: TextStyle(color: Colors.white)),
@@ -284,23 +295,23 @@ class FontPageState extends State<FontPage> with BaseLayout {
                                   value: key,
                                   successfully: (value) {
                                     final oldEntry = model;
-                                    List<String> chars = List.of(model.chars ?? []);
+                                    List<String> chars =
+                                        List.of(model.chars ?? []);
                                     chars.remove(key);
-                                    final newEntry = oldEntry.copyWith(chars: chars);
+                                    final newEntry =
+                                        oldEntry.copyWith(chars: chars);
                                     setState(() {
-                                      StoreProvider.dispatch(
-                                          context, UpdateFontAction(oldEntry, newEntry));
+                                      StoreProvider.dispatch(context,
+                                          UpdateFontAction(oldEntry, newEntry));
                                       selectedItem.value = newEntry;
                                     });
                                     return true;
-                                  }
-                              ).getDeleteDialog();
+                                  }).getDeleteDialog();
                             });
                       },
                     ),
                   );
-                })
-            ),
+                })),
           ],
         ),
         Positioned(
@@ -313,8 +324,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
               },
               label: saveText,
               icon: saveIcon,
-            )
-        )
+            ))
       ],
     );
   }
@@ -322,10 +332,10 @@ class FontPageState extends State<FontPage> with BaseLayout {
   List<DropdownMenuItem<FontType>>? getItems() {
     return List.generate(
         values.length,
-            (index) => DropdownMenuItem(
+        (index) => DropdownMenuItem(
               value: values[index],
               child: Text(values[index].displayName),
-        ));
+            ));
   }
 
   FontType getDefaultValue(FontModel value) {

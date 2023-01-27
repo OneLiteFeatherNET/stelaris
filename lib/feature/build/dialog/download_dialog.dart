@@ -1,0 +1,66 @@
+import 'dart:convert';
+import 'dart:html';
+
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:stelaris_ui/api/api_service.dart';
+import 'package:stelaris_ui/util/constants.dart';
+
+class DownloadDialog extends StatefulWidget {
+  final List<DropdownMenuItem<String>> branches;
+
+  const DownloadDialog({Key? key, required this.branches}) : super(key: key);
+
+  @override
+  State<DownloadDialog> createState() => _DownloadDialogState();
+}
+
+class _DownloadDialogState extends State<DownloadDialog> {
+  String? defaultValue;
+
+  @override
+  Widget build(BuildContext context) {
+    defaultValue = widget.branches.first.value;
+    return SimpleDialog(
+      title: const Text(
+        "Download",
+        textAlign: TextAlign.center,
+      ),
+      contentPadding: const EdgeInsets.all(20.0),
+      children: [
+        const Text(
+          "Please select a branch",
+          textAlign: TextAlign.center,
+        ),
+        spaceTwentyFiveHeightBox,
+        SizedBox(
+            width: 300,
+            child: DropdownButtonFormField<String>(
+              items: widget.branches,
+              value: defaultValue,
+              onChanged: (String? value) {
+                if (value == null) return;
+                defaultValue = value;
+              },
+            )),
+        spaceTwentyFiveHeightBox,
+        TextButton(
+            onPressed: () async {
+              if (defaultValue != null) {
+                final data =
+                    await ApiService().generateApi.download(defaultValue!);
+                final content = base64Encode(data);
+                final anchor = AnchorElement(
+                    href: "data:application/octet-stream;base64,$content")
+                  ..setAttribute("download", "generated.zip")
+                  ..click();
+                if (mounted) {
+                  context.pop();
+                }
+              }
+            },
+            child: const Text("Download"))
+      ],
+    );
+  }
+}

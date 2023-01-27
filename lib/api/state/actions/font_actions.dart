@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 
 import '../../../util/default.dart';
-import '../../api_service.dart';
 import '../../model/font_model.dart';
 import '../app_state.dart';
 
@@ -9,8 +9,8 @@ class InitFontAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    //var fonts = await ApiService().fontAPI.getAllFonts();
-    return state.copyWith(fonts: [fontModel]);
+    var fonts = await ApiService().fontAPI.getAllFonts();
+    return state.copyWith(fonts: fonts);
   }
 
   InitFontAction();
@@ -29,6 +29,21 @@ class RemoveFontsAction extends ReduxAction<AppState> {
     return state.copyWith(fonts: fonts);
   }
 }
+
+class AddFontAction extends ReduxAction<AppState> {
+
+  final FontModel _model;
+
+  AddFontAction(this._model);
+
+  @override
+  Future<AppState?> reduce() async {
+    await ApiService().fontAPI.addFont(_model);
+    var fonts = await ApiService().fontAPI.getAllFonts();
+    return state.copyWith(fonts: fonts);
+  }
+}
+
 
 class UpdateFontAction extends ReduxAction<AppState> {
   final FontModel oldEntry;

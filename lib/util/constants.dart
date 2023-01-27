@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 
 /// Strings
 const String appName = "Stelaris";
@@ -38,11 +37,12 @@ String displayNameToolTip = "Adjust the Displayname for the item";
 /// Regs
 RegExp numberPattern = RegExp("[1-9]\\d*");
 RegExp stringPattern = RegExp("[a-zA-Z]\\w*");
+RegExp dotPattern = RegExp("\\.");
 
 /// Formatter
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);
 
-//Minecraft related values
+/// Minecraft related values
 const String zero = "0";
 const String empty = "";
 const int maxItemSize = 64;
@@ -50,9 +50,6 @@ const String defaultMaterial = "minecraft:dirt";
 
 //Template Stepper
 const String templateStepperTitle = "Create a server template";
-
-// Font dialog
-const FrameType defaultFrameType = FrameType.task;
 
 // Text
 // Button

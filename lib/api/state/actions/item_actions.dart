@@ -1,5 +1,5 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:stelaris_ui/util/default.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 
 import '../../model/item_model.dart';
 import '../app_state.dart';
@@ -24,8 +24,8 @@ class InitItemAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    // var items = await ApiService().itemApi.getAllItems();
-    return state.copyWith(items: [defaultItem]);
+    var items = await ApiService().itemApi.getAllItems();
+    return state.copyWith(items: items);
   }
 
   InitItemAction();
@@ -33,17 +33,18 @@ class InitItemAction extends ReduxAction<AppState> {
 
 class AddItemAction extends ReduxAction<AppState> {
 
-  final ItemModel model;
+  final ItemModel _model;
 
-  AddItemAction(this.model);
+  AddItemAction(this._model);
 
   @override
   Future<AppState?> reduce() async {
-    final items = List.of(state.items, growable: true);
-    items.add(model);
+    await ApiService().itemApi.addItem(_model);
+    var items = await ApiService().itemApi.getAllItems();
     return state.copyWith(items: items);
   }
 }
+
 
 class RemoveItemAction extends ReduxAction<AppState> {
 
@@ -53,8 +54,8 @@ class RemoveItemAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final items = List.of(state.items, growable: true);
-    items.remove(model);
+    await ApiService().itemApi.remove(model);
+    var items = await ApiService().itemApi.getAllItems();
     return state.copyWith(items: items);
   }
 }
