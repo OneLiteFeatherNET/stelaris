@@ -12,6 +12,7 @@ import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -30,27 +31,25 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<NotificationModel>>(
       onInit: (store) {
-        if (store.state.notifications.isEmpty) {
-          store.dispatch(InitNotificationAction());
-        }
+        store.dispatch(InitNotificationAction());
       },
       converter: (store) {
         return store.state.notifications;
       },
       builder: (context, vm) {
-        selectedItem.value ??= vm.first;
+        if (vm.isNotEmpty) {
+          selectedItem.value ??= vm.first;
+        }
         return ModelContainerList<NotificationModel>(
           mapToDeleteDialog: (value) {
             return [
-              const TextSpan(
-                  text: firstLine,
-                  style: TextStyle(color: Colors.white)),
+              TextSpan(
+                  text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
               TextSpan(
                   text: value.name ?? unknownEntry,
                   style: const TextStyle(color: Colors.red)),
               const TextSpan(
-                  text: secondLine,
-                  style: TextStyle(color: Colors.white)),
+                  text: secondLine, style: TextStyle(color: Colors.white)),
             ];
           },
           mapToDeleteSuccessfully: (value) {
@@ -63,25 +62,34 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
           mapToDataModelItem: mapDataToModelItem,
           openFunction: () {
             showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: (BuildContext context) {
-                  return Dialog(
+              context: context,
+              useRootNavigator: false,
+              builder: (BuildContext context) {
+                return Dialog(
+                  child: SizedBox(
+                    width: 500,
+                    height: 350,
                     child: Card(
+                      elevation: 0.8,
                       child: SetupStepper<NotificationModel>(
                         finishCallback: (model) {
+                          ApiService().notificationAPI.addNotification(model);
                           StoreProvider.dispatch(
-                              context, InputNotificationAction(model));
+                              context, NotificationAddAction(model));
+
                           Navigator.pop(context);
                           selectedItem.value = model;
                         },
                         buildModel: (String name, String description) {
-                          return NotificationModel(name: name, frameType: FrameType.goal.value);
+                          return NotificationModel(
+                              name: name, frameType: FrameType.goal.value);
                         },
                       ),
                     ),
-                  );
-                });
+                  ),
+                );
+              },
+            );
           },
         );
       },
@@ -123,11 +131,11 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                   final oldModel = model;
                   final newEntry = oldModel.copyWith(name: value);
                   setState(() {
-                    StoreProvider.dispatch(context, UpdateNotificationAction(oldModel, newEntry));
+                    StoreProvider.dispatch(
+                        context, UpdateNotificationAction(oldModel, newEntry));
                     selectedItem.value = newEntry;
                   });
-                }
-            ),
+                }),
             TextInputCard<String>(
                 title: materialText,
                 currentValue: model.material ?? empty,
@@ -137,11 +145,11 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                   final oldModel = model;
                   final newEntry = oldModel.copyWith(material: value);
                   setState(() {
-                    StoreProvider.dispatch(context, UpdateNotificationAction(oldModel, newEntry));
+                    StoreProvider.dispatch(
+                        context, UpdateNotificationAction(oldModel, newEntry));
                     selectedItem.value = newEntry;
                   });
-                }
-            ),
+                }),
             TextInputCard<String>(
                 title: const Text("Title"),
                 currentValue: model.title ?? empty,
@@ -151,11 +159,11 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                   final oldModel = model;
                   final newEntry = oldModel.copyWith(title: value);
                   setState(() {
-                    StoreProvider.dispatch(context, UpdateNotificationAction(oldModel, newEntry));
+                    StoreProvider.dispatch(
+                        context, UpdateNotificationAction(oldModel, newEntry));
                     selectedItem.value = newEntry;
                   });
-                }
-            ),
+                }),
             TextInputCard<String>(
                 title: descriptionText,
                 currentValue: model.description ?? empty,
@@ -165,11 +173,11 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                   final oldModel = model;
                   final newEntry = oldModel.copyWith(description: value);
                   setState(() {
-                    StoreProvider.dispatch(context, UpdateNotificationAction(oldModel, newEntry));
+                    StoreProvider.dispatch(
+                        context, UpdateNotificationAction(oldModel, newEntry));
                     selectedItem.value = newEntry;
                   });
-                }
-            ),
+                }),
             DropDownCard<FrameType, NotificationModel>(
               currentValue: model,
               title: const Text("FrameType", textAlign: TextAlign.center),
@@ -178,7 +186,8 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                 if (value == getDefaultValue(model)) return;
                 final newEntry = model.copyWith(frameType: value?.value);
                 setState(() {
-                  StoreProvider.dispatch(context, UpdateNotificationAction(model, newEntry));
+                  StoreProvider.dispatch(
+                      context, UpdateNotificationAction(model, newEntry));
                   selectedItem.value = newEntry;
                 });
               },
@@ -196,8 +205,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
               },
               label: saveText,
               icon: saveIcon,
-            )
-        )
+            ))
       ],
     );
   }

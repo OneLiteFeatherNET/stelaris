@@ -1,21 +1,18 @@
-import 'dart:convert';
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
-class DownloadDialog extends StatefulWidget {
+class GenerateDialog extends StatefulWidget {
   final List<DropdownMenuItem<String>> branches;
 
-  const DownloadDialog({Key? key, required this.branches}) : super(key: key);
+  const GenerateDialog({Key? key, required this.branches}) : super(key: key);
 
   @override
-  State<DownloadDialog> createState() => _DownloadDialogState();
+  State<GenerateDialog> createState() => _GenerateDialogState();
 }
 
-class _DownloadDialogState extends State<DownloadDialog> {
+class _GenerateDialogState extends State<GenerateDialog> {
   String? defaultValue;
 
   @override
@@ -23,7 +20,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
     defaultValue = widget.branches.first.value;
     return SimpleDialog(
       title: const Text(
-        "Download",
+        "Generate",
         textAlign: TextAlign.center,
       ),
       contentPadding: const EdgeInsets.all(20.0),
@@ -48,18 +45,30 @@ class _DownloadDialogState extends State<DownloadDialog> {
             onPressed: () async {
               if (defaultValue != null) {
                 final data =
-                    await ApiService().generateApi.download(defaultValue!);
-                final content = base64Encode(data);
-                final anchor = AnchorElement(
-                    href: "data:application/octet-stream;base64,$content")
-                  ..setAttribute("download", "generated.zip")
-                  ..click();
+                    await ApiService().generateApi.generate(defaultValue!);
+                if (data.statusCode != 200) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context)
+                      ..removeCurrentSnackBar()
+                      ..showSnackBar(SnackBar(
+                        content: Text("Generation fails at backend"),
+                      ));
+                  }
+                } else{
+                  if (mounted) {
+                    ScaffoldMessenger.of(context)
+                      ..removeCurrentSnackBar()
+                      ..showSnackBar(SnackBar(
+                        content: Text("Generation submited to backend"),
+                      ));
+                  }
+                }
                 if (mounted) {
                   context.pop();
                 }
               }
             },
-            child: const Text("Download"))
+            child: const Text("Generate"))
       ],
     );
   }

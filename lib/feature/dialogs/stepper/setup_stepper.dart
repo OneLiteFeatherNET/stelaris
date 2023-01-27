@@ -4,11 +4,12 @@ import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
 class SetupStepper<E extends DataModel> extends StatefulWidget {
-
   final FinishStepper<E> finishCallback;
   final BuildModel<E> buildModel;
 
-  const SetupStepper({Key? key, required this.finishCallback, required this.buildModel}) : super(key: key);
+  const SetupStepper(
+      {Key? key, required this.finishCallback, required this.buildModel})
+      : super(key: key);
 
   @override
   State<SetupStepper<E>> createState() => _SetupStepperState<E>();
@@ -17,7 +18,8 @@ class SetupStepper<E extends DataModel> extends StatefulWidget {
 class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
   int _currentStep = 0;
 
-  GlobalKey<_SetupStepperState<E>> itemStepperKey = GlobalKey<_SetupStepperState<E>>();
+  GlobalKey<_SetupStepperState<E>> itemStepperKey =
+      GlobalKey<_SetupStepperState<E>>();
 
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -28,12 +30,12 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
   Widget build(BuildContext context) {
     final steps = getSteps();
     return ListView(
-      shrinkWrap: true,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       children: [
         Container(
           padding: const EdgeInsets.all(8),
-          child: const Text("Create new model"),
+          child: const Text("Create new model",
+              style: TextStyle(fontSize: 25), textAlign: TextAlign.center),
         ),
         Stepper(
             type: StepperType.vertical,
@@ -72,7 +74,8 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
     bool isLastStep = _currentStep == getSteps().length - 1;
 
     if (isLastStep) {
-      widget.finishCallback(widget.buildModel(nameController.text, descriptionController.text));
+      widget.finishCallback(
+          widget.buildModel(nameController.text, descriptionController.text));
       return null;
     } else {
       setState(() => _currentStep += 1);
@@ -81,32 +84,37 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
 
   List<Step> getSteps() => [
         Step(
-            isActive: _currentStep == 0,
-            title: const Text("Name"),
-            content: Column(
-              children: [
-                SizedBox(
-                  width: 650,
-                  child: TextFormField(
-                      controller: nameController,
-                      decoration: const InputDecoration(labelText: 'Name')),
+          isActive: _currentStep == 0,
+          title: nameText,
+          content: Column(
+            children: [
+              SizedBox(
+                width: 650,
+                child: TextFormField(
+                  controller: nameController,
+                  decoration: const InputDecoration(labelText: 'Name'),
                 ),
-              ],
-            )),
+              ),
+              fifteenBox
+            ],
+          ),
+        ),
         Step(
-            isActive: _currentStep == 1,
-            title: const Text("Description"),
-            content: Column(
-              children: [
-                spaceTenAndTenBox,
-                SizedBox(
-                  width: 650,
-                  child: TextFormField(
-                      controller: descriptionController,
-                      decoration:
-                          const InputDecoration(labelText: 'Description')),
+          isActive: _currentStep == 1,
+          title: const Text("Description"),
+          content: Column(
+            children: [
+              spaceTenAndTenBox,
+              SizedBox(
+                width: 650,
+                child: TextFormField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(labelText: 'Description'),
                 ),
-              ],
-            )),
+              ),
+              fifteenBox
+            ],
+          ),
+        ),
       ];
 }

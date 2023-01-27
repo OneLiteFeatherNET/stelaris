@@ -1,5 +1,4 @@
-import 'dart:html' as html;
-
+import 'package:dio/dio.dart';
 import 'package:stelaris_ui/api/api_client.dart';
 
 class GenerateApi {
@@ -9,17 +8,37 @@ class GenerateApi {
   const GenerateApi(this._apiClient);
 
 
-  Future<void> download() async {
+  Future<Response> generate(String branch) async {
+    final queryParams = <String, dynamic>{
+      "branch": branch
+    };
+    final baseUri = Uri.parse(_apiClient.baseUrl);
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/generate');
+    //final result = await _apiClient.dio.getUri(uri).then((value) => ItemModel.fromJson(value.data!));
+    final data = await _apiClient.dio.getUri(uri).then((value) => value);
+    return data;
+  }
+
+  Future<List<String>> branches() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    /*final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/generate');
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/branches');
     //final result = await _apiClient.dio.getUri(uri).then((value) => ItemModel.fromJson(value.data!));
-    final data = await _apiClient.dio.getUri(uri).then((value) => value.data!);
-    final uriStream = Uri.dataFromBytes(data);*/
-    html.AnchorElement anchorElement = html.AnchorElement(href: '${baseUri.path}/generate');
-    anchorElement.download = 'generated.zip';
-    anchorElement.click();
+    final data = await _apiClient.dio.getUri(uri).then((value) {
+      return value.data!;
+    });
+    return (data as List<dynamic>).map((e) => e as String).toList();
+  }
 
+  Future<List<int>> download(String branch) async {
+    final queryParams = <String, dynamic>{
+      "branch": branch
+    };
+    final baseUri = Uri.parse(_apiClient.baseUrl);
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/download');
+    //final result = await _apiClient.dio.getUri(uri).then((value) => ItemModel.fromJson(value.data!));
+    final data = await _apiClient.dio.getUri(uri, options: Options(responseType: ResponseType.bytes)).then((value) => value.data! as List<int>);
+    return data;
   }
 
 }

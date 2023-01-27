@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/util/default.dart';
 import '../../model/block_model.dart';
 import '../app_state.dart';
@@ -22,11 +23,27 @@ class InitBlockAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    return state.copyWith(blocks: [blocKModel]);
+    var blocks = await ApiService().blockAPI.getAllBlocks();
+    return state.copyWith(blocks: blocks);
   }
 
   InitBlockAction();
 }
+
+class AddBlockAction extends ReduxAction<AppState> {
+
+  final BlockModel _model;
+
+  AddBlockAction(this._model);
+
+  @override
+  Future<AppState?> reduce() async {
+    await ApiService().blockAPI.addBlock(_model);
+    var blocks = await ApiService().blockAPI.getAllBlocks();
+    return state.copyWith(blocks: blocks);
+  }
+}
+
 
 class RemoveBlockAction extends ReduxAction<AppState> {
 
@@ -36,8 +53,8 @@ class RemoveBlockAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final blocks = List.of(state.blocks, growable: true);
-    blocks.remove(model);
+    await ApiService().blockAPI.remove(model);
+    var blocks = await ApiService().blockAPI.getAllBlocks();
     return state.copyWith(blocks: blocks);
   }
 }

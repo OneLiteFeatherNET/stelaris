@@ -1,0 +1,13 @@
+{
+  "delete_dialog_firstline": "Do you really want to delete ",
+  "delete_dialog_entry": " entry",
+  "button_add": "Add",
+  "button_save": "Save",
+  "button_download": "Download",
+  "button_generate": "Generate",
+  "button_trigger_go": "Go!",
+  "text_branch": "Please select a branch",
+  "text_trigger_title": "Trigger a new build",
+  "text_version_new": "Add new version",
+  "text_version_type": "Version type"
+}
