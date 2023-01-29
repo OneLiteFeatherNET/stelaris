@@ -84,7 +84,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
                       child: SetupStepper<FontModel>(
                           buildModel: (name, description) {
                         return FontModel(
-                            name: name, type: FontType.bitmap.displayName);
+                            name: name, description: description, type: FontType.bitmap.displayName);
                       }, finishCallback: (model) {
                         StoreProvider.dispatch(context, AddFontAction(model));
                         Navigator.pop(context);
