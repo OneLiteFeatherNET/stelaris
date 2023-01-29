@@ -6,6 +6,7 @@ import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
@@ -44,7 +45,8 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
           mapToDeleteDialog: (value) {
             return [
               TextSpan(
-                  text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
+                  text: context.l10n.delete_dialog_firstline,
+                  style: TextStyle(color: Colors.white)),
               TextSpan(
                   text: value.name ?? unknownEntry,
                   style: const TextStyle(color: Colors.red)),
@@ -112,55 +114,51 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
       return nil;
     }
 
-    return Stack(children: [
-      Wrap(
-        children: [
-          TextInputCard<String>(
-            title: nameText,
-            currentValue: model.name ?? "",
-            infoText: nameToolTip,
-            formatter: [FilteringTextInputFormatter.allow(stringPattern)],
-            valueUpdate: (value) {
-              if (value == model.name) return;
-              final oldModel = model;
-              final newEntry = oldModel.copyWith(name: value);
-              setState(() {
-                StoreProvider.dispatch(
-                    context, UpdateBlockAction(oldModel, newEntry));
-                selectedItem.value = newEntry;
-              });
-            },
-          ),
-          TextInputCard<String>(
-            title: modelDataText,
-            infoText: modelDataToolTip,
-            currentValue: model.customModelId.toString(),
-            formatter: [FilteringTextInputFormatter.allow(numberPattern)],
-            valueUpdate: (value) {
-              if (value == model.customModelId) return;
-              final oldModel = model;
-              final newID = int.parse(value);
-              final newEntry = oldModel.copyWith(customModelId: newID);
-              setState(() {
-                StoreProvider.dispatch(
-                    context, UpdateBlockAction(oldModel, newEntry));
-                selectedItem.value = newEntry;
-              });
-            },
-          ),
-        ],
-      ),
-      Positioned(
-          bottom: 25,
-          right: 25,
-          child: FloatingActionButton.extended(
-            heroTag: UniqueKey(),
-            onPressed: () {
-              ApiService().blockAPI.update(model);
-            },
-            label: saveText,
-            icon: saveIcon,
-          ))
-    ]);
+    return Stack(
+      children: [
+        Wrap(
+          children: [
+            TextInputCard<String>(
+              title: nameText,
+              currentValue: model.name ?? "",
+              infoText: nameToolTip,
+              formatter: [FilteringTextInputFormatter.allow(stringPattern)],
+              valueUpdate: (value) {
+                if (value == model.name) return;
+                final oldModel = model;
+                final newEntry = oldModel.copyWith(name: value);
+                setState(() {
+                  StoreProvider.dispatch(
+                      context, UpdateBlockAction(oldModel, newEntry));
+                  selectedItem.value = newEntry;
+                });
+              },
+            ),
+            TextInputCard<String>(
+              title: modelDataText,
+              infoText: modelDataToolTip,
+              currentValue: model.customModelId.toString(),
+              formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+              valueUpdate: (value) {
+                if (value == model.customModelId) return;
+                final oldModel = model;
+                final newID = int.parse(value);
+                final newEntry = oldModel.copyWith(customModelId: newID);
+                setState(() {
+                  StoreProvider.dispatch(
+                      context, UpdateBlockAction(oldModel, newEntry));
+                  selectedItem.value = newEntry;
+                });
+              },
+            ),
+          ],
+        ),
+        SaveButton(
+          callback: () {
+            ApiService().blockAPI.update(model);
+          },
+        )
+      ],
+    );
   }
 }
