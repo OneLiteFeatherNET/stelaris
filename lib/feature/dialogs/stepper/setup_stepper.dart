@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
@@ -7,9 +8,11 @@ class SetupStepper<E extends DataModel> extends StatefulWidget {
   final FinishStepper<E> finishCallback;
   final BuildModel<E> buildModel;
 
-  const SetupStepper(
-      {Key? key, required this.finishCallback, required this.buildModel})
-      : super(key: key);
+  const SetupStepper({
+    Key? key,
+    required this.finishCallback,
+    required this.buildModel
+  }) : super(key: key);
 
   @override
   State<SetupStepper<E>> createState() => _SetupStepperState<E>();
@@ -34,8 +37,9 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
       children: [
         Container(
           padding: const EdgeInsets.all(8),
-          child: const Text("Create new model",
-              style: TextStyle(fontSize: 25), textAlign: TextAlign.center),
+          child: Text(
+              context.l10n.setup_new_model,
+              style: const TextStyle(fontSize: 25), textAlign: TextAlign.center),
         ),
         Stepper(
             type: StepperType.vertical,
@@ -47,15 +51,15 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
                   details.stepIndex == (steps.length - 1)
                       ? TextButton(
                           onPressed: details.onStepContinue,
-                          child: const Text('Finish'),
+                          child: Text(context.l10n.button_finish)
                         )
                       : TextButton(
                           onPressed: details.onStepContinue,
-                          child: const Text('Continue'),
+                          child: Text(context.l10n.button_continue)
                         ),
                   TextButton(
                     onPressed: details.onStepCancel,
-                    child: const Text('Back'),
+                    child: Text(context.l10n.button_back)
                   )
                 ],
               );
@@ -64,7 +68,7 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
               _continue();
             },
             onStepCancel: () {
-              _currentStep > 0 ? setState(() => _currentStep -= 1) : "";
+              _currentStep > 0 ? setState(() => _currentStep -= 1) : empty;
             })
       ],
     );
@@ -85,7 +89,7 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
   List<Step> getSteps() => [
         Step(
           isActive: _currentStep == 0,
-          title: nameText,
+          title: Text(context.l10n.card_name),
           content: Column(
             children: [
               SizedBox(
@@ -101,7 +105,7 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
         ),
         Step(
           isActive: _currentStep == 1,
-          title: const Text("Description"),
+          title: Text(context.l10n.card_description),
           content: Column(
             children: [
               spaceTenAndTenBox,

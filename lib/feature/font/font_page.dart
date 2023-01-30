@@ -52,13 +52,17 @@ class FontPageState extends State<FontPage> with BaseLayout {
           mapToDeleteDialog: (value) {
             return [
               TextSpan(
-                  text: context.l10n.delete_dialog_firstline,
-                  style: TextStyle(color: Colors.white)),
+                  text: context.l10n.delete_dialog_first_line,
+                  style: whiteStyle
+              ),
               TextSpan(
                   text: value.name ?? unknownEntry,
-                  style: const TextStyle(color: Colors.red)),
-              const TextSpan(
-                  text: secondLine, style: TextStyle(color: Colors.white)),
+                  style: redStyle)
+              ,
+              TextSpan(
+                  text: context.l10n.delete_dialog_entry,
+                  style: whiteStyle
+              ),
             ];
           },
           mapToDeleteSuccessfully: (value) {
@@ -132,8 +136,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
         Wrap(
           children: [
             TextInputCard<String>(
-              infoText: nameToolTip,
-              title: nameText,
+              infoText: context.l10n.tooltip_name,
+              title: Text(context.l10n.card_name),
               currentValue: model.name ?? empty,
               formatter: [FilteringTextInputFormatter.allow(stringPattern)],
               valueUpdate: (value) {
@@ -148,8 +152,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
               },
             ),
             TextInputCard<String>(
-              infoText: descriptionToolTip,
-              title: descriptionText,
+              infoText: context.l10n.tooltip_description,
+              title: Text(context.l10n.card_description),
               currentValue: model.description ?? empty,
               formatter: [FilteringTextInputFormatter.allow(stringPattern)],
               valueUpdate: (value) {
@@ -164,7 +168,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
               },
             ),
             DropDownCard<FontType, FontModel>(
-              title: const Text("Type"),
+              title: Text(context.l10n.card_type),
               items: getItems(),
               currentValue: model,
               defaultValue: getDefaultValue,
@@ -179,8 +183,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
               },
             ),
             TextInputCard<String>(
-              infoText: "Hier kann ich ein Mat setzen",
-              title: const Text("Ascent"),
+              infoText: context.l10n.tooltip_ascent,
+              title:Text(context.l10n.card_ascent),
               currentValue: model.ascent?.toString() ?? zero,
               valueUpdate: (value) {
                 if (value == model.ascent) return;
@@ -197,8 +201,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
               formatter: [FilteringTextInputFormatter.allow(numberPattern)],
             ),
             TextInputCard(
-              infoText: "Hier kann ich ein Mat setzen",
-              title: const Text("Height"),
+              infoText: context.l10n.tooltip_height,
+              title: Text(context.l10n.card_height),
               currentValue: model.height?.toString() ?? zero,
               valueUpdate: (value) {
                 if (value == model.height) return;
@@ -272,18 +276,18 @@ class FontPageState extends State<FontPage> with BaseLayout {
                             context: context,
                             builder: (context) {
                               return DeleteDialog(
-                                  title: deleteTitle,
+                                  title: Text(context.l10n.dialog_delete_confirm),
                                   header: [
                                     TextSpan(
                                         text: context
-                                            .l10n.delete_dialog_firstline,
+                                            .l10n.delete_dialog_first_line,
                                         style: TextStyle(color: Colors.white)),
                                     TextSpan(
                                         text: key,
                                         style:
                                             const TextStyle(color: Colors.red)),
-                                    const TextSpan(
-                                        text: secondLine,
+                                    TextSpan(
+                                        text: context.l10n.delete_dialog_entry,
                                         style: TextStyle(color: Colors.white)),
                                   ],
                                   context: context,

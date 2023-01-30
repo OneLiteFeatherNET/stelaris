@@ -6,6 +6,7 @@ import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/build/dialog/download_dialog.dart';
 import 'package:stelaris_ui/feature/build/dialog/generate_dialog.dart';
 import 'package:stelaris_ui/feature/build/dialog/version_dialog.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 
 class BuildPage extends StatefulWidget {
   const BuildPage({Key? key}) : super(key: key);
@@ -75,7 +76,7 @@ class BuildPageState extends State<BuildPage> {
                                       branches: finalBranches);
                                 });
                           },
-                          label: const Text("Download"),
+                          label: Text(context.l10n.button_download),
                           icon: const Icon(Icons.download),
                         )),
                     Padding(
@@ -95,7 +96,7 @@ class BuildPageState extends State<BuildPage> {
                                 return GenerateDialog(branches: finalBranches);
                               });
                         },
-                        label: const Text("Generate"),
+                        label: Text(context.l10n.button_generate),
                         icon: const Icon(Icons.build),
                       ),
                     )

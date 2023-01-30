@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 typedef StringValueUpdate = void Function(String value);
@@ -30,7 +31,7 @@ class EntryAddDialog extends StatelessWidget {
               if (controller.value.text.isEmpty) return;
               valueUpdate(controller.value.text);
               },
-            child: addText
+            child: Text(context.l10n.button_add)
         )
       ],
     );
