@@ -44,12 +44,17 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
           mapToDeleteDialog: (value) {
             return [
               TextSpan(
-                  text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
+                  text: context.l10n.delete_dialog_first_line,
+                  style: whiteStyle
+              ),
               TextSpan(
                   text: value.name ?? unknownEntry,
-                  style: const TextStyle(color: Colors.red)),
-              const TextSpan(
-                  text: secondLine, style: TextStyle(color: Colors.white)),
+                  style: redStyle
+              ),
+              TextSpan(
+                  text: context.l10n.delete_dialog_entry,
+                  style: whiteStyle
+              ),
             ];
           },
           mapToDeleteSuccessfully: (value) {
@@ -116,9 +121,9 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
       Wrap(
         children: [
           TextInputCard<String>(
-            title: nameText,
+            title: Text(context.l10n.card_name),
             currentValue: model.name ?? "",
-            infoText: nameToolTip,
+            infoText: context.l10n.tooltip_name,
             formatter: [FilteringTextInputFormatter.allow(stringPattern)],
             valueUpdate: (value) {
               if (value == model.name) return;
@@ -132,8 +137,8 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
             },
           ),
           TextInputCard<String>(
-            title: modelDataText,
-            infoText: modelDataToolTip,
+            title: Text(context.l10n.card_model_data),
+            infoText: context.l10n.tooltip_model_data,
             currentValue: model.customModelId.toString(),
             formatter: [FilteringTextInputFormatter.allow(numberPattern)],
             valueUpdate: (value) {
@@ -158,7 +163,7 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
             onPressed: () {
               ApiService().blockAPI.update(model);
             },
-            label: saveText,
+            label: Text(context.l10n.button_save),
             icon: saveIcon,
           ))
     ]);

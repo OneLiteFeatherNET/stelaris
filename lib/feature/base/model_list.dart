@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/feature/base/button/add_button.dart';
 import 'package:stelaris_ui/feature/dialogs/dismiss_dialog.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
@@ -63,7 +64,7 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
                                     context: context,
                                     builder: (context) {
                                       return DeleteDialog(
-                                          title: deleteTitle,
+                                          title: Text(context.l10n.dialog_delete_confirm),
                                           header: widget.mapToDeleteDialog(e),
                                           context: context,
                                           value: e,

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
-
-const cancelText = Text("Cancel");
-const yesText = Text("Yes");
 
 class DeleteDialog<E> {
 
@@ -24,7 +22,7 @@ class DeleteDialog<E> {
       ),
       actions: <Widget> [
         TextButton(
-          child: yesText,
+          child: Text(context.l10n.button_yes),
           onPressed: () {
             if (successfully(value)) {
               Navigator.of(context).pop(true);
@@ -32,7 +30,7 @@ class DeleteDialog<E> {
           },
         ),
         TextButton(
-            child: cancelText,
+            child: Text(context.l10n.button_cancel),
             onPressed: () {
               Navigator.of(context).pop(false);
             }

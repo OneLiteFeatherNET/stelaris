@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/util/minecraft/enchantment.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
@@ -21,10 +22,10 @@ class ItemEnchantmentAddDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: const Text("Add a enchantment", textAlign: TextAlign.center,),
+      title: Text(context.l10n.dialog_enchantment_title, textAlign: TextAlign.center,),
       contentPadding: const EdgeInsets.all(20.0),
       children: [
-        const Text("Enchantment"),
+        Text(context.l10n.dialog_enchantment_enchantment),
         spaceTenBox,
         DropdownButtonFormField(
           value: items[0].value,
@@ -46,7 +47,7 @@ class ItemEnchantmentAddDialog extends StatelessWidget {
           if (_selected != null) {
             addEnchantmentCallback(_selected!, int.parse(levelController.value.text));
           }
-        }, child: addText)
+        }, child: Text(context.l10n.button_add))
       ],
     );
   }

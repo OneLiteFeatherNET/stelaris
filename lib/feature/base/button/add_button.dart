@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class AddButton extends StatelessWidget {
@@ -11,7 +12,7 @@ class AddButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
         onPressed: openFunction,
-        label: addText,
+        label: Text(context.l10n.button_add),
         icon: addModelIcon,
     );
   }

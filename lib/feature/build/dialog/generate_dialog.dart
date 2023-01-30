@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/api/api_service.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class GenerateDialog extends StatefulWidget {
@@ -19,14 +20,14 @@ class _GenerateDialogState extends State<GenerateDialog> {
   Widget build(BuildContext context) {
     defaultValue = widget.branches.first.value;
     return SimpleDialog(
-      title: const Text(
-        "Generate",
+      title: Text(
+        context.l10n.button_generate,
         textAlign: TextAlign.center,
       ),
       contentPadding: const EdgeInsets.all(20.0),
       children: [
-        const Text(
-          "Please select a branch",
+        Text(
+          context.l10n.text_branch,
           textAlign: TextAlign.center,
         ),
         spaceTwentyFiveHeightBox,
@@ -51,16 +52,15 @@ class _GenerateDialogState extends State<GenerateDialog> {
                     ScaffoldMessenger.of(context)
                       ..removeCurrentSnackBar()
                       ..showSnackBar(SnackBar(
-                        content: Text("Generation fails at backend"),
+                        content: Text(context.l10n.error_generation_failure),
                       ));
                   }
-                } else{
+                } else {
                   if (mounted) {
                     ScaffoldMessenger.of(context)
                       ..removeCurrentSnackBar()
                       ..showSnackBar(SnackBar(
-                        content: Text("Generation submited to backend"),
-                      ));
+                          content: Text(context.l10n.error_generation_submit)));
                   }
                 }
                 if (mounted) {
@@ -68,7 +68,7 @@ class _GenerateDialogState extends State<GenerateDialog> {
                 }
               }
             },
-            child: const Text("Generate"))
+            child: Text(context.l10n.button_generate))
       ],
     );
   }

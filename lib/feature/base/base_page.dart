@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/api/state/actions/app_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/util/navigation.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 
 import '../../util/constants.dart';
 import 'button/theme_switcher_toggle.dart';
@@ -22,7 +23,6 @@ class BasePage extends StatefulWidget {
 }
 
 class _BasePageState extends State<BasePage> {
-
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AppState>(converter: (store) {
@@ -67,18 +67,20 @@ class _BasePageState extends State<BasePage> {
       const ThemeSwitcherToggle(),
       IconButton(
           onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("You can find the wiki under LINK HERE"),
-              behavior: SnackBarBehavior.floating,
-              width: 500.0,
-              elevation: 0.0,
-            ));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(context.l10n.text_wiki),
+                behavior: SnackBarBehavior.floating,
+                width: 500.0,
+                elevation: 0.0,
+              ),
+            );
           },
           icon: const Icon(Icons.help_outline))
     ];
     return NavigationRail(
       minExtendedWidth: maxXOffset,
-      extended: openNavigation,
+      extended: MediaQuery.of(context).size.width < 1000 ? false : openNavigation,
       onDestinationSelected: (index) {
         router.push(navigationEntries[index].route);
       },

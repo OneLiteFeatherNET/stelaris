@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/api/util/version/version.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
@@ -37,13 +38,13 @@ class _VersionDialogState extends State<VersionDialog> {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: const Text(
-        "Add new version",
+      title: Text(
+        context.l10n.text_version_new,
         textAlign: TextAlign.center,
       ),
       contentPadding: const EdgeInsets.all(20.0),
       children: [
-        const Text("Version type"),
+        Text(context.l10n.text_version_type),
         Column(
           children: [
             RadioListTile(
@@ -101,7 +102,7 @@ class _VersionDialogState extends State<VersionDialog> {
               GoRouter.of(context).pop(false);
             }
           },
-          child: addText,
+          child: Text(context.l10n.button_add),
         )
       ],
     );

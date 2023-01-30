@@ -4,6 +4,7 @@ import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/api/api_service.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class DownloadDialog extends StatefulWidget {
@@ -22,14 +23,14 @@ class _DownloadDialogState extends State<DownloadDialog> {
   Widget build(BuildContext context) {
     defaultValue = widget.branches.first.value;
     return SimpleDialog(
-      title: const Text(
-        "Download",
+      title: Text(
+        context.l10n.button_download,
         textAlign: TextAlign.center,
       ),
       contentPadding: const EdgeInsets.all(20.0),
       children: [
-        const Text(
-          "Please select a branch",
+        Text(
+          context.l10n.text_branch,
           textAlign: TextAlign.center,
         ),
         spaceTwentyFiveHeightBox,
@@ -59,7 +60,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
                 }
               }
             },
-            child: const Text("Download"))
+            child: Text(context.l10n.button_download))
       ],
     );
   }
