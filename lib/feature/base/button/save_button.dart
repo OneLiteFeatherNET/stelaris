@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 
 import '../../../util/constants.dart';
 
@@ -18,7 +19,7 @@ class SaveButton extends StatelessWidget {
           onPressed: () {
             callback.call();
           },
-          label: saveText,
+          label: Text(context.l10n.button_add),
           icon: saveIcon,
         )
     );
