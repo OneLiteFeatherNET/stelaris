@@ -7,6 +7,7 @@ import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/dialogs/dismiss_dialog.dart';
@@ -243,17 +244,11 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
             ),
           ],
         ),
-        Positioned(
-            bottom: 25,
-            right: 25,
-            child: FloatingActionButton.extended(
-              heroTag: UniqueKey(),
-              onPressed: () {
-                ApiService().itemApi.update(model);
-              },
-              label: Text(context.l10n.button_save),
-              icon: saveIcon,
-            ))
+        SaveButton(
+          callback: () {
+            ApiService().itemApi.update(model);
+          },
+        )
       ],
     );
   }
@@ -499,17 +494,11 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
             ),
           ],
         ),
-        Positioned(
-            bottom: 25,
-            right: 25,
-            child: FloatingActionButton.extended(
-              heroTag: UniqueKey(),
-              onPressed: () {
-                ApiService().itemApi.update(model);
-              },
-              label: Text(context.l10n.button_save),
-              icon: saveIcon,
-            ))
+        SaveButton(
+          callback: () {
+            ApiService().itemApi.update(model);
+          },
+        )
       ],
     );
   }

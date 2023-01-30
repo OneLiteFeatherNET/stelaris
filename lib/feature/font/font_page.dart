@@ -7,6 +7,7 @@ import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
@@ -219,17 +220,11 @@ class FontPageState extends State<FontPage> with BaseLayout {
             ),
           ],
         ),
-        Positioned(
-            bottom: 25,
-            right: 25,
-            child: FloatingActionButton.extended(
-              heroTag: UniqueKey(),
-              onPressed: () {
-                ApiService().fontAPI.update(model);
-              },
-              label: Text(context.l10n.button_save),
-              icon: saveIcon,
-            ))
+        SaveButton(
+          callback: () {
+            ApiService().fontAPI.update(model);
+          },
+        )
       ],
     );
   }
@@ -318,17 +313,11 @@ class FontPageState extends State<FontPage> with BaseLayout {
                 })),
           ],
         ),
-        Positioned(
-            bottom: 25,
-            right: 25,
-            child: FloatingActionButton.extended(
-              heroTag: UniqueKey(),
-              onPressed: () {
-                ApiService().fontAPI.update(model);
-              },
-              label: Text(context.l10n.button_save),
-              icon: saveIcon,
-            ))
+        SaveButton(
+          callback: () {
+            ApiService().fontAPI.update(model);
+          },
+        )
       ],
     );
   }

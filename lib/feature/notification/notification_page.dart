@@ -8,6 +8,7 @@ import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
@@ -194,17 +195,11 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
             ),
           ],
         ),
-        Positioned(
-            bottom: 25,
-            right: 25,
-            child: FloatingActionButton.extended(
-              heroTag: UniqueKey(),
-              onPressed: () {
-                ApiService().notificationAPI.update(model);
-              },
-              label: Text(context.l10n.button_save),
-              icon: saveIcon,
-            ))
+        SaveButton(
+          callback: () {
+            ApiService().notificationAPI.update(model);
+          },
+        ),
       ],
     );
   }
