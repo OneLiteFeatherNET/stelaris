@@ -45,13 +45,17 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
           mapToDeleteDialog: (value) {
             return [
               TextSpan(
-                  text: context.l10n.delete_dialog_firstline,
-                  style: TextStyle(color: Colors.white)),
+                  text: context.l10n.delete_dialog_first_line,
+                  style: whiteStyle
+              ),
               TextSpan(
                   text: value.name ?? unknownEntry,
-                  style: const TextStyle(color: Colors.red)),
-              const TextSpan(
-                  text: secondLine, style: TextStyle(color: Colors.white)),
+                  style: redStyle
+              ),
+              TextSpan(
+                  text: context.l10n.delete_dialog_entry,
+                  style: whiteStyle
+              ),
             ];
           },
           mapToDeleteSuccessfully: (value) {
@@ -114,51 +118,55 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
       return nil;
     }
 
-    return Stack(
-      children: [
-        Wrap(
-          children: [
-            TextInputCard<String>(
-              title: nameText,
-              currentValue: model.name ?? "",
-              infoText: nameToolTip,
-              formatter: [FilteringTextInputFormatter.allow(stringPattern)],
-              valueUpdate: (value) {
-                if (value == model.name) return;
-                final oldModel = model;
-                final newEntry = oldModel.copyWith(name: value);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateBlockAction(oldModel, newEntry));
-                  selectedItem.value = newEntry;
-                });
-              },
-            ),
-            TextInputCard<String>(
-              title: modelDataText,
-              infoText: modelDataToolTip,
-              currentValue: model.customModelId.toString(),
-              formatter: [FilteringTextInputFormatter.allow(numberPattern)],
-              valueUpdate: (value) {
-                if (value == model.customModelId) return;
-                final oldModel = model;
-                final newID = int.parse(value);
-                final newEntry = oldModel.copyWith(customModelId: newID);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateBlockAction(oldModel, newEntry));
-                  selectedItem.value = newEntry;
-                });
-              },
-            ),
-          ],
-        ),
-        SaveButton(
-          callback: () {
-            ApiService().blockAPI.update(model);
-          },
-        )
-      ],
-    );
+    return Stack(children: [
+      Wrap(
+        children: [
+          TextInputCard<String>(
+            title: Text(context.l10n.card_name),
+            currentValue: model.name ?? "",
+            infoText: context.l10n.tooltip_name,
+            formatter: [FilteringTextInputFormatter.allow(stringPattern)],
+            valueUpdate: (value) {
+              if (value == model.name) return;
+              final oldModel = model;
+              final newEntry = oldModel.copyWith(name: value);
+              setState(() {
+                StoreProvider.dispatch(
+                    context, UpdateBlockAction(oldModel, newEntry));
+                selectedItem.value = newEntry;
+              });
+            },
+          ),
+          TextInputCard<String>(
+            title: Text(context.l10n.card_model_data),
+            infoText: context.l10n.tooltip_model_data,
+            currentValue: model.customModelId.toString(),
+            formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+            valueUpdate: (value) {
+              if (value == model.customModelId) return;
+              final oldModel = model;
+              final newID = int.parse(value);
+              final newEntry = oldModel.copyWith(customModelId: newID);
+              setState(() {
+                StoreProvider.dispatch(
+                    context, UpdateBlockAction(oldModel, newEntry));
+                selectedItem.value = newEntry;
+              });
+            },
+          ),
+        ],
+      ),
+      Positioned(
+          bottom: 25,
+          right: 25,
+          child: FloatingActionButton.extended(
+            heroTag: UniqueKey(),
+            onPressed: () {
+              ApiService().blockAPI.update(model);
+            },
+            label: Text(context.l10n.button_save),
+            icon: saveIcon,
+          ))
+    ]);
   }
 }
