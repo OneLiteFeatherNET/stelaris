@@ -26,7 +26,7 @@ final GoRouter router = GoRouter(routes: [
               child: child,
             )),
   ),
-  GoRoute(
+  /*GoRoute(
     path: NavigationEntry.blocks.route,
     pageBuilder: (context, state) => CustomTransitionPage(
         child: const BasePage(child: BlockPage()),
@@ -36,7 +36,7 @@ final GoRouter router = GoRouter(routes: [
               opacity: animation,
               child: child,
             )),
-  ),
+  ),*/
   GoRoute(
     path: NavigationEntry.notifications.route,
     pageBuilder: (context, state) => CustomTransitionPage(
