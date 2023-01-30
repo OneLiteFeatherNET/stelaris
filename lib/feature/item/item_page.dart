@@ -55,60 +55,65 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
           selectedItem.value ??= vm.first;
         }
         return ModelContainerList<ItemModel>(
-            mapToDeleteDialog: (value) {
-              return [
+          mapToDeleteDialog: (value) {
+            return [
               TextSpan(
-                  text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
-                TextSpan(
-                    text: value.name ?? unknownEntry,
-                    style: const TextStyle(color: Colors.red)),
-                const TextSpan(
-                    text: secondLine,
-                    style: TextStyle(color: Colors.white)),
-              ];
-            },
-            mapToDeleteSuccessfully: (value) {
-              StoreProvider.dispatch(context, RemoveItemAction(value));
-              return true;
-            },
-            items: vm,
-            page: mapPageToWidget,
-            mapToDataModelItem: mapDataToModelItem,
-            selectedItem: selectedItem,
-            openFunction: () {
-              showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (BuildContext context) {
-                    return Dialog(
-                      child: SizedBox(
-                        width: 500,
-                        height: 350,
-                        child: Card(
-                          elevation: 0.8,
-                          child: SetupStepper<ItemModel>(
-                            buildModel: (name, description) {
-                              return ItemModel(name: name);
-                            },
-                            finishCallback: (model) {
-                              StoreProvider.dispatch(
-                                  context, AddItemAction(model));
-                              Navigator.pop(context);
-                              selectedItem.value = model;
-                            },
-                          ),
-                        ),
+                  text: context.l10n.delete_dialog_first_line,
+                  style: whiteStyle
+              ),
+              TextSpan(
+                  text: value.name ?? unknownEntry,
+                  style: redStyle
+              ),
+              TextSpan(
+                  text: context.l10n.delete_dialog_entry,
+                  style: whiteStyle
+              ),
+            ];
+          },
+          mapToDeleteSuccessfully: (value) {
+            StoreProvider.dispatch(context, RemoveItemAction(value));
+            return true;
+          },
+          items: vm,
+          page: mapPageToWidget,
+          mapToDataModelItem: mapDataToModelItem,
+          selectedItem: selectedItem,
+          openFunction: () {
+            showDialog(
+              context: context,
+              useRootNavigator: false,
+              builder: (BuildContext context) {
+                return Dialog(
+                  child: SizedBox(
+                    width: 500,
+                    height: 350,
+                    child: Card(
+                      elevation: 0.8,
+                      child: SetupStepper<ItemModel>(
+                        buildModel: (name, description) {
+                          return ItemModel(name: name);
+                        },
+                        finishCallback: (model) {
+                          StoreProvider.dispatch(context, AddItemAction(model));
+                          Navigator.pop(context);
+                          selectedItem.value = model;
+                        },
                       ),
-                    );
-                  });
-            });
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        );
       },
     );
   }
 
   Widget mapDataToModelItem(ItemModel model) {
     return Text(
-      model.name ?? "Test",
+      model.name ?? unknownEntry,
       overflow: TextOverflow.ellipsis,
     );
   }
@@ -117,16 +122,18 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
     switch (e) {
       case TabPages.general:
         return ValueListenableBuilder<ItemModel?>(
-            valueListenable: listenable,
-            builder: (BuildContext context, ItemModel? value, Widget? child) {
-              return getGeneralContent(value);
-            });
+          valueListenable: listenable,
+          builder: (BuildContext context, ItemModel? value, Widget? child) {
+            return getGeneralContent(value);
+          },
+        );
       case TabPages.meta:
         return ValueListenableBuilder<ItemModel?>(
-            valueListenable: listenable,
-            builder: (BuildContext context, value, Widget? child) {
-              return getMetaContent(value);
-            });
+          valueListenable: listenable,
+          builder: (BuildContext context, value, Widget? child) {
+            return getMetaContent(value);
+          },
+        );
     }
   }
 
@@ -139,81 +146,86 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
         Wrap(
           children: [
             TextInputCard<String>(
-              infoText: nameToolTip,
-                title: nameText,
-                currentValue: model.name ?? empty,
-                valueUpdate: (value) {
-                  if (value == model.name) return;
-                  final oldModel = model;
-                  final newEntry = oldModel.copyWith(name: value);
-                  setState(() {
-                    StoreProvider.dispatch(context, UpdateItemAction(oldModel, newEntry));
-                    selectedItem.value = newEntry;
-                  });
+              infoText: context.l10n.tooltip_name,
+              title: Text(context.l10n.card_name),
+              currentValue: model.name ?? empty,
+              valueUpdate: (value) {
+                if (value == model.name) return;
+                final oldModel = model;
+                final newEntry = oldModel.copyWith(name: value);
+                setState(() {
+                  StoreProvider.dispatch(
+                      context, UpdateItemAction(oldModel, newEntry));
+                  selectedItem.value = newEntry;
+                });
               },
             ),
             TextInputCard<String>(
-              infoText: descriptionToolTip,
-              title: descriptionText,
+              infoText: context.l10n.tooltip_description,
+              title: Text(context.l10n.card_description),
               currentValue: model.description ?? empty,
               valueUpdate: (value) {
                 if (value == model.description) return;
                 final oldModel = model;
                 final newEntry = oldModel.copyWith(description: value);
                 setState(() {
-                  StoreProvider.dispatch(context, UpdateItemAction(oldModel, newEntry));
+                  StoreProvider.dispatch(
+                      context, UpdateItemAction(oldModel, newEntry));
                   selectedItem.value = newEntry;
                 });
               },
             ),
             TextInputCard<String>(
-              infoText: materialTooltip,
-              title: materialText,
+              infoText: context.l10n.tooltip_material,
+              title: Text(context.l10n.card_material),
               currentValue: model.material ?? empty,
               valueUpdate: (value) {
                 if (value == model.material) return;
                 final oldModel = model;
                 final newEntry = oldModel.copyWith(material: value);
                 setState(() {
-                  StoreProvider.dispatch(context, UpdateItemAction(oldModel, newEntry));
+                  StoreProvider.dispatch(
+                      context, UpdateItemAction(oldModel, newEntry));
                   selectedItem.value = newEntry;
                 });
               },
             ),
             TextInputCard<String>(
-              infoText: displayNameToolTip,
-              title: const Text("Displayname"),
+              infoText: context.l10n.tooltip_displayname,
+              title: Text(context.l10n.card_display_name),
               currentValue: model.displayName ?? empty,
               valueUpdate: (value) {
                 if (value == model.displayName) return;
                 final oldModel = model;
                 final newEntry = oldModel.copyWith(displayName: value);
                 setState(() {
-                  StoreProvider.dispatch(context, UpdateItemAction(oldModel, newEntry));
+                  StoreProvider.dispatch(
+                      context, UpdateItemAction(oldModel, newEntry));
                   selectedItem.value = newEntry;
                 });
               },
             ),
             TextInputCard(
-              infoText: modelDataToolTip,
-                title: modelDataText,
-                currentValue: model.customModelId?.toString() ?? zero,
-                valueUpdate: (value) {
-                  if (value == model.customModelId) return;
-                  final oldModel = model;
-                  final newID = int.parse(value);
-                  final newEntry = oldModel.copyWith(customModelId: newID);
-                  setState(() {
-                    StoreProvider.dispatch(context, UpdateItemAction(oldModel, newEntry));
-                    selectedItem.value = newEntry;
-                  });
-                },
-                inputType: numberInput,
-                formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+              infoText: context.l10n.tooltip_model_data,
+              title: Text(context.l10n.card_model_data),
+              currentValue: model.customModelId?.toString() ?? zero,
+              valueUpdate: (value) {
+                if (value == model.customModelId) return;
+                final oldModel = model;
+                final newID = int.parse(value);
+                final newEntry = oldModel.copyWith(customModelId: newID);
+                setState(() {
+                  StoreProvider.dispatch(
+                      context, UpdateItemAction(oldModel, newEntry));
+                  selectedItem.value = newEntry;
+                });
+              },
+              inputType: numberInput,
+              formatter: [FilteringTextInputFormatter.allow(numberPattern)],
             ),
             TextInputCard(
-              infoText: "Hier kann ich ein Mat setzen",
-              title: const Text("Amount"),
+              infoText: context.l10n.tooltip_amount,
+              title: Text(context.l10n.card_amount),
               currentValue: model.amount?.toString() ?? zero,
               valueUpdate: (value) {
                 if (value == model.amount) return;
@@ -221,7 +233,8 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                 final newAmount = int.parse(value);
                 final newEntry = oldModel.copyWith(amount: newAmount);
                 setState(() {
-                  StoreProvider.dispatch(context, UpdateItemAction(oldModel, newEntry));
+                  StoreProvider.dispatch(
+                      context, UpdateItemAction(oldModel, newEntry));
                   selectedItem.value = newEntry;
                 });
               },
@@ -238,7 +251,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               onPressed: () {
                 ApiService().itemApi.update(model);
               },
-              label: saveText,
+              label: Text(context.l10n.button_save),
               icon: saveIcon,
             ))
       ],
@@ -252,147 +265,169 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
     final List<String> flags = model.flags == null ? [] : model.flags!.toList();
     return Stack(
       children: [
-          Wrap(
+        Wrap(
           clipBehavior: Clip.hardEdge,
           children: [
             ExpandableDataCard(
-              title: const Text("Flags"),
+              title: Text(context.l10n.card_flags),
               buttonClick: () {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return EnumAddDialog<ItemFlag>(
-                      title: const Text("Add a flag", textAlign: TextAlign.center),
-                      items: items,
-                      valueUpdate: (value) {
-                        final oldEntry = model;
-                        Set<String> flags = Set.of(oldEntry.flags ?? {});
-                        flags.add(value!.minestomValue);
-                        final newEntry = oldEntry.copyWith(flags: flags);
-                        setState(() {
-                          StoreProvider.dispatch(context, UpdateItemAction(oldEntry, newEntry));
-                          Navigator.pop(context);
-                          selectedItem.value = newEntry;
+                        title: Text(context.l10n.enum_dialog_flags, textAlign: TextAlign.center),
+                        items: items,
+                        valueUpdate: (value) {
+                          final oldEntry = model;
+                          Set<String> flags = Set.of(oldEntry.flags ?? {});
+                          flags.add(value!.minestomValue);
+                          final newEntry = oldEntry.copyWith(flags: flags);
+                          setState(() {
+                            StoreProvider.dispatch(
+                                context, UpdateItemAction(oldEntry, newEntry));
+                            Navigator.pop(context);
+                            selectedItem.value = newEntry;
+                          });
                         });
-                      }
+                  },
+                );
+              },
+              widgets: List<Widget>.generate(
+                flags.length,
+                (index) {
+                  final key = flags[index];
+                  return ListTile(
+                    title: Text(key),
+                    trailing: IconButton(
+                      icon: deleteIcon,
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return DeleteDialog(
+                              title: Text(context.l10n.dialog_delete_confirm),
+                              header: [
+                                TextSpan(
+                                    text: context.l10n.delete_dialog_first_line,
+                                    style:
+                                        const TextStyle(color: Colors.white)),
+                                TextSpan(
+                                    text: key,
+                                    style: const TextStyle(color: Colors.red)),
+                                TextSpan(
+                                    text: context.l10n.delete_dialog_entry,
+                                    style: TextStyle(color: Colors.white)),
+                              ],
+                              context: context,
+                              value: key,
+                              successfully: (value) {
+                                final oldEntry = model;
+                                Set<String> oldFlags =
+                                    Set.of(oldEntry.flags ?? {});
+                                oldFlags.remove(key);
+                                final newEntry =
+                                    oldEntry.copyWith(flags: oldFlags);
+                                setState(
+                                  () {
+                                    StoreProvider.dispatch(context,
+                                        UpdateItemAction(oldEntry, newEntry));
+                                    selectedItem.value = newEntry;
+                                  },
+                                );
+                                return true;
+                              },
+                            ).getDeleteDialog();
+                          },
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+            ExpandableDataCard(
+              title: Text(context.l10n.card_enchantments),
+              buttonClick: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    final oldEntry = model;
+                    return ItemEnchantmentAddDialog(
+                      addEnchantmentCallback: (selected, level) {
+                        final oldEnchantments =
+                            Map<String, int>.of(oldEntry.enchantments ?? {});
+                        oldEnchantments[selected.minecraftValue] = level;
+                        final newEntry =
+                            oldEntry.copyWith(enchantments: oldEnchantments);
+                        setState(
+                          () {
+                            Navigator.pop(context);
+                            StoreProvider.dispatch(
+                                context, UpdateItemAction(oldEntry, newEntry));
+                            selectedItem.value = newEntry;
+                          },
+                        );
+                      },
                     );
                   },
                 );
               },
-              widgets: List<Widget>.generate(flags.length, (index) {
-                final key = flags[index];
-                return ListTile(
-                  title: Text(key),
-                  trailing: IconButton(
-                    icon: deleteIcon,
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return DeleteDialog(
-                                title: deleteTitle,
+              widgets: List<Widget>.generate(
+                model.enchantments?.length ?? 0,
+                (index) {
+                  final key = model.enchantments?.keys.elementAt(index);
+                  final value = model.enchantments?.values.elementAt(index);
+                  return ListTile(
+                      title: Text("$key, Level: $value"),
+                      trailing: IconButton(
+                        icon: deleteIcon,
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return DeleteDialog(
+                                title: Text(context.l10n.dialog_delete_confirm),
                                 header: [
                                   TextSpan(
-                                      text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
+                                      text:
+                                          context.l10n.delete_dialog_first_line,
+                                      style: TextStyle(color: Colors.white)),
                                   TextSpan(
                                       text: key,
-                                      style: const TextStyle(color: Colors.red)),
-                                  const TextSpan(
-                                      text: secondLine,
+                                      style:
+                                          const TextStyle(color: Colors.red)),
+                                  TextSpan(
+                                      text: context.l10n.delete_dialog_entry,
                                       style: TextStyle(color: Colors.white)),
                                 ],
                                 context: context,
                                 value: key,
                                 successfully: (value) {
                                   final oldEntry = model;
-                                  Set<String> oldFlags = Set.of(oldEntry.flags ?? {});
-                                  oldFlags.remove(key);
-                                  final newEntry = oldEntry.copyWith(flags: oldFlags);
-                                  setState(() {
-                                    StoreProvider.dispatch(context, UpdateItemAction(oldEntry, newEntry));
-                                    selectedItem.value = newEntry;
-                                  });
-                                  return true;
-                                }
-                            ).getDeleteDialog();
-                          });
-                    },
-                  ),
-                );
-
-              })
-            ),
-            ExpandableDataCard(
-              title: const Text("Enchantments"),
-              buttonClick: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      final oldEntry = model;
-                      return ItemEnchantmentAddDialog(
-                        addEnchantmentCallback: (selected, level) {
-                          final oldEnchantments =
-                          Map<String, int>.of(oldEntry.enchantments ?? {});
-                          oldEnchantments[selected.minecraftValue] = level;
-                          final newEntry =
-                          oldEntry.copyWith(enchantments: oldEnchantments);
-                          setState(() {
-                            Navigator.pop(context);
-                            StoreProvider.dispatch(
-                                context, UpdateItemAction(oldEntry, newEntry));
-                            selectedItem.value = newEntry;
-                          });
-                        },
-                      );
-                    });
-              },
-              widgets: List<Widget>.generate(model.enchantments?.length ?? 0, (index) {
-                final key = model.enchantments?.keys.elementAt(index);
-                final value = model.enchantments?.values.elementAt(index);
-                return ListTile(
-                    title: Text("$key, Level: $value"),
-                    trailing: IconButton(
-                      icon: deleteIcon,
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return DeleteDialog(
-                                  title: deleteTitle,
-                                  header:  [
-                              TextSpan(
-                              text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
-                                    TextSpan(
-                                        text: key,
-                                        style: const TextStyle(color: Colors.red)),
-                                    const TextSpan(
-                                        text: secondLine,
-                                        style: TextStyle(color: Colors.white)),
-                                  ],
-                                  context: context,
-                                  value: key,
-                                  successfully: (value) {
-                                    final oldEntry = model;
-                                    final oldEnchantments =
-                                    Map<String, int>.of(oldEntry.enchantments ?? {});
-                                    oldEnchantments.remove(key);
-                                    final newEntry =
-                                    oldEntry.copyWith(enchantments: oldEnchantments);
-                                    setState(() {
-                                      StoreProvider.dispatch(
-                                          context, UpdateItemAction(oldEntry, newEntry));
+                                  final oldEnchantments = Map<String, int>.of(
+                                      oldEntry.enchantments ?? {});
+                                  oldEnchantments.remove(key);
+                                  final newEntry = oldEntry.copyWith(
+                                      enchantments: oldEnchantments);
+                                  setState(
+                                    () {
+                                      StoreProvider.dispatch(context,
+                                          UpdateItemAction(oldEntry, newEntry));
                                       selectedItem.value = newEntry;
-                                    });
-                                    return true;
-                                  }
+                                    },
+                                  );
+                                  return true;
+                                },
                               ).getDeleteDialog();
-                            });
-                      },
-                    ));
-              }),
+                            },
+                          );
+                        },
+                      ));
+                },
+              ),
             ),
             ExpandableDataCard(
-              title: const Text("Lore"),
+              title: Text(context.l10n.card_lore),
               buttonClick: () {
                 showDialog(
                   context: context,
@@ -405,13 +440,13 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                           oldLores.add(value);
                           final newEntry = oldEntry.copyWith(lore: oldLores);
                           setState(() {
-                            StoreProvider.dispatch(context, UpdateItemAction(oldEntry, newEntry));
+                            StoreProvider.dispatch(
+                                context, UpdateItemAction(oldEntry, newEntry));
                             Navigator.pop(context);
                             selectedItem.value = newEntry;
                           });
                         }),
-                        title: const Text("Add new line")
-                    );
+                        title: const Text("Add new line"));
                   },
                 );
               },
@@ -426,31 +461,36 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                           context: context,
                           builder: (context) {
                             return DeleteDialog(
-                                title: deleteTitle,
-                                header:  [
+                                title: Text(context.l10n.dialog_delete_confirm),
+                                header: [
                                   TextSpan(
-                                      text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
+                                      text:
+                                          context.l10n.delete_dialog_first_line,
+                                      style: TextStyle(color: Colors.white)),
                                   TextSpan(
                                       text: key,
-                                      style: const TextStyle(color: Colors.red)),
-                                  const TextSpan(
-                                      text: secondLine,
+                                      style:
+                                          const TextStyle(color: Colors.red)),
+                                  TextSpan(
+                                      text: context.l10n.delete_dialog_entry,
                                       style: TextStyle(color: Colors.white)),
                                 ],
                                 context: context,
                                 value: key,
                                 successfully: (value) {
                                   final oldEntry = model;
-                                  List<String> oldLores = List.of(oldEntry.lore ?? []);
+                                  List<String> oldLores =
+                                      List.of(oldEntry.lore ?? []);
                                   oldLores.remove(key);
-                                  final newEntry = oldEntry.copyWith(lore: oldLores);
+                                  final newEntry =
+                                      oldEntry.copyWith(lore: oldLores);
                                   setState(() {
-                                    StoreProvider.dispatch(context, UpdateItemAction(oldEntry, newEntry));
+                                    StoreProvider.dispatch(context,
+                                        UpdateItemAction(oldEntry, newEntry));
                                     selectedItem.value = newEntry;
                                   });
                                   return true;
-                                }
-                            ).getDeleteDialog();
+                                }).getDeleteDialog();
                           });
                     },
                   ),
@@ -458,7 +498,6 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               }),
             ),
           ],
-
         ),
         Positioned(
             bottom: 25,
@@ -468,10 +507,9 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
               onPressed: () {
                 ApiService().itemApi.update(model);
               },
-              label: saveText,
+              label: Text(context.l10n.button_save),
               icon: saveIcon,
-            )
-        )
+            ))
       ],
     );
   }

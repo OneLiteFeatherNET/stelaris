@@ -44,12 +44,11 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
           mapToDeleteDialog: (value) {
             return [
               TextSpan(
-                  text: context.l10n.delete_dialog_firstline, style: TextStyle(color: Colors.white)),
+                  text: context.l10n.delete_dialog_first_line,
+                  style: whiteStyle),
+              TextSpan(text: value.name ?? unknownEntry, style: redStyle),
               TextSpan(
-                  text: value.name ?? unknownEntry,
-                  style: const TextStyle(color: Colors.red)),
-              const TextSpan(
-                  text: secondLine, style: TextStyle(color: Colors.white)),
+                  text: context.l10n.delete_dialog_entry, style: whiteStyle),
             ];
           },
           mapToDeleteSuccessfully: (value) {
@@ -103,11 +102,12 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
     switch (e) {
       case TabPages.general:
         return ValueListenableBuilder<NotificationModel?>(
-            valueListenable: test,
-            builder: (BuildContext context, NotificationModel? value,
-                Widget? child) {
-              return getGeneralContent(value);
-            });
+          valueListenable: test,
+          builder:
+              (BuildContext context, NotificationModel? value, Widget? child) {
+            return getGeneralContent(value);
+          },
+        );
       case TabPages.meta:
         return nil;
     }
@@ -122,8 +122,8 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
         Wrap(
           children: [
             TextInputCard<String>(
-                title: nameText,
-                infoText: nameToolTip,
+                title: Text(context.l10n.card_name),
+                infoText: context.l10n.tooltip_name,
                 currentValue: model.name ?? empty,
                 valueUpdate: (value) {
                   if (value == model.name) return;
@@ -136,9 +136,9 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                   });
                 }),
             TextInputCard<String>(
-                title: materialText,
+                title: Text(context.l10n.card_material),
                 currentValue: model.material ?? empty,
-                infoText: materialTooltip,
+                infoText: context.l10n.tooltip_material,
                 valueUpdate: (value) {
                   if (value == model.material) return;
                   final oldModel = model;
@@ -150,9 +150,9 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                   });
                 }),
             TextInputCard<String>(
-                title: const Text("Title"),
+                title: Text(context.l10n.card_title),
                 currentValue: model.title ?? empty,
-                infoText: "Hier kann ich ein Mat setzen",
+                infoText: context.l10n.tooltip_title,
                 valueUpdate: (value) {
                   if (value == model.title) return;
                   final oldModel = model;
@@ -164,9 +164,9 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                   });
                 }),
             TextInputCard<String>(
-                title: descriptionText,
+                title: Text(context.l10n.card_description),
                 currentValue: model.description ?? empty,
-                infoText: descriptionToolTip,
+                infoText: context.l10n.tooltip_description,
                 valueUpdate: (value) {
                   if (value == model.description) return;
                   final oldModel = model;
@@ -179,7 +179,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                 }),
             DropDownCard<FrameType, NotificationModel>(
               currentValue: model,
-              title: const Text("FrameType", textAlign: TextAlign.center),
+              title: Text(context.l10n.card_frame_type, textAlign: TextAlign.center),
               items: getItems(),
               valueUpdate: (FrameType? value) {
                 if (value == getDefaultValue(model)) return;
@@ -202,7 +202,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
               onPressed: () {
                 ApiService().notificationAPI.update(model);
               },
-              label: saveText,
+              label: Text(context.l10n.button_save),
               icon: saveIcon,
             ))
       ],
