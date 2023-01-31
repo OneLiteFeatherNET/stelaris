@@ -10,7 +10,7 @@ import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
-import 'package:stelaris_ui/feature/dialogs/dismiss_dialog.dart';
+import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/enum_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_enchantments_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
@@ -60,16 +60,10 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
             return [
               TextSpan(
                   text: context.l10n.delete_dialog_first_line,
-                  style: whiteStyle
-              ),
+                  style: whiteStyle),
+              TextSpan(text: value.name ?? unknownEntry, style: redStyle),
               TextSpan(
-                  text: value.name ?? unknownEntry,
-                  style: redStyle
-              ),
-              TextSpan(
-                  text: context.l10n.delete_dialog_entry,
-                  style: whiteStyle
-              ),
+                  text: context.l10n.delete_dialog_entry, style: whiteStyle),
             ];
           },
           mapToDeleteSuccessfully: (value) {
@@ -90,7 +84,6 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                     width: 500,
                     height: 350,
                     child: Card(
-                      elevation: 0.8,
                       child: SetupStepper<ItemModel>(
                         buildModel: (name, description) {
                           return ItemModel(name: name);
@@ -270,7 +263,8 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                   context: context,
                   builder: (BuildContext context) {
                     return EnumAddDialog<ItemFlag>(
-                        title: Text(context.l10n.enum_dialog_flags, textAlign: TextAlign.center),
+                        title: Text(context.l10n.enum_dialog_flags,
+                            textAlign: TextAlign.center),
                         items: items,
                         valueUpdate: (value) {
                           final oldEntry = model;
@@ -299,39 +293,40 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                         showDialog(
                           context: context,
                           builder: (context) {
-                            return DeleteDialog(
-                              title: Text(context.l10n.dialog_delete_confirm),
-                              header: [
-                                TextSpan(
-                                    text: context.l10n.delete_dialog_first_line,
-                                    style:
-                                        const TextStyle(color: Colors.white)),
-                                TextSpan(
-                                    text: key,
-                                    style: const TextStyle(color: Colors.red)),
-                                TextSpan(
-                                    text: context.l10n.delete_dialog_entry,
-                                    style: TextStyle(color: Colors.white)),
-                              ],
-                              context: context,
-                              value: key,
-                              successfully: (value) {
-                                final oldEntry = model;
-                                Set<String> oldFlags =
-                                    Set.of(oldEntry.flags ?? {});
-                                oldFlags.remove(key);
-                                final newEntry =
-                                    oldEntry.copyWith(flags: oldFlags);
-                                setState(
-                                  () {
-                                    StoreProvider.dispatch(context,
-                                        UpdateItemAction(oldEntry, newEntry));
-                                    selectedItem.value = newEntry;
-                                  },
-                                );
-                                return true;
-                              },
-                            ).getDeleteDialog();
+                            return DeleteDialog<String>(
+                                title: Text(context.l10n.dialog_delete_confirm),
+                                header: [
+                                  TextSpan(
+                                      text:
+                                          context.l10n.delete_dialog_first_line,
+                                      style:
+                                          const TextStyle(color: Colors.white)),
+                                  TextSpan(
+                                      text: key,
+                                      style:
+                                          const TextStyle(color: Colors.red)),
+                                  TextSpan(
+                                      text: context.l10n.delete_dialog_entry,
+                                      style:
+                                          const TextStyle(color: Colors.white)),
+                                ],
+                                value: key,
+                                successfully: (value) {
+                                  final oldEntry = model;
+                                  Set<String> oldFlags =
+                                      Set.of(oldEntry.flags ?? {});
+                                  oldFlags.remove(key);
+                                  final newEntry =
+                                      oldEntry.copyWith(flags: oldFlags);
+                                  setState(
+                                    () {
+                                      StoreProvider.dispatch(context,
+                                          UpdateItemAction(oldEntry, newEntry));
+                                      selectedItem.value = newEntry;
+                                    },
+                                  );
+                                  return true;
+                                });
                           },
                         );
                       },
@@ -380,40 +375,41 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                           showDialog(
                             context: context,
                             builder: (context) {
-                              return DeleteDialog(
-                                title: Text(context.l10n.dialog_delete_confirm),
-                                header: [
-                                  TextSpan(
-                                      text:
-                                          context.l10n.delete_dialog_first_line,
-                                      style: TextStyle(color: Colors.white)),
-                                  TextSpan(
-                                      text: key,
-                                      style:
-                                          const TextStyle(color: Colors.red)),
-                                  TextSpan(
-                                      text: context.l10n.delete_dialog_entry,
-                                      style: TextStyle(color: Colors.white)),
-                                ],
-                                context: context,
-                                value: key,
-                                successfully: (value) {
-                                  final oldEntry = model;
-                                  final oldEnchantments = Map<String, int>.of(
-                                      oldEntry.enchantments ?? {});
-                                  oldEnchantments.remove(key);
-                                  final newEntry = oldEntry.copyWith(
-                                      enchantments: oldEnchantments);
-                                  setState(
-                                    () {
-                                      StoreProvider.dispatch(context,
-                                          UpdateItemAction(oldEntry, newEntry));
-                                      selectedItem.value = newEntry;
-                                    },
-                                  );
-                                  return true;
-                                },
-                              ).getDeleteDialog();
+                              return DeleteDialog<String?>(
+                                  title:
+                                      Text(context.l10n.dialog_delete_confirm),
+                                  header: [
+                                    TextSpan(
+                                        text: context
+                                            .l10n.delete_dialog_first_line,
+                                        style: TextStyle(color: Colors.white)),
+                                    TextSpan(
+                                        text: key,
+                                        style:
+                                            const TextStyle(color: Colors.red)),
+                                    TextSpan(
+                                        text: context.l10n.delete_dialog_entry,
+                                        style: TextStyle(color: Colors.white)),
+                                  ],
+                                  value: key,
+                                  successfully: (value) {
+                                    final oldEntry = model;
+                                    final oldEnchantments = Map<String, int>.of(
+                                        oldEntry.enchantments ?? {});
+                                    oldEnchantments.remove(key);
+                                    final newEntry = oldEntry.copyWith(
+                                        enchantments: oldEnchantments);
+                                    setState(
+                                      () {
+                                        StoreProvider.dispatch(
+                                            context,
+                                            UpdateItemAction(
+                                                oldEntry, newEntry));
+                                        selectedItem.value = newEntry;
+                                      },
+                                    );
+                                    return true;
+                                  });
                             },
                           );
                         },
@@ -445,17 +441,19 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                   },
                 );
               },
-              widgets: List<Widget>.generate(model.lore?.length ?? 0, (index) {
-                final key = model.lore?[index];
-                return ListTile(
-                  title: Text(key!),
-                  trailing: IconButton(
-                    icon: deleteIcon,
-                    onPressed: () {
-                      showDialog(
+              widgets: List<Widget>.generate(
+                model.lore?.length ?? 0,
+                (index) {
+                  final key = model.lore?[index];
+                  return ListTile(
+                    title: Text(key!),
+                    trailing: IconButton(
+                      icon: deleteIcon,
+                      onPressed: () {
+                        showDialog(
                           context: context,
                           builder: (context) {
-                            return DeleteDialog(
+                            return DeleteDialog<String>(
                                 title: Text(context.l10n.dialog_delete_confirm),
                                 header: [
                                   TextSpan(
@@ -470,7 +468,6 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                                       text: context.l10n.delete_dialog_entry,
                                       style: TextStyle(color: Colors.white)),
                                 ],
-                                context: context,
                                 value: key,
                                 successfully: (value) {
                                   final oldEntry = model;
@@ -485,12 +482,14 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                                     selectedItem.value = newEntry;
                                   });
                                   return true;
-                                }).getDeleteDialog();
-                          });
-                    },
-                  ),
-                );
-              }),
+                                });
+                          },
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
