@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
-class DeleteDialog<E> {
-
-  Text title;
-  List<TextSpan> header;
-  BuildContext context;
+class DeleteDialog<E> extends StatelessWidget {
+  final Text title;
+  final List<TextSpan> header;
   final E value;
   final MapToDeleteSuccessfully<E> successfully;
 
-  DeleteDialog({required this.title, required this.header, required this.context, required this.value, required this.successfully});
+  const DeleteDialog(
+      {Key? key,
+      required this.title,
+      required this.header,
+      required this.value,
+      required this.successfully})
+      : super(key: key);
 
-  AlertDialog getDeleteDialog() {
+  @override
+  Widget build(BuildContext context) {
     return AlertDialog(
       title: title,
       content: RichText(
@@ -20,7 +25,7 @@ class DeleteDialog<E> {
           children: header
         ),
       ),
-      actions: <Widget> [
+      actions:<Widget> [
         TextButton(
           child: Text(context.l10n.button_yes),
           onPressed: () {
