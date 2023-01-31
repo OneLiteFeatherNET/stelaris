@@ -11,7 +11,7 @@ import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
-import 'package:stelaris_ui/feature/dialogs/dismiss_dialog.dart';
+import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
@@ -53,16 +53,10 @@ class FontPageState extends State<FontPage> with BaseLayout {
             return [
               TextSpan(
                   text: context.l10n.delete_dialog_first_line,
-                  style: whiteStyle
-              ),
+                  style: whiteStyle),
+              TextSpan(text: value.name ?? unknownEntry, style: redStyle),
               TextSpan(
-                  text: value.name ?? unknownEntry,
-                  style: redStyle)
-              ,
-              TextSpan(
-                  text: context.l10n.delete_dialog_entry,
-                  style: whiteStyle
-              ),
+                  text: context.l10n.delete_dialog_entry, style: whiteStyle),
             ];
           },
           mapToDeleteSuccessfully: (value) {
@@ -89,7 +83,9 @@ class FontPageState extends State<FontPage> with BaseLayout {
                       child: SetupStepper<FontModel>(
                           buildModel: (name, description) {
                         return FontModel(
-                            name: name, description: description, type: FontType.bitmap.displayName);
+                            name: name,
+                            description: description,
+                            type: FontType.bitmap.displayName);
                       }, finishCallback: (model) {
                         StoreProvider.dispatch(context, AddFontAction(model));
                         Navigator.pop(context);
@@ -184,7 +180,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
             ),
             TextInputCard<String>(
               infoText: context.l10n.tooltip_ascent,
-              title:Text(context.l10n.card_ascent),
+              title: Text(context.l10n.card_ascent),
               currentValue: model.ascent?.toString() ?? zero,
               valueUpdate: (value) {
                 if (value == model.ascent) return;
@@ -238,34 +234,35 @@ class FontPageState extends State<FontPage> with BaseLayout {
           clipBehavior: Clip.hardEdge,
           children: [
             ExpandableDataCard(
-                title: const Text("Chars"),
-                buttonClick: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return EntryAddDialog(
-                          title: const Text("Add new char"),
-                          controller: TextEditingController(),
-                          formatters: [
-                            FilteringTextInputFormatter.allow(stringPattern)
-                          ],
-                          valueUpdate: (value) {
-                            final oldEntry = model;
-                            List<String> chars = List.of(oldEntry.chars ?? []);
-                            chars.add(value);
-                            final newEntry = oldEntry.copyWith(chars: chars);
-                            setState(() {
-                              StoreProvider.dispatch(context,
-                                  UpdateFontAction(oldEntry, newEntry));
-                              Navigator.pop(context);
-                              selectedItem.value = newEntry;
-                            });
+              title: const Text("Chars"),
+              buttonClick: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return EntryAddDialog(
+                        title: const Text("Add new char"),
+                        controller: TextEditingController(),
+                        formatters: [
+                          FilteringTextInputFormatter.allow(stringPattern)
+                        ],
+                        valueUpdate: (value) {
+                          final oldEntry = model;
+                          List<String> chars = List.of(oldEntry.chars ?? []);
+                          chars.add(value);
+                          final newEntry = oldEntry.copyWith(chars: chars);
+                          setState(() {
+                            StoreProvider.dispatch(
+                                context, UpdateFontAction(oldEntry, newEntry));
+                            Navigator.pop(context);
+                            selectedItem.value = newEntry;
                           });
-                    },
-                  );
-                },
-                widgets:
-                    List<Widget>.generate(model.chars?.length ?? 0, (index) {
+                        });
+                  },
+                );
+              },
+              widgets: List<Widget>.generate(
+                model.chars?.length ?? 0,
+                (index) {
                   final key = model.chars![index];
                   return ListTile(
                     title: Text(key),
@@ -273,44 +270,45 @@ class FontPageState extends State<FontPage> with BaseLayout {
                       icon: deleteIcon,
                       onPressed: () {
                         showDialog(
-                            context: context,
-                            builder: (context) {
-                              return DeleteDialog(
-                                  title: Text(context.l10n.dialog_delete_confirm),
-                                  header: [
-                                    TextSpan(
-                                        text: context
-                                            .l10n.delete_dialog_first_line,
-                                        style: TextStyle(color: Colors.white)),
-                                    TextSpan(
-                                        text: key,
-                                        style:
-                                            const TextStyle(color: Colors.red)),
-                                    TextSpan(
-                                        text: context.l10n.delete_dialog_entry,
-                                        style: TextStyle(color: Colors.white)),
-                                  ],
-                                  context: context,
-                                  value: key,
-                                  successfully: (value) {
-                                    final oldEntry = model;
-                                    List<String> chars =
-                                        List.of(model.chars ?? []);
-                                    chars.remove(key);
-                                    final newEntry =
-                                        oldEntry.copyWith(chars: chars);
-                                    setState(() {
-                                      StoreProvider.dispatch(context,
-                                          UpdateFontAction(oldEntry, newEntry));
-                                      selectedItem.value = newEntry;
-                                    });
-                                    return true;
-                                  }).getDeleteDialog();
-                            });
+                          context: context,
+                          builder: (context) {
+                            return DeleteDialog<String>(
+                                title: Text(context.l10n.dialog_delete_confirm),
+                                header: [
+                                  TextSpan(
+                                      text:
+                                      context.l10n.delete_dialog_first_line,
+                                      style: TextStyle(color: Colors.white)),
+                                  TextSpan(
+                                      text: key,
+                                      style:
+                                      const TextStyle(color: Colors.red)),
+                                  TextSpan(
+                                      text: context.l10n.delete_dialog_entry,
+                                      style: TextStyle(color: Colors.white)),
+                                ],
+                                value: key,
+                                successfully: (value) {
+                                  final oldEntry = model;
+                                  List<String> chars = List.of(model.chars ?? []);
+                                  chars.remove(key);
+                                  final newEntry = oldEntry.copyWith(chars: chars);
+                                  setState(() {
+                                    StoreProvider.dispatch(context,
+                                        UpdateFontAction(oldEntry, newEntry));
+                                    selectedItem.value = newEntry;
+                                  });
+                                  return true;
+                                }
+                            );
+                          },
+                        );
                       },
                     ),
                   );
-                })),
+                },
+              ),
+            ),
           ],
         ),
         SaveButton(
