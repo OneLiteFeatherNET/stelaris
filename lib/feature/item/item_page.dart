@@ -6,10 +6,12 @@ import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
+import 'package:stelaris_ui/api/util/minecraft/enchantment.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
+import 'package:stelaris_ui/feature/dialogs/abort_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/enum_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_enchantments_dialog.dart';
@@ -262,6 +264,12 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
+                    if (flags.length == ItemFlag.values.length) {
+                      return AbortAddDialog(
+                          title: context.l10n.dialog_abort_flags_title,
+                          content: context.l10n.dialog_abort_flags
+                      );
+                    }
                     return EnumAddDialog<ItemFlag>(
                         title: Text(context.l10n.enum_dialog_flags,
                             textAlign: TextAlign.center),
@@ -341,6 +349,12 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
+                    if (model.enchantments != null && model.enchantments!.length == Enchantment.values.length) {
+                      return AbortAddDialog(
+                          title: context.l10n.dialog_abort_enchantment_title,
+                          content: context.l10n.dialog_abort_enchantments
+                      );
+                    }
                     final oldEntry = model;
                     return ItemEnchantmentAddDialog(
                       addEnchantmentCallback: (selected, level) {
