@@ -5,20 +5,15 @@ import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
-const List<Enchantment> enchantments = Enchantment.values;
-List<DropdownMenuItem<Enchantment>> items = List.generate(
-    enchantments.length,
-    (index) => DropdownMenuItem(
-          value: enchantments[index],
-          child: Text(enchantments[index].display),
-        ));
-
 class ItemEnchantmentAddDialog extends StatelessWidget {
+
   final AddEnchantmentCallback addEnchantmentCallback;
   final TextEditingController levelController = TextEditingController();
+  final List<DropdownMenuItem<Enchantment>> items;
   Enchantment? _selected;
 
-  ItemEnchantmentAddDialog({Key? key, required this.addEnchantmentCallback})
+  ItemEnchantmentAddDialog(
+      {Key? key, required this.addEnchantmentCallback, required this.items})
       : super(key: key);
 
   @override
