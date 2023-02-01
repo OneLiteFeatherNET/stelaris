@@ -17,20 +17,13 @@ import 'package:stelaris_ui/feature/dialogs/enum_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_enchantments_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
+import 'package:stelaris_ui/util/item_reducer.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 import '../../api/state/app_state.dart';
 import '../../api/util/minecraft/item_flag.dart';
 import '../base/model_container_list.dart';
-
-const List<ItemFlag> flags = ItemFlag.values;
-List<DropdownMenuItem<ItemFlag>> items = List.generate(
-    flags.length,
-    (index) => DropdownMenuItem(
-          value: flags[index],
-          child: Text(flags[index].display),
-        ));
 
 class ItemPage extends StatefulWidget {
   const ItemPage({Key? key}) : super(key: key);
@@ -41,7 +34,7 @@ class ItemPage extends StatefulWidget {
   }
 }
 
-class ItemPageState extends State<ItemPage> with BaseLayout {
+class ItemPageState extends State<ItemPage> with BaseLayout, DropDownItemReducer {
   final ValueNotifier<ItemModel?> selectedItem = ValueNotifier(null);
 
   @override
@@ -273,7 +266,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                     return EnumAddDialog<ItemFlag>(
                         title: Text(context.l10n.enum_dialog_flags,
                             textAlign: TextAlign.center),
-                        items: items,
+                        items: reduceFlags(model),
                         valueUpdate: (value) {
                           final oldEntry = model;
                           Set<String> flags = Set.of(oldEntry.flags ?? {});
@@ -371,7 +364,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                             selectedItem.value = newEntry;
                           },
                         );
-                      },
+                      }, items: reduceEnchantments(model),
                     );
                   },
                 );
