@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
-import '../../../util/constants.dart';
-
 class TextInputCard<E> extends StatelessWidget with BaseLayout {
 
   final Text title;

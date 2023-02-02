@@ -2,10 +2,8 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/build/dialog/download_dialog.dart';
 import 'package:stelaris_ui/feature/build/dialog/generate_dialog.dart';
-import 'package:stelaris_ui/feature/build/dialog/version_dialog.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 
 class BuildPage extends StatefulWidget {
