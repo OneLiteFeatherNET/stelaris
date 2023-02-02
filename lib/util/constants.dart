@@ -46,3 +46,5 @@ const SizedBox spaceTenAndTenBox = SizedBox(width: 10, height: 10);
 const SizedBox spaceTenBox = SizedBox(width: 10);
 const SizedBox fifteenBox = SizedBox(height: 15);
 const SizedBox spaceTwentyFiveHeightBox = SizedBox(height: 25);
+
+const EdgeInsets dialogPadding = EdgeInsets.all(20.0);
