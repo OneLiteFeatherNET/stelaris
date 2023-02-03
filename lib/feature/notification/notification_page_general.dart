@@ -57,7 +57,13 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                         context, UpdateNotificationAction(oldModel, newEntry));
                     widget.selectedItem.value = newEntry;
                   });
-                }),
+                },
+                validator: (value) {
+                  if (value == null) return false;
+                  return !value.startsWith("minecraft:");
+                },
+              errorMessage: "The material must begins with minecraft:",
+            ),
             TextInputCard<String>(
                 title: Text(context.l10n.card_title),
                 currentValue: widget.model.title ?? empty,
