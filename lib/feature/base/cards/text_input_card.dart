@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
-import '../../../util/constants.dart';
-
 class TextInputCard<E> extends StatelessWidget with BaseLayout {
 
   final Text title;
@@ -12,6 +10,8 @@ class TextInputCard<E> extends StatelessWidget with BaseLayout {
   final String currentValue;
   final TextInputType? inputType;
   final List<TextInputFormatter>? formatter;
+  final Validator<String>? validator;
+  final String? errorMessage;
   final TextEditingController _editController = TextEditingController();
   final IconData? infoIcon;
   final String infoText;
@@ -24,7 +24,7 @@ class TextInputCard<E> extends StatelessWidget with BaseLayout {
       this.inputType,
       this.formatter,
       this.infoIcon,
-      required this.infoText})
+      required this.infoText, this.validator, this.errorMessage})
       : super(key: key);
 
   @override
@@ -56,10 +56,17 @@ class TextInputCard<E> extends StatelessWidget with BaseLayout {
           height: 100,
           child: Focus(
             child: TextFormField(
+              autovalidateMode: validator != null && errorMessage != null ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
               autocorrect: false,
               controller: _editController,
               keyboardType: inputType,
               inputFormatters: formatter,
+              validator: (value) {
+                if (validator == null) return null;
+                if (validator!(value)) {
+                  return errorMessage;
+                }
+              }
             ),
             onFocusChange: (focus) {
               if (!focus) {
