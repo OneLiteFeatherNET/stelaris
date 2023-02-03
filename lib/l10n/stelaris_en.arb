@@ -28,6 +28,7 @@
   "dialog_abort_chars_add": "Unable to add char",
   "dialog_abort_chars_text": "There is already an entry called ",
   "dialog_char_title": "Add new char",
+  "input_validation_material": "The material starts not with minecraft:",
   "error_generation_failure": "Generation failure in the backend",
   "error_generation_submit": "Generation submitted to backend",
   "tooltip_material": "Change the material",

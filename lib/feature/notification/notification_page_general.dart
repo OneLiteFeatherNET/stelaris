@@ -62,7 +62,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                   if (value == null) return false;
                   return !value.startsWith("minecraft:");
                 },
-              errorMessage: "The material must begins with minecraft:",
+              errorMessage: context.l10n.input_validation_material,
             ),
             TextInputCard<String>(
                 title: Text(context.l10n.card_title),
