@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
@@ -105,8 +106,16 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
               SizedBox(
                 width: 650,
                 child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: nameController,
                   decoration: const InputDecoration(labelText: 'Name'),
+                  inputFormatters: [FilteringTextInputFormatter.allow(namePattern)],
+                  validator: (value) {
+                    if (value != null && !namePattern.hasMatch(value)) {
+                      return "The name must start with a character not with a number";
+                    }
+                    return null;
+                  },
                 ),
               ),
               fifteenBox
