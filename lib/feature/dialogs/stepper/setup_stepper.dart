@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
+import 'package:stelaris_ui/feature/base/button/setup_stepper_button.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
@@ -48,9 +49,7 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
             currentStep: _currentStep,
             steps: steps,
             controlsBuilder: (BuildContext context, ControlsDetails details) {
-              return Row(
-                children: getButtons(details),
-              );
+              return StepperDialogButton(details: details);
             },
             onStepContinue: () {
               _continue();
@@ -62,37 +61,18 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
     );
   }
 
-  List<Widget> getButtons(ControlsDetails details) {
-    if (details.stepIndex == 0) {
-      return [
-        TextButton(
-            onPressed: details.onStepContinue,
-            child: Text(context.l10n.button_continue)
-        )
-      ];
-    } else {
-      return [
-        TextButton(
-            onPressed: details.onStepCancel,
-            child: Text(context.l10n.button_back)
-        ),
-        TextButton(
-            onPressed: details.onStepContinue,
-            child: Text(context.l10n.button_finish)
-        )
-      ];
-    }
-  }
-
   _continue() async {
     bool isLastStep = _currentStep == getSteps().length - 1;
 
-    if (isLastStep) {
+    if (isLastStep && nameController.text.trim().isNotEmpty) {
       widget.finishCallback(
           widget.buildModel(nameController.text, descriptionController.text));
       return null;
-    } else {
+    }
+
+    if (!isLastStep) {
       setState(() => _currentStep += 1);
+
     }
   }
 
@@ -108,11 +88,12 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
                 child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
+                  decoration: InputDecoration(labelText: context.l10n.card_name),
+                  maxLength: 30,
                   inputFormatters: [FilteringTextInputFormatter.allow(namePattern)],
                   validator: (value) {
                     if (value != null && !namePattern.hasMatch(value)) {
-                      return "The name must start with a character not with a number";
+                      return context.l10n.setup_invalid_name;
                     }
                     return null;
                   },
@@ -132,7 +113,7 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
                 width: 650,
                 child: TextFormField(
                   controller: descriptionController,
-                  decoration: const InputDecoration(labelText: 'Description'),
+                  decoration: InputDecoration(labelText: context.l10n.card_description),
                 ),
               ),
               fifteenBox
