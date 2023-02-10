@@ -109,7 +109,6 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
                   },
                 ),
               ),
-              fifteenBox
             ],
           ),
         ),
