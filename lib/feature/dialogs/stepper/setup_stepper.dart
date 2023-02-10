@@ -31,6 +31,8 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
 
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
+  FocusNode focusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     final steps = getSteps();
@@ -64,15 +66,22 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
   _continue() async {
     bool isLastStep = _currentStep == getSteps().length - 1;
 
+    if (!isLastStep) {
+      setState(() => _currentStep += 1);
+    }
+
+    if (isLastStep && nameController.text.isEmpty) {
+      setState(() {
+        _currentStep -= 1;
+        focusNode.requestFocus();
+      });
+      _currentStep = 0;
+    }
+
     if (isLastStep && nameController.text.trim().isNotEmpty) {
       widget.finishCallback(
           widget.buildModel(nameController.text, descriptionController.text));
       return null;
-    }
-
-    if (!isLastStep) {
-      setState(() => _currentStep += 1);
-
     }
   }
 
@@ -86,6 +95,7 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
               SizedBox(
                 width: 650,
                 child: TextFormField(
+                  focusNode: focusNode,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: nameController,
                   decoration: InputDecoration(labelText: context.l10n.card_name),
