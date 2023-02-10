@@ -18,6 +18,7 @@
   "text_version_type": "Version type",
   "text_wiki": "You can find the wiki here: ",
   "setup_new_model": "Create new model",
+  "setup_invalid_name": "The name must start with a character not with a number",
   "dialog_enchantment_title": "Add a enchantment",
   "dialog_enchantment_enchantment": "Enchantment",
   "dialog_delete_confirm": "Confirm deletion",

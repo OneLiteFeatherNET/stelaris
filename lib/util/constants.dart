@@ -17,6 +17,7 @@ Text emptyText = const Text(empty);
 RegExp numberPattern = RegExp("[1-9]\\d*");
 RegExp stringPattern = RegExp("[a-zA-Z]\\w*");
 RegExp dotPattern = RegExp("\\.");
+RegExp namePattern = RegExp("^[a-zA-z]\\w*");
 
 /// Formatter
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);
