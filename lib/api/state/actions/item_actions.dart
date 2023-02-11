@@ -10,7 +10,6 @@ class UpdateItemAction extends ReduxAction<AppState> {
 
   UpdateItemAction(this.oldEntry, this.newEntry);
 
-
   @override
   Future<AppState?> reduce() async {
     final items = List.of(state.items, growable: true);

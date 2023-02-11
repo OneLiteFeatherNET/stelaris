@@ -60,9 +60,10 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                 },
                 validator: (value) {
                   if (value == null) return false;
+                  return !minecraftPattern.hasMatch(value);
                   return !value.startsWith("minecraft:");
                 },
-              errorMessage: context.l10n.input_validation_material,
+                errorMessage: context.l10n.input_validation_material,
             ),
             TextInputCard<String>(
                 title: Text(context.l10n.card_title),

@@ -17,6 +17,7 @@ Text emptyText = const Text(empty);
 RegExp numberPattern = RegExp("[1-9]\\d*");
 RegExp stringPattern = RegExp("[a-zA-Z]\\w*");
 RegExp dotPattern = RegExp("\\.");
+RegExp minecraftPattern = RegExp("minecraft:");
 RegExp namePattern = RegExp("^[a-zA-z]\\w*");
 RegExp charPattern = RegExp('\\u[0-9a-fA-F]{4}'); //Represents the Common Unicode escape sequences
 
@@ -37,6 +38,7 @@ const String templateStepperTitle = "Create a server template";
 Icon addModelIcon = const Icon(Icons.add);
 Icon deleteIcon = const Icon(Icons.delete_forever, color: Colors.red);
 Icon saveIcon = const Icon(Icons.save);
+Icon editIcon = const Icon(Icons.edit, color: Colors.white);
 
 /// Styles
 TextStyle whiteStyle = const TextStyle(color: Colors.white);
