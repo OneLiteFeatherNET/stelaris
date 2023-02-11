@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/util/minecraft/enchantment.dart';
+import 'package:stelaris_ui/feature/item/enchantment_reducer.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
-class ItemEnchantmentAddDialog extends StatelessWidget {
+class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
 
   final AddEnchantmentCallback addEnchantmentCallback;
   final TextEditingController levelController = TextEditingController();
-  final List<DropdownMenuItem<Enchantment>> items;
+  final ItemModel model;
   Enchantment? _selected;
 
-  ItemEnchantmentAddDialog(
-      {Key? key, required this.addEnchantmentCallback, required this.items})
-      : super(key: key);
+  ItemEnchantmentAddDialog({Key? key, required this.addEnchantmentCallback, required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List<DropdownMenuItem<Enchantment>> enchantments = getEnchantments(model);
+    _selected = enchantments[0].value;
     return SimpleDialog(
       title: Text(
         context.l10n.dialog_enchantment_title,
@@ -28,8 +30,8 @@ class ItemEnchantmentAddDialog extends StatelessWidget {
         Text(context.l10n.dialog_enchantment_enchantment),
         spaceTenBox,
         DropdownButtonFormField(
-          value: items[0].value,
-          items: items,
+          value: _selected,
+          items: enchantments,
           onChanged: (Enchantment? value) {
             _selected = value;
           },

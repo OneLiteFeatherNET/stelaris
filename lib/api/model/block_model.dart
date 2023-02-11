@@ -10,7 +10,7 @@ class BlockModel extends DataModel with _$BlockModel {
   const factory BlockModel({
     @JsonKey(name: 'id') String? id,
     @JsonKey(name: 'name') String? name,
-    @JsonKey(name: 'generator', defaultValue: "BlockGenerator") @Default('BlockGenerator') String? generator,
+    @JsonKey(name: 'generator') @Default('BlockGenerator') String? generator,
     @JsonKey(name: 'customModelId') int? customModelId,
 }) = _BlockModel;
   
