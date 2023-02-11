@@ -12,11 +12,11 @@ class FontModel extends DataModel with _$FontModel {
     @JsonKey(name: 'name') String? name,
     @JsonKey(name: 'description') String? description,
     @JsonKey(name: 'generator') @Default('FontGenerator') String? generator,
-    @JsonKey(name: 'type') String? type,
+    @JsonKey(name: 'type') @Default('bitmap') String? type, //Ignore
     @JsonKey(name: 'chars') List<String>? chars,
     @JsonKey(name: 'ascent') int? ascent,
     @JsonKey(name: 'height') int? height,
-    @JsonKey(name: 'shift') List<double>? shift
+    @JsonKey(name: 'shift') List<double>? shift //Ignore
 }) = _FontModel;
 
 
