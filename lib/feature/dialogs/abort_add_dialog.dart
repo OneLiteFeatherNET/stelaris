@@ -12,6 +12,7 @@ class AbortAddDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
+      contentPadding: dialogPadding,
       title: Text(title, textAlign: TextAlign.center,),
       children: [
         Text(content, textAlign: TextAlign.center,),
