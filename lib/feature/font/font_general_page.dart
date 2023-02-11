@@ -63,21 +63,6 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                 });
               },
             ),
-            DropDownCard<FontType, FontModel>(
-              title: Text(context.l10n.card_type),
-              items: getItems(),
-              currentValue: widget.model,
-              defaultValue: getDefaultValue,
-              valueUpdate: (FontType? value) {
-                if (value == getDefaultValue(widget.model)) return;
-                final newEntry = widget.model.copyWith(type: value?.displayName);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateFontAction(widget.model, newEntry));
-                  widget.selectedItem.value = newEntry;
-                });
-              },
-            ),
             TextInputCard<String>(
               infoText: context.l10n.tooltip_ascent,
               title: Text(context.l10n.card_ascent),
