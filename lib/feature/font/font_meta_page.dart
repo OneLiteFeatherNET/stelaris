@@ -6,6 +6,7 @@ import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
+import 'package:stelaris_ui/feature/dialogs/abort_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
@@ -37,12 +38,20 @@ class _FontMetaPageState extends State<FontMetaPage> {
                   context: context,
                   builder: (BuildContext context) {
                     return EntryAddDialog(
-                        title: const Text("Add new char"),
+                        title: Text(context.l10n.dialog_char_title, textAlign: TextAlign.center,),
+                        forceClose: true,
                         controller: TextEditingController(),
-                        formatters: [
-                          FilteringTextInputFormatter.allow(stringPattern)
-                        ],
+                        formatters: [FilteringTextInputFormatter.allow(stringPattern)],
                         valueUpdate: (value) {
+                          if (widget.model.chars != null && widget.model.chars!.contains(value)) {
+                            showDialog(context: context, builder: (BuildContext context) {
+                              return AbortAddDialog(
+                                title: context.l10n.dialog_abort_chars_add,
+                                content: '${context.l10n.dialog_abort_chars_text} $value',
+                              );
+                            });
+                            return;
+                          }
                           final oldEntry = widget.model;
                           List<String> chars = List.of(oldEntry.chars ?? []);
                           chars.add(value);
@@ -53,7 +62,8 @@ class _FontMetaPageState extends State<FontMetaPage> {
                             Navigator.pop(context);
                             widget.selectedItem.value = newEntry;
                           });
-                        });
+                        },
+                    );
                   },
                 );
               },
