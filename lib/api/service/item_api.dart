@@ -20,7 +20,7 @@ class ItemApi {
   Future<ItemModel> addItem(ItemModel item) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/item/');
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/item');
     final result = await _apiClient.dio.postUri(uri, data: item).then((value) => ItemModel.fromJson(value.data!));
     return result;
   }
@@ -38,6 +38,14 @@ class ItemApi {
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/item/update');
     final result = await _apiClient.dio.postUri(uri, data: itemModel.toJson()).then((value) => ItemModel.fromJson(value.data!));
+    return result;
+  }
+
+  Future<ItemModel> remove(ItemModel itemModel) async {
+    final queryParams = <String, dynamic>{};
+    final baseUri = Uri.parse(_apiClient.baseUrl);
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/item/remove/${itemModel.id}');
+    final result = await _apiClient.dio.deleteUri(uri).then((value) => ItemModel.fromJson(value.data!));
     return result;
   }
 }

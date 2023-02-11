@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/feature/base/button/add_button.dart';
-import 'package:stelaris_ui/feature/dialogs/dismiss_dialog.dart';
+import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
@@ -13,15 +14,15 @@ class ModelList<E extends DataModel> extends StatefulWidget {
   final MapToDeleteDialog<E> mapToDeleteDialog;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
 
-  const ModelList({
-    Key? key,
-    required this.items,
-    required this.mapToDataModelItem,
-    required this.selectedItem,
-    required this.openFunction,
-    required this.mapToDeleteDialog,
-    required this.mapToDeleteSuccessfully
-  }) : super(key: key);
+  const ModelList(
+      {Key? key,
+      required this.items,
+      required this.mapToDataModelItem,
+      required this.selectedItem,
+      required this.openFunction,
+      required this.mapToDeleteDialog,
+      required this.mapToDeleteSuccessfully})
+      : super(key: key);
 
   @override
   State<ModelList<E>> createState() => _ModelListState<E>();
@@ -31,7 +32,7 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: Theme.of(context).colorScheme.background,
       child: Stack(
         children: [
           SizedBox(
@@ -42,10 +43,12 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
                     itemCount: widget.items.length,
                     itemBuilder: (context, index) {
                       final e = widget.items[index];
-                      final selected = e.hashCode == widget.selectedItem.value.hashCode;
+                      final selected =
+                          e.hashCode == widget.selectedItem.value.hashCode;
                       final selectedCardShape = RoundedRectangleBorder(
                           side: BorderSide(
-                              color: Theme.of(context).colorScheme.secondary), borderRadius: BorderRadius.circular(12.0));
+                              color: Theme.of(context).colorScheme.secondary),
+                          borderRadius: BorderRadius.circular(12.0));
                       return InkWell(
                         onTap: () {
                           setState(() {
@@ -60,24 +63,22 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
                               icon: deleteIcon,
                               onPressed: () {
                                 showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return DeleteDialog(
-                                          title: deleteTitle,
-                                          header: widget.mapToDeleteDialog(e),
-                                          context: context,
-                                          value: e,
-                                          successfully: widget.mapToDeleteSuccessfully
-                                      ).getDeleteDialog();
-                                });
+                                  context: context,
+                                  builder: (context) {
+                                    return DeleteDialog<E>(
+                                        title: Text(context.l10n.dialog_delete_confirm, textAlign: TextAlign.center,),
+                                        header: widget.mapToDeleteDialog(e),
+                                        value: e,
+                                        successfully: widget.mapToDeleteSuccessfully
+                                    );
+                                  },
+                                );
                               },
                             ),
                           ),
                         ),
                       );
-                    }
-                )
-            ),
+                    })),
           ),
           Positioned(
             bottom: 20,
