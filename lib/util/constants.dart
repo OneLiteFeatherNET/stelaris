@@ -17,6 +17,7 @@ Text emptyText = const Text(empty);
 RegExp numberPattern = RegExp("[1-9]\\d*");
 RegExp stringPattern = RegExp("[a-zA-Z]\\w*");
 RegExp dotPattern = RegExp("\\.");
+RegExp charPattern = RegExp('\\u[0-9a-fA-F]{4}'); //Represents the Common Unicode escape sequences
 
 /// Formatter
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);
