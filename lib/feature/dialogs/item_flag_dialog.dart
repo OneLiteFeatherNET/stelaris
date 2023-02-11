@@ -18,7 +18,7 @@ class EntryAddDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return SimpleDialog(
       title: title,
-      contentPadding: const EdgeInsets.all(20.0),
+      contentPadding: dialogPadding,
       children: [
         TextFormField(
           keyboardType: TextInputType.text,
