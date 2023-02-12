@@ -9,6 +9,7 @@ class FontModel extends DataModel with _$FontModel {
 
   const factory FontModel({
     @JsonKey(name: 'id') String? id,
+    @JsonKey(name: 'modelName') String? modelName,
     @JsonKey(name: 'name') String? name,
     @JsonKey(name: 'description') String? description,
     @JsonKey(name: 'generator') @Default('FontGenerator') String? generator,
