@@ -4,10 +4,11 @@ import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
+import 'package:stelaris_ui/api/util/minecraft/item_flag.dart';
+import 'package:stelaris_ui/feature/base/button/delete_entry_button.dart';
 import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/dialogs/abort_add_dialog.dart';
-import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/enum_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_enchantments_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
@@ -16,8 +17,6 @@ import 'package:stelaris_ui/feature/item/enchantment_reducer.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/feature/item/item_reducer.dart';
-
-import '../../api/util/minecraft/item_flag.dart';
 
 class ItemMetaPage extends StatefulWidget with DropDownItemReducer {
   final ItemModel model;
@@ -76,47 +75,34 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                 (index) {
                   final key = flags[index];
                   return ListTile(
-                    title: Text(key),
-                    trailing: IconButton(
-                      icon: deleteIcon,
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return DeleteDialog(
-                              title: Text(context.l10n.dialog_delete_confirm, textAlign: TextAlign.center,),
-                              header: [
-                                TextSpan(
-                                    text: context.l10n.delete_dialog_first_line,
-                                    style: whiteStyle),
-                                TextSpan(text: key, style: redStyle),
-                                TextSpan(
-                                    text: context.l10n.delete_dialog_entry,
-                                    style: whiteStyle),
-                              ],
-                              value: key,
-                              successfully: (value) {
-                                final oldEntry = widget.model;
-                                Set<String> oldFlags =
-                                    Set.of(oldEntry.flags ?? {});
-                                oldFlags.remove(key);
-                                final newEntry =
-                                    oldEntry.copyWith(flags: oldFlags);
-                                setState(
-                                  () {
-                                    StoreProvider.dispatch(context,
-                                        UpdateItemAction(oldEntry, newEntry));
-                                    widget.selectedItem.value = newEntry;
-                                  },
-                                );
-                                return true;
-                              },
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  );
+                      title: Text(key),
+                      trailing: DeleteEntryButton<String>(
+                        title: context.l10n.dialog_delete_confirm,
+                        header: [
+                          TextSpan(
+                              text: context.l10n.delete_dialog_first_line,
+                              style: whiteStyle),
+                          TextSpan(text: key, style: redStyle),
+                          TextSpan(
+                              text: context.l10n.delete_dialog_entry,
+                              style: whiteStyle),
+                        ],
+                        value: key,
+                        mapToDeleteSuccessfully: (value) {
+                          final oldEntry = widget.model;
+                          Set<String> oldFlags = Set.of(oldEntry.flags ?? {});
+                          oldFlags.remove(key);
+                          final newEntry = oldEntry.copyWith(flags: oldFlags);
+                          setState(
+                            () {
+                              StoreProvider.dispatch(context,
+                                  UpdateItemAction(oldEntry, newEntry));
+                              widget.selectedItem.value = newEntry;
+                            },
+                          );
+                          return true;
+                        },
+                      ));
                 },
               ),
             ),
@@ -168,29 +154,29 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                       level: value,
                       delete: (ItemModel? value) {
                         final oldEntry = widget.model;
-                        final oldEnchantments = Map<String, int>.of(
-                            oldEntry.enchantments ?? {});
+                        final oldEnchantments =
+                            Map<String, int>.of(oldEntry.enchantments ?? {});
                         oldEnchantments.remove(key);
-                        final newEntry = oldEntry.copyWith(
-                            enchantments: oldEnchantments);
+                        final newEntry =
+                            oldEntry.copyWith(enchantments: oldEnchantments);
                         setState(
-                              () {
-                            StoreProvider.dispatch(context,
-                                UpdateItemAction(oldEntry, newEntry));
+                          () {
+                            StoreProvider.dispatch(
+                                context, UpdateItemAction(oldEntry, newEntry));
                             widget.selectedItem.value = newEntry;
                           },
                         );
                       },
                       update: (value, key) {
                         final oldEntry = widget.model;
-                        final oldEnchantments = Map<String, int>.from(
-                            oldEntry.enchantments ?? {});
+                        final oldEnchantments =
+                            Map<String, int>.from(oldEntry.enchantments ?? {});
                         oldEnchantments[value!] = int.parse(key!);
-                        final newEntry = oldEntry.copyWith(
-                            enchantments: oldEnchantments);
+                        final newEntry =
+                            oldEntry.copyWith(enchantments: oldEnchantments);
                         setState(() {
-                          StoreProvider.dispatch(context,
-                              UpdateItemAction(oldEntry, newEntry));
+                          StoreProvider.dispatch(
+                              context, UpdateItemAction(oldEntry, newEntry));
                           widget.selectedItem.value = newEntry;
                         });
                       },
@@ -223,50 +209,39 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                   },
                 );
               },
-              widgets: List<Widget>.generate(widget.model.lore?.length ?? 0,
-                  (index) {
-                final key = widget.model.lore?[index];
-                return ListTile(
-                  title: Text(key!),
-                  trailing: IconButton(
-                    icon: deleteIcon,
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return DeleteDialog<String>(
-                            title: Text(context.l10n.dialog_delete_confirm, textAlign: TextAlign.center,),
-                            header: [
-                              TextSpan(
-                                  text: context.l10n.delete_dialog_first_line,
-                                  style: whiteStyle),
-                              TextSpan(text: key, style: redStyle),
-                              TextSpan(
-                                  text: context.l10n.delete_dialog_entry,
-                                  style: whiteStyle),
-                            ],
-                            value: key,
-                            successfully: (value) {
-                              final oldEntry = widget.model;
-                              List<String> oldLores =
-                                  List.of(oldEntry.lore ?? []);
-                              oldLores.remove(key);
-                              final newEntry =
-                                  oldEntry.copyWith(lore: oldLores);
-                              setState(() {
-                                StoreProvider.dispatch(context,
-                                    UpdateItemAction(oldEntry, newEntry));
-                                widget.selectedItem.value = newEntry;
-                              });
-                              return true;
-                            },
-                          );
+              widgets: List<Widget>.generate(
+                widget.model.lore?.length ?? 0,
+                (index) {
+                  final key = widget.model.lore?[index];
+                  return ListTile(
+                      title: Text(key!),
+                      trailing: DeleteEntryButton<String>(
+                        title: context.l10n.dialog_delete_confirm,
+                        value: key,
+                        header: [
+                          TextSpan(
+                              text: context.l10n.delete_dialog_first_line,
+                              style: whiteStyle),
+                          TextSpan(text: key, style: redStyle),
+                          TextSpan(
+                              text: context.l10n.delete_dialog_entry,
+                              style: whiteStyle),
+                        ],
+                        mapToDeleteSuccessfully: (value) {
+                          final oldEntry = widget.model;
+                          List<String> oldLores = List.of(oldEntry.lore ?? []);
+                          oldLores.remove(key);
+                          final newEntry = oldEntry.copyWith(lore: oldLores);
+                          setState(() {
+                            StoreProvider.dispatch(
+                                context, UpdateItemAction(oldEntry, newEntry));
+                            widget.selectedItem.value = newEntry;
+                          });
+                          return true;
                         },
-                      );
-                    },
-                  ),
-                );
-              }),
+                      ));
+                },
+              ),
             ),
           ],
         ),
