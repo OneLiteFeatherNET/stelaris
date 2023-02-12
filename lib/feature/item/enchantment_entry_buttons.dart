@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
-import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
+import 'package:stelaris_ui/feature/base/button/delete_entry_button.dart';
 import 'package:stelaris_ui/feature/item/enchantment_edit_dialog.dart';
 import 'package:stelaris_ui/feature/item/enchantment_reducer.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
@@ -28,30 +28,19 @@ class EnchantmentButtons extends StatelessWidget with EnchantmentReducer {
       width: 80,
       child: Row(
         children: [
-          IconButton(
-            icon: deleteIcon,
-            tooltip: context.l10n.tooltip_delete,
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return DeleteDialog<String?>(
-                    title: Text(context.l10n.dialog_delete_confirm, textAlign: TextAlign.center,),
-                    header: [
-                      TextSpan(
-                          text: context.l10n.dialog_level_delete_first_line,
-                          style: whiteStyle),
-                      TextSpan(text: name, style: redStyle)
-                    ],
-                    value: name,
-                    successfully: (value) {
-                      delete(model);
-                      return true;
-                    },
-                  );
-                },
-              );
-            },
+          DeleteEntryButton<String?>(
+              title: context.l10n.dialog_delete_confirm,
+              header: [
+                TextSpan(
+                    text: context.l10n.dialog_level_delete_first_line,
+                    style: whiteStyle),
+                TextSpan(text: name, style: redStyle)
+              ],
+              value: name,
+              mapToDeleteSuccessfully: (value) {
+                delete(model);
+                return true;
+              },
           ),
           IconButton(onPressed: () {
             showDialog(context: context, builder: (BuildContext context) {
