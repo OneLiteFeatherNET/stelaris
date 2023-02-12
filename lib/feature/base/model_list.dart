@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/feature/base/button/add_button.dart';
-import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris_ui/feature/base/button/delete_model_button.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
 class ModelList<E extends DataModel> extends StatefulWidget {
@@ -59,22 +57,11 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
                           shape: selected ? selectedCardShape : null,
                           child: ListTile(
                             title: widget.mapToDataModelItem(e),
-                            trailing: IconButton(
-                              icon: deleteIcon,
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return DeleteDialog<E>(
-                                        title: Text(context.l10n.dialog_delete_confirm, textAlign: TextAlign.center,),
-                                        header: widget.mapToDeleteDialog(e),
-                                        value: e,
-                                        successfully: widget.mapToDeleteSuccessfully
-                                    );
-                                  },
-                                );
-                              },
-                            ),
+                            trailing: DeleteModelButton(
+                              value: e,
+                              mapToDeleteDialog: widget.mapToDeleteDialog,
+                              mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
+                            )
                           ),
                         ),
                       );
