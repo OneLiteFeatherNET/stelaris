@@ -66,6 +66,7 @@ class TextInputCard<E> extends StatelessWidget with BaseLayout {
                 if (validator!(value)) {
                   return errorMessage;
                 }
+                return null;
               }
             ),
             onFocusChange: (focus) {
