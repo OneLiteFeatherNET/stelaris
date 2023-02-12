@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/api/util/navigation.dart';
 import 'package:stelaris_ui/feature/base/base_page.dart';
-import 'package:stelaris_ui/feature/block/block_page.dart';
 import 'package:stelaris_ui/feature/build/build_page.dart';
 import 'package:stelaris_ui/feature/font/font_page.dart';
 import 'package:stelaris_ui/feature/item/item_page.dart';
