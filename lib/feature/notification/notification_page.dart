@@ -78,7 +78,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                         },
                         buildModel: (String name, String description) {
                           return NotificationModel(
-                              name: name, frameType: FrameType.goal.value);
+                              modelName: name, frameType: FrameType.goal.value);
                         },
                       ),
                     ),
