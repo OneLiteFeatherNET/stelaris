@@ -77,7 +77,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                     child: Card(
                       child: SetupStepper<ItemModel>(
                         buildModel: (name, description) {
-                          return ItemModel(name: name, description: description, group: ItemGroup.misc.display);
+                          return ItemModel(modelName: name, description: description, group: ItemGroup.misc.display);
                         },
                         finishCallback: (model) {
                           StoreProvider.dispatch(context, AddItemAction(model));

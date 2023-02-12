@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/actions/font_actions.dart';
+import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
@@ -11,9 +13,6 @@ import 'package:stelaris_ui/feature/font/font_general_page.dart';
 import 'package:stelaris_ui/feature/font/font_meta_page.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
-
-import '../../api/state/app_state.dart';
-import '../../api/tabs/tab_pages.dart';
 
 class FontPage extends StatefulWidget {
   const FontPage({Key? key}) : super(key: key);
@@ -75,7 +74,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
                       child: SetupStepper<FontModel>(
                           buildModel: (name, description) {
                         return FontModel(
-                            name: name,
+                            modelName: name,
                             description: description,
                             type: FontType.bitmap.displayName);
                       }, finishCallback: (model) {
