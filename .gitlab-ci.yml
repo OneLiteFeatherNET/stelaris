@@ -1,2 +1,2 @@
 # The Docker image that will be used to build your app
-image: cirrusci/flutter:stable
+image: repo.htl-md.schule:5003/cirrusci/flutter:latest
