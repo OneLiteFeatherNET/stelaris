@@ -1,7 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris_ui/api/api_service.dart';
-import 'package:stelaris_ui/feature/base/button/theme_switcher_toggle.dart';
-import 'package:stelaris_ui/util/default.dart';
 
 import '../../model/notification_model.dart';
 import '../app_state.dart';
@@ -27,8 +25,8 @@ class UpdateNotificationAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final notifications = List.of(state.notifications, growable: true);
-    notifications.remove(oldEntry);
-    notifications.add(newEntry);
+    final index = notifications.indexOf(oldEntry);
+    notifications[index] = newEntry;
     return state.copyWith(notifications: notifications);
   }
 }
