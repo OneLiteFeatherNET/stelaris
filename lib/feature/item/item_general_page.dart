@@ -15,12 +15,14 @@ import 'package:stelaris_ui/util/constants.dart';
 
 const List<ItemGroup> values = ItemGroup.values;
 
-List<DropdownMenuItem<ItemGroup>> groupItems = List.generate(
+List<DropdownMenuItem<ItemGroup>> getItems() {
+  return List.generate(
       values.length,
           (index) => DropdownMenuItem(
         value: values[index],
         child: Text(values[index].display),
       ));
+}
 
 class ItemGeneralPage extends StatefulWidget {
   final ItemModel model;
@@ -35,6 +37,7 @@ class ItemGeneralPage extends StatefulWidget {
 }
 
 class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReducer {
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -72,52 +75,59 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
               },
             ),
             DropDownCard<ItemGroup, ItemModel>(
-              currentValue: widget.model,
               title: Text(context.l10n.card_group),
+              currentValue: widget.model,
               items: getItems(),
-              valueUpdate: (ItemGroup? group) {
-                if (group == null || identical(group.display, widget.model.group)) return;
+              valueUpdate: (ItemGroup? value) {
+                if (identical(value!.display, widget.model.group)) return;
 
-                var list = getRemoveItems(widget.model, group);
+                var list = getRemoveItems(widget.model, value);
 
                 if (list.isNotEmpty) {
-                 showDialog(context: context, builder: (BuildContext context) {
-                      return ItemGroupChangeDialog(
-                          title: Text(context.l10n.dialog_group_change, textAlign: TextAlign.center,),
-                          header: [
-                            TextSpan(
-                                text:
-                                context.l10n.dialog_group_change_text,
-                                style: whiteStyle
-                            ),
-                          ],
-                          function: (value) {
-                            return true;
-                          },
-                      );
+                  showDialog(context: context, builder: (BuildContext context) {
+                    return ItemGroupChangeDialog(
+                      title: Text(context.l10n.dialog_group_change, textAlign: TextAlign.center,),
+                      header: [
+                        TextSpan(
+                            text:
+                            context.l10n.dialog_group_change_text,
+                            style: whiteStyle
+                        ),
+                      ],
+                      function: (value) {
+                        return true;
+                      },
+                    );
                   }).then((value) {
-                    if (value != null && value == true) {
+                    if (value == null) return;
+
+                    if (value == true) {
                       final oldEnchantments = Map.of(widget.model.enchantments!);
 
                       for (var enchantment in list) {
                         oldEnchantments.remove(enchantment.minecraftValue);
                       }
-                      final newEntry = widget.model.copyWith(group: group.display, enchantments: oldEnchantments);
+                      final newEntry = widget.model.copyWith(group: value.display, enchantments: oldEnchantments);
                       setState(() {
                         StoreProvider.dispatch(
                             context, UpdateItemAction(widget.model, newEntry));
                         widget.selectedItem.value = newEntry;
                       });
+                    } else {
+                      //TODO: Reset dropdown card
+                      print("asas");
+                      //widget.resetKey.value? as
                     }
-                 });
-                  return;
+                  });
+                  print("f");
+                } else {
+                  final newEntry = widget.model.copyWith(group: value.display);
+
+                  setState(() {
+                    StoreProvider.dispatch(context, UpdateItemAction(widget.model, newEntry));
+                    widget.selectedItem.value = newEntry;
+                  });
                 }
-                final newEntry = widget.model.copyWith(group: group.display);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateItemAction(widget.model, newEntry));
-                  widget.selectedItem.value = newEntry;
-                });
               },
               defaultValue: getDefaultValue,
             ),
@@ -213,12 +223,10 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
     if (value.group == null) {
       return ItemGroup.misc;
     }
-    return ItemGroup.values
-        .firstWhere((element) => element.display == value.group);
+    return values.firstWhere((element) => element.display == value.group);
   }
 
   List<DropdownMenuItem<ItemGroup>> getItems() {
-    List<ItemGroup> values = ItemGroup.values;
     return List.generate(
         values.length,
             (index) => DropdownMenuItem(
