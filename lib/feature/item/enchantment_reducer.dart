@@ -138,9 +138,29 @@ mixin EnchantmentReducer {
     return newList;
   }
 
+  List<DropdownMenuItem<Enchantment>> _getArmor(ItemModel itemModel) {
+    if (itemModel.enchantments == null && itemModel.group == ItemGroup.armor.display) {
+      return miscEnchantments;
+    }
+
+    var newList = List.of(armorEnchantments, growable: true);
+
+    for (var value in armorEnchantments) {
+      if (itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
+        newList.remove(value);
+      }
+    }
+
+    return newList;
+  }
+
   List<DropdownMenuItem<Enchantment>> getEnchantments(ItemModel model) {
     if (model.group == null || model.group!.trim().isEmpty) {
       return _getMisc(model);
+    }
+
+    if (identical(model.group, ItemGroup.armor.display)) {
+      return _getArmor(model);
     }
 
     if (identical(model.group, ItemGroup.tools.display)) {
@@ -180,17 +200,16 @@ mixin EnchantmentReducer {
 
     switch(group) {
       case ItemGroup.misc:
-        return miscEnchantments.length != model.enchantments!.length;
+        return miscEnchantments.length <= model.enchantments!.length;
       case ItemGroup.meeleWeapon:
-        return meeleEnchantments.length != model.enchantments!.length;
+        return meeleEnchantments.length <= model.enchantments!.length;
       case ItemGroup.rangedWeapon:
-        return rangedEnchantments.length != model.enchantments!.length;
+        return rangedEnchantments.length <= model.enchantments!.length;
       case ItemGroup.tools:
-        return toolEnchantments.length != model.enchantments!.length;
+        return toolEnchantments.length <= model.enchantments!.length;
       case ItemGroup.armor:
-        return armorEnchantments.length != model.enchantments!.length;
+        return armorEnchantments.length <= model.enchantments!.length;
     }
-
   }
 
   Enchantment? getByGroup(ItemModel model, String enchantment) {
@@ -205,6 +224,7 @@ mixin EnchantmentReducer {
   }
   
   List<Enchantment> getRemoveItems(ItemModel itemModel, ItemGroup newGroup) {
+    print(itemModel.enchantments!.length);
     if (itemModel.enchantments == null || itemModel.enchantments!.isEmpty) {
       return List.empty();
     }
@@ -213,7 +233,7 @@ mixin EnchantmentReducer {
     var groupEnchantments = _getEnchantments(newGroup);
     
     for (var value in groupEnchantments) {
-      if (itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
+      if (!itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
         removeList.add(value.value!);
       }
     }
