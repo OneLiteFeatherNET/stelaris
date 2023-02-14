@@ -38,6 +38,7 @@
   "input_validation_material": "The material starts not with minecraft:",
   "error_generation_failure": "Generation failure in the backend",
   "error_generation_submit": "Generation submitted to backend",
+  "error_card_empty": "The value can't be empty",
   "tooltip_delete": "Delete",
   "tooltip_material": "Change the material",
   "tooltip_name": "Change the name",
