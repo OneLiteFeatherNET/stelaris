@@ -27,6 +27,7 @@
   "dialog_abort_flags": "Unable to set flags because all available flags are set",
   "dialog_abort_enchantment_title": "Test",
   "dialog_level_title": "Edit level",
+  "dialog_lore_edit_title": "Edit lore",
   "dialog_level_validation": "The level can't be empty",
   "dialog_level_delete_first_line": "Do you really want to delete ",
   "dialog_abort_enchantments": "Unable to set enchantment because all are set",
