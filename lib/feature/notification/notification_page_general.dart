@@ -58,11 +58,13 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                     widget.selectedItem.value = newEntry;
                   });
                 },
-                validator: (value) {
-                  if (value == null) return false;
-                  return !minecraftPattern.hasMatch(value);
-                },
-                errorMessage: context.l10n.input_validation_material,
+              formValidator: (value) {
+                if (value == null) return null;
+                if (!minecraftPattern.hasMatch(value)) {
+                  return context.l10n.input_validation_material;
+                }
+                return null;
+              },
             ),
             TextInputCard<String>(
                 title: Text(context.l10n.card_title),
