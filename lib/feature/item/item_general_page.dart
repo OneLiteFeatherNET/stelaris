@@ -225,6 +225,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
         ),
         SaveButton(
           callback: () {
+            if (!_key.currentState!.validate()) return;
             ApiService().itemApi.update(widget.model);
           }
         )
