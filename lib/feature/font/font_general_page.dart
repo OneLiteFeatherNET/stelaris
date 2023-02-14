@@ -104,16 +104,6 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                 },
                 inputType: numberInput,
                 formatter: [FilteringTextInputFormatter.allow(numberPattern)],
-                validator: (p0) {
-                  if (p0 == null || int.tryParse(p0) == null) {
-                    return true;
-                  }
-                  if (int.tryParse(p0)! > 10) {
-                    return true;
-                  }
-                  return false;
-                },
-                errorMessage: "Value is to high",
               ),
             ],
           ),
