@@ -19,7 +19,7 @@ class SaveButton extends StatelessWidget {
           onPressed: () {
             callback.call();
           },
-          label: Text(context.l10n.button_add),
+          label: Text(context.l10n.button_save),
           icon: saveIcon,
         )
     );
