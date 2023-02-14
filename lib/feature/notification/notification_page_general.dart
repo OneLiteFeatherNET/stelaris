@@ -24,27 +24,33 @@ class NotificationGeneralPage extends StatefulWidget {
 }
 
 class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
+
+  final _key = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Wrap(
-          children: [
-            TextInputCard<String>(
-                title: Text(context.l10n.card_name),
-                infoText: context.l10n.tooltip_name,
-                currentValue: widget.model.name ?? empty,
-                valueUpdate: (value) {
-                  if (value == widget.model.name) return;
-                  final oldModel = widget.model;
-                  final newEntry = oldModel.copyWith(name: value);
-                  setState(() {
-                    StoreProvider.dispatch(
-                        context, UpdateNotificationAction(oldModel, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
-                }),
-            TextInputCard<String>(
+        Form(
+          key: _key,
+          autovalidateMode: AutovalidateMode.always,
+          child: Wrap(
+            children: [
+              TextInputCard<String>(
+                  title: Text(context.l10n.card_name),
+                  infoText: context.l10n.tooltip_name,
+                  currentValue: widget.model.name ?? empty,
+                  valueUpdate: (value) {
+                    if (value == widget.model.name) return;
+                    final oldModel = widget.model;
+                    final newEntry = oldModel.copyWith(name: value);
+                    setState(() {
+                      StoreProvider.dispatch(
+                          context, UpdateNotificationAction(oldModel, newEntry));
+                      widget.selectedItem.value = newEntry;
+                    });
+                  }),
+              TextInputCard<String>(
                 title: Text(context.l10n.card_material),
                 currentValue: widget.model.material ?? empty,
                 infoText: context.l10n.tooltip_material,
@@ -58,62 +64,64 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                     widget.selectedItem.value = newEntry;
                   });
                 },
-              formValidator: (value) {
-                if (value == null) return null;
-                if (!minecraftPattern.hasMatch(value)) {
-                  return context.l10n.input_validation_material;
-                }
-                return null;
-              },
-            ),
-            TextInputCard<String>(
-                title: Text(context.l10n.card_title),
-                currentValue: widget.model.title ?? empty,
-                infoText: context.l10n.tooltip_title,
-                valueUpdate: (value) {
-                  if (value == widget.model.title) return;
-                  final oldModel = widget.model;
-                  final newEntry = oldModel.copyWith(title: value);
+                formValidator: (value) {
+                  if (value == null) return null;
+                  if (!minecraftPattern.hasMatch(value)) {
+                    return context.l10n.input_validation_material;
+                  }
+                  return null;
+                },
+              ),
+              TextInputCard<String>(
+                  title: Text(context.l10n.card_title),
+                  currentValue: widget.model.title ?? empty,
+                  infoText: context.l10n.tooltip_title,
+                  valueUpdate: (value) {
+                    if (value == widget.model.title) return;
+                    final oldModel = widget.model;
+                    final newEntry = oldModel.copyWith(title: value);
+                    setState(() {
+                      StoreProvider.dispatch(
+                          context, UpdateNotificationAction(oldModel, newEntry));
+                      widget.selectedItem.value = newEntry;
+                    });
+                  }),
+              TextInputCard<String>(
+                  title: Text(context.l10n.card_description),
+                  currentValue: widget.model.description ?? empty,
+                  infoText: context.l10n.tooltip_description,
+                  valueUpdate: (value) {
+                    if (value == widget.model.description) return;
+                    final oldModel = widget.model;
+                    final newEntry = oldModel.copyWith(description: value);
+                    setState(() {
+                      StoreProvider.dispatch(
+                          context, UpdateNotificationAction(oldModel, newEntry));
+                      widget.selectedItem.value = newEntry;
+                    });
+                  }),
+              DropDownCard<FrameType, NotificationModel>(
+                currentValue: widget.model,
+                title: Text(context.l10n.card_frame_type,
+                    textAlign: TextAlign.center),
+                items: getItems(),
+                valueUpdate: (FrameType? value) {
+                  if (value == getDefaultValue(widget.model)) return;
+                  final newEntry = widget.model.copyWith(frameType: value?.value);
                   setState(() {
-                    StoreProvider.dispatch(
-                        context, UpdateNotificationAction(oldModel, newEntry));
+                    StoreProvider.dispatch(context,
+                        UpdateNotificationAction(widget.model, newEntry));
                     widget.selectedItem.value = newEntry;
                   });
-                }),
-            TextInputCard<String>(
-                title: Text(context.l10n.card_description),
-                currentValue: widget.model.description ?? empty,
-                infoText: context.l10n.tooltip_description,
-                valueUpdate: (value) {
-                  if (value == widget.model.description) return;
-                  final oldModel =widget.model;
-                  final newEntry = oldModel.copyWith(description: value);
-                  setState(() {
-                    StoreProvider.dispatch(
-                        context, UpdateNotificationAction(oldModel, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
-                }),
-            DropDownCard<FrameType, NotificationModel>(
-              currentValue: widget.model,
-              title: Text(context.l10n.card_frame_type,
-                  textAlign: TextAlign.center),
-              items: getItems(),
-              valueUpdate: (FrameType? value) {
-                if (value == getDefaultValue(widget.model)) return;
-                final newEntry = widget.model.copyWith(frameType: value?.value);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateNotificationAction(widget.model, newEntry));
-                  widget.selectedItem.value = newEntry;
-                });
-              },
-              defaultValue: getDefaultValue,
-            ),
-          ],
+                },
+                defaultValue: getDefaultValue,
+              ),
+            ],
+          ),
         ),
         SaveButton(
           callback: () {
+            if (!_key.currentState!.validate()) return;
             ApiService().notificationAPI.update(widget.model);
           },
         ),
