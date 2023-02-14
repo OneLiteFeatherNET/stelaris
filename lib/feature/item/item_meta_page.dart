@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 
 import 'package:async_redux/async_redux.dart';
@@ -12,7 +13,7 @@ import 'package:stelaris_ui/feature/dialogs/abort_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/enum_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_enchantments_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
-import 'package:stelaris_ui/feature/item/enchantment_entry_buttons.dart';
+import 'package:stelaris_ui/feature/base/button/entry_buttons.dart';
 import 'package:stelaris_ui/feature/item/enchantment_reducer.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
@@ -122,6 +123,14 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                       final oldEntry = widget.model;
                       return ItemEnchantmentAddDialog(
                         model: widget.model,
+                        formFieldValidator: (value) {
+                          var input = value as String;
+
+                          if (input.trim().isEmpty) {
+                            return context.l10n.error_card_empty;
+                          }
+                          return null;
+                        },
                         addEnchantmentCallback: (selected, level) {
                           final oldEnchantments =
                           Map<String, int>.of(oldEntry.enchantments ?? {});
@@ -149,10 +158,20 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                     widget.model.enchantments?.values.elementAt(index);
                     return ListTile(
                       title: Text("$key, Level: $value"),
-                      trailing: EnchantmentButtons(
+                      trailing: EntryButtons(
+                        editTitle: context.l10n.dialog_level_title,
                         model: widget.model,
                         name: key,
-                        level: value,
+                        value: value.toString(),
+                        inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
+                        formFieldValidator: (value) {
+                          var input = value as String;
+
+                          if (input.trim().isEmpty) {
+                            return context.l10n.error_card_empty;
+                          }
+                          return null;
+                        },
                         delete: (ItemModel? value) {
                           final oldEntry = widget.model;
                           final oldEnchantments =
@@ -206,6 +225,14 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                               widget.selectedItem.value = newEntry;
                             });
                           }),
+                          formFieldValidator: (value) {
+                            var input = value as String;
+
+                            if (input.trim().isEmpty) {
+                              return context.l10n.error_card_empty;
+                            }
+                            return null;
+                          },
                           title: Text(context.l10n.button_add_new_line));
                     },
                   );
@@ -216,19 +243,20 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                     final key = widget.model.lore?[index];
                     return ListTile(
                         title: Text(key!),
-                        trailing: DeleteEntryButton<String>(
-                          title: context.l10n.dialog_delete_confirm,
+                        trailing: EntryButtons(
+                          editTitle: context.l10n.dialog_lore_edit_title,
+                          model: widget.model,
+                          name: key,
                           value: key,
-                          header: [
-                            TextSpan(
-                                text: context.l10n.delete_dialog_first_line,
-                                style: whiteStyle),
-                            TextSpan(text: key, style: redStyle),
-                            TextSpan(
-                                text: context.l10n.delete_dialog_entry,
-                                style: whiteStyle),
-                          ],
-                          mapToDeleteSuccessfully: (value) {
+                          formFieldValidator: (value) {
+                            var input = value as String;
+
+                            if (input.trim().isEmpty) {
+                              return context.l10n.error_card_empty;
+                            }
+                            return null;
+                          },
+                          delete: (ItemModel? value) {
                             final oldEntry = widget.model;
                             List<String> oldLores = List.of(oldEntry.lore ?? []);
                             oldLores.remove(key);
@@ -238,9 +266,21 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                                   context, UpdateItemAction(oldEntry, newEntry));
                               widget.selectedItem.value = newEntry;
                             });
-                            return true;
                           },
-                        ));
+                          update: (value, key) {
+                            final oldEntry = widget.model;
+                            List<String> oldLores = List.of(oldEntry.lore ?? []);
+                            int index = oldLores.indexWhere((element) => identical(element, value));
+                            oldLores[index] = key!;
+                            final newEntry = oldEntry.copyWith(lore: oldLores);
+                            setState(() {
+                              StoreProvider.dispatch(
+                                  context, UpdateItemAction(oldEntry, newEntry));
+                              widget.selectedItem.value = newEntry;
+                            });
+                          },
+                        )
+                       );
                   },
                 ),
               ),
