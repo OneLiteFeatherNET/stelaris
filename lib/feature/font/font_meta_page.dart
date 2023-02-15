@@ -42,9 +42,24 @@ class _FontMetaPageState extends State<FontMetaPage> {
                           title: Text(context.l10n.dialog_char_title, textAlign: TextAlign.center,),
                           forceClose: true,
                           controller: TextEditingController(),
-                          formatters: [FilteringTextInputFormatter.allow(stringPattern)],
+                          formFieldValidator: (value) {
+                            String input = value as String;
+
+                            if (input.trim().isEmpty) {
+                              return context.l10n.error_card_empty;
+                            }
+
+                            if (!input.startsWith("\\u")) {
+                              return context.l10n.error_not_unicode_start;
+                            }
+
+                            if (input.length > 6) {
+                              return context.l10n.error_not_unicode;
+                            }
+                            return null;
+                          },
                           valueUpdate: (value) {
-                            if (widget.model.chars != null && widget.model.chars!.contains(value)) {
+                            if (widget.model.chars != null) {
                               showDialog(context: context, builder: (BuildContext context) {
                                 return AbortAddDialog(
                                   title: context.l10n.dialog_abort_chars_add,
