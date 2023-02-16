@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
 import 'package:stelaris_ui/api/state/actions/notification_actions.dart';
@@ -40,6 +41,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                   title: Text(context.l10n.card_name),
                   infoText: context.l10n.tooltip_name,
                   currentValue: widget.model.name ?? empty,
+                  formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                   valueUpdate: (value) {
                     if (value == widget.model.name) return;
                     final oldModel = widget.model;
@@ -49,7 +51,17 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                           context, UpdateNotificationAction(oldModel, newEntry));
                       widget.selectedItem.value = newEntry;
                     });
-                  }),
+                  },
+                  formValidator: (value) {
+                    var input = value as String;
+
+                    if (input.trim().isEmpty) {
+                      return context.l10n.error_card_empty;
+                    }
+
+                    return null;
+                  },
+              ),
               TextInputCard<String>(
                 title: Text(context.l10n.card_material),
                 currentValue: widget.model.material ?? empty,
