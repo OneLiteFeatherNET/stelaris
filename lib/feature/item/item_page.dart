@@ -98,7 +98,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
 
   Widget mapDataToModelItem(ItemModel model) {
     return Text(
-      model.name ?? unknownEntry,
+      model.modelName ?? unknownEntry,
       overflow: TextOverflow.ellipsis,
     );
   }
