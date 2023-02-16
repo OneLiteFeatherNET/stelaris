@@ -93,7 +93,10 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
   }
 
   Widget mapDataToModelItem(NotificationModel model) {
-    return Text(model.name ?? unknownEntry);
+    return Text(
+      model.modelName ?? unknownEntry,
+      overflow: TextOverflow.ellipsis,
+    );
   }
 
   Widget mapPageToWidget(TabPages e, ValueNotifier<NotificationModel?> test) {
