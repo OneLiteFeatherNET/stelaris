@@ -20,6 +20,7 @@ class AppState with _$AppState {
     @Default([]) List<PluginModel> plugins,
     @Default([]) List<BlockModel> blocks,
     @Default(true) bool openNavigation,
+    @Default(true) bool nightMode,
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, dynamic> json) =>
