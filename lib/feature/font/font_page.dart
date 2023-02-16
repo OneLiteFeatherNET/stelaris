@@ -52,14 +52,15 @@ class FontPageState extends State<FontPage> with BaseLayout {
           },
           mapToDeleteSuccessfully: (value) {
             StoreProvider.dispatch(context, RemoveFontsAction(value));
+            setState(() {
+              selectedItem.value = vm.first;
+            });
             return true;
           },
           selectedItem: selectedItem,
           items: vm,
           page: mapPageToWidget,
-          mapToDataModelItem: (e) {
-            return Text(e.name ?? unknownEntry);
-          },
+          mapToDataModelItem: mapDataToModelItem,
           openFunction: () {
             showDialog(
               context: context,
@@ -94,7 +95,10 @@ class FontPageState extends State<FontPage> with BaseLayout {
   }
 
   Widget mapDataToModelItem(FontModel model) {
-    return Text(model.name ?? unknownEntry);
+    return Text(
+      model.modelName ?? unknownEntry,
+      overflow: TextOverflow.ellipsis,
+    );
   }
 
   Widget mapPageToWidget(TabPages e, ValueNotifier<FontModel?> test) {
