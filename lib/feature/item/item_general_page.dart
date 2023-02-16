@@ -15,12 +15,14 @@ import 'package:stelaris_ui/util/constants.dart';
 
 const List<ItemGroup> values = ItemGroup.values;
 
-List<DropdownMenuItem<ItemGroup>> groupItems = List.generate(
+List<DropdownMenuItem<ItemGroup>> getItems() {
+  return List.generate(
       values.length,
           (index) => DropdownMenuItem(
         value: values[index],
         child: Text(values[index].display),
       ));
+}
 
 class ItemGeneralPage extends StatefulWidget {
   final ItemModel model;
@@ -35,173 +37,195 @@ class ItemGeneralPage extends StatefulWidget {
 }
 
 class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReducer {
+
+  final _key = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Wrap(
-          children: [
-            TextInputCard<String>(
-              infoText: context.l10n.tooltip_name,
-              title: Text(context.l10n.card_name),
-              currentValue: widget.model.name ?? empty,
-              valueUpdate: (value) {
-                if (value == widget.model.name) return;
-                final oldModel = widget.model;
-                final newEntry = oldModel.copyWith(name: value);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateItemAction(oldModel, newEntry));
-                  widget.selectedItem.value = newEntry;
-                });
-              },
-            ),
-            TextInputCard<String>(
-              infoText: context.l10n.tooltip_description,
-              title: Text(context.l10n.card_description),
-              currentValue: widget.model.description ?? empty,
-              valueUpdate: (value) {
-                if (value == widget.model.description) return;
-                final oldModel = widget.model;
-                final newEntry = oldModel.copyWith(description: value);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateItemAction(oldModel, newEntry));
-                  widget.selectedItem.value = newEntry;
-                });
-              },
-            ),
-            DropDownCard<ItemGroup, ItemModel>(
-              currentValue: widget.model,
-              title: Text(context.l10n.card_group),
-              items: getItems(),
-              valueUpdate: (ItemGroup? group) {
-                if (group == null || identical(group.display, widget.model.group)) return;
+        Form(
+          autovalidateMode: AutovalidateMode.always,
+          key: _key,
+          child: Wrap(
+            children: [
+              TextInputCard<String>(
+                infoText: context.l10n.tooltip_name,
+                title: Text(context.l10n.card_name),
+                currentValue: widget.model.name ?? empty,
+                valueUpdate: (value) {
+                  if (value == widget.model.name) return;
+                  final oldModel = widget.model;
+                  final newEntry = oldModel.copyWith(name: value);
+                  setState(() {
+                    StoreProvider.dispatch(
+                        context, UpdateItemAction(oldModel, newEntry));
+                    widget.selectedItem.value = newEntry;
+                  });
+                },
+              ),
+              TextInputCard<String>(
+                infoText: context.l10n.tooltip_description,
+                title: Text(context.l10n.card_description),
+                currentValue: widget.model.description ?? empty,
+                valueUpdate: (value) {
+                  if (value == widget.model.description) return;
+                  final oldModel = widget.model;
+                  final newEntry = oldModel.copyWith(description: value);
+                  setState(() {
+                    StoreProvider.dispatch(
+                        context, UpdateItemAction(oldModel, newEntry));
+                    widget.selectedItem.value = newEntry;
+                  });
+                },
+              ),
+              DropDownCard<ItemGroup, ItemModel>(
+                title: Text(context.l10n.card_group),
+                currentValue: widget.model,
+                items: getItems(),
+                valueUpdate: (ItemGroup? value) {
+                  if (identical(value!.display, widget.model.group)) return;
 
-                var list = getRemoveItems(widget.model, group);
+                  var list = getRemoveItems(widget.model, value);
 
-                if (list.isNotEmpty) {
-                 showDialog(context: context, builder: (BuildContext context) {
+                  if (list.isNotEmpty) {
+                    showDialog(context: context, builder: (BuildContext context) {
                       return ItemGroupChangeDialog(
-                          title: Text(context.l10n.dialog_group_change, textAlign: TextAlign.center,),
-                          header: [
-                            TextSpan(
-                                text:
-                                context.l10n.dialog_group_change_text,
-                                style: whiteStyle
-                            ),
-                          ],
-                          function: (value) {
-                            return true;
-                          },
+                        title: Text(context.l10n.dialog_group_change, textAlign: TextAlign.center,),
+                        header: [
+                          TextSpan(
+                              text:
+                              context.l10n.dialog_group_change_text,
+                              style: whiteStyle
+                          ),
+                        ],
+                        function: (value) {
+                          return true;
+                        },
                       );
-                  }).then((value) {
-                    if (value != null && value == true) {
-                      final oldEnchantments = Map.of(widget.model.enchantments!);
+                    }).then((value) {
+                      if (value == null) return;
 
-                      for (var enchantment in list) {
-                        oldEnchantments.remove(enchantment.minecraftValue);
+                      if (value == true) {
+                        final oldEnchantments = Map.of(widget.model.enchantments!);
+
+                        for (var enchantment in list) {
+                          oldEnchantments.remove(enchantment.minecraftValue);
+                        }
+                        final newEntry = widget.model.copyWith(group: value.display, enchantments: oldEnchantments);
+                        setState(() {
+                          StoreProvider.dispatch(
+                              context, UpdateItemAction(widget.model, newEntry));
+                          widget.selectedItem.value = newEntry;
+                        });
+                      } else {
+                        //TODO: Reset dropdown card
+                        print("asas");
+                        //widget.resetKey.value? as
                       }
-                      final newEntry = widget.model.copyWith(group: group.display, enchantments: oldEnchantments);
-                      setState(() {
-                        StoreProvider.dispatch(
-                            context, UpdateItemAction(widget.model, newEntry));
-                        widget.selectedItem.value = newEntry;
-                      });
-                    }
-                 });
-                  return;
-                }
-                final newEntry = widget.model.copyWith(group: group.display);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateItemAction(widget.model, newEntry));
-                  widget.selectedItem.value = newEntry;
-                });
-              },
-              defaultValue: getDefaultValue,
-            ),
-            TextInputCard<String>(
-              infoText: context.l10n.tooltip_material,
-              title: Text(context.l10n.card_material),
-              currentValue: widget.model.material ?? empty,
-              valueUpdate: (value) {
-                if (value == widget.model.material) return;
-                final oldModel = widget.model;
-                final newEntry = oldModel.copyWith(material: value);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateItemAction(oldModel, newEntry));
-                  widget.selectedItem.value = newEntry;
-                });
+                    });
+                    print("f");
+                  } else {
+                    final newEntry = widget.model.copyWith(group: value.display);
 
-              },
-              validator: (value) {
-                if (value == null) return false;
-                return !minecraftPattern.hasMatch(value);
-              },
-              errorMessage: context.l10n.input_validation_material,
-            ),
-            TextInputCard<String>(
-              infoText: context.l10n.tooltip_displayname,
-              title: Text(context.l10n.card_display_name),
-              currentValue: widget.model.displayName ?? empty,
-              valueUpdate: (value) {
-                if (value == widget.model.displayName) return;
-                final oldModel = widget.model;
-                final newEntry = oldModel.copyWith(displayName: value);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateItemAction(oldModel, newEntry));
-                  widget.selectedItem.value = newEntry;
-                });
-              },
-            ),
-            TextInputCard(
-              infoText: context.l10n.tooltip_model_data,
-              title: Text(context.l10n.card_model_data),
-              currentValue: widget.model.customModelId?.toString() ?? zero,
-              valueUpdate: (value) {
-                if (value == widget.model.customModelId) return;
-                final oldModel = widget.model;
-                final newID = int.parse(value);
-                final newEntry = oldModel.copyWith(customModelId: newID);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateItemAction(oldModel, newEntry));
-                  widget.selectedItem.value = newEntry;
-                });
-              },
-              inputType: numberInput,
-              formatter: [FilteringTextInputFormatter.allow(numberPattern)],
-            ),
-            TextInputCard(
-              infoText: context.l10n.tooltip_amount,
-              title: Text(context.l10n.card_amount),
-              currentValue: widget.model.amount?.toString() ?? zero,
-              valueUpdate: (value) {
-                if (value == widget.model.amount) return;
-                final oldModel = widget.model;
-                final newAmount = int.parse(value);
-                final newEntry = oldModel.copyWith(amount: newAmount);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateItemAction(oldModel, newEntry));
-                  widget.selectedItem.value = newEntry;
-                });
-              },
-              inputType: numberInput,
-              formatter: [FilteringTextInputFormatter.allow(numberPattern)],
-              errorMessage: context.l10n.card_amount_to_high,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) return false;
-                return int.parse(value) > maxItemSize;
-              },
-            ),
-          ],
+                    setState(() {
+                      StoreProvider.dispatch(context, UpdateItemAction(widget.model, newEntry));
+                      widget.selectedItem.value = newEntry;
+                    });
+                  }
+                },
+                defaultValue: getDefaultValue,
+              ),
+              TextInputCard<String>(
+                infoText: context.l10n.tooltip_material,
+                title: Text(context.l10n.card_material),
+                currentValue: widget.model.material ?? empty,
+                valueUpdate: (value) {
+                  if (value == widget.model.material) return;
+                  final oldModel = widget.model;
+                  final newEntry = oldModel.copyWith(material: value);
+                  setState(() {
+                    StoreProvider.dispatch(
+                        context, UpdateItemAction(oldModel, newEntry));
+                    widget.selectedItem.value = newEntry;
+                  });
+
+                },
+                formValidator: (value) {
+                  if (value == null) return null;
+                  if (!minecraftPattern.hasMatch(value)) {
+                    return context.l10n.input_validation_material;
+                  }
+                  return null;
+                },
+              ),
+              TextInputCard<String>(
+                infoText: context.l10n.tooltip_displayname,
+                title: Text(context.l10n.card_display_name),
+                currentValue: widget.model.displayName ?? empty,
+                valueUpdate: (value) {
+                  if (value == widget.model.displayName) return;
+                  final oldModel = widget.model;
+                  final newEntry = oldModel.copyWith(displayName: value);
+                  setState(() {
+                    StoreProvider.dispatch(
+                        context, UpdateItemAction(oldModel, newEntry));
+                    widget.selectedItem.value = newEntry;
+                  });
+                },
+              ),
+              TextInputCard(
+                infoText: context.l10n.tooltip_model_data,
+                title: Text(context.l10n.card_model_data),
+                currentValue: widget.model.customModelId?.toString() ?? zero,
+                valueUpdate: (value) {
+                  if (value == widget.model.customModelId) return;
+                  final oldModel = widget.model;
+                  final newID = int.parse(value);
+                  final newEntry = oldModel.copyWith(customModelId: newID);
+                  setState(() {
+                    StoreProvider.dispatch(
+                        context, UpdateItemAction(oldModel, newEntry));
+                    widget.selectedItem.value = newEntry;
+                  });
+                },
+                inputType: numberInput,
+                formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+              ),
+              TextInputCard(
+                infoText: context.l10n.tooltip_amount,
+                title: Text(context.l10n.card_amount),
+                currentValue: widget.model.amount?.toString() ?? zero,
+                valueUpdate: (value) {
+                  if (value == widget.model.amount) return;
+                  final oldModel = widget.model;
+                  final newAmount = int.parse(value);
+                  final newEntry = oldModel.copyWith(amount: newAmount);
+                  setState(() {
+                    StoreProvider.dispatch(
+                        context, UpdateItemAction(oldModel, newEntry));
+                    widget.selectedItem.value = newEntry;
+                  });
+                },
+                inputType: numberInput,
+                formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+                formValidator: (value) {
+                  if (value == null) return null;
+                  String input = value as String;
+                  if (input.trim().isEmpty) return context.l10n.error_card_empty;
+
+                  if (int.parse(input) > maxItemSize) {
+                    return context.l10n.card_amount_to_high;
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
         ),
         SaveButton(
           callback: () {
+            if (!_key.currentState!.validate()) return;
             ApiService().itemApi.update(widget.model);
           }
         )
@@ -213,12 +237,10 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
     if (value.group == null) {
       return ItemGroup.misc;
     }
-    return ItemGroup.values
-        .firstWhere((element) => element.display == value.group);
+    return values.firstWhere((element) => element.display == value.group);
   }
 
   List<DropdownMenuItem<ItemGroup>> getItems() {
-    List<ItemGroup> values = ItemGroup.values;
     return List.generate(
         values.length,
             (index) => DropdownMenuItem(

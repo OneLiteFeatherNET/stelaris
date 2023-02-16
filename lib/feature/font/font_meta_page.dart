@@ -28,99 +28,116 @@ class _FontMetaPageState extends State<FontMetaPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Wrap(
-          clipBehavior: Clip.hardEdge,
-          children: [
-            ExpandableDataCard(
-              title: const Text("Chars"),
-              buttonClick: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return EntryAddDialog(
-                        title: Text(context.l10n.dialog_char_title, textAlign: TextAlign.center,),
-                        forceClose: true,
-                        controller: TextEditingController(),
-                        formatters: [FilteringTextInputFormatter.allow(stringPattern)],
-                        valueUpdate: (value) {
-                          if (widget.model.chars != null && widget.model.chars!.contains(value)) {
-                            showDialog(context: context, builder: (BuildContext context) {
-                              return AbortAddDialog(
-                                title: context.l10n.dialog_abort_chars_add,
-                                content: '${context.l10n.dialog_abort_chars_text} $value',
-                              );
-                            });
-                            return;
-                          }
-                          final oldEntry = widget.model;
-                          List<String> chars = List.of(oldEntry.chars ?? []);
-                          chars.add(value);
-                          final newEntry = oldEntry.copyWith(chars: chars);
-                          setState(() {
-                            StoreProvider.dispatch(
-                                context, UpdateFontAction(oldEntry, newEntry));
-                            Navigator.pop(context);
-                            widget.selectedItem.value = newEntry;
-                          });
-                        },
-                    );
-                  },
-                );
-              },
-              widgets: List<Widget>.generate(
-                widget.model.chars?.length ?? 0,
-                    (index) {
-                  final key = widget.model.chars![index];
-                  return ListTile(
-                    title: Text(key),
-                    trailing: IconButton(
-                      icon: deleteIcon,
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return DeleteDialog<String>(
-                                title: Text(context.l10n.dialog_delete_confirm),
-                                header: [
-                                  TextSpan(
-                                      text:
-                                      context.l10n.delete_dialog_first_line,
-                                      style: whiteStyle
-                                  ),
-                                  TextSpan(
-                                      text: key,
-                                      style: redStyle
-                                  ),
-                                  TextSpan(
-                                      text: context.l10n.delete_dialog_entry,
-                                      style: whiteStyle
-                                  ),
-                                ],
-                                value: key,
-                                successfully: (value) {
-                                  final oldEntry = widget.model;
-                                  List<String> chars = List.of(
-                                      widget.model.chars ?? []);
-                                  chars.remove(key);
-                                  final newEntry = oldEntry.copyWith(
-                                      chars: chars);
-                                  setState(() {
-                                    StoreProvider.dispatch(context,
-                                        UpdateFontAction(oldEntry, newEntry));
-                                    widget.selectedItem.value = newEntry;
-                                  });
-                                  return true;
-                                }
-                            );
+        SingleChildScrollView(
+          child: Wrap(
+            clipBehavior: Clip.hardEdge,
+            children: [
+              ExpandableDataCard(
+                title: const Text("Chars"),
+                buttonClick: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return EntryAddDialog(
+                          title: Text(context.l10n.dialog_char_title, textAlign: TextAlign.center,),
+                          forceClose: true,
+                          controller: TextEditingController(),
+                          formFieldValidator: (value) {
+                            String input = value as String;
+
+                            if (input.trim().isEmpty) {
+                              return context.l10n.error_card_empty;
+                            }
+
+                            if (!input.startsWith("\\u")) {
+                              return context.l10n.error_not_unicode_start;
+                            }
+
+                            if (input.length > 6) {
+                              return context.l10n.error_not_unicode;
+                            }
+                            return null;
                           },
-                        );
-                      },
-                    ),
+                          valueUpdate: (value) {
+                            if (widget.model.chars != null) {
+                              showDialog(context: context, builder: (BuildContext context) {
+                                return AbortAddDialog(
+                                  title: context.l10n.dialog_abort_chars_add,
+                                  content: '${context.l10n.dialog_abort_chars_text} $value',
+                                );
+                              });
+                              return;
+                            }
+                            final oldEntry = widget.model;
+                            List<String> chars = List.of(oldEntry.chars ?? []);
+                            chars.add(value);
+                            final newEntry = oldEntry.copyWith(chars: chars);
+                            setState(() {
+                              StoreProvider.dispatch(
+                                  context, UpdateFontAction(oldEntry, newEntry));
+                              Navigator.pop(context);
+                              widget.selectedItem.value = newEntry;
+                            });
+                          },
+                      );
+                    },
                   );
                 },
+                widgets: List<Widget>.generate(
+                  widget.model.chars?.length ?? 0,
+                      (index) {
+                    final key = widget.model.chars![index];
+                    return ListTile(
+                      title: Text(key),
+                      trailing: IconButton(
+                        icon: deleteIcon,
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return DeleteDialog<String>(
+                                  title: Text(context.l10n.dialog_delete_confirm),
+                                  header: [
+                                    TextSpan(
+                                        text:
+                                        context.l10n.delete_dialog_first_line,
+                                        style: whiteStyle
+                                    ),
+                                    TextSpan(
+                                        text: key,
+                                        style: redStyle
+                                    ),
+                                    TextSpan(
+                                        text: context.l10n.delete_dialog_entry,
+                                        style: whiteStyle
+                                    ),
+                                  ],
+                                  value: key,
+                                  successfully: (value) {
+                                    final oldEntry = widget.model;
+                                    List<String> chars = List.of(
+                                        widget.model.chars ?? []);
+                                    chars.remove(key);
+                                    final newEntry = oldEntry.copyWith(
+                                        chars: chars);
+                                    setState(() {
+                                      StoreProvider.dispatch(context,
+                                          UpdateFontAction(oldEntry, newEntry));
+                                      widget.selectedItem.value = newEntry;
+                                    });
+                                    return true;
+                                  }
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         SaveButton(
           callback: () {

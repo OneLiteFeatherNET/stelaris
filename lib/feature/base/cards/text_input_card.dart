@@ -4,17 +4,15 @@ import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
 class TextInputCard<E> extends StatelessWidget with BaseLayout {
-
   final Text title;
   final ValueUpdate<dynamic> valueUpdate;
   final String currentValue;
   final TextInputType? inputType;
   final List<TextInputFormatter>? formatter;
-  final Validator<String>? validator;
-  final String? errorMessage;
   final TextEditingController _editController = TextEditingController();
   final IconData? infoIcon;
   final String infoText;
+  final FormFieldValidator? formValidator;
 
   TextInputCard(
       {Key? key,
@@ -24,7 +22,8 @@ class TextInputCard<E> extends StatelessWidget with BaseLayout {
       this.inputType,
       this.formatter,
       this.infoIcon,
-      required this.infoText, this.validator, this.errorMessage})
+      required this.infoText,
+      this.formValidator})
       : super(key: key);
 
   @override
@@ -56,21 +55,17 @@ class TextInputCard<E> extends StatelessWidget with BaseLayout {
           height: 100,
           child: Focus(
             child: TextFormField(
-              autovalidateMode: validator != null && errorMessage != null ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
-              autocorrect: false,
-              controller: _editController,
-              keyboardType: inputType,
-              inputFormatters: formatter,
-              validator: (value) {
-                if (validator == null) return null;
-                if (validator!(value)) {
-                  return errorMessage;
-                }
-                return null;
-              }
+                autovalidateMode: formValidator != null
+                    ? AutovalidateMode.onUserInteraction
+                    : AutovalidateMode.disabled,
+                autocorrect: false,
+                controller: _editController,
+                keyboardType: inputType,
+                inputFormatters: formatter,
+                validator: formValidator
             ),
             onFocusChange: (focus) {
-              if (!focus) {
+              if (!focus && _editController.value.text.trim().isNotEmpty) {
                 valueUpdate(_editController.value.text);
               }
             },
