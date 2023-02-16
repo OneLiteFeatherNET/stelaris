@@ -41,6 +41,14 @@ class FontAPI {
     final result = await _apiClient.dio.postUri(uri, data: model.toJson()).then((value) => FontModel.fromJson(value.data!));
     return result;
   }
+
+  Future<FontModel> remove(FontModel fontModel) async {
+    final queryParams = <String, dynamic>{};
+    final baseUri = Uri.parse(_apiClient.baseUrl);
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/font/remove/${fontModel.id}');
+    final result = await _apiClient.dio.deleteUri(uri).then((value) => FontModel.fromJson(value.data!));
+    return result;
+  }
 }
 
 class StringToFont implements JsonConverter<List<FontModel>, List<dynamic>> {
