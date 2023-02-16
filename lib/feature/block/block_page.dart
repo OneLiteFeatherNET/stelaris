@@ -96,7 +96,10 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
   }
 
   Widget mapDataToModelItem(BlockModel model) {
-    return Text(model.name ?? unknownEntry);
+    return Text(
+      model.name ?? unknownEntry,
+      overflow: TextOverflow.ellipsis,
+    );
   }
 
   Widget mapPageToWidget(TabPages e, ValueNotifier<BlockModel?> test) {
