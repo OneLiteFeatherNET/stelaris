@@ -41,6 +41,11 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
           selectedItem.value ??= vm.first;
         }
         return ModelContainerList<BlockModel>(
+          tabPages: (pages) {
+            List<Tab> requiredTabs = List.from(pages, growable: true);
+            requiredTabs.removeWhere((element) => identical(element.text, TabPage.meta.content));
+            return requiredTabs;
+          },
           mapToDeleteDialog: (value) {
             return [
               TextSpan(
@@ -102,15 +107,15 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
     );
   }
 
-  Widget mapPageToWidget(TabPages e, ValueNotifier<BlockModel?> test) {
+  Widget mapPageToWidget(TabPage e, ValueNotifier<BlockModel?> test) {
     switch (e) {
-      case TabPages.general:
+      case TabPage.general:
         return ValueListenableBuilder<BlockModel?>(
             valueListenable: test,
             builder: (BuildContext context, BlockModel? value, Widget? child) {
               return getGeneralContent(value);
             });
-      case TabPages.meta:
+      case TabPage.meta:
         return nil;
     }
   }

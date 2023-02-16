@@ -41,6 +41,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
           selectedItem.value ??= vm.first;
         }
         return ModelContainerList<ItemModel>(
+          tabPages: (pages) => pages,
           mapToDeleteDialog: (value) {
             return [
               TextSpan(
@@ -104,9 +105,9 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
     );
   }
 
-  Widget mapPageToWidget(TabPages e, ValueNotifier<ItemModel?> listenable) {
-    switch (e) {
-      case TabPages.general:
+  Widget mapPageToWidget(TabPage value, ValueNotifier<ItemModel?> listenable) {
+    switch (value) {
+      case TabPage.general:
         return ValueListenableBuilder<ItemModel?>(
           valueListenable: listenable,
           builder: (BuildContext context, ItemModel? value, Widget? child) {
@@ -114,7 +115,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
             return ItemGeneralPage(model: value, selectedItem: selectedItem);
           },
         );
-      case TabPages.meta:
+      case TabPage.meta:
         return ValueListenableBuilder<ItemModel?>(
           valueListenable: listenable,
           builder: (BuildContext context, value, Widget? child) {

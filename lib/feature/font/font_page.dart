@@ -40,6 +40,14 @@ class FontPageState extends State<FontPage> with BaseLayout {
           selectedItem.value ??= vm.first;
         }
         return ModelContainerList<FontModel>(
+          tabPages: (pages) {
+            List<Tab> requiredTabs = List.from(pages, growable: true);
+            requiredTabs.removeWhere((element) {
+              var text = element.child as Text;
+              return identical(text.data, TabPage.meta.content);
+            });
+            return requiredTabs;
+          },
           mapToDeleteDialog: (value) {
             return [
               TextSpan(
@@ -99,9 +107,9 @@ class FontPageState extends State<FontPage> with BaseLayout {
     );
   }
 
-  Widget mapPageToWidget(TabPages e, ValueNotifier<FontModel?> test) {
-    switch (e) {
-      case TabPages.general:
+  Widget mapPageToWidget(TabPage value, ValueNotifier<FontModel?> test) {
+    switch (value) {
+      case TabPage.general:
         return ValueListenableBuilder<FontModel?>(
           valueListenable: test,
           builder: (BuildContext context, FontModel? value, Widget? child) {
@@ -109,7 +117,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
             return FontGeneralPage(model: value, selectedItem: selectedItem);
           },
         );
-      case TabPages.meta:
+      case TabPage.meta:
         return ValueListenableBuilder<FontModel?>(
           valueListenable: test,
           builder: (BuildContext context, FontModel? value, Widget? child) {
