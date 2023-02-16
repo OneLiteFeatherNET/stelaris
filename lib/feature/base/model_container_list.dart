@@ -5,9 +5,9 @@ import 'package:stelaris_ui/util/typedefs.dart';
 
 import '../../api/tabs/tab_pages.dart';
 
-var tabPagesValues = TabPages.values;
+const List<TabPage> tabPagesValues = TabPage.values;
 
-var tabs = tabPagesValues
+List<Tab> tabs = tabPagesValues
     .map((e) => Tab(
           child: Text(e.content),
         ))
@@ -21,6 +21,7 @@ class ModelContainerList<E extends DataModel> extends StatefulWidget {
   final ValueNotifier<E?> selectedItem;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
   final MapToDeleteDialog<E> mapToDeleteDialog;
+  final MapToTabPages tabPages;
 
   const ModelContainerList(
       {Key? key,
@@ -30,7 +31,8 @@ class ModelContainerList<E extends DataModel> extends StatefulWidget {
       required this.openFunction,
       required this.selectedItem,
       required this.mapToDeleteSuccessfully,
-      required this.mapToDeleteDialog})
+      required this.mapToDeleteDialog,
+      required this.tabPages})
       : super(key: key);
 
   @override
@@ -41,6 +43,7 @@ class _ModelContainerListState<E extends DataModel>
     extends State<ModelContainerList<E>> {
   @override
   Widget build(BuildContext context) {
+    var pages = widget.tabPages.call(tabs);
     return Row(children: [
       ModelList(
           items: widget.items,
@@ -50,22 +53,35 @@ class _ModelContainerListState<E extends DataModel>
           mapToDeleteDialog: widget.mapToDeleteDialog,
           mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully),
       DefaultTabController(
-          length: tabPagesValues.length,
+          length: pages.length,
           child: Expanded(
             child: Scaffold(
               appBar: AppBar(
                 toolbarHeight: 0,
                 bottom: TabBar(
-                  tabs: tabs,
+                  tabs: pages,
                 ),
               ),
               body: TabBarView(
-                children: tabPagesValues
-                    .map((e) => widget.page(e, widget.selectedItem))
-                    .toList(),
+                children: pages.map((e) {
+                  var text = e.child as Text;
+                  return widget.page(transform(text.data!), widget.selectedItem);
+                }).toList(),
               ),
             ),
           ))
     ]);
+  }
+
+  TabPage transform(String name) {
+    if (identical(TabPage.general.content, name)) {
+      return TabPage.general;
+    }
+
+    if (identical(TabPage.meta.content, name)) {
+      return TabPage.meta;
+    }
+
+    return TabPage.general;
   }
 }

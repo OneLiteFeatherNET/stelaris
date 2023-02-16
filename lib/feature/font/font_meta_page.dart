@@ -8,7 +8,7 @@ import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/dialogs/abort_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
-import 'package:stelaris_ui/feature/dialogs/item_flag_dialog.dart';
+import 'package:stelaris_ui/feature/dialogs/entry_add_dialog.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
