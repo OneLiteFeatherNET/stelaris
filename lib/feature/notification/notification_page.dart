@@ -51,6 +51,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
           },
           mapToDeleteSuccessfully: (value) {
             StoreProvider.dispatch(context, RemoveNotificationAction(value));
+            Navigator.pop(context);
             return true;
           },
           selectedItem: selectedItem,
@@ -78,7 +79,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
                         },
                         buildModel: (String name, String description) {
                           return NotificationModel(
-                              name: name, frameType: FrameType.goal.value);
+                              modelName: name, frameType: FrameType.goal.value);
                         },
                       ),
                     ),
@@ -93,7 +94,10 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
   }
 
   Widget mapDataToModelItem(NotificationModel model) {
-    return Text(model.name ?? unknownEntry);
+    return Text(
+      model.modelName ?? unknownEntry,
+      overflow: TextOverflow.ellipsis,
+    );
   }
 
   Widget mapPageToWidget(TabPages e, ValueNotifier<NotificationModel?> test) {

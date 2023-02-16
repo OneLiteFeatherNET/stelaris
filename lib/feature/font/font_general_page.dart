@@ -52,6 +52,14 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                     widget.selectedItem.value = newEntry;
                   });
                 },
+                formValidator: (value) {
+                  var input = value as String;
+
+                  if (input.trim().isEmpty) {
+                    return context.l10n.error_card_empty;
+                  }
+                  return null;
+                },
               ),
               TextInputCard<String>(
                 infoText: context.l10n.tooltip_description,

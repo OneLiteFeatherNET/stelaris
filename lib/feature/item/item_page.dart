@@ -59,6 +59,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
           },
           mapToDeleteSuccessfully: (value) {
             StoreProvider.dispatch(context, RemoveItemAction(value));
+            Navigator.pop(context);
             return true;
           },
           items: vm,
@@ -77,7 +78,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
                     child: Card(
                       child: SetupStepper<ItemModel>(
                         buildModel: (name, description) {
-                          return ItemModel(name: name, description: description, group: ItemGroup.misc.display);
+                          return ItemModel(modelName: name, description: description, group: ItemGroup.misc.display);
                         },
                         finishCallback: (model) {
                           StoreProvider.dispatch(context, AddItemAction(model));
@@ -98,7 +99,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
 
   Widget mapDataToModelItem(ItemModel model) {
     return Text(
-      model.name ?? unknownEntry,
+      model.modelName ?? unknownEntry,
       overflow: TextOverflow.ellipsis,
     );
   }

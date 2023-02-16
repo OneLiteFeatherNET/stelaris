@@ -75,7 +75,6 @@ class _FontMetaPageState extends State<FontMetaPage> {
                             setState(() {
                               StoreProvider.dispatch(
                                   context, UpdateFontAction(oldEntry, newEntry));
-                              Navigator.pop(context);
                               widget.selectedItem.value = newEntry;
                             });
                           },

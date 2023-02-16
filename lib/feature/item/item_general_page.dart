@@ -53,6 +53,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
                 infoText: context.l10n.tooltip_name,
                 title: Text(context.l10n.card_name),
                 currentValue: widget.model.name ?? empty,
+                formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                 valueUpdate: (value) {
                   if (value == widget.model.name) return;
                   final oldModel = widget.model;
@@ -62,6 +63,13 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
                         context, UpdateItemAction(oldModel, newEntry));
                     widget.selectedItem.value = newEntry;
                   });
+                },
+                formValidator: (value) {
+                  var input = value as String;
+
+                  if (input.trim().isEmpty) {
+                    return context.l10n.error_card_empty;
+                  }
                 },
               ),
               TextInputCard<String>(
