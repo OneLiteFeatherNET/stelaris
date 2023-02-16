@@ -58,7 +58,6 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                     if (input.trim().isEmpty) {
                       return context.l10n.error_card_empty;
                     }
-
                     return null;
                   },
               ),

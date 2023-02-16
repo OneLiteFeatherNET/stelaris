@@ -58,7 +58,6 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                   if (input.trim().isEmpty) {
                     return context.l10n.error_card_empty;
                   }
-
                   return null;
                 },
               ),
