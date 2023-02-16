@@ -51,6 +51,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
           },
           mapToDeleteSuccessfully: (value) {
             StoreProvider.dispatch(context, RemoveNotificationAction(value));
+            Navigator.pop(context);
             return true;
           },
           selectedItem: selectedItem,
