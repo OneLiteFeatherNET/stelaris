@@ -59,6 +59,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
           },
           mapToDeleteSuccessfully: (value) {
             StoreProvider.dispatch(context, RemoveItemAction(value));
+            Navigator.pop(context);
             return true;
           },
           items: vm,

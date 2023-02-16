@@ -52,9 +52,7 @@ class FontPageState extends State<FontPage> with BaseLayout {
           },
           mapToDeleteSuccessfully: (value) {
             StoreProvider.dispatch(context, RemoveFontsAction(value));
-            setState(() {
-              selectedItem.value = vm.first;
-            });
+            Navigator.pop(context);
             return true;
           },
           selectedItem: selectedItem,
