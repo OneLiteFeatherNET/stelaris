@@ -24,6 +24,7 @@ class RemoveFontsAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
+    await ApiService().fontAPI.remove(model);
     final fonts = List.of(state.fonts, growable: true);
     fonts.remove(model);
     return state.copyWith(fonts: fonts);

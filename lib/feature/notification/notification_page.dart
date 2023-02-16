@@ -39,6 +39,14 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
           selectedItem.value ??= vm.first;
         }
         return ModelContainerList<NotificationModel>(
+          tabPages: (pages) {
+            List<Tab> requiredTabs = List.from(pages, growable: true);
+            requiredTabs.removeWhere((element) {
+              var text = element.child as Text;
+              return identical(text.data, TabPage.meta.content);
+            });
+            return requiredTabs;
+          },
           mapToDeleteDialog: (value) {
             return [
               TextSpan(
@@ -100,18 +108,18 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
     );
   }
 
-  Widget mapPageToWidget(TabPages e, ValueNotifier<NotificationModel?> test) {
-    switch (e) {
-      case TabPages.general:
-        return ValueListenableBuilder<NotificationModel?>(
-          valueListenable: test,
-          builder: (BuildContext context, NotificationModel? value, Widget? child) {
-            if (value == null) return nil;
-            return NotificationGeneralPage(model: value, selectedItem: selectedItem);
-          },
-        );
-      case TabPages.meta:
-        return nil;
+  Widget mapPageToWidget(TabPage page, ValueNotifier<NotificationModel?> test) {
+    if (page == TabPage.general) {
+      return ValueListenableBuilder<NotificationModel?>(
+        valueListenable: test,
+        builder: (BuildContext context, NotificationModel? value,
+            Widget? child) {
+          if (value == null) return nil;
+          return NotificationGeneralPage(
+              model: value, selectedItem: selectedItem);
+        },
+      );
     }
+    return nil;
   }
 }

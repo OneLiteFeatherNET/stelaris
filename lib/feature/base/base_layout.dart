@@ -5,7 +5,6 @@ import 'package:stelaris_ui/util/constants.dart';
 EdgeInsets padding = const EdgeInsets.only(top: 10, left: 10);
 
 const SizedBox spaceBox = SizedBox(height: 10);
-const EdgeInsets top = EdgeInsets.only(top: 10);
 const EdgeInsets all = EdgeInsets.all(20);
 
 mixin BaseLayout {

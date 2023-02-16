@@ -1,4 +1,4 @@
-enum TabPages {
+enum TabPage {
 
   general("General"),
   meta("Meta");
@@ -6,5 +6,5 @@ enum TabPages {
 
   final String content;
 
-  const TabPages(this.content);
+  const TabPage(this.content);
 }
