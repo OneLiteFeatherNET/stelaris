@@ -15,7 +15,7 @@ class StelarisApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // notifier.value = MediaQuery.of(context).platformBrightness == Brightness.dark ? ThemeMode.dark : ThemeMode.light;
     return ValueListenableBuilder<ThemeMode>(valueListenable: notifier, builder: (_, mode, __) {
-      return  MaterialApp.router(
+      return MaterialApp.router(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         routeInformationParser: router.routeInformationParser,
         routerDelegate: router.routerDelegate,
