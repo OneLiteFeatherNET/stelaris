@@ -52,7 +52,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
               TextSpan(
                   text: context.l10n.delete_dialog_first_line,
                   style: whiteStyle),
-              TextSpan(text: value.name ?? unknownEntry, style: redStyle),
+              TextSpan(text: value.modelName ?? unknownEntry, style: redStyle),
               TextSpan(
                   text: context.l10n.delete_dialog_entry, style: whiteStyle),
             ];
