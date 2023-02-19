@@ -35,9 +35,6 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
         return store.state.notifications;
       },
       builder: (context, vm) {
-        if (vm.isNotEmpty) {
-          selectedItem.value ??= vm.first;
-        }
         return ModelContainerList<NotificationModel>(
           tabPages: (pages) {
             List<Tab> requiredTabs = List.from(pages, growable: true);
