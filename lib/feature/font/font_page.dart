@@ -36,9 +36,6 @@ class FontPageState extends State<FontPage> with BaseLayout {
         return store.state.fonts;
       },
       builder: (context, vm) {
-        if (vm.isNotEmpty) {
-          selectedItem.value ??= vm.first;
-        }
         return ModelContainerList<FontModel>(
           tabPages: (pages) {
             List<Tab> requiredTabs = List.from(pages, growable: true);
