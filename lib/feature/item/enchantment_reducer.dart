@@ -200,16 +200,26 @@ mixin EnchantmentReducer {
 
     switch(group) {
       case ItemGroup.misc:
-        return miscEnchantments.length <= model.enchantments!.length;
+        return model.enchantments!.length <= miscEnchantments.length;
       case ItemGroup.meeleWeapon:
-        return meeleEnchantments.length <= model.enchantments!.length;
+        return model.enchantments!.length <= meeleEnchantments.length;
       case ItemGroup.rangedWeapon:
-        return rangedEnchantments.length <= model.enchantments!.length;
+        return model.enchantments!.length <= rangedEnchantments.length;
       case ItemGroup.tools:
-        return toolEnchantments.length <= model.enchantments!.length;
+        return model.enchantments!.length <= toolEnchantments.length;
       case ItemGroup.armor:
-        return armorEnchantments.length <= model.enchantments!.length;
+        return model.enchantments!.length <= armorEnchantments.length;
     }
+  }
+
+  List<String> _getAsString(List<DropdownMenuItem<Enchantment>> items) {
+    List<String> values = [];
+
+    for (var value in items) {
+      values.add(value.value!.minecraftValue);
+    }
+
+    return values;
   }
 
   Enchantment? getByGroup(ItemModel model, String enchantment) {
@@ -223,18 +233,17 @@ mixin EnchantmentReducer {
     return null;
   }
   
-  List<Enchantment> getRemoveItems(ItemModel itemModel, ItemGroup newGroup) {
-    print(itemModel.enchantments!.length);
+  List<String> getRemoveItems(ItemModel itemModel, ItemGroup newGroup) {
     if (itemModel.enchantments == null || itemModel.enchantments!.isEmpty) {
       return List.empty();
     }
-    List<Enchantment> removeList = List.empty(growable: true);
+    List<String> removeList = List.empty(growable: true);
     
-    var groupEnchantments = _getEnchantments(newGroup);
-    
-    for (var value in groupEnchantments) {
-      if (!itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
-        removeList.add(value.value!);
+    var groupEnchantments = _getAsString(_getEnchantments(newGroup));
+
+    for (var value in itemModel.enchantments!.keys) {
+      if (!groupEnchantments.contains(value)) {
+        removeList.add(value);
       }
     }
 
