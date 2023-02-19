@@ -39,6 +39,7 @@ class ItemGeneralPage extends StatefulWidget {
 class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReducer {
 
   final _key = GlobalKey<FormState>();
+  final _groupKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +91,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
               DropDownCard<ItemGroup, ItemModel>(
                 title: Text(context.l10n.card_group),
                 currentValue: widget.model,
+                formKey: _groupKey,
                 items: getItems(),
                 valueUpdate: (ItemGroup? value) {
                   if (identical(value!.display, widget.model.group)) return;
@@ -111,14 +113,14 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
                           return true;
                         },
                       );
-                    }).then((value) {
-                      if (value == null) return;
+                    }).then((result) {
+                      if (result == null) return;
 
-                      if (value == true) {
+                      if (result == true) {
                         final oldEnchantments = Map.of(widget.model.enchantments!);
 
                         for (var enchantment in list) {
-                          oldEnchantments.remove(enchantment.minecraftValue);
+                          oldEnchantments.remove(enchantment);
                         }
                         final newEntry = widget.model.copyWith(group: value.display, enchantments: oldEnchantments);
                         setState(() {
@@ -127,15 +129,11 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
                           widget.selectedItem.value = newEntry;
                         });
                       } else {
-                        //TODO: Reset dropdown card
-                        print("asas");
-                        //widget.resetKey.value? as
+                        _groupKey.currentState!.reset();
                       }
                     });
-                    print("f");
                   } else {
                     final newEntry = widget.model.copyWith(group: value.display);
-
                     setState(() {
                       StoreProvider.dispatch(context, UpdateItemAction(widget.model, newEntry));
                       widget.selectedItem.value = newEntry;
