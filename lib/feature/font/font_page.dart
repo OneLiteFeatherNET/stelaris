@@ -36,18 +36,8 @@ class FontPageState extends State<FontPage> with BaseLayout {
         return store.state.fonts;
       },
       builder: (context, vm) {
-        if (vm.isNotEmpty) {
-          selectedItem.value ??= vm.first;
-        }
         return ModelContainerList<FontModel>(
-          tabPages: (pages) {
-            List<Tab> requiredTabs = List.from(pages, growable: true);
-            requiredTabs.removeWhere((element) {
-              var text = element.child as Text;
-              return identical(text.data, TabPage.meta.content);
-            });
-            return requiredTabs;
-          },
+          tabPages: (pages) => pages,
           mapToDeleteDialog: (value) {
             return [
               TextSpan(

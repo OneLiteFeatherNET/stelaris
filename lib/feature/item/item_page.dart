@@ -38,9 +38,6 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
         return store.state.items;
       },
       builder: (context, vm) {
-        if (vm.isNotEmpty) {
-          selectedItem.value ??= vm.first;
-        }
         return ModelContainerList<ItemModel>(
           tabPages: (pages) => pages,
           mapToDeleteDialog: (value) {
