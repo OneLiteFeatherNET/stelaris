@@ -14,7 +14,7 @@ enum Enchantment {
   soulSpeed("SoulSpeed", 3, "minecraft:soul_speed"),
   swiftSneak("Swift Sneak", 3, "minecraft:swift_sneak"),
 
-  sharpness("Shaprness", 3, "minecraft:sharpness"),
+  sharpness("Sharpness", 3, "minecraft:sharpness"),
   smite("Smite", 3, "minecraft:smite"),
   baneOfArthropods("Bane of Arthropods", 2, "minecraft:bane_of_arthropods"),
   knockback("Knockback", 3, "minecraft:knockback"),
