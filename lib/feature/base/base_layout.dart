@@ -5,29 +5,9 @@ import 'package:stelaris_ui/util/constants.dart';
 EdgeInsets padding = const EdgeInsets.only(top: 10, left: 10);
 
 const SizedBox spaceBox = SizedBox(height: 10);
-const EdgeInsets top = EdgeInsets.only(top: 10);
 const EdgeInsets all = EdgeInsets.all(20);
 
 mixin BaseLayout {
-
-  Widget createDropDownContainer<E>(E type, String title, E value, E defaultValue, List<DropdownMenuItem<E>> items) {
-    return Padding(
-      padding: padding,
-      child: constructContainer(
-        [
-          Text(title, textAlign: TextAlign.left),
-          spaceBox,
-          SizedBox(
-            width: 300,
-            child: DropdownButtonFormField<E>(
-              value: value ?? defaultValue,
-              items: items,
-              onChanged: (E? value) {}),
-            )
-        ]
-      ),
-    );
-  }
 
   Widget createInputContainer(String title, String? value) {
     return Padding(
@@ -123,12 +103,11 @@ mixin BaseLayout {
 
   Widget constructContainer(List<Widget> children) {
     return Card(
-        // decoration: boxDecoration,
+        margin: eightEdgeInsets,
         child: Column(
           children: [
             Container(
               padding: all,
-              // decoration: boxDecoration,
               child: Column(children: children),
             ),
           ]

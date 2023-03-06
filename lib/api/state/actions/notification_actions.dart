@@ -1,7 +1,6 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:stelaris_ui/util/default.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 
-import '../../api_service.dart';
 import '../../model/notification_model.dart';
 import '../app_state.dart';
 
@@ -9,8 +8,8 @@ class InitNotificationAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    // var items = await ApiService().itemApi.getAllItems();
-    return state.copyWith(notifications: [firstNotificationModel, secondNotificationModel]);
+    var notifications = await ApiService().notificationAPI.getAllNotifications();
+    return state.copyWith(notifications: notifications);
   }
 
   InitNotificationAction();
@@ -26,22 +25,22 @@ class UpdateNotificationAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final notifications = List.of(state.notifications, growable: true);
-    notifications.remove(oldEntry);
-    notifications.add(newEntry);
+    final index = notifications.indexOf(oldEntry);
+    notifications[index] = newEntry;
     return state.copyWith(notifications: notifications);
   }
 }
 
-class InputNotificationAction extends ReduxAction<AppState> {
+class NotificationAddAction extends ReduxAction<AppState> {
 
   final NotificationModel model;
 
-  InputNotificationAction(this.model);
+  NotificationAddAction(this.model);
 
   @override
   Future<AppState?> reduce() async {
-    final models = List.of(state.notifications, growable: true);
-    models.add(model);
+    await ApiService().notificationAPI.addNotification(model);
+    final models = await ApiService().notificationAPI.getAllNotifications();
     return state.copyWith(notifications: models);
   }
 }

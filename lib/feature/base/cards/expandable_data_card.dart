@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/util/constants.dart';
 
-import '../../../util/constants.dart';
-import '../base_layout.dart';
-
-const BoxConstraints constraints = BoxConstraints(
-    minWidth: 300,
-    minHeight: 100,
-    maxWidth: 300
-);
-
-class ExpandableDataCard extends StatefulWidget {
+class ExpandableDataCard extends StatelessWidget with BaseLayout {
 
   final Text title;
   final VoidCallback buttonClick;
@@ -18,11 +11,6 @@ class ExpandableDataCard extends StatefulWidget {
   const ExpandableDataCard({Key? key, required this.title, required this.buttonClick, required this.widgets}) : super(key: key);
 
   @override
-  State<ExpandableDataCard> createState() => _ExpandableDataCardState();
-}
-
-class _ExpandableDataCardState extends State<ExpandableDataCard> with BaseLayout {
-  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: padding,
@@ -30,12 +18,12 @@ class _ExpandableDataCardState extends State<ExpandableDataCard> with BaseLayout
           [
             ExpansionTile(
                 controlAffinity: ListTileControlAffinity.leading,
-                title: widget.title,
+                title: title,
                 trailing: IconButton(
-                  onPressed: widget.buttonClick,
+                  onPressed: buttonClick,
                   icon: addModelIcon,
                 ),
-                children: widget.widgets
+                children: widgets
             )
           ]
       ),

@@ -1,53 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/util/minecraft/enchantment.dart';
+import 'package:stelaris_ui/feature/item/enchantment_reducer.dart';
+import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
-const List<Enchantment> enchantments = Enchantment.values;
-List<DropdownMenuItem<Enchantment>> items =
-List.generate(enchantments.length, (index) =>
-    DropdownMenuItem(value: enchantments[index],child: Text(enchantments[index].display),)
-);
-
-class ItemEnchantmentAddDialog extends StatelessWidget {
-
+class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
   final AddEnchantmentCallback addEnchantmentCallback;
   final TextEditingController levelController = TextEditingController();
+  final ItemModel model;
+  final FormFieldValidator formFieldValidator;
   Enchantment? _selected;
 
-  ItemEnchantmentAddDialog({Key? key, required this.addEnchantmentCallback}) : super(key: key);
+  final _key = GlobalKey<FormState>();
+
+  ItemEnchantmentAddDialog(
+      {Key? key,
+      required this.addEnchantmentCallback,
+      required this.model,
+      required this.formFieldValidator})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List<DropdownMenuItem<Enchantment>> enchantments = getEnchantments(model);
+    _selected = enchantments[0].value;
     return SimpleDialog(
-      title: const Text("Add a enchantment", textAlign: TextAlign.center,),
-      contentPadding: const EdgeInsets.all(20.0),
+      title: Text(
+        context.l10n.dialog_enchantment_title,
+        textAlign: TextAlign.center,
+      ),
+      contentPadding: dialogPadding,
       children: [
-        const Text("Enchantment"),
-        spaceFiveBox,
-        const SizedBox(height: 5,),
+        Text(context.l10n.dialog_enchantment_enchantment),
+        spaceTenBox,
         DropdownButtonFormField(
-          value: items[0].value,
-          items: items,
+          value: _selected,
+          items: enchantments,
           onChanged: (Enchantment? value) {
             _selected = value;
-        },
+          },
         ),
         spaceTwentyFiveHeightBox,
         const Text("Level"),
-        TextFormField(
-          controller: levelController,
-          autocorrect: false,
-          keyboardType: numberInput,
-          inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
+        Form(
+          key: _key,
+          autovalidateMode: AutovalidateMode.always,
+          child: TextFormField(
+            controller: levelController,
+            autocorrect: false,
+            keyboardType: numberInput,
+            inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
+            validator: formFieldValidator,
+          ),
         ),
         spaceTwentyFiveHeightBox,
-        TextButton(onPressed: () {
-          if (_selected != null) {
-            addEnchantmentCallback(_selected!, int.parse(levelController.value.text));
-          }
-        }, child: addText)
+        TextButton(
+            onPressed: () {
+              if (!_key.currentState!.validate()) return;
+              if (_selected != null) {
+                addEnchantmentCallback(
+                    _selected!, int.parse(levelController.value.text));
+              }
+            },
+            child: Text(context.l10n.button_add))
       ],
     );
   }

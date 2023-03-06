@@ -13,7 +13,7 @@ class FontAPI {
   Future<FontModel> getFont() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/api/font');
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/font');
     final result = await _apiClient.dio.getUri(uri).then((value) => FontModel.fromJson(value.data!));
     return result;
   }
@@ -21,7 +21,7 @@ class FontAPI {
   Future<FontModel> addFont(FontModel font) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/font/');
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/font');
     final result = await _apiClient.dio.postUri(uri, data: font).then((value) => FontModel.fromJson(value.data!));
     return result;
   }
@@ -39,6 +39,14 @@ class FontAPI {
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/font/update');
     final result = await _apiClient.dio.postUri(uri, data: model.toJson()).then((value) => FontModel.fromJson(value.data!));
+    return result;
+  }
+
+  Future<FontModel> remove(FontModel fontModel) async {
+    final queryParams = <String, dynamic>{};
+    final baseUri = Uri.parse(_apiClient.baseUrl);
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/font/remove/${fontModel.id}');
+    final result = await _apiClient.dio.deleteUri(uri).then((value) => FontModel.fromJson(value.data!));
     return result;
   }
 }
