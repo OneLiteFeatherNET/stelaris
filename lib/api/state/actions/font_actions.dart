@@ -54,7 +54,7 @@ class UpdateFontAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final items = List.of(state.fonts, growable: true);
-    items.remove(oldEntry);
+    items.removeAt(items.indexWhere((element) => element.id == oldEntry.id));
     items.add(newEntry);
     return state.copyWith(fonts: items);
   }
