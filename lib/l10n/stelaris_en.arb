@@ -70,5 +70,6 @@
   "card_height": "Height",
   "card_chars": "Chars",
   "card_group": "Group",
-  "card_amount_to_high": "The maximum amount is 64"
+  "card_amount_to_high": "The maximum amount is 64",
+  "label_level": "Level"
 }
