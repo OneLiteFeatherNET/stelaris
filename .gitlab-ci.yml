@@ -2,6 +2,7 @@
 image: ghcr.io/cirruslabs/flutter:beta
 # Functions that should be executed before the build script is run
 before_script:
+  - flutter doctor
   - flutter clean
   - flutter pub get
 pages:
