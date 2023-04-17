@@ -2,6 +2,7 @@
 image: ghcr.io/cirruslabs/flutter:latest
 # Functions that should be executed before the build script is run
 before_script:
+  - flutter clean
   - flutter pub get
 pages:
   script:
