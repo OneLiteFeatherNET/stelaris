@@ -22,7 +22,7 @@ dependencies:
   async_redux: 19.0.2
   data_table_2: ^2.3.8
   nil: ^1.1.1
-  intl: ^0.17.0
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:
