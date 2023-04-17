@@ -4,6 +4,9 @@ image: ghcr.io/cirruslabs/flutter:beta
 before_script:
   - flutter doctor
   - flutter config --enable-web
+  - sudo apt-get update
+  - sudo apt-get install -y chromium-browser
+  - sudo rm -rf /var/lib/apt/lists/*
   - flutter clean
   - flutter pub get
 pages:
