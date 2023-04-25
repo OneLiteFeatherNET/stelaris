@@ -8,6 +8,7 @@ import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
+import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
@@ -69,7 +70,7 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
           selectedItem: selectedItem,
           items: vm,
           page: mapPageToWidget,
-          mapToDataModelItem: mapDataToModelItem,
+          mapToDataModelItem: (value) => ModelText(displayName: value.name),
           openFunction: () {
             showDialog(
               context: context,
@@ -97,13 +98,6 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
           },
         );
       },
-    );
-  }
-
-  Widget mapDataToModelItem(BlockModel model) {
-    return Text(
-      model.name ?? unknownEntry,
-      overflow: TextOverflow.ellipsis,
     );
   }
 
