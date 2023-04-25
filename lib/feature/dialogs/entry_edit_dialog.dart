@@ -39,6 +39,7 @@ class EntryEditDialog extends StatelessWidget {
           key: _key,
           autovalidateMode: AutovalidateMode.always,
           child: TextFormField(
+            autofocus: true,
             controller: _controller,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             inputFormatters: inputFormatters,
