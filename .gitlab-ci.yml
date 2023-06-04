@@ -1,14 +1,23 @@
-# The Docker image that will be used to build your app
-image: repo.htl-md.schule:5003/cirrusci/flutter:latest
-# Functions that should be executed before the build script is run
+image: ghcr.io/cirruslabs/flutter:beta
+variables:
+  KUBERNETES_CPU_REQUEST: "2"
+  KUBERNETES_CPU_LIMIT: "4"
+  KUBERNETES_MEMORY_REQUEST: "2Gi"
+  KUBERNETES_MEMORY_LIMIT: "4Gi"
+  KUBERNETES_EPHEMERAL_STORAGE_REQUEST: "5Gi"
+  KUBERNETES_EPHEMERAL_STORAGE_LIMIT: "10Gi"
+
 before_script:
-  - flutter channel stable
-  - flutter upgrade
+  - flutter config --enable-web
+  - sudo apt-get update
+  - sudo apt-get install -y chromium-browser
+  - sudo rm -rf /var/lib/apt/lists/*
+  - flutter doctor
   - flutter pub get
 pages:
   script:
     - flutter pub run build_runner build --delete-conflicting-outputs
-    - flutter build web --base-href /stelaris-ui/
+    - flutter build web --release --base-href /stelaris-ui/
     - mv build/web public
     - chmod 777 -R public
   artifacts:

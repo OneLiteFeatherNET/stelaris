@@ -1,11 +1,11 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
 import 'package:stelaris_ui/feature/item/item_general_page.dart';
 import 'package:stelaris_ui/feature/item/item_group.dart';
@@ -62,7 +62,7 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
           },
           items: vm,
           page: mapPageToWidget,
-          mapToDataModelItem: mapDataToModelItem,
+          mapToDataModelItem: (value) => ModelText(displayName: value.modelName),
           selectedItem: selectedItem,
           openFunction: () {
             showDialog(
@@ -92,13 +92,6 @@ class ItemPageState extends State<ItemPage> with BaseLayout {
           },
         );
       },
-    );
-  }
-
-  Widget mapDataToModelItem(ItemModel model) {
-    return Text(
-      model.modelName ?? unknownEntry,
-      overflow: TextOverflow.ellipsis,
     );
   }
 

@@ -8,6 +8,7 @@ import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
+import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
 import 'package:stelaris_ui/feature/notification/notification_page_general.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
@@ -62,7 +63,7 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
           selectedItem: selectedItem,
           items: vm,
           page: mapPageToWidget,
-          mapToDataModelItem: mapDataToModelItem,
+          mapToDataModelItem: (value) => ModelText(displayName: value.modelName),
           openFunction: () {
             showDialog(
               context: context,
@@ -95,13 +96,6 @@ class NotificationPageState extends State<NotificationPage> with BaseLayout {
           },
         );
       },
-    );
-  }
-
-  Widget mapDataToModelItem(NotificationModel model) {
-    return Text(
-      model.modelName ?? unknownEntry,
-      overflow: TextOverflow.ellipsis,
     );
   }
 

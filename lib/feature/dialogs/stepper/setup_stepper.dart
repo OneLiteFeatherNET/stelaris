@@ -10,11 +10,9 @@ class SetupStepper<E extends DataModel> extends StatefulWidget {
   final FinishStepper<E> finishCallback;
   final BuildModel<E> buildModel;
 
-  const SetupStepper({
-    Key? key,
-    required this.finishCallback,
-    required this.buildModel
-  }) : super(key: key);
+  const SetupStepper(
+      {Key? key, required this.finishCallback, required this.buildModel})
+      : super(key: key);
 
   @override
   State<SetupStepper<E>> createState() => _SetupStepperState<E>();
@@ -23,8 +21,8 @@ class SetupStepper<E extends DataModel> extends StatefulWidget {
 class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
   int _currentStep = 0;
 
-  GlobalKey<_SetupStepperState<E>> itemStepperKey = GlobalKey<
-      _SetupStepperState<E>>();
+  GlobalKey<_SetupStepperState<E>> itemStepperKey =
+      GlobalKey<_SetupStepperState<E>>();
 
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -41,8 +39,7 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
       children: [
         Container(
           padding: const EdgeInsets.all(8),
-          child: Text(
-              context.l10n.setup_new_model,
+          child: Text(context.l10n.setup_new_model,
               style: const TextStyle(fontSize: 25),
               textAlign: TextAlign.center),
         ),
@@ -85,8 +82,7 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
     }
   }
 
-  List<Step> getSteps() =>
-      [
+  List<Step> getSteps() => [
         Step(
           isActive: _currentStep == 0,
           title: Text(context.l10n.card_name),
@@ -95,12 +91,16 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
               SizedBox(
                 width: 650,
                 child: TextFormField(
+                  autofocus: true,
                   focusNode: focusNode,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: nameController,
-                  decoration: InputDecoration(labelText: context.l10n.card_name),
+                  decoration:
+                      InputDecoration(labelText: context.l10n.card_name),
                   maxLength: 30,
-                  inputFormatters: [FilteringTextInputFormatter.allow(namePattern)],
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(namePattern)
+                  ],
                   validator: (value) {
                     if (value != null && !namePattern.hasMatch(value)) {
                       return context.l10n.setup_invalid_name;
@@ -122,7 +122,8 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
                 width: 650,
                 child: TextFormField(
                   controller: descriptionController,
-                  decoration: InputDecoration(labelText: context.l10n.card_description),
+                  decoration:
+                      InputDecoration(labelText: context.l10n.card_description),
                 ),
               ),
               fifteenBox
