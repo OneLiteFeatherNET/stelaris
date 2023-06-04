@@ -37,10 +37,10 @@ packages:
     dependency: "direct main"
     description:
       name: async_redux
-      sha256: f572943d3a7c1951186c977f55c47b7efa70a1fea55f8d18227aaef99edcad2a
+      sha256: "80bfa63483f94c1a106c8efe56396cdf3f5709124ce763cf086cf617e2fda462"
       url: "https://pub.dev"
     source: hosted
-    version: "19.0.2"
+    version: "20.0.2"
   boolean_selector:
     dependency: transitive
     description:
@@ -417,10 +417,10 @@ packages:
     dependency: transitive
     description:
       name: material_color_utilities
-      sha256: "586678f20e112219ed0f73215f01bcdf1d769824ba2ebae45ad918a9bfde9bdb"
+      sha256: d92141dc6fe1dad30722f9aa826c7fbc896d021d792f80678280601aff8cf724
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.2.0"
   meta:
     dependency: transitive
     description:
@@ -598,10 +598,10 @@ packages:
     dependency: transitive
     description:
       name: source_span
-      sha256: "53e943d4206a5e30df338fd4c6e7a077e02254531b138a15aec3bd143c1a8b3c"
+      sha256: dd904f795d4b4f3b870833847c461801f6750a9fa8e61ea5ac53f9422b31f250
       url: "https://pub.dev"
     source: hosted
-    version: "1.10.0"
+    version: "1.9.1"
   stack_trace:
     dependency: transitive
     description:
@@ -694,10 +694,10 @@ packages:
     dependency: transitive
     description:
       name: weak_map
-      sha256: "10b77d47f1a010bb15a91c828adc90c669b38bf3d97ad3910587adbf6d267b2b"
+      sha256: "34cbf7ad813c399140df4ca2b4b66861418847489ddb9dbd91e12b5340ea8e9c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "3.0.0"
   web_socket_channel:
     dependency: transitive
     description:
