@@ -71,6 +71,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
                   if (input.trim().isEmpty) {
                     return context.l10n.error_card_empty;
                   }
+                  return null;
                 },
               ),
               TextInputCard<String>(

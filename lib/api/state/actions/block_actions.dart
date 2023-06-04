@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris_ui/api/api_service.dart';
-import 'package:stelaris_ui/util/default.dart';
 import '../../model/block_model.dart';
 import '../app_state.dart';
 
@@ -13,7 +12,7 @@ class UpdateBlockAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final items = List.of(state.blocks, growable: true);
-    items.remove(oldEntry);
+    items.removeAt(items.indexWhere((element) => element.id == oldEntry.id));
     items.add(newEntry);
     return state.copyWith(blocks: items);
   }

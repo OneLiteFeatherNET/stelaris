@@ -12,7 +12,7 @@ class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
   final TextEditingController levelController = TextEditingController();
   final ItemModel model;
   final FormFieldValidator formFieldValidator;
-  Enchantment? _selected;
+  final ValueNotifier<Enchantment?> _selected = ValueNotifier(null);
 
   final _key = GlobalKey<FormState>();
 
@@ -26,7 +26,7 @@ class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
   @override
   Widget build(BuildContext context) {
     List<DropdownMenuItem<Enchantment>> enchantments = getEnchantments(model);
-    _selected = enchantments[0].value;
+    _selected.value = enchantments[0].value;
     return SimpleDialog(
       title: Text(
         context.l10n.dialog_enchantment_title,
@@ -36,15 +36,15 @@ class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
       children: [
         Text(context.l10n.dialog_enchantment_enchantment),
         spaceTenBox,
-        DropdownButtonFormField(
-          value: _selected,
+        DropdownButtonFormField<Enchantment?>(
+          value: _selected.value,
           items: enchantments,
-          onChanged: (Enchantment? value) {
-            _selected = value;
+          onChanged: (value) {
+            _selected.value = value;
           },
         ),
         spaceTwentyFiveHeightBox,
-        const Text("Level"),
+        Text(context.l10n.label_level),
         Form(
           key: _key,
           autovalidateMode: AutovalidateMode.always,
@@ -60,10 +60,8 @@ class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
         TextButton(
             onPressed: () {
               if (!_key.currentState!.validate()) return;
-              if (_selected != null) {
-                addEnchantmentCallback(
-                    _selected!, int.parse(levelController.value.text));
-              }
+              if (_selected.value == null) return;
+              addEnchantmentCallback(_selected.value!, int.parse(levelController.value.text));
             },
             child: Text(context.l10n.button_add))
       ],
