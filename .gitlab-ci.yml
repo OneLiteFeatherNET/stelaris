@@ -1,4 +1,4 @@
-image: ghcr.io/cirruslabs/flutter:beta
+image: ghcr.io/cirruslabs/flutter:latest
 variables:
   KUBERNETES_CPU_REQUEST: "2"
   KUBERNETES_CPU_LIMIT: "4"
