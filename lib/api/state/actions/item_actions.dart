@@ -13,7 +13,7 @@ class UpdateItemAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final items = List.of(state.items, growable: true);
-    items.removeAt(items.indexWhere((element) => element.id == newEntry.id));
+    items.removeAt(items.indexWhere((element) => element.id == oldEntry.id));
     items.add(newEntry);
     return state.copyWith(items: items);
   }

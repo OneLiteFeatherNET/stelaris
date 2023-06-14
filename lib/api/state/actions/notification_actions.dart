@@ -25,8 +25,8 @@ class UpdateNotificationAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final notifications = List.of(state.notifications, growable: true);
-    final index = notifications.indexOf(oldEntry);
-    notifications[index] = newEntry;
+    notifications.removeAt(notifications.indexWhere((element) => element.id == oldEntry.id));
+    notifications.add(newEntry);
     return state.copyWith(notifications: notifications);
   }
 }
