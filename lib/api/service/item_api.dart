@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_ui/api/api_client.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
@@ -21,7 +22,7 @@ class ItemApi {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/item');
-    final result = await _apiClient.dio.postUri(uri, data: item).then((value) => ItemModel.fromJson(value.data!));
+    final result = await _apiClient.dio.postUri(uri, data: item.toJson()).then((value) => ItemModel.fromJson(value.data!));
     return result;
   }
 

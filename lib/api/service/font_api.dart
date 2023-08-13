@@ -22,7 +22,7 @@ class FontAPI {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/font');
-    final result = await _apiClient.dio.postUri(uri, data: font).then((value) => FontModel.fromJson(value.data!));
+    final result = await _apiClient.dio.postUri(uri, data: font.toJson()).then((value) => FontModel.fromJson(value.data!));
     return result;
   }
 
