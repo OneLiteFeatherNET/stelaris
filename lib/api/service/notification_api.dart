@@ -23,7 +23,7 @@ class NotificationAPI {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/notification');
-    final result = await _apiClient.dio.postUri(uri, data: notification).then((value) => NotificationModel.fromJson(value.data!));
+    final result = await _apiClient.dio.postUri(uri, data: notification.toJson()).then((value) => NotificationModel.fromJson(value.data!));
     return result;
   }
 

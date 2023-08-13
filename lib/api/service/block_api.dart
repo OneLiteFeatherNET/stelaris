@@ -23,7 +23,7 @@ class BlockAPI {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/block');
-    final result = await _apiClient.dio.postUri(uri, data: block).then((value) => BlockModel.fromJson(value.data!));
+    final result = await _apiClient.dio.postUri(uri, data: block.toJson()).then((value) => BlockModel.fromJson(value.data!));
     return result;
   }
 
