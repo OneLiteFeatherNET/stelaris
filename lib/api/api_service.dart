@@ -34,10 +34,10 @@ class ApiService {
   late final PluginAPI pluginAPI = PluginAPI(_apiClient);
 
   ApiClient _createApiClient() {
-    return ApiClient("https://vulpes.volans.builders/api");
+    return ApiClient("https://api.onelitefeather.dev/vulpes/backend/");
   }
 
   ApiClient _createGeneratorClient() {
-    return ApiClient("https://vulpes.volans.builders/generator");
+    return ApiClient("https://api.onelitefeather.dev/vulpes/generator/");
   }
 }
