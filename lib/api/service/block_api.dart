@@ -6,7 +6,6 @@ import '../model/block_model.dart';
 class BlockAPI {
 
   final ApiClient _apiClient;
-
   final StringToBlock _formatter = const StringToBlock();
 
   BlockAPI(this._apiClient);

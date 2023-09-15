@@ -6,15 +6,14 @@ import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/base/model_container_list.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
-import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
+import 'package:stelaris_ui/feature/dialogs/setup_dialog.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
-
-import '../../api/state/app_state.dart';
-import '../../api/tabs/tab_pages.dart';
+import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 
 class BlockPage extends StatefulWidget {
   const BlockPage({Key? key}) : super(key: key);
@@ -30,69 +29,43 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, List<BlockModel>>(
-      onInit: (store) {
-        store.dispatch(InitBlockAction());
+    return ModelContainerList<BlockModel>(
+      converter: (store) => store.state.blocks,
+      action: InitBlockAction(),
+      tabPages: (pages) {
+        List<Tab> requiredTabs = List.from(pages, growable: true);
+        requiredTabs.removeWhere(
+            (element) => identical(element.text, TabPage.meta.content));
+        return requiredTabs;
       },
-      converter: (store) {
-        return store.state.blocks;
+      mapToDeleteDialog: (value) {
+        return [
+          TextSpan(
+              text: context.l10n.delete_dialog_first_line, style: whiteStyle),
+          TextSpan(text: value.name ?? unknownEntry, style: redStyle),
+          TextSpan(text: context.l10n.delete_dialog_entry, style: whiteStyle),
+        ];
       },
-      builder: (context, vm) {
-        if (vm.isNotEmpty) {
-          selectedItem.value ??= vm.first;
-        }
-        return ModelContainerList<BlockModel>(
-          tabPages: (pages) {
-            List<Tab> requiredTabs = List.from(pages, growable: true);
-            requiredTabs.removeWhere((element) => identical(element.text, TabPage.meta.content));
-            return requiredTabs;
-          },
-          mapToDeleteDialog: (value) {
-            return [
-              TextSpan(
-                  text: context.l10n.delete_dialog_first_line,
-                  style: whiteStyle
-              ),
-              TextSpan(
-                  text: value.name ?? unknownEntry,
-                  style: redStyle
-              ),
-              TextSpan(
-                  text: context.l10n.delete_dialog_entry,
-                  style: whiteStyle
-              ),
-            ];
-          },
-          mapToDeleteSuccessfully: (value) {
-            StoreProvider.dispatch(context, RemoveBlockAction(value));
-            return true;
-          },
-          selectedItem: selectedItem,
-          items: vm,
-          page: mapPageToWidget,
-          mapToDataModelItem: (value) => ModelText(displayName: value.name),
-          openFunction: () {
-            showDialog(
-              context: context,
-              useRootNavigator: false,
-              builder: (BuildContext context) {
-                return Dialog(
-                  child: SizedBox(
-                    width: 500,
-                    height: 350,
-                    child: Card(
-                      elevation: 0.8,
-                      child: SetupStepper<BlockModel>(
-                          buildModel: (name, description) {
-                        return BlockModel(name: name);
-                      }, finishCallback: (model) {
-                        StoreProvider.dispatch(context, AddBlockAction(model));
-                        Navigator.pop(context);
-                        selectedItem.value = model;
-                      }),
-                    ),
-                  ),
-                );
+      mapToDeleteSuccessfully: (value) {
+        StoreProvider.dispatch(context, RemoveBlockAction(value));
+        return true;
+      },
+      selectedItem: selectedItem,
+      page: mapPageToWidget,
+      mapToDataModelItem: (value) => ModelText(displayName: value.name),
+      openFunction: () {
+        showDialog(
+          context: context,
+          useRootNavigator: false,
+          builder: (BuildContext context) {
+            return SetUpDialog<BlockModel>(
+              buildModel: (name, description) {
+                return BlockModel(name: name);
+              },
+              finishCallback: (model) {
+                StoreProvider.dispatch(context, AddBlockAction(model));
+                Navigator.pop(context);
+                selectedItem.value = model;
               },
             );
           },

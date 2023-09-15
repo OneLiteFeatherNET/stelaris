@@ -42,7 +42,7 @@ class EntryAddDialog extends StatelessWidget {
             validator: formFieldValidator,
           ),
         ),
-        spaceTwentyFiveHeightBox,
+        verticalSpacing25,
         TextButton(
             onPressed: () {
               if (!_key.currentState!.validate()) return;

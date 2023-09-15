@@ -5,7 +5,6 @@ import 'package:stelaris_ui/api/model/plugin_model.dart';
 class PluginAPI {
 
   final ApiClient _apiClient;
-
   final StringToPlugin _formatter = const StringToPlugin();
 
   PluginAPI(this._apiClient);

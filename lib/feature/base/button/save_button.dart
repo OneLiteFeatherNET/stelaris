@@ -1,27 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/feature/base/position_bottom_right.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 
 import '../../../util/constants.dart';
 
 class SaveButton extends StatelessWidget {
-
   final Function callback;
+  final Object? parameter;
 
-  const SaveButton({Key? key, required this.callback}) : super(key: key);
+  const SaveButton({
+    required this.callback,
+    this.parameter,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return  Positioned(
-        bottom: 25,
-        right: 25,
-        child: FloatingActionButton.extended(
-          heroTag: UniqueKey(),
-          onPressed: () {
+    return PositionBottomRight(
+      child: FloatingActionButton.extended(
+        heroTag: UniqueKey(),
+        onPressed: () {
+          if (parameter != null) {
+            callback.call(parameter);
+          } else {
             callback.call();
-          },
-          label: Text(context.l10n.button_save),
-          icon: saveIcon,
-        )
+          }
+        },
+        label: Text(context.l10n.button_save),
+        icon: saveIcon,
+      ),
     );
   }
 }

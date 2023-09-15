@@ -40,7 +40,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
               TextInputCard<String>(
                   title: Text(context.l10n.card_name),
                   infoText: context.l10n.tooltip_name,
-                  currentValue: widget.model.name ?? empty,
+                  currentValue: widget.model.name ?? emptyString,
                   formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                   valueUpdate: (value) {
                     if (value == widget.model.name) return;
@@ -53,9 +53,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                     });
                   },
                   formValidator: (value) {
-                    var input = value as String;
-
-                    if (input.trim().isEmpty) {
+                    if (value.trim().isEmpty) {
                       return context.l10n.error_card_empty;
                     }
                     return null;
@@ -63,7 +61,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
               ),
               TextInputCard<String>(
                 title: Text(context.l10n.card_material),
-                currentValue: widget.model.material ?? empty,
+                currentValue: widget.model.material ?? emptyString,
                 infoText: context.l10n.tooltip_material,
                 valueUpdate: (value) {
                   if (value == widget.model.material) return;
@@ -85,7 +83,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
               ),
               TextInputCard<String>(
                   title: Text(context.l10n.card_title),
-                  currentValue: widget.model.title ?? empty,
+                  currentValue: widget.model.title ?? emptyString,
                   infoText: context.l10n.tooltip_title,
                   valueUpdate: (value) {
                     if (value == widget.model.title) return;
@@ -99,7 +97,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                   }),
               TextInputCard<String>(
                   title: Text(context.l10n.card_description),
-                  currentValue: widget.model.description ?? empty,
+                  currentValue: widget.model.description ?? emptyString,
                   infoText: context.l10n.tooltip_description,
                   valueUpdate: (value) {
                     if (value == widget.model.description) return;

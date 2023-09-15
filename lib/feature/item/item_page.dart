@@ -6,87 +6,57 @@ import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
-import 'package:stelaris_ui/feature/dialogs/stepper/setup_stepper.dart';
+import 'package:stelaris_ui/feature/dialogs/setup_dialog.dart';
 import 'package:stelaris_ui/feature/item/item_general_page.dart';
 import 'package:stelaris_ui/feature/item/item_group.dart';
 import 'package:stelaris_ui/feature/item/item_meta_page.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
-import '../../api/state/app_state.dart';
 import '../base/model_container_list.dart';
 
-class ItemPage extends StatefulWidget {
-  const ItemPage({Key? key}) : super(key: key);
+final ValueNotifier<ItemModel?> selectedItem = ValueNotifier(null);
 
-  @override
-  State<StatefulWidget> createState() {
-    return ItemPageState();
-  }
-}
-
-class ItemPageState extends State<ItemPage> with BaseLayout {
-  final ValueNotifier<ItemModel?> selectedItem = ValueNotifier(null);
+class ItemPage extends StatelessWidget with BaseLayout {
+  const ItemPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, List<ItemModel>>(
-      onInit: (store) {
-        store.dispatch(InitItemAction());
+    return ModelContainerList<ItemModel>(
+      converter: (store) => store.state.items,
+      action: InitItemAction(),
+      tabPages: (pages) => pages,
+      mapToDeleteDialog: (value) {
+        return [
+          TextSpan(
+              text: context.l10n.delete_dialog_first_line, style: whiteStyle),
+          TextSpan(text: value.modelName ?? unknownEntry, style: redStyle),
+          TextSpan(text: context.l10n.delete_dialog_entry, style: whiteStyle),
+        ];
       },
-      converter: (store) {
-        return store.state.items;
+      mapToDeleteSuccessfully: (value) {
+        StoreProvider.dispatch(context, RemoveItemAction(value));
+        return true;
       },
-      builder: (context, vm) {
-        return ModelContainerList<ItemModel>(
-          tabPages: (pages) => pages,
-          mapToDeleteDialog: (value) {
-            return [
-              TextSpan(
-                  text: context.l10n.delete_dialog_first_line,
-                  style: whiteStyle
-              ),
-              TextSpan(
-                  text: value.modelName ?? unknownEntry,
-                  style: redStyle
-              ),
-              TextSpan(
-                  text: context.l10n.delete_dialog_entry,
-                  style: whiteStyle
-              ),
-            ];
-          },
-          mapToDeleteSuccessfully: (value) {
-            StoreProvider.dispatch(context, RemoveItemAction(value));
-            return true;
-          },
-          items: vm,
-          page: mapPageToWidget,
-          mapToDataModelItem: (value) => ModelText(displayName: value.modelName),
-          selectedItem: selectedItem,
-          openFunction: () {
-            showDialog(
-              context: context,
-              useRootNavigator: false,
-              builder: (BuildContext context) {
-                return Dialog(
-                  child: SizedBox(
-                    width: 500,
-                    height: 350,
-                    child: Card(
-                      child: SetupStepper<ItemModel>(
-                        buildModel: (name, description) {
-                          return ItemModel(modelName: name, description: description, group: ItemGroup.misc.display);
-                        },
-                        finishCallback: (model) {
-                          StoreProvider.dispatch(context, AddItemAction(model));
-                          Navigator.pop(context);
-                          selectedItem.value = model;
-                        },
-                      ),
-                    ),
-                  ),
-                );
+      page: mapPageToWidget,
+      mapToDataModelItem: (value) => ModelText(displayName: value.modelName),
+      selectedItem: selectedItem,
+      openFunction: () {
+        showDialog(
+          context: context,
+          useRootNavigator: false,
+          builder: (BuildContext context) {
+            return SetUpDialog<ItemModel>(
+              buildModel: (name, description) {
+                return ItemModel(
+                    modelName: name,
+                    description: description,
+                    group: ItemGroup.misc.display);
+              },
+              finishCallback: (model) {
+                StoreProvider.dispatch(context, AddItemAction(model));
+                Navigator.pop(context);
+                selectedItem.value = model;
               },
             );
           },

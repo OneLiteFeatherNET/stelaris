@@ -5,7 +5,6 @@ import 'package:stelaris_ui/api/model/font_model.dart';
 class FontAPI {
 
   final ApiClient _apiClient;
-
   final StringToFont _formatter = const StringToFont();
 
   FontAPI(this._apiClient);

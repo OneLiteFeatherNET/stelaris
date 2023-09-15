@@ -11,7 +11,7 @@ const EdgeInsets eightEdgeInsets = EdgeInsets.all(8.0);
 
 Text appText = const Text(appName);
 Text appTitle = const Text("S T E L A R I S");
-Text emptyText = const Text(empty);
+Text emptyText = const Text(emptyString);
 
 /// Regs
 RegExp numberPattern = RegExp("[1-9]\\d*");
@@ -24,8 +24,8 @@ RegExp namePattern = RegExp("^[a-zA-z]\\w*");
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);
 
 /// Minecraft related values
-const String zero = "0";
-const String empty = "";
+const String zeroString = "0";
+const String emptyString = "";
 const int maxItemSize = 64;
 const String defaultMaterial = "minecraft:dirt";
 
@@ -44,10 +44,18 @@ TextStyle whiteStyle = const TextStyle(color: Colors.white);
 TextStyle redStyle = const TextStyle(color: Colors.red);
 
 // Boxes
-const SizedBox spaceFiveBox = SizedBox(width: 5);
-const SizedBox spaceTenAndTenBox = SizedBox(width: 10, height: 10);
-const SizedBox spaceTenBox = SizedBox(width: 10);
-const SizedBox fifteenBox = SizedBox(height: 15);
-const SizedBox spaceTwentyFiveHeightBox = SizedBox(height: 25);
+const SizedBox horizontalSpacing5 = SizedBox(width: 5);
+const SizedBox spacing10 = SizedBox(width: 10, height: 10);
+const SizedBox horizontalSpacing10 = SizedBox(width: 10);
+const SizedBox verticalSpacing10 = SizedBox(height: 15);
+const SizedBox verticalSpacing25 = SizedBox(height: 25);
 
-const EdgeInsets dialogPadding = EdgeInsets.all(20.0);
+const EdgeInsets dialogPadding = EdgeInsets.all(20);
+const EdgeInsets top = EdgeInsets.only(top: 10);
+const EdgeInsets horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
+const EdgeInsets largePadding = EdgeInsets.all(20);
+
+const double dialogWidth = 500;
+const double dialogHeight = 350;
+
+const double cardElevation = 0.8;

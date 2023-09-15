@@ -1,11 +1,9 @@
-import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_ui/api/api_client.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 
 class ItemApi {
   final ApiClient _apiClient;
-
   final StringToItems _formatter = const StringToItems();
 
   ItemApi(this._apiClient);

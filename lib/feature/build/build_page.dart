@@ -2,9 +2,11 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/feature/base/position_bottom_right.dart';
 import 'package:stelaris_ui/feature/build/dialog/download_dialog.dart';
 import 'package:stelaris_ui/feature/build/dialog/generate_dialog.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/constants.dart';
 
 class BuildPage extends StatefulWidget {
   const BuildPage({Key? key}) : super(key: key);
@@ -24,10 +26,10 @@ class BuildPageState extends State<BuildPage> {
       builder: (context, vm) {
         return Stack(
           children: [
-            Center(
+            const Center(
               child: Text('Nothing to see / WIP'),
             ),
-            Wrap(clipBehavior: Clip.hardEdge, children: [
+            const Wrap(clipBehavior: Clip.hardEdge, children: [
 
               /*ExpandableDataCard(
                 title: const Text("Version"),
@@ -51,13 +53,11 @@ class BuildPageState extends State<BuildPage> {
                 ),
               ),*/
             ]),
-            Positioned(
-                bottom: 25,
-                right: 25,
+            PositionBottomRight(
                 child: Row(
                   children: [
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        padding: horizontalPadding,
                         child: FloatingActionButton.extended(
                           heroTag: UniqueKey(),
                           onPressed: () async {
@@ -78,7 +78,7 @@ class BuildPageState extends State<BuildPage> {
                           icon: const Icon(Icons.download),
                         )),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      padding: horizontalPadding,
                       child: FloatingActionButton.extended(
                         heroTag: UniqueKey(),
                         onPressed: () async {

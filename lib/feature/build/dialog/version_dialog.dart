@@ -82,17 +82,17 @@ class _VersionDialogState extends State<VersionDialog> {
             ),
           ],
         ),
-        spaceTwentyFiveHeightBox,
+        verticalSpacing25,
         TextField(
           enabled: false,
           controller: _currentVersionController,
         ),
-        spaceTwentyFiveHeightBox,
+        verticalSpacing25,
         TextField(
           enabled: false,
           controller: _newVersionController,
         ),
-        spaceTwentyFiveHeightBox,
+        verticalSpacing25,
         TextButton(
           onPressed: () {
             if (_newVersionController.text.isNotEmpty) {
