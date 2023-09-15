@@ -35,7 +35,7 @@ class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
       contentPadding: dialogPadding,
       children: [
         Text(context.l10n.dialog_enchantment_enchantment),
-        spaceTenBox,
+        horizontalSpacing10,
         DropdownButtonFormField<Enchantment?>(
           value: _selected.value,
           items: enchantments,
@@ -43,7 +43,7 @@ class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
             _selected.value = value;
           },
         ),
-        spaceTwentyFiveHeightBox,
+        verticalSpacing25,
         Text(context.l10n.label_level),
         Form(
           key: _key,
@@ -56,7 +56,7 @@ class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
             validator: formFieldValidator,
           ),
         ),
-        spaceTwentyFiveHeightBox,
+        verticalSpacing25,
         TextButton(
             onPressed: () {
               if (!_key.currentState!.validate()) return;

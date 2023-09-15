@@ -53,8 +53,8 @@ class RemoveNotificationAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final notifications = List.of(state.notifications, growable: true);
-    notifications.remove(model);
-    return state.copyWith(notifications: notifications);
+    await ApiService().notificationAPI.delete(model);
+    final models = await ApiService().notificationAPI.getAllNotifications();
+    return state.copyWith(notifications: models);
   }
 }

@@ -7,14 +7,12 @@ class GenerateApi {
 
   const GenerateApi(this._apiClient);
 
-
   Future<Response> generate(String branch) async {
     final queryParams = <String, dynamic>{
       "branch": branch
     };
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/generate');
-    //final result = await _apiClient.dio.getUri(uri).then((value) => ItemModel.fromJson(value.data!));
     final data = await _apiClient.dio.getUri(uri).then((value) => value);
     return data;
   }
@@ -23,7 +21,6 @@ class GenerateApi {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/branches');
-    //final result = await _apiClient.dio.getUri(uri).then((value) => ItemModel.fromJson(value.data!));
     final data = await _apiClient.dio.getUri(uri).then((value) {
       return value.data!;
     });
@@ -36,9 +33,7 @@ class GenerateApi {
     };
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/download');
-    //final result = await _apiClient.dio.getUri(uri).then((value) => ItemModel.fromJson(value.data!));
     final data = await _apiClient.dio.getUri(uri, options: Options(responseType: ResponseType.bytes)).then((value) => value.data! as List<int>);
     return data;
   }
-
 }

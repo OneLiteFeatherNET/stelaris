@@ -18,26 +18,28 @@ const List<ItemGroup> values = ItemGroup.values;
 List<DropdownMenuItem<ItemGroup>> getItems() {
   return List.generate(
       values.length,
-          (index) => DropdownMenuItem(
-        value: values[index],
-        child: Text(values[index].display),
-      ));
+      (index) => DropdownMenuItem(
+            value: values[index],
+            child: Text(values[index].display),
+          ));
 }
 
 class ItemGeneralPage extends StatefulWidget {
   final ItemModel model;
   final ValueNotifier<ItemModel?> selectedItem;
 
-  const ItemGeneralPage(
-      {Key? key, required this.model, required this.selectedItem})
-      : super(key: key);
+  const ItemGeneralPage({
+    required this.model,
+    required this.selectedItem,
+    super.key,
+  });
 
   @override
   State<ItemGeneralPage> createState() => _ItemGeneralPageState();
 }
 
-class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReducer {
-
+class _ItemGeneralPageState extends State<ItemGeneralPage>
+    with EnchantmentReducer {
   final _key = GlobalKey<FormState>();
   final _groupKey = GlobalKey<FormState>();
 
@@ -53,7 +55,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
               TextInputCard<String>(
                 infoText: context.l10n.tooltip_name,
                 title: Text(context.l10n.card_name),
-                currentValue: widget.model.name ?? empty,
+                currentValue: widget.model.name ?? emptyString,
                 formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                 valueUpdate: (value) {
                   if (value == widget.model.name) return;
@@ -77,7 +79,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
               TextInputCard<String>(
                 infoText: context.l10n.tooltip_description,
                 title: Text(context.l10n.card_description),
-                currentValue: widget.model.description ?? empty,
+                currentValue: widget.model.description ?? emptyString,
                 valueUpdate: (value) {
                   if (value == widget.model.description) return;
                   final oldModel = widget.model;
@@ -100,33 +102,39 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
                   var list = getRemoveItems(widget.model, value);
 
                   if (list.isNotEmpty) {
-                    showDialog(context: context, builder: (BuildContext context) {
-                      return ItemGroupChangeDialog(
-                        title: Text(context.l10n.dialog_group_change, textAlign: TextAlign.center,),
-                        header: [
-                          TextSpan(
-                              text:
-                              context.l10n.dialog_group_change_text,
-                              style: whiteStyle
-                          ),
-                        ],
-                        function: (value) {
-                          return true;
-                        },
-                      );
-                    }).then((result) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return ItemGroupChangeDialog(
+                            title: Text(
+                              context.l10n.dialog_group_change,
+                              textAlign: TextAlign.center,
+                            ),
+                            header: [
+                              TextSpan(
+                                  text: context.l10n.dialog_group_change_text,
+                                  style: whiteStyle),
+                            ],
+                            function: (value) {
+                              return true;
+                            },
+                          );
+                        }).then((result) {
                       if (result == null) return;
 
                       if (result == true) {
-                        final oldEnchantments = Map.of(widget.model.enchantments!);
+                        final oldEnchantments =
+                            Map.of(widget.model.enchantments!);
 
                         for (var enchantment in list) {
                           oldEnchantments.remove(enchantment);
                         }
-                        final newEntry = widget.model.copyWith(group: value.display, enchantments: oldEnchantments);
+                        final newEntry = widget.model.copyWith(
+                            group: value.display,
+                            enchantments: oldEnchantments);
                         setState(() {
-                          StoreProvider.dispatch(
-                              context, UpdateItemAction(widget.model, newEntry));
+                          StoreProvider.dispatch(context,
+                              UpdateItemAction(widget.model, newEntry));
                           widget.selectedItem.value = newEntry;
                         });
                       } else {
@@ -134,9 +142,12 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
                       }
                     });
                   } else {
-                    final newEntry = widget.model.copyWith(group: value.display);
+                    final newEntry =
+                        widget.model.copyWith(group: value.display);
                     setState(() {
-                      StoreProvider.dispatch(context, UpdateItemAction(widget.model, newEntry));
+                      StoreProvider.dispatch(
+                          context, UpdateItemAction(widget.model, newEntry),
+                      );
                       widget.selectedItem.value = newEntry;
                     });
                   }
@@ -146,7 +157,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
               TextInputCard<String>(
                 infoText: context.l10n.tooltip_material,
                 title: Text(context.l10n.card_material),
-                currentValue: widget.model.material ?? empty,
+                currentValue: widget.model.material ?? emptyString,
                 valueUpdate: (value) {
                   if (value == widget.model.material) return;
                   final oldModel = widget.model;
@@ -156,7 +167,6 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
                         context, UpdateItemAction(oldModel, newEntry));
                     widget.selectedItem.value = newEntry;
                   });
-
                 },
                 formValidator: (value) {
                   if (value == null) return null;
@@ -169,7 +179,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
               TextInputCard<String>(
                 infoText: context.l10n.tooltip_displayname,
                 title: Text(context.l10n.card_display_name),
-                currentValue: widget.model.displayName ?? empty,
+                currentValue: widget.model.displayName ?? emptyString,
                 valueUpdate: (value) {
                   if (value == widget.model.displayName) return;
                   final oldModel = widget.model;
@@ -184,7 +194,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
               TextInputCard(
                 infoText: context.l10n.tooltip_model_data,
                 title: Text(context.l10n.card_model_data),
-                currentValue: widget.model.customModelId?.toString() ?? zero,
+                currentValue: widget.model.customModelId?.toString() ?? zeroString,
                 valueUpdate: (value) {
                   if (value == widget.model.customModelId) return;
                   final oldModel = widget.model;
@@ -202,7 +212,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
               TextInputCard(
                 infoText: context.l10n.tooltip_amount,
                 title: Text(context.l10n.card_amount),
-                currentValue: widget.model.amount?.toString() ?? zero,
+                currentValue: widget.model.amount?.toString() ?? zeroString,
                 valueUpdate: (value) {
                   if (value == widget.model.amount) return;
                   final oldModel = widget.model;
@@ -219,7 +229,8 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
                 formValidator: (value) {
                   if (value == null) return null;
                   String input = value as String;
-                  if (input.trim().isEmpty) return context.l10n.error_card_empty;
+                  if (input.trim().isEmpty)
+                    return context.l10n.error_card_empty;
 
                   if (int.parse(input) > maxItemSize) {
                     return context.l10n.card_amount_to_high;
@@ -230,12 +241,10 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
             ],
           ),
         ),
-        SaveButton(
-          callback: () {
-            if (!_key.currentState!.validate()) return;
-            ApiService().itemApi.update(widget.model);
-          }
-        )
+        SaveButton(callback: () {
+          if (!_key.currentState!.validate()) return;
+          ApiService().itemApi.update(widget.model);
+        })
       ],
     );
   }
@@ -248,11 +257,11 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> with EnchantmentReduc
   }
 
   List<DropdownMenuItem<ItemGroup>> getItems() {
-    return List.generate(
-        values.length,
-            (index) => DropdownMenuItem(
-          value: values[index],
-          child: Text(values[index].display),
-        ));
+    return values
+        .map((e) => DropdownMenuItem(
+              value: e,
+              child: Text(e.display),
+            ))
+        .toList();
   }
 }

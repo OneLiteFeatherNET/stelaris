@@ -16,7 +16,7 @@ class AbortAddDialog extends StatelessWidget {
       title: Text(title, textAlign: TextAlign.center,),
       children: [
         Text(content, textAlign: TextAlign.center,),
-        fifteenBox,
+        verticalSpacing10,
         TextButton(
             onPressed: () {
               Navigator.of(context).pop(false);

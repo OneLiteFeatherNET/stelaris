@@ -54,7 +54,7 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
               _continue();
             },
             onStepCancel: () {
-              _currentStep > 0 ? setState(() => _currentStep -= 1) : empty;
+              _currentStep > 0 ? setState(() => _currentStep -= 1) : emptyString;
             })
       ],
     );
@@ -117,7 +117,7 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
           title: Text(context.l10n.card_description),
           content: Column(
             children: [
-              spaceTenAndTenBox,
+              spacing10,
               SizedBox(
                 width: 650,
                 child: TextFormField(
@@ -126,7 +126,7 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
                       InputDecoration(labelText: context.l10n.card_description),
                 ),
               ),
-              fifteenBox
+              verticalSpacing10
             ],
           ),
         ),

@@ -6,7 +6,6 @@ import '../model/notification_model.dart';
 class NotificationAPI {
 
   final ApiClient _apiClient;
-
   final StringToNotifications _formatter = const StringToNotifications();
 
   NotificationAPI(this._apiClient);
@@ -40,6 +39,14 @@ class NotificationAPI {
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/notification/update');
     final result = await _apiClient.dio.postUri(uri, data: model.toJson()).then((value) => NotificationModel.fromJson(value.data!));
+    return result;
+  }
+
+  Future<NotificationModel> delete(NotificationModel model) async {
+    final queryParams = <String, dynamic>{};
+    final baseUri = Uri.parse(_apiClient.baseUrl);
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/notification/remove/${model.id}');
+    final result = await _apiClient.dio.deleteUri(uri).then((value) => NotificationModel.fromJson(value.data!));
     return result;
   }
 }

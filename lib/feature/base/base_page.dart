@@ -1,17 +1,12 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/api/state/actions/app_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/util/navigation.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/feature/base/navigation_side_bar.dart';
 
 import '../../util/constants.dart';
-import 'button/theme_switcher_toggle.dart';
 
-const double maxXOffset = 180;
-const navigationEntries = NavigationEntry.values;
-const navigationEntryTextStyle = TextStyle(fontSize: 16);
+
 
 class BasePage extends StatefulWidget {
   final Widget child;
@@ -40,11 +35,10 @@ class _BasePageState extends State<BasePage> {
           title: appTitle,
           centerTitle: true,
         ),
-        body: Flex(
-          direction: Axis.horizontal,
+        body: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildNavigationContainer(vm.openNavigation),
+            NavigationSideBar(openNavigation: vm.openNavigation),
             Expanded(flex: 1, child: widget.child),
           ],
         ),
@@ -58,64 +52,4 @@ class _BasePageState extends State<BasePage> {
     });
   }
 
-  Widget _buildNavigationContainer(bool openNavigation) {
-    final router = GoRouter.of(context);
-    final index = navigationEntries.indexWhere((element) {
-      return element.route == router.location;
-    });
-    final actionChild = [
-      const ThemeSwitcherToggle(),
-      IconButton(
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.text_wiki),
-                behavior: SnackBarBehavior.floating,
-                width: 500.0,
-                elevation: 0.0,
-              ),
-            );
-          },
-          icon: const Icon(Icons.help_outline))
-    ];
-    return NavigationRail(
-      minExtendedWidth: maxXOffset,
-      extended: MediaQuery.of(context).size.width < 1000 ? false : openNavigation,
-      onDestinationSelected: (index) {
-        router.push(navigationEntries[index].route);
-      },
-      labelType: NavigationRailLabelType.none,
-      destinations: _buildNavigationView(),
-      selectedIndex: index != -1 ? index : 0,
-      trailing: Expanded(
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 30),
-            child: openNavigation
-                ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: actionChild,
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: actionChild,
-                  ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  List<NavigationRailDestination> _buildNavigationView() {
-    return List.generate(navigationEntries.length, (index) {
-      var display = navigationEntries[index].display;
-      var leadingIcon = Icon(navigationEntries[index].data);
-      return NavigationRailDestination(
-          icon: leadingIcon,
-          label: Text(display, style: navigationEntryTextStyle));
-    });
-  }
 }

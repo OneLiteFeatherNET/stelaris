@@ -18,9 +18,9 @@ const BorderRadius borderRadius = BorderRadius.only(
     bottomRight: radius
 );
 
-const SizedBox spaceBox = SizedBox(height: 10);
-const EdgeInsets top = EdgeInsets.only(top: 10);
-const EdgeInsets all = EdgeInsets.all(20);
+
+
+
 BoxDecoration boxDecoration = BoxDecoration(
   color: Colors.white,
   borderRadius: borderRadius,
