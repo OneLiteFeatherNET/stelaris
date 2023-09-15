@@ -37,7 +37,7 @@ class _EnumAddDialogState<E> extends State<EnumAddDialog<E>> {
               },
             )
         ),
-        spaceTwentyFiveHeightBox,
+        verticalSpacing25,
         TextButton(onPressed: () {
           widget.valueUpdate(defaultValue);
         }, child: Text(context.l10n.button_add))

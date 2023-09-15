@@ -33,7 +33,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
           context.l10n.text_branch,
           textAlign: TextAlign.center,
         ),
-        spaceTwentyFiveHeightBox,
+        verticalSpacing25,
         SizedBox(
             width: 300,
             child: DropdownButtonFormField<String>(
@@ -44,7 +44,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
                 defaultValue = value;
               },
             )),
-        spaceTwentyFiveHeightBox,
+        verticalSpacing25,
         TextButton(
             onPressed: () async {
               if (defaultValue != null) {

@@ -26,7 +26,7 @@ class EntryEditDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _controller.text = currentValue ?? empty;
+    _controller.text = currentValue ?? emptyString;
     return SimpleDialog(
       title: Text(
         title,
@@ -34,7 +34,7 @@ class EntryEditDialog extends StatelessWidget {
       ),
       contentPadding: dialogPadding,
       children: [
-        spaceTenBox,
+        horizontalSpacing10,
         Form(
           key: _key,
           autovalidateMode: AutovalidateMode.always,
@@ -46,7 +46,7 @@ class EntryEditDialog extends StatelessWidget {
             validator: formFieldValidator
           ),
         ),
-        spaceTwentyFiveHeightBox,
+        verticalSpacing25,
         TextButton(
             onPressed: () {
               if (!_key.currentState!.validate()) return;

@@ -23,9 +23,11 @@ class ItemMetaPage extends StatefulWidget with DropDownItemReducer {
   final ItemModel model;
   final ValueNotifier<ItemModel?> selectedItem;
 
-  const ItemMetaPage(
-      {Key? key, required this.model, required this.selectedItem})
-      : super(key: key);
+  const ItemMetaPage({
+    required this.model,
+    required this.selectedItem,
+    super.key,
+  });
 
   @override
   State<ItemMetaPage> createState() => _ItemMetaPageState();
@@ -39,7 +41,7 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
     return Stack(
       children: [
         SingleChildScrollView(
-          child:  Wrap(
+          child: Wrap(
             clipBehavior: Clip.hardEdge,
             children: [
               ExpandableDataCard(
@@ -63,8 +65,8 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                             flags.add(value!.minestomValue);
                             final newEntry = oldEntry.copyWith(flags: flags);
                             setState(() {
-                              StoreProvider.dispatch(
-                                  context, UpdateItemAction(oldEntry, newEntry));
+                              StoreProvider.dispatch(context,
+                                  UpdateItemAction(oldEntry, newEntry));
                               Navigator.pop(context);
                               widget.selectedItem.value = newEntry;
                             });
@@ -74,7 +76,7 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                 },
                 widgets: List<Widget>.generate(
                   flags.length,
-                      (index) {
+                  (index) {
                     final key = flags[index];
                     return ListTile(
                         title: Text(key),
@@ -96,7 +98,7 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                             oldFlags.remove(key);
                             final newEntry = oldEntry.copyWith(flags: oldFlags);
                             setState(
-                                  () {
+                              () {
                                 StoreProvider.dispatch(context,
                                     UpdateItemAction(oldEntry, newEntry));
                                 widget.selectedItem.value = newEntry;
@@ -133,15 +135,15 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                         },
                         addEnchantmentCallback: (selected, level) {
                           final oldEnchantments =
-                          Map<String, int>.of(oldEntry.enchantments ?? {});
+                              Map<String, int>.of(oldEntry.enchantments ?? {});
                           oldEnchantments[selected.minecraftValue] = level;
                           final newEntry =
-                          oldEntry.copyWith(enchantments: oldEnchantments);
+                              oldEntry.copyWith(enchantments: oldEnchantments);
                           setState(
-                                () {
+                            () {
                               Navigator.pop(context);
-                              StoreProvider.dispatch(
-                                  context, UpdateItemAction(oldEntry, newEntry));
+                              StoreProvider.dispatch(context,
+                                  UpdateItemAction(oldEntry, newEntry));
                               widget.selectedItem.value = newEntry;
                             },
                           );
@@ -152,10 +154,11 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                 },
                 widgets: List<Widget>.generate(
                   widget.model.enchantments?.length ?? 0,
-                      (index) {
-                    final key = widget.model.enchantments?.keys.elementAt(index);
+                  (index) {
+                    final key =
+                        widget.model.enchantments?.keys.elementAt(index);
                     final value =
-                    widget.model.enchantments?.values.elementAt(index);
+                        widget.model.enchantments?.values.elementAt(index);
                     return ListTile(
                       title: Text("$key, Level: $value"),
                       trailing: EntryButtons(
@@ -163,7 +166,9 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                         model: widget.model,
                         name: key,
                         value: value.toString(),
-                        inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(numberPattern)
+                        ],
                         formFieldValidator: (value) {
                           var input = value as String;
 
@@ -175,25 +180,25 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                         delete: (ItemModel? value) {
                           final oldEntry = widget.model;
                           final oldEnchantments =
-                          Map<String, int>.of(oldEntry.enchantments ?? {});
+                              Map<String, int>.of(oldEntry.enchantments ?? {});
                           oldEnchantments.remove(key);
                           final newEntry =
-                          oldEntry.copyWith(enchantments: oldEnchantments);
+                              oldEntry.copyWith(enchantments: oldEnchantments);
                           setState(
-                                () {
-                              StoreProvider.dispatch(
-                                  context, UpdateItemAction(oldEntry, newEntry));
+                            () {
+                              StoreProvider.dispatch(context,
+                                  UpdateItemAction(oldEntry, newEntry));
                               widget.selectedItem.value = newEntry;
                             },
                           );
                         },
                         update: (value, key) {
                           final oldEntry = widget.model;
-                          final oldEnchantments =
-                          Map<String, int>.from(oldEntry.enchantments ?? {});
+                          final oldEnchantments = Map<String, int>.from(
+                              oldEntry.enchantments ?? {});
                           oldEnchantments[value!] = int.parse(key!);
                           final newEntry =
-                          oldEntry.copyWith(enchantments: oldEnchantments);
+                              oldEntry.copyWith(enchantments: oldEnchantments);
                           setState(() {
                             StoreProvider.dispatch(
                                 context, UpdateItemAction(oldEntry, newEntry));
@@ -215,12 +220,13 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                           controller: TextEditingController(),
                           valueUpdate: ((value) {
                             final oldEntry = widget.model;
-                            List<String> oldLores = List.of(oldEntry.lore ?? []);
+                            List<String> oldLores =
+                                List.of(oldEntry.lore ?? []);
                             oldLores.add(value);
                             final newEntry = oldEntry.copyWith(lore: oldLores);
                             setState(() {
-                              StoreProvider.dispatch(
-                                  context, UpdateItemAction(oldEntry, newEntry));
+                              StoreProvider.dispatch(context,
+                                  UpdateItemAction(oldEntry, newEntry));
                               Navigator.pop(context);
                               widget.selectedItem.value = newEntry;
                             });
@@ -239,7 +245,7 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                 },
                 widgets: List<Widget>.generate(
                   widget.model.lore?.length ?? 0,
-                      (index) {
+                  (index) {
                     final key = widget.model.lore?[index];
                     return ListTile(
                         title: Text(key!),
@@ -258,29 +264,31 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                           },
                           delete: (ItemModel? value) {
                             final oldEntry = widget.model;
-                            List<String> oldLores = List.of(oldEntry.lore ?? []);
+                            List<String> oldLores =
+                                List.of(oldEntry.lore ?? []);
                             oldLores.remove(key);
                             final newEntry = oldEntry.copyWith(lore: oldLores);
                             setState(() {
-                              StoreProvider.dispatch(
-                                  context, UpdateItemAction(oldEntry, newEntry));
+                              StoreProvider.dispatch(context,
+                                  UpdateItemAction(oldEntry, newEntry));
                               widget.selectedItem.value = newEntry;
                             });
                           },
                           update: (value, key) {
                             final oldEntry = widget.model;
-                            List<String> oldLores = List.of(oldEntry.lore ?? []);
-                            int index = oldLores.indexWhere((element) => identical(element, value));
+                            List<String> oldLores =
+                                List.of(oldEntry.lore ?? []);
+                            int index = oldLores.indexWhere(
+                                (element) => identical(element, value));
                             oldLores[index] = key!;
                             final newEntry = oldEntry.copyWith(lore: oldLores);
                             setState(() {
-                              StoreProvider.dispatch(
-                                  context, UpdateItemAction(oldEntry, newEntry));
+                              StoreProvider.dispatch(context,
+                                  UpdateItemAction(oldEntry, newEntry));
                               widget.selectedItem.value = newEntry;
                             });
                           },
-                        )
-                       );
+                        ));
                   },
                 ),
               ),

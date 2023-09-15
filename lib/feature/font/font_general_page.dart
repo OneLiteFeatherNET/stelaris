@@ -16,16 +16,17 @@ class FontGeneralPage extends StatefulWidget {
   final FontModel model;
   final ValueNotifier<FontModel?> selectedItem;
 
-  const FontGeneralPage(
-      {Key? key, required this.model, required this.selectedItem})
-      : super(key: key);
+  const FontGeneralPage({
+    required this.model,
+    required this.selectedItem,
+    super.key,
+  });
 
   @override
   State<FontGeneralPage> createState() => _FontGeneralPageState();
 }
 
 class _FontGeneralPageState extends State<FontGeneralPage> {
-
   final _key = GlobalKey<FormState>();
 
   @override
@@ -40,7 +41,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
               TextInputCard<String>(
                 infoText: context.l10n.tooltip_name,
                 title: Text(context.l10n.card_name),
-                currentValue: widget.model.name ?? empty,
+                currentValue: widget.model.name ?? emptyString,
                 formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                 valueUpdate: (value) {
                   if (value == widget.model.name) return;
@@ -64,7 +65,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
               TextInputCard<String>(
                 infoText: context.l10n.tooltip_description,
                 title: Text(context.l10n.card_description),
-                currentValue: widget.model.description ?? empty,
+                currentValue: widget.model.description ?? emptyString,
                 formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                 valueUpdate: (value) {
                   if (value == widget.model.description) return;
@@ -80,7 +81,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
               TextInputCard<String>(
                 infoText: context.l10n.tooltip_ascent,
                 title: Text(context.l10n.card_ascent),
-                currentValue: widget.model.ascent?.toString() ?? zero,
+                currentValue: widget.model.ascent?.toString() ?? zeroString,
                 valueUpdate: (value) {
                   if (value == widget.model.ascent) return;
                   final oldModel = widget.model;
@@ -98,7 +99,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
               TextInputCard(
                 infoText: context.l10n.tooltip_height,
                 title: Text(context.l10n.card_height),
-                currentValue: widget.model.height?.toString() ?? zero,
+                currentValue: widget.model.height?.toString() ?? zeroString,
                 valueUpdate: (value) {
                   if (value == widget.model.height) return;
                   final oldModel = widget.model;

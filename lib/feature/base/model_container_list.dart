@@ -1,5 +1,7 @@
+import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
+import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/feature/base/model_list.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
@@ -14,7 +16,6 @@ List<Tab> tabs = tabPagesValues
     .toList();
 
 class ModelContainerList<E extends DataModel> extends StatefulWidget {
-  final List<E> items;
   final TabPageMapFunction<E> page;
   final MapToDataModelItem<E> mapToDataModelItem;
   final VoidCallback openFunction;
@@ -22,18 +23,21 @@ class ModelContainerList<E extends DataModel> extends StatefulWidget {
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
   final MapToDeleteDialog<E> mapToDeleteDialog;
   final MapToTabPages tabPages;
+  final ReduxAction<AppState> action;
+  final List<DataModel> Function(Store<AppState>) converter;
 
-  const ModelContainerList(
-      {Key? key,
-      required this.items,
-      required this.page,
-      required this.mapToDataModelItem,
-      required this.openFunction,
-      required this.selectedItem,
-      required this.mapToDeleteSuccessfully,
-      required this.mapToDeleteDialog,
-      required this.tabPages})
-      : super(key: key);
+  const ModelContainerList({
+    required this.action,
+    required this.page,
+    required this.mapToDataModelItem,
+    required this.openFunction,
+    required this.selectedItem,
+    required this.mapToDeleteSuccessfully,
+    required this.mapToDeleteDialog,
+    required this.tabPages,
+    required this.converter,
+    super.key,
+  });
 
   @override
   State<ModelContainerList<E>> createState() => _ModelContainerListState<E>();
@@ -46,12 +50,14 @@ class _ModelContainerListState<E extends DataModel>
     var pages = widget.tabPages.call(tabs);
     return Row(children: [
       ModelList(
-          items: widget.items,
+          action: widget.action,
           mapToDataModelItem: widget.mapToDataModelItem,
           selectedItem: widget.selectedItem,
           openFunction: widget.openFunction,
           mapToDeleteDialog: widget.mapToDeleteDialog,
-          mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully),
+          mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
+          converter: widget.converter,
+      ),
       DefaultTabController(
           length: pages.length,
           child: Expanded(
@@ -65,7 +71,8 @@ class _ModelContainerListState<E extends DataModel>
               body: TabBarView(
                 children: pages.map((e) {
                   var text = e.child as Text;
-                  return widget.page(transform(text.data!), widget.selectedItem);
+                  return widget.page(
+                      transform(text.data!), widget.selectedItem);
                 }).toList(),
               ),
             ),

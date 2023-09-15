@@ -21,7 +21,7 @@ mixin BaseLayout {
             height: 100,
             child: TextField(
               controller: TextEditingController(
-                  text: value ?? empty
+                  text: value ?? emptyString
               ),
               maxLength: 30,
             ),
@@ -43,7 +43,7 @@ mixin BaseLayout {
               height: 100,
               child: TextField(
                 controller: TextEditingController(
-                  text: value ?? empty,
+                  text: value ?? emptyString,
                 ),
                 keyboardType: type,
                 autocorrect: false,
@@ -66,7 +66,7 @@ mixin BaseLayout {
             height: 100,
             child: TextField(
               controller: TextEditingController(
-                  text: value ?? empty,
+                  text: value ?? emptyString,
               ),
               autocorrect: false,
               inputFormatters: formatter,
@@ -85,7 +85,7 @@ mixin BaseLayout {
         _constructSizedBox(
           TextField(
             keyboardType: TextInputType.number,
-            controller: TextEditingController(text: value ?? zero),
+            controller: TextEditingController(text: value ?? zeroString),
             maxLength: 2,
           )
         )

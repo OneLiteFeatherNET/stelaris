@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/feature/base/button/cancel_button.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
@@ -36,12 +37,7 @@ class DeleteDialog<E> extends StatelessWidget {
             }
           },
         ),
-        TextButton(
-            child: Text(context.l10n.button_cancel),
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            }
-        ),
+        const CancelButton(),
       ],
     );
   }
