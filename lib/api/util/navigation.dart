@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 /// The enum class contains all relevant item for the navigation widget.
 enum NavigationEntry {
 
+  attributes("Attributes", "/attributes", Icons.badge_sharp),
   items("Items", "/items", Icons.games),
   //blocks("Blocks", "/blocks", Icons.square),
   //entities("Entities", "/entities", Icons.add_moderator),
