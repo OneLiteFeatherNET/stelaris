@@ -27,6 +27,13 @@ class AttributesEntry extends StatelessWidget with BaseLayout {
             controlAffinity: ListTileControlAffinity.trailing,
             title: AttributesTile(
               attributeModel: attributeModel,
+              updateModel: () {
+                return attributeModel.copyWith(
+                  name: nameController.text,
+                  defaultValue: double.parse(defaultController.text),
+                  maximumValue: double.parse(maxValueController.text),
+                );
+              },
             ),
             children: [
               AttributeRow(
