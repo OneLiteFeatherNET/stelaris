@@ -7,10 +7,14 @@ import 'package:stelaris_ui/util/I10n_ext.dart';
 
 import '../../util/constants.dart';
 
-class AttributesTile extends StatelessWidget {
-  final AttributeModel attributeModel;
+typedef UpdateModel = AttributeModel Function();
 
-  const AttributesTile({super.key, required this.attributeModel});
+class AttributesTile extends StatelessWidget {
+
+  AttributeModel attributeModel;
+  UpdateModel updateModel;
+
+  AttributesTile({super.key, required this.attributeModel, required this.updateModel});
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +25,12 @@ class AttributesTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            onPressed: () {},
-            icon: Icon(
+            onPressed: () {
+              var updatedModel = updateModel();
+              StoreProvider.dispatch(context, UpdateAttributeAction(attributeModel, updatedModel));
+              attributeModel = updatedModel;
+            },
+            icon: const Icon(
               Icons.save_rounded,
               color: Colors.white,
             ),
