@@ -20,7 +20,7 @@ class AttributeRow extends StatelessWidget {
         children: [
           // Add your Row children here
           Text(label),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           Expanded(
