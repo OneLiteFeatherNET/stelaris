@@ -32,6 +32,7 @@ class AttributesEntry extends StatelessWidget with BaseLayout {
               AttributeRow(
                 controller: nameController,
                 label: "Name",
+                formatter: FilteringTextInputFormatter.allow(letterPattern),
               ),
               AttributeRow(
                 controller: defaultController,
