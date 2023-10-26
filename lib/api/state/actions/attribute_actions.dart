@@ -19,6 +19,21 @@ class InitAttributeListAction extends ReduxAction<AppState> {
   }
 }
 
+class UpdateAttributeAction extends ReduxAction<AppState> {
+  final AttributeModel oldEntry;
+  final AttributeModel newEntry;
+
+  UpdateAttributeAction(this.oldEntry, this.newEntry);
+
+  @override
+  Future<AppState?> reduce() async {
+    final items = List.of(state.attributes, growable: true);
+    items.removeAt(items.indexWhere((element) => element.modelName == oldEntry.modelName));
+    items.add(newEntry);
+    return state.copyWith(attributes: items);
+  }
+}
+
 class AttributeAddAction extends ReduxAction<AppState> {
 
   final AttributeModel model;
