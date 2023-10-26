@@ -1,5 +1,7 @@
+import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/attribute_model.dart';
+import 'package:stelaris_ui/api/state/actions/attribute_actions.dart';
 import 'package:stelaris_ui/feature/base/button/delete_entry_button.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 
@@ -14,7 +16,7 @@ class AttributesTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text(attributeModel.name!),
+      title: Text(attributeModel.modelName!),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -31,13 +33,14 @@ class AttributesTile extends StatelessWidget {
               TextSpan(
                   text: context.l10n.delete_dialog_first_line,
                   style: whiteStyle),
-              TextSpan(text: attributeModel.name, style: redStyle),
+              TextSpan(text: attributeModel.modelName, style: redStyle),
               TextSpan(
                   text: context.l10n.delete_dialog_entry,
                   style: whiteStyle),
             ],
             value: attributeModel,
             mapToDeleteSuccessfully: (value) {
+              StoreProvider.dispatch(context, AttributeRemoveAction(value));
               return true;
             },
           ),
