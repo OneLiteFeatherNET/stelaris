@@ -28,8 +28,9 @@ class UpdateAttributeAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final items = List.of(state.attributes, growable: true);
-    items.removeAt(items.indexWhere((element) => element.modelName == oldEntry.modelName));
-    items.add(newEntry);
+    int index = items.indexWhere((element) => element.modelName == oldEntry.modelName);
+    items.removeAt(index);
+    items.insert(index, newEntry);
     return state.copyWith(attributes: items);
   }
 }
