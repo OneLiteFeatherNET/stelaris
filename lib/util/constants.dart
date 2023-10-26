@@ -15,6 +15,7 @@ Text emptyText = const Text(emptyString);
 
 /// Regs
 RegExp numberPattern = RegExp("[1-9]\\d*");
+RegExp decimalPattern = RegExp(r'^\d*\.?\d*');
 RegExp stringPattern = RegExp("[a-zA-Z]\\w*");
 RegExp dotPattern = RegExp("\\.");
 RegExp minecraftPattern = RegExp("minecraft:");
@@ -23,6 +24,9 @@ RegExp namePattern = RegExp("^[a-zA-z]\\w*");
 /// Formatter
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);
 const TextInputType decimalInput = TextInputType.numberWithOptions(decimal: true, signed: true);
+
+/// Input field
+const int maxInputLength = 20;
 
 /// Minecraft related values
 const String zeroString = "0";
