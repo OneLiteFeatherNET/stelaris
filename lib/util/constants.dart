@@ -22,6 +22,7 @@ RegExp namePattern = RegExp("^[a-zA-z]\\w*");
 
 /// Formatter
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);
+const TextInputType decimalInput = TextInputType.numberWithOptions(decimal: true, signed: true);
 
 /// Minecraft related values
 const String zeroString = "0";
