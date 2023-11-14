@@ -15,7 +15,7 @@ import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class FontPage extends StatefulWidget {
-  const FontPage({Key? key}) : super(key: key);
+  const FontPage({super.key});
 
   @override
   State<StatefulWidget> createState() {

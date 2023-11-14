@@ -8,7 +8,7 @@ final ValueNotifier<ThemeMode> notifier = ValueNotifier(ThemeMode.dark);
 
 class StelarisApp extends StatelessWidget {
 
-  const StelarisApp({Key? key}) : super(key: key);
+  const StelarisApp({super.key});
 
   // This widget is the root of your application.
   @override

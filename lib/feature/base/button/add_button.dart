@@ -6,7 +6,7 @@ class AddButton extends StatelessWidget {
 
   final VoidCallback openFunction;
 
-  const AddButton({Key? key, required this.openFunction}) : super(key: key);
+  const AddButton({super.key, required this.openFunction});
 
   @override
   Widget build(BuildContext context) {

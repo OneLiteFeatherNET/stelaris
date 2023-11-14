@@ -11,8 +11,7 @@ class SetupStepper<E extends DataModel> extends StatefulWidget {
   final BuildModel<E> buildModel;
 
   const SetupStepper(
-      {Key? key, required this.finishCallback, required this.buildModel})
-      : super(key: key);
+      {super.key, required this.finishCallback, required this.buildModel});
 
   @override
   State<SetupStepper<E>> createState() => _SetupStepperState<E>();

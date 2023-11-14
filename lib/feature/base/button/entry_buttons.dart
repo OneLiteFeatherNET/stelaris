@@ -19,7 +19,7 @@ class EntryButtons extends StatelessWidget with EnchantmentReducer {
   final FormFieldValidator formFieldValidator;
 
   EntryButtons(
-      {Key? key,
+      {super.key,
       required this.editTitle,
       required this.model,
       required this.name,
@@ -27,8 +27,7 @@ class EntryButtons extends StatelessWidget with EnchantmentReducer {
       required this.delete,
       required this.update,
       this.inputFormatters,
-      required this.formFieldValidator})
-      : super(key: key);
+      required this.formFieldValidator});
 
   @override
   Widget build(BuildContext context) {

@@ -16,7 +16,7 @@ class FontMetaPage extends StatefulWidget {
   final FontModel model;
   final ValueNotifier<FontModel?> selectedItem;
 
-  const FontMetaPage({Key? key, required this.model, required this.selectedItem}) : super(key: key);
+  const FontMetaPage({super.key, required this.model, required this.selectedItem});
 
   @override
   State<FontMetaPage> createState() => _FontMetaPageState();

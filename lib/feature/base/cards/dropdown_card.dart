@@ -11,14 +11,13 @@ class DropDownCard<E, T> extends StatefulWidget {
   final Key? formKey;
 
   const DropDownCard(
-      {Key? key,
+      {super.key,
       required this.title,
       required this.items,
       required this.valueUpdate,
       required this.defaultValue,
       required this.currentValue,
-      this.formKey})
-      : super(key: key);
+      this.formKey});
 
   @override
   State<DropDownCard<E, T>> createState() => _DropDownCardState<E, T>();

@@ -11,12 +11,11 @@ class DeleteDialog<E> extends StatelessWidget {
   final MapToDeleteSuccessfully<E> successfully;
 
   const DeleteDialog(
-      {Key? key,
+      {super.key,
       required this.title,
       required this.header,
       required this.value,
-      required this.successfully})
-      : super(key: key);
+      required this.successfully});
 
   @override
   Widget build(BuildContext context) {

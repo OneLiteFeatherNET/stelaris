@@ -8,7 +8,7 @@ class ExpandableDataCard extends StatelessWidget with BaseLayout {
   final VoidCallback buttonClick;
   final List<Widget> widgets;
 
-  const ExpandableDataCard({Key? key, required this.title, required this.buttonClick, required this.widgets}) : super(key: key);
+  const ExpandableDataCard({super.key, required this.title, required this.buttonClick, required this.widgets});
 
   @override
   Widget build(BuildContext context) {
