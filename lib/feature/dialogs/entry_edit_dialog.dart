@@ -16,13 +16,12 @@ class EntryEditDialog extends StatelessWidget {
   final _key = GlobalKey<FormState>();
 
   EntryEditDialog(
-      {Key? key,
+      {super.key,
       required this.title,
       required this.currentValue,
       required this.valueUpdate,
       this.inputFormatters,
-      required this.formFieldValidator})
-      : super(key: key);
+      required this.formFieldValidator});
 
   @override
   Widget build(BuildContext context) {

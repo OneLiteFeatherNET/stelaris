@@ -16,7 +16,7 @@ import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 
 class BlockPage extends StatefulWidget {
-  const BlockPage({Key? key}) : super(key: key);
+  const BlockPage({super.key});
 
   @override
   State<StatefulWidget> createState() {

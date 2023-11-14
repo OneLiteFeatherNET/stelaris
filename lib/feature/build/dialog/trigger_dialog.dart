@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 
 class TriggerDialog extends StatelessWidget {
-  const TriggerDialog({Key? key}) : super(key: key);
+  const TriggerDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

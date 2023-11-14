@@ -8,7 +8,7 @@ import 'package:stelaris_ui/util/typedefs.dart';
 class VersionDialog extends StatefulWidget {
   final ValueUpdate<String> valueUpdate;
 
-  const VersionDialog({Key? key, required this.valueUpdate}) : super(key: key);
+  const VersionDialog({super.key, required this.valueUpdate});
 
   @override
   State<VersionDialog> createState() => _VersionDialogState();

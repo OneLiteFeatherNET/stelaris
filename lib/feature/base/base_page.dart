@@ -11,7 +11,7 @@ import '../../util/constants.dart';
 class BasePage extends StatefulWidget {
   final Widget child;
 
-  const BasePage({Key? key, required this.child}) : super(key: key);
+  const BasePage({super.key, required this.child});
 
   @override
   State<BasePage> createState() => _BasePageState();

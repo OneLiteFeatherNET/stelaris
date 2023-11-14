@@ -9,7 +9,7 @@ import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class BuildPage extends StatefulWidget {
-  const BuildPage({Key? key}) : super(key: key);
+  const BuildPage({super.key});
 
   @override
   State<StatefulWidget> createState() => BuildPageState();

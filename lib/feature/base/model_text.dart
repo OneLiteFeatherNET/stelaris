@@ -5,7 +5,7 @@ class ModelText extends StatelessWidget {
 
   final String? displayName;
 
-  const ModelText({Key? key, required this.displayName}) : super(key: key);
+  const ModelText({super.key, required this.displayName});
 
   @override
   Widget build(BuildContext context) {

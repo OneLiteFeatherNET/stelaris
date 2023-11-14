@@ -9,11 +9,11 @@ class ItemGroupChangeDialog extends StatelessWidget {
   final MapToDeleteSuccessfully function;
 
   const ItemGroupChangeDialog({
-    Key? key,
+    super.key,
     required this.title,
     required this.header,
     required this.function,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
