@@ -8,6 +8,7 @@ part 'attribute_model.freezed.dart';
 class AttributeModel extends DataModel with _$AttributeModel {
 
   const factory AttributeModel({
+    String? id,
     String? modelName,
     String? name,
     double? defaultValue,
