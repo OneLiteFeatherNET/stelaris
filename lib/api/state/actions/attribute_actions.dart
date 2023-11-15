@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/attribute_model.dart';
 
 import '../app_state.dart';
@@ -7,14 +8,7 @@ class InitAttributeListAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    var attributes = <AttributeModel>[
-      AttributeModel(modelName: "Strength", name: "", defaultValue: 0, maximumValue: 10),
-      AttributeModel(modelName: "Dexterity",  name: "", defaultValue: 0, maximumValue: 10),
-      AttributeModel(modelName: "Constitution",name: "", defaultValue: 0, maximumValue: 10),
-      AttributeModel(modelName: "Intelligence", name: "",defaultValue: 0, maximumValue: 10),
-      AttributeModel(modelName: "Wisdom", name: "",defaultValue: 0, maximumValue: 10),
-      AttributeModel(modelName: "Charisma", name: "",defaultValue: 0, maximumValue: 10),
-    ];
+    List<AttributeModel> attributes = await ApiService().attributesAPI.getAll();
     return state.copyWith(attributes: attributes);
   }
 }
