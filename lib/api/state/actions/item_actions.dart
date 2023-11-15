@@ -23,7 +23,7 @@ class InitItemAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    var items = await ApiService().itemApi.getAllItems();
+    var items = await ApiService().itemApi.getAll();
     return state.copyWith(items: items);
   }
 
@@ -38,8 +38,8 @@ class AddItemAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    await ApiService().itemApi.addItem(_model);
-    var items = await ApiService().itemApi.getAllItems();
+    await ApiService().itemApi.add(_model);
+    var items = await ApiService().itemApi.getAll();
     return state.copyWith(items: items);
   }
 }
@@ -54,7 +54,7 @@ class RemoveItemAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     await ApiService().itemApi.remove(model);
-    var items = await ApiService().itemApi.getAllItems();
+    var items = await ApiService().itemApi.getAll();
     return state.copyWith(items: items);
   }
 }
