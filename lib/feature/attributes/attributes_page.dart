@@ -13,7 +13,6 @@ class AttributesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AttributeAddAction(AttributeModel(modelName: "test"));
     return Stack(
       children: [
         SizedBox(
