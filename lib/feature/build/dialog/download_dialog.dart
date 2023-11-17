@@ -10,7 +10,7 @@ import 'package:stelaris_ui/util/constants.dart';
 class DownloadDialog extends StatefulWidget {
   final List<DropdownMenuItem<String>> branches;
 
-  const DownloadDialog({Key? key, required this.branches}) : super(key: key);
+  const DownloadDialog({super.key, required this.branches});
 
   @override
   State<DownloadDialog> createState() => _DownloadDialogState();

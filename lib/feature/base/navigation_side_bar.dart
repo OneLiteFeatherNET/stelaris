@@ -17,9 +17,9 @@ class NavigationSideBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final router = GoRouter.of(context);
+    final router = GoRouterState.of(context);
     final index = navigationEntries.indexWhere((element) {
-      return element.route == router.location;
+      return element.route == router.uri.toString();
     });
     final actionChild = [
       const ThemeSwitcherToggle(),
@@ -41,7 +41,7 @@ class NavigationSideBar extends StatelessWidget {
       extended:
           MediaQuery.of(context).size.width < 1000 ? false : openNavigation,
       onDestinationSelected: (index) {
-        router.push(navigationEntries[index].route);
+        context.go(navigationEntries[index].route);
       },
       labelType: NavigationRailLabelType.none,
       destinations: _buildNavigationView(),

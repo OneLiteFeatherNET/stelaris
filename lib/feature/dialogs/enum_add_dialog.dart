@@ -9,7 +9,7 @@ class EnumAddDialog<E> extends StatefulWidget {
   final List<DropdownMenuItem<E>> items;
   final ValueUpdate<E> valueUpdate;
 
-  const EnumAddDialog({Key? key, required this.title, required this.items, required this.valueUpdate}) : super(key: key);
+  const EnumAddDialog({super.key, required this.title, required this.items, required this.valueUpdate});
 
   @override
   State<EnumAddDialog<E>> createState() => _EnumAddDialogState<E>();

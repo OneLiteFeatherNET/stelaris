@@ -229,8 +229,9 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                 formValidator: (value) {
                   if (value == null) return null;
                   String input = value as String;
-                  if (input.trim().isEmpty)
+                  if (input.trim().isEmpty) {
                     return context.l10n.error_card_empty;
+                  }
 
                   if (int.parse(input) > maxItemSize) {
                     return context.l10n.card_amount_to_high;

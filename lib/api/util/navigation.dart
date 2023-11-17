@@ -5,12 +5,8 @@ enum NavigationEntry {
 
   attributes("Attributes", "/attributes", Icons.badge_sharp),
   items("Items", "/items", Icons.games),
-  //blocks("Blocks", "/blocks", Icons.square),
-  //entities("Entities", "/entities", Icons.add_moderator),
-  //quests("Quests", "/quests",Icons.access_time_filled_outlined),
   notifications("Notifications", "/notifications", Icons.notification_add),
   font("Fonts", "/fonts", Icons.font_download_outlined),
-  //plugins("Plugins", "/plugins", Icons.extension),
   build("Build", "/build", Icons.build);
 
   final String display;

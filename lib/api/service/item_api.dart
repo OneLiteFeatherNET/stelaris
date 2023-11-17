@@ -1,66 +1,66 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_ui/api/api_client.dart';
+import 'package:stelaris_ui/api/client_api.dart';
+import 'package:stelaris_ui/api/converter/model_list_converter.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 
-class ItemApi {
+class ItemApi implements ClientAPI<ItemModel> {
   final ApiClient _apiClient;
-  final StringToItems _formatter = const StringToItems();
+  final ModelListConverter<ItemModel> _formatter = ModelListConverter((p0) => ItemModel.fromJson(p0));
 
   ItemApi(this._apiClient);
 
-  Future<ItemModel> getItem() async {
+  @override
+  Future<ItemModel> get() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/api/items');
-    final result = await _apiClient.dio.getUri(uri).then((value) => ItemModel.fromJson(value.data!));
+    final uri = baseUri.replace(
+        queryParameters: queryParams, path: '${baseUri.path}/api/items');
+    final result = await _apiClient.dio.getUri(uri).then((value) =>
+        ItemModel.fromJson(value.data!));
     return result;
   }
 
-  Future<ItemModel> addItem(ItemModel item) async {
+  @override
+  Future<ItemModel> add(ItemModel item) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/item');
-    final result = await _apiClient.dio.postUri(uri, data: item.toJson()).then((value) => ItemModel.fromJson(value.data!));
+    final uri = baseUri.replace(
+        queryParameters: queryParams, path: '${baseUri.path}/item');
+    final result = await _apiClient.dio.postUri(uri, data: item.toJson()).then((
+        value) => ItemModel.fromJson(value.data!));
     return result;
   }
 
-  Future<List<ItemModel>> getAllItems() async {
+  @override
+  Future<List<ItemModel>> getAll() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/item/getAll');
-    final result = await _apiClient.dio.getUri(uri).then((value) => _formatter.fromJson(value.data!));
+    final uri = baseUri.replace(
+        queryParameters: queryParams, path: '${baseUri.path}/item/getAll');
+    final result = await _apiClient.dio.getUri(uri).then((value) =>
+        _formatter.fromJson(value.data!));
     return result;
   }
 
+  @override
   Future<ItemModel> update(ItemModel itemModel) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/item/update');
-    final result = await _apiClient.dio.postUri(uri, data: itemModel.toJson()).then((value) => ItemModel.fromJson(value.data!));
+    final uri = baseUri.replace(
+        queryParameters: queryParams, path: '${baseUri.path}/item/update');
+    final result = await _apiClient.dio.postUri(uri, data: itemModel.toJson())
+        .then((value) => ItemModel.fromJson(value.data!));
     return result;
   }
 
+  @override
   Future<ItemModel> remove(ItemModel itemModel) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/item/remove/${itemModel.id}');
-    final result = await _apiClient.dio.deleteUri(uri).then((value) => ItemModel.fromJson(value.data!));
+    final uri = baseUri.replace(queryParameters: queryParams,
+        path: '${baseUri.path}/item/remove/${itemModel.id}');
+    final result = await _apiClient.dio.deleteUri(uri).then((value) =>
+        ItemModel.fromJson(value.data!));
     return result;
   }
-}
-
-class StringToItems implements JsonConverter<List<ItemModel>, List<dynamic>> {
-
-  const StringToItems();
-
-  @override
-  List<ItemModel> fromJson(List<dynamic> json) {
-    return json.map((e) => ItemModel.fromJson(e)).toList();
-  }
-
-  @override
-  List<dynamic> toJson(List<ItemModel> object) {
-    throw UnimplementedError();
-  }
-
 }

@@ -1,16 +1,17 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_ui/api/api_client.dart';
+import 'package:stelaris_ui/api/client_api.dart';
+import 'package:stelaris_ui/api/converter/model_list_converter.dart';
+import 'package:stelaris_ui/api/model/block_model.dart';
 
-import '../model/block_model.dart';
-
-class BlockAPI {
+class BlockAPI implements ClientAPI<BlockModel> {
 
   final ApiClient _apiClient;
-  final StringToBlock _formatter = const StringToBlock();
+  final ModelListConverter<BlockModel> _formatter = ModelListConverter((p0) => BlockModel.fromJson(p0));
 
   BlockAPI(this._apiClient);
 
-  Future<BlockModel> getBlock() async {
+  @override
+  Future<BlockModel> get() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/block');
@@ -18,7 +19,8 @@ class BlockAPI {
     return result;
   }
 
-  Future<BlockModel> addBlock(BlockModel block) async {
+  @override
+  Future<BlockModel> add(BlockModel block) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/block');
@@ -26,7 +28,8 @@ class BlockAPI {
     return result;
   }
 
-  Future<List<BlockModel>> getAllBlocks() async {
+  @override
+  Future<List<BlockModel>> getAll() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/block/getAll');
@@ -34,6 +37,7 @@ class BlockAPI {
     return result;
   }
 
+  @override
   Future<BlockModel> update(BlockModel model) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
@@ -42,26 +46,12 @@ class BlockAPI {
     return result;
   }
 
+  @override
   Future<BlockModel> remove(BlockModel model) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/block/remove/${model.id}');
     final result = await _apiClient.dio.deleteUri(uri).then((value) => BlockModel.fromJson(value.data!));
     return result;
-  }
-}
-
-class StringToBlock implements JsonConverter<List<BlockModel>, List<dynamic>> {
-
-  const StringToBlock();
-
-  @override
-  List<BlockModel> fromJson(List<dynamic> json) {
-    return json.map((e) => BlockModel.fromJson(e)).toList();
-  }
-
-  @override
-  List<dynamic> toJson(List<BlockModel> object) {
-    throw UnimplementedError();
   }
 }
