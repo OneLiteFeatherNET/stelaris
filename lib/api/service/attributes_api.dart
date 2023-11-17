@@ -17,11 +17,11 @@ class AttributesAPI {
     return result;
   }
 
-  Future<AttributeModel> addAttribute(AttributeModel font) async {
+  Future<AttributeModel> addAttribute(AttributeModel model) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/attribute');
-    final result = await _apiClient.dio.postUri(uri, data: font.toJson()).then((value) => AttributeModel.fromJson(value.data!));
+    final result = await _apiClient.dio.postUri(uri, data: model.toJson()).then((value) => AttributeModel.fromJson(value.data!));
     return result;
   }
 
