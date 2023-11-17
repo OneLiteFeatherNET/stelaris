@@ -8,7 +8,7 @@ class InitFontAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    var fonts = await ApiService().fontAPI.getAllFonts();
+    var fonts = await ApiService().fontAPI.getAll();
     return state.copyWith(fonts: fonts);
   }
 
@@ -38,8 +38,8 @@ class AddFontAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    await ApiService().fontAPI.addFont(_model);
-    var fonts = await ApiService().fontAPI.getAllFonts();
+    await ApiService().fontAPI.add(_model);
+    var fonts = await ApiService().fontAPI.getAll();
     return state.copyWith(fonts: fonts);
   }
 }

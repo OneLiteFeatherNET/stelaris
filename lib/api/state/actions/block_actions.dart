@@ -22,7 +22,7 @@ class InitBlockAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    var blocks = await ApiService().blockAPI.getAllBlocks();
+    var blocks = await ApiService().blockAPI.getAll();
     return state.copyWith(blocks: blocks);
   }
 
@@ -37,8 +37,8 @@ class AddBlockAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    await ApiService().blockAPI.addBlock(_model);
-    var blocks = await ApiService().blockAPI.getAllBlocks();
+    await ApiService().blockAPI.add(_model);
+    var blocks = await ApiService().blockAPI.getAll();
     return state.copyWith(blocks: blocks);
   }
 }
@@ -53,7 +53,7 @@ class RemoveBlockAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     await ApiService().blockAPI.remove(model);
-    var blocks = await ApiService().blockAPI.getAllBlocks();
+    var blocks = await ApiService().blockAPI.getAll();
     return state.copyWith(blocks: blocks);
   }
 }
