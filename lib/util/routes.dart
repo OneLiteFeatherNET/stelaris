@@ -48,17 +48,6 @@ final GoRouter router = GoRouter(routes: [
               child: child,
             )),
   ),
-  /*GoRoute(
-    path: NavigationEntry.plugins.route,
-    pageBuilder: (context, state) => CustomTransitionPage(
-        child:  const BasePage(child: PluginPage()),
-        key: state.pageKey,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            FadeTransition(
-              opacity: animation,
-              child: child,
-            )),
-  )*/
   GoRoute(
     path: NavigationEntry.build.route,
     pageBuilder: (context, state) => CustomTransitionPage(

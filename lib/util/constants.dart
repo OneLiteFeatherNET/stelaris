@@ -29,9 +29,6 @@ const String emptyString = "";
 const int maxItemSize = 64;
 const String defaultMaterial = "minecraft:dirt";
 
-//Template Stepper
-const String templateStepperTitle = "Create a server template";
-
 // Text
 // Button
 Icon addModelIcon = const Icon(Icons.add);
