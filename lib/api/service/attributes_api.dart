@@ -1,12 +1,11 @@
-
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_ui/api/api_client.dart';
+import 'package:stelaris_ui/api/converter/model_list_converter.dart';
 import 'package:stelaris_ui/api/model/attribute_model.dart';
 
 class AttributesAPI {
 
   final ApiClient _apiClient;
-  final StringToAttribute _formatter = const StringToAttribute();
+  final ModelListConverter<AttributeModel> _formatter = ModelListConverter((p0) => AttributeModel.fromJson(p0));
 
   AttributesAPI(this._apiClient);
 
@@ -50,19 +49,4 @@ class AttributesAPI {
     return result;
   }
 
-}
-
-class StringToAttribute implements JsonConverter<List<AttributeModel>, List<dynamic>> {
-
-  const StringToAttribute();
-
-  @override
-  List<AttributeModel> fromJson(List<dynamic> json) {
-    return json.map((e) => AttributeModel.fromJson(e)).toList();
-  }
-
-  @override
-  List<dynamic> toJson(List<AttributeModel> object) {
-    throw UnimplementedError();
-  }
 }
