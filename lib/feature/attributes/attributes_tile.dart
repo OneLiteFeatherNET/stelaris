@@ -10,11 +10,11 @@ import '../../util/constants.dart';
 typedef UpdateModel = AttributeModel Function();
 
 class AttributesTile extends StatelessWidget {
-
   AttributeModel attributeModel;
   UpdateModel updateModel;
 
-  AttributesTile({super.key, required this.attributeModel, required this.updateModel});
+  AttributesTile(
+      {super.key, required this.attributeModel, required this.updateModel});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,8 @@ class AttributesTile extends StatelessWidget {
           IconButton(
             onPressed: () {
               var updatedModel = updateModel();
-              StoreProvider.dispatch(context, UpdateAttributeAction(attributeModel, updatedModel));
+              StoreProvider.dispatch(
+                  context, UpdateAttributeAction(attributeModel, updatedModel));
               attributeModel = updatedModel;
             },
             icon: const Icon(
@@ -39,12 +40,14 @@ class AttributesTile extends StatelessWidget {
             title: "Confirm deletion",
             header: [
               TextSpan(
-                  text: context.l10n.delete_dialog_first_line,
-                  style: whiteStyle),
+                text: context.l10n.delete_dialog_first_line,
+                style: whiteStyle,
+              ),
               TextSpan(text: attributeModel.modelName, style: redStyle),
               TextSpan(
-                  text: context.l10n.delete_dialog_entry,
-                  style: whiteStyle),
+                text: context.l10n.delete_dialog_entry,
+                style: whiteStyle,
+              ),
             ],
             value: attributeModel,
             mapToDeleteSuccessfully: (value) {
