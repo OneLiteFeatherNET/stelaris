@@ -1,8 +1,7 @@
 import 'package:stelaris_ui/api/api_client.dart';
 import 'package:stelaris_ui/api/client_api.dart';
-import 'package:stelaris_ui/api/converter/ModeListConverter.dart';
+import 'package:stelaris_ui/api/converter/model_list_converter.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
-
 
 class BlockAPI implements ClientAPI<BlockModel> {
 
