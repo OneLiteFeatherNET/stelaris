@@ -5,7 +5,6 @@ import 'package:stelaris_ui/api/service/font_api.dart';
 import 'package:stelaris_ui/api/service/generate_api.dart';
 import 'package:stelaris_ui/api/service/item_api.dart';
 import 'package:stelaris_ui/api/service/notification_api.dart';
-import 'package:stelaris_ui/api/service/plugin_api.dart';
 
 class ApiService {
 
@@ -30,8 +29,6 @@ class ApiService {
   late final FontAPI fontAPI = FontAPI(_apiClient);
 
   late final BlockAPI blockAPI = BlockAPI(_apiClient);
-
-  late final PluginAPI pluginAPI = PluginAPI(_apiClient);
 
   ApiClient _createApiClient() {
     return ApiClient("https://api.onelitefeather.dev/vulpes/backend/");

@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
-import 'package:stelaris_ui/api/model/plugin_model.dart';
 
 import '../model/item_model.dart';
 
@@ -17,7 +16,6 @@ class AppState with _$AppState {
     @Default([]) List<ItemModel> items,
     @Default([]) List<NotificationModel> notifications,
     @Default([]) List<FontModel> fonts,
-    @Default([]) List<PluginModel> plugins,
     @Default([]) List<BlockModel> blocks,
     @Default(true) bool openNavigation,
     @Default(true) bool nightMode,

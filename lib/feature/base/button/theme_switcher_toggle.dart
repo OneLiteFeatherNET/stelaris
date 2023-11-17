@@ -6,7 +6,7 @@ const Icon lightMode = Icon(Icons.sunny_snowing);
 
 class ThemeSwitcherToggle extends StatefulWidget {
 
-  const ThemeSwitcherToggle({Key? key}) : super(key: key);
+  const ThemeSwitcherToggle({super.key});
 
   @override
   State<ThemeSwitcherToggle> createState() => _ThemeSwitcherToggleState();

@@ -5,7 +5,7 @@ class StepperDialogButton extends StatelessWidget {
 
   final ControlsDetails details;
 
-  const StepperDialogButton({Key? key, required this.details}) : super(key: key);
+  const StepperDialogButton({super.key, required this.details});
 
   @override
   Widget build(BuildContext context) {

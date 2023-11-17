@@ -16,8 +16,7 @@ class NotificationGeneralPage extends StatefulWidget {
   final ValueNotifier<NotificationModel?> selectedItem;
 
   const NotificationGeneralPage(
-      {Key? key, required this.model, required this.selectedItem})
-      : super(key: key);
+      {super.key, required this.model, required this.selectedItem});
 
   @override
   State<NotificationGeneralPage> createState() =>

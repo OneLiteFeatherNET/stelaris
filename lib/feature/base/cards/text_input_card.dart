@@ -16,7 +16,7 @@ class TextInputCard<E> extends StatelessWidget with BaseLayout {
   final FormFieldValidator? formValidator;
 
   TextInputCard(
-      {Key? key,
+      {super.key,
       required this.title,
       required this.currentValue,
       required this.valueUpdate,
@@ -24,8 +24,7 @@ class TextInputCard<E> extends StatelessWidget with BaseLayout {
       this.formatter,
       this.infoIcon,
       required this.infoText,
-      this.formValidator})
-      : super(key: key);
+      this.formValidator});
 
   @override
   Widget build(BuildContext context) {

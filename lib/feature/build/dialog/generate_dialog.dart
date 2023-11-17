@@ -7,7 +7,7 @@ import 'package:stelaris_ui/util/constants.dart';
 class GenerateDialog extends StatefulWidget {
   final List<DropdownMenuItem<String>> branches;
 
-  const GenerateDialog({Key? key, required this.branches}) : super(key: key);
+  const GenerateDialog({super.key, required this.branches});
 
   @override
   State<GenerateDialog> createState() => _GenerateDialogState();

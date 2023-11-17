@@ -11,11 +11,10 @@ class DeleteModelButton<E extends DataModel> extends StatelessWidget {
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
 
   const DeleteModelButton(
-      {Key? key,
+      {super.key,
       required this.value,
       required this.mapToDeleteDialog,
-      required this.mapToDeleteSuccessfully})
-      : super(key: key);
+      required this.mapToDeleteSuccessfully});
 
   @override
   Widget build(BuildContext context) {
