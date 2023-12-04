@@ -14,18 +14,18 @@ class InitAttributeListAction extends ReduxAction<AppState> {
 }
 
 class UpdateAttributeAction extends ReduxAction<AppState> {
-  final AttributeModel oldEntry;
   final AttributeModel newEntry;
 
-  UpdateAttributeAction(this.oldEntry, this.newEntry);
+  UpdateAttributeAction(this.newEntry);
 
   @override
   Future<AppState?> reduce() async {
-    final items = List.of(state.attributes, growable: true);
-    int index = items.indexWhere((element) => element.modelName == oldEntry.modelName);
-    items.removeAt(index);
-    items.insert(index, newEntry);
-    return state.copyWith(attributes: items);
+    var updatedModel = await ApiService().attributesAPI.update(newEntry);
+    final attributes = List.of(state.attributes, growable: true);
+    int index = attributes.indexWhere((element) => element.id == newEntry.id);
+    attributes.removeAt(index);
+    attributes.insert(index, updatedModel);
+    return state.copyWith(attributes: attributes);
   }
 }
 
@@ -37,8 +37,9 @@ class AttributeAddAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
+    var databaseModel = await ApiService().attributesAPI.add(model);
     var attributes = List.of(state.attributes, growable: true);
-    attributes.add(model);
+    attributes.add(databaseModel);
     return state.copyWith(attributes: attributes);
   }
 }
@@ -51,6 +52,7 @@ class AttributeRemoveAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
+    await ApiService().attributesAPI.remove(model);
     var attributes = List.of(state.attributes, growable: true);
     attributes.remove(model);
     return state.copyWith(attributes: attributes);

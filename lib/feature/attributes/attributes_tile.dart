@@ -11,7 +11,7 @@ typedef UpdateModel = AttributeModel Function();
 
 class AttributesTile extends StatelessWidget {
   AttributeModel attributeModel;
-  UpdateModel updateModel;
+  final UpdateModel updateModel;
 
   AttributesTile(
       {super.key, required this.attributeModel, required this.updateModel});
@@ -28,7 +28,7 @@ class AttributesTile extends StatelessWidget {
             onPressed: () {
               var updatedModel = updateModel();
               StoreProvider.dispatch(
-                  context, UpdateAttributeAction(attributeModel, updatedModel));
+                  context, UpdateAttributeAction(updatedModel));
               attributeModel = updatedModel;
             },
             icon: const Icon(
