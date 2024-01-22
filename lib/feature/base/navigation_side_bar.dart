@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/api/util/navigation.dart';
-import 'package:stelaris_ui/feature/base/button/theme_switcher_toggle.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
 
 const double maxXOffset = 180;
 const navigationEntries = NavigationEntry.values;
@@ -13,6 +11,7 @@ class NavigationSideBar extends StatelessWidget {
     required this.openNavigation,
     super.key,
   });
+
   final bool openNavigation;
 
   @override
@@ -21,21 +20,6 @@ class NavigationSideBar extends StatelessWidget {
     final index = navigationEntries.indexWhere((element) {
       return element.route == router.uri.toString();
     });
-    final actionChild = [
-      const ThemeSwitcherToggle(),
-      IconButton(
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.text_wiki),
-                behavior: SnackBarBehavior.floating,
-                width: 500.0,
-                elevation: 0.0,
-              ),
-            );
-          },
-          icon: const Icon(Icons.help_outline))
-    ];
     return NavigationRail(
       minExtendedWidth: maxXOffset,
       extended:
@@ -46,25 +30,6 @@ class NavigationSideBar extends StatelessWidget {
       labelType: NavigationRailLabelType.none,
       destinations: _buildNavigationView(),
       selectedIndex: index != -1 ? index : 0,
-      trailing: Expanded(
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 30),
-            child: openNavigation
-                ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: actionChild,
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: actionChild,
-                  ),
-          ),
-        ),
-      ),
     );
   }
 
