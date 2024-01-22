@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris_ui/api/api_service.dart';
-import '../../model/block_model.dart';
-import '../app_state.dart';
+import 'package:stelaris_ui/api/model/block_model.dart';
+import 'package:stelaris_ui/api/state/app_state.dart';
 
 class UpdateBlockAction extends ReduxAction<AppState> {
   final BlockModel oldEntry;

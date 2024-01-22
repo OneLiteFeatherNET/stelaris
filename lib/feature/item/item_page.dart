@@ -5,6 +5,7 @@ import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/feature/base/model_container_list.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/setup_dialog.dart';
 import 'package:stelaris_ui/feature/item/item_general_page.dart';
@@ -12,8 +13,6 @@ import 'package:stelaris_ui/feature/item/item_group.dart';
 import 'package:stelaris_ui/feature/item/item_meta_page.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
-
-import '../base/model_container_list.dart';
 
 final ValueNotifier<ItemModel?> selectedItem = ValueNotifier(null);
 
