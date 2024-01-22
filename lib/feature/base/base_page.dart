@@ -2,6 +2,8 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/state/actions/app_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/feature/base/button/info_button.dart';
+import 'package:stelaris_ui/feature/base/button/theme_switcher_toggle.dart';
 import 'package:stelaris_ui/feature/base/navigation_side_bar.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
@@ -31,6 +33,10 @@ class _BasePageState extends State<BasePage> {
           elevation: 0,
           title: appTitle,
           centerTitle: true,
+          actions: const [
+            ThemeSwitcherToggle(),
+            InfoButton()
+          ],
         ),
         body: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
