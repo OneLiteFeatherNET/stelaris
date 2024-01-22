@@ -1,8 +1,8 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/state/actions/app_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/feature/base/button/info_button.dart';
+import 'package:stelaris_ui/feature/base/button/toggle_navigation_button.dart';
 import 'package:stelaris_ui/feature/base/button/theme_switcher_toggle.dart';
 import 'package:stelaris_ui/feature/base/navigation_side_bar.dart';
 import 'package:stelaris_ui/util/constants.dart';
@@ -19,12 +19,7 @@ class BasePage extends StatelessWidget {
     }, builder: (context, vm) {
       return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              StoreProvider.dispatch(context, UpdateNavigationAction(!vm.openNavigation));
-            },
-          ),
+          leading: ToggleNavigationBar(navigationState: vm.openNavigation),
           elevation: 0,
           title: appTitle,
           centerTitle: true,
