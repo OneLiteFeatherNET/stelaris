@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/state/actions/app_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/feature/base/navigation_side_bar.dart';
-
-import '../../util/constants.dart';
-
-
+import 'package:stelaris_ui/util/constants.dart';
 
 class BasePage extends StatefulWidget {
   final Widget child;

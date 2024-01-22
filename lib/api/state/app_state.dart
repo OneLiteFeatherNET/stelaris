@@ -2,12 +2,10 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_ui/api/model/attribute_model.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/model/font_model.dart';
+import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
 
-import '../model/item_model.dart';
-
 part 'app_state.g.dart';
-
 part 'app_state.freezed.dart';
 
 @freezed
