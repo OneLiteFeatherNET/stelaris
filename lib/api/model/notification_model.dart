@@ -8,14 +8,13 @@ part 'notification_model.freezed.dart';
 class NotificationModel extends DataModel with _$NotificationModel {
 
   const factory NotificationModel({
-    @JsonKey(name: 'id') String? id,
-    @JsonKey(name: 'modelName') String? modelName,
-    @JsonKey(name: 'name') String? name,
-    @JsonKey(name: 'generator') @Default('NotificationGenerator') String? generator,
-    @JsonKey(name: 'material') String? material,
-    @JsonKey(name: 'frameType') String? frameType,
-    @JsonKey(name: 'title') String? title,
-    @JsonKey(name: 'description') String? description,
+    String? id,
+    String? modelName,
+    String? name,
+    String? material,
+    String? frameType,
+    String? title,
+    String? description,
   }) = _Notification;
 
 
