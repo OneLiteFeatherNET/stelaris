@@ -1,12 +1,11 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/api/model/attribute_model.dart';
 import 'package:stelaris_ui/api/state/actions/attribute_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/feature/attributes/attributes_entry.dart';
+import 'package:stelaris_ui/feature/base/position_bottom_right.dart';
 import 'package:stelaris_ui/feature/dialogs/setup_dialog.dart';
-
-import '../../api/model/attribute_model.dart';
-import '../base/position_bottom_right.dart';
 
 class AttributesPage extends StatelessWidget {
   const AttributesPage({super.key});

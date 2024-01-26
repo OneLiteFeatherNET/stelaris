@@ -2,10 +2,9 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/feature/base/model_list.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
-
-import '../../api/tabs/tab_pages.dart';
 
 const List<TabPage> tabPagesValues = TabPage.values;
 

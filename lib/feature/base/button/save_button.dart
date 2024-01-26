@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/feature/base/position_bottom_right.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
-
-import '../../../util/constants.dart';
+import 'package:stelaris_ui/util/constants.dart';
 
 class SaveButton extends StatelessWidget {
   final Function callback;

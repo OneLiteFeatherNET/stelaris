@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/util/constants.dart';
-
-import '../base/base_layout.dart';
 
 class AttributeRow extends StatelessWidget {
   final TextEditingController controller;
