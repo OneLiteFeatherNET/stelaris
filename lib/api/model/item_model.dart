@@ -8,21 +8,19 @@ part 'item_model.g.dart';
 class ItemModel extends DataModel with _$ItemModel {
 
   const factory ItemModel({
-    @JsonKey(name: 'id') String? id,
-    @JsonKey(name: 'modelName') String? modelName,
-    @JsonKey(name: 'name') String? name,
-    @JsonKey(name: 'description') String? description,
-    @JsonKey(name: 'displayName') String? displayName,
-    @JsonKey(name: 'group') @Default('misc') String? group,
-    @JsonKey(name: "generator") @Default('ItemGenerator') String? generator,
-    @JsonKey(name: 'material') String? material,
-    @JsonKey(name: 'customModelId') int? customModelId,
-    @JsonKey(name: 'amount') @Default(1) int? amount,
-    @JsonKey(name: 'enchantments') Map<String, int>? enchantments,
-    @JsonKey(name: 'flags') Set<String>? flags,
-    @JsonKey(name: 'lore') List<String>? lore,
+    String? id,
+    String? modelName,
+    String? name,
+    String? description,
+    String? displayName,
+     @Default('misc') String? group,
+    String? material,
+    int? customModelId,
+    @Default(1) int? amount,
+    Map<String, int>? enchantments,
+    Set<String>? flags,
+    List<String>? lore,
 }) = _ItemModel;
-
 
   factory ItemModel.fromJson(Map<String, dynamic> json) => _$ItemModelFromJson(json);
 }
