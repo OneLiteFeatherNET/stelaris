@@ -7,7 +7,6 @@ import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 
 var defaultItem = const ItemModel(
     name: "Test1234",
-    generator: "ItemGenerator",
     //group: "Test",
     material: "minecraft:air",
     customModelId: 1,
@@ -18,7 +17,6 @@ var defaultItem = const ItemModel(
 
 var firstNotificationModel = NotificationModel(
     material: "Holz",
-    generator: "NotificationGenerator",
     name: "Test",
     title: "Test Title",
     description: "Lol",
@@ -26,7 +24,6 @@ var firstNotificationModel = NotificationModel(
 );
 var secondNotificationModel = NotificationModel(
     material: "Stein",
-    generator: "NotificationGenerator",
     name: "Second",
     title: "Test Title",
     description: "Hui",
@@ -41,7 +38,6 @@ var blocKModel = const BlockModel(
 
 var fontModel = FontModel(
     name: "Font",
-    generator: "FontGenerator",
     type: FontType.bitmap.displayName,
     ascent: 10,
     height: 100
