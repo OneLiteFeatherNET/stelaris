@@ -17,9 +17,7 @@ class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
 
   @override
-  State<StatefulWidget> createState() {
-    return NotificationPageState();
-  }
+  State<StatefulWidget> createState() => NotificationPageState();
 }
 
 class NotificationPageState extends State<NotificationPage> with BaseLayout {
