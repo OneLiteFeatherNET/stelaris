@@ -1,35 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris_ui/feature/base/base_card.dart';
+import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
-class TextInputCard<E> extends StatefulWidget {
+class TextInputCard2<E> extends StatefulWidget {
   final String display;
-  final String message;
+  final String? tooltipMessage;
+  final String? hintText;
   final ValueUpdate<E> valueUpdate;
   final String currentValue;
   final TextInputType? inputType;
   final List<TextInputFormatter>? formatter;
   final FormFieldValidator? formValidator;
   final int maxLength;
+  final bool isNumber;
 
-  const TextInputCard({
+  const TextInputCard2({
     super.key,
     required this.display,
-    required this.message,
+    this.tooltipMessage,
+    this.hintText,
     required this.valueUpdate,
     required this.currentValue,
     this.inputType,
     this.formatter,
     this.formValidator,
-    required this.maxLength,
+    this.maxLength = 30,
+    this.isNumber = false,
   });
 
   @override
-  State<TextInputCard> createState() => _TextInputCardState();
+  State<TextInputCard2> createState() => _TextInputCardState();
 }
 
-class _TextInputCardState extends State<TextInputCard> {
+class _TextInputCardState extends State<TextInputCard2> {
   final TextEditingController _editController = TextEditingController();
 
   @override
@@ -40,9 +45,11 @@ class _TextInputCardState extends State<TextInputCard> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseCard(
+    return Padding(
+      padding: padding,
+      child: BaseCard(
         display: widget.display,
-        message: widget.message,
+        message: widget.tooltipMessage,
         widget: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
           child: SizedBox(
@@ -58,6 +65,10 @@ class _TextInputCardState extends State<TextInputCard> {
                 keyboardType: widget.inputType,
                 inputFormatters: widget.formatter,
                 validator: widget.formValidator,
+                decoration: InputDecoration(
+                  hintText: widget.hintText,
+                ),
+                textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
               ),
               onFocusChange: (focus) {
                 if (!focus && _editController.value.text.trim().isNotEmpty) {
@@ -66,6 +77,8 @@ class _TextInputCardState extends State<TextInputCard> {
               },
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
