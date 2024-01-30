@@ -4,7 +4,7 @@ import 'package:stelaris_ui/util/constants.dart';
 
 class BaseCard extends StatelessWidget {
   final String display;
-  final String message;
+  final String? message;
   final Widget widget;
 
   const BaseCard(
@@ -15,27 +15,36 @@ class BaseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      child: Column(
-        children: [
-          Container(
-            color: Colors.teal[800],
-            height: 50,
-            child: ListTile(
-              title: Text(display, style: whiteStyle),
-              trailing: Tooltip(
-                message: message,
-                child: const Icon(
-                  Icons.info,
-                  color: Colors.white,
-                ),
+    return SizedBox(
+      width: 350,
+      height: 200,
+      child: Card(
+        clipBehavior: Clip.hardEdge,
+        child: Column(
+          children: [
+            Container(
+              color: Colors.teal[800],
+              height: 50,
+              child: ListTile(
+                title: Text(display, style: whiteStyle),
+                trailing: _getToolTip()
               ),
             ),
-          ),
-          spaceBox,
-          widget
-        ],
+            spaceBox,
+            widget
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget? _getToolTip() {
+    if (message == null) return null;
+    return Tooltip(
+      message: message!,
+      child: const Icon(
+        Icons.info,
+        color: Colors.white,
       ),
     );
   }
