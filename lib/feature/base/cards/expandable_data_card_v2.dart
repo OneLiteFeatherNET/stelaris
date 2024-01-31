@@ -2,7 +2,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_header.dart';
 
-class ExpandableDataCardV2 extends StatefulWidget {
+class ExpandableDataCardV2 extends StatelessWidget {
   final String cardTitle;
   final Text title;
   final String message;
@@ -19,11 +19,6 @@ class ExpandableDataCardV2 extends StatefulWidget {
   });
 
   @override
-  State<ExpandableDataCardV2> createState() => _ExpandableDataCardV2State();
-}
-
-class _ExpandableDataCardV2State extends State<ExpandableDataCardV2> {
-  @override
   Widget build(BuildContext context) {
     return ExpandableNotifier(
       child: Padding(
@@ -34,9 +29,9 @@ class _ExpandableDataCardV2State extends State<ExpandableDataCardV2> {
             tapHeaderToExpand: false,
           ),
           collapsed: ExpandableHeader(
-            title: widget.title,
+            title: title,
             isExpanded: false,
-            buttonClick: widget.buttonClick,
+            buttonClick: buttonClick,
           ),
           expanded: Container(
             decoration: BoxDecoration(
@@ -46,11 +41,11 @@ class _ExpandableDataCardV2State extends State<ExpandableDataCardV2> {
             child: Column(
               children: [
                 ExpandableHeader(
-                  title: widget.title,
+                  title: title,
                   isExpanded: true,
-                  buttonClick: widget.buttonClick,
+                  buttonClick: buttonClick,
                 ),
-                ...widget.widgets
+                ...widgets
               ],
             ),
           ),
