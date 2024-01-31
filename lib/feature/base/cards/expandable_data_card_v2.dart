@@ -1,6 +1,6 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/feature/base/base_card.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris_ui/feature/base/cards/expandable_header.dart';
 
 class ExpandableDataCardV2 extends StatefulWidget {
   final String cardTitle;
@@ -25,55 +25,37 @@ class ExpandableDataCardV2 extends StatefulWidget {
 class _ExpandableDataCardV2State extends State<ExpandableDataCardV2> {
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      controlAffinity: ListTileControlAffinity.leading,
-      title: ColoredBox(
-        color: Colors.teal[800] ?? Colors.teal,
-        child: widget.title
+    return ExpandableNotifier(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+        child: Expandable(
+          theme: const ExpandableThemeData(
+            iconPlacement: ExpandablePanelIconPlacement.left,
+            tapHeaderToExpand: false,
+          ),
+          collapsed: ExpandableHeader(
+            title: widget.title,
+            isExpanded: false,
+            buttonClick: widget.buttonClick,
+          ),
+          expanded: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Column(
+              children: [
+                ExpandableHeader(
+                  title: widget.title,
+                  isExpanded: true,
+                  buttonClick: widget.buttonClick,
+                ),
+                ...widget.widgets
+              ],
+            ),
+          ),
+        ),
       ),
-      trailing: IconButton(
-        onPressed: widget.buttonClick,
-        icon: addModelIcon,
-      ),
-      children: widget.widgets,
     );
   }
 }
-
-/**  child: Column(
-    children: [
-    Container(
-    color: Colors.teal[800],
-    height: 50,
-    child: ListTile(
-    title: Text(display, style: whiteStyle),
-    trailing: Tooltip(
-    message: message,
-    child: const Icon(
-    Icons.info,
-    color: Colors.white,
-    ),
-    ),
-    ),
-    ),
-    spaceBox,
-    widget
-    ],
-    ),
-    );
-    return BaseCard(
-    display: widget.cardTitle,
-    message: widget.message,
-    widget: ExpansionTile(
-    controlAffinity: ListTileControlAffinity.leading,
-    title: widget.title,
-    trailing: IconButton(
-    onPressed: widget.buttonClick,
-    icon: addModelIcon,
-    ),
-    children: widget.widgets
-    ),
-    );
-    return const Placeholder();
-    }
-    }*/
