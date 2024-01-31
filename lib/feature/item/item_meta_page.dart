@@ -9,6 +9,7 @@ import 'package:stelaris_ui/api/util/minecraft/item_flag.dart';
 import 'package:stelaris_ui/feature/base/button/delete_entry_button.dart';
 import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
+import 'package:stelaris_ui/feature/base/cards/expandable_data_card_v2.dart';
 import 'package:stelaris_ui/feature/dialogs/abort_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/enum_add_dialog.dart';
@@ -44,7 +45,9 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
           child: Wrap(
             clipBehavior: Clip.hardEdge,
             children: [
-              ExpandableDataCard(
+              ExpandableDataCardV2(
+                cardTitle: 'EEE',
+                message: 'EEEDDD',
                 title: Text(context.l10n.card_flags),
                 buttonClick: () {
                   showDialog(

@@ -23,7 +23,7 @@ class BaseCard extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              color: Colors.teal[800],
+              color: Theme.of(context).secondaryHeaderColor,
               height: 50,
               child: ListTile(
                 title: Text(display, style: whiteStyle),
