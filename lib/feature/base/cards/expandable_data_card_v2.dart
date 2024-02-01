@@ -20,33 +20,44 @@ class ExpandableDataCardV2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ExpandableNotifier(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-        child: Expandable(
-          theme: const ExpandableThemeData(
-            iconPlacement: ExpandablePanelIconPlacement.left,
-            tapHeaderToExpand: false,
+    return Container(
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: ExpandableNotifier(
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: 10,
+            left: 10,
+            right: 10,
           ),
-          collapsed: ExpandableHeader(
-            title: title,
-            isExpanded: false,
-            buttonClick: buttonClick,
-          ),
-          expanded: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(5),
+          child: Expandable(
+            theme: const ExpandableThemeData(
+              iconPlacement: ExpandablePanelIconPlacement.left,
+              tapHeaderToExpand: false,
             ),
-            child: Column(
-              children: [
-                ExpandableHeader(
-                  title: title,
-                  isExpanded: true,
-                  buttonClick: buttonClick,
-                ),
-                ...widgets
-              ],
+            collapsed: ExpandableHeader(
+              title: title,
+              isExpanded: false,
+              buttonClick: buttonClick,
+            ),
+            expanded: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(5)),
+              ),
+              child: Column(
+                children: [
+                  ExpandableHeader(
+                    title: title,
+                    isExpanded: true,
+                    buttonClick: buttonClick,
+                  ),
+                  ...widgets
+                ],
+              ),
             ),
           ),
         ),
