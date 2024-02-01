@@ -18,6 +18,7 @@ class ExpandableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExpandableButton(
       child: Container(
+        clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           color: Theme.of(context).secondaryHeaderColor,
           borderRadius: BorderRadius.circular(5),
