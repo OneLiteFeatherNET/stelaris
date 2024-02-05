@@ -18,20 +18,25 @@ class AttributesPage extends StatelessWidget {
           width: double.infinity,
           child: SingleChildScrollView(
             child: StoreConnector<AppState, List<AttributeModel>>(
-                onInit: (store) {
-                  store.dispatch(InitAttributeListAction());
-                },
-                converter: (store) => store.state.attributes,
-                builder: (BuildContext context, vm) {
-                  return Wrap(
-                    clipBehavior: Clip.hardEdge,
-                    children: vm
-                        .map((e) => AttributesEntry(
-                              attributeModel: e,
-                            ))
-                        .toList(),
-                  );
-                }),
+              onInit: (store) {
+                store.dispatch(InitAttributeListAction());
+              },
+              converter: (store) => store.state.attributes,
+              builder: (BuildContext context, vm) {
+                return Wrap(
+                  clipBehavior: Clip.hardEdge,
+                  spacing: 100,
+                  runSpacing: 50,
+                  children: vm
+                      .map(
+                        (e) => AttributesEntry(
+                          attributeModel: e,
+                        ),
+                      )
+                      .toList(),
+                );
+              },
+            ),
           ),
         ),
         PositionBottomRight(
@@ -43,11 +48,11 @@ class AttributesPage extends StatelessWidget {
                 builder: (context) {
                   return SetUpDialog<AttributeModel>(
                     buildModel: (name, description) {
-                      return AttributeModel(
-                          modelName: name);
+                      return AttributeModel(modelName: name);
                     },
                     finishCallback: (model) {
-                      StoreProvider.dispatch(context, AttributeAddAction(model));
+                      StoreProvider.dispatch(
+                          context, AttributeAddAction(model));
                       Navigator.pop(context);
                     },
                   );

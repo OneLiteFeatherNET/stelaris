@@ -18,7 +18,6 @@ class AttributesTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: EdgeInsets.zero,
       title: Text(attributeModel.modelName ?? emptyString),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,

@@ -1,9 +1,10 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/model/attribute_model.dart';
 import 'package:stelaris_ui/feature/attributes/attribute_row.dart';
-import 'package:stelaris_ui/feature/attributes/attributes_tile.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/feature/base/cards/expandable_header.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class AttributesEntry extends StatelessWidget with BaseLayout {
@@ -19,44 +20,52 @@ class AttributesEntry extends StatelessWidget with BaseLayout {
     var maxValueController =
         TextEditingController(text: "${attributeModel.maximumValue}");
     return Container(
-      width: 750,
-      padding: padding,
-      child: constructContainer(
-        [
-          ExpansionTile(
-            controlAffinity: ListTileControlAffinity.trailing,
-            title: AttributesTile(
-              attributeModel: attributeModel,
-              updateModel: () {
-                return attributeModel.copyWith(
-                  name: nameController.text,
-                  defaultValue: double.parse(defaultController.text),
-                  maximumValue: double.parse(maxValueController.text),
-                );
-              },
+      width: 500,
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 15, right: 5),
+        child: ExpandableNotifier(
+          child: Expandable(
+            theme: const ExpandableThemeData(
+              iconPlacement: ExpandablePanelIconPlacement.left,
+              tapHeaderToExpand: false,
             ),
-            children: [
-              AttributeRow(
-                controller: nameController,
-                label: "Name",
-                formatter: FilteringTextInputFormatter.allow(letterPattern),
-              ),
-              AttributeRow(
-                controller: defaultController,
-                label: "Default",
-                formatter: FilteringTextInputFormatter.allow(decimalPattern),
-              ),
-              AttributeRow(
-                controller: maxValueController,
-                label: "Maximum",
-                formatter: FilteringTextInputFormatter.allow(decimalPattern),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-            ],
-          )
-        ],
+            collapsed: ExpandableHeader(
+              title: Text(attributeModel.modelName ?? emptyString),
+              isExpanded: false,
+            ),
+            expanded: Column(
+              children: [
+                ExpandableHeader(
+                  title: Text(attributeModel.modelName ?? emptyString),
+                  isExpanded: false,
+                ),
+                AttributeRow(
+                  controller: nameController,
+                  label: "Name",
+                  formatter: FilteringTextInputFormatter.allow(letterPattern),
+                ),
+                AttributeRow(
+                  controller: defaultController,
+                  label: "Default",
+                  formatter: FilteringTextInputFormatter.allow(decimalPattern),
+                ),
+                AttributeRow(
+                  controller: maxValueController,
+                  label: "Maximum",
+                  formatter: FilteringTextInputFormatter.allow(decimalPattern),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
