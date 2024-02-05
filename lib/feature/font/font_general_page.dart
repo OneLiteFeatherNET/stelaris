@@ -7,7 +7,6 @@ import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
-import 'package:stelaris_ui/feature/base/cards/text_input_card_v2.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
@@ -39,7 +38,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
           key: _key,
           child: Wrap(
             children: [
-              TextInputCard2<String>(
+              TextInputCard<String>(
                 display: context.l10n.card_name,
                 currentValue: widget.model.name ?? emptyString,
                 formatter: [FilteringTextInputFormatter.allow(stringPattern)],
@@ -62,7 +61,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                   return null;
                 },
               ),
-              TextInputCard2<String>(
+              TextInputCard<String>(
                 display: context.l10n.card_description,
                 currentValue: widget.model.description ?? emptyString,
                 formatter: [FilteringTextInputFormatter.allow(stringPattern)],
@@ -77,7 +76,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                   });
                 },
               ),
-              TextInputCard2<int>(
+              TextInputCard<int>(
                 isNumber: true,
                 tooltipMessage: context.l10n.tooltip_ascent,
                 display: context.l10n.card_ascent,
@@ -96,7 +95,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                 inputType: numberInput,
                 formatter: [FilteringTextInputFormatter.allow(numberPattern)],
               ),
-              TextInputCard2<int>(
+              TextInputCard<int>(
                 isNumber: true,
                 tooltipMessage: context.l10n.tooltip_height,
                 display: context.l10n.card_height,

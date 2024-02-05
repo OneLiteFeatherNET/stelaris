@@ -1,12 +1,12 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-
-import '../../../util/constants.dart';
+import 'package:stelaris_ui/util/constants.dart';
 
 class ExpandableHeader extends StatelessWidget {
   final bool isExpanded;
   final Text title;
   final VoidCallback buttonClick;
+
   const ExpandableHeader({
     super.key,
     required this.isExpanded,

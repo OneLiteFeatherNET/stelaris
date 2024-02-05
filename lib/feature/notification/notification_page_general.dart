@@ -7,9 +7,7 @@ import 'package:stelaris_ui/api/state/actions/notification_actions.dart';
 import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
-import 'package:stelaris_ui/feature/base/cards/dropdown_card_v2.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
-import 'package:stelaris_ui/feature/base/cards/text_input_card_v2.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
@@ -38,7 +36,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
           autovalidateMode: AutovalidateMode.always,
           child: Wrap(
             children: [
-              TextInputCard2<String>(
+              TextInputCard<String>(
                   display: context.l10n.card_name,
                   currentValue: widget.model.name ?? emptyString,
                   formatter: [FilteringTextInputFormatter.allow(stringPattern)],
@@ -59,7 +57,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                     return null;
                   },
               ),
-              TextInputCard2<String>(
+              TextInputCard<String>(
                 display: context.l10n.card_material,
                 currentValue: widget.model.material ?? emptyString,
                 hintText: 'minecraft:stone',
@@ -82,7 +80,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                 },
                 maxLength: 30,
               ),
-              TextInputCard2<String>(
+              TextInputCard<String>(
                   display: context.l10n.card_title,
                   currentValue: widget.model.title ?? emptyString,
                   valueUpdate: (value) {
@@ -95,7 +93,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                       widget.selectedItem.value = newEntry;
                     });
                   }),
-              TextInputCard2<String>(
+              TextInputCard<String>(
                   display: context.l10n.card_description,
                   currentValue: widget.model.description ?? emptyString,
                   valueUpdate: (value) {
@@ -108,7 +106,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                       widget.selectedItem.value = newEntry;
                     });
                   }),
-              DropdownCardV2<FrameType, NotificationModel>(
+              DropdownCard<FrameType, NotificationModel>(
                 currentValue: widget.model,
                 display: context.l10n.card_frame_type,
                 items: getItems(),
