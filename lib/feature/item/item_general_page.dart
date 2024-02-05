@@ -53,8 +53,8 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
           child: Wrap(
             children: [
               TextInputCard<String>(
-                infoText: context.l10n.tooltip_name,
-                title: Text(context.l10n.card_name),
+                display: context.l10n.card_name,
+                tooltipMessage: context.l10n.tooltip_name,
                 currentValue: widget.model.name ?? emptyString,
                 formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                 valueUpdate: (value) {
@@ -75,10 +75,10 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                   }
                   return null;
                 },
+                maxLength: 30,
               ),
               TextInputCard<String>(
-                infoText: context.l10n.tooltip_description,
-                title: Text(context.l10n.card_description),
+                display: context.l10n.card_description,
                 currentValue: widget.model.description ?? emptyString,
                 valueUpdate: (value) {
                   if (value == widget.model.description) return;
@@ -90,9 +90,10 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                     widget.selectedItem.value = newEntry;
                   });
                 },
+                maxLength: 30,
               ),
-              DropDownCard<ItemGroup, ItemModel>(
-                title: Text(context.l10n.card_group),
+              DropdownCard<ItemGroup, ItemModel>(
+                display: context.l10n.card_group,
                 currentValue: widget.model,
                 formKey: _groupKey,
                 items: getItems(),
@@ -146,7 +147,8 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                         widget.model.copyWith(group: value.display);
                     setState(() {
                       StoreProvider.dispatch(
-                          context, UpdateItemAction(widget.model, newEntry),
+                        context,
+                        UpdateItemAction(widget.model, newEntry),
                       );
                       widget.selectedItem.value = newEntry;
                     });
@@ -155,8 +157,8 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                 defaultValue: getDefaultValue,
               ),
               TextInputCard<String>(
-                infoText: context.l10n.tooltip_material,
-                title: Text(context.l10n.card_material),
+                display: context.l10n.card_material,
+                hintText: 'minecraft:stone',
                 currentValue: widget.model.material ?? emptyString,
                 valueUpdate: (value) {
                   if (value == widget.model.material) return;
@@ -175,10 +177,11 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                   }
                   return null;
                 },
+                maxLength: 30,
               ),
               TextInputCard<String>(
-                infoText: context.l10n.tooltip_displayname,
-                title: Text(context.l10n.card_display_name),
+                tooltipMessage: context.l10n.tooltip_displayname,
+                display: context.l10n.card_display_name,
                 currentValue: widget.model.displayName ?? emptyString,
                 valueUpdate: (value) {
                   if (value == widget.model.displayName) return;
@@ -190,15 +193,17 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                     widget.selectedItem.value = newEntry;
                   });
                 },
+                maxLength: 30,
               ),
-              TextInputCard(
-                infoText: context.l10n.tooltip_model_data,
-                title: Text(context.l10n.card_model_data),
-                currentValue: widget.model.customModelId?.toString() ?? zeroString,
+              TextInputCard<int>(
+                tooltipMessage: context.l10n.tooltip_model_data,
+                display:context.l10n.card_model_data,
+                currentValue:
+                    widget.model.customModelId?.toString() ?? zeroString,
                 valueUpdate: (value) {
                   if (value == widget.model.customModelId) return;
                   final oldModel = widget.model;
-                  final newID = int.parse(value);
+                  final newID = value ?? 0;
                   final newEntry = oldModel.copyWith(customModelId: newID);
                   setState(() {
                     StoreProvider.dispatch(
@@ -206,17 +211,18 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                     widget.selectedItem.value = newEntry;
                   });
                 },
+                maxLength: 30,
                 inputType: numberInput,
                 formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+                isNumber: true,
               ),
-              TextInputCard(
-                infoText: context.l10n.tooltip_amount,
-                title: Text(context.l10n.card_amount),
+              TextInputCard<int>(
+                display: context.l10n.card_amount,
                 currentValue: widget.model.amount?.toString() ?? zeroString,
                 valueUpdate: (value) {
                   if (value == widget.model.amount) return;
                   final oldModel = widget.model;
-                  final newAmount = int.parse(value);
+                  final newAmount = value ?? 0;
                   final newEntry = oldModel.copyWith(amount: newAmount);
                   setState(() {
                     StoreProvider.dispatch(
@@ -238,6 +244,8 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                   }
                   return null;
                 },
+                maxLength: 30,
+                isNumber: true,
               ),
             ],
           ),

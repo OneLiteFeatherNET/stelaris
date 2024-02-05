@@ -7,6 +7,7 @@ EdgeInsets padding = const EdgeInsets.only(top: 10, left: 10);
 const SizedBox spaceBox = SizedBox(height: 10);
 const EdgeInsets all = EdgeInsets.all(20);
 
+@Deprecated('Don\'t use this class anymore')
 mixin BaseLayout {
 
   Widget createInputContainer(String title, String? value) {

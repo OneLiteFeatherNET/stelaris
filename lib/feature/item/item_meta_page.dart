@@ -94,9 +94,11 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                           value: key,
                           mapToDeleteSuccessfully: (value) {
                             final oldEntry = widget.model;
-                            Set<String> oldFlags = Set.of(oldEntry.flags ?? {});
+                            Set<String> oldFlags =
+                                Set.of(oldEntry.flags ?? {});
                             oldFlags.remove(key);
-                            final newEntry = oldEntry.copyWith(flags: oldFlags);
+                            final newEntry =
+                                oldEntry.copyWith(flags: oldFlags);
                             setState(
                               () {
                                 StoreProvider.dispatch(context,
@@ -119,7 +121,8 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                       if (widget.model.enchantments != null &&
                           !canAdd(widget.model)) {
                         return AbortAddDialog(
-                            title: context.l10n.dialog_abort_enchantment_title,
+                            title:
+                                context.l10n.dialog_abort_enchantment_title,
                             content: context.l10n.dialog_abort_enchantments);
                       }
                       final oldEntry = widget.model;
@@ -134,11 +137,11 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                           return null;
                         },
                         addEnchantmentCallback: (selected, level) {
-                          final oldEnchantments =
-                              Map<String, int>.of(oldEntry.enchantments ?? {});
+                          final oldEnchantments = Map<String, int>.of(
+                              oldEntry.enchantments ?? {});
                           oldEnchantments[selected.minecraftValue] = level;
-                          final newEntry =
-                              oldEntry.copyWith(enchantments: oldEnchantments);
+                          final newEntry = oldEntry.copyWith(
+                              enchantments: oldEnchantments);
                           setState(
                             () {
                               Navigator.pop(context);
@@ -179,11 +182,11 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                         },
                         delete: (ItemModel? value) {
                           final oldEntry = widget.model;
-                          final oldEnchantments =
-                              Map<String, int>.of(oldEntry.enchantments ?? {});
+                          final oldEnchantments = Map<String, int>.of(
+                              oldEntry.enchantments ?? {});
                           oldEnchantments.remove(key);
-                          final newEntry =
-                              oldEntry.copyWith(enchantments: oldEnchantments);
+                          final newEntry = oldEntry.copyWith(
+                              enchantments: oldEnchantments);
                           setState(
                             () {
                               StoreProvider.dispatch(context,
@@ -197,11 +200,11 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                           final oldEnchantments = Map<String, int>.from(
                               oldEntry.enchantments ?? {});
                           oldEnchantments[value!] = int.parse(key!);
-                          final newEntry =
-                              oldEntry.copyWith(enchantments: oldEnchantments);
+                          final newEntry = oldEntry.copyWith(
+                              enchantments: oldEnchantments);
                           setState(() {
-                            StoreProvider.dispatch(
-                                context, UpdateItemAction(oldEntry, newEntry));
+                            StoreProvider.dispatch(context,
+                                UpdateItemAction(oldEntry, newEntry));
                             widget.selectedItem.value = newEntry;
                           });
                         },
@@ -223,7 +226,8 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                             List<String> oldLores =
                                 List.of(oldEntry.lore ?? []);
                             oldLores.add(value);
-                            final newEntry = oldEntry.copyWith(lore: oldLores);
+                            final newEntry =
+                                oldEntry.copyWith(lore: oldLores);
                             setState(() {
                               StoreProvider.dispatch(context,
                                   UpdateItemAction(oldEntry, newEntry));
@@ -267,7 +271,8 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                             List<String> oldLores =
                                 List.of(oldEntry.lore ?? []);
                             oldLores.remove(key);
-                            final newEntry = oldEntry.copyWith(lore: oldLores);
+                            final newEntry =
+                                oldEntry.copyWith(lore: oldLores);
                             setState(() {
                               StoreProvider.dispatch(context,
                                   UpdateItemAction(oldEntry, newEntry));
@@ -281,7 +286,8 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                             int index = oldLores.indexWhere(
                                 (element) => identical(element, value));
                             oldLores[index] = key!;
-                            final newEntry = oldEntry.copyWith(lore: oldLores);
+                            final newEntry =
+                                oldEntry.copyWith(lore: oldLores);
                             setState(() {
                               StoreProvider.dispatch(context,
                                   UpdateItemAction(oldEntry, newEntry));

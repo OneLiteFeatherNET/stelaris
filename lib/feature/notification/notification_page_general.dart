@@ -37,8 +37,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
           child: Wrap(
             children: [
               TextInputCard<String>(
-                  title: Text(context.l10n.card_name),
-                  infoText: context.l10n.tooltip_name,
+                  display: context.l10n.card_name,
                   currentValue: widget.model.name ?? emptyString,
                   formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                   valueUpdate: (value) {
@@ -59,9 +58,9 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                   },
               ),
               TextInputCard<String>(
-                title: Text(context.l10n.card_material),
+                display: context.l10n.card_material,
                 currentValue: widget.model.material ?? emptyString,
-                infoText: context.l10n.tooltip_material,
+                hintText: 'minecraft:stone',
                 valueUpdate: (value) {
                   if (value == widget.model.material) return;
                   final oldModel = widget.model;
@@ -79,11 +78,11 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                   }
                   return null;
                 },
+                maxLength: 30,
               ),
               TextInputCard<String>(
-                  title: Text(context.l10n.card_title),
+                  display: context.l10n.card_title,
                   currentValue: widget.model.title ?? emptyString,
-                  infoText: context.l10n.tooltip_title,
                   valueUpdate: (value) {
                     if (value == widget.model.title) return;
                     final oldModel = widget.model;
@@ -95,9 +94,8 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                     });
                   }),
               TextInputCard<String>(
-                  title: Text(context.l10n.card_description),
+                  display: context.l10n.card_description,
                   currentValue: widget.model.description ?? emptyString,
-                  infoText: context.l10n.tooltip_description,
                   valueUpdate: (value) {
                     if (value == widget.model.description) return;
                     final oldModel = widget.model;
@@ -108,10 +106,9 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                       widget.selectedItem.value = newEntry;
                     });
                   }),
-              DropDownCard<FrameType, NotificationModel>(
+              DropdownCard<FrameType, NotificationModel>(
                 currentValue: widget.model,
-                title: Text(context.l10n.card_frame_type,
-                    textAlign: TextAlign.center),
+                display: context.l10n.card_frame_type,
                 items: getItems(),
                 valueUpdate: (FrameType? value) {
                   if (value == getDefaultValue(widget.model)) return;

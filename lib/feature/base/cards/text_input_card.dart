@@ -1,77 +1,84 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stelaris_ui/feature/base/base_card.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
-import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
-class TextInputCard<E> extends StatelessWidget with BaseLayout {
-  final Text title;
-  final ValueUpdate<dynamic> valueUpdate;
+class TextInputCard<E> extends StatefulWidget {
+  final String display;
+  final ValueUpdate<E> valueUpdate;
   final String currentValue;
   final TextInputType? inputType;
+  final int maxLength;
+  final bool isNumber;
+  final String? tooltipMessage;
+  final String? hintText;
   final List<TextInputFormatter>? formatter;
-  final TextEditingController _editController = TextEditingController();
-  final IconData? infoIcon;
-  final String infoText;
   final FormFieldValidator? formValidator;
 
-  TextInputCard(
-      {super.key,
-      required this.title,
-      required this.currentValue,
-      required this.valueUpdate,
-      this.inputType,
-      this.formatter,
-      this.infoIcon,
-      required this.infoText,
-      this.formValidator});
+  const TextInputCard({
+    super.key,
+    required this.display,
+    required this.valueUpdate,
+    required this.currentValue,
+    this.tooltipMessage,
+    this.hintText,
+    this.inputType,
+    this.formatter,
+    this.formValidator,
+    this.maxLength = 30,
+    this.isNumber = false,
+  });
+
+  @override
+  State<TextInputCard> createState() => _TextInputCardState();
+}
+
+class _TextInputCardState extends State<TextInputCard> {
+  final TextEditingController _editController = TextEditingController();
+
+  @override
+  initState() {
+    super.initState();
+    _editController.text = widget.currentValue;
+  }
 
   @override
   Widget build(BuildContext context) {
-    _editController.text = currentValue;
     return Padding(
       padding: padding,
-      child: constructContainer([
-        SizedBox(
-          width: 300,
-          height: 25,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                margin: horizontalPadding,
-                child: title,
-              ),
-              Tooltip(
-                message: infoText,
-                child: Icon(infoIcon ?? Icons.info),
-              ),
-            ],
-          ),
-        ),
-        spaceBox,
-        SizedBox(
-          width: 300,
-          height: 100,
-          child: Focus(
-            child: TextFormField(
-                autovalidateMode: formValidator != null
+      child: BaseCard(
+        display: widget.display,
+        message: widget.tooltipMessage,
+        widget: Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Focus(
+              child: TextFormField(
+                maxLength: widget.maxLength,
+                autovalidateMode: widget.formValidator != null
                     ? AutovalidateMode.onUserInteraction
                     : AutovalidateMode.disabled,
                 autocorrect: false,
                 controller: _editController,
-                keyboardType: inputType,
-                inputFormatters: formatter,
-                validator: formValidator
+                keyboardType: widget.inputType,
+                inputFormatters: widget.formatter,
+                validator: widget.formValidator,
+                decoration: InputDecoration(
+                  hintText: widget.hintText,
+                ),
+                textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
+              ),
+              onFocusChange: (focus) {
+                if (!focus && _editController.value.text.trim().isNotEmpty) {
+                  widget.valueUpdate(_editController.value.text);
+                }
+              },
             ),
-            onFocusChange: (focus) {
-              if (!focus && _editController.value.text.trim().isNotEmpty) {
-                valueUpdate(_editController.value.text);
-              }
-            },
           ),
-        )
-      ]),
+        ),
+      ),
     );
   }
 }

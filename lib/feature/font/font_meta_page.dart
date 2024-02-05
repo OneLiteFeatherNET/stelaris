@@ -32,7 +32,7 @@ class _FontMetaPageState extends State<FontMetaPage> {
             clipBehavior: Clip.hardEdge,
             children: [
               ExpandableDataCard(
-                title: const Text("Chars"),
+                title: Text(context.l10n.card_chars),
                 buttonClick: () {
                   showDialog(
                     context: context,
@@ -132,7 +132,7 @@ class _FontMetaPageState extends State<FontMetaPage> {
                       ),
                     );
                   },
-                ),
+                )
               ),
             ],
           ),

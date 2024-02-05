@@ -39,8 +39,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
           child: Wrap(
             children: [
               TextInputCard<String>(
-                infoText: context.l10n.tooltip_name,
-                title: Text(context.l10n.card_name),
+                display: context.l10n.card_name,
                 currentValue: widget.model.name ?? emptyString,
                 formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                 valueUpdate: (value) {
@@ -63,8 +62,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                 },
               ),
               TextInputCard<String>(
-                infoText: context.l10n.tooltip_description,
-                title: Text(context.l10n.card_description),
+                display: context.l10n.card_description,
                 currentValue: widget.model.description ?? emptyString,
                 formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                 valueUpdate: (value) {
@@ -78,14 +76,15 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                   });
                 },
               ),
-              TextInputCard<String>(
-                infoText: context.l10n.tooltip_ascent,
-                title: Text(context.l10n.card_ascent),
+              TextInputCard<int>(
+                isNumber: true,
+                tooltipMessage: context.l10n.tooltip_ascent,
+                display: context.l10n.card_ascent,
                 currentValue: widget.model.ascent?.toString() ?? zeroString,
                 valueUpdate: (value) {
                   if (value == widget.model.ascent) return;
                   final oldModel = widget.model;
-                  final newAscent = int.parse(value);
+                  final newAscent = value ?? 0;
                   final newEntry = oldModel.copyWith(ascent: newAscent);
                   setState(() {
                     StoreProvider.dispatch(
@@ -96,14 +95,15 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                 inputType: numberInput,
                 formatter: [FilteringTextInputFormatter.allow(numberPattern)],
               ),
-              TextInputCard(
-                infoText: context.l10n.tooltip_height,
-                title: Text(context.l10n.card_height),
+              TextInputCard<int>(
+                isNumber: true,
+                tooltipMessage: context.l10n.tooltip_height,
+                display: context.l10n.card_height,
                 currentValue: widget.model.height?.toString() ?? zeroString,
                 valueUpdate: (value) {
                   if (value == widget.model.height) return;
                   final oldModel = widget.model;
-                  final newHeight = int.tryParse(value);
+                  final newHeight = value ?? 0;
                   final newEntry = oldModel.copyWith(height: newHeight);
                   setState(() {
                     StoreProvider.dispatch(
