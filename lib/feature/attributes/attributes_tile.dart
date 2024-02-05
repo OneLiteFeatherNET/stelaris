@@ -4,8 +4,7 @@ import 'package:stelaris_ui/api/model/attribute_model.dart';
 import 'package:stelaris_ui/api/state/actions/attribute_actions.dart';
 import 'package:stelaris_ui/feature/base/button/delete_entry_button.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
-
-import '../../util/constants.dart';
+import 'package:stelaris_ui/util/constants.dart';
 
 typedef UpdateModel = AttributeModel Function();
 
@@ -19,7 +18,6 @@ class AttributesTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: EdgeInsets.zero,
       title: Text(attributeModel.modelName ?? emptyString),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
