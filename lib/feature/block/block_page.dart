@@ -92,51 +92,48 @@ class BlockPageState extends State<BlockPage> with BaseLayout {
       return nil;
     }
 
-    return Stack(
-      children: [
-        Wrap(
-          children: [
-            TextInputCard<String>(
-              title: Text(context.l10n.card_name),
-              currentValue: model.name ?? "",
-              infoText: context.l10n.tooltip_name,
-              formatter: [FilteringTextInputFormatter.allow(stringPattern)],
-              valueUpdate: (value) {
-                if (value == model.name) return;
-                final oldModel = model;
-                final newEntry = oldModel.copyWith(name: value);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateBlockAction(oldModel, newEntry));
-                  selectedItem.value = newEntry;
-                });
-              },
-            ),
-            TextInputCard<String>(
-              title: Text(context.l10n.card_model_data),
-              infoText: context.l10n.tooltip_model_data,
-              currentValue: model.customModelId.toString(),
-              formatter: [FilteringTextInputFormatter.allow(numberPattern)],
-              valueUpdate: (value) {
-                if (value == model.customModelId) return;
-                final oldModel = model;
-                final newID = int.parse(value);
-                final newEntry = oldModel.copyWith(customModelId: newID);
-                setState(() {
-                  StoreProvider.dispatch(
-                      context, UpdateBlockAction(oldModel, newEntry));
-                  selectedItem.value = newEntry;
-                });
-              },
-            ),
-          ],
-        ),
-        SaveButton(
-          callback: () {
-            ApiService().blockAPI.update(model);
-          },
-        )
-      ],
-    );
+    return Stack(children: [
+      Wrap(
+        children: [
+          TextInputCard<String>(
+            display: context.l10n.card_name,
+            currentValue: model.name ?? "",
+            tooltipMessage: context.l10n.tooltip_name,
+            formatter: [FilteringTextInputFormatter.allow(stringPattern)],
+            valueUpdate: (value) {
+              if (value == model.name) return;
+              final oldModel = model;
+              final newEntry = oldModel.copyWith(name: value);
+              setState(() {
+                StoreProvider.dispatch(
+                    context, UpdateBlockAction(oldModel, newEntry));
+                selectedItem.value = newEntry;
+              });
+            },
+          ),
+          TextInputCard<int>(
+            display: context.l10n.card_model_data,
+            tooltipMessage: context.l10n.tooltip_model_data,
+            currentValue: model.customModelId.toString(),
+            formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+            valueUpdate: (value) {
+              if (value == model.customModelId) return;
+              final oldModel = model;
+              final newID = value ?? 0;
+              final newEntry = oldModel.copyWith(customModelId: newID);
+              setState(() {
+                StoreProvider.dispatch(
+                    context, UpdateBlockAction(oldModel, newEntry));
+                selectedItem.value = newEntry;
+              });
+            },
+          ),
+        ],
+      ),
+      SaveButton(
+        callback: ApiService().blockAPI.update,
+        parameter: model,
+      ),
+    ]);
   }
 }

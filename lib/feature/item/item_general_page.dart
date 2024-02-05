@@ -6,9 +6,7 @@ import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
-import 'package:stelaris_ui/feature/base/cards/dropdown_card_v2.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
-import 'package:stelaris_ui/feature/base/cards/text_input_card_v2.dart';
 import 'package:stelaris_ui/feature/item/enchantment_reducer.dart';
 import 'package:stelaris_ui/feature/item/item_group.dart';
 import 'package:stelaris_ui/feature/item/item_group_change_dialog.dart';
@@ -54,7 +52,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
           key: _key,
           child: Wrap(
             children: [
-              TextInputCard2<String>(
+              TextInputCard<String>(
                 display: context.l10n.card_name,
                 tooltipMessage: context.l10n.tooltip_name,
                 currentValue: widget.model.name ?? emptyString,
@@ -79,7 +77,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                 },
                 maxLength: 30,
               ),
-              TextInputCard2<String>(
+              TextInputCard<String>(
                 display: context.l10n.card_description,
                 currentValue: widget.model.description ?? emptyString,
                 valueUpdate: (value) {
@@ -94,7 +92,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                 },
                 maxLength: 30,
               ),
-              DropdownCardV2<ItemGroup, ItemModel>(
+              DropdownCard<ItemGroup, ItemModel>(
                 display: context.l10n.card_group,
                 currentValue: widget.model,
                 formKey: _groupKey,
@@ -158,7 +156,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                 },
                 defaultValue: getDefaultValue,
               ),
-              TextInputCard2<String>(
+              TextInputCard<String>(
                 display: context.l10n.card_material,
                 hintText: 'minecraft:stone',
                 currentValue: widget.model.material ?? emptyString,
@@ -181,7 +179,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                 },
                 maxLength: 30,
               ),
-              TextInputCard2<String>(
+              TextInputCard<String>(
                 tooltipMessage: context.l10n.tooltip_displayname,
                 display: context.l10n.card_display_name,
                 currentValue: widget.model.displayName ?? emptyString,
@@ -197,7 +195,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                 },
                 maxLength: 30,
               ),
-              TextInputCard2<int>(
+              TextInputCard<int>(
                 tooltipMessage: context.l10n.tooltip_model_data,
                 display:context.l10n.card_model_data,
                 currentValue:
@@ -218,7 +216,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
                 formatter: [FilteringTextInputFormatter.allow(numberPattern)],
                 isNumber: true,
               ),
-              TextInputCard2<int>(
+              TextInputCard<int>(
                 display: context.l10n.card_amount,
                 currentValue: widget.model.amount?.toString() ?? zeroString,
                 valueUpdate: (value) {
