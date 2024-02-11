@@ -3,6 +3,31 @@ import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 
+class SelectedItemAction extends ReduxAction<AppState> {
+
+  final ItemModel model;
+
+  SelectedItemAction(this.model);
+
+  @override
+  AppState reduce() {
+    return state.copyWith(selectedItem: model);
+  }
+}
+
+class RemoveSelectItemAction extends ReduxAction<AppState> {
+
+  final ItemModel model;
+
+  RemoveSelectItemAction(this.model);
+
+  @override
+  AppState? reduce() {
+    if (state.selectedItem == null) return null;
+    return state.copyWith(selectedItem: null);
+  }
+}
+
 class UpdateItemAction extends ReduxAction<AppState> {
   final ItemModel oldEntry;
   final ItemModel newEntry;
@@ -12,9 +37,10 @@ class UpdateItemAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final items = List.of(state.items, growable: true);
-    items.removeAt(items.indexWhere((element) => element.id == oldEntry.id));
-    items.add(newEntry);
-    return state.copyWith(items: items);
+    int index = items.indexWhere((element) => element.id == oldEntry.id);
+    items.removeAt(index);
+    items.insert(index, newEntry);
+    return state.copyWith(items: items, selectedItem: newEntry);
   }
 }
 
@@ -23,6 +49,7 @@ class InitItemAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     var items = await ApiService().itemApi.getAll();
+    if (items.isEmpty) return null;
     return state.copyWith(items: items);
   }
 
@@ -37,9 +64,9 @@ class AddItemAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    await ApiService().itemApi.add(_model);
+    var added = await ApiService().itemApi.add(_model);
     var items = await ApiService().itemApi.getAll();
-    return state.copyWith(items: items);
+    return state.copyWith(items: items, selectedItem: added);
   }
 }
 
@@ -54,6 +81,6 @@ class RemoveItemAction extends ReduxAction<AppState> {
   Future<AppState?> reduce() async {
     await ApiService().itemApi.remove(model);
     var items = await ApiService().itemApi.getAll();
-    return state.copyWith(items: items);
+    return state.copyWith(items: items, selectedItem: null);
   }
 }

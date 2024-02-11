@@ -7,7 +7,7 @@ class UpdateNavigationAction extends ReduxAction<AppState> {
   UpdateNavigationAction(this.openNavigation);
 
   @override
-  Future<AppState?> reduce() async {
+  Future<AppState> reduce() async {
     return state.copyWith(openNavigation: openNavigation);
   }
 }

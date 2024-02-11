@@ -11,19 +11,13 @@ import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
-class NotificationGeneralPage extends StatefulWidget {
+class NotificationGeneralPage extends StatelessWidget {
   final NotificationModel model;
-  final ValueNotifier<NotificationModel?> selectedItem;
 
-  const NotificationGeneralPage(
-      {super.key, required this.model, required this.selectedItem});
-
-  @override
-  State<NotificationGeneralPage> createState() =>
-      _NotificationGeneralPageState();
-}
-
-class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
+  NotificationGeneralPage({
+    super.key,
+    required this.model,
+  });
 
   final _key = GlobalKey<FormState>();
 
@@ -37,39 +31,33 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
           child: Wrap(
             children: [
               TextInputCard<String>(
-                  display: context.l10n.card_name,
-                  currentValue: widget.model.name ?? emptyString,
-                  formatter: [FilteringTextInputFormatter.allow(stringPattern)],
-                  valueUpdate: (value) {
-                    if (value == widget.model.name) return;
-                    final oldModel = widget.model;
-                    final newEntry = oldModel.copyWith(name: value);
-                    setState(() {
-                      StoreProvider.dispatch(
-                          context, UpdateNotificationAction(oldModel, newEntry));
-                      widget.selectedItem.value = newEntry;
-                    });
-                  },
-                  formValidator: (value) {
-                    if (value.trim().isEmpty) {
-                      return context.l10n.error_card_empty;
-                    }
-                    return null;
-                  },
+                display: context.l10n.card_name,
+                currentValue: model.name ?? emptyString,
+                formatter: [FilteringTextInputFormatter.allow(stringPattern)],
+                valueUpdate: (value) {
+                  if (value == model.name) return;
+                  final oldModel = model;
+                  final newEntry = oldModel.copyWith(name: value);
+                  StoreProvider.dispatch(
+                      context, UpdateNotificationAction(oldModel, newEntry));
+                },
+                formValidator: (value) {
+                  if (value.trim().isEmpty) {
+                    return context.l10n.error_card_empty;
+                  }
+                  return null;
+                },
               ),
               TextInputCard<String>(
                 display: context.l10n.card_material,
-                currentValue: widget.model.material ?? emptyString,
+                currentValue: model.material ?? emptyString,
                 hintText: 'minecraft:stone',
                 valueUpdate: (value) {
-                  if (value == widget.model.material) return;
-                  final oldModel = widget.model;
+                  if (value == model.material) return;
+                  final oldModel = model;
                   final newEntry = oldModel.copyWith(material: value);
-                  setState(() {
-                    StoreProvider.dispatch(
-                        context, UpdateNotificationAction(oldModel, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
+                  StoreProvider.dispatch(
+                      context, UpdateNotificationAction(oldModel, newEntry));
                 },
                 formValidator: (value) {
                   if (value == null) return null;
@@ -82,42 +70,33 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
               ),
               TextInputCard<String>(
                   display: context.l10n.card_title,
-                  currentValue: widget.model.title ?? emptyString,
+                  currentValue: model.title ?? emptyString,
                   valueUpdate: (value) {
-                    if (value == widget.model.title) return;
-                    final oldModel = widget.model;
+                    if (value == model.title) return;
+                    final oldModel = model;
                     final newEntry = oldModel.copyWith(title: value);
-                    setState(() {
-                      StoreProvider.dispatch(
-                          context, UpdateNotificationAction(oldModel, newEntry));
-                      widget.selectedItem.value = newEntry;
-                    });
+                    StoreProvider.dispatch(
+                        context, UpdateNotificationAction(oldModel, newEntry));
                   }),
               TextInputCard<String>(
                   display: context.l10n.card_description,
-                  currentValue: widget.model.description ?? emptyString,
+                  currentValue: model.description ?? emptyString,
                   valueUpdate: (value) {
-                    if (value == widget.model.description) return;
-                    final oldModel = widget.model;
+                    if (value == model.description) return;
+                    final oldModel = model;
                     final newEntry = oldModel.copyWith(description: value);
-                    setState(() {
-                      StoreProvider.dispatch(
-                          context, UpdateNotificationAction(oldModel, newEntry));
-                      widget.selectedItem.value = newEntry;
-                    });
+                    StoreProvider.dispatch(
+                        context, UpdateNotificationAction(oldModel, newEntry));
                   }),
               DropdownCard<FrameType, NotificationModel>(
-                currentValue: widget.model,
+                currentValue: model,
                 display: context.l10n.card_frame_type,
                 items: getItems(),
                 valueUpdate: (FrameType? value) {
-                  if (value == getDefaultValue(widget.model)) return;
-                  final newEntry = widget.model.copyWith(frameType: value?.value);
-                  setState(() {
-                    StoreProvider.dispatch(context,
-                        UpdateNotificationAction(widget.model, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
+                  if (value == getDefaultValue(model)) return;
+                  final newEntry = model.copyWith(frameType: value?.value);
+                  StoreProvider.dispatch(
+                      context, UpdateNotificationAction(model, newEntry));
                 },
                 defaultValue: getDefaultValue,
               ),
@@ -127,7 +106,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
         SaveButton(
           callback: () {
             if (!_key.currentState!.validate()) return;
-            ApiService().notificationAPI.update(widget.model);
+            ApiService().notificationAPI.update(model);
           },
         ),
       ],
