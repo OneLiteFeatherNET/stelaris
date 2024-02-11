@@ -3,11 +3,37 @@ import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/attribute_model.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 
+class SelectAttributeAction extends ReduxAction<AppState> {
+
+  final AttributeModel model;
+
+  SelectAttributeAction(this.model);
+
+  @override
+  AppState reduce() {
+    return state.copyWith(selectedAttribute: model);
+  }
+}
+
+class RemoveSelectAttributeAction extends ReduxAction<AppState> {
+
+  final AttributeModel model;
+
+  RemoveSelectAttributeAction(this.model);
+
+  @override
+  AppState? reduce() {
+    if (state.selectedAttribute == null) return null;
+    return state.copyWith(selectedAttribute: model);
+  }
+}
+
 class InitAttributeListAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
     List<AttributeModel> attributes = await ApiService().attributesAPI.getAll();
+    if (attributes.isEmpty) return null;
     return state.copyWith(attributes: attributes);
   }
 }

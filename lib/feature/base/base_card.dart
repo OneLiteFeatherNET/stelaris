@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class BaseCard extends StatelessWidget {
@@ -30,7 +29,7 @@ class BaseCard extends StatelessWidget {
                 trailing: _getToolTip()
               ),
             ),
-            spaceBox,
+            heightTen,
             widget
           ],
         ),

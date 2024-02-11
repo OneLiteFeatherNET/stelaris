@@ -5,18 +5,17 @@ import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/model/attribute_model.dart';
 import 'package:stelaris_ui/api/state/actions/attribute_actions.dart';
 import 'package:stelaris_ui/feature/attributes/attribute_row.dart';
-import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_header.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
-class AttributesEntry extends StatelessWidget with BaseLayout {
+class AttributesEntry extends StatelessWidget {
   final AttributeModel attributeModel;
 
   const AttributesEntry({super.key, required this.attributeModel});
 
   @override
   Widget build(BuildContext context) {
-    var nameController = TextEditingController(text: attributeModel.name ?? "");
+    var nameController = TextEditingController(text: attributeModel.name ?? emptyString);
     var defaultController =
         TextEditingController(text: "${attributeModel.defaultValue}");
     var maxValueController =

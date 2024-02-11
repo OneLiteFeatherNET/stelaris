@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris_ui/feature/base/base_card.dart';
-import 'package:stelaris_ui/feature/base/base_layout.dart';
+import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
 class TextInputCard<E> extends StatefulWidget {
   final String display;
-  final ValueUpdate<E> valueUpdate;
+  final void Function(dynamic value) valueUpdate;
   final String currentValue;
   final TextInputType? inputType;
   final int maxLength;
@@ -41,6 +41,7 @@ class _TextInputCardState extends State<TextInputCard> {
   initState() {
     super.initState();
     _editController.text = widget.currentValue;
+    print('initState: ${widget.currentValue}');
   }
 
   @override

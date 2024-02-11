@@ -19,25 +19,17 @@ import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/feature/item/item_reducer.dart';
 
-class ItemMetaPage extends StatefulWidget with DropDownItemReducer {
+class ItemMetaPage extends StatelessWidget
+    with EnchantmentReducer, DropDownItemReducer {
   final ItemModel model;
-  final ValueNotifier<ItemModel?> selectedItem;
 
-  const ItemMetaPage({
+  ItemMetaPage({
     required this.model,
-    required this.selectedItem,
-    super.key,
   });
 
   @override
-  State<ItemMetaPage> createState() => _ItemMetaPageState();
-}
-
-class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
-  @override
   Widget build(BuildContext context) {
-    final List<String> flags =
-        widget.model.flags == null ? [] : widget.model.flags!.toList();
+    final List<String> flags = model.flags == null ? [] : model.flags!.toList();
     return Stack(
       children: [
         SingleChildScrollView(
@@ -58,18 +50,16 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                       return EnumAddDialog<ItemFlag>(
                           title: Text(context.l10n.enum_dialog_flags,
                               textAlign: TextAlign.center),
-                          items: widget.reduceFlags(widget.model),
+                          items: reduceFlags(model),
                           valueUpdate: (value) {
-                            final oldEntry = widget.model;
+                            final oldEntry = model;
                             Set<String> flags = Set.of(oldEntry.flags ?? {});
                             flags.add(value!.minestomValue);
                             final newEntry = oldEntry.copyWith(flags: flags);
-                            setState(() {
-                              StoreProvider.dispatch(context,
-                                  UpdateItemAction(oldEntry, newEntry));
-                              Navigator.pop(context);
-                              widget.selectedItem.value = newEntry;
-                            });
+                            StoreProvider.dispatch(
+                                context, UpdateItemAction(oldEntry, newEntry));
+                            Navigator.pop(context);
+                            //widget.selectedItem.value = newEntry;
                           });
                     },
                   );
@@ -93,19 +83,13 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                           ],
                           value: key,
                           mapToDeleteSuccessfully: (value) {
-                            final oldEntry = widget.model;
-                            Set<String> oldFlags =
-                                Set.of(oldEntry.flags ?? {});
+                            final oldEntry = model;
+                            Set<String> oldFlags = Set.of(oldEntry.flags ?? {});
                             oldFlags.remove(key);
-                            final newEntry =
-                                oldEntry.copyWith(flags: oldFlags);
-                            setState(
-                              () {
-                                StoreProvider.dispatch(context,
-                                    UpdateItemAction(oldEntry, newEntry));
-                                widget.selectedItem.value = newEntry;
-                              },
-                            );
+                            final newEntry = oldEntry.copyWith(flags: oldFlags);
+                            StoreProvider.dispatch(
+                                context, UpdateItemAction(oldEntry, newEntry));
+                            //widget.selectedItem.value = newEntry;
                             return true;
                           },
                         ));
@@ -118,16 +102,14 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      if (widget.model.enchantments != null &&
-                          !canAdd(widget.model)) {
+                      if (model.enchantments != null && !canAdd(model)) {
                         return AbortAddDialog(
-                            title:
-                                context.l10n.dialog_abort_enchantment_title,
+                            title: context.l10n.dialog_abort_enchantment_title,
                             content: context.l10n.dialog_abort_enchantments);
                       }
-                      final oldEntry = widget.model;
+                      final oldEntry = model;
                       return ItemEnchantmentAddDialog(
-                        model: widget.model,
+                        model: model,
                         formFieldValidator: (value) {
                           var input = value as String;
 
@@ -137,36 +119,30 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                           return null;
                         },
                         addEnchantmentCallback: (selected, level) {
-                          final oldEnchantments = Map<String, int>.of(
-                              oldEntry.enchantments ?? {});
+                          final oldEnchantments =
+                              Map<String, int>.of(oldEntry.enchantments ?? {});
                           oldEnchantments[selected.minecraftValue] = level;
-                          final newEntry = oldEntry.copyWith(
-                              enchantments: oldEnchantments);
-                          setState(
-                            () {
-                              Navigator.pop(context);
-                              StoreProvider.dispatch(context,
-                                  UpdateItemAction(oldEntry, newEntry));
-                              widget.selectedItem.value = newEntry;
-                            },
-                          );
+                          final newEntry =
+                              oldEntry.copyWith(enchantments: oldEnchantments);
+                          Navigator.pop(context);
+                          StoreProvider.dispatch(
+                              context, UpdateItemAction(oldEntry, newEntry));
+                          //widget.selectedItem.value = newEntry;
                         },
                       );
                     },
                   );
                 },
                 widgets: List<Widget>.generate(
-                  widget.model.enchantments?.length ?? 0,
+                  model.enchantments?.length ?? 0,
                   (index) {
-                    final key =
-                        widget.model.enchantments?.keys.elementAt(index);
-                    final value =
-                        widget.model.enchantments?.values.elementAt(index);
+                    final key = model.enchantments?.keys.elementAt(index);
+                    final value = model.enchantments?.values.elementAt(index);
                     return ListTile(
                       title: Text("$key, Level: $value"),
                       trailing: EntryButtons(
                         editTitle: context.l10n.dialog_level_title,
-                        model: widget.model,
+                        model: model,
                         name: key,
                         value: value.toString(),
                         inputFormatters: [
@@ -181,32 +157,26 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                           return null;
                         },
                         delete: (ItemModel? value) {
-                          final oldEntry = widget.model;
-                          final oldEnchantments = Map<String, int>.of(
-                              oldEntry.enchantments ?? {});
+                          final oldEntry = model;
+                          final oldEnchantments =
+                              Map<String, int>.of(oldEntry.enchantments ?? {});
                           oldEnchantments.remove(key);
-                          final newEntry = oldEntry.copyWith(
-                              enchantments: oldEnchantments);
-                          setState(
-                            () {
-                              StoreProvider.dispatch(context,
-                                  UpdateItemAction(oldEntry, newEntry));
-                              widget.selectedItem.value = newEntry;
-                            },
-                          );
+                          final newEntry =
+                              oldEntry.copyWith(enchantments: oldEnchantments);
+                          StoreProvider.dispatch(
+                              context, UpdateItemAction(oldEntry, newEntry));
+                          //widget.selectedItem.value = newEntry;
                         },
                         update: (value, key) {
-                          final oldEntry = widget.model;
+                          final oldEntry = model;
                           final oldEnchantments = Map<String, int>.from(
                               oldEntry.enchantments ?? {});
                           oldEnchantments[value!] = int.parse(key!);
-                          final newEntry = oldEntry.copyWith(
-                              enchantments: oldEnchantments);
-                          setState(() {
-                            StoreProvider.dispatch(context,
-                                UpdateItemAction(oldEntry, newEntry));
-                            widget.selectedItem.value = newEntry;
-                          });
+                          final newEntry =
+                              oldEntry.copyWith(enchantments: oldEnchantments);
+                          StoreProvider.dispatch(
+                              context, UpdateItemAction(oldEntry, newEntry));
+                          //widget.selectedItem.value = newEntry;
                         },
                       ),
                     );
@@ -222,18 +192,15 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                       return EntryAddDialog(
                           controller: TextEditingController(),
                           valueUpdate: ((value) {
-                            final oldEntry = widget.model;
+                            final oldEntry = model;
                             List<String> oldLores =
                                 List.of(oldEntry.lore ?? []);
                             oldLores.add(value);
-                            final newEntry =
-                                oldEntry.copyWith(lore: oldLores);
-                            setState(() {
-                              StoreProvider.dispatch(context,
-                                  UpdateItemAction(oldEntry, newEntry));
-                              Navigator.pop(context);
-                              widget.selectedItem.value = newEntry;
-                            });
+                            final newEntry = oldEntry.copyWith(lore: oldLores);
+                            StoreProvider.dispatch(
+                                context, UpdateItemAction(oldEntry, newEntry));
+                            Navigator.pop(context);
+                            //widget.selectedItem.value = newEntry;
                           }),
                           formFieldValidator: (value) {
                             var input = value as String;
@@ -248,62 +215,57 @@ class _ItemMetaPageState extends State<ItemMetaPage> with EnchantmentReducer {
                   );
                 },
                 widgets: List<Widget>.generate(
-                  widget.model.lore?.length ?? 0,
+                  model.lore?.length ?? 0,
                   (index) {
-                    final key = widget.model.lore?[index];
+                    final key = model.lore?[index];
                     return ListTile(
-                        title: Text(key!),
-                        trailing: EntryButtons(
-                          editTitle: context.l10n.dialog_lore_edit_title,
-                          model: widget.model,
-                          name: key,
-                          value: key,
-                          formFieldValidator: (value) {
-                            var input = value as String;
+                      title: Text(key!),
+                      trailing: EntryButtons(
+                        editTitle: context.l10n.dialog_lore_edit_title,
+                        model: model,
+                        name: key,
+                        value: key,
+                        formFieldValidator: (value) {
+                          var input = value as String;
 
-                            if (input.trim().isEmpty) {
-                              return context.l10n.error_card_empty;
-                            }
-                            return null;
-                          },
-                          delete: (ItemModel? value) {
-                            final oldEntry = widget.model;
-                            List<String> oldLores =
-                                List.of(oldEntry.lore ?? []);
-                            oldLores.remove(key);
-                            final newEntry =
-                                oldEntry.copyWith(lore: oldLores);
-                            setState(() {
-                              StoreProvider.dispatch(context,
-                                  UpdateItemAction(oldEntry, newEntry));
-                              widget.selectedItem.value = newEntry;
-                            });
-                          },
-                          update: (value, key) {
-                            final oldEntry = widget.model;
-                            List<String> oldLores =
-                                List.of(oldEntry.lore ?? []);
-                            int index = oldLores.indexWhere(
-                                (element) => identical(element, value));
-                            oldLores[index] = key!;
-                            final newEntry =
-                                oldEntry.copyWith(lore: oldLores);
-                            setState(() {
-                              StoreProvider.dispatch(context,
-                                  UpdateItemAction(oldEntry, newEntry));
-                              widget.selectedItem.value = newEntry;
-                            });
-                          },
-                        ));
+                          if (input.trim().isEmpty) {
+                            return context.l10n.error_card_empty;
+                          }
+                          return null;
+                        },
+                        delete: (ItemModel? value) {
+                          final oldEntry = model;
+                          List<String> oldLores = List.of(oldEntry.lore ?? []);
+                          oldLores.remove(key);
+                          final newEntry = oldEntry.copyWith(lore: oldLores);
+                          StoreProvider.dispatch(
+                              context, UpdateItemAction(oldEntry, newEntry));
+                          //widget.selectedItem.value = newEntry;
+                        },
+                        update: (value, key) {
+                          final oldEntry = model;
+                          List<String> oldLores = List.of(oldEntry.lore ?? []);
+                          int index = oldLores.indexWhere(
+                              (element) => identical(element, value));
+                          oldLores[index] = key!;
+                          final newEntry = oldEntry.copyWith(lore: oldLores);
+                          StoreProvider.dispatch(
+                              context, UpdateItemAction(oldEntry, newEntry));
+                          //widget.selectedItem.value = newEntry;
+                        },
+                      ),
+                    );
                   },
                 ),
               ),
             ],
           ),
         ),
-        SaveButton(callback: () {
-          ApiService().itemApi.update(widget.model);
-        })
+        SaveButton(
+          callback: () {
+            ApiService().itemApi.update(model);
+          },
+        )
       ],
     );
   }

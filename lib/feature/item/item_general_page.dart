@@ -24,23 +24,16 @@ List<DropdownMenuItem<ItemGroup>> getItems() {
           ));
 }
 
-class ItemGeneralPage extends StatefulWidget {
+class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
   final ItemModel model;
-  final ValueNotifier<ItemModel?> selectedItem;
 
-  const ItemGeneralPage({
+  ItemGeneralPage({
     required this.model,
-    required this.selectedItem,
     super.key,
   });
 
-  @override
-  State<ItemGeneralPage> createState() => _ItemGeneralPageState();
-}
-
-class _ItemGeneralPageState extends State<ItemGeneralPage>
-    with EnchantmentReducer {
   final _key = GlobalKey<FormState>();
+
   final _groupKey = GlobalKey<FormState>();
 
   @override
@@ -55,17 +48,15 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
               TextInputCard<String>(
                 display: context.l10n.card_name,
                 tooltipMessage: context.l10n.tooltip_name,
-                currentValue: widget.model.name ?? emptyString,
+                currentValue: model.name ?? emptyString,
                 formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                 valueUpdate: (value) {
-                  if (value == widget.model.name) return;
-                  final oldModel = widget.model;
+                  if (value == model.name) return;
+                  final oldModel = model;
                   final newEntry = oldModel.copyWith(name: value);
-                  setState(() {
-                    StoreProvider.dispatch(
-                        context, UpdateItemAction(oldModel, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
+                  StoreProvider.dispatch(
+                      context, UpdateItemAction(oldModel, newEntry));
+                  //widget.selectedItem.value = newEntry;
                 },
                 formValidator: (value) {
                   var input = value as String;
@@ -79,28 +70,26 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
               ),
               TextInputCard<String>(
                 display: context.l10n.card_description,
-                currentValue: widget.model.description ?? emptyString,
+                currentValue: model.description ?? emptyString,
                 valueUpdate: (value) {
-                  if (value == widget.model.description) return;
-                  final oldModel = widget.model;
+                  if (value == model.description) return;
+                  final oldModel = model;
                   final newEntry = oldModel.copyWith(description: value);
-                  setState(() {
-                    StoreProvider.dispatch(
-                        context, UpdateItemAction(oldModel, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
+                  StoreProvider.dispatch(
+                      context, UpdateItemAction(oldModel, newEntry));
+                  //widget.selectedItem.value = newEntry;
                 },
                 maxLength: 30,
               ),
               DropdownCard<ItemGroup, ItemModel>(
                 display: context.l10n.card_group,
-                currentValue: widget.model,
+                currentValue: model,
                 formKey: _groupKey,
                 items: getItems(),
                 valueUpdate: (ItemGroup? value) {
-                  if (identical(value!.display, widget.model.group)) return;
+                  if (identical(value!.display, model.group)) return;
 
-                  var list = getRemoveItems(widget.model, value);
+                  var list = getRemoveItems(model, value);
 
                   if (list.isNotEmpty) {
                     showDialog(
@@ -125,33 +114,29 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
 
                       if (result == true) {
                         final oldEnchantments =
-                            Map.of(widget.model.enchantments!);
+                            Map.of(model.enchantments!);
 
                         for (var enchantment in list) {
                           oldEnchantments.remove(enchantment);
                         }
-                        final newEntry = widget.model.copyWith(
+                        final newEntry = model.copyWith(
                             group: value.display,
                             enchantments: oldEnchantments);
-                        setState(() {
-                          StoreProvider.dispatch(context,
-                              UpdateItemAction(widget.model, newEntry));
-                          widget.selectedItem.value = newEntry;
-                        });
+                        StoreProvider.dispatch(
+                            context, UpdateItemAction(model, newEntry));
+                        //widget.selectedItem.value = newEntry;
                       } else {
                         _groupKey.currentState!.reset();
                       }
                     });
                   } else {
                     final newEntry =
-                        widget.model.copyWith(group: value.display);
-                    setState(() {
-                      StoreProvider.dispatch(
-                        context,
-                        UpdateItemAction(widget.model, newEntry),
-                      );
-                      widget.selectedItem.value = newEntry;
-                    });
+                        model.copyWith(group: value.display);
+                    StoreProvider.dispatch(
+                      context,
+                      UpdateItemAction(model, newEntry),
+                    );
+                    //widget.selectedItem.value = newEntry;
                   }
                 },
                 defaultValue: getDefaultValue,
@@ -159,16 +144,14 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
               TextInputCard<String>(
                 display: context.l10n.card_material,
                 hintText: 'minecraft:stone',
-                currentValue: widget.model.material ?? emptyString,
+                currentValue: model.material ?? emptyString,
                 valueUpdate: (value) {
-                  if (value == widget.model.material) return;
-                  final oldModel = widget.model;
+                  if (value == model.material) return;
+                  final oldModel = model;
                   final newEntry = oldModel.copyWith(material: value);
-                  setState(() {
-                    StoreProvider.dispatch(
-                        context, UpdateItemAction(oldModel, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
+                  StoreProvider.dispatch(
+                      context, UpdateItemAction(oldModel, newEntry));
+                  //widget.selectedItem.value = newEntry;
                 },
                 formValidator: (value) {
                   if (value == null) return null;
@@ -182,34 +165,30 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
               TextInputCard<String>(
                 tooltipMessage: context.l10n.tooltip_displayname,
                 display: context.l10n.card_display_name,
-                currentValue: widget.model.displayName ?? emptyString,
+                currentValue: model.displayName ?? emptyString,
                 valueUpdate: (value) {
-                  if (value == widget.model.displayName) return;
-                  final oldModel = widget.model;
+                  if (value == model.displayName) return;
+                  final oldModel = model;
                   final newEntry = oldModel.copyWith(displayName: value);
-                  setState(() {
                     StoreProvider.dispatch(
                         context, UpdateItemAction(oldModel, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
+                    //widget.selectedItem.value = newEntry;
                 },
                 maxLength: 30,
               ),
               TextInputCard<int>(
                 tooltipMessage: context.l10n.tooltip_model_data,
-                display:context.l10n.card_model_data,
+                display: context.l10n.card_model_data,
                 currentValue:
-                    widget.model.customModelId?.toString() ?? zeroString,
+                    model.customModelId?.toString() ?? zeroString,
                 valueUpdate: (value) {
-                  if (value == widget.model.customModelId) return;
-                  final oldModel = widget.model;
+                  if (value == model.customModelId) return;
+                  final oldModel = model;
                   final newID = value ?? 0;
                   final newEntry = oldModel.copyWith(customModelId: newID);
-                  setState(() {
-                    StoreProvider.dispatch(
-                        context, UpdateItemAction(oldModel, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
+                  StoreProvider.dispatch(
+                      context, UpdateItemAction(oldModel, newEntry));
+                  //widget.selectedItem.value = newEntry;
                 },
                 maxLength: 30,
                 inputType: numberInput,
@@ -218,17 +197,15 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
               ),
               TextInputCard<int>(
                 display: context.l10n.card_amount,
-                currentValue: widget.model.amount?.toString() ?? zeroString,
+                currentValue: model.amount?.toString() ?? zeroString,
                 valueUpdate: (value) {
-                  if (value == widget.model.amount) return;
-                  final oldModel = widget.model;
+                  if (value == model.amount) return;
+                  final oldModel = model;
                   final newAmount = value ?? 0;
                   final newEntry = oldModel.copyWith(amount: newAmount);
-                  setState(() {
-                    StoreProvider.dispatch(
-                        context, UpdateItemAction(oldModel, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
+                  StoreProvider.dispatch(
+                      context, UpdateItemAction(oldModel, newEntry));
+                  //widget.selectedItem.value = newEntry;
                 },
                 inputType: numberInput,
                 formatter: [FilteringTextInputFormatter.allow(numberPattern)],
@@ -252,7 +229,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage>
         ),
         SaveButton(callback: () {
           if (!_key.currentState!.validate()) return;
-          ApiService().itemApi.update(widget.model);
+          ApiService().itemApi.update(model);
         })
       ],
     );
