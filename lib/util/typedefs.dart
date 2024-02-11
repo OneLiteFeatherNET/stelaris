@@ -27,4 +27,4 @@ typedef MapToTabPages = List<Tab> Function(List<Tab> pages);
 
 /// ModelContainerList functions
 typedef TabPageMapFunction<E extends DataModel> = Widget Function(
-    TabPage page, ValueNotifier<E?> notification);
+    TabPage page, E? notification);

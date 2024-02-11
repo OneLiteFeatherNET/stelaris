@@ -18,12 +18,13 @@ class ModelContainerList<E extends DataModel> extends StatefulWidget {
   final TabPageMapFunction<E> page;
   final MapToDataModelItem<E> mapToDataModelItem;
   final VoidCallback openFunction;
-  final ValueNotifier<E?> selectedItem;
+  final E? selectedItem;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
   final MapToDeleteDialog<E> mapToDeleteDialog;
   final MapToTabPages tabPages;
   final ReduxAction<AppState> action;
   final List<DataModel> Function(Store<AppState>) converter;
+  final Function(E) callFunction;
 
   const ModelContainerList({
     required this.action,
@@ -35,6 +36,7 @@ class ModelContainerList<E extends DataModel> extends StatefulWidget {
     required this.mapToDeleteDialog,
     required this.tabPages,
     required this.converter,
+    required this.callFunction,
     super.key,
   });
 
@@ -47,17 +49,19 @@ class _ModelContainerListState<E extends DataModel>
   @override
   Widget build(BuildContext context) {
     var pages = widget.tabPages.call(tabs);
-    return Row(children: [
-      ModelList(
+    return Row(
+      children: [
+        ModelList(
           action: widget.action,
           mapToDataModelItem: widget.mapToDataModelItem,
           selectedItem: widget.selectedItem,
           openFunction: widget.openFunction,
           mapToDeleteDialog: widget.mapToDeleteDialog,
           mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
+          callFunction: widget.callFunction,
           converter: widget.converter,
-      ),
-      DefaultTabController(
+        ),
+        DefaultTabController(
           length: pages.length,
           child: Expanded(
             child: Scaffold(
@@ -68,15 +72,21 @@ class _ModelContainerListState<E extends DataModel>
                 ),
               ),
               body: TabBarView(
-                children: pages.map((e) {
-                  var text = e.child as Text;
-                  return widget.page(
-                      transform(text.data!), widget.selectedItem);
-                }).toList(),
+                children: pages.map(
+                  (e) {
+                    var text = e.child as Text;
+                    return widget.page(
+                      transform(text.data!),
+                      widget.selectedItem,
+                    );
+                  },
+                ).toList(),
               ),
             ),
-          ))
-    ]);
+          ),
+        )
+      ],
+    );
   }
 
   TabPage transform(String name) {

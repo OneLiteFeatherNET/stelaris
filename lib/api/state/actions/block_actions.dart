@@ -3,6 +3,31 @@ import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 
+class SelectBlockAction extends ReduxAction<AppState> {
+
+  final BlockModel model;
+
+  SelectBlockAction(this.model);
+
+  @override
+  AppState reduce() {
+    return state.copyWith(selectedBlock: model);
+  }
+}
+
+class RemoveBlockFont extends ReduxAction<AppState> {
+
+  final BlockModel model;
+
+  RemoveBlockFont(this.model);
+
+  @override
+  AppState? reduce() {
+    if (state.selectedBlock == null) return null;
+    return state.copyWith(selectedBlock: null);
+  }
+}
+
 class UpdateBlockAction extends ReduxAction<AppState> {
   final BlockModel oldEntry;
   final BlockModel newEntry;
@@ -37,9 +62,9 @@ class AddBlockAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    await ApiService().blockAPI.add(_model);
+    var addedBlock = await ApiService().blockAPI.add(_model);
     var blocks = await ApiService().blockAPI.getAll();
-    return state.copyWith(blocks: blocks);
+    return state.copyWith(blocks: blocks, selectedBlock: addedBlock);
   }
 }
 

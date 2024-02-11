@@ -12,21 +12,14 @@ import 'package:stelaris_ui/util/constants.dart';
 
 const List<FontType> values = FontType.values;
 
-class FontGeneralPage extends StatefulWidget {
+class FontGeneralPage extends StatelessWidget {
   final FontModel model;
-  final ValueNotifier<FontModel?> selectedItem;
 
-  const FontGeneralPage({
-    required this.model,
-    required this.selectedItem,
+  FontGeneralPage({
     super.key,
+    required this.model,
   });
 
-  @override
-  State<FontGeneralPage> createState() => _FontGeneralPageState();
-}
-
-class _FontGeneralPageState extends State<FontGeneralPage> {
   final _key = GlobalKey<FormState>();
 
   @override
@@ -40,17 +33,14 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
             children: [
               TextInputCard<String>(
                 display: context.l10n.card_name,
-                currentValue: widget.model.name ?? emptyString,
+                currentValue: model.name ?? emptyString,
                 formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                 valueUpdate: (value) {
-                  if (value == widget.model.name) return;
-                  final oldModel = widget.model;
+                  if (value == model.name) return;
+                  final oldModel = model;
                   final newEntry = oldModel.copyWith(name: value);
-                  setState(() {
-                    StoreProvider.dispatch(
-                        context, UpdateFontAction(oldModel, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
+                  StoreProvider.dispatch(
+                      context, UpdateFontAction(oldModel, newEntry));
                 },
                 formValidator: (value) {
                   var input = value as String;
@@ -63,34 +53,28 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
               ),
               TextInputCard<String>(
                 display: context.l10n.card_description,
-                currentValue: widget.model.description ?? emptyString,
+                currentValue: model.description ?? emptyString,
                 formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                 valueUpdate: (value) {
-                  if (value == widget.model.description) return;
-                  final oldModel = widget.model;
+                  if (value == model.description) return;
+                  final oldModel = model;
                   final newEntry = oldModel.copyWith(description: value);
-                  setState(() {
-                    StoreProvider.dispatch(
-                        context, UpdateFontAction(oldModel, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
+                  StoreProvider.dispatch(
+                      context, UpdateFontAction(oldModel, newEntry));
                 },
               ),
               TextInputCard<int>(
                 isNumber: true,
                 tooltipMessage: context.l10n.tooltip_ascent,
                 display: context.l10n.card_ascent,
-                currentValue: widget.model.ascent?.toString() ?? zeroString,
+                currentValue: model.ascent?.toString() ?? zeroString,
                 valueUpdate: (value) {
-                  if (value == widget.model.ascent) return;
-                  final oldModel = widget.model;
+                  if (value == model.ascent) return;
+                  final oldModel = model;
                   final newAscent = value ?? 0;
                   final newEntry = oldModel.copyWith(ascent: newAscent);
-                  setState(() {
-                    StoreProvider.dispatch(
-                        context, UpdateFontAction(oldModel, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
+                  StoreProvider.dispatch(
+                      context, UpdateFontAction(oldModel, newEntry));
                 },
                 inputType: numberInput,
                 formatter: [FilteringTextInputFormatter.allow(numberPattern)],
@@ -99,17 +83,14 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                 isNumber: true,
                 tooltipMessage: context.l10n.tooltip_height,
                 display: context.l10n.card_height,
-                currentValue: widget.model.height?.toString() ?? zeroString,
+                currentValue: model.height?.toString() ?? zeroString,
                 valueUpdate: (value) {
-                  if (value == widget.model.height) return;
-                  final oldModel = widget.model;
+                  if (value == model.height) return;
+                  final oldModel = model;
                   final newHeight = value ?? 0;
                   final newEntry = oldModel.copyWith(height: newHeight);
-                  setState(() {
-                    StoreProvider.dispatch(
-                        context, UpdateFontAction(oldModel, newEntry));
-                    widget.selectedItem.value = newEntry;
-                  });
+                  StoreProvider.dispatch(
+                      context, UpdateFontAction(oldModel, newEntry));
                 },
                 inputType: numberInput,
                 formatter: [FilteringTextInputFormatter.allow(numberPattern)],
@@ -120,7 +101,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
         SaveButton(
           callback: () {
             if (!_key.currentState!.validate()) return;
-            ApiService().fontAPI.update(widget.model);
+            ApiService().fontAPI.update(model);
           },
         )
       ],

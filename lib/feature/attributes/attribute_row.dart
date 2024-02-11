@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class AttributeRow extends StatelessWidget {
@@ -23,9 +22,7 @@ class AttributeRow extends StatelessWidget {
         children: [
           // Add your Row children here
           Text(label),
-          const SizedBox(
-            width: 10,
-          ),
+          horizontalSpacing10,
           Expanded(
             child: FractionallySizedBox(
               widthFactor: 0.9,

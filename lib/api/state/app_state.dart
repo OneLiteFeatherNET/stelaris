@@ -19,6 +19,11 @@ class AppState with _$AppState {
     @Default(<AttributeModel>[]) List<AttributeModel> attributes,
     @Default(true) bool openNavigation,
     @Default(true) bool nightMode,
+    @JsonKey(includeToJson: false)@Default(null) ItemModel? selectedItem,
+    @JsonKey(includeToJson: false)@Default(null) NotificationModel? selectedNotification,
+    @JsonKey(includeToJson: false)@Default(null) FontModel? selectedFont,
+    @JsonKey(includeToJson: false)@Default(null) AttributeModel? selectedAttribute,
+    @JsonKey(includeToJson: false)@Default(null) BlockModel? selectedBlock,
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, dynamic> json) =>

@@ -6,14 +6,15 @@ import 'package:stelaris_ui/feature/base/button/add_button.dart';
 import 'package:stelaris_ui/feature/base/button/delete_model_button.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
-class ModelList<E extends DataModel> extends StatefulWidget {
+class ModelList<E extends DataModel> extends StatelessWidget {
   final MapToDataModelItem<E> mapToDataModelItem;
-  final ValueNotifier<E?> selectedItem;
+  final E? selectedItem;
   final VoidCallback openFunction;
   final MapToDeleteDialog<E> mapToDeleteDialog;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
   final ReduxAction<AppState> action;
   final List<DataModel> Function(Store<AppState>) converter;
+  final Function(E) callFunction;
 
   const ModelList({
     required this.action,
@@ -23,21 +24,17 @@ class ModelList<E extends DataModel> extends StatefulWidget {
     required this.mapToDeleteDialog,
     required this.mapToDeleteSuccessfully,
     required this.converter,
+    required this.callFunction,
     super.key,
   });
 
   @override
-  State<ModelList<E>> createState() => _ModelListState<E>();
-}
-
-class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
-  @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<DataModel>>(
       onInit: (store) {
-        store.dispatch(widget.action);
+        store.dispatch(action);
       },
-      converter: widget.converter,
+      converter: converter,
       builder: (context, vm) {
         return Container(
           color: Theme.of(context).colorScheme.background,
@@ -50,9 +47,11 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
                     child: ListView.builder(
                         itemCount: vm.length,
                         itemBuilder: (context, index) {
-                          final E e = vm[index] as E;
+                          final E rawModel = vm[index] as E;
                           final selected =
-                              e.hashCode == widget.selectedItem.value.hashCode;
+                              rawModel.hashCode == selectedItem.hashCode;
+                          debugPrint("Hallo");
+                          debugPrint("Selected: $selected");
                           final selectedCardShape = RoundedRectangleBorder(
                               side: BorderSide(
                                   color:
@@ -60,19 +59,21 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
                               borderRadius: BorderRadius.circular(12.0));
                           return InkWell(
                             onTap: () {
-                              setState(() {
-                                widget.selectedItem.value = e;
-                              });
+                              callFunction.call(rawModel);
+                              /*setState(() {
+                                widget.callFunction.call(rawModel);
+                                // Action to select the item TODO
+                              });*/
                             },
                             child: Card(
                               shape: selected ? selectedCardShape : null,
                               child: ListTile(
-                                  title: widget.mapToDataModelItem(e),
+                                  title: mapToDataModelItem(rawModel),
                                   trailing: DeleteModelButton<E>(
-                                    value: e,
-                                    mapToDeleteDialog: widget.mapToDeleteDialog,
+                                    value: rawModel,
+                                    mapToDeleteDialog: mapToDeleteDialog,
                                     mapToDeleteSuccessfully:
-                                        widget.mapToDeleteSuccessfully,
+                                        mapToDeleteSuccessfully,
                                   )),
                             ),
                           );
@@ -83,7 +84,7 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
                 left: 0,
                 right: 0,
                 child: AddButton(
-                  openFunction: widget.openFunction,
+                  openFunction: openFunction,
                 ),
               )
             ],
