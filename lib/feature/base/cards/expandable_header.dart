@@ -5,13 +5,15 @@ import 'package:stelaris_ui/util/constants.dart';
 class ExpandableHeader extends StatelessWidget {
   final bool isExpanded;
   final Text title;
-  final VoidCallback? buttonClick;
+  final VoidCallback? addCallback;
+  final VoidCallback? saveCallback;
 
   const ExpandableHeader({
     super.key,
     required this.isExpanded,
     required this.title,
-    this.buttonClick,
+    this.saveCallback,
+    this.addCallback,
   });
 
   @override
@@ -36,11 +38,20 @@ class ExpandableHeader extends StatelessWidget {
   }
 
   Widget? _getTrailingWidget() {
-    if (buttonClick == null) return null;
-    return IconButton(
-      onPressed: buttonClick,
-      icon: addModelIcon,
-      color: isExpanded ? Colors.tealAccent : Colors.white,
-    );
+    if (saveCallback != null) {
+      return IconButton(
+        onPressed: saveCallback,
+        icon: saveIcon,
+        color: isExpanded ? Colors.tealAccent : Colors.white,
+      );
+    }
+    if (addCallback != null) {
+      return IconButton(
+        onPressed: addCallback,
+        icon: addModelIcon,
+        color: isExpanded ? Colors.tealAccent : Colors.white,
+      );
+    }
+    return null;
   }
 }

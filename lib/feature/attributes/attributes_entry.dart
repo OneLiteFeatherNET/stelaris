@@ -1,7 +1,9 @@
+import 'package:async_redux/async_redux.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/model/attribute_model.dart';
+import 'package:stelaris_ui/api/state/actions/attribute_actions.dart';
 import 'package:stelaris_ui/feature/attributes/attribute_row.dart';
 import 'package:stelaris_ui/feature/base/base_layout.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_header.dart';
@@ -37,12 +39,28 @@ class AttributesEntry extends StatelessWidget with BaseLayout {
             collapsed: ExpandableHeader(
               title: Text(attributeModel.modelName ?? emptyString),
               isExpanded: false,
+              saveCallback: () {
+                final newEntry = attributeModel.copyWith(
+                  name: nameController.text,
+                  defaultValue: double.parse(defaultController.text),
+                  maximumValue: double.parse(maxValueController.text),
+                );
+                StoreProvider.dispatch(context, UpdateAttributeAction(newEntry));
+              },
             ),
             expanded: Column(
               children: [
                 ExpandableHeader(
                   title: Text(attributeModel.modelName ?? emptyString),
-                  isExpanded: false,
+                  saveCallback: () {
+                    final newEntry = attributeModel.copyWith(
+                      name: nameController.text,
+                      defaultValue: double.parse(defaultController.text),
+                      maximumValue: double.parse(maxValueController.text),
+                    );
+                    StoreProvider.dispatch(context, UpdateAttributeAction(newEntry));
+                  },
+                  isExpanded: true,
                 ),
                 AttributeRow(
                   controller: nameController,

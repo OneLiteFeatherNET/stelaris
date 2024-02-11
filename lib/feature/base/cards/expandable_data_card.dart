@@ -38,7 +38,7 @@ class ExpandableDataCard extends StatelessWidget {
             collapsed: ExpandableHeader(
               title: title,
               isExpanded: false,
-              buttonClick: buttonClick,
+              addCallback: buttonClick,
             ),
             expanded: Container(
               decoration: BoxDecoration(
@@ -50,7 +50,7 @@ class ExpandableDataCard extends StatelessWidget {
                   ExpandableHeader(
                     title: title,
                     isExpanded: true,
-                    buttonClick: buttonClick,
+                    addCallback: buttonClick,
                   ),
                   ...widgets
                 ],
