@@ -11,8 +11,8 @@ class AttributeModel extends DataModel with _$AttributeModel {
     String? id,
     String? modelName,
     String? name,
-    double? defaultValue,
-    double? maximumValue
+    @Default(0.0) double? defaultValue,
+    @Default(0.0) double? maximumValue
   }) = _AttributeModel;
 
   factory AttributeModel.fromJson(Map<String, dynamic> json) =>
