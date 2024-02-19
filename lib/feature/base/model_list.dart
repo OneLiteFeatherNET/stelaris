@@ -52,8 +52,7 @@ class ModelList<E extends DataModel> extends StatelessWidget {
                           side: BorderSide(
                               color: Theme.of(context).colorScheme.secondary),
                           borderRadius: BorderRadius.circular(12.0));
-                      return InkWell(
-                        borderRadius: BorderRadius.circular(12.0),
+                      return GestureDetector(
                         onTap: () {
                           callFunction.call(rawModel);
                         },
