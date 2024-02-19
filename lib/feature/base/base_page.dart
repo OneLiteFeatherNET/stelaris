@@ -32,7 +32,7 @@ class BasePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             NavigationSideBar(openNavigation: vm.openNavigation),
-            Expanded(flex: 1, child: child),
+            Expanded(child: child),
           ],
         ),
       );

@@ -23,93 +23,122 @@ class NotificationGeneralPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Form(
-          key: _key,
-          autovalidateMode: AutovalidateMode.always,
-          child: Wrap(
-            children: [
-              TextInputCard<String>(
-                display: context.l10n.card_name,
-                currentValue: model.name ?? emptyString,
-                formatter: [FilteringTextInputFormatter.allow(stringPattern)],
-                valueUpdate: (value) {
-                  if (value == model.name) return;
-                  final oldModel = model;
-                  final newEntry = oldModel.copyWith(name: value);
-                  StoreProvider.dispatch(
-                      context, UpdateNotificationAction(oldModel, newEntry));
-                },
-                formValidator: (value) {
-                  if (value.trim().isEmpty) {
-                    return context.l10n.error_card_empty;
-                  }
-                  return null;
-                },
-              ),
-              TextInputCard<String>(
-                display: context.l10n.card_material,
-                currentValue: model.material ?? emptyString,
-                hintText: 'minecraft:stone',
-                valueUpdate: (value) {
-                  if (value == model.material) return;
-                  final oldModel = model;
-                  final newEntry = oldModel.copyWith(material: value);
-                  StoreProvider.dispatch(
-                      context, UpdateNotificationAction(oldModel, newEntry));
-                },
-                formValidator: (value) {
-                  if (value == null) return null;
-                  if (!minecraftPattern.hasMatch(value)) {
-                    return context.l10n.input_validation_material;
-                  }
-                  return null;
-                },
-                maxLength: 30,
-              ),
-              TextInputCard<String>(
-                  display: context.l10n.card_title,
-                  currentValue: model.title ?? emptyString,
+    return Expanded(
+      child: Stack(
+        children: [
+          Form(
+            key: _key,
+            autovalidateMode: AutovalidateMode.always,
+            child: Wrap(
+              spacing: 10,
+              clipBehavior: Clip.hardEdge,
+              children: [
+                TextInputCard<String>(
+                  display: context.l10n.card_name,
+                  currentValue: model.name ?? emptyString,
+                  formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                   valueUpdate: (value) {
-                    if (value == model.title) return;
+                    if (value == model.name) return;
                     final oldModel = model;
-                    final newEntry = oldModel.copyWith(title: value);
+                    final newEntry = oldModel.copyWith(name: value);
                     StoreProvider.dispatch(
-                        context, UpdateNotificationAction(oldModel, newEntry));
-                  }),
-              TextInputCard<String>(
-                  display: context.l10n.card_description,
-                  currentValue: model.description ?? emptyString,
+                      context,
+                      UpdateNotificationAction(
+                        oldModel,
+                        newEntry,
+                      ),
+                    );
+                  },
+                  formValidator: (value) {
+                    if (value.trim().isEmpty) {
+                      return context.l10n.error_card_empty;
+                    }
+                    return null;
+                  },
+                ),
+                TextInputCard<String>(
+                  display: context.l10n.card_material,
+                  currentValue: model.material ?? emptyString,
+                  hintText: 'minecraft:stone',
                   valueUpdate: (value) {
-                    if (value == model.description) return;
+                    if (value == model.material) return;
                     final oldModel = model;
-                    final newEntry = oldModel.copyWith(description: value);
+                    final newEntry = oldModel.copyWith(material: value);
                     StoreProvider.dispatch(
-                        context, UpdateNotificationAction(oldModel, newEntry));
-                  }),
-              DropdownCard<FrameType, NotificationModel>(
-                currentValue: model,
-                display: context.l10n.card_frame_type,
-                items: getItems(),
-                valueUpdate: (FrameType? value) {
-                  if (value == getDefaultValue(model)) return;
-                  final newEntry = model.copyWith(frameType: value?.value);
-                  StoreProvider.dispatch(
-                      context, UpdateNotificationAction(model, newEntry));
-                },
-                defaultValue: getDefaultValue,
-              ),
-            ],
+                      context,
+                      UpdateNotificationAction(
+                        oldModel,
+                        newEntry,
+                      ),
+                    );
+                  },
+                  formValidator: (value) {
+                    if (value == null) return null;
+                    if (!minecraftPattern.hasMatch(value)) {
+                      return context.l10n.input_validation_material;
+                    }
+                    return null;
+                  },
+                  maxLength: 30,
+                ),
+                TextInputCard<String>(
+                    display: context.l10n.card_title,
+                    currentValue: model.title ?? emptyString,
+                    valueUpdate: (value) {
+                      if (value == model.title) return;
+                      final oldModel = model;
+                      final newEntry = oldModel.copyWith(title: value);
+                      StoreProvider.dispatch(
+                        context,
+                        UpdateNotificationAction(
+                          oldModel,
+                          newEntry,
+                        ),
+                      );
+                    }),
+                TextInputCard<String>(
+                    display: context.l10n.card_description,
+                    currentValue: model.description ?? emptyString,
+                    valueUpdate: (value) {
+                      if (value == model.description) return;
+                      final oldModel = model;
+                      final newEntry = oldModel.copyWith(description: value);
+                      StoreProvider.dispatch(
+                        context,
+                        UpdateNotificationAction(
+                          oldModel,
+                          newEntry,
+                        ),
+                      );
+                    }),
+                DropdownCard<FrameType, NotificationModel>(
+                  currentValue: model,
+                  display: context.l10n.card_frame_type,
+                  items: getItems(),
+                  valueUpdate: (FrameType? value) {
+                    if (value == getDefaultValue(model)) return;
+                    final newEntry = model.copyWith(frameType: value?.value);
+                    StoreProvider.dispatch(
+                      context,
+                      UpdateNotificationAction(
+                        model,
+                        newEntry,
+                      ),
+                    );
+                  },
+                  defaultValue: getDefaultValue,
+                ),
+              ],
+            ),
           ),
-        ),
-        SaveButton(
-          callback: () {
-            if (!_key.currentState!.validate()) return;
-            ApiService().notificationAPI.update(model);
-          },
-        ),
-      ],
+          SaveButton(
+            callback: () {
+              if (!_key.currentState!.validate()) return;
+              ApiService().notificationAPI.update(model);
+            },
+          ),
+        ],
+      ),
     );
   }
 
