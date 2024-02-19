@@ -14,9 +14,9 @@ class FontModel extends DataModel with _$FontModel {
     String? description,
     @Default('bitmap') String? type, //Ignore
     List<String>? chars,
-    int? ascent,
-    int? height,
-    List<double>? shift, //Ignore
+    @Default(0) int? ascent,
+    @Default(0) int? height,
+    @Default([]) List<double>? shift, //Ignore
   }) = _FontModel;
 
   factory FontModel.fromJson(Map<String, dynamic> json) =>
