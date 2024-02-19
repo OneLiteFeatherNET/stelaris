@@ -22,7 +22,8 @@ class RemoveSelectNotificationAction extends ReduxAction<AppState> {
   @override
   AppState reduce() {
     if (state.selectedItem == null) return state;
-    return state.copyWith(selectedNotification: model);
+    if (state.selectedItem.hashCode != model.hashCode) return state;
+    return state.copyWith(selectedNotification: null);
   }
 }
 
