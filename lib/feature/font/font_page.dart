@@ -6,11 +6,11 @@ import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
-import 'package:stelaris_ui/feature/base/model_container_list.dart';
+import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/setup_dialog.dart';
 import 'package:stelaris_ui/feature/font/font_general_page.dart';
-import 'package:stelaris_ui/feature/font/font_meta_page.dart';
+import 'package:stelaris_ui/feature/font/meta/font_meta_page.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
@@ -23,69 +23,72 @@ class FontPage extends StatelessWidget {
     return StoreConnector<AppState, FontModel?>(
       converter: (store) => store.state.selectedFont,
       builder: (context, vm) {
-        return ModelContainerList<FontModel>(
-          callFunction: (model) {
-            StoreProvider.dispatch(context, SelectFontAction(model));
-          },
-          converter: (store) => store.state.fonts,
+        return BaseModelViewTabs<FontModel>(
           action: InitFontAction(),
-          tabPages: (pages) => pages,
-          mapToDeleteDialog: (value) {
-            return [
-              TextSpan(
-                  text: context.l10n.delete_dialog_first_line,
-                  style: whiteStyle),
-              TextSpan(
-                text: value.modelName ?? unknownEntry,
-                style: redStyle,
-              ),
-              TextSpan(
-                text: context.l10n.delete_dialog_entry,
-                style: whiteStyle,
-              ),
-            ];
-          },
+          mapToDataModelItem: (value) =>
+              ModelText(displayName: value.modelName),
+          openFunction: () => _openDialog(context),
+          selectedItem: vm,
+          mapToDeleteDialog: (value) => _createDeleteText(value, context),
           mapToDeleteSuccessfully: (value) {
             StoreProvider.dispatch(context, RemoveFontsAction(value));
             Navigator.pop(context);
             return true;
           },
-          selectedItem: vm,
-          page: _mapPageToWidget,
-          mapToDataModelItem: (value) =>
-              ModelText(displayName: value.modelName),
-          openFunction: () {
-            showDialog(
-              context: context,
-              useRootNavigator: false,
-              builder: (BuildContext context) {
-                return SetUpDialog<FontModel>(
-                  buildModel: (name, description) {
-                    return FontModel(
-                        modelName: name,
-                        description: description,
-                        type: FontType.bitmap.displayName);
-                  },
-                  finishCallback: (model) {
-                    StoreProvider.dispatch(context, AddFontAction(model));
-                    Navigator.pop(context);
-                  },
-                );
-              },
-            );
+          converter: (store) => store.state.fonts,
+          callFunction: (model) =>
+            StoreProvider.dispatch(context, SelectFontAction(model)),
+          page: (page, notification) => _mapPageToWidget(page, notification),
+          tabPages: (pages) => pages,
+        );
+      },
+    );
+  }
+
+  void _openDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (BuildContext context) {
+        return SetUpDialog<FontModel>(
+          buildModel: (name, description) {
+            return FontModel(
+                modelName: name,
+                description: description,
+                type: FontType.bitmap.displayName);
+          },
+          finishCallback: (model) {
+            StoreProvider.dispatch(context, AddFontAction(model));
+            Navigator.pop(context);
           },
         );
       },
     );
   }
 
+  List<TextSpan> _createDeleteText(FontModel value, BuildContext context) {
+    return [
+      TextSpan(
+        text: context.l10n.delete_dialog_first_line,
+        style: whiteStyle,
+      ),
+      TextSpan(
+        text: value.modelName ?? unknownEntry,
+        style: redStyle,
+      ),
+      TextSpan(
+        text: context.l10n.delete_dialog_entry,
+        style: whiteStyle,
+      ),
+    ];
+  }
+
   Widget _mapPageToWidget(TabPage value, FontModel? clickedModel) {
+    if (clickedModel == null) return nil;
     switch (value) {
       case TabPage.general:
-        if (clickedModel == null) return nil;
         return FontGeneralPage(model: clickedModel);
       case TabPage.meta:
-        if (clickedModel == null) return nil;
         return FontMetaPage(model: clickedModel);
     }
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/feature/base/position_bottom_right.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
@@ -15,18 +14,22 @@ class SaveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PositionBottomRight(
-      child: FloatingActionButton.extended(
-        heroTag: UniqueKey(),
-        onPressed: () {
-          if (parameter != null) {
-            callback.call(parameter);
-          } else {
-            callback.call();
-          }
-        },
-        label: Text(context.l10n.button_save),
-        icon: saveIcon,
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 25, right: 10),
+        child: FloatingActionButton.extended(
+          heroTag: UniqueKey(),
+          onPressed: () {
+            if (parameter != null) {
+              callback.call(parameter);
+            } else {
+              callback.call();
+            }
+          },
+          label: Text(context.l10n.button_save),
+          icon: saveIcon,
+        ),
       ),
     );
   }
