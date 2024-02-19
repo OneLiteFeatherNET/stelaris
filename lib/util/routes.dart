@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/api/util/navigation.dart';
-import 'package:stelaris_ui/feature/attributes/attributes_page.dart';
+import 'package:stelaris_ui/feature/attributes/attribute_page.dart';
 import 'package:stelaris_ui/feature/base/base_page.dart';
 import 'package:stelaris_ui/feature/build/build_page.dart';
 import 'package:stelaris_ui/feature/font/font_page.dart';
@@ -19,7 +19,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: NavigationEntry.attributes.route,
       pageBuilder: (context, state) => CustomTransitionPage(
-          child: const BasePage(child: AttributesPage()),
+          child: const BasePage(child: AttributePage()),
           key: state.pageKey,
           transitionsBuilder: (context, animation, secondaryAnimation, child) =>
               FadeTransition(

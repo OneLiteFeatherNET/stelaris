@@ -24,11 +24,11 @@ class RemoveSelectAttributeAction extends ReduxAction<AppState> {
   @override
   AppState? reduce() {
     if (state.selectedAttribute == null) return null;
-    return state.copyWith(selectedAttribute: model);
+    return state.copyWith(selectedAttribute: null);
   }
 }
 
-class InitAttributeListAction extends ReduxAction<AppState> {
+class InitAttributeAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
@@ -39,18 +39,18 @@ class InitAttributeListAction extends ReduxAction<AppState> {
 }
 
 class UpdateAttributeAction extends ReduxAction<AppState> {
+  final AttributeModel oldEntry;
   final AttributeModel newEntry;
 
-  UpdateAttributeAction(this.newEntry);
+  UpdateAttributeAction(this.oldEntry, this.newEntry,);
 
   @override
   Future<AppState?> reduce() async {
-    var updatedModel = await ApiService().attributesAPI.update(newEntry);
     final attributes = List.of(state.attributes, growable: true);
-    int index = attributes.indexWhere((element) => element.id == newEntry.id);
+    int index = attributes.indexWhere((element) => element.id == oldEntry.id);
     attributes.removeAt(index);
-    attributes.insert(index, updatedModel);
-    return state.copyWith(attributes: attributes);
+    attributes.insert(index, newEntry);
+    return state.copyWith(attributes: attributes, selectedAttribute: newEntry);
   }
 }
 
@@ -65,7 +65,7 @@ class AttributeAddAction extends ReduxAction<AppState> {
     var databaseModel = await ApiService().attributesAPI.add(model);
     var attributes = List.of(state.attributes, growable: true);
     attributes.add(databaseModel);
-    return state.copyWith(attributes: attributes);
+    return state.copyWith(attributes: attributes, selectedAttribute: databaseModel);
   }
 }
 
@@ -80,6 +80,7 @@ class AttributeRemoveAction extends ReduxAction<AppState> {
     await ApiService().attributesAPI.remove(model);
     var attributes = List.of(state.attributes, growable: true);
     attributes.remove(model);
-    return state.copyWith(attributes: attributes);
+    var selectedModel = state.selectedAttribute.hashCode == model.hashCode ? null : state.selectedAttribute;
+    return state.copyWith(attributes: attributes, selectedAttribute: selectedModel);
   }
 }
