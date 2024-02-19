@@ -16,6 +16,7 @@ Text emptyText = const Text(emptyString);
 
 /// Regs
 RegExp numberPattern = RegExp("[1-9]\\d*");
+RegExp fontNumberPattern = RegExp("^(0|[1-9][0-9]*)");
 RegExp letterPattern = RegExp("[a-zA-Z]*");
 RegExp decimalPattern = RegExp(r'^\d*\.?\d*');
 RegExp stringPattern = RegExp("[a-zA-Z]\\w*");

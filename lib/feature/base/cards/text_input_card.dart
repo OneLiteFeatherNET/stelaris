@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris_ui/feature/base/base_card.dart';
 import 'package:stelaris_ui/util/constants.dart';
-import 'package:stelaris_ui/util/typedefs.dart';
 
 class TextInputCard<E> extends StatefulWidget {
   final String display;
@@ -41,7 +40,6 @@ class _TextInputCardState extends State<TextInputCard> {
   initState() {
     super.initState();
     _editController.text = widget.currentValue;
-    print('initState: ${widget.currentValue}');
   }
 
   @override

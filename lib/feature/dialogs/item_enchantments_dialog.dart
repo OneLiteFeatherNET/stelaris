@@ -60,7 +60,12 @@ class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
             onPressed: () {
               if (!_key.currentState!.validate()) return;
               if (_selected.value == null) return;
-              addEnchantmentCallback(_selected.value!, int.parse(levelController.value.text));
+              addEnchantmentCallback(
+                _selected.value!,
+                int.parse(
+                  levelController.value.text,
+                ),
+              );
             },
             child: Text(context.l10n.button_add))
       ],

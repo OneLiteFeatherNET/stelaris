@@ -6,9 +6,11 @@ import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 import 'package:stelaris_ui/feature/base/button/save_button.dart';
+import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris_ui/util/functions.dart';
 
 const List<FontType> values = FontType.values;
 
@@ -44,11 +46,7 @@ class FontGeneralPage extends StatelessWidget {
                 },
                 formValidator: (value) {
                   var input = value as String;
-
-                  if (input.trim().isEmpty) {
-                    return context.l10n.error_card_empty;
-                  }
-                  return null;
+                  return checkIfEmptyAndReturnErrorString(input, context);
                 },
               ),
               TextInputCard<String>(
@@ -60,7 +58,12 @@ class FontGeneralPage extends StatelessWidget {
                   final oldModel = model;
                   final newEntry = oldModel.copyWith(description: value);
                   StoreProvider.dispatch(
-                      context, UpdateFontAction(oldModel, newEntry));
+                    context,
+                    UpdateFontAction(
+                      oldModel,
+                      newEntry,
+                    ),
+                  );
                 },
               ),
               TextInputCard<int>(
@@ -71,13 +74,13 @@ class FontGeneralPage extends StatelessWidget {
                 valueUpdate: (value) {
                   if (value == model.ascent) return;
                   final oldModel = model;
-                  final newAscent = value ?? 0;
+                  final newAscent = int.parse(value);
                   final newEntry = oldModel.copyWith(ascent: newAscent);
                   StoreProvider.dispatch(
                       context, UpdateFontAction(oldModel, newEntry));
                 },
                 inputType: numberInput,
-                formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+                formatter: [FilteringTextInputFormatter.allow(fontNumberPattern)],
               ),
               TextInputCard<int>(
                 isNumber: true,
@@ -87,14 +90,28 @@ class FontGeneralPage extends StatelessWidget {
                 valueUpdate: (value) {
                   if (value == model.height) return;
                   final oldModel = model;
-                  final newHeight = value ?? 0;
+                  final newHeight = int.parse(value);
                   final newEntry = oldModel.copyWith(height: newHeight);
                   StoreProvider.dispatch(
                       context, UpdateFontAction(oldModel, newEntry));
                 },
                 inputType: numberInput,
-                formatter: [FilteringTextInputFormatter.allow(numberPattern)],
+                formatter: [FilteringTextInputFormatter.allow(fontNumberPattern)],
               ),
+              DropdownCard<FontType, FontModel>(
+                  display: context.l10n.card_type,
+                  items: getItems(),
+                  valueUpdate: (value) {
+                    if (value == null) return;
+                    if (value.displayName == model.type) return;
+                    StoreProvider.dispatch(context, UpdateFontAction(
+                      model,
+                      model.copyWith(type: value.displayName),
+                    ));
+                  },
+                  defaultValue: (value) => getDefaultValue(value),
+                  currentValue: model,
+              )
             ],
           ),
         ),
@@ -111,10 +128,10 @@ class FontGeneralPage extends StatelessWidget {
   List<DropdownMenuItem<FontType>>? getItems() {
     return List.generate(
         values.length,
-        (index) => DropdownMenuItem(
-              value: values[index],
-              child: Text(values[index].displayName),
-            ));
+            (index) => DropdownMenuItem(
+          value: values[index],
+          child: Text(values[index].displayName),
+        ));
   }
 
   FontType getDefaultValue(FontModel value) {
