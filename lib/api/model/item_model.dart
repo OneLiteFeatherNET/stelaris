@@ -13,7 +13,7 @@ class ItemModel extends DataModel with _$ItemModel {
     String? name,
     String? description,
     String? displayName,
-     @Default('misc') String? group,
+    @Default('misc') String? group,
     String? material,
     int? customModelId,
     @Default(1) int? amount,
