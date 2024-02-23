@@ -62,7 +62,6 @@ class GroupCard extends StatelessWidget with EnchantmentReducer {
                   enchantments: oldEnchantments);
               StoreProvider.dispatch(
                   context, UpdateItemAction(model, newEntry,),);
-              //widget.selectedItem.value = newEntry;
             } else {
               _groupKey.currentState!.reset();
             }
@@ -74,7 +73,6 @@ class GroupCard extends StatelessWidget with EnchantmentReducer {
             context,
             UpdateItemAction(model, newEntry),
           );
-          //widget.selectedItem.value = newEntry;
         }
       },
       defaultValue: getDefaultValue,

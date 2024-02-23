@@ -38,7 +38,6 @@ class LoreCard extends StatelessWidget {
                   ),
                 );
                 Navigator.pop(context);
-                //widget.selectedItem.value = newEntry;
               }),
               formFieldValidator: (value) {
                 var input = value as String;
@@ -76,7 +75,6 @@ class LoreCard extends StatelessWidget {
                     newEntry,
                   ),
                 );
-                //widget.selectedItem.value = newEntry;
               },
               update: (value, key) {
                 final oldEntry = model;
@@ -96,7 +94,6 @@ class LoreCard extends StatelessWidget {
                     newEntry,
                   ),
                 );
-                //widget.selectedItem.value = newEntry;
               },
             ),
           );

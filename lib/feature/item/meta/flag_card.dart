@@ -49,7 +49,6 @@ class FlagCard extends StatelessWidget with DropDownItemReducer {
                     ),
                   );
                   Navigator.pop(context);
-                  //widget.selectedItem.value = newEntry;
                 });
           },
         );
@@ -89,7 +88,6 @@ class FlagCard extends StatelessWidget with DropDownItemReducer {
                       newEntry,
                     ),
                   );
-                  //widget.selectedItem.value = newEntry;
                   return true;
                 },
               ));

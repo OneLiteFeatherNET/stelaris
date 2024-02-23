@@ -55,7 +55,6 @@ class EnchantmentCard extends StatelessWidget with EnchantmentReducer {
                     newEntry,
                   ),
                 );
-                //widget.selectedItem.value = newEntry;
               },
             );
           },
@@ -95,7 +94,6 @@ class EnchantmentCard extends StatelessWidget with EnchantmentReducer {
                     newEntry,
                   ),
                 );
-                //widget.selectedItem.value = newEntry;
               },
               update: (value, key) {
                 final oldEntry = model;
@@ -111,7 +109,6 @@ class EnchantmentCard extends StatelessWidget with EnchantmentReducer {
                     newEntry,
                   ),
                 );
-                //widget.selectedItem.value = newEntry;
               },
             ),
           );
