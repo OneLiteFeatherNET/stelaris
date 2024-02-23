@@ -59,7 +59,7 @@ class NotificationGeneralPage extends StatelessWidget {
                 TextInputCard<String>(
                   display: context.l10n.card_material,
                   currentValue: model.material ?? emptyString,
-                  hintText: 'minecraft:stone',
+                  hintText: defaultMaterial,
                   valueUpdate: (value) {
                     if (value == model.material) return;
                     final oldModel = model;

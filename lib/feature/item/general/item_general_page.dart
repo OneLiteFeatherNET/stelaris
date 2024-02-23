@@ -76,7 +76,7 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
               GroupCard(model: model, values: values,),
               TextInputCard<String>(
                 display: context.l10n.card_material,
-                hintText: 'minecraft:stone',
+                hintText: defaultMaterial,
                 currentValue: model.material ?? emptyString,
                 valueUpdate: (value) {
                   if (value == model.material) return;
