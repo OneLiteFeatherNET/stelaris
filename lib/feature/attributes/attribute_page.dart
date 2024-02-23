@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/attribute_model.dart';
 import 'package:stelaris_ui/api/state/actions/attribute_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/AttributeVmState.dart';
+import 'package:stelaris_ui/api/state/factory/attribute_vm_state.dart';
 import 'package:stelaris_ui/feature/attributes/attribute_general_page.dart';
 import 'package:stelaris_ui/feature/base/base_model_view.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';

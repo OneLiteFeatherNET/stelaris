@@ -4,7 +4,7 @@ import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/FontVmState.dart';
+import 'package:stelaris_ui/api/state/factory/font_vm_state.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';

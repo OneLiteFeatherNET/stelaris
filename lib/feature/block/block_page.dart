@@ -4,7 +4,7 @@ import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/BlockVmState.dart';
+import 'package:stelaris_ui/api/state/factory/block_vm_state.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/block/block_general_page.dart';

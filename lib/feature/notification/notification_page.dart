@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
 import 'package:stelaris_ui/api/state/actions/notification_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/NotificationVmState.dart';
+import 'package:stelaris_ui/api/state/factory/notification_vm_state.dart';
 import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 import 'package:stelaris_ui/feature/base/base_model_view.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
