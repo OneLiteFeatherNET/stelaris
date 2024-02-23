@@ -54,7 +54,6 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
                   final newEntry = oldModel.copyWith(name: value);
                   StoreProvider.dispatch(
                       context, UpdateItemAction(oldModel, newEntry));
-                  //widget.selectedItem.value = newEntry;
                 },
                 formValidator: (value) {
                   var input = value as String;
@@ -71,7 +70,6 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
                   final newEntry = oldModel.copyWith(description: value);
                   StoreProvider.dispatch(
                       context, UpdateItemAction(oldModel, newEntry));
-                  //widget.selectedItem.value = newEntry;
                 },
                 maxLength: 30,
               ),
@@ -86,7 +84,6 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
                   final newEntry = oldModel.copyWith(material: value);
                   StoreProvider.dispatch(
                       context, UpdateItemAction(oldModel, newEntry));
-                  //widget.selectedItem.value = newEntry;
                 },
                 formValidator: (value) {
                   if (value == null) return null;
@@ -107,7 +104,6 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
                   final newEntry = oldModel.copyWith(displayName: value);
                     StoreProvider.dispatch(
                         context, UpdateItemAction(oldModel, newEntry));
-                    //widget.selectedItem.value = newEntry;
                 },
                 maxLength: 30,
               ),
@@ -123,7 +119,6 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
                   final newEntry = oldModel.copyWith(customModelId: newID);
                   StoreProvider.dispatch(
                       context, UpdateItemAction(oldModel, newEntry));
-                  //widget.selectedItem.value = newEntry;
                 },
                 maxLength: 30,
                 inputType: numberInput,
@@ -140,7 +135,6 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
                   final newEntry = oldModel.copyWith(amount: newAmount);
                   StoreProvider.dispatch(
                       context, UpdateItemAction(oldModel, newEntry));
-                  //widget.selectedItem.value = newEntry;
                 },
                 inputType: numberInput,
                 formatter: [FilteringTextInputFormatter.allow(numberPattern)],
