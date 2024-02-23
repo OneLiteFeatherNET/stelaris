@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
 import 'package:stelaris_ui/api/state/actions/notification_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/api/state/factory/NotificationVmState.dart';
 import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 import 'package:stelaris_ui/feature/base/base_model_view.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
@@ -17,12 +18,11 @@ class NotificationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('NotificationPage.build');
-    return StoreConnector<AppState, NotificationModel?>(
-      converter: (store) => store.state.selectedNotification,
+    return StoreConnector<AppState, NotificationViewModel>(
+      vm: () => NotificationVmFactory(),
+      onInit: (store) => store.dispatchAsync(InitNotificationAction()),
       builder: (context, vm) {
         return BaseModelView<NotificationModel>(
-            action: InitNotificationAction(),
             mapToDataModelItem: (value) =>
                 ModelText(displayName: value.modelName),
             openFunction: () {
@@ -48,7 +48,7 @@ class NotificationPage extends StatelessWidget {
                 },
               );
             },
-            selectedItem: vm,
+            selectedItem: vm.selected,
             mapToDeleteDialog: (value) {
               return [
                 TextSpan(
@@ -68,10 +68,10 @@ class NotificationPage extends StatelessWidget {
               StoreProvider.dispatch(context, RemoveNotificationAction(value));
               return true;
             },
-            converter: (store) => store.state.notifications,
             callFunction: (model) => StoreProvider.dispatch(
                 context, SelectedNotificationAction(model)),
-            child: _mapPageToWidget(vm));
+            models: vm.models,
+            child: _mapPageToWidget(vm.selected));
       },
     );
   }

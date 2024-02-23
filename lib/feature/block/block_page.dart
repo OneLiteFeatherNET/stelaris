@@ -4,6 +4,7 @@ import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/api/state/factory/BlockVmState.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/block/block_general_page.dart';
@@ -17,11 +18,11 @@ class BlockPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, BlockModel?>(
-      converter: (store) => store.state.selectedBlock,
+    return StoreConnector<AppState, BlockViewModel>(
+      vm: () => BlockVmFactory(),
+      onInit: (store) => store.dispatchAsync(InitBlockAction()),
       builder: (context, vm) {
         return BaseModelViewTabs<BlockModel>(
-          action: InitBlockAction(),
           mapToDataModelItem: (value) => ModelText(displayName: value.name),
           openFunction: () {
             showDialog(
@@ -40,7 +41,7 @@ class BlockPage extends StatelessWidget {
               },
             );
           },
-          selectedItem: vm,
+          selectedItem: vm.selected,
           mapToDeleteDialog: (value) {
             return [
               TextSpan(
@@ -55,11 +56,11 @@ class BlockPage extends StatelessWidget {
             StoreProvider.dispatch(context, RemoveBlockAction(value));
             return true;
           },
-          converter: (store) => store.state.blocks,
           callFunction: (model) {
             StoreProvider.dispatch(context, SelectBlockAction(model));
           },
           page: _mapPageToWidget,
+          models: vm.models,
           tabPages: (pages) {
             List<Tab> requiredTabs = List.from(pages, growable: true);
             requiredTabs.removeWhere(
