@@ -4,6 +4,7 @@ import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/api/state/factory/ItemVmState.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
@@ -20,11 +21,11 @@ class ItemPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, ItemModel?>(
-      converter: (store) => store.state.selectedItem,
+    return StoreConnector<AppState, ItemViewModel>(
+      vm: () => ItemVmFactory(),
+      onInit: (store) => store.dispatchAsync(InitItemAction()),
       builder: (context, vm) {
         return BaseModelViewTabs<ItemModel>(
-          action: InitItemAction(),
           mapToDataModelItem: (value) =>
               ModelText(displayName: value.modelName),
           openFunction: () {
@@ -48,7 +49,7 @@ class ItemPage extends StatelessWidget {
               },
             );
           },
-          selectedItem: vm,
+          selectedItem: vm.selected,
           mapToDeleteDialog: (value) {
             return [
               TextSpan(
@@ -68,10 +69,10 @@ class ItemPage extends StatelessWidget {
             StoreProvider.dispatch(context, RemoveItemAction(value));
             return true;
           },
-          converter: (store) => store.state.items,
           callFunction: (model) =>
               StoreProvider.dispatch(context, SelectedItemAction(model)),
           page: (page, model) => _mapPageToWidget(page, model),
+          models: vm.itemModels,
           tabPages: (pages) => pages,
         );
       },

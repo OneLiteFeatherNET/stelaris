@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
-import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 
 part 'notification_model.g.dart';
 part 'notification_model.freezed.dart';

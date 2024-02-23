@@ -4,6 +4,7 @@ import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/api/state/factory/FontVmState.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
@@ -20,25 +21,25 @@ class FontPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, FontModel?>(
-      converter: (store) => store.state.selectedFont,
+    return StoreConnector<AppState, FontViewModel>(
+      vm: () => FontVmFactory(),
+      onInit: (store) => store.dispatchAsync(InitFontAction()),
       builder: (context, vm) {
         return BaseModelViewTabs<FontModel>(
-          action: InitFontAction(),
           mapToDataModelItem: (value) =>
               ModelText(displayName: value.modelName),
           openFunction: () => _openDialog(context),
-          selectedItem: vm,
+          selectedItem: vm.selected,
           mapToDeleteDialog: (value) => _createDeleteText(value, context),
           mapToDeleteSuccessfully: (value) {
             StoreProvider.dispatch(context, RemoveFontsAction(value));
             Navigator.pop(context);
             return true;
           },
-          converter: (store) => store.state.fonts,
           callFunction: (model) =>
             StoreProvider.dispatch(context, SelectFontAction(model)),
           page: (page, notification) => _mapPageToWidget(page, notification),
+          models: vm.models,
           tabPages: (pages) => pages,
         );
       },
