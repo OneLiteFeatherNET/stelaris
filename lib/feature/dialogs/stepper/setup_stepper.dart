@@ -10,8 +10,11 @@ class SetupStepper<E extends DataModel> extends StatefulWidget {
   final FinishStepper<E> finishCallback;
   final BuildModel<E> buildModel;
 
-  const SetupStepper(
-      {super.key, required this.finishCallback, required this.buildModel});
+  const SetupStepper({
+    required this.finishCallback,
+    required this.buildModel,
+    super.key,
+  });
 
   @override
   State<SetupStepper<E>> createState() => _SetupStepperState<E>();
@@ -43,18 +46,19 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
               textAlign: TextAlign.center),
         ),
         Stepper(
-            type: StepperType.vertical,
-            currentStep: _currentStep,
-            steps: steps,
-            controlsBuilder: (BuildContext context, ControlsDetails details) {
-              return StepperDialogButton(details: details);
-            },
-            onStepContinue: () {
-              _continue();
-            },
-            onStepCancel: () {
-              _currentStep > 0 ? setState(() => _currentStep -= 1) : emptyString;
-            })
+          type: StepperType.vertical,
+          currentStep: _currentStep,
+          steps: steps,
+          controlsBuilder: (BuildContext context, ControlsDetails details) {
+            return StepperDialogButton(details: details);
+          },
+          onStepContinue: () {
+            _continue();
+          },
+          onStepCancel: () {
+            _currentStep > 0 ? setState(() => _currentStep -= 1) : emptyString;
+          },
+        )
       ],
     );
   }

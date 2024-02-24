@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 
 class StepperDialogButton extends StatelessWidget {
-
   final ControlsDetails details;
 
-  const StepperDialogButton({super.key, required this.details});
+  const StepperDialogButton({
+    required this.details,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +16,7 @@ class StepperDialogButton extends StatelessWidget {
         children: [
           TextButton(
               onPressed: details.onStepContinue,
-              child: Text(context.l10n.button_continue)
-          )
+              child: Text(context.l10n.button_continue))
         ],
       );
     } else {
@@ -23,12 +24,10 @@ class StepperDialogButton extends StatelessWidget {
         children: [
           TextButton(
               onPressed: details.onStepCancel,
-              child: Text(context.l10n.button_back)
-          ),
+              child: Text(context.l10n.button_back)),
           TextButton(
               onPressed: details.onStepContinue,
-              child: Text(context.l10n.button_finish)
-          )
+              child: Text(context.l10n.button_finish))
         ],
       );
     }

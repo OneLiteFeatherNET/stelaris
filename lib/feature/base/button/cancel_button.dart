@@ -8,9 +8,7 @@ class CancelButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
         child: Text(context.l10n.button_cancel),
-        onPressed: () {
-          Navigator.of(context).pop(false);
-        }
+        onPressed: () => Navigator.of(context).pop(false),
     );
   }
 }

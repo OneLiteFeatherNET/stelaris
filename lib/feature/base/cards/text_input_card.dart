@@ -16,7 +16,6 @@ class TextInputCard<E> extends StatefulWidget {
   final FormFieldValidator? formValidator;
 
   const TextInputCard({
-    super.key,
     required this.display,
     required this.valueUpdate,
     required this.currentValue,
@@ -27,6 +26,7 @@ class TextInputCard<E> extends StatefulWidget {
     this.formValidator,
     this.maxLength = 30,
     this.isNumber = false,
+    super.key,
   });
 
   @override
@@ -70,9 +70,9 @@ class _TextInputCardState extends State<TextInputCard> {
                 textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
               ),
               onFocusChange: (focus) {
-                if (!focus && _editController.value.text.trim().isNotEmpty) {
-                  widget.valueUpdate(_editController.value.text);
-                }
+                if (!focus) return;
+                if (_editController.value.text.trim().isEmpty) return;
+                widget.valueUpdate(_editController.value.text);
               },
             ),
           ),

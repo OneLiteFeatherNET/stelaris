@@ -34,12 +34,16 @@ class NavigationSideBar extends StatelessWidget {
   }
 
   List<NavigationRailDestination> _buildNavigationView() {
-    return List.generate(navigationEntries.length, (index) {
-      var display = navigationEntries[index].display;
-      var leadingIcon = Icon(navigationEntries[index].data);
-      return NavigationRailDestination(
+    return List.generate(
+      navigationEntries.length,
+      (index) {
+        var display = navigationEntries[index].display;
+        var leadingIcon = Icon(navigationEntries[index].data);
+        return NavigationRailDestination(
           icon: leadingIcon,
-          label: Text(display, style: navigationEntryTextStyle));
-    });
+          label: Text(display, style: navigationEntryTextStyle),
+        );
+      },
+    );
   }
 }

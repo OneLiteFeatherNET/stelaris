@@ -10,11 +10,12 @@ class DeleteModelButton<E extends DataModel> extends StatelessWidget {
   final MapToDeleteDialog<E> mapToDeleteDialog;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
 
-  const DeleteModelButton(
-      {super.key,
-      required this.value,
-      required this.mapToDeleteDialog,
-      required this.mapToDeleteSuccessfully});
+  const DeleteModelButton({
+    super.key,
+    required this.value,
+    required this.mapToDeleteDialog,
+    required this.mapToDeleteSuccessfully,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +26,13 @@ class DeleteModelButton<E extends DataModel> extends StatelessWidget {
           context: context,
           builder: (context) {
             return DeleteDialog<E>(
-                title: Text(
-                  context.l10n.dialog_delete_confirm,
-                  textAlign: TextAlign.center,
-                ),
-                header: mapToDeleteDialog(value),
-                value: value,
-                successfully: mapToDeleteSuccessfully
+              title: Text(
+                context.l10n.dialog_delete_confirm,
+                textAlign: TextAlign.center,
+              ),
+              header: mapToDeleteDialog(value),
+              value: value,
+              successfully: mapToDeleteSuccessfully,
             );
           },
         );

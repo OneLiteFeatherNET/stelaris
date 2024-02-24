@@ -13,7 +13,6 @@ class DropdownCard<E, T> extends StatefulWidget {
   final Key? formKey;
 
   const DropdownCard({
-    super.key,
     required this.display,
     required this.valueUpdate,
     required this.defaultValue,
@@ -21,6 +20,7 @@ class DropdownCard<E, T> extends StatefulWidget {
     this.tooltipMessage,
     this.items,
     this.formKey,
+    super.key,
   });
 
   @override
@@ -46,9 +46,7 @@ class _DropdownCardState<E, T> extends State<DropdownCard<E, T>> {
                 value: widget.defaultValue(widget.currentValue),
                 onChanged: (E? value) {
                   if (value == null) return;
-                  setState(() {
-                    widget.valueUpdate(value);
-                  });
+                  setState(() => widget.valueUpdate(value));
                 },
               ),
             ),

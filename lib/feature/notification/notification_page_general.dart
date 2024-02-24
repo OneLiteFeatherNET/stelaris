@@ -15,8 +15,8 @@ class NotificationGeneralPage extends StatelessWidget {
   final NotificationModel model;
 
   NotificationGeneralPage({
-    super.key,
     required this.model,
+    super.key,
   });
 
   final _key = GlobalKey<FormState>();

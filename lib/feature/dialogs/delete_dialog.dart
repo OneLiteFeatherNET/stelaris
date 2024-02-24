@@ -10,12 +10,13 @@ class DeleteDialog<E> extends StatelessWidget {
   final E value;
   final MapToDeleteSuccessfully<E> successfully;
 
-  const DeleteDialog(
-      {super.key,
-      required this.title,
-      required this.header,
-      required this.value,
-      required this.successfully});
+  const DeleteDialog({
+    required this.title,
+    required this.header,
+    required this.value,
+    required this.successfully,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +24,9 @@ class DeleteDialog<E> extends StatelessWidget {
       contentPadding: dialogPadding,
       title: title,
       content: RichText(
-        text: TextSpan(
-          children: header
-        ),
+        text: TextSpan(children: header),
       ),
-      actions:<Widget> [
+      actions: <Widget>[
         TextButton(
           child: Text(context.l10n.button_yes),
           onPressed: () {

@@ -16,14 +16,15 @@ class EntryAddDialog extends StatelessWidget {
 
   final _key = GlobalKey<FormState>();
 
-  EntryAddDialog(
-      {super.key,
-      required this.title,
-      required this.controller,
-      required this.valueUpdate,
-      this.formatters,
-      this.forceClose,
-      this.formFieldValidator});
+  EntryAddDialog({
+    required this.title,
+    required this.controller,
+    required this.valueUpdate,
+    this.formatters,
+    this.forceClose,
+    this.formFieldValidator,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +44,17 @@ class EntryAddDialog extends StatelessWidget {
         ),
         verticalSpacing25,
         TextButton(
-            onPressed: () {
-              if (!_key.currentState!.validate()) return;
-              if (controller.value.text.isEmpty) return;
+          onPressed: () {
+            if (!_key.currentState!.validate()) return;
+            if (controller.value.text.isEmpty) return;
 
-              if (forceClose != null && forceClose!) {
-                context.pop(true);
-              }
-              valueUpdate(controller.value.text);
-            },
-            child: Text(context.l10n.button_add))
+            if (forceClose != null && forceClose!) {
+              context.pop(true);
+            }
+            valueUpdate(controller.value.text);
+          },
+          child: Text(context.l10n.button_add),
+        )
       ],
     );
   }

@@ -15,8 +15,8 @@ import 'package:stelaris_ui/util/functions.dart';
 class EnchantmentCard extends StatelessWidget with EnchantmentReducer {
   final ItemModel model;
   EnchantmentCard({
-    super.key,
     required this.model,
+    super.key,
   });
 
   @override

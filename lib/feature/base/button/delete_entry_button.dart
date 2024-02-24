@@ -9,12 +9,13 @@ class DeleteEntryButton<E> extends StatelessWidget {
   final E value;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
 
-  const DeleteEntryButton(
-      {super.key,
-      required this.title,
-      required this.header,
-      required this.value,
-      required this.mapToDeleteSuccessfully});
+  const DeleteEntryButton({
+    super.key,
+    required this.title,
+    required this.header,
+    required this.value,
+    required this.mapToDeleteSuccessfully,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,17 +23,19 @@ class DeleteEntryButton<E> extends StatelessWidget {
       icon: deleteIcon,
       onPressed: () {
         showDialog(
-            context: context,
-            builder: (context) {
-              return DeleteDialog<E>(
-                  title: Text(
-                    title,
-                    textAlign: TextAlign.center,
-                  ),
-                  header: header,
-                  value: value,
-                  successfully: mapToDeleteSuccessfully);
-            });
+          context: context,
+          builder: (context) {
+            return DeleteDialog<E>(
+              title: Text(
+                title,
+                textAlign: TextAlign.center,
+              ),
+              header: header,
+              value: value,
+              successfully: mapToDeleteSuccessfully,
+            );
+          },
+        );
       },
     );
   }

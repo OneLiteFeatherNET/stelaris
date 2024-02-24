@@ -14,8 +14,8 @@ import 'package:stelaris_ui/util/constants.dart';
 class FlagCard extends StatelessWidget with DropDownItemReducer {
   final ItemModel model;
   const FlagCard({
-    super.key,
     required this.model,
+    super.key,
   });
 
   @override

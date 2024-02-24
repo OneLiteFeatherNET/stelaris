@@ -13,8 +13,8 @@ class ItemMetaPage extends StatelessWidget with DropDownItemReducer {
   final ItemModel model;
 
   ItemMetaPage({
-    super.key,
     required this.model,
+    super.key,
   });
 
   @override

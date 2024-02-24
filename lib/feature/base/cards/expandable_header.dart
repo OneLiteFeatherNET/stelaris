@@ -9,11 +9,11 @@ class ExpandableHeader extends StatelessWidget {
   final VoidCallback? saveCallback;
 
   const ExpandableHeader({
-    super.key,
     required this.isExpanded,
     required this.title,
     this.saveCallback,
     this.addCallback,
+    super.key,
   });
 
   @override
