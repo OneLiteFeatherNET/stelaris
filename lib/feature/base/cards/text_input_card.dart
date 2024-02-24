@@ -43,6 +43,12 @@ class _TextInputCardState extends State<TextInputCard> {
   }
 
   @override
+  void dispose() {
+    _editController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: padding,
