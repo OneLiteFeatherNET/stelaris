@@ -34,6 +34,14 @@ class _SetupStepperState<E extends DataModel> extends State<SetupStepper<E>> {
   FocusNode focusNode = FocusNode();
 
   @override
+  void dispose() {
+    nameController.dispose();
+    descriptionController.dispose();
+    focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final steps = getSteps();
     return ListView(
