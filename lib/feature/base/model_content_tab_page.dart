@@ -16,10 +16,10 @@ class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
   final TabPageMapFunction<E> page;
 
   const ModelContentTabPage({
-    super.key,
     this.selectedItem,
     required this.tabPages,
     required this.page,
+    super.key,
   });
 
   @override

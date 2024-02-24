@@ -12,7 +12,10 @@ import 'package:stelaris_ui/util/constants.dart';
 class BlockGeneralPage extends StatelessWidget {
   final BlockModel selectedBlock;
 
-  const BlockGeneralPage({super.key, required this.selectedBlock});
+  const BlockGeneralPage({
+    required this.selectedBlock,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

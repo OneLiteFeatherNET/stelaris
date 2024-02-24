@@ -11,9 +11,10 @@ import 'package:stelaris_ui/util/constants.dart';
 
 class CharCard extends StatelessWidget {
   final FontModel model;
+
   const CharCard({
-    super.key,
     required this.model,
+    super.key,
   });
 
   @override
@@ -50,14 +51,15 @@ class CharCard extends StatelessWidget {
               valueUpdate: (value) {
                 if (model.chars != null) {
                   showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AbortAddDialog(
-                          title: context.l10n.dialog_abort_chars_add,
-                          content:
-                              '${context.l10n.dialog_abort_chars_text} $value',
-                        );
-                      });
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AbortAddDialog(
+                        title: context.l10n.dialog_abort_chars_add,
+                        content:
+                            '${context.l10n.dialog_abort_chars_text} $value',
+                      );
+                    },
+                  );
                   return;
                 }
                 final oldEntry = model;
@@ -89,36 +91,37 @@ class CharCard extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return DeleteDialog<String>(
-                        title: Text(context.l10n.dialog_delete_confirm),
-                        header: [
-                          TextSpan(
-                            text: context.l10n.delete_dialog_first_line,
-                            style: whiteStyle,
+                      title: Text(context.l10n.dialog_delete_confirm),
+                      header: [
+                        TextSpan(
+                          text: context.l10n.delete_dialog_first_line,
+                          style: whiteStyle,
+                        ),
+                        TextSpan(
+                          text: key,
+                          style: redStyle,
+                        ),
+                        TextSpan(
+                          text: context.l10n.delete_dialog_entry,
+                          style: whiteStyle,
+                        ),
+                      ],
+                      value: key,
+                      successfully: (value) {
+                        final oldEntry = model;
+                        List<String> chars = List.of(model.chars ?? []);
+                        chars.remove(key);
+                        final newEntry = oldEntry.copyWith(chars: chars);
+                        StoreProvider.dispatch(
+                          context,
+                          UpdateFontAction(
+                            oldEntry,
+                            newEntry,
                           ),
-                          TextSpan(
-                            text: key,
-                            style: redStyle,
-                          ),
-                          TextSpan(
-                            text: context.l10n.delete_dialog_entry,
-                            style: whiteStyle,
-                          ),
-                        ],
-                        value: key,
-                        successfully: (value) {
-                          final oldEntry = model;
-                          List<String> chars = List.of(model.chars ?? []);
-                          chars.remove(key);
-                          final newEntry = oldEntry.copyWith(chars: chars);
-                          StoreProvider.dispatch(
-                            context,
-                            UpdateFontAction(
-                              oldEntry,
-                              newEntry,
-                            ),
-                          );
-                          return true;
-                        });
+                        );
+                        return true;
+                      },
+                    );
                   },
                 );
               },

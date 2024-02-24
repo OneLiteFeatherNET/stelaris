@@ -13,7 +13,10 @@ import 'package:stelaris_ui/util/functions.dart';
 class AttributeGeneralPage extends StatelessWidget {
   final AttributeModel attributeModel;
 
-  AttributeGeneralPage({required this.attributeModel, super.key});
+  AttributeGeneralPage({
+    required this.attributeModel,
+    super.key,
+  });
 
   final _key = GlobalKey<FormState>();
 

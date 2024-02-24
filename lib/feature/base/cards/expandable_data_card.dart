@@ -9,10 +9,10 @@ class ExpandableDataCard extends StatelessWidget {
   final List<Widget> widgets;
 
   const ExpandableDataCard({
-    super.key,
     required this.title,
     required this.buttonClick,
     required this.widgets,
+    super.key,
   });
 
   @override

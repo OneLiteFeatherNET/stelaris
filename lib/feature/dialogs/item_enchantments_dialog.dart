@@ -13,14 +13,14 @@ class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
   final ItemModel model;
   final FormFieldValidator formFieldValidator;
   final ValueNotifier<Enchantment?> _selected = ValueNotifier(null);
-
   final _key = GlobalKey<FormState>();
 
-  ItemEnchantmentAddDialog(
-      {super.key,
-      required this.addEnchantmentCallback,
-      required this.model,
-      required this.formFieldValidator});
+  ItemEnchantmentAddDialog({
+    required this.addEnchantmentCallback,
+    required this.model,
+    required this.formFieldValidator,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

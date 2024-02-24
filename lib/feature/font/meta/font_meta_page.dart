@@ -7,7 +7,10 @@ import 'package:stelaris_ui/feature/font/meta/char_card.dart';
 class FontMetaPage extends StatelessWidget {
   final FontModel model;
 
-  const FontMetaPage({super.key, required this.model});
+  const FontMetaPage({
+    required this.model,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

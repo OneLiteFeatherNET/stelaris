@@ -12,13 +12,13 @@ class ModelCard<E extends DataModel> extends StatefulWidget {
   final E rawModel;
 
   const ModelCard({
-    super.key,
     required this.selected,
     required this.selectedCardShape,
     required this.mapToDeleteDialog,
     required this.mapToDeleteSuccessfully,
     required this.mapToDataModelItem,
     required this.rawModel,
+    super.key,
   });
 
   @override

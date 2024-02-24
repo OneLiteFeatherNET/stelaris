@@ -11,8 +11,8 @@ import 'package:stelaris_ui/util/functions.dart';
 class LoreCard extends StatelessWidget {
   final ItemModel model;
   const LoreCard({
-    super.key,
     required this.model,
+    super.key,
   });
 
   @override

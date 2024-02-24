@@ -6,11 +6,12 @@ class BaseCard extends StatelessWidget {
   final String? message;
   final Widget widget;
 
-  const BaseCard(
-      {super.key,
-      required this.display,
-      required this.message,
-      required this.widget});
+  const BaseCard({
+    required this.display,
+    required this.message,
+    required this.widget,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +26,8 @@ class BaseCard extends StatelessWidget {
               color: Theme.of(context).secondaryHeaderColor,
               height: 50,
               child: ListTile(
-                title: Text(display, style: whiteStyle),
-                trailing: _getToolTip()
-              ),
+                  title: Text(display, style: whiteStyle),
+                  trailing: _getToolTip()),
             ),
             heightTen,
             widget

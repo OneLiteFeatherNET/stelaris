@@ -18,16 +18,17 @@ class EntryButtons extends StatelessWidget with EnchantmentReducer {
   final List<TextInputFormatter>? inputFormatters;
   final FormFieldValidator formFieldValidator;
 
-  EntryButtons(
-      {super.key,
-      required this.editTitle,
-      required this.model,
-      required this.name,
-      required this.value,
-      required this.delete,
-      required this.update,
-      this.inputFormatters,
-      required this.formFieldValidator});
+  EntryButtons({
+    super.key,
+    required this.editTitle,
+    required this.model,
+    required this.name,
+    required this.value,
+    required this.delete,
+    required this.update,
+    this.inputFormatters,
+    required this.formFieldValidator,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +40,13 @@ class EntryButtons extends StatelessWidget with EnchantmentReducer {
             title: context.l10n.dialog_delete_confirm,
             header: [
               TextSpan(
-                  text: context.l10n.dialog_level_delete_first_line,
-                  style: whiteStyle),
-              TextSpan(text: name, style: redStyle)
+                text: context.l10n.dialog_level_delete_first_line,
+                style: whiteStyle,
+              ),
+              TextSpan(
+                text: name,
+                style: redStyle,
+              )
             ],
             value: name,
             mapToDeleteSuccessfully: (value) {

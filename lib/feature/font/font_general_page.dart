@@ -18,8 +18,8 @@ class FontGeneralPage extends StatelessWidget {
   final FontModel model;
 
   FontGeneralPage({
-    super.key,
     required this.model,
+    super.key,
   });
 
   final _key = GlobalKey<FormState>();

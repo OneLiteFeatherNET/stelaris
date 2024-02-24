@@ -30,9 +30,7 @@ class BlockPage extends StatelessWidget {
               useRootNavigator: false,
               builder: (BuildContext context) {
                 return SetUpDialog<BlockModel>(
-                  buildModel: (name, description) {
-                    return BlockModel(name: name);
-                  },
+                  buildModel: (name, description) => BlockModel(name: name),
                   finishCallback: (model) {
                     StoreProvider.dispatch(context, AddBlockAction(model));
                     Navigator.pop(context);
