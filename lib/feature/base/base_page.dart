@@ -14,28 +14,26 @@ class BasePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, AppState>(converter: (store) {
-      return store.state;
-    }, builder: (context, vm) {
-      return Scaffold(
-        appBar: AppBar(
-          leading: ToggleNavigationBar(navigationState: vm.openNavigation),
-          elevation: 0,
-          title: appTitle,
-          centerTitle: true,
-          actions: const [
-            ThemeSwitcherToggle(),
-            InfoButton()
-          ],
-        ),
-        body: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            NavigationSideBar(openNavigation: vm.openNavigation),
-            Expanded(child: child),
-          ],
-        ),
-      );
-    });
+    return StoreConnector<AppState, bool>(
+      converter: (store) => store.state.openNavigation,
+      builder: (context, vm) {
+        return Scaffold(
+          appBar: AppBar(
+            leading: ToggleNavigationBar(navigationState: vm),
+            elevation: 0,
+            title: appTitle,
+            centerTitle: true,
+            actions: const [ThemeSwitcherToggle(), InfoButton()],
+          ),
+          body: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              NavigationSideBar(openNavigation: vm),
+              Expanded(child: child),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
