@@ -49,7 +49,7 @@ class CharCard extends StatelessWidget {
                 return null;
               },
               valueUpdate: (value) {
-                if (model.chars != null) {
+                if (model.chars != null && model.chars!.contains(value)) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
