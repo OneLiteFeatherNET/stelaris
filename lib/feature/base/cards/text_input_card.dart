@@ -35,6 +35,7 @@ class TextInputCard<E> extends StatefulWidget {
 
 class _TextInputCardState extends State<TextInputCard> {
   final TextEditingController _editController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   initState() {
@@ -45,6 +46,7 @@ class _TextInputCardState extends State<TextInputCard> {
   @override
   void dispose() {
     _editController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -60,6 +62,7 @@ class _TextInputCardState extends State<TextInputCard> {
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
             child: Focus(
+              focusNode: _focusNode,
               child: TextFormField(
                 maxLength: widget.maxLength,
                 autovalidateMode: widget.formValidator != null
@@ -76,9 +79,10 @@ class _TextInputCardState extends State<TextInputCard> {
                 textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
               ),
               onFocusChange: (focus) {
-                if (!focus) return;
-                if (_editController.value.text.trim().isEmpty) return;
-                widget.valueUpdate(_editController.value.text);
+                if (focus) return;
+                String value = _editController.value.text;
+                if (value.trim().isEmpty) return;
+                widget.valueUpdate(value);
               },
             ),
           ),
