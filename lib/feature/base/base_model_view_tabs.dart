@@ -15,6 +15,7 @@ class BaseModelViewTabs<E extends DataModel> extends StatelessWidget {
   final TabPageMapFunction<E> page;
   final MapToTabPages tabPages;
   final List<E> models;
+  final bool Function(E) compareFunction;
 
   const BaseModelViewTabs({
     required this.mapToDataModelItem,
@@ -26,6 +27,7 @@ class BaseModelViewTabs<E extends DataModel> extends StatelessWidget {
     required this.page,
     required this.tabPages,
     required this.models,
+    required this.compareFunction,
     super.key
   });
 
@@ -39,6 +41,7 @@ class BaseModelViewTabs<E extends DataModel> extends StatelessWidget {
       mapToDeleteSuccessfully: mapToDeleteSuccessfully,
       callFunction: callFunction,
       models: models,
+      compareFunction: compareFunction,
       child: ModelContentTabPage(
         selectedItem: selectedItem,
         page: page,

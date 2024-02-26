@@ -12,6 +12,7 @@ class ModelList<E extends DataModel> extends StatelessWidget {
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
   final Function(E) callFunction;
   final List<E> models;
+  final bool Function(E) compareFunction;
 
   const ModelList({
     required this.mapToDataModelItem,
@@ -21,6 +22,7 @@ class ModelList<E extends DataModel> extends StatelessWidget {
     required this.mapToDeleteSuccessfully,
     required this.callFunction,
     required this.models,
+    required this.compareFunction,
     super.key,
   });
 
@@ -38,7 +40,6 @@ class ModelList<E extends DataModel> extends StatelessWidget {
               itemCount: models.length,
               itemBuilder: (context, index) {
                 final E rawModel = models[index];
-                final selected = rawModel.hashCode == selectedItem.hashCode;
                 final selectedCardShape = RoundedRectangleBorder(
                   side: BorderSide(
                       color: Theme.of(context).colorScheme.secondary),
@@ -49,7 +50,7 @@ class ModelList<E extends DataModel> extends StatelessWidget {
                     callFunction.call(rawModel);
                   },
                   child: ModelCard<E>(
-                    selected: selected,
+                    selected: this.compareFunction.call(rawModel),
                     selectedCardShape: selectedCardShape,
                     mapToDeleteDialog: mapToDeleteDialog,
                     mapToDeleteSuccessfully: mapToDeleteSuccessfully,
