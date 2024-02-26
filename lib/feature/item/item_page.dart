@@ -16,7 +16,6 @@ import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class ItemPage extends StatelessWidget {
-
   const ItemPage({super.key});
 
   @override
@@ -74,13 +73,13 @@ class ItemPage extends StatelessWidget {
           page: (page, model) => _mapPageToWidget(page, model),
           models: vm.itemModels,
           tabPages: (pages) => pages,
+          compareFunction: (model) => vm.isSelectedItem(model),
         );
       },
     );
   }
 
-  Widget _mapPageToWidget(
-      TabPage value, ItemModel? listenable) {
+  Widget _mapPageToWidget(TabPage value, ItemModel? listenable) {
     switch (value) {
       case TabPage.general:
         if (listenable == null) return nil;

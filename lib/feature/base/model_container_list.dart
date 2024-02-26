@@ -11,6 +11,7 @@ class ModelContainerList<E extends DataModel> extends StatelessWidget {
   final MapToDeleteDialog<E> mapToDeleteDialog;
   final Function(E) callFunction;
   final List<E> models;
+  final bool Function(E) compareFunction;
 
   const ModelContainerList({
     required this.mapToDataModelItem,
@@ -20,6 +21,7 @@ class ModelContainerList<E extends DataModel> extends StatelessWidget {
     required this.mapToDeleteDialog,
     required this.callFunction,
     required this.models,
+    required this.compareFunction,
     super.key,
   });
 
@@ -33,6 +35,7 @@ class ModelContainerList<E extends DataModel> extends StatelessWidget {
       mapToDeleteSuccessfully: mapToDeleteSuccessfully,
       callFunction: callFunction,
       models: models,
+      compareFunction: compareFunction,
     );
   }
 }
