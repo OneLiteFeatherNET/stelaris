@@ -71,7 +71,9 @@ class NotificationPage extends StatelessWidget {
             callFunction: (model) => StoreProvider.dispatch(
                 context, SelectedNotificationAction(model)),
             models: vm.models,
-            child: _mapPageToWidget(vm.selected));
+            child: _mapPageToWidget(vm.selected),
+            compareFunction: (model) => vm.isSelectedItem(model),
+        );
       },
     );
   }

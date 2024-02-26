@@ -30,6 +30,13 @@ class ItemViewModel extends Vm {
       : super(equals: [itemModels, selected]);
 
   bool isSelectedItem(ItemModel model) {
-    return selected != null && selected.hashCode == model.hashCode;
+    if (selected == null) return false;
+
+    final selectedModel = selected!;
+
+    if (selectedModel.id != null && model.id != null) {
+      return selectedModel.id == model.id;
+    }
+    return selectedModel.hashCode == model.hashCode;
   }
 }

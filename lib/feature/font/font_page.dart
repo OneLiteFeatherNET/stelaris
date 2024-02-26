@@ -16,7 +16,6 @@ import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class FontPage extends StatelessWidget {
-
   const FontPage({super.key});
 
   @override
@@ -37,10 +36,11 @@ class FontPage extends StatelessWidget {
             return true;
           },
           callFunction: (model) =>
-            StoreProvider.dispatch(context, SelectFontAction(model)),
+              StoreProvider.dispatch(context, SelectFontAction(model)),
           page: (page, notification) => _mapPageToWidget(page, notification),
           models: vm.models,
           tabPages: (pages) => pages,
+          compareFunction: (model) => vm.isSelectedItem(model),
         );
       },
     );

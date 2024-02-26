@@ -35,6 +35,7 @@ class AttributePage extends StatelessWidget {
           },
           models: vm.models,
           child: _mapModelToWidget(vm.selected),
+          compareFunction: (model) => vm.isSelectedItem(model),
         );
       },
     );

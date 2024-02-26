@@ -65,6 +65,7 @@ class BlockPage extends StatelessWidget {
                 (element) => identical(element.text, TabPage.meta.content));
             return requiredTabs;
           },
+          compareFunction: (model) => vm.isSelectedItem(model),
         );
       },
     );

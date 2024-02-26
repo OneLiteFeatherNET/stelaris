@@ -12,6 +12,7 @@ class BaseModelView<E extends DataModel> extends StatelessWidget {
   final Function(E) callFunction;
   final List<E> models;
   final Widget? child;
+  final bool Function(E) compareFunction;
 
   const BaseModelView({
     required this.mapToDataModelItem,
@@ -22,6 +23,7 @@ class BaseModelView<E extends DataModel> extends StatelessWidget {
     required this.callFunction,
     required this.models,
     required this.child,
+    required this.compareFunction,
     super.key,
   });
 
@@ -39,6 +41,7 @@ class BaseModelView<E extends DataModel> extends StatelessWidget {
           mapToDeleteSuccessfully: mapToDeleteSuccessfully,
           callFunction: callFunction,
           models: models,
+          compareFunction: compareFunction,
         ),
         if (child != null) child!,
       ],
