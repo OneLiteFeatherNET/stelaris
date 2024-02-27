@@ -26,12 +26,7 @@ class CharCard extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return EntryAddDialog(
-              title: Text(
-                context.l10n.dialog_char_title,
-                textAlign: TextAlign.center,
-              ),
-              forceClose: true,
-              controller: TextEditingController(),
+              title: context.l10n.dialog_char_title,
               formFieldValidator: (value) {
                 String input = value as String;
 
@@ -64,7 +59,7 @@ class CharCard extends StatelessWidget {
                 }
                 final oldEntry = model;
                 List<String> chars = List.of(oldEntry.chars ?? []);
-                chars.add(value);
+                chars.add(value!);
                 final newEntry = oldEntry.copyWith(chars: chars);
                 StoreProvider.dispatch(
                   context,
@@ -74,6 +69,8 @@ class CharCard extends StatelessWidget {
                   ),
                 );
               },
+              autoFocus: true,
+              formKey: GlobalKey<FormState>(),
             );
           },
         );

@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/model/attribute_model.dart';
 import 'package:stelaris_ui/api/state/actions/attribute_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
@@ -7,9 +8,10 @@ import 'package:stelaris_ui/api/state/factory/attribute_vm_state.dart';
 import 'package:stelaris_ui/feature/attributes/attribute_general_page.dart';
 import 'package:stelaris_ui/feature/base/base_model_view.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
-import 'package:stelaris_ui/feature/dialogs/setup_dialog.dart';
+import 'package:stelaris_ui/feature/dialogs/entry_add_dialog.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris_ui/util/functions.dart';
 
 class AttributePage extends StatelessWidget {
   const AttributePage({super.key});
@@ -53,14 +55,22 @@ class AttributePage extends StatelessWidget {
       context: context,
       useRootNavigator: false,
       builder: (BuildContext context) {
-        return SetUpDialog<AttributeModel>(
-          buildModel: (name, description) {
-            return AttributeModel(modelName: name);
-          },
-          finishCallback: (model) {
-            StoreProvider.dispatch(context, AttributeAddAction(model));
+        return EntryAddDialog(
+          title: 'Create new attribute',
+          valueUpdate: (value) {
+            AttributeModel attributeModel = AttributeModel(modelName: value);
+            StoreProvider.dispatch(context, AttributeAddAction(attributeModel));
             Navigator.pop(context, true);
           },
+          formKey: GlobalKey<FormState>(),
+          hintText: 'Example name',
+          formatters: [FilteringTextInputFormatter.allow(stringWithSpacePattern)],
+          formFieldValidator: (value) {
+            var input = value as String;
+            return checkIfEmptyAndReturnErrorString(input, context);
+          },
+          clearFunction: (text) => text.trim().isNotEmpty,
+          autoFocus: true,
         );
       },
     );

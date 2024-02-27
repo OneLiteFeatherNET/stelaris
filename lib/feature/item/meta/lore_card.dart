@@ -10,6 +10,7 @@ import 'package:stelaris_ui/util/functions.dart';
 
 class LoreCard extends StatelessWidget {
   final ItemModel model;
+
   const LoreCard({
     required this.model,
     super.key,
@@ -24,11 +25,10 @@ class LoreCard extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return EntryAddDialog(
-              controller: TextEditingController(),
-              valueUpdate: ((value) {
+              valueUpdate: (value) {
                 final oldEntry = model;
                 List<String> oldLores = List.of(oldEntry.lore ?? []);
-                oldLores.add(value);
+                oldLores.add(value!);
                 final newEntry = oldEntry.copyWith(lore: oldLores);
                 StoreProvider.dispatch(
                   context,
@@ -38,12 +38,14 @@ class LoreCard extends StatelessWidget {
                   ),
                 );
                 Navigator.pop(context);
-              }),
+              },
               formFieldValidator: (value) {
                 var input = value as String;
                 return checkIfEmptyAndReturnErrorString(input, context);
               },
-              title: Text(context.l10n.button_add_new_line),
+              title: context.l10n.button_add_new_line,
+              autoFocus: true,
+              formKey: GlobalKey<FormState>(),
             );
           },
         );
