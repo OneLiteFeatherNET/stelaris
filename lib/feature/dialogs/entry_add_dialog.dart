@@ -1,61 +1,102 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris_ui/util/typedefs.dart';
 
-typedef StringValueUpdate = void Function(String value);
-
-class EntryAddDialog extends StatelessWidget {
-  final Text title;
-  final TextEditingController controller;
-  final StringValueUpdate valueUpdate;
-  final List<TextInputFormatter>? formatters;
-  final bool? forceClose;
+class EntryAddDialog extends StatefulWidget {
+  final String title;
+  final GlobalKey<FormState> formKey;
+  final ValueUpdate<String> valueUpdate;
   final FormFieldValidator? formFieldValidator;
+  final List<TextInputFormatter>? formatters;
+  final String? hintText;
+  final bool Function(String)? clearFunction;
+  final bool? autoFocus;
 
-  final _key = GlobalKey<FormState>();
-
-  EntryAddDialog({
+  const EntryAddDialog({
     required this.title,
-    required this.controller,
+    required this.formKey,
     required this.valueUpdate,
     this.formatters,
-    this.forceClose,
     this.formFieldValidator,
+    this.hintText,
+    this.clearFunction,
+    this.autoFocus,
     super.key,
   });
 
   @override
+  State<EntryAddDialog> createState() => _EntryAddDialogState();
+}
+
+class _EntryAddDialogState extends State<EntryAddDialog> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: title,
       contentPadding: dialogPadding,
+      title: Text(
+        widget.title,
+        textAlign: TextAlign.center,
+      ),
       children: [
         Form(
-          key: _key,
-          autovalidateMode: AutovalidateMode.always,
+          key: widget.formKey,
           child: TextFormField(
-            autofocus: true,
-            controller: controller,
-            inputFormatters: formatters,
-            validator: formFieldValidator,
+            autofocus: widget.autoFocus ?? false,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            controller: _controller,
+            inputFormatters: widget.formatters,
+            validator: widget.formFieldValidator,
+            decoration: InputDecoration(
+              hintText: widget.hintText,
+              suffixIcon: _getSuffixWidget(),
+            ),
           ),
         ),
         verticalSpacing25,
-        TextButton(
-          onPressed: () {
-            if (!_key.currentState!.validate()) return;
-            if (controller.value.text.isEmpty) return;
-
-            if (forceClose != null && forceClose!) {
-              context.pop(true);
-            }
-            valueUpdate(controller.value.text);
-          },
-          child: Text(context.l10n.button_add),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () => _handleCreateClick(),
+              child: Text(context.l10n.button_add),
+            ),
+            dialogButtonWidthSpacing,
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(context.l10n.button_cancel),
+            ),
+          ],
         )
       ],
+    );
+  }
+
+  void _handleCreateClick() {
+    if (!widget.formKey.currentState!.validate()) return;
+    final String input = _controller.value.text;
+    if (input.isEmpty) return;
+    widget.valueUpdate(input);
+  }
+
+  Widget? _getSuffixWidget() {
+    if (widget.clearFunction == null) return null;
+    return IconButton(
+      onPressed: () {
+        if (!widget.clearFunction!.call(_controller.value.text)) return;
+        _controller.text = emptyString;
+      },
+      icon: const Icon(Icons.clear_sharp),
     );
   }
 }

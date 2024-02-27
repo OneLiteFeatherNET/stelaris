@@ -1,16 +1,17 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
 import 'package:stelaris_ui/api/state/actions/notification_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/state/factory/notification_vm_state.dart';
-import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 import 'package:stelaris_ui/feature/base/base_model_view.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
-import 'package:stelaris_ui/feature/dialogs/setup_dialog.dart';
+import 'package:stelaris_ui/feature/dialogs/entry_add_dialog.dart';
 import 'package:stelaris_ui/feature/notification/notification_page_general.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris_ui/util/functions.dart';
 
 class NotificationPage extends StatelessWidget {
 
@@ -25,29 +26,7 @@ class NotificationPage extends StatelessWidget {
         return BaseModelView<NotificationModel>(
             mapToDataModelItem: (value) =>
                 ModelText(displayName: value.modelName),
-            openFunction: () {
-              showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: (BuildContext context) {
-                  return SetUpDialog<NotificationModel>(
-                    buildModel: (name, description) {
-                      return NotificationModel(
-                        modelName: name,
-                        frameType: FrameType.goal.value,
-                      );
-                    },
-                    finishCallback: (model) {
-                      StoreProvider.dispatch(
-                        context,
-                        NotificationAddAction(model),
-                      );
-                      Navigator.pop(context);
-                    },
-                  );
-                },
-              );
-            },
+            openFunction: () => _openCreationDialog(context),
             selectedItem: vm.selected,
             mapToDeleteDialog: (value) {
               return [
@@ -73,6 +52,32 @@ class NotificationPage extends StatelessWidget {
             models: vm.models,
             child: _mapPageToWidget(vm.selected),
             compareFunction: (model) => vm.isSelectedItem(model),
+        );
+      },
+    );
+  }
+
+  void _openCreationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (BuildContext context) {
+        return EntryAddDialog(
+          title: 'Create new notification',
+          valueUpdate: (value) {
+            NotificationModel model = NotificationModel(modelName: value);
+            StoreProvider.dispatch(context, NotificationAddAction(model));
+            Navigator.pop(context, true);
+          },
+          formKey: GlobalKey<FormState>(),
+          hintText: 'Example name',
+          formatters: [FilteringTextInputFormatter.allow(stringWithSpacePattern)],
+          formFieldValidator: (value) {
+            var input = value as String;
+            return checkIfEmptyAndReturnErrorString(input, context);
+          },
+          clearFunction: (text) => text.trim().isNotEmpty,
+          autoFocus: true,
         );
       },
     );
