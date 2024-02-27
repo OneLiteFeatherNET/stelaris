@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
@@ -8,12 +9,12 @@ import 'package:stelaris_ui/api/state/factory/item_vm_state.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
-import 'package:stelaris_ui/feature/dialogs/setup_dialog.dart';
+import 'package:stelaris_ui/feature/dialogs/entry_add_dialog.dart';
 import 'package:stelaris_ui/feature/item/general/item_general_page.dart';
-import 'package:stelaris_ui/feature/item/item_group.dart';
 import 'package:stelaris_ui/feature/item/meta/item_meta_page.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris_ui/util/functions.dart';
 
 class ItemPage extends StatelessWidget {
   const ItemPage({super.key});
@@ -27,27 +28,7 @@ class ItemPage extends StatelessWidget {
         return BaseModelViewTabs<ItemModel>(
           mapToDataModelItem: (value) =>
               ModelText(displayName: value.modelName),
-          openFunction: () {
-            showDialog(
-              context: context,
-              useRootNavigator: false,
-              builder: (BuildContext context) {
-                return SetUpDialog<ItemModel>(
-                  buildModel: (name, description) {
-                    return ItemModel(
-                      modelName: name,
-                      description: description,
-                      group: ItemGroup.misc.display,
-                    );
-                  },
-                  finishCallback: (model) {
-                    StoreProvider.dispatch(context, AddItemAction(model));
-                    Navigator.pop(context);
-                  },
-                );
-              },
-            );
-          },
+          openFunction: () => _openCreationDialog(context),
           selectedItem: vm.selected,
           mapToDeleteDialog: (value) {
             return [
@@ -79,13 +60,40 @@ class ItemPage extends StatelessWidget {
     );
   }
 
+  void _openCreationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (BuildContext context) {
+        return EntryAddDialog(
+          title: 'Create new item',
+          valueUpdate: (value) {
+            final model = ItemModel(modelName: value);
+            StoreProvider.dispatch(context, AddItemAction(model));
+            Navigator.pop(context, true);
+          },
+          formKey: GlobalKey<FormState>(),
+          hintText: 'Example name',
+          formatters: [
+            FilteringTextInputFormatter.allow(stringWithSpacePattern),
+          ],
+          formFieldValidator: (value) {
+            var input = value as String;
+            return checkIfEmptyAndReturnErrorString(input, context);
+          },
+          clearFunction: (text) => text.trim().isNotEmpty,
+          autoFocus: true,
+        );
+      },
+    );
+  }
+
   Widget _mapPageToWidget(TabPage value, ItemModel? listenable) {
+    if (listenable == null) return nil;
     switch (value) {
       case TabPage.general:
-        if (listenable == null) return nil;
         return ItemGeneralPage(model: listenable);
       case TabPage.meta:
-        if (listenable == null) return nil;
         return ItemMetaPage(model: listenable);
     }
   }

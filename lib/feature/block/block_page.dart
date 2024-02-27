@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/block_model.dart';
 import 'package:stelaris_ui/api/state/actions/block_actions.dart';
@@ -8,10 +9,11 @@ import 'package:stelaris_ui/api/state/factory/block_vm_state.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/block/block_general_page.dart';
-import 'package:stelaris_ui/feature/dialogs/setup_dialog.dart';
+import 'package:stelaris_ui/feature/dialogs/entry_add_dialog.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
+import 'package:stelaris_ui/util/functions.dart';
 
 class BlockPage extends StatelessWidget {
   const BlockPage({super.key});
@@ -24,21 +26,7 @@ class BlockPage extends StatelessWidget {
       builder: (context, vm) {
         return BaseModelViewTabs<BlockModel>(
           mapToDataModelItem: (value) => ModelText(displayName: value.name),
-          openFunction: () {
-            showDialog(
-              context: context,
-              useRootNavigator: false,
-              builder: (BuildContext context) {
-                return SetUpDialog<BlockModel>(
-                  buildModel: (name, description) => BlockModel(name: name),
-                  finishCallback: (model) {
-                    StoreProvider.dispatch(context, AddBlockAction(model));
-                    Navigator.pop(context);
-                  },
-                );
-              },
-            );
-          },
+          openFunction: () => _openDialog(context),
           selectedItem: vm.selected,
           mapToDeleteDialog: (value) {
             return [
@@ -71,9 +59,35 @@ class BlockPage extends StatelessWidget {
     );
   }
 
+  void _openDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (BuildContext context) {
+        return EntryAddDialog(
+          title: 'Create new block',
+          valueUpdate: (value) {
+            BlockModel model = BlockModel(name: value);
+            StoreProvider.of(context, false).dispatchAsync(AddBlockAction(model));
+            Navigator.pop(context, true);
+          },
+          formKey: GlobalKey<FormState>(),
+          hintText: 'Example name',
+          formatters: [FilteringTextInputFormatter.allow(stringWithSpacePattern)],
+          formFieldValidator: (value) {
+            var input = value as String;
+            return checkIfEmptyAndReturnErrorString(input, context);
+          },
+          clearFunction: (text) => text.trim().isNotEmpty,
+          autoFocus: true,
+        );
+      },
+    );
+  }
+
   Widget _mapPageToWidget(TabPage page, BlockModel? model) {
-    if (page != TabPage.general) return nil;
     if (model == null) return nil;
+    if (page != TabPage.general) return nil;
     return BlockGeneralPage(selectedBlock: model);
   }
 }
