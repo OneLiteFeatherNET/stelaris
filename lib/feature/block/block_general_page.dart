@@ -53,8 +53,7 @@ class BlockGeneralPage extends StatelessWidget {
           ],
         ),
         SaveButton(
-          callback: ApiService().blockAPI.update,
-          parameter: selectedBlock,
+          callback: () => ApiService().blockAPI.update(selectedBlock),
         ),
       ],
     );
