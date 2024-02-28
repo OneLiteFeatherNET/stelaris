@@ -63,7 +63,8 @@ class NotificationAddAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     var added = await ApiService().notificationAPI.add(model);
-    final models = await ApiService().notificationAPI.getAll();
+    final models = List.of(state.notifications, growable: true);
+    models.add(added);
     return state.copyWith(notifications: models, selectedNotification: added);
   }
 }
@@ -75,8 +76,9 @@ class RemoveNotificationAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    await ApiService().notificationAPI.remove(model);
-    final models = await ApiService().notificationAPI.getAll();
+    final removedModel = await ApiService().notificationAPI.remove(model);
+    final models = List.of(state.notifications, growable: true);
+    models.remove(removedModel);
     return state.copyWith(notifications: models);
   }
 }

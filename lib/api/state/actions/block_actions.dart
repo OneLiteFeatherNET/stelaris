@@ -63,7 +63,8 @@ class AddBlockAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     var addedBlock = await ApiService().blockAPI.add(_model);
-    var blocks = await ApiService().blockAPI.getAll();
+    final List<BlockModel> blocks = List.of(state.blocks, growable: true);
+    blocks.add(addedBlock);
     return state.copyWith(blocks: blocks, selectedBlock: addedBlock);
   }
 }
@@ -77,8 +78,9 @@ class RemoveBlockAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    await ApiService().blockAPI.remove(model);
-    var blocks = await ApiService().blockAPI.getAll();
+    var removed = await ApiService().blockAPI.remove(model);
+    var blocks = List.of(state.blocks, growable: true);
+    blocks.remove(removed);
     return state.copyWith(blocks: blocks);
   }
 }
