@@ -48,9 +48,9 @@ class RemoveFontsAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    await ApiService().fontAPI.remove(model);
+    final removed = await ApiService().fontAPI.remove(model);
     final fonts = List.of(state.fonts, growable: true);
-    fonts.remove(model);
+    fonts.remove(removed);
     return state.copyWith(fonts: fonts);
   }
 }
@@ -64,7 +64,8 @@ class AddFontAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     var added = await ApiService().fontAPI.add(_model);
-    var fonts = await ApiService().fontAPI.getAll();
+    final List<FontModel> fonts = List.of(state.fonts, growable: true);
+    fonts.add(added);
     return state.copyWith(fonts: fonts, selectedFont: added);
   }
 }

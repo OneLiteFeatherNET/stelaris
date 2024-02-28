@@ -19,6 +19,7 @@ class BasePage extends StatelessWidget {
       builder: (context, vm) {
         return Scaffold(
           appBar: AppBar(
+            scrolledUnderElevation: 0,
             leading: ToggleNavigationBar(navigationState: vm),
             elevation: 0,
             title: appTitle,

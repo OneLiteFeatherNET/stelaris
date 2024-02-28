@@ -1,10 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/feature/base/button/add_button.dart';
 import 'package:stelaris_ui/feature/base/model_card.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
-class ModelList<E extends DataModel> extends StatelessWidget {
+class ModelList<E extends DataModel> extends StatefulWidget {
   final MapToDataModelItem<E> mapToDataModelItem;
   final E? selectedItem;
   final VoidCallback openFunction;
@@ -27,19 +28,32 @@ class ModelList<E extends DataModel> extends StatelessWidget {
   });
 
   @override
+  State<ModelList<E>> createState() => _ModelListState<E>();
+}
+
+class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
+
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(
-          width: 250,
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8),
+        Expanded(
+          child: SizedBox(
+            width: 250,
             child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: models.length,
+              controller: _scrollController,
+              itemCount: widget.models.length,
               itemBuilder: (context, index) {
-                final E rawModel = models[index];
+                final E rawModel = widget.models[index];
                 final selectedCardShape = RoundedRectangleBorder(
                   side: BorderSide(
                       color: Theme.of(context).colorScheme.secondary),
@@ -47,14 +61,14 @@ class ModelList<E extends DataModel> extends StatelessWidget {
                 );
                 return GestureDetector(
                   onTap: () {
-                    callFunction.call(rawModel);
+                    widget.callFunction.call(rawModel);
                   },
                   child: ModelCard<E>(
-                    selected: this.compareFunction.call(rawModel),
+                    selected: this.widget.compareFunction.call(rawModel),
                     selectedCardShape: selectedCardShape,
-                    mapToDeleteDialog: mapToDeleteDialog,
-                    mapToDeleteSuccessfully: mapToDeleteSuccessfully,
-                    mapToDataModelItem: mapToDataModelItem,
+                    mapToDeleteDialog: widget.mapToDeleteDialog,
+                    mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
+                    mapToDataModelItem: widget.mapToDataModelItem,
                     rawModel: rawModel,
                   ),
                 );
@@ -62,12 +76,12 @@ class ModelList<E extends DataModel> extends StatelessWidget {
             ),
           ),
         ),
-        const Spacer(),
+        SizedBox(height: 15,),
         SizedBox(
           width: 250,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 25),
-            child: AddButton(openFunction: openFunction),
+            child: AddButton(openFunction: widget.openFunction),
           ),
         )
       ],

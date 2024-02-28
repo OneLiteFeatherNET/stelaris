@@ -65,11 +65,11 @@ class AddItemAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     var added = await ApiService().itemApi.add(_model);
-    var items = await ApiService().itemApi.getAll();
+    final List<ItemModel> items = List.of(state.items, growable: true);
+    items.add(added);
     return state.copyWith(items: items, selectedItem: added);
   }
 }
-
 
 class RemoveItemAction extends ReduxAction<AppState> {
 
@@ -79,8 +79,9 @@ class RemoveItemAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    await ApiService().itemApi.remove(model);
-    var items = await ApiService().itemApi.getAll();
+    var removedEntry = await ApiService().itemApi.remove(model);
+    List<ItemModel> items = List.of(state.items, growable: true);
+    items.removeWhere((element) => element.id == removedEntry.id);
     return state.copyWith(items: items, selectedItem: null);
   }
 }
