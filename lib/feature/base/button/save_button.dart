@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
+/// The class represents the save button widget which is used to save the changes.
+/// It is only used in such structures which require a save button.
 class SaveButton extends StatelessWidget {
   final Function callback;
-  final Object? parameter;
+  final String? text;
 
   const SaveButton({
     required this.callback,
-    this.parameter,
+    this.text,
     super.key,
   });
 
@@ -18,19 +19,28 @@ class SaveButton extends StatelessWidget {
       alignment: Alignment.bottomRight,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 25, right: 10),
-        child: FloatingActionButton.extended(
-          heroTag: UniqueKey(),
-          onPressed: () {
-            if (parameter != null) {
-              callback.call(parameter);
-            } else {
-              callback.call();
-            }
-          },
-          label: Text(context.l10n.button_save),
-          icon: saveIcon,
-        ),
+        child: _getButton(text),
       ),
+    );
+  }
+
+  /// Returns the button which should be displayed
+  Widget _getButton(String? text) {
+    if (text == null) return _getButtonWithOutLabel();
+    return FloatingActionButton.extended(
+      heroTag: UniqueKey(),
+      onPressed: () => callback.call(),
+      label: Text(text),
+      icon: saveIcon,
+    );
+  }
+
+  /// Returns the button without any label
+  Widget _getButtonWithOutLabel() {
+    return FloatingActionButton(
+      heroTag: UniqueKey(),
+      onPressed: () => callback.call(),
+      child: saveIcon,
     );
   }
 }
