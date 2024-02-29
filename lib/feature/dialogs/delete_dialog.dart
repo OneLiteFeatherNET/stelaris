@@ -28,6 +28,7 @@ class DeleteDialog<E> extends StatelessWidget {
       ),
       actions: <Widget>[
         TextButton(
+          autofocus: true,
           child: Text(context.l10n.button_yes),
           onPressed: () {
             if (successfully(value)) {

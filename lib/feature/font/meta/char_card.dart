@@ -69,7 +69,6 @@ class CharCard extends StatelessWidget {
                   ),
                 );
               },
-              autoFocus: true,
               formKey: GlobalKey<FormState>(),
             );
           },

@@ -27,6 +27,7 @@ class AbortAddDialog extends StatelessWidget {
         ),
         verticalSpacing10,
         TextButton(
+          autofocus: true,
           onPressed: () {
             Navigator.of(context).pop(false);
           },

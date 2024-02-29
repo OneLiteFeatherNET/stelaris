@@ -7,15 +7,12 @@ import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
-class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
+class ItemEnchantmentAddDialog extends StatefulWidget {
   final AddEnchantmentCallback addEnchantmentCallback;
-  final TextEditingController levelController = TextEditingController();
   final ItemModel model;
   final FormFieldValidator formFieldValidator;
-  final ValueNotifier<Enchantment?> _selected = ValueNotifier(null);
-  final _key = GlobalKey<FormState>();
 
-  ItemEnchantmentAddDialog({
+  const ItemEnchantmentAddDialog({
     required this.addEnchantmentCallback,
     required this.model,
     required this.formFieldValidator,
@@ -23,8 +20,24 @@ class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
   });
 
   @override
+  State<ItemEnchantmentAddDialog> createState() => _ItemEnchantmentAddDialogState();
+}
+
+class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog> with EnchantmentReducer {
+  final TextEditingController _controller = TextEditingController();
+  final ValueNotifier<Enchantment?> _selected = ValueNotifier(null);
+  final _key = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _selected.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<DropdownMenuItem<Enchantment>> enchantments = getEnchantments(model);
+    List<DropdownMenuItem<Enchantment>> enchantments = getEnchantments(widget.model);
     _selected.value = enchantments[0].value;
     return SimpleDialog(
       title: Text(
@@ -36,6 +49,7 @@ class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
         Text(context.l10n.dialog_enchantment_enchantment),
         horizontalSpacing10,
         DropdownButtonFormField<Enchantment?>(
+          autofocus: true,
           value: _selected.value,
           items: enchantments,
           onChanged: (value) {
@@ -48,11 +62,11 @@ class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
           key: _key,
           autovalidateMode: AutovalidateMode.always,
           child: TextFormField(
-            controller: levelController,
+            controller: _controller,
             autocorrect: false,
             keyboardType: numberInput,
             inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
-            validator: formFieldValidator,
+            validator: widget.formFieldValidator,
           ),
         ),
         verticalSpacing25,
@@ -60,10 +74,10 @@ class ItemEnchantmentAddDialog extends StatelessWidget with EnchantmentReducer {
             onPressed: () {
               if (!_key.currentState!.validate()) return;
               if (_selected.value == null) return;
-              addEnchantmentCallback(
+              widget.addEnchantmentCallback(
                 _selected.value!,
                 int.parse(
-                  levelController.value.text,
+                  _controller.value.text,
                 ),
               );
             },

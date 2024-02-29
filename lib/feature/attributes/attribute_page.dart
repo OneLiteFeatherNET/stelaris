@@ -70,7 +70,6 @@ class AttributePage extends StatelessWidget {
             return checkIfEmptyAndReturnErrorString(input, context);
           },
           clearFunction: (text) => text.trim().isNotEmpty,
-          autoFocus: true,
         );
       },
     );

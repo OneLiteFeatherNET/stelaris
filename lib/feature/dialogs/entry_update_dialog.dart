@@ -12,7 +12,6 @@ class EntryUpdateDialog extends StatefulWidget {
   final List<TextInputFormatter>? formatters;
   final String? hintText;
   final bool Function(String)? clearFunction;
-  final bool? autoFocus;
   final String? data;
 
   const EntryUpdateDialog({
@@ -23,7 +22,6 @@ class EntryUpdateDialog extends StatefulWidget {
     this.formFieldValidator,
     this.hintText,
     this.clearFunction,
-    this.autoFocus,
     this.data,
     super.key,
   });
@@ -59,7 +57,7 @@ class _EntryUpdateDialogState extends State<EntryUpdateDialog> {
         Form(
           key: widget.formKey,
           child: TextFormField(
-            autofocus: widget.autoFocus ?? false,
+            autofocus: true,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             controller: _controller,
             inputFormatters: widget.formatters,
