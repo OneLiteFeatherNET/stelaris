@@ -4,7 +4,7 @@ import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
-class EntryAddDialog extends StatefulWidget {
+class EntryUpdateDialog extends StatefulWidget {
   final String title;
   final GlobalKey<FormState> formKey;
   final ValueUpdate<String> valueUpdate;
@@ -13,8 +13,9 @@ class EntryAddDialog extends StatefulWidget {
   final String? hintText;
   final bool Function(String)? clearFunction;
   final bool? autoFocus;
+  final String? data;
 
-  const EntryAddDialog({
+  const EntryUpdateDialog({
     required this.title,
     required this.formKey,
     required this.valueUpdate,
@@ -23,15 +24,22 @@ class EntryAddDialog extends StatefulWidget {
     this.hintText,
     this.clearFunction,
     this.autoFocus,
+    this.data,
     super.key,
   });
 
   @override
-  State<EntryAddDialog> createState() => _EntryAddDialogState();
+  State<EntryUpdateDialog> createState() => _EntryUpdateDialogState();
 }
 
-class _EntryAddDialogState extends State<EntryAddDialog> {
+class _EntryUpdateDialogState extends State<EntryUpdateDialog> {
   final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    if (widget.data != null) _controller.text = widget.data!;
+    super.initState();
+  }
 
   @override
   void dispose() {

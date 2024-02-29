@@ -9,7 +9,7 @@ import 'package:stelaris_ui/api/state/factory/item_vm_state.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
-import 'package:stelaris_ui/feature/dialogs/entry_add_dialog.dart';
+import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris_ui/feature/item/general/item_general_page.dart';
 import 'package:stelaris_ui/feature/item/meta/item_meta_page.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
@@ -65,7 +65,7 @@ class ItemPage extends StatelessWidget {
       context: context,
       useRootNavigator: false,
       builder: (BuildContext context) {
-        return EntryAddDialog(
+        return EntryUpdateDialog(
           title: 'Create new item',
           valueUpdate: (value) {
             final model = ItemModel(modelName: value);

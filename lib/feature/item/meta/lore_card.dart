@@ -4,7 +4,7 @@ import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/feature/base/button/entry_buttons.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
-import 'package:stelaris_ui/feature/dialogs/entry_add_dialog.dart';
+import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
@@ -24,7 +24,7 @@ class LoreCard extends StatelessWidget {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return EntryAddDialog(
+            return EntryUpdateDialog(
               valueUpdate: (value) {
                 final oldEntry = model;
                 List<String> oldLores = List.of(oldEntry.lore ?? []);

@@ -7,7 +7,7 @@ import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/state/factory/notification_vm_state.dart';
 import 'package:stelaris_ui/feature/base/base_model_view.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
-import 'package:stelaris_ui/feature/dialogs/entry_add_dialog.dart';
+import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris_ui/feature/notification/notification_page_general.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
@@ -62,7 +62,7 @@ class NotificationPage extends StatelessWidget {
       context: context,
       useRootNavigator: false,
       builder: (BuildContext context) {
-        return EntryAddDialog(
+        return EntryUpdateDialog(
           title: 'Create new notification',
           valueUpdate: (value) {
             NotificationModel model = NotificationModel(modelName: value);
