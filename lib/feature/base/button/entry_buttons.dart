@@ -75,7 +75,6 @@ class EntryButtons extends StatelessWidget {
             Navigator.pop(context, false);
           },
           formFieldValidator: formFieldValidator,
-          autoFocus: true,
           data: value,
         );
       },
