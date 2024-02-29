@@ -44,7 +44,6 @@ class LoreCard extends StatelessWidget {
                 return checkIfEmptyAndReturnErrorString(input, context);
               },
               title: context.l10n.button_add_new_line,
-              autoFocus: true,
               formKey: GlobalKey<FormState>(),
             );
           },

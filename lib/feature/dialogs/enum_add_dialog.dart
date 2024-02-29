@@ -32,6 +32,7 @@ class _EnumAddDialogState<E> extends State<EnumAddDialog<E>> {
         SizedBox(
           width: 300,
           child: DropdownButtonFormField<E>(
+            autofocus: true,
             items: widget.items,
             value: defaultValue,
             onChanged: (E? value) {
@@ -42,9 +43,7 @@ class _EnumAddDialogState<E> extends State<EnumAddDialog<E>> {
         ),
         verticalSpacing25,
         TextButton(
-          onPressed: () {
-            widget.valueUpdate(defaultValue);
-          },
+          onPressed: () => widget.valueUpdate(defaultValue),
           child: Text(context.l10n.button_add),
         )
       ],
