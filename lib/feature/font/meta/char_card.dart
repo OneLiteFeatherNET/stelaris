@@ -5,7 +5,7 @@ import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/dialogs/abort_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
-import 'package:stelaris_ui/feature/dialogs/entry_add_dialog.dart';
+import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
@@ -25,7 +25,7 @@ class CharCard extends StatelessWidget {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return EntryAddDialog(
+            return EntryUpdateDialog(
               title: context.l10n.dialog_char_title,
               formFieldValidator: (value) {
                 String input = value as String;
