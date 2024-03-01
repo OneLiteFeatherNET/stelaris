@@ -12,10 +12,11 @@ class BaseModelViewTabs<E extends DataModel> extends StatelessWidget {
   final MapToDeleteDialog<E> mapToDeleteDialog;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
   final Function(E) callFunction;
-  final TabPageMapFunction<E> page;
+  final TabMapFunction<E> page;
   final MapToTabPages tabPages;
   final List<E> models;
   final bool Function(E) compareFunction;
+  final List<Tab> tabs;
 
   const BaseModelViewTabs({
     required this.mapToDataModelItem,
@@ -28,6 +29,7 @@ class BaseModelViewTabs<E extends DataModel> extends StatelessWidget {
     required this.tabPages,
     required this.models,
     required this.compareFunction,
+    required this.tabs,
     super.key
   });
 
@@ -46,6 +48,7 @@ class BaseModelViewTabs<E extends DataModel> extends StatelessWidget {
         selectedItem: selectedItem,
         page: page,
         tabPages: tabPages,
+        tabs: tabs,
       ),
     );
   }
