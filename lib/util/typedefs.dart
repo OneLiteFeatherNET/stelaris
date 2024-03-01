@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
-import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/api/util/minecraft/enchantment.dart';
 
 /// Defines all typedef function for the card which displays data from a model
@@ -26,5 +25,4 @@ typedef MapToDeleteDialog<E extends DataModel> = List<TextSpan> Function(E value
 typedef MapToTabPages = List<Tab> Function(List<Tab> pages);
 
 /// ModelContainerList functions
-typedef TabPageMapFunction<E extends DataModel> = Widget Function(
-    TabPage page, E? notification);
+typedef TabMapFunction<E extends DataModel> = Widget Function(String page, E? dataModel);

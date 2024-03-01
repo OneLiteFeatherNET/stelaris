@@ -6,7 +6,6 @@ import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/state/factory/font_vm_state.dart';
-import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_add_dialog.dart';
@@ -41,6 +40,7 @@ class FontPage extends StatelessWidget {
           models: vm.models,
           tabPages: (pages) => pages,
           compareFunction: (model) => vm.isSelectedItem(model),
+          tabs: _getTabs(),
         );
       },
     );
@@ -72,6 +72,21 @@ class FontPage extends StatelessWidget {
     );
   }
 
+  List<Tab> _getTabs() {
+    return [
+      const Tab(
+        child: Text(
+          'General',
+        ),
+      ),
+      const Tab(
+        child: Text(
+          'Chars',
+        ),
+      ),
+    ];
+  }
+
   List<TextSpan> _createDeleteText(FontModel value, BuildContext context) {
     return [
       TextSpan(
@@ -89,13 +104,14 @@ class FontPage extends StatelessWidget {
     ];
   }
 
-  Widget _mapPageToWidget(TabPage value, FontModel? clickedModel) {
-    if (clickedModel == null) return nil;
+  Widget _mapPageToWidget(String value, FontModel? clickedModel) {
+    if (value.trim().isEmpty || clickedModel == null) return nil;
     switch (value) {
-      case TabPage.general:
+      case 'General':
         return FontGeneralPage(model: clickedModel);
-      case TabPage.meta:
+      case 'Chars':
         return FontMetaPage(model: clickedModel);
     }
+    return nil;
   }
 }
