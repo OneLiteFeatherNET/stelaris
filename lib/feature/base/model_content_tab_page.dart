@@ -1,46 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/api/tabs/tab_pages.dart';
+import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
-
-const List<TabPage> tabPagesValues = TabPage.values;
-List<Tab> tabs = tabPagesValues
-    .map((e) => Tab(
-          child: Text(e.content),
-        ))
-    .toList();
 
 class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
   final E? selectedItem;
   final MapToTabPages tabPages;
-  final TabPageMapFunction<E> page;
+  final TabMapFunction<E> page;
+  final List<Tab> tabs;
 
   const ModelContentTabPage({
     this.selectedItem,
     required this.tabPages,
     required this.page,
+    required this.tabs,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    var pages = tabPages.call(tabs);
     return DefaultTabController(
-      length: pages.length,
+      length: tabs.length,
       child: Expanded(
         child: Scaffold(
           appBar: AppBar(
             toolbarHeight: 0,
             bottom: TabBar(
-              tabs: pages,
+              tabs: tabs,
             ),
           ),
           body: TabBarView(
-            children: pages.map(
+            children: tabs.map(
               (e) {
-                var text = e.child as Text;
+                Text text = e.child as Text;
                 return page(
-                  transform(text.data!),
+                  text.data ?? emptyString,
                   selectedItem,
                 );
               },
@@ -49,17 +44,5 @@ class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  TabPage transform(String name) {
-    if (identical(TabPage.general.content, name)) {
-      return TabPage.general;
-    }
-
-    if (identical(TabPage.meta.content, name)) {
-      return TabPage.meta;
-    }
-
-    return TabPage.general;
   }
 }

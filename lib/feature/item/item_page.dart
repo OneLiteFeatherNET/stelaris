@@ -6,7 +6,6 @@ import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/state/factory/item_vm_state.dart';
-import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
@@ -55,6 +54,7 @@ class ItemPage extends StatelessWidget {
           models: vm.itemModels,
           tabPages: (pages) => pages,
           compareFunction: (model) => vm.isSelectedItem(model),
+          tabs: _getTabs(),
         );
       },
     );
@@ -87,13 +87,31 @@ class ItemPage extends StatelessWidget {
     );
   }
 
-  Widget _mapPageToWidget(TabPage value, ItemModel? listenable) {
-    if (listenable == null) return nil;
+  List<Tab> _getTabs() {
+    return [
+      const Tab(
+        child: Text(
+          'General',
+        ),
+      ),
+      const Tab(
+        child: Text(
+          'Meta',
+        ),
+      ),
+    ];
+  }
+
+  Widget _mapPageToWidget(String value, ItemModel? listenable) {
+    if (value.trim().isEmpty) return nil;
     switch (value) {
-      case TabPage.general:
+      case 'General':
+        if (listenable == null) return nil;
         return ItemGeneralPage(model: listenable);
-      case TabPage.meta:
+      case 'Meta':
+        if (listenable == null) return nil;
         return ItemMetaPage(model: listenable);
     }
+    return nil;
   }
 }

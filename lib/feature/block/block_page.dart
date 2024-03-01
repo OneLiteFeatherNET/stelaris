@@ -31,11 +31,17 @@ class BlockPage extends StatelessWidget {
           mapToDeleteDialog: (value) {
             return [
               TextSpan(
-                  text: context.l10n.delete_dialog_first_line,
-                  style: whiteStyle),
-              TextSpan(text: value.name ?? unknownEntry, style: redStyle),
+                text: context.l10n.delete_dialog_first_line,
+                style: whiteStyle,
+              ),
               TextSpan(
-                  text: context.l10n.delete_dialog_entry, style: whiteStyle),
+                text: value.name ?? unknownEntry,
+                style: redStyle,
+              ),
+              TextSpan(
+                text: context.l10n.delete_dialog_entry,
+                style: whiteStyle,
+              ),
             ];
           },
           mapToDeleteSuccessfully: (value) {
@@ -49,11 +55,14 @@ class BlockPage extends StatelessWidget {
           models: vm.models,
           tabPages: (pages) {
             List<Tab> requiredTabs = List.from(pages, growable: true);
-            requiredTabs.removeWhere(
-                (element) => identical(element.text, TabPage.meta.content));
+            requiredTabs.removeWhere((element) => identical(
+                  element.text,
+                  TabPage.meta.content,
+                ));
             return requiredTabs;
           },
           compareFunction: (model) => vm.isSelectedItem(model),
+          tabs: _getTabs(),
         );
       },
     );
@@ -84,9 +93,22 @@ class BlockPage extends StatelessWidget {
     );
   }
 
-  Widget _mapPageToWidget(TabPage page, BlockModel? model) {
+  List<Tab> _getTabs() {
+    return [
+      const Tab(
+        child: Text(
+          'General',
+        ),
+      ),
+      const Tab(
+        text: 'Meta',
+      ),
+    ];
+  }
+
+  Widget _mapPageToWidget(String page, BlockModel? model) {
     if (model == null) return nil;
-    if (page != TabPage.general) return nil;
+    if (page.trim().isEmpty) return nil;
     return BlockGeneralPage(selectedBlock: model);
   }
 }
