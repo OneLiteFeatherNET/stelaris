@@ -37,11 +37,11 @@ class NavigationSideBar extends StatelessWidget {
     return List.generate(
       navigationEntries.length,
       (index) {
-        var display = navigationEntries[index].display;
-        var leadingIcon = Icon(navigationEntries[index].data);
+        final navigationValue = navigationEntries[index];
         return NavigationRailDestination(
-          icon: leadingIcon,
-          label: Text(display, style: navigationEntryTextStyle),
+          selectedIcon: Icon(navigationValue.selected),
+          icon: Icon(navigationValue.data),
+          label: Text(navigationValue.display, style: navigationEntryTextStyle),
         );
       },
     );
