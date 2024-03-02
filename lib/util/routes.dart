@@ -19,35 +19,38 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: NavigationEntry.attributes.route,
       pageBuilder: (context, state) => CustomTransitionPage(
-          child: const BasePage(child: AttributePage()),
-          key: state.pageKey,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-              FadeTransition(
-                opacity: animation,
-                child: child,
-              )),
+        child: const BasePage(child: AttributePage()),
+        key: state.pageKey,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+      ),
     ),
     GoRoute(
       path: NavigationEntry.items.route,
       pageBuilder: (context, state) => CustomTransitionPage(
-          child: const BasePage(child: ItemPage()),
-          key: state.pageKey,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-              FadeTransition(
-                opacity: animation,
-                child: child,
-              )),
+        child: const BasePage(child: ItemPage()),
+        key: state.pageKey,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+      ),
     ),
     GoRoute(
       path: NavigationEntry.notifications.route,
       pageBuilder: (context, state) => CustomTransitionPage(
-          child: const BasePage(child: NotificationPage()),
-          key: state.pageKey,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-              FadeTransition(
-                opacity: animation,
-                child: child,
-              )),
+        child: const BasePage(child: NotificationPage()),
+        key: state.pageKey,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+      ),
     ),
     GoRoute(
       path: NavigationEntry.font.route,
