@@ -11,7 +11,7 @@ class AttributeModel extends DataModel with _$AttributeModel {
     String? id,
     String? modelName,
     String? name,
-    @Default(0.0) double? defaultValue,
+    @freezed@Default(0.0) double? defaultValue,
     @Default(0.0) double? maximumValue
   }) = _AttributeModel;
 

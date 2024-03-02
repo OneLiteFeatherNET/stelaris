@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
+import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 
 part 'font_model.g.dart';
 
@@ -12,11 +13,11 @@ class FontModel extends DataModel with _$FontModel {
     String? modelName,
     String? name,
     String? description,
-    @Default('bitmap') String? type, //Ignore
+    @Default(FontType.bitmap) FontType type,
     List<String>? chars,
     @Default(0) int? ascent,
     @Default(0) int? height,
-    @Default([]) List<double>? shift, //Ignore
+    @Default([]) List<double>? shift,
   }) = _FontModel;
 
   factory FontModel.fromJson(Map<String, dynamic> json) =>

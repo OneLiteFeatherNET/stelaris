@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
+import 'package:stelaris_ui/api/util/minecraft/frame_type.dart';
 
 part 'notification_model.g.dart';
 part 'notification_model.freezed.dart';
@@ -12,7 +13,7 @@ class NotificationModel extends DataModel with _$NotificationModel {
     String? modelName,
     String? name,
     String? material,
-    @Default('goal') String? frameType,
+    @Default(FrameType.task) FrameType frameType,
     String? title,
     String? description,
   }) = _Notification;

@@ -106,10 +106,10 @@ class FontGeneralPage extends StatelessWidget {
                     if (value.displayName == model.type) return;
                     StoreProvider.dispatch(context, UpdateFontAction(
                       model,
-                      model.copyWith(type: value.displayName),
+                      model.copyWith(type: value),
                     ));
                   },
-                  defaultValue: (value) => getDefaultValue(value),
+                  defaultValue: (value) => value.type,
                   currentValue: model,
               )
             ],
@@ -132,10 +132,5 @@ class FontGeneralPage extends StatelessWidget {
           value: values[index],
           child: Text(values[index].displayName),
         ));
-  }
-
-  FontType getDefaultValue(FontModel value) {
-    return FontType.values
-        .firstWhere((element) => element.displayName == value.type);
   }
 }
