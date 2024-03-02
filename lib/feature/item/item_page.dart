@@ -69,6 +69,7 @@ class ItemPage extends StatelessWidget {
           title: 'Create new item',
           valueUpdate: (value) {
             final model = ItemModel(modelName: value);
+            debugPrint("Model group is ${model.group}");
             StoreProvider.dispatch(context, AddItemAction(model));
             Navigator.pop(context, true);
           },

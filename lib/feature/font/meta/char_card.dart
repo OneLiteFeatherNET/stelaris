@@ -27,22 +27,7 @@ class CharCard extends StatelessWidget {
           builder: (BuildContext context) {
             return EntryUpdateDialog(
               title: context.l10n.dialog_char_title,
-              formFieldValidator: (value) {
-                String input = value as String;
-
-                if (input.trim().isEmpty) {
-                  return context.l10n.error_card_empty;
-                }
-
-                if (!input.startsWith("\\u")) {
-                  return context.l10n.error_not_unicode_start;
-                }
-
-                if (input.length > 6) {
-                  return context.l10n.error_not_unicode;
-                }
-                return null;
-              },
+              formFieldValidator: (value) => _validateCharInput(context, value as String),
               valueUpdate: (value) {
                 if (model.chars != null && model.chars!.contains(value)) {
                   showDialog(
@@ -80,6 +65,7 @@ class CharCard extends StatelessWidget {
           final key = model.chars![index];
           return ListTile(
             title: Text(key),
+          leading: Text(convertToEmoji(key)),
             trailing: IconButton(
               icon: deleteIcon,
               onPressed: () {
@@ -88,20 +74,7 @@ class CharCard extends StatelessWidget {
                   builder: (context) {
                     return DeleteDialog<String>(
                       title: Text(context.l10n.dialog_delete_confirm),
-                      header: [
-                        TextSpan(
-                          text: context.l10n.delete_dialog_first_line,
-                          style: whiteStyle,
-                        ),
-                        TextSpan(
-                          text: key,
-                          style: redStyle,
-                        ),
-                        TextSpan(
-                          text: context.l10n.delete_dialog_entry,
-                          style: whiteStyle,
-                        ),
-                      ],
+                      header: _getDeleteHeader(context, key),
                       value: key,
                       successfully: (value) {
                         final oldEntry = model;
@@ -126,5 +99,42 @@ class CharCard extends StatelessWidget {
         },
       ),
     );
+  }
+
+  String convertToEmoji(String input) {
+    final String d = input.replaceAll("\\u", '');
+    return "\\u{$d}";
+  }
+
+  String? _validateCharInput(BuildContext context, String input) {
+    if (input.trim().isEmpty) {
+      return context.l10n.error_card_empty;
+    }
+
+    if (!input.startsWith("\\u")) {
+      return context.l10n.error_not_unicode_start;
+    }
+
+    if (input.length > 6) {
+      return context.l10n.error_not_unicode;
+    }
+    return null;
+  }
+
+  List<TextSpan> _getDeleteHeader(BuildContext context, String key) {
+    return [
+      TextSpan(
+        text: context.l10n.delete_dialog_first_line,
+        style: whiteStyle,
+      ),
+      TextSpan(
+        text: key,
+        style: redStyle,
+      ),
+      TextSpan(
+        text: context.l10n.delete_dialog_entry,
+        style: whiteStyle,
+      ),
+    ];
   }
 }

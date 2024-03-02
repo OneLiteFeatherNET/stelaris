@@ -62,7 +62,7 @@ class GroupCard extends StatelessWidget with EnchantmentReducer {
                 oldEnchantments.remove(enchantment);
               }
               final newEntry = model.copyWith(
-                  group: value.display, enchantments: oldEnchantments);
+                  group: value, enchantments: oldEnchantments);
               StoreProvider.dispatch(
                 context,
                 UpdateItemAction(
@@ -75,14 +75,14 @@ class GroupCard extends StatelessWidget with EnchantmentReducer {
             }
           });
         } else {
-          final newEntry = model.copyWith(group: value.display);
+          final newEntry = model.copyWith(group: value);
           StoreProvider.dispatch(
             context,
             UpdateItemAction(model, newEntry),
           );
         }
       },
-      defaultValue: getDefaultValue,
+      defaultValue: ((value) => model.group),
     );
   }
 
@@ -93,10 +93,5 @@ class GroupCard extends StatelessWidget with EnchantmentReducer {
               child: Text(e.display),
             ))
         .toList();
-  }
-
-  ItemGroup getDefaultValue(ItemModel value) {
-    if (value.group == null)  return ItemGroup.misc;
-    return values.firstWhere((element) => element.display == value.group);
   }
 }

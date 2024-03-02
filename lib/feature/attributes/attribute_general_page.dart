@@ -36,7 +36,7 @@ class AttributeGeneralPage extends StatelessWidget {
                   currentValue: attributeModel.name ?? emptyString,
                   formatter: [FilteringTextInputFormatter.allow(stringPattern)],
                   valueUpdate: (value) {
-                    if (value == attributeModel.modelName) return;
+                    if (value == attributeModel.name) return;
                     final oldModel = attributeModel;
                     final newEntry = oldModel.copyWith(name: value);
                     StoreProvider.dispatch(
