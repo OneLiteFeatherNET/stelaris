@@ -75,7 +75,7 @@ mixin EnchantmentReducer {
   final List<DropdownMenuItem<Enchantment>> miscEnchantments = List.from(enchantments.values);
 
   List<DropdownMenuItem<Enchantment>> _getTools(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.tools.display) {
+    if (itemModel.enchantments == null && itemModel.group == ItemGroup.tools) {
       return toolEnchantments;
     }
 
@@ -91,7 +91,7 @@ mixin EnchantmentReducer {
   }
 
   List<DropdownMenuItem<Enchantment>> _getMeele(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.meeleWeapon.display) {
+    if (itemModel.enchantments == null && itemModel.group == ItemGroup.meeleWeapon) {
       return meeleEnchantments;
     }
 
@@ -107,7 +107,7 @@ mixin EnchantmentReducer {
   }
 
   List<DropdownMenuItem<Enchantment>> _getRanged(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.rangedWeapon.display) {
+    if (itemModel.enchantments == null && itemModel.group == ItemGroup.rangedWeapon) {
       return rangedEnchantments;
     }
 
@@ -123,7 +123,7 @@ mixin EnchantmentReducer {
   }
 
   List<DropdownMenuItem<Enchantment>> _getMisc(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.misc.display) {
+    if (itemModel.enchantments == null && itemModel.group == ItemGroup.misc) {
       return miscEnchantments;
     }
 
@@ -139,7 +139,7 @@ mixin EnchantmentReducer {
   }
 
   List<DropdownMenuItem<Enchantment>> _getArmor(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.armor.display) {
+    if (itemModel.enchantments == null && itemModel.group == ItemGroup.armor) {
       return miscEnchantments;
     }
 
@@ -155,10 +155,6 @@ mixin EnchantmentReducer {
   }
 
   List<DropdownMenuItem<Enchantment>> getEnchantments(ItemModel model) {
-    if (model.group == null || model.group!.trim().isEmpty) {
-      return _getMisc(model);
-    }
-
     if (identical(model.group, ItemGroup.armor.display)) {
       return _getArmor(model);
     }

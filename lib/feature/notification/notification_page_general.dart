@@ -116,8 +116,8 @@ class NotificationGeneralPage extends StatelessWidget {
                   display: context.l10n.card_frame_type,
                   items: getItems(),
                   valueUpdate: (FrameType? value) {
-                    if (value == getDefaultValue(model)) return;
-                    final newEntry = model.copyWith(frameType: value?.value);
+                    if (value == model.frameType) return;
+                    final newEntry = model.copyWith(frameType: value!);
                     StoreProvider.dispatch(
                       context,
                       UpdateNotificationAction(
@@ -126,7 +126,7 @@ class NotificationGeneralPage extends StatelessWidget {
                       ),
                     );
                   },
-                  defaultValue: getDefaultValue,
+                  defaultValue: (value) => value.frameType,
                 ),
               ],
             ),
@@ -150,10 +150,5 @@ class NotificationGeneralPage extends StatelessWidget {
               value: values[index],
               child: Text(values[index].value),
             ));
-  }
-
-  FrameType getDefaultValue(NotificationModel value) {
-    return FrameType.values
-        .firstWhere((element) => element.name == value.frameType);
   }
 }

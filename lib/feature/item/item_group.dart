@@ -9,4 +9,5 @@ enum ItemGroup {
   final String display;
 
   const ItemGroup(this.display);
+
 }
