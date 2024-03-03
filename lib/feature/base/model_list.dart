@@ -64,7 +64,7 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
                     widget.callFunction.call(rawModel);
                   },
                   child: ModelCard<E>(
-                    selected: this.widget.compareFunction.call(rawModel),
+                    selected: widget.compareFunction.call(rawModel),
                     selectedCardShape: selectedCardShape,
                     mapToDeleteDialog: widget.mapToDeleteDialog,
                     mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
