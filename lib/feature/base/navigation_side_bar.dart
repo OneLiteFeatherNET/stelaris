@@ -1,5 +1,8 @@
+import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/api/state/factory/navigation_vm_state.dart';
 import 'package:stelaris_ui/api/util/navigation.dart';
 
 const double maxXOffset = 180;
@@ -7,12 +10,6 @@ const navigationEntries = NavigationEntry.values;
 const navigationEntryTextStyle = TextStyle(fontSize: 16);
 
 class NavigationSideBar extends StatelessWidget {
-  const NavigationSideBar({
-    required this.openNavigation,
-    super.key,
-  });
-
-  final bool openNavigation;
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +17,21 @@ class NavigationSideBar extends StatelessWidget {
     final index = navigationEntries.indexWhere((element) {
       return element.route == router.uri.toString();
     });
-    return NavigationRail(
-      minExtendedWidth: maxXOffset,
-      extended:
-          MediaQuery.of(context).size.width < 1000 ? false : openNavigation,
-      onDestinationSelected: (index) {
-        context.go(navigationEntries[index].route);
+    return StoreConnector<AppState, NavigationViewModel>(
+      vm: () => NavigationStateFactory(),
+      builder: (context, vm) {
+        return NavigationRail(
+          minExtendedWidth: maxXOffset,
+          extended:
+          MediaQuery.of(context).size.width < 1000 ? false : vm.openNavigation,
+          onDestinationSelected: (index) {
+            context.go(navigationEntries[index].route);
+          },
+          labelType: NavigationRailLabelType.none,
+          destinations: _buildNavigationView(),
+          selectedIndex: index != -1 ? index : 0,
+        );
       },
-      labelType: NavigationRailLabelType.none,
-      destinations: _buildNavigationView(),
-      selectedIndex: index != -1 ? index : 0,
     );
   }
 
