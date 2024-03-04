@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
 import 'package:stelaris_ui/feature/base/button/add_button.dart';
 import 'package:stelaris_ui/feature/base/model_card.dart';
+import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
 class ModelList<E extends DataModel> extends StatefulWidget {
@@ -75,7 +76,7 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
             ),
           ),
         ),
-        SizedBox(height: 15,),
+        verticalSpacing10,
         SizedBox(
           width: 250,
           child: Padding(
