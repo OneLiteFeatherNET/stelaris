@@ -103,7 +103,7 @@ class FontGeneralPage extends StatelessWidget {
                   items: getItems(),
                   valueUpdate: (value) {
                     if (value == null) return;
-                    if (value.displayName == model.type) return;
+                    if (value == model.type) return;
                     StoreProvider.dispatch(context, UpdateFontAction(
                       model,
                       model.copyWith(type: value),
