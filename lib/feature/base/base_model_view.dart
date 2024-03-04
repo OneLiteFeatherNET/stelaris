@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
-import 'package:stelaris_ui/feature/base/model_container_list.dart';
+import 'package:stelaris_ui/feature/base/model_list.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
 class BaseModelView<E extends DataModel> extends StatelessWidget {
@@ -33,7 +33,7 @@ class BaseModelView<E extends DataModel> extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ModelContainerList(
+        ModelList(
           mapToDataModelItem: mapToDataModelItem,
           openFunction: openFunction,
           selectedItem: selectedItem,

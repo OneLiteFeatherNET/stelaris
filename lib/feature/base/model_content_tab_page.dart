@@ -10,7 +10,7 @@ class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
   final List<Tab> tabs;
 
   const ModelContentTabPage({
-    this.selectedItem,
+    required this.selectedItem,
     required this.tabPages,
     required this.page,
     required this.tabs,
