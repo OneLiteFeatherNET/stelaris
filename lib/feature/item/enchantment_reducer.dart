@@ -191,8 +191,7 @@ mixin EnchantmentReducer {
 
   bool canAdd(ItemModel model) {
     if (model.enchantments == null) return true;
-
-    var group = ItemGroup.values.firstWhere((element) => identical(model.group, element.display));
+    var group = ItemGroup.values.firstWhere((element) => identical(model.group, element));
 
     switch(group) {
       case ItemGroup.misc:
@@ -219,7 +218,7 @@ mixin EnchantmentReducer {
   }
 
   Enchantment? getByGroup(ItemModel model, String enchantment) {
-    var groupEnchantments = _getEnchantments(ItemGroup.values.firstWhere((element) => identical(element.display, model.group)));
+    var groupEnchantments = _getEnchantments(ItemGroup.values.firstWhere((element) => identical(element, model.group)));
 
     for (var value in groupEnchantments) {
       if (value.value!.minecraftValue == enchantment) {
