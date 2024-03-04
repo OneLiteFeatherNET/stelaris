@@ -1,6 +1,4 @@
-import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/feature/base/button/info_button.dart';
 import 'package:stelaris_ui/feature/base/button/toggle_navigation_button.dart';
 import 'package:stelaris_ui/feature/base/button/theme_switcher_toggle.dart';
@@ -14,27 +12,22 @@ class BasePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, bool>(
-      converter: (store) => store.state.openNavigation,
-      builder: (context, vm) {
-        return Scaffold(
-          appBar: AppBar(
-            scrolledUnderElevation: 0,
-            leading: ToggleNavigationBar(navigationState: vm),
-            elevation: 0,
-            title: appTitle,
-            centerTitle: true,
-            actions: const [ThemeSwitcherToggle(), InfoButton()],
-          ),
-          body: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              NavigationSideBar(openNavigation: vm),
-              Expanded(child: child),
-            ],
-          ),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
+        leading: const ToggleNavigationBar(),
+        elevation: 0,
+        title: appTitle,
+        centerTitle: true,
+        actions: const [ThemeSwitcherToggle(), InfoButton()],
+      ),
+      body: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          NavigationSideBar(),
+          Expanded(child: child),
+        ],
+      ),
     );
   }
 }
