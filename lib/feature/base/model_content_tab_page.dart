@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/data_model.dart';
-import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
