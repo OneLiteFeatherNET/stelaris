@@ -6,7 +6,7 @@ enum NavigationEntry {
     "Attributes",
     "/attributes",
     Icons.badge_outlined,
-    Icons.badge_sharp,
+    Icons.badge,
   ),
   items(
     "Items",
@@ -17,8 +17,8 @@ enum NavigationEntry {
   notifications(
     "Notifications",
     "/notifications",
-    Icons.notification_add_outlined,
-    Icons.notification_add,
+    Icons.message_outlined,
+    Icons.message,
   ),
   font(
     "Fonts",
