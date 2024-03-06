@@ -11,6 +11,8 @@ const navigationEntryTextStyle = TextStyle(fontSize: 16);
 
 class NavigationSideBar extends StatelessWidget {
 
+  const NavigationSideBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     final router = GoRouterState.of(context);
