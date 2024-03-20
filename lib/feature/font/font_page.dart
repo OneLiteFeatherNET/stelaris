@@ -11,7 +11,6 @@ import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris_ui/feature/font/font_general_page.dart';
 import 'package:stelaris_ui/feature/font/meta/font_meta_page.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
@@ -29,7 +28,7 @@ class FontPage extends StatelessWidget {
               ModelText(displayName: value.modelName),
           openFunction: () => _openDialog(context),
           selectedItem: vm.selected,
-          mapToDeleteDialog: (value) => _createDeleteText(value, context),
+          mapToDeleteDialog: (value) => createDeleteText(value.modelName, context),
           mapToDeleteSuccessfully: (value) {
             StoreProvider.dispatch(context, RemoveFontsAction(value));
             return true;
@@ -60,7 +59,9 @@ class FontPage extends StatelessWidget {
           },
           formKey: GlobalKey<FormState>(),
           hintText: 'Example name',
-          formatters: [FilteringTextInputFormatter.allow(stringWithSpacePattern)],
+          formatters: [
+            FilteringTextInputFormatter.allow(stringWithSpacePattern)
+          ],
           formFieldValidator: (value) {
             var input = value as String;
             return checkIfEmptyAndReturnErrorString(input, context);
@@ -82,23 +83,6 @@ class FontPage extends StatelessWidget {
         child: Text(
           'Chars',
         ),
-      ),
-    ];
-  }
-
-  List<TextSpan> _createDeleteText(FontModel value, BuildContext context) {
-    return [
-      TextSpan(
-        text: context.l10n.delete_dialog_first_line,
-        style: whiteStyle,
-      ),
-      TextSpan(
-        text: value.modelName ?? unknownEntry,
-        style: redStyle,
-      ),
-      TextSpan(
-        text: context.l10n.delete_dialog_entry,
-        style: whiteStyle,
       ),
     ];
   }
