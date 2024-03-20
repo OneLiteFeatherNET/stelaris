@@ -20,7 +20,6 @@ class ExpandableDataCard extends StatelessWidget {
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(5),
       ),
       child: ExpandableNotifier(

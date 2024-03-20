@@ -40,7 +40,6 @@ class EntryButtons extends StatelessWidget {
             header: [
               TextSpan(
                 text: context.l10n.dialog_level_delete_first_line,
-                style: whiteStyle,
               ),
               TextSpan(
                 text: name,

@@ -44,7 +44,7 @@ const String defaultMaterial = "minecraft:dirt";
 Icon addModelIcon = const Icon(Icons.add);
 Icon deleteIcon = const Icon(Icons.delete_forever, color: Colors.red);
 Icon saveIcon = const Icon(Icons.save);
-Icon editIcon = const Icon(Icons.edit, color: Colors.white);
+Icon editIcon = const Icon(Icons.edit);
 
 /// Styles
 TextStyle whiteStyle = const TextStyle(color: Colors.white);
@@ -68,3 +68,5 @@ const double dialogWidth = 500;
 const double dialogHeight = 350;
 
 const double cardElevation = 0.8;
+
+const String conceptURL = "https://docs.onelitefeather.network/doc/stelaris-S1nldMzySr#h-43-build-page";

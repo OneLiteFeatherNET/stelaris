@@ -18,6 +18,8 @@ class ExpandableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).colorScheme.onBackground;
+    final expandedColor = Theme.of(context).colorScheme.primary;
     return ExpandableButton(
       child: Container(
         clipBehavior: Clip.hardEdge,
@@ -29,27 +31,27 @@ class ExpandableHeader extends StatelessWidget {
           title: title,
           leading: Icon(
             isExpanded ? Icons.expand_less : Icons.expand_more,
-            color: isExpanded ? Colors.tealAccent : Colors.white,
+            color: isExpanded ? expandedColor : textColor,
           ),
-          trailing: _getTrailingWidget(),
+          trailing: _getTrailingWidget(textColor, expandedColor)
         ),
       ),
     );
   }
 
-  Widget? _getTrailingWidget() {
+  Widget? _getTrailingWidget(Color iconColor, Color expandedColor) {
     if (saveCallback != null) {
       return IconButton(
         onPressed: saveCallback,
         icon: saveIcon,
-        color: isExpanded ? Colors.tealAccent : Colors.white,
+        color: isExpanded ? expandedColor : iconColor,
       );
     }
     if (addCallback != null) {
       return IconButton(
         onPressed: addCallback,
         icon: addModelIcon,
-        color: isExpanded ? Colors.tealAccent : Colors.white,
+        color: isExpanded ? expandedColor : iconColor
       );
     }
     return null;

@@ -9,7 +9,7 @@ import 'package:stelaris_ui/feature/dialogs/abort_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/enum_add_dialog.dart';
 import 'package:stelaris_ui/feature/item/item_reducer.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris_ui/util/functions.dart';
 
 class FlagCard extends StatelessWidget with DropDownItemReducer {
   final ItemModel model;
@@ -61,20 +61,7 @@ class FlagCard extends StatelessWidget with DropDownItemReducer {
               title: Text(key),
               trailing: DeleteEntryButton<String>(
                 title: context.l10n.dialog_delete_confirm,
-                header: [
-                  TextSpan(
-                    text: context.l10n.delete_dialog_first_line,
-                    style: whiteStyle,
-                  ),
-                  TextSpan(
-                    text: key,
-                    style: redStyle,
-                  ),
-                  TextSpan(
-                    text: context.l10n.delete_dialog_entry,
-                    style: whiteStyle,
-                  ),
-                ],
+                header: createDeleteText(key, context),
                 value: key,
                 mapToDeleteSuccessfully: (value) {
                   final oldEntry = model;

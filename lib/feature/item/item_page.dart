@@ -11,7 +11,6 @@ import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris_ui/feature/item/general/item_general_page.dart';
 import 'package:stelaris_ui/feature/item/meta/item_meta_page.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
@@ -29,21 +28,7 @@ class ItemPage extends StatelessWidget {
               ModelText(displayName: value.modelName),
           openFunction: () => _openCreationDialog(context),
           selectedItem: vm.selected,
-          mapToDeleteDialog: (value) {
-            return [
-              TextSpan(
-                  text: context.l10n.delete_dialog_first_line,
-                  style: whiteStyle),
-              TextSpan(
-                text: value.modelName ?? unknownEntry,
-                style: redStyle,
-              ),
-              TextSpan(
-                text: context.l10n.delete_dialog_entry,
-                style: whiteStyle,
-              ),
-            ];
-          },
+          mapToDeleteDialog: (value) => createDeleteText(value.modelName, context),
           mapToDeleteSuccessfully: (value) {
             StoreProvider.dispatch(context, RemoveItemAction(value));
             return true;

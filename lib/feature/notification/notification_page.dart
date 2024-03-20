@@ -9,12 +9,10 @@ import 'package:stelaris_ui/feature/base/base_model_view.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris_ui/feature/notification/notification_page_general.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
 class NotificationPage extends StatelessWidget {
-
   const NotificationPage({super.key});
 
   @override
@@ -24,34 +22,20 @@ class NotificationPage extends StatelessWidget {
       onInit: (store) => store.dispatchAsync(InitNotificationAction()),
       builder: (context, vm) {
         return BaseModelView<NotificationModel>(
-            mapToDataModelItem: (value) =>
-                ModelText(displayName: value.modelName),
-            openFunction: () => _openCreationDialog(context),
-            selectedItem: vm.selected,
-            mapToDeleteDialog: (value) {
-              return [
-                TextSpan(
-                    text: context.l10n.delete_dialog_first_line,
-                    style: whiteStyle),
-                TextSpan(
-                  text: value.modelName ?? unknownEntry,
-                  style: redStyle,
-                ),
-                TextSpan(
-                  text: context.l10n.delete_dialog_entry,
-                  style: whiteStyle,
-                ),
-              ];
-            },
-            mapToDeleteSuccessfully: (value) {
-              StoreProvider.dispatch(context, RemoveNotificationAction(value));
-              return true;
-            },
-            callFunction: (model) => StoreProvider.dispatch(
-                context, SelectedNotificationAction(model)),
-            models: vm.models,
-            child: _mapPageToWidget(vm.selected),
-            compareFunction: (model) => vm.isSelectedItem(model),
+          mapToDataModelItem: (value) =>
+              ModelText(displayName: value.modelName),
+          openFunction: () => _openCreationDialog(context),
+          selectedItem: vm.selected,
+          mapToDeleteDialog: (value) => createDeleteText(value.modelName, context),
+          mapToDeleteSuccessfully: (value) {
+            StoreProvider.dispatch(context, RemoveNotificationAction(value));
+            return true;
+          },
+          callFunction: (model) => StoreProvider.dispatch(
+              context, SelectedNotificationAction(model)),
+          models: vm.models,
+          child: _mapPageToWidget(vm.selected),
+          compareFunction: (model) => vm.isSelectedItem(model),
         );
       },
     );
@@ -71,7 +55,9 @@ class NotificationPage extends StatelessWidget {
           },
           formKey: GlobalKey<FormState>(),
           hintText: 'Example name',
-          formatters: [FilteringTextInputFormatter.allow(stringWithSpacePattern)],
+          formatters: [
+            FilteringTextInputFormatter.allow(stringWithSpacePattern)
+          ],
           formFieldValidator: (value) {
             var input = value as String;
             return checkIfEmptyAndReturnErrorString(input, context);

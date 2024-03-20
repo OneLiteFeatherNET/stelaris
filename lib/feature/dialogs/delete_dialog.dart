@@ -27,7 +27,8 @@ class DeleteDialog<E> extends StatelessWidget {
         text: TextSpan(children: header),
       ),
       actions: <Widget>[
-        TextButton(
+        const CancelButton(),
+        FilledButton(
           autofocus: true,
           child: Text(context.l10n.button_yes),
           onPressed: () {
@@ -36,7 +37,6 @@ class DeleteDialog<E> extends StatelessWidget {
             }
           },
         ),
-        const CancelButton(),
       ],
     );
   }
