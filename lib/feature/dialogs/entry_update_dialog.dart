@@ -70,17 +70,15 @@ class _EntryUpdateDialogState extends State<EntryUpdateDialog> {
         ),
         verticalSpacing25,
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            TextButton(
-              onPressed: () => _handleCreateClick(),
-              child: Text(context.l10n.button_add),
-            ),
-            dialogButtonWidthSpacing,
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
               child: Text(context.l10n.button_cancel),
+            ),
+            FilledButton(
+              onPressed: () => _handleCreateClick(),
+              child: Text(context.l10n.button_add),
             ),
           ],
         )

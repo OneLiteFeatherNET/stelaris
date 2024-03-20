@@ -9,7 +9,6 @@ import 'package:stelaris_ui/feature/attributes/attribute_general_page.dart';
 import 'package:stelaris_ui/feature/base/base_model_view.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
@@ -27,7 +26,7 @@ class AttributePage extends StatelessWidget {
               ModelText(displayName: value.modelName),
           openFunction: () => _openDialog(context),
           selectedItem: vm.selected,
-          mapToDeleteDialog: (value) => _createDeleteText(value, context),
+          mapToDeleteDialog: (value) => createDeleteText(value.modelName, context),
           mapToDeleteSuccessfully: (value) {
             StoreProvider.dispatch(context, AttributeRemoveAction(value));
             return true;
@@ -64,7 +63,9 @@ class AttributePage extends StatelessWidget {
           },
           formKey: GlobalKey<FormState>(),
           hintText: 'Example name',
-          formatters: [FilteringTextInputFormatter.allow(stringWithSpacePattern)],
+          formatters: [
+            FilteringTextInputFormatter.allow(stringWithSpacePattern)
+          ],
           formFieldValidator: (value) {
             var input = value as String;
             return checkIfEmptyAndReturnErrorString(input, context);
@@ -75,16 +76,4 @@ class AttributePage extends StatelessWidget {
     );
   }
 
-  List<TextSpan> _createDeleteText(AttributeModel value, BuildContext context) {
-    return [
-      TextSpan(text: context.l10n.delete_dialog_first_line),
-      TextSpan(
-        text: value.modelName ?? unknownEntry,
-        style: redStyle,
-      ),
-      TextSpan(
-        text: context.l10n.delete_dialog_entry,
-      ),
-    ];
-  }
 }
