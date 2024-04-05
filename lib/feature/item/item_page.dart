@@ -10,6 +10,7 @@ import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris_ui/feature/item/general/item_general_page.dart';
+import 'package:stelaris_ui/feature/item/lore/lore_page.dart';
 import 'package:stelaris_ui/feature/item/meta/item_meta_page.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
@@ -85,18 +86,25 @@ class ItemPage extends StatelessWidget {
           'Meta',
         ),
       ),
+      const Tab(
+        child: Text('Lore'),
+      ),
     ];
   }
 
   Widget _mapPageToWidget(String value, ItemModel? listenable) {
     if (value.trim().isEmpty) return nil;
+    if (listenable == null) return nil;
     switch (value) {
       case 'General':
-        if (listenable == null) return nil;
         return ItemGeneralPage(model: listenable);
       case 'Meta':
-        if (listenable == null) return nil;
         return ItemMetaPage(model: listenable);
+      case 'Lore':
+        return LorePage(
+          model: listenable,
+          key: UniqueKey(),
+        );
     }
     return nil;
   }

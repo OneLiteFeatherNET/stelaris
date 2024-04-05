@@ -30,6 +30,9 @@ RegExp namePattern = RegExp("^[a-zA-z]\\w*");
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);
 const TextInputType decimalInput = TextInputType.numberWithOptions(decimal: true, signed: true);
 
+/// Lore page
+const int maxLoreLines = 64;
+
 /// Input field
 const int maxInputLength = 20;
 
@@ -42,6 +45,7 @@ const String defaultMaterial = "minecraft:dirt";
 // Text
 // Button
 Icon addModelIcon = const Icon(Icons.add);
+Icon confirmIcon = const Icon(Icons.check);
 Icon deleteIcon = const Icon(Icons.delete_forever, color: Colors.red);
 Icon saveIcon = const Icon(Icons.save);
 Icon editIcon = const Icon(Icons.edit);
@@ -68,5 +72,7 @@ const double dialogWidth = 500;
 const double dialogHeight = 350;
 
 const double cardElevation = 0.8;
+
+const borderRadius12 = BorderRadius.all(Radius.circular(12.0));
 
 const String conceptURL = "https://docs.onelitefeather.network/doc/stelaris-S1nldMzySr#h-43-build-page";
