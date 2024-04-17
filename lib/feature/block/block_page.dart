@@ -12,7 +12,6 @@ import 'package:stelaris_ui/feature/block/block_general_page.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
-import 'package:stelaris_ui/api/tabs/tab_pages.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
 class BlockPage extends StatelessWidget {
@@ -53,14 +52,7 @@ class BlockPage extends StatelessWidget {
           },
           page: _mapPageToWidget,
           models: vm.models,
-          tabPages: (pages) {
-            List<Tab> requiredTabs = List.from(pages, growable: true);
-            requiredTabs.removeWhere((element) => identical(
-                  element.text,
-                  TabPage.meta.content,
-                ));
-            return requiredTabs;
-          },
+          tabPages: (pages) => pages,
           compareFunction: (model) => vm.isSelectedItem(model),
           tabs: _getTabs(),
         );
