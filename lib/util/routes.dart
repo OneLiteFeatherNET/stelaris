@@ -9,13 +9,8 @@ import 'package:stelaris_ui/feature/item/item_page.dart';
 import 'package:stelaris_ui/feature/notification/notification_page.dart';
 
 final GoRouter router = GoRouter(
+  initialLocation: NavigationEntry.attributes.route,
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (BuildContext context, GoRouterState state) {
-        return const BasePage(child: NotificationPage());
-      },
-    ),
     GoRoute(
       path: NavigationEntry.attributes.route,
       pageBuilder: (context, state) => CustomTransitionPage(
