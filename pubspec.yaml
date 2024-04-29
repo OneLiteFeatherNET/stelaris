@@ -23,6 +23,7 @@ dependencies:
   intl: ^0.18.1
   json_annotation: 4.8.1
   expandable: ^5.0.1
+  web: ^0.5.1
 
 dev_dependencies:
   flutter_test:
