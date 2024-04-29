@@ -7,7 +7,6 @@ const String entityPage = "Entities";
 const String unknownEntry = "Unknown";
 
 /// EdgeInsets
-const EdgeInsets eightEdgeInsets = EdgeInsets.all(8.0);
 const EdgeInsets padding = EdgeInsets.only(top: 10, left: 10);
 
 Text appText = const Text(appName);
@@ -55,24 +54,18 @@ TextStyle whiteStyle = const TextStyle(color: Colors.white);
 TextStyle redStyle = const TextStyle(color: Colors.red);
 
 // Boxes
-const SizedBox horizontalSpacing5 = SizedBox(width: 5);
-const SizedBox spacing10 = SizedBox(width: 10, height: 10);
 const SizedBox heightTen = SizedBox(height: 10);
 const SizedBox horizontalSpacing10 = SizedBox(width: 10);
-const SizedBox dialogButtonWidthSpacing = SizedBox(width: 50);
 const SizedBox verticalSpacing10 = SizedBox(height: 15);
 const SizedBox verticalSpacing25 = SizedBox(height: 25);
 
 const EdgeInsets dialogPadding = EdgeInsets.all(20);
-const EdgeInsets top = EdgeInsets.only(top: 10);
 const EdgeInsets horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
-const EdgeInsets largePadding = EdgeInsets.all(20);
 
 const double dialogWidth = 500;
 const double dialogHeight = 350;
 
-const double cardElevation = 0.8;
-
 const borderRadius12 = BorderRadius.all(Radius.circular(12.0));
 
-const String conceptURL = "https://docs.onelitefeather.network/doc/stelaris-S1nldMzySr#h-43-build-page";
+const String conceptURL = 'https://docs.onelitefeather.network/doc/stelaris-S1nldMzySr#h-43-build-page';
+const String gitUrl = 'https://gitlab.themeinerlp.dev/dungeon/frontend/stelaris-ui/-/issues/new';
