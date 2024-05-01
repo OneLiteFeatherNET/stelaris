@@ -21,7 +21,7 @@ dependencies:
   async_redux: ^23.0.0
   nil: ^1.1.1
   intl: ^0.18.1
-  json_annotation: 4.8.1
+  json_annotation: 4.9.0
   expandable: ^5.0.1
   web: ^0.5.1
 
