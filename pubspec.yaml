@@ -18,7 +18,7 @@ dependencies:
   dio: ^5.4.2+1
   dio_cache_interceptor: ^3.5.0
   localstorage: ^4.0.1+4
-  async_redux: ^21.4.0
+  async_redux: ^23.0.0
   nil: ^1.1.1
   intl: ^0.18.1
   json_annotation: 4.8.1
