@@ -5,26 +5,30 @@ class BaseCard extends StatelessWidget {
   final String display;
   final String? message;
   final Widget widget;
+  final double width;
+  final double height;
 
   const BaseCard({
     required this.display,
     required this.message,
     required this.widget,
+    this.width = 350,
+    this.height = 200,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 350,
-      height: 200,
+      width: width,
+      height: height,
       child: Card(
         clipBehavior: Clip.hardEdge,
         child: Column(
           children: [
             Container(
               color: Theme.of(context).secondaryHeaderColor,
-              height: 50,
+              height: sizeFifty,
               child: ListTile(
                   title: Text(display, style: whiteStyle),
                   trailing: _getToolTip()),

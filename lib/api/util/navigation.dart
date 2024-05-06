@@ -25,12 +25,6 @@ enum NavigationEntry {
     "/fonts",
     Icons.font_download_outlined,
     Icons.font_download,
-  ),
-  build(
-    "Build",
-    "/build",
-    Icons.build_outlined,
-    Icons.build,
   );
 
   final String display;
