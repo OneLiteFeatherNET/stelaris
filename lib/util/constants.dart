@@ -33,7 +33,8 @@ const TextInputType decimalInput = TextInputType.numberWithOptions(decimal: true
 const int maxLoreLines = 64;
 
 /// Input field
-const int maxInputLength = 20;
+const int twentyLength = 20;
+const double fiftyLength = 50;
 
 /// Minecraft related values
 const String zeroString = "0";

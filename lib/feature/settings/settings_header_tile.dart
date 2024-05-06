@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:stelaris_ui/util/constants.dart';
 
 class SettingsHeaderTile extends StatelessWidget {
   const SettingsHeaderTile({super.key});
@@ -8,7 +9,7 @@ class SettingsHeaderTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).secondaryHeaderColor,
-      height: 50,
+      height: fiftyLength,
       child: Padding(
         padding: const EdgeInsets.only(left: 10, right: 10),
         child: Row(
@@ -23,7 +24,10 @@ class SettingsHeaderTile extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: IconButton(
                 onPressed: () => context.pop(false),
-                icon: const Icon(Icons.close),
+                icon: Icon(
+                  Icons.close,
+                  color: Theme.of(context).buttonTheme.colorScheme?.secondary,
+                ),
               ),
             ),
           ],

@@ -12,14 +12,26 @@ class SettingsEndTile extends StatelessWidget {
         RichText(
           text: TextSpan(
             children: [
-              TextSpan(text:'@2024 Onelitefeather', style: Theme.of(context).textTheme.bodyMedium),
-              TextSpan(text:' • ', style: Theme.of(context).textTheme.bodyMedium),
-              TextSpan(text: 'Made with', style: Theme.of(context).textTheme.bodyMedium),
+              TextSpan(
+                text: '@2024 Onelitefeather',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              TextSpan(
+                text: ' • ',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              TextSpan(
+                text: 'Made with',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
               const TextSpan(
                 text: ' \u2764 ',
                 style: TextStyle(color: Colors.red),
               ),
-              TextSpan(text: 'by the team',  style: Theme.of(context).textTheme.bodyMedium),
+              TextSpan(
+                text: 'by the team',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ],
           ),
         )
