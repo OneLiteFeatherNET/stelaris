@@ -31,10 +31,10 @@ class ApiService {
   late final AttributesAPI attributesAPI = AttributesAPI(_apiClient);
 
   ApiClient _createApiClient() {
-    return ApiClient("https://api.onelitefeather.dev/vulpes/backend/");
+    return ApiClient("");
   }
 
   ApiClient _createGeneratorClient() {
-    return ApiClient("https://api.onelitefeather.dev/vulpes/generator/");
+    return ApiClient("");
   }
 }
