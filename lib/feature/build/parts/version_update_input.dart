@@ -56,6 +56,7 @@ class _VersionUpdateInputState extends State<VersionUpdateInput> {
           versionFormatter,
         ],
         validator: (value) {
+          if (widget.branchOption.value != BranchOption.snapshot) return null;
           final String input = value!;
           if (input.trim().isEmpty) {
             return "The major part must start with 99";
