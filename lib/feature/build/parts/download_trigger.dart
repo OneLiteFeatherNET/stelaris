@@ -27,7 +27,7 @@ class DownloadTrigger extends StatelessWidget {
           );
         }
 
-        if (snapshot.hasData) {
+        if (!snapshot.hasData) {
           return const Center(
             child: ModelText(
               displayName: 'Found no data!',
