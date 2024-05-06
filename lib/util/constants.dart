@@ -9,6 +9,9 @@ const String unknownEntry = "Unknown";
 /// EdgeInsets
 const EdgeInsets padding = EdgeInsets.only(top: 10, left: 10);
 
+const loader = SizedBox(height: 25, width: 25, child: CircularProgressIndicator());
+const divider = Divider();
+
 Text appText = const Text(appName);
 Text appTitle = const Text("S T E L A R I S");
 Text emptyText = const Text(emptyString);
@@ -24,6 +27,8 @@ RegExp stringWithSpacePattern = RegExp("[a-zA-Z][a-zA-Z ]*");
 RegExp dotPattern = RegExp("\\.");
 RegExp minecraftPattern = RegExp("minecraft:");
 RegExp namePattern = RegExp("^[a-zA-z]\\w*");
+RegExp gitCommitPattern = RegExp("[0-9a-fA-F]{10}");
+RegExp versionPattern = RegExp(r'^[0-9.]*$');
 
 /// Formatter
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);
@@ -63,8 +68,7 @@ const SizedBox verticalSpacing25 = SizedBox(height: 25);
 const EdgeInsets dialogPadding = EdgeInsets.all(20);
 const EdgeInsets horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
 
-const double dialogWidth = 500;
-const double dialogHeight = 350;
+const double sizeFifty = 50.0;
 
 const borderRadius12 = BorderRadius.all(Radius.circular(12.0));
 

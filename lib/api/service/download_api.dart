@@ -7,9 +7,11 @@ class DownloadAPI  {
   DownloadAPI(this._apiClient);
 
   Future<String> download(String branch) async {
-    final queryParams = <String, dynamic>{};
+    final queryParams = <String, dynamic>{
+      "branch" : branch
+    };
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/generator/download');
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/download');
     final result = await _apiClient.dio.getUri(uri).then((value) => value.data!);
     return result;
   }
