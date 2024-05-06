@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris_ui/feature/base/button/build_button.dart';
 import 'package:stelaris_ui/feature/base/button/settings_button.dart';
 import 'package:stelaris_ui/feature/base/button/toggle_navigation_button.dart';
+import 'package:stelaris_ui/feature/build/build_drawer.dart';
 import 'package:stelaris_ui/feature/navigation/navigation_side_bar.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
@@ -18,15 +20,16 @@ class BasePage extends StatelessWidget {
         elevation: 0,
         title: appTitle,
         centerTitle: true,
-        actions: const [SettingsButton()],
+        actions: const [BuildButton(), SettingsButton()],
       ),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          NavigationSideBar(),
+          const NavigationSideBar(),
           Expanded(child: child),
         ],
       ),
+      endDrawer: const BuildDrawer(),
     );
   }
 }

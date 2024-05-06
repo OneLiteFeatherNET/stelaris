@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:stelaris_ui/api/api_client.dart';
+import 'package:stelaris_ui/api/model/build_information.dart';
 
 class GenerateApi {
 
@@ -35,5 +36,14 @@ class GenerateApi {
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/download');
     final data = await _apiClient.dio.getUri(uri, options: Options(responseType: ResponseType.bytes)).then((value) => value.data! as List<int>);
     return data;
+  }
+
+  Future<BuildInformation> buildInformation() async {
+    final queryParams = <String, dynamic>{};
+    final baseUri = Uri.parse(_apiClient.baseUrl);
+    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/build/data');
+    return await _apiClient.dio.getUri(uri).then((value)  {
+      return BuildInformation.fromJson(value.data! as Map<String, dynamic>);
+    });
   }
 }
