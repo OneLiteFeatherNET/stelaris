@@ -5,7 +5,7 @@ import 'package:stelaris_ui/util/constants.dart';
 
 class TextInputCard<E> extends StatefulWidget {
   final String display;
-  final void Function(dynamic value) valueUpdate;
+  final void Function(String value) valueUpdate;
   final String currentValue;
   final TextInputType? inputType;
   final int maxLength;
@@ -80,7 +80,7 @@ class _TextInputCardState extends State<TextInputCard> {
               ),
               onFocusChange: (focus) {
                 if (focus) return;
-                String value = _editController.value.text;
+                final String value = _editController.value.text;
                 if (value.trim().isEmpty) return;
                 widget.valueUpdate(value);
               },
