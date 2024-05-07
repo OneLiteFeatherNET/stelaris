@@ -53,6 +53,7 @@ class CharCard extends StatelessWidget {
                     newEntry,
                   ),
                 );
+                Navigator.of(context).pop(true);
               },
               formKey: GlobalKey<FormState>(),
             );
