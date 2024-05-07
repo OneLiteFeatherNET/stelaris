@@ -113,10 +113,10 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
                 currentValue:
                     model.customModelId?.toString() ?? zeroString,
                 valueUpdate: (value) {
-                  if (value == model.customModelId) return;
+                  final newValue = int.tryParse(value) ?? 0;
+                  if (newValue == model.customModelId) return;
                   final oldModel = model;
-                  final newID = value ?? 0;
-                  final newEntry = oldModel.copyWith(customModelId: newID);
+                  final newEntry = oldModel.copyWith(customModelId: newValue);
                   StoreProvider.dispatch(
                       context, UpdateItemAction(oldModel, newEntry));
                 },
@@ -129,10 +129,10 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
                 display: context.l10n.card_amount,
                 currentValue: model.amount?.toString() ?? zeroString,
                 valueUpdate: (value) {
-                  if (value == model.amount) return;
+                  final updatedValue = int.tryParse(value) ?? 0;
+                  if (updatedValue == model.amount) return;
                   final oldModel = model;
-                  final newAmount = value ?? 0;
-                  final newEntry = oldModel.copyWith(amount: newAmount);
+                  final newEntry = oldModel.copyWith(amount: updatedValue);
                   StoreProvider.dispatch(
                       context, UpdateItemAction(oldModel, newEntry));
                 },
