@@ -4,19 +4,15 @@ import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 
 class SelectFontAction extends ReduxAction<AppState> {
-
   final FontModel model;
 
   SelectFontAction(this.model);
 
   @override
-  AppState reduce() {
-    return state.copyWith(selectedFont: model);
-  }
-}
+  AppState reduce() => state.copyWith(selectedFont: model);
+ }
 
 class RemoveSelectedFont extends ReduxAction<AppState> {
-
   final FontModel model;
 
   RemoveSelectedFont(this.model);
@@ -30,18 +26,17 @@ class RemoveSelectedFont extends ReduxAction<AppState> {
 
 class InitFontAction extends ReduxAction<AppState> {
 
+  InitFontAction();
+
   @override
   Future<AppState?> reduce() async {
-    var fonts = await ApiService().fontAPI.getAll();
+    final List<FontModel> fonts = await ApiService().fontAPI.getAll();
     if (fonts.isEmpty) return null;
     return state.copyWith(fonts: fonts);
   }
-
-  InitFontAction();
 }
 
 class RemoveFontsAction extends ReduxAction<AppState> {
-
   final FontModel model;
 
   RemoveFontsAction(this.model);
@@ -56,14 +51,13 @@ class RemoveFontsAction extends ReduxAction<AppState> {
 }
 
 class AddFontAction extends ReduxAction<AppState> {
-
   final FontModel _model;
 
   AddFontAction(this._model);
 
   @override
   Future<AppState?> reduce() async {
-    var added = await ApiService().fontAPI.add(_model);
+    final FontModel added = await ApiService().fontAPI.add(_model);
     final List<FontModel> fonts = List.of(state.fonts, growable: true);
     fonts.add(added);
     return state.copyWith(fonts: fonts, selectedFont: added);
@@ -71,17 +65,27 @@ class AddFontAction extends ReduxAction<AppState> {
 }
 
 class UpdateFontAction extends ReduxAction<AppState> {
-  final FontModel oldEntry;
   final FontModel newEntry;
 
-  UpdateFontAction(this.oldEntry, this.newEntry);
+  UpdateFontAction(this.newEntry);
+
+  @override
+  Future<AppState?> reduce() async => state.copyWith(selectedFont: newEntry);
+}
+
+class FontDatabaseUpdate extends ReduxAction<AppState> {
+
+  FontDatabaseUpdate();
 
   @override
   Future<AppState?> reduce() async {
-    final fonts = List.of(state.fonts, growable: true);
-    final index = fonts.indexWhere((element) => element.id == oldEntry.id);
-    fonts.removeAt(index);
-    fonts.insert(index, newEntry);
-    return state.copyWith(fonts: fonts, selectedFont: newEntry);
+    if (state.selectedFont == null) return null;
+    final FontModel selected = state.selectedFont!;
+    final FontModel dbModel = await ApiService().fontAPI.update(selected);
+    final List<FontModel> models = List.of(state.fonts, growable: true);
+    final int index = models.indexWhere((element) => element.id == selected.id);
+    models.removeAt(index);
+    models.insert(index, dbModel);
+    return state.copyWith(fonts: models, selectedFont: dbModel);
   }
 }
