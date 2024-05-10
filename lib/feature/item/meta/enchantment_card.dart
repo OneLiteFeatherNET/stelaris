@@ -48,13 +48,7 @@ class EnchantmentCard extends StatelessWidget with EnchantmentReducer {
                 final newEntry =
                     oldEntry.copyWith(enchantments: oldEnchantments);
                 Navigator.pop(context);
-                StoreProvider.dispatch(
-                  context,
-                  UpdateItemAction(
-                    oldEntry,
-                    newEntry,
-                  ),
-                );
+                context.dispatch(UpdateItemAction(newEntry));
               },
             );
           },
@@ -87,13 +81,7 @@ class EnchantmentCard extends StatelessWidget with EnchantmentReducer {
                 oldEnchantments.remove(key);
                 final newEntry =
                     oldEntry.copyWith(enchantments: oldEnchantments);
-                StoreProvider.dispatch(
-                  context,
-                  UpdateItemAction(
-                    oldEntry,
-                    newEntry,
-                  ),
-                );
+                context.dispatch(UpdateItemAction(newEntry));
               },
               update: (value, key) {
                 final oldEntry = model;
@@ -102,13 +90,7 @@ class EnchantmentCard extends StatelessWidget with EnchantmentReducer {
                 oldEnchantments[value!] = int.parse(key!);
                 final newEntry =
                     oldEntry.copyWith(enchantments: oldEnchantments);
-                StoreProvider.dispatch(
-                  context,
-                  UpdateItemAction(
-                    oldEntry,
-                    newEntry,
-                  ),
-                );
+                context.dispatch(UpdateItemAction(newEntry));
               },
             ),
           );

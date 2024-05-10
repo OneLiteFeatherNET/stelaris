@@ -41,13 +41,7 @@ class FlagCard extends StatelessWidget with DropDownItemReducer {
                   Set<String> flags = Set.of(oldEntry.flags ?? {});
                   flags.add(value!.minestomValue);
                   final newEntry = oldEntry.copyWith(flags: flags);
-                  StoreProvider.dispatch(
-                    context,
-                    UpdateItemAction(
-                      oldEntry,
-                      newEntry,
-                    ),
-                  );
+                  context.dispatch(UpdateItemAction(newEntry));
                   Navigator.pop(context);
                 });
           },
@@ -68,13 +62,7 @@ class FlagCard extends StatelessWidget with DropDownItemReducer {
                   Set<String> oldFlags = Set.of(oldEntry.flags ?? {});
                   oldFlags.remove(key);
                   final newEntry = oldEntry.copyWith(flags: oldFlags);
-                  StoreProvider.dispatch(
-                    context,
-                    UpdateItemAction(
-                      oldEntry,
-                      newEntry,
-                    ),
-                  );
+                  context.dispatch(UpdateItemAction(newEntry));
                   return true;
                 },
               ));

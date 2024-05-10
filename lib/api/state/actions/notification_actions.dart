@@ -9,9 +9,7 @@ class SelectedNotificationAction extends ReduxAction<AppState> {
   SelectedNotificationAction(this.model);
 
   @override
-  AppState reduce() {
-    return state.copyWith(selectedNotification: model);
-  }
+  AppState reduce() => state.copyWith(selectedNotification: model);
 }
 
 class RemoveSelectNotificationAction extends ReduxAction<AppState> {
@@ -20,9 +18,9 @@ class RemoveSelectNotificationAction extends ReduxAction<AppState> {
   RemoveSelectNotificationAction(this.model);
 
   @override
-  AppState reduce() {
-    if (state.selectedItem == null) return state;
-    if (state.selectedItem.hashCode != model.hashCode) return state;
+  AppState? reduce() {
+    if (state.selectedItem == null) return null;
+    if (state.selectedItem.hashCode != model.hashCode) return null;
     return state.copyWith(selectedNotification: null);
   }
 }
@@ -30,7 +28,8 @@ class RemoveSelectNotificationAction extends ReduxAction<AppState> {
 class InitNotificationAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
-    var notifications = await ApiService().notificationAPI.getAll();
+    final List<NotificationModel> notifications =
+        await ApiService().notificationAPI.getAll();
     if (notifications.isEmpty) return null;
     return state.copyWith(notifications: notifications);
   }
@@ -39,20 +38,13 @@ class InitNotificationAction extends ReduxAction<AppState> {
 }
 
 class UpdateNotificationAction extends ReduxAction<AppState> {
-  final NotificationModel oldEntry;
   final NotificationModel newEntry;
 
-  UpdateNotificationAction(this.oldEntry, this.newEntry);
+  UpdateNotificationAction(this.newEntry);
 
   @override
-  Future<AppState?> reduce() async {
-    final notifications = List.of(state.notifications, growable: true);
-    int index = notifications.indexWhere((element) => element.id == oldEntry.id);
-    notifications.removeAt(index);
-    notifications.insert(index, newEntry);
-    return state.copyWith(
-        notifications: notifications, selectedNotification: newEntry);
-  }
+  Future<AppState?> reduce() async =>
+      state.copyWith(selectedNotification: newEntry);
 }
 
 class NotificationAddAction extends ReduxAction<AppState> {
@@ -62,7 +54,7 @@ class NotificationAddAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    var added = await ApiService().notificationAPI.add(model);
+    final NotificationModel added = await ApiService().notificationAPI.add(model);
     final models = List.of(state.notifications, growable: true);
     models.add(added);
     return state.copyWith(notifications: models, selectedNotification: added);
@@ -80,5 +72,23 @@ class RemoveNotificationAction extends ReduxAction<AppState> {
     final models = List.of(state.notifications, growable: true);
     models.remove(removedModel);
     return state.copyWith(notifications: models);
+  }
+}
+
+
+class NotificationDatabaseUpdate extends ReduxAction<AppState> {
+
+  NotificationDatabaseUpdate();
+
+  @override
+  Future<AppState?> reduce() async {
+    if (state.selectedNotification == null) return null;
+    final NotificationModel selected = state.selectedNotification!;
+    final NotificationModel dbModel = await ApiService().notificationAPI.update(selected);
+    final List<NotificationModel> models = List.of(state.notifications, growable: true);
+    final int index = models.indexWhere((element) => element.id == selected.id);
+    models.removeAt(index);
+    models.insert(index, dbModel);
+    return state.copyWith(notifications: models, selectedNotification: dbModel);
   }
 }

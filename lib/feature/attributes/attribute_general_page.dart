@@ -39,8 +39,7 @@ class AttributeGeneralPage extends StatelessWidget {
                     if (value == attributeModel.name) return;
                     final oldModel = attributeModel;
                     final newEntry = oldModel.copyWith(name: value);
-                    StoreProvider.dispatch(
-                        context, UpdateAttributeAction(oldModel, newEntry));
+                    context.dispatch(UpdateAttributeAction(newEntry));
                   },
                   formValidator: (value) {
                     var input = value as String;
@@ -57,8 +56,7 @@ class AttributeGeneralPage extends StatelessWidget {
                     final oldModel = attributeModel;
                     final newValue = double.parse(value);
                     final newEntry = oldModel.copyWith(defaultValue: newValue);
-                    StoreProvider.dispatch(
-                        context, UpdateAttributeAction(oldModel, newEntry));
+                    context.dispatch(UpdateAttributeAction(newEntry));
                   },
                   maxLength: 100,
                 ),
@@ -71,8 +69,7 @@ class AttributeGeneralPage extends StatelessWidget {
                     final oldModel = attributeModel;
                     final newValue = double.parse(value);
                     final newEntry = oldModel.copyWith(maximumValue: newValue);
-                    StoreProvider.dispatch(
-                        context, UpdateAttributeAction(oldModel, newEntry));
+                    context.dispatch(UpdateAttributeAction(newEntry));
                   },
                   maxLength: 100,
                 ),
