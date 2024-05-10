@@ -153,13 +153,7 @@ class _LorePageState extends State<LorePage> {
     final newEntry = oldEntry.copyWith(lore: oldLores);
     setState(() {
       loreLines = oldLores;
-      StoreProvider.dispatch(
-        context,
-        UpdateItemAction(
-          oldEntry,
-          newEntry,
-        ),
-      );
+      context.dispatch(UpdateItemAction(newEntry));
     });
   }
 
@@ -195,25 +189,13 @@ class _LorePageState extends State<LorePage> {
       List<String> newLines,) {
     setState(() {
       loreLines = newLines;
-      StoreProvider.dispatch(
-        context,
-        UpdateItemAction(
-          oldEntry,
-          newEntry,
-        ),
-      );
+      context.dispatch(UpdateItemAction(newEntry));
     });
   }
 
   void _saveModel() async {
     final ItemModel newModel = widget.model.copyWith(lore: loreLines);
-    await StoreProvider.dispatch(
-      context,
-      UpdateItemAction(
-        widget.model,
-        newModel,
-      ),
-    );
+    await context.dispatch(UpdateItemAction(newModel));
     ApiService().itemApi.update(widget.model);
   }
 

@@ -41,8 +41,7 @@ class FontGeneralPage extends StatelessWidget {
                   if (value == model.name) return;
                   final oldModel = model;
                   final newEntry = oldModel.copyWith(name: value);
-                  StoreProvider.dispatch(
-                      context, UpdateFontAction(oldModel, newEntry));
+                  context.dispatch(UpdateFontAction(newEntry));
                 },
                 formValidator: (value) {
                   var input = value as String;
@@ -57,13 +56,7 @@ class FontGeneralPage extends StatelessWidget {
                   if (value == model.description) return;
                   final oldModel = model;
                   final newEntry = oldModel.copyWith(description: value);
-                  StoreProvider.dispatch(
-                    context,
-                    UpdateFontAction(
-                      oldModel,
-                      newEntry,
-                    ),
-                  );
+                  context.dispatch(UpdateFontAction(newEntry));
                 },
               ),
               TextInputCard<int>(
@@ -76,8 +69,7 @@ class FontGeneralPage extends StatelessWidget {
                   final oldModel = model;
                   final newAscent = int.parse(value);
                   final newEntry = oldModel.copyWith(ascent: newAscent);
-                  StoreProvider.dispatch(
-                      context, UpdateFontAction(oldModel, newEntry));
+                  context.dispatch(UpdateFontAction(newEntry));
                 },
                 inputType: numberInput,
                 formatter: [FilteringTextInputFormatter.allow(fontNumberPattern)],
@@ -92,8 +84,7 @@ class FontGeneralPage extends StatelessWidget {
                   final oldModel = model;
                   final newHeight = int.parse(value);
                   final newEntry = oldModel.copyWith(height: newHeight);
-                  StoreProvider.dispatch(
-                      context, UpdateFontAction(oldModel, newEntry));
+                  context.dispatch(UpdateFontAction(newEntry));
                 },
                 inputType: numberInput,
                 formatter: [FilteringTextInputFormatter.allow(fontNumberPattern)],
@@ -104,10 +95,8 @@ class FontGeneralPage extends StatelessWidget {
                   valueUpdate: (value) {
                     if (value == null) return;
                     if (value == model.type) return;
-                    StoreProvider.dispatch(context, UpdateFontAction(
-                      model,
-                      model.copyWith(type: value),
-                    ));
+                    final FontModel newEntry = model.copyWith(type: value);
+                    context.dispatch(UpdateFontAction(newEntry));
                   },
                   defaultValue: (value) => value.type,
                   currentValue: model,

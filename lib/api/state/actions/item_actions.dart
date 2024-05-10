@@ -4,7 +4,6 @@ import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 
 class SelectedItemAction extends ReduxAction<AppState> {
-
   final ItemModel model;
 
   SelectedItemAction(this.model);
@@ -16,7 +15,6 @@ class SelectedItemAction extends ReduxAction<AppState> {
 }
 
 class RemoveSelectItemAction extends ReduxAction<AppState> {
-
   final ItemModel model;
 
   RemoveSelectItemAction(this.model);
@@ -29,26 +27,18 @@ class RemoveSelectItemAction extends ReduxAction<AppState> {
 }
 
 class UpdateItemAction extends ReduxAction<AppState> {
-  final ItemModel oldEntry;
   final ItemModel newEntry;
 
-  UpdateItemAction(this.oldEntry, this.newEntry);
+  UpdateItemAction(this.newEntry);
 
   @override
-  Future<AppState?> reduce() async {
-    final items = List.of(state.items, growable: true);
-    int index = items.indexWhere((element) => element.id == oldEntry.id);
-    items.removeAt(index);
-    items.insert(index, newEntry);
-    return state.copyWith(items: items, selectedItem: newEntry);
-  }
+  Future<AppState?> reduce() async => state.copyWith(selectedItem: newEntry);
 }
 
 class InitItemAction extends ReduxAction<AppState> {
-
   @override
   Future<AppState?> reduce() async {
-    var items = await ApiService().itemApi.getAll();
+    final List<ItemModel> items = await ApiService().itemApi.getAll();
     if (items.isEmpty) return null;
     return state.copyWith(items: items);
   }
@@ -57,14 +47,13 @@ class InitItemAction extends ReduxAction<AppState> {
 }
 
 class AddItemAction extends ReduxAction<AppState> {
-
   final ItemModel _model;
 
   AddItemAction(this._model);
 
   @override
   Future<AppState?> reduce() async {
-    var added = await ApiService().itemApi.add(_model);
+    final ItemModel added = await ApiService().itemApi.add(_model);
     final List<ItemModel> items = List.of(state.items, growable: true);
     items.add(added);
     return state.copyWith(items: items, selectedItem: added);
@@ -72,16 +61,32 @@ class AddItemAction extends ReduxAction<AppState> {
 }
 
 class RemoveItemAction extends ReduxAction<AppState> {
-
   final ItemModel model;
 
   RemoveItemAction(this.model);
 
   @override
   Future<AppState?> reduce() async {
-    var removedEntry = await ApiService().itemApi.remove(model);
-    List<ItemModel> items = List.of(state.items, growable: true);
+    final ItemModel removedEntry = await ApiService().itemApi.remove(model);
+    final List<ItemModel> items = List.of(state.items, growable: true);
     items.removeWhere((element) => element.id == removedEntry.id);
     return state.copyWith(items: items, selectedItem: null);
+  }
+}
+
+class ItemDatabaseUpdate extends ReduxAction<AppState> {
+
+  ItemDatabaseUpdate();
+
+  @override
+  Future<AppState?> reduce() async {
+    if (state.selectedItem == null) return null;
+    final ItemModel selected = state.selectedItem!;
+    final ItemModel dbModel = await ApiService().itemApi.update(selected);
+    final List<ItemModel> models = List.of(state.items, growable: true);
+    final int index = models.indexWhere((element) => element.id == selected.id);
+    models.removeAt(index);
+    models.insert(index, dbModel);
+    return state.copyWith(items: models, selectedItem: dbModel);
   }
 }

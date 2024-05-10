@@ -44,7 +44,6 @@ class NotificationGeneralPage extends StatelessWidget {
                     StoreProvider.dispatch(
                       context,
                       UpdateNotificationAction(
-                        oldModel,
                         newEntry,
                       ),
                     );
@@ -64,13 +63,7 @@ class NotificationGeneralPage extends StatelessWidget {
                     if (value == model.material) return;
                     final oldModel = model;
                     final newEntry = oldModel.copyWith(material: value);
-                    StoreProvider.dispatch(
-                      context,
-                      UpdateNotificationAction(
-                        oldModel,
-                        newEntry,
-                      ),
-                    );
+                    context.dispatch(UpdateNotificationAction(newEntry));
                   },
                   formValidator: (value) {
                     if (value == null) return null;
@@ -82,35 +75,25 @@ class NotificationGeneralPage extends StatelessWidget {
                   maxLength: 30,
                 ),
                 TextInputCard<String>(
-                    display: context.l10n.card_title,
-                    currentValue: model.title ?? emptyString,
-                    valueUpdate: (value) {
-                      if (value == model.title) return;
-                      final oldModel = model;
-                      final newEntry = oldModel.copyWith(title: value);
-                      StoreProvider.dispatch(
-                        context,
-                        UpdateNotificationAction(
-                          oldModel,
-                          newEntry,
-                        ),
-                      );
-                    }),
+                  display: context.l10n.card_title,
+                  currentValue: model.title ?? emptyString,
+                  valueUpdate: (value) {
+                    if (value == model.title) return;
+                    final oldModel = model;
+                    final newEntry = oldModel.copyWith(title: value);
+                    context.dispatch(UpdateNotificationAction(newEntry));
+                  },
+                ),
                 TextInputCard<String>(
-                    display: context.l10n.card_description,
-                    currentValue: model.description ?? emptyString,
-                    valueUpdate: (value) {
-                      if (value == model.description) return;
-                      final oldModel = model;
-                      final newEntry = oldModel.copyWith(description: value);
-                      StoreProvider.dispatch(
-                        context,
-                        UpdateNotificationAction(
-                          oldModel,
-                          newEntry,
-                        ),
-                      );
-                    }),
+                  display: context.l10n.card_description,
+                  currentValue: model.description ?? emptyString,
+                  valueUpdate: (value) {
+                    if (value == model.description) return;
+                    final oldModel = model;
+                    final newEntry = oldModel.copyWith(description: value);
+                    context.dispatch(UpdateNotificationAction(newEntry));
+                  },
+                ),
                 DropdownCard<FrameType, NotificationModel>(
                   currentValue: model,
                   display: context.l10n.card_frame_type,
@@ -118,13 +101,7 @@ class NotificationGeneralPage extends StatelessWidget {
                   valueUpdate: (FrameType? value) {
                     if (value == model.frameType) return;
                     final newEntry = model.copyWith(frameType: value!);
-                    StoreProvider.dispatch(
-                      context,
-                      UpdateNotificationAction(
-                        model,
-                        newEntry,
-                      ),
-                    );
+                    context.dispatch(UpdateNotificationAction(newEntry));
                   },
                   defaultValue: (value) => value.frameType,
                 ),

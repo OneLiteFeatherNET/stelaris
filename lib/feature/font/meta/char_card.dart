@@ -46,13 +46,7 @@ class CharCard extends StatelessWidget {
                 List<String> chars = List.of(oldEntry.chars ?? []);
                 chars.add(value!);
                 final newEntry = oldEntry.copyWith(chars: chars);
-                StoreProvider.dispatch(
-                  context,
-                  UpdateFontAction(
-                    oldEntry,
-                    newEntry,
-                  ),
-                );
+                context.dispatch(UpdateFontAction(newEntry));
                 Navigator.of(context).pop(true);
               },
               formKey: GlobalKey<FormState>(),
@@ -82,13 +76,7 @@ class CharCard extends StatelessWidget {
                         List<String> chars = List.of(model.chars ?? []);
                         chars.remove(key);
                         final newEntry = oldEntry.copyWith(chars: chars);
-                        StoreProvider.dispatch(
-                          context,
-                          UpdateFontAction(
-                            oldEntry,
-                            newEntry,
-                          ),
-                        );
+                        context.dispatch(UpdateFontAction(newEntry));
                         return true;
                       },
                     );

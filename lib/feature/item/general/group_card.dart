@@ -63,23 +63,14 @@ class GroupCard extends StatelessWidget with EnchantmentReducer {
               }
               final newEntry = model.copyWith(
                   group: value, enchantments: oldEnchantments);
-              StoreProvider.dispatch(
-                context,
-                UpdateItemAction(
-                  model,
-                  newEntry,
-                ),
-              );
+              context.dispatch(UpdateItemAction(newEntry));
             } else {
               _groupKey.currentState!.reset();
             }
           });
         } else {
           final newEntry = model.copyWith(group: value);
-          StoreProvider.dispatch(
-            context,
-            UpdateItemAction(model, newEntry),
-          );
+          context.dispatch(UpdateItemAction(newEntry));
         }
       },
       defaultValue: ((value) => model.group),
