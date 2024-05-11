@@ -9,8 +9,8 @@ import 'package:stelaris_ui/api/state/factory/font/font_vm_state.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris_ui/feature/font/chars/char_card.dart';
 import 'package:stelaris_ui/feature/font/font_general_page.dart';
-import 'package:stelaris_ui/feature/font/meta/font_meta_page.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
@@ -93,7 +93,7 @@ class FontPage extends StatelessWidget {
       case 'General':
         return FontGeneralPage();
       case 'Chars':
-        return const FontMetaPage();
+        return const CharCard();
     }
     return nil;
   }
