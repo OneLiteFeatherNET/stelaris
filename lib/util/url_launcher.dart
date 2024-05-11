@@ -15,6 +15,6 @@ class UriLauncher {
   }
 
   void launchUrlInTab(String url) async {
-    web.window.open(url, "new tab");
+    web.window.open(url, 'new tab');
   }
 }

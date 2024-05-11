@@ -1,5 +1,5 @@
 enum BranchOption {
-  release("Release"),
+  release('Release'),
   snapshot('Snapshot');
 
   final String name;

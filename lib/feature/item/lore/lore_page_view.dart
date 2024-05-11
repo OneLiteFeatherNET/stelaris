@@ -5,7 +5,7 @@ import 'package:stelaris_ui/api/state/factory/item/selected_item_state.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris_ui/feature/item/lore/grabbed_card.dart';
 import 'package:stelaris_ui/feature/item/lore/lore_delete_checkbox.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
 

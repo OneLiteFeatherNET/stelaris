@@ -6,7 +6,7 @@ import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris_ui/feature/item/enchantment_reducer.dart';
 import 'package:stelaris_ui/feature/item/item_group.dart';
 import 'package:stelaris_ui/feature/item/item_group_change_dialog.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class GroupCard extends StatelessWidget with EnchantmentReducer {
@@ -31,7 +31,7 @@ class GroupCard extends StatelessWidget with EnchantmentReducer {
       valueUpdate: (ItemGroup? value) {
         if (identical(value!.display, model.group)) return;
 
-        var list = getRemoveItems(model, value);
+        final list = getRemoveItems(model, value);
 
         if (list.isNotEmpty) {
           showDialog(

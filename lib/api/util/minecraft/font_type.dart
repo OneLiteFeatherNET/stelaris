@@ -1,7 +1,7 @@
 enum FontType {
-  bitmap("BitMap"),
-  legacyUnicode("Legacy Unicode"),
-  ttf("TrueType | OpenType");
+  bitmap('BitMap'),
+  legacyUnicode('Legacy Unicode'),
+  ttf('TrueType | OpenType');
 
   final String displayName;
 

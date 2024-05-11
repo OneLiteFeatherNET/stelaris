@@ -5,7 +5,7 @@ import 'package:localstorage/localstorage.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 
 class AppPersistor extends Persistor<AppState> {
-  static const String appState = "appState";
+  static const String appState = 'appState';
   late LocalStorage storage;
 
   AppPersistor() {

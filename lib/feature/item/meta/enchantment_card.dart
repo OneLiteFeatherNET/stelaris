@@ -8,7 +8,7 @@ import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/dialogs/abort_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/item_enchantments_dialog.dart';
 import 'package:stelaris_ui/feature/item/enchantment_reducer.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
@@ -37,7 +37,7 @@ class EnchantmentCard extends StatelessWidget with EnchantmentReducer {
             return ItemEnchantmentAddDialog(
               model: model,
               formFieldValidator: (value) {
-                var input = value as String;
+                final input = value as String;
 
                 return checkIfEmptyAndReturnErrorString(input, context);
               },
@@ -60,7 +60,7 @@ class EnchantmentCard extends StatelessWidget with EnchantmentReducer {
           final key = model.enchantments?.keys.elementAt(index);
           final value = model.enchantments?.values.elementAt(index);
           return ListTile(
-            title: Text("$key, Level: $value"),
+            title: Text('$key, Level: $value'),
             trailing: EntryButtons(
               editTitle: context.l10n.dialog_level_title,
               model: model,
@@ -70,7 +70,7 @@ class EnchantmentCard extends StatelessWidget with EnchantmentReducer {
                 FilteringTextInputFormatter.allow(numberPattern)
               ],
               formFieldValidator: (value) {
-                var input = value as String;
+                final input = value as String;
 
                 return checkIfEmptyAndReturnErrorString(input, context);
               },

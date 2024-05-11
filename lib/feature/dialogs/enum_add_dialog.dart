@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
@@ -27,7 +27,7 @@ class _EnumAddDialogState<E> extends State<EnumAddDialog<E>> {
     defaultValue = widget.items.first.value;
     return SimpleDialog(
       title: widget.title,
-      contentPadding: const EdgeInsets.all(20.0),
+      contentPadding: const EdgeInsets.all(20),
       children: [
         SizedBox(
           width: 300,

@@ -7,7 +7,7 @@ import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/dialogs/abort_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class CharCard extends StatelessWidget {
@@ -95,8 +95,8 @@ class CharCard extends StatelessWidget {
   }
 
   String convertToEmoji(String input) {
-    final String d = input.replaceAll("\\u", '');
-    return "\\u{$d}";
+    final String d = input.replaceAll('\\u', '');
+    return '\\u{$d}';
   }
 
   String? _validateCharInput(BuildContext context, String input) {
@@ -104,7 +104,7 @@ class CharCard extends StatelessWidget {
       return context.l10n.error_card_empty;
     }
 
-    if (!input.startsWith("\\u")) {
+    if (!input.startsWith('\\u')) {
       return context.l10n.error_not_unicode_start;
     }
 

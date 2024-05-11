@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/util/minecraft/enchantment.dart';
 import 'package:stelaris_ui/feature/item/enchantment_reducer.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 
@@ -37,7 +37,7 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog> wit
 
   @override
   Widget build(BuildContext context) {
-    List<DropdownMenuItem<Enchantment>> enchantments = getEnchantments(widget.model);
+    final List<DropdownMenuItem<Enchantment>> enchantments = getEnchantments(widget.model);
     _selected.value = enchantments[0].value;
     return SimpleDialog(
       title: Text(

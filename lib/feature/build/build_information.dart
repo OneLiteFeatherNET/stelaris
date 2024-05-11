@@ -4,8 +4,8 @@ import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/api/model/build_information.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
-DateFormat inputFormat = DateFormat("EEE MMM dd HH:mm:ss 'CEST' yyyy", "en_US");
-DateFormat outputFormat = DateFormat("yyyy-MM-dd HH:mm:ss", "en_US");
+DateFormat inputFormat = DateFormat("EEE MMM dd HH:mm:ss 'CEST' yyyy", 'en_US');
+DateFormat outputFormat = DateFormat('yyyy-MM-dd HH:mm:ss', 'en_US');
 
 class BuildInformationDisplay extends StatelessWidget {
   const BuildInformationDisplay({super.key});
@@ -23,18 +23,18 @@ class BuildInformationDisplay extends StatelessWidget {
         if (snapshot.hasError) {
           return const Align(
             alignment: Alignment.center,
-            child: Text("Service unavailable"),
+            child: Text('Service unavailable'),
           );
         }
 
         if (!snapshot.hasData) {
           return const Align(
             alignment: Alignment.center,
-            child: Text("No releases found"),
+            child: Text('No releases found'),
           );
         }
 
-        BuildInformation buildInformation = snapshot.data as BuildInformation;
+        final BuildInformation buildInformation = snapshot.data as BuildInformation;
 
         return SizedBox(
           height: sizeFifty,

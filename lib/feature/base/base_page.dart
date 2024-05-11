@@ -9,7 +9,7 @@ import 'package:stelaris_ui/util/constants.dart';
 class BasePage extends StatelessWidget {
   final Widget child;
 
-  const BasePage({super.key, required this.child});
+  const BasePage({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {

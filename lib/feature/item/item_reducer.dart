@@ -17,7 +17,7 @@ mixin DropDownItemReducer {
     if (itemModel.flags == null) {
       return items;
     }
-    var newList = List.of(items, growable: true);
+    final newList = List.of(items, growable: true);
 
     for (var value in items) {
       if (itemModel.flags!.contains(value.value!.minestomValue)) {

@@ -79,7 +79,7 @@ mixin EnchantmentReducer {
       return toolEnchantments;
     }
 
-    var newList = List.of(toolEnchantments, growable: true);
+    final newList = List.of(toolEnchantments, growable: true);
 
     for (var value in toolEnchantments) {
       if (itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
@@ -95,7 +95,7 @@ mixin EnchantmentReducer {
       return meeleEnchantments;
     }
 
-    var newList = List.of(meeleEnchantments, growable: true);
+    final newList = List.of(meeleEnchantments, growable: true);
 
     for (var value in meeleEnchantments) {
       if (itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
@@ -111,7 +111,7 @@ mixin EnchantmentReducer {
       return rangedEnchantments;
     }
 
-    var newList = List.of(rangedEnchantments, growable: true);
+    final newList = List.of(rangedEnchantments, growable: true);
 
     for (var value in rangedEnchantments) {
       if (itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
@@ -127,7 +127,7 @@ mixin EnchantmentReducer {
       return miscEnchantments;
     }
 
-    var newList = List.of(miscEnchantments, growable: true);
+    final newList = List.of(miscEnchantments, growable: true);
 
     for (var value in miscEnchantments) {
       if (itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
@@ -143,7 +143,7 @@ mixin EnchantmentReducer {
       return miscEnchantments;
     }
 
-    var newList = List.of(armorEnchantments, growable: true);
+    final newList = List.of(armorEnchantments, growable: true);
 
     for (var value in armorEnchantments) {
       if (itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
@@ -191,7 +191,7 @@ mixin EnchantmentReducer {
 
   bool canAdd(ItemModel model) {
     if (model.enchantments == null) return true;
-    var group = ItemGroup.values.firstWhere((element) => identical(model.group, element));
+    final group = ItemGroup.values.firstWhere((element) => identical(model.group, element));
 
     switch(group) {
       case ItemGroup.misc:
@@ -208,7 +208,7 @@ mixin EnchantmentReducer {
   }
 
   List<String> _getAsString(List<DropdownMenuItem<Enchantment>> items) {
-    List<String> values = [];
+    final List<String> values = [];
 
     for (var value in items) {
       values.add(value.value!.minecraftValue);
@@ -218,7 +218,7 @@ mixin EnchantmentReducer {
   }
 
   Enchantment? getByGroup(ItemModel model, String enchantment) {
-    var groupEnchantments = _getEnchantments(ItemGroup.values.firstWhere((element) => identical(element, model.group)));
+    final groupEnchantments = _getEnchantments(ItemGroup.values.firstWhere((element) => identical(element, model.group)));
 
     for (var value in groupEnchantments) {
       if (value.value!.minecraftValue == enchantment) {
@@ -232,9 +232,9 @@ mixin EnchantmentReducer {
     if (itemModel.enchantments == null || itemModel.enchantments!.isEmpty) {
       return List.empty();
     }
-    List<String> removeList = List.empty(growable: true);
+    final List<String> removeList = List.empty(growable: true);
     
-    var groupEnchantments = _getAsString(_getEnchantments(newGroup));
+    final groupEnchantments = _getAsString(_getEnchantments(newGroup));
 
     for (var value in itemModel.enchantments!.keys) {
       if (!groupEnchantments.contains(value)) {

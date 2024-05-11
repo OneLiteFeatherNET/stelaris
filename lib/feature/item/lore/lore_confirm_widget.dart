@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class LoreConfirmWidget extends StatelessWidget {
@@ -8,10 +8,7 @@ class LoreConfirmWidget extends StatelessWidget {
   final bool isEditing;
 
   const LoreConfirmWidget({
-    super.key,
-    required this.onConfirm,
-    required this.onSave,
-    required this.isEditing,
+    required this.onConfirm, required this.onSave, required this.isEditing, super.key,
   });
 
   @override
@@ -25,7 +22,7 @@ class LoreConfirmWidget extends StatelessWidget {
         : FilledButton.icon(
             onPressed: onConfirm,
             icon: confirmIcon,
-            label: const Text("Confirm"),
+            label: const Text('Confirm'),
           );
   }
 }
