@@ -1,0 +1,51 @@
+import 'package:async_redux/async_redux.dart';
+import 'package:stelaris_ui/api/model/item_model.dart';
+import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/feature/notification/notification_page_general.dart';
+import 'package:stelaris_ui/util/constants.dart';
+
+class SelectedItemFactory
+    extends VmFactory<AppState, NotificationGeneralPage, SelectedItemView> {
+  SelectedItemFactory();
+
+  @override
+  SelectedItemView fromStore() =>
+      SelectedItemView(selected: state.selectedItem!);
+}
+
+class SelectedItemView extends Vm {
+  SelectedItemView({required this.selected}) : super(equals: [selected]) {
+    loreLines = List.of(selected.lore ?? [], growable: true);
+  }
+
+  final ItemModel selected;
+  late final List<String> loreLines;
+  final Set<String> fieldsToDelete = {};
+
+  String get name => selected.name ?? unknownEntry;
+  String get material => selected.material ?? defaultMaterial;
+
+  bool get hasLoreLines => loreLines.isNotEmpty;
+
+  int get loreCount => loreLines.length;
+
+  void addLoreLine(String line) {
+    loreLines.add(line);
+  }
+
+  void removeLoreLine(int index) {
+    loreLines.removeAt(index);
+  }
+
+  bool addFieldToDelete(String field) {
+    return fieldsToDelete.add(field);
+  }
+
+  bool removeFieldToDelete(String field) {
+    return fieldsToDelete.remove(field);
+  }
+
+  void clearFieldsToDelete() {
+    fieldsToDelete.clear();
+  }
+}

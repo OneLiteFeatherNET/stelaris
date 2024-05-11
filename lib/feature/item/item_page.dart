@@ -5,7 +5,7 @@ import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/item_vm_state.dart';
+import 'package:stelaris_ui/api/state/factory/item/item_vm_state.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
@@ -31,11 +31,11 @@ class ItemPage extends StatelessWidget {
           selectedItem: vm.selected,
           mapToDeleteDialog: (value) => createDeleteText(value.modelName, context),
           mapToDeleteSuccessfully: (value) {
-            StoreProvider.dispatch(context, RemoveItemAction(value));
+            context.dispatch(RemoveItemAction(value));
             return true;
           },
           callFunction: (model) =>
-              StoreProvider.dispatch(context, SelectedItemAction(model)),
+              context.dispatch(SelectedItemAction(model)),
           page: (page, model) => _mapPageToWidget(page, model),
           models: vm.itemModels,
           tabPages: (pages) => pages,
@@ -55,7 +55,7 @@ class ItemPage extends StatelessWidget {
           title: 'Create new item',
           valueUpdate: (value) {
             final model = ItemModel(modelName: value);
-            StoreProvider.dispatch(context, AddItemAction(model));
+            context.dispatch(AddItemAction(model));
             Navigator.pop(context, true);
           },
           formKey: GlobalKey<FormState>(),
@@ -96,12 +96,11 @@ class ItemPage extends StatelessWidget {
     if (listenable == null) return nil;
     switch (value) {
       case 'General':
-        return ItemGeneralPage(model: listenable);
+        return ItemGeneralPage();
       case 'Meta':
-        return ItemMetaPage(model: listenable);
+        return ItemMetaPage();
       case 'Lore':
         return LorePage(
-          model: listenable,
           key: UniqueKey(),
         );
     }

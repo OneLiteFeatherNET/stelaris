@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/model/attribute_model.dart';
 import 'package:stelaris_ui/api/state/actions/attribute_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/attribute_vm_state.dart';
+import 'package:stelaris_ui/api/state/factory/attribute/attribute_vm_state.dart';
 import 'package:stelaris_ui/feature/attributes/attribute_general_page.dart';
 import 'package:stelaris_ui/feature/base/base_model_view.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
@@ -19,21 +19,20 @@ class AttributePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AttributeViewModel>(
       vm: () => AttributeVmFactory(),
-      onInit: (store) => store.dispatchAsync(InitAttributeAction()),
+      onInit: (store) => store.dispatchAndWait(InitAttributeAction()),
       builder: (context, vm) {
         return BaseModelView<AttributeModel>(
           mapToDataModelItem: (value) =>
               ModelText(displayName: value.modelName),
           openFunction: () => _openDialog(context),
           selectedItem: vm.selected,
-          mapToDeleteDialog: (value) => createDeleteText(value.modelName, context),
+          mapToDeleteDialog: (value) =>
+              createDeleteText(value.modelName, context),
           mapToDeleteSuccessfully: (value) {
             StoreProvider.dispatch(context, AttributeRemoveAction(value));
             return true;
           },
-          callFunction: (model) {
-            StoreProvider.dispatch(context, SelectAttributeAction(model));
-          },
+          callFunction: (model) => context.dispatch(SelectAttributeAction(model)),
           models: vm.models,
           child: _mapModelToWidget(vm.selected),
           compareFunction: (model) => vm.isSelectedItem(model),
@@ -44,9 +43,7 @@ class AttributePage extends StatelessWidget {
 
   Widget? _mapModelToWidget(AttributeModel? model) {
     if (model == null) return null;
-    return AttributeGeneralPage(
-      attributeModel: model,
-    );
+    return AttributeGeneralPage();
   }
 
   void _openDialog(BuildContext context) {
@@ -57,8 +54,8 @@ class AttributePage extends StatelessWidget {
         return EntryUpdateDialog(
           title: 'Create new attribute',
           valueUpdate: (value) {
-            AttributeModel attributeModel = AttributeModel(modelName: value);
-            StoreProvider.dispatch(context, AttributeAddAction(attributeModel));
+            final AttributeModel attributeModel = AttributeModel(modelName: value);
+            context.dispatchAndWait(AttributeAddAction(attributeModel));
             Navigator.pop(context, true);
           },
           formKey: GlobalKey<FormState>(),
@@ -67,7 +64,7 @@ class AttributePage extends StatelessWidget {
             FilteringTextInputFormatter.allow(stringWithSpacePattern)
           ],
           formFieldValidator: (value) {
-            var input = value as String;
+            final String input = value as String;
             return checkIfEmptyAndReturnErrorString(input, context);
           },
           clearFunction: (text) => text.trim().isNotEmpty,
@@ -75,5 +72,4 @@ class AttributePage extends StatelessWidget {
       },
     );
   }
-
 }
