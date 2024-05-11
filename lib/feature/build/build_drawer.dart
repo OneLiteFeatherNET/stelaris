@@ -20,7 +20,7 @@ class BuildDrawer extends StatelessWidget {
               height: sizeFifty,
               child: ListTile(
                 title: Text(
-                  "Vulpes Build",
+                  'Vulpes Build',
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -31,7 +31,7 @@ class BuildDrawer extends StatelessWidget {
             divider,
             heightTen,
             Text(
-              "What do you want to do?",
+              'What do you want to do?',
               textAlign: TextAlign.center,
             ),
             heightTen,

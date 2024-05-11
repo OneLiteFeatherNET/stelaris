@@ -9,7 +9,7 @@ import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/item/enchantment_reducer.dart';
 import 'package:stelaris_ui/feature/item/general/group_card.dart';
 import 'package:stelaris_ui/feature/item/item_group.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
@@ -144,7 +144,7 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
                     ],
                     formValidator: (value) {
                       if (value == null) return null;
-                      String input = value as String;
+                      final String input = value as String;
                       if (input.trim().isEmpty) {
                         return context.l10n.error_card_empty;
                       }

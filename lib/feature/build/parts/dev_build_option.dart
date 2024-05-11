@@ -36,7 +36,7 @@ class _DevBuildOptionState extends State<DevBuildOption> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
-              "Customize Git commit",
+              'Customize Git commit',
               textAlign: TextAlign.center,
             ),
             Checkbox(
@@ -63,7 +63,7 @@ class _DevBuildOptionState extends State<DevBuildOption> {
         maxLength: maxCommitLength, // TODO: Add a constant for this
         controller: widget.controller,
         decoration: const InputDecoration(
-          labelText: "Git commit",
+          labelText: 'Git commit',
           suffixIcon: Tooltip(
             message: 'Enter a valid Git commit (Only the first 10 characters)',
             child: Icon(Icons.info_outline_rounded),
@@ -75,7 +75,7 @@ class _DevBuildOptionState extends State<DevBuildOption> {
         ],
         validator: (value) {
           if (value != null && value.length < maxCommitLength) {
-            return "The commit must contains 10 chars";
+            return 'The commit must contains 10 chars';
           }
           return null;
         },

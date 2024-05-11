@@ -36,7 +36,7 @@ class DownloadTrigger extends StatelessWidget {
         } else {
           final list = snapshot.data as List<String>;
           final filter = this.filter;
-          List<DropdownMenuItem<String>> items = filter == null
+          final List<DropdownMenuItem<String>> items = filter == null
               ? _getItems(list)
               : _getItemsWithFilter(list, filter);
           return DownloadSelection(

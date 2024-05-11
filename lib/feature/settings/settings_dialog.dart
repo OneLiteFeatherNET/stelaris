@@ -7,7 +7,7 @@ import 'package:stelaris_ui/feature/settings/settings_divider.dart';
 import 'package:stelaris_ui/feature/settings/settings_end_tile.dart';
 import 'package:stelaris_ui/feature/settings/settings_header_tile.dart';
 import 'package:stelaris_ui/feature/settings/settings_text_tile.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/url_launcher.dart';
 

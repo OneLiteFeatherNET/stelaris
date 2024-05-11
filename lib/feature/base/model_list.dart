@@ -57,7 +57,7 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
                 final selectedCardShape = RoundedRectangleBorder(
                   side: BorderSide(
                       color: Theme.of(context).colorScheme.secondary),
-                  borderRadius: BorderRadius.circular(12.0),
+                  borderRadius: BorderRadius.circular(12),
                 );
                 return GestureDetector(
                   onTap: () {

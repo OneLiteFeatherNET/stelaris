@@ -31,10 +31,10 @@ class ApiService {
   late final AttributesAPI attributesAPI = AttributesAPI(_apiClient);
 
   ApiClient _createApiClient() {
-    return ApiClient("");
+    return ApiClient('');
   }
 
   ApiClient _createGeneratorClient() {
-    return ApiClient("");
+    return ApiClient('');
   }
 }

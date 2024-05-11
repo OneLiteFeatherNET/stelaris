@@ -47,7 +47,7 @@ class _VersionUpdateInputState extends State<VersionUpdateInput> {
             ? AutovalidateMode.onUserInteraction
             : AutovalidateMode.disabled,
         decoration: InputDecoration(
-          labelText: "New version",
+          labelText: 'New version',
           suffixIcon: _getSuffix(),
         ),
         controller: widget.controller,
@@ -59,7 +59,7 @@ class _VersionUpdateInputState extends State<VersionUpdateInput> {
           if (widget.branchOption.value != BranchOption.snapshot) return null;
           final String input = value!;
           if (input.trim().isEmpty) {
-            return "The major part must start with 99";
+            return 'The major part must start with 99';
           }
 
           String? part;
@@ -70,8 +70,8 @@ class _VersionUpdateInputState extends State<VersionUpdateInput> {
             part = input.split(dotPattern)[0];
           }
 
-          if (part.startsWith("99")) return null;
-          return "The major part must start with 99";
+          if (part.startsWith('99')) return null;
+          return 'The major part must start with 99';
         },
       ),
     );

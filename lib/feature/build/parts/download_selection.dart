@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/api_service.dart';
 import 'package:stelaris_ui/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris_ui/feature/build/parts/dev_build_option.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:web/web.dart' as web;
 
@@ -42,7 +42,7 @@ class _DownloadSelectionState extends State<DownloadSelection> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: Column(
         children: [
           Text(
@@ -82,8 +82,8 @@ class _DownloadSelectionState extends State<DownloadSelection> {
               final content = base64Encode(data);
               web.HTMLAnchorElement()
                 ..setAttribute(
-                    "href", "data:application/octet-stream;base64,$content")
-                ..setAttribute("download", "generated.zip")
+                    'href', 'data:application/octet-stream;base64,$content')
+                ..setAttribute('download', 'generated.zip')
                 ..click();
             },
             child: Text(context.l10n.button_download),

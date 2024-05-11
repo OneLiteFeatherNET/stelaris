@@ -8,7 +8,7 @@ import 'package:stelaris_ui/feature/item/lore/empty_lore_list.dart';
 import 'package:stelaris_ui/feature/item/lore/lore_action_chips.dart';
 import 'package:stelaris_ui/feature/item/lore/lore_confirm_widget.dart';
 import 'package:stelaris_ui/feature/item/lore/lore_page_view.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
@@ -39,7 +39,7 @@ class _LorePageState extends State<LorePage> {
       },
       builder: (context, vm) {
         return Padding(
-          padding: const EdgeInsets.only(left: 25, right: 25.0),
+          padding: const EdgeInsets.only(left: 25, right: 25),
           child: Stack(
             children: [
               Column(
