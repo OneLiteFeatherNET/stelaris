@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 /// Strings
-const String appName = "Stelaris";
-const String itemPage = "Items";
-const String entityPage = "Entities";
-const String unknownEntry = "Unknown";
+const String appName = 'Stelaris';
+const String itemPage = 'Items';
+const String entityPage = 'Entities';
+const String unknownEntry = 'Unknown';
 
 /// EdgeInsets
 const EdgeInsets padding = EdgeInsets.only(top: 10, left: 10);
@@ -13,21 +13,21 @@ const loader = SizedBox(height: 25, width: 25, child: CircularProgressIndicator(
 const divider = Divider();
 
 Text appText = const Text(appName);
-Text appTitle = const Text("S T E L A R I S");
+Text appTitle = const Text('S T E L A R I S');
 Text emptyText = const Text(emptyString);
 
 /// Regs
-RegExp numberPattern = RegExp("[1-9]\\d*");
-RegExp fontNumberPattern = RegExp("^(0|[1-9][0-9]*)");
-RegExp doubleNumberPattern = RegExp("^(0|[1-9][0-9]*)(\\.[0-9]+)?");
-RegExp letterPattern = RegExp("[a-zA-Z][a-z A-Z]*");
+RegExp numberPattern = RegExp('[1-9]\\d*');
+RegExp fontNumberPattern = RegExp('^(0|[1-9][0-9]*)');
+RegExp doubleNumberPattern = RegExp('^(0|[1-9][0-9]*)(\\.[0-9]+)?');
+RegExp letterPattern = RegExp('[a-zA-Z][a-z A-Z]*');
 RegExp decimalPattern = RegExp(r'^\d*\.?\d*');
-RegExp stringPattern = RegExp("[a-zA-Z]\\w*");
-RegExp stringWithSpacePattern = RegExp("[a-zA-Z][a-zA-Z ]*");
-RegExp dotPattern = RegExp("\\.");
-RegExp minecraftPattern = RegExp("minecraft:");
-RegExp namePattern = RegExp("^[a-zA-z]\\w*");
-RegExp gitCommitPattern = RegExp("[0-9a-fA-F]{10}");
+RegExp stringPattern = RegExp('[a-zA-Z]\\w*');
+RegExp stringWithSpacePattern = RegExp('[a-zA-Z][a-zA-Z ]*');
+RegExp dotPattern = RegExp('\\.');
+RegExp minecraftPattern = RegExp('minecraft:');
+RegExp namePattern = RegExp('^[a-zA-z]\\w*');
+RegExp gitCommitPattern = RegExp('[0-9a-fA-F]{10}');
 RegExp versionPattern = RegExp(r'^[0-9.]*$');
 
 /// Formatter
@@ -42,10 +42,10 @@ const int twentyLength = 20;
 const double fiftyLength = 50;
 
 /// Minecraft related values
-const String zeroString = "0";
-const String emptyString = "";
+const String zeroString = '0';
+const String emptyString = '';
 const int maxItemSize = 64;
-const String defaultMaterial = "minecraft:dirt";
+const String defaultMaterial = 'minecraft:dirt';
 
 // Text
 // Button
@@ -68,9 +68,9 @@ const SizedBox verticalSpacing25 = SizedBox(height: 25);
 const EdgeInsets dialogPadding = EdgeInsets.all(20);
 const EdgeInsets horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
 
-const double sizeFifty = 50.0;
+const double sizeFifty = 50;
 
-const borderRadius12 = BorderRadius.all(Radius.circular(12.0));
+const borderRadius12 = BorderRadius.all(Radius.circular(12));
 
 const String conceptURL = 'https://docs.onelitefeather.network/doc/stelaris-S1nldMzySr#h-43-build-page';
 const String gitUrl = 'https://gitlab.themeinerlp.dev/dungeon/frontend/stelaris-ui/-/issues/new';

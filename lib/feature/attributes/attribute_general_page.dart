@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/model/attribute_model.dart';
 import 'package:stelaris_ui/api/state/actions/attribute_actions.dart';
-import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/state/factory/attribute/selected_attribute_state.dart';
 import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
 

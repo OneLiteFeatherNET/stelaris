@@ -9,7 +9,7 @@ import 'package:stelaris_ui/api/util/minecraft/font_type.dart';
 import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
@@ -54,7 +54,7 @@ class FontGeneralPage extends StatelessWidget {
                       context.dispatch(UpdateFontAction(newEntry));
                     },
                     formValidator: (value) {
-                      var input = value as String;
+                      final input = value as String;
                       return checkIfEmptyAndReturnErrorString(input, context);
                     },
                   ),
@@ -77,10 +77,10 @@ class FontGeneralPage extends StatelessWidget {
                     display: context.l10n.card_ascent,
                     currentValue: vm.selected.ascent?.toString() ?? zeroString,
                     valueUpdate: (value) {
-                      if (value == vm.selected.ascent) return;
+                      final parsedValue = int.tryParse(value) ?? 0;
+                      if (parsedValue == vm.selected.ascent) return;
                       final oldModel = vm.selected;
-                      final newAscent = int.parse(value);
-                      final newEntry = oldModel.copyWith(ascent: newAscent);
+                      final newEntry = oldModel.copyWith(ascent: parsedValue);
                       context.dispatch(UpdateFontAction(newEntry));
                     },
                     inputType: numberInput,
@@ -94,10 +94,10 @@ class FontGeneralPage extends StatelessWidget {
                     display: context.l10n.card_height,
                     currentValue: vm.selected.height?.toString() ?? zeroString,
                     valueUpdate: (value) {
-                      if (value == vm.selected.height) return;
+                      final parsedValue = int.tryParse(value) ?? 0;
+                      if (parsedValue == vm.selected.height) return;
                       final oldModel = vm.selected;
-                      final newHeight = int.parse(value);
-                      final newEntry = oldModel.copyWith(height: newHeight);
+                      final newEntry = oldModel.copyWith(height: parsedValue);
                       context.dispatch(UpdateFontAction(newEntry));
                     },
                     inputType: numberInput,

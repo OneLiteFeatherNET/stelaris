@@ -58,7 +58,7 @@ class NotificationPage extends StatelessWidget {
             FilteringTextInputFormatter.allow(stringWithSpacePattern)
           ],
           formFieldValidator: (value) {
-            var input = value as String;
+            final input = value as String;
             return checkIfEmptyAndReturnErrorString(input, context);
           },
           clearFunction: (text) => text.trim().isNotEmpty,

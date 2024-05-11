@@ -1,5 +1,6 @@
 import 'package:stelaris_ui/api/api_client.dart';
 
+@Deprecated('Please use the GenerateAPI class instead')
 class DownloadAPI  {
 
   final ApiClient _apiClient;
@@ -8,7 +9,7 @@ class DownloadAPI  {
 
   Future<String> download(String branch) async {
     final queryParams = <String, dynamic>{
-      "branch" : branch
+      'branch' : branch
     };
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/download');

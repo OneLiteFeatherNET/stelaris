@@ -10,11 +10,7 @@ class DeleteEntryButton<E> extends StatelessWidget {
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
 
   const DeleteEntryButton({
-    super.key,
-    required this.title,
-    required this.header,
-    required this.value,
-    required this.mapToDeleteSuccessfully,
+    required this.title, required this.header, required this.value, required this.mapToDeleteSuccessfully, super.key,
   });
 
   @override

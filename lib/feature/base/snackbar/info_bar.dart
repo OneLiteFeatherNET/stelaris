@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const double snackBarWidth = 550.0;
+const double snackBarWidth = 550;
 
 /// The [InfoBarFactory] class is a factory class that creates a [SnackBar] with a given text.
 /// The created [SnackBar] has a width of [snackBarWidth] and a duration of 2 seconds.
@@ -20,7 +20,7 @@ class InfoBarFactory {
       content: Text(text),
       duration: const Duration(seconds: 2),
       width: width,
-      elevation: 0.0,
+      elevation: 0,
       behavior: SnackBarBehavior.floating,
     );
   }

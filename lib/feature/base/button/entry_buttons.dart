@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/feature/base/button/delete_entry_button.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/typedefs.dart';
 

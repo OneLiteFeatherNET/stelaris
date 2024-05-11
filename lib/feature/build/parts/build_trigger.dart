@@ -42,7 +42,7 @@ class _BuildTriggerState extends State<BuildTrigger> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -50,12 +50,12 @@ class _BuildTriggerState extends State<BuildTrigger> {
           TextField(
             enabled: false,
             decoration: const InputDecoration(
-              labelText: "Current version",
+              labelText: 'Current version',
             ),
             controller: _controller,
           ),
           verticalSpacing25,
-          const Text("Select the part of the version to update:"),
+          const Text('Select the part of the version to update:'),
           verticalSpacing25,
           VersionGroupSelection(
             onSelected: (value) {
@@ -92,7 +92,7 @@ class _BuildTriggerState extends State<BuildTrigger> {
                 }
                 ApiService().generateApi.generate(branch);
               },
-              child: const Text("Generate"),
+              child: const Text('Generate'),
             ),
           ),
         ],
@@ -103,7 +103,7 @@ class _BuildTriggerState extends State<BuildTrigger> {
   /// Update the version string based on the selected radio button index
   String _updateVersion(String currentVersion, int radioButtonIndex) {
     // Split the version string into parts
-    List<String> versionParts = currentVersion.split('.');
+    final List<String> versionParts = currentVersion.split('.');
 
     // Ensure that the version string has at least three parts
     if (versionParts.length < 3) {

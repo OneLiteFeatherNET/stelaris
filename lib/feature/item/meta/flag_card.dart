@@ -8,7 +8,7 @@ import 'package:stelaris_ui/feature/base/cards/expandable_data_card.dart';
 import 'package:stelaris_ui/feature/dialogs/abort_add_dialog.dart';
 import 'package:stelaris_ui/feature/dialogs/enum_add_dialog.dart';
 import 'package:stelaris_ui/feature/item/item_reducer.dart';
-import 'package:stelaris_ui/util/I10n_ext.dart';
+import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
 class FlagCard extends StatelessWidget with DropDownItemReducer {
@@ -38,7 +38,7 @@ class FlagCard extends StatelessWidget with DropDownItemReducer {
                 items: reduceFlags(model),
                 valueUpdate: (value) {
                   final oldEntry = model;
-                  Set<String> flags = Set.of(oldEntry.flags ?? {});
+                  final Set<String> flags = Set.of(oldEntry.flags ?? {});
                   flags.add(value!.minestomValue);
                   final newEntry = oldEntry.copyWith(flags: flags);
                   context.dispatch(UpdateItemAction(newEntry));
@@ -59,7 +59,7 @@ class FlagCard extends StatelessWidget with DropDownItemReducer {
                 value: key,
                 mapToDeleteSuccessfully: (value) {
                   final oldEntry = model;
-                  Set<String> oldFlags = Set.of(oldEntry.flags ?? {});
+                  final Set<String> oldFlags = Set.of(oldEntry.flags ?? {});
                   oldFlags.remove(key);
                   final newEntry = oldEntry.copyWith(flags: oldFlags);
                   context.dispatch(UpdateItemAction(newEntry));
