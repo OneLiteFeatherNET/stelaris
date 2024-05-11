@@ -5,7 +5,7 @@ import 'package:nil/nil.dart';
 import 'package:stelaris_ui/api/model/font_model.dart';
 import 'package:stelaris_ui/api/state/actions/font_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/font_vm_state.dart';
+import 'package:stelaris_ui/api/state/factory/font/font_vm_state.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
@@ -21,20 +21,20 @@ class FontPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, FontViewModel>(
       vm: () => FontVmFactory(),
-      onInit: (store) => store.dispatchAsync(InitFontAction()),
+      onInit: (store) => store.dispatchAndWait(InitFontAction()),
       builder: (context, vm) {
         return BaseModelViewTabs<FontModel>(
           mapToDataModelItem: (value) =>
               ModelText(displayName: value.modelName),
           openFunction: () => _openDialog(context),
           selectedItem: vm.selected,
-          mapToDeleteDialog: (value) => createDeleteText(value.modelName, context),
+          mapToDeleteDialog: (value) =>
+              createDeleteText(value.modelName, context),
           mapToDeleteSuccessfully: (value) {
-            StoreProvider.dispatch(context, RemoveFontsAction(value));
+            context.dispatch(RemoveFontsAction(value));
             return true;
           },
-          callFunction: (model) =>
-              StoreProvider.dispatch(context, SelectFontAction(model)),
+          callFunction: (model) => context.dispatch(SelectFontAction(model)),
           page: (page, notification) => _mapPageToWidget(page, notification),
           models: vm.models,
           tabPages: (pages) => pages,
@@ -53,8 +53,8 @@ class FontPage extends StatelessWidget {
         return EntryUpdateDialog(
           title: 'Create new font',
           valueUpdate: (value) {
-            FontModel model = FontModel(modelName: value);
-            StoreProvider.dispatch(context, AddFontAction(model));
+            final FontModel model = FontModel(modelName: value);
+            context.dispatch(AddFontAction(model));
             Navigator.pop(context, true);
           },
           formKey: GlobalKey<FormState>(),
@@ -63,7 +63,7 @@ class FontPage extends StatelessWidget {
             FilteringTextInputFormatter.allow(stringWithSpacePattern)
           ],
           formFieldValidator: (value) {
-            var input = value as String;
+            final String input = value as String;
             return checkIfEmptyAndReturnErrorString(input, context);
           },
           clearFunction: (text) => text.trim().isNotEmpty,
@@ -91,9 +91,9 @@ class FontPage extends StatelessWidget {
     if (value.trim().isEmpty || clickedModel == null) return nil;
     switch (value) {
       case 'General':
-        return FontGeneralPage(model: clickedModel);
+        return FontGeneralPage();
       case 'Chars':
-        return FontMetaPage(model: clickedModel);
+        return const FontMetaPage();
     }
     return nil;
   }

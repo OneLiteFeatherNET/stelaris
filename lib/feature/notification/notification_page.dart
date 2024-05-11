@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:stelaris_ui/api/model/notification_model.dart';
 import 'package:stelaris_ui/api/state/actions/notification_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/notification_vm_state.dart';
+import 'package:stelaris_ui/api/state/factory/notification/notification_vm_state.dart';
 import 'package:stelaris_ui/feature/base/base_model_view.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
@@ -19,7 +19,7 @@ class NotificationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, NotificationViewModel>(
       vm: () => NotificationVmFactory(),
-      onInit: (store) => store.dispatchAsync(InitNotificationAction()),
+      onInit: (store) => store.dispatchAndWait(InitNotificationAction()),
       builder: (context, vm) {
         return BaseModelView<NotificationModel>(
           mapToDataModelItem: (value) =>
@@ -31,8 +31,7 @@ class NotificationPage extends StatelessWidget {
             StoreProvider.dispatch(context, RemoveNotificationAction(value));
             return true;
           },
-          callFunction: (model) => StoreProvider.dispatch(
-              context, SelectedNotificationAction(model)),
+          callFunction: (model) => context.dispatch(SelectedNotificationAction(model)),
           models: vm.models,
           child: _mapPageToWidget(vm.selected),
           compareFunction: (model) => vm.isSelectedItem(model),
@@ -49,8 +48,8 @@ class NotificationPage extends StatelessWidget {
         return EntryUpdateDialog(
           title: 'Create new notification',
           valueUpdate: (value) {
-            NotificationModel model = NotificationModel(modelName: value);
-            StoreProvider.dispatch(context, NotificationAddAction(model));
+            final NotificationModel model = NotificationModel(modelName: value);
+            context.dispatchAndWait(NotificationAddAction(model));
             Navigator.pop(context, true);
           },
           formKey: GlobalKey<FormState>(),
@@ -70,6 +69,6 @@ class NotificationPage extends StatelessWidget {
 
   Widget? _mapPageToWidget(NotificationModel? model) {
     if (model == null) return null;
-    return NotificationGeneralPage(model: model);
+    return NotificationGeneralPage();
   }
 }

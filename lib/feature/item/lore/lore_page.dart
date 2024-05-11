@@ -1,215 +1,106 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/api_service.dart';
-import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
-import 'package:stelaris_ui/feature/base/button/entry_buttons.dart';
+import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris_ui/api/state/factory/item/selected_item_state.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris_ui/feature/item/lore/empty_lore_list.dart';
-import 'package:stelaris_ui/feature/item/lore/grabbed_card.dart';
 import 'package:stelaris_ui/feature/item/lore/lore_action_chips.dart';
 import 'package:stelaris_ui/feature/item/lore/lore_confirm_widget.dart';
-import 'package:stelaris_ui/feature/item/lore/lore_delete_checkbox.dart';
+import 'package:stelaris_ui/feature/item/lore/lore_page_view.dart';
 import 'package:stelaris_ui/util/I10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
 class LorePage extends StatefulWidget {
-  final ItemModel model;
-
-  const LorePage({
-    required this.model,
-    super.key,
-  });
+  const LorePage({super.key});
 
   @override
   State<LorePage> createState() => _LorePageState();
 }
 
 class _LorePageState extends State<LorePage> {
-  late List<String> loreLines;
-  final List<int> selectedToDelete = [];
   bool isEditing = false;
 
   @override
   void initState() {
-    loreLines = List.of(widget.model.lore ?? []);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 25, right: 25.0),
-      child: Stack(
-        children: [
-          Column(
+    return StoreConnector<AppState, SelectedItemView>(
+      vm: () => SelectedItemFactory(),
+      onWillChange: (context, store, previousVm, newVm) {
+        if ((previousVm.selected.lore?.length ?? 0) >
+            (newVm.selected.lore?.length ?? 0)) {
+          isEditing = false;
+        }
+      },
+      builder: (context, vm) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 25, right: 25.0),
+          child: Stack(
             children: [
-              verticalSpacing25,
-              LoreActionChips(
-                dialogFunction: () => _openCreateDialog(context),
-                confirmWidget: LoreConfirmWidget(
-                  onConfirm: _onConfirm,
-                  onSave: _saveModel,
-                  isEditing: isEditing,
-                ),
-                deleteFunction: _toggleDeleteState,
-                currentIndex: loreLines.length,
-              ),
-              verticalSpacing25,
-              Flexible(
-                child: loreLines.isEmpty
-                    ? const EmptyLoreList()
-                    : ReorderableListView.builder(
-                  proxyDecorator: (child, index, animation) =>
-                      GrabbedCard(
-                        child: child,
-                      ),
-                  itemBuilder: (context, index) {
-                    final key = loreLines[index];
-                    return ListTile(
-                      key: Key(index.toString()),
-                      title: Text(
-                        key,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      leading: Text("${index + 1}"),
-                      trailing: Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: isEditing
-                            ? LoreDeleteCheckbox(
-                          index: index,
-                          function: _loreManipulate,
-                        )
-                            : EntryButtons(
-                          editTitle:
-                          context.l10n.dialog_lore_edit_title,
-                          model: widget.model,
-                          name: key,
-                          value: key,
-                          formFieldValidator: (value) {
-                            var input = value as String;
-                            return checkIfEmptyAndReturnErrorString(
-                              input,
-                              context,
-                            );
-                          },
-                          delete: (ItemModel? value) {
-                            final oldEntry = widget.model;
-                            List<String> oldLores =
-                            List.of(oldEntry.lore ?? []);
-                            oldLores.remove(key);
-                            final newEntry =
-                            oldEntry.copyWith(lore: oldLores);
-                            _updateData(
-                              widget.model,
-                              newEntry,
-                              oldLores,
-                            );
-                          },
-                          update: _updateLoreLine,
-                        ),
-                      ),
-                    );
-                  },
-                  itemCount: loreLines.length,
-                  onReorder: (oldIndex, newIndex) {
-                    if (oldIndex == newIndex) return;
-                    if (newIndex > oldIndex) {
-                      newIndex -= 1;
-                    }
-
-                    if (newIndex > loreLines.length - 1) {
-                      newIndex = loreLines.length - 1;
-                    }
-                    List<String> oldLores =
-                    List.of(loreLines, growable: true);
-                    final item = oldLores.removeAt(oldIndex);
-                    oldLores.insert(newIndex, item);
-                    setState(() {
-                      loreLines = oldLores;
-                    });
-                  },
-                ),
+              Column(
+                children: [
+                  verticalSpacing25,
+                  LoreActionChips(
+                    dialogFunction: () => _openCreateDialog(vm, context),
+                    confirmWidget: LoreConfirmWidget(
+                      onConfirm: () => _onConfirm(vm),
+                      onSave: () => context.dispatch(ItemDatabaseUpdate()),
+                      isEditing: isEditing,
+                    ),
+                    deleteFunction: _toggleDeleteState,
+                    currentIndex: vm.loreLines.length,
+                  ),
+                  verticalSpacing25,
+                  Flexible(
+                    child: !vm.hasLoreLines
+                        ? const EmptyLoreList()
+                        : LorePageView(
+                            isEditing: isEditing,
+                            view: vm,
+                          ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
-  }
-
-  void _updateLoreLine(String? value, String? key) {
-    final oldEntry = widget.model;
-    List<String> oldLores = List.of(oldEntry.lore ?? []);
-    int index = oldLores.indexWhere(
-          (element) =>
-          identical(
-            element,
-            value,
-          ),
-    );
-    oldLores[index] = key!;
-    final newEntry = oldEntry.copyWith(lore: oldLores);
-    setState(() {
-      loreLines = oldLores;
-      context.dispatch(UpdateItemAction(newEntry));
-    });
   }
 
   void _toggleDeleteState() {
     setState(() {
       isEditing = !isEditing;
-      if (!isEditing) selectedToDelete.clear();
     });
   }
 
-  void _onConfirm() {
-    if (selectedToDelete.isEmpty) return;
-    final oldEntry = widget.model;
-    List<String> lines = List.of(oldEntry.lore ?? [], growable: true);
-    for (var element in selectedToDelete) {
-      lines.removeAt(selectedToDelete[element]);
+  void _onConfirm(SelectedItemView view) {
+    if (view.fieldsToDelete.isEmpty) return;
+    final oldEntry = view.selected;
+    for (String element in view.fieldsToDelete) {
+      view.loreLines.remove(element);
     }
-    final newEntry = oldEntry.copyWith(lore: lines);
-    _updateData(oldEntry, newEntry, lines);
-    _toggleDeleteState();
+    final newEntry = oldEntry.copyWith(lore: view.loreLines);
+    view.clearFieldsToDelete();
+    context.dispatch(UpdateItemAction(newEntry));
   }
 
-  void _loreManipulate(bool add, int index) {
-    if (add) {
-      selectedToDelete.add(index);
-    } else {
-      selectedToDelete.remove(index);
-    }
-  }
-
-  void _updateData(ItemModel oldEntry,
-      ItemModel newEntry,
-      List<String> newLines,) {
-    setState(() {
-      loreLines = newLines;
-      context.dispatch(UpdateItemAction(newEntry));
-    });
-  }
-
-  void _saveModel() async {
-    final ItemModel newModel = widget.model.copyWith(lore: loreLines);
-    await context.dispatch(UpdateItemAction(newModel));
-    ApiService().itemApi.update(widget.model);
-  }
-
-  void _openCreateDialog(BuildContext context) {
+  void _openCreateDialog(SelectedItemView view, BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return EntryUpdateDialog(
           valueUpdate: (value) {
-            _updateLore(value!, true);
+            _updateLore(view, value!, true);
             Navigator.pop(context);
           },
           formFieldValidator: (value) {
-            var input = value as String;
+            final String input = value as String;
             return checkIfEmptyAndReturnErrorString(input, context);
           },
           title: context.l10n.button_add_new_line,
@@ -219,15 +110,13 @@ class _LorePageState extends State<LorePage> {
     );
   }
 
-  void _updateLore(String line, [bool add = true]) {
-    final oldEntry = widget.model;
-    List<String> oldLores = List.of(oldEntry.lore ?? []);
+  void _updateLore(SelectedItemView view, String line, [bool add = true]) {
     if (add) {
-      oldLores.add(line);
+      view.loreLines.add(line);
     } else {
-      oldLores.remove(line);
+      view.loreLines.remove(line);
     }
-    final newEntry = oldEntry.copyWith(lore: oldLores);
-    _updateData(oldEntry, newEntry, oldLores);
+    final newEntry = view.selected.copyWith(lore: view.loreLines);
+    context.dispatch(UpdateItemAction(newEntry));
   }
 }
