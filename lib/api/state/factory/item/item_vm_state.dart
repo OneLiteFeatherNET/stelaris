@@ -1,20 +1,11 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
-import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/feature/item/item_page.dart';
 
 class ItemVmFactory extends VmFactory<AppState, ItemPage, ItemViewModel> {
 
   ItemVmFactory();
-
-  Future<void> updateSelectedEntry(ItemModel model) async {
-    dispatchAsync(SelectedItemAction(model));
-  }
-
-  Future<void> removeSelectedEntry(ItemModel model) async {
-    dispatchAsync(RemoveSelectItemAction(model));
-  }
 
   @override
   ItemViewModel fromStore() =>

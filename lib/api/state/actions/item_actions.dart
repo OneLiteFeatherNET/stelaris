@@ -32,14 +32,15 @@ class UpdateItemAction extends ReduxAction<AppState> {
   UpdateItemAction(this.newEntry);
 
   @override
-  Future<AppState?> reduce() async => state.copyWith(selectedItem: newEntry);
+  Future<AppState?> reduce() async {
+    return state.copyWith(selectedItem: newEntry);
+  }
 }
 
 class InitItemAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final List<ItemModel> items = await ApiService().itemApi.getAll();
-    if (items.isEmpty) return null;
     return state.copyWith(items: items);
   }
 
