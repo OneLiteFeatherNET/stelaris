@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/state/factory/item/selected_item_state.dart';
+import 'package:stelaris_ui/feature/base/empty_data_widget.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris_ui/feature/item/lore/empty_lore_list.dart';
 import 'package:stelaris_ui/feature/item/lore/lore_action_chips.dart';
 import 'package:stelaris_ui/feature/item/lore/lore_confirm_widget.dart';
 import 'package:stelaris_ui/feature/item/lore/lore_page_view.dart';
@@ -58,7 +58,7 @@ class _LorePageState extends State<LorePage> {
                   verticalSpacing25,
                   Flexible(
                     child: !vm.hasLoreLines
-                        ? const EmptyLoreList()
+                        ? const EmptyDataWidget()
                         : LorePageView(
                             isEditing: isEditing,
                             view: vm,
