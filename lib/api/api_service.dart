@@ -5,9 +5,10 @@ import 'package:stelaris_ui/api/service/font_api.dart';
 import 'package:stelaris_ui/api/service/generate_api.dart';
 import 'package:stelaris_ui/api/service/item_api.dart';
 import 'package:stelaris_ui/api/service/notification_api.dart';
+import 'package:stelaris_ui/env/environment.dart';
 
+/// The [ApiService] class contains all web services which are used in the app to communicate with the backend.
 class ApiService {
-
   static final ApiService _apiService = ApiService._internal();
 
   factory ApiService() => _apiService;
@@ -30,11 +31,9 @@ class ApiService {
 
   late final AttributesAPI attributesAPI = AttributesAPI(_apiClient);
 
-  ApiClient _createApiClient() {
-    return ApiClient('');
-  }
+  /// Creates an instance of [ApiClient] with the backend URL.
+  ApiClient _createApiClient() => ApiClient(Environment.backendURl);
 
-  ApiClient _createGeneratorClient() {
-    return ApiClient('');
-  }
+  /// Creates an instance of [ApiClient] with the generator URL.
+  ApiClient _createGeneratorClient() => ApiClient(Environment.generatorUrl);
 }
