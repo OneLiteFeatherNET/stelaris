@@ -34,7 +34,7 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, SelectedItemView>(
-      vm: () => SelectedItemFactory(),
+      vm: () => SelectedItemFactory<ItemGeneralPage>(),
       builder: (context, vm) {
         return Stack(
           children: [

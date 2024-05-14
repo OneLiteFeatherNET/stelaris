@@ -30,7 +30,7 @@ class _LorePageState extends State<LorePage> {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, SelectedItemView>(
-      vm: () => SelectedItemFactory(),
+      vm: () => SelectedItemFactory<LorePage>(),
       onWillChange: (context, store, previousVm, newVm) {
         if ((previousVm.selected.lore?.length ?? 0) >
             (newVm.selected.lore?.length ?? 0)) {
