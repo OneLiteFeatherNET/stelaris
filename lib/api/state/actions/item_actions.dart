@@ -37,6 +37,17 @@ class UpdateItemAction extends ReduxAction<AppState> {
   }
 }
 
+class ItemFlagResetAction extends ReduxAction<AppState> {
+
+  @override
+  Future<AppState?> reduce() async {
+    if (state.selectedItem == null) return null;
+    final ItemModel oldEntry = state.selectedItem!;
+    if (oldEntry.flags == null) return null;
+    return state.copyWith(selectedItem: oldEntry.copyWith(flags: {}));
+  }
+}
+
 class InitItemAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
