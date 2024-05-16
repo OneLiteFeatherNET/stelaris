@@ -32,6 +32,8 @@ class NotificationGeneralPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, SelectedNotificationView>(
       vm: () => SelectedNotificationFactory(),
+      onDispose: (store) =>
+          store.dispatch(RemoveSelectNotificationAction(), notify: false),
       builder: (context, vm) {
         return Expanded(
           child: Stack(
