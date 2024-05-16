@@ -15,9 +15,8 @@ class SelectedItemAction extends ReduxAction<AppState> {
 }
 
 class RemoveSelectItemAction extends ReduxAction<AppState> {
-  final ItemModel model;
 
-  RemoveSelectItemAction(this.model);
+  RemoveSelectItemAction();
 
   @override
   AppState? reduce() {

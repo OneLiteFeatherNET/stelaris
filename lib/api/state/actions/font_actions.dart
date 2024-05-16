@@ -13,9 +13,6 @@ class SelectFontAction extends ReduxAction<AppState> {
  }
 
 class RemoveSelectedFont extends ReduxAction<AppState> {
-  final FontModel model;
-
-  RemoveSelectedFont(this.model);
 
   @override
   AppState? reduce() {
