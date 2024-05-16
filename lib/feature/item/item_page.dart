@@ -23,6 +23,7 @@ class ItemPage extends StatelessWidget {
     return StoreConnector<AppState, ItemViewModel>(
       vm: () => ItemVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitItemAction()),
+      onDispose: (store) => store.dispatch(RemoveSelectItemAction(), notify: false),
       builder: (context, vm) {
         return BaseModelViewTabs<ItemModel>(
           mapToDataModelItem: (value) =>

@@ -20,6 +20,7 @@ class AttributePage extends StatelessWidget {
     return StoreConnector<AppState, AttributeViewModel>(
       vm: () => AttributeVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitAttributeAction()),
+      onDispose: (store) => store.dispatch(RemoveSelectAttributeAction(), notify: false),
       builder: (context, vm) {
         return BaseModelView<AttributeModel>(
           mapToDataModelItem: (value) =>

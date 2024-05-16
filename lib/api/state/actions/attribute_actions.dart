@@ -13,9 +13,6 @@ class SelectAttributeAction extends ReduxAction<AppState> {
 }
 
 class RemoveSelectAttributeAction extends ReduxAction<AppState> {
-  final AttributeModel model;
-
-  RemoveSelectAttributeAction(this.model);
 
   @override
   AppState? reduce() {
