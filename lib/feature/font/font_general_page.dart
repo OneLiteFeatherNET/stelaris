@@ -33,7 +33,6 @@ class FontGeneralPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, SelectedFontView>(
       vm: () => SelectedFontFactory(),
-      onDispose: (store) => store.dispatch(RemoveSelectedFont(), notify: false),
       builder: (context, vm) {
         return Stack(
           children: [
