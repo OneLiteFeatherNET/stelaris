@@ -75,7 +75,7 @@ mixin EnchantmentReducer {
   final List<DropdownMenuItem<Enchantment>> miscEnchantments = List.from(enchantments.values);
 
   List<DropdownMenuItem<Enchantment>> _getTools(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.tools) {
+    if (itemModel.enchantments == null && itemModel.group.hasSameGroup(ItemGroup.tools)) {
       return toolEnchantments;
     }
 
@@ -91,7 +91,7 @@ mixin EnchantmentReducer {
   }
 
   List<DropdownMenuItem<Enchantment>> _getMeele(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.meeleWeapon) {
+    if (itemModel.enchantments == null && itemModel.group.hasSameGroup(ItemGroup.meeleWeapon)) {
       return meeleEnchantments;
     }
 
@@ -107,7 +107,7 @@ mixin EnchantmentReducer {
   }
 
   List<DropdownMenuItem<Enchantment>> _getRanged(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.rangedWeapon) {
+    if (itemModel.enchantments == null && itemModel.group.hasSameGroup(ItemGroup.rangedWeapon)) {
       return rangedEnchantments;
     }
 
@@ -123,7 +123,7 @@ mixin EnchantmentReducer {
   }
 
   List<DropdownMenuItem<Enchantment>> _getMisc(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.misc) {
+    if (itemModel.enchantments == null && itemModel.group.hasSameGroup(ItemGroup.misc)) {
       return miscEnchantments;
     }
 
@@ -139,7 +139,7 @@ mixin EnchantmentReducer {
   }
 
   List<DropdownMenuItem<Enchantment>> _getArmor(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.armor) {
+    if (itemModel.enchantments == null && itemModel.group.hasSameGroup(ItemGroup.armor)) {
       return miscEnchantments;
     }
 
@@ -191,7 +191,7 @@ mixin EnchantmentReducer {
 
   bool canAdd(ItemModel model) {
     if (model.enchantments == null) return true;
-    final group = ItemGroup.values.firstWhere((element) => identical(model.group, element));
+    final group = ItemGroup.values.firstWhere((element) => element.hasSameGroup(model.group));
 
     switch(group) {
       case ItemGroup.misc:
@@ -218,7 +218,7 @@ mixin EnchantmentReducer {
   }
 
   Enchantment? getByGroup(ItemModel model, String enchantment) {
-    final groupEnchantments = _getEnchantments(ItemGroup.values.firstWhere((element) => identical(element, model.group)));
+    final groupEnchantments = _getEnchantments(ItemGroup.values.firstWhere((element) => element.hasSameGroup(model.group)));
 
     for (var value in groupEnchantments) {
       if (value.value!.minecraftValue == enchantment) {

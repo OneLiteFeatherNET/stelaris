@@ -9,10 +9,6 @@ typedef DefaultValue<E,T> = E Function(T value);
 typedef StringValueUpdate = void Function(String value);
 typedef Validator<String> = bool Function(String?)?;
 
-/// Defines all typedef functions for the SetupStepper
-typedef FinishStepper<E extends DataModel> = void Function(E model);
-typedef BuildModel<E extends DataModel> = E Function(String name, String description);
-
 /// DismissDialog functions
 typedef MapToDeleteSuccessfully<E> = bool Function(E value);
 
