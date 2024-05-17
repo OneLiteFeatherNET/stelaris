@@ -2,14 +2,13 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/state/factory/item/selected_item_state.dart';
-import 'package:stelaris_ui/feature/item/item_reducer.dart';
 import 'package:stelaris_ui/feature/item/meta/enchantment_card.dart';
 import 'package:stelaris_ui/feature/item/meta/flag_grid.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
-class ItemMetaPage extends StatefulWidget with DropDownItemReducer {
+class ItemMetaPage extends StatefulWidget {
 
-  ItemMetaPage({
+  const ItemMetaPage({
     super.key,
   });
 

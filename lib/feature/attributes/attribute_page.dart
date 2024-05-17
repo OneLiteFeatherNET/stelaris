@@ -30,7 +30,7 @@ class AttributePage extends StatelessWidget {
           mapToDeleteDialog: (value) =>
               createDeleteText(value.modelName, context),
           mapToDeleteSuccessfully: (value) {
-            StoreProvider.dispatch(context, AttributeRemoveAction(value));
+            context.dispatch(AttributeRemoveAction(value));
             return true;
           },
           callFunction: (model) => context.dispatch(SelectAttributeAction(model)),

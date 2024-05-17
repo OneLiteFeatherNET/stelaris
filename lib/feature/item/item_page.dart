@@ -99,7 +99,7 @@ class ItemPage extends StatelessWidget {
       case 'General':
         return ItemGeneralPage();
       case 'Meta':
-        return ItemMetaPage();
+        return const ItemMetaPage();
       case 'Lore':
         return LorePage(
           key: UniqueKey(),

@@ -3,15 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/state/actions/item_actions.dart';
 import 'package:stelaris_ui/api/state/app_state.dart';
 import 'package:stelaris_ui/api/state/factory/item/selected_item_state.dart';
-import 'package:stelaris_ui/feature/item/meta/single_flag_card.dart';
 import 'package:stelaris_ui/api/util/minecraft/item_flag.dart';
-import 'package:stelaris_ui/feature/item/item_reducer.dart';
+import 'package:stelaris_ui/feature/item/meta/single_flag_card.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/l10n_ext.dart';
 
-const List<ItemFlag> itemFlags = ItemFlag.values;
-
-class FlagGrid extends StatelessWidget with DropDownItemReducer {
+class FlagGrid extends StatelessWidget {
   const FlagGrid({
     super.key,
   });
@@ -52,11 +49,13 @@ class FlagGrid extends StatelessWidget with DropDownItemReducer {
               runSpacing: 10,
               spacing: 10,
               children: List.generate(
-                itemFlags.length,
+                ItemFlag.values.length,
                 (index) => SizedBox(
                   width: 200,
                   child: SingleFlagCard(
-                      flag: itemFlags[index], model: vm.selected),
+                    flag: ItemFlag.values[index],
+                    model: vm.selected,
+                  ),
                 ),
               ),
             )
