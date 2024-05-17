@@ -7,22 +7,10 @@ import 'package:stelaris_ui/api/state/factory/item/selected_item_state.dart';
 import 'package:stelaris_ui/feature/base/button/save_button.dart';
 import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
 import 'package:stelaris_ui/feature/item/enchantment_reducer.dart';
-import 'package:stelaris_ui/feature/item/general/group_card.dart';
-import 'package:stelaris_ui/feature/item/item_group.dart';
+import 'package:stelaris_ui/feature/item/general/item_group_card.dart';
 import 'package:stelaris_ui/util/l10n_ext.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
-
-const List<ItemGroup> values = ItemGroup.values;
-
-List<DropdownMenuItem<ItemGroup>> getItems() {
-  return List.generate(
-      values.length,
-      (index) => DropdownMenuItem(
-            value: values[index],
-            child: Text(values[index].display),
-          ));
-}
 
 class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
   ItemGeneralPage({
@@ -73,9 +61,9 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
                     },
                     maxLength: 30,
                   ),
-                  GroupCard(
+                  ItemGroupCard(
                     model: vm.selected,
-                    values: values,
+                    groupKey: GlobalKey<FormState>(),
                   ),
                   TextInputCard<String>(
                     display: context.l10n.card_material,
