@@ -23,11 +23,12 @@ List<DropdownMenuItem<FontType>> types = List.generate(
 );
 
 class FontGeneralPage extends StatelessWidget {
-  FontGeneralPage({
+  const FontGeneralPage({
+    required this.formKey,
     super.key,
   });
 
-  final _key = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class FontGeneralPage extends StatelessWidget {
           children: [
             Form(
               autovalidateMode: AutovalidateMode.always,
-              key: _key,
+              key: formKey,
               child: Wrap(
                 children: [
                   TextInputCard<String>(
@@ -123,7 +124,7 @@ class FontGeneralPage extends StatelessWidget {
             ),
             SaveButton(
               callback: () {
-                if (!_key.currentState!.validate()) return;
+                if (!formKey.currentState!.validate()) return;
                 context.dispatch(FontDatabaseUpdate());
               },
             )

@@ -92,7 +92,7 @@ class FontPage extends StatelessWidget {
     if (value.trim().isEmpty || clickedModel == null) return nil;
     switch (value) {
       case 'General':
-        return FontGeneralPage();
+        return FontGeneralPage(formKey: GlobalKey<FormState>(),);
       case 'Chars':
         return const CharCard();
     }
