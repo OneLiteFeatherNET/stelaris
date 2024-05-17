@@ -22,6 +22,7 @@ class FontPage extends StatelessWidget {
     return StoreConnector<AppState, FontViewModel>(
       vm: () => FontVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitFontAction()),
+      onDispose: (store) => store.dispatch(RemoveSelectedFont(), notify: false),
       builder: (context, vm) {
         return BaseModelViewTabs<FontModel>(
           mapToDataModelItem: (value) =>
