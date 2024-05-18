@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 /// Strings
 const String appName = 'Stelaris';
-const String itemPage = 'Items';
-const String entityPage = 'Entities';
 const String unknownEntry = 'Unknown';
 
 /// EdgeInsets
@@ -66,7 +64,6 @@ const SizedBox verticalSpacing10 = SizedBox(height: 15);
 const SizedBox verticalSpacing25 = SizedBox(height: 25);
 
 const EdgeInsets dialogPadding = EdgeInsets.all(20);
-const EdgeInsets horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
 
 const double sizeFifty = 50;
 
