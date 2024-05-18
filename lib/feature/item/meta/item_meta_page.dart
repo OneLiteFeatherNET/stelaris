@@ -7,7 +7,6 @@ import 'package:stelaris_ui/feature/item/meta/flag_grid.dart';
 import 'package:stelaris_ui/util/constants.dart';
 
 class ItemMetaPage extends StatefulWidget {
-
   const ItemMetaPage({
     super.key,
   });
@@ -35,33 +34,37 @@ class _ItemMetaPageState extends State<ItemMetaPage>
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, SelectedItemView>(
-        vm: () => SelectedItemFactory<ItemMetaPage>(),
-        builder: (context, vm) {
-          return  Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: Column(
-              children: [
-                TabBar.secondary(
+      vm: () => SelectedItemFactory<ItemMetaPage>(),
+      builder: (context, vm) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: Column(
+            children: [
+              TabBar.secondary(
+                controller: _tabController,
+                tabs: const [
+                  Tab(
+                    text: 'ItemFlags',
+                  ),
+                  Tab(
+                    text: 'Enchantments',
+                  ),
+                ],
+              ),
+              heightTen,
+              Expanded(
+                child: TabBarView(
                   controller: _tabController,
-                  tabs: const [
-                    Tab(text: 'ItemFlags',),
-                    Tab(text: 'Enchantments',),
+                  children: [
+                    const FlagGrid(),
+                    EnchantmentCard(model: vm.selected),
                   ],
                 ),
-                heightTen,
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      const FlagGrid(),
-                      EnchantmentCard(model: vm.selected),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
