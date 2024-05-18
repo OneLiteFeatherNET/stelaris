@@ -20,7 +20,9 @@ class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+      animationDuration: const Duration(milliseconds: 300),
       length: tabs.length,
+      initialIndex: 0,
       child: Expanded(
         child: Padding(
           padding: const EdgeInsets.only(left: 10, right: 10),
@@ -32,6 +34,7 @@ class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
               ),
             ),
             body: TabBarView(
+              physics: const AlwaysScrollableScrollPhysics(),
               children: tabs.map(
                 (element) {
                   final Text text = element.child as Text;
