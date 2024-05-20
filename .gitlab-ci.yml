@@ -65,7 +65,8 @@ container:
   cache: {}
   script:
     - buildah login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - buildah build -t $IMAGE_TAG .
+    - buildah build -t $IMAGE_TAG -t $CI_REGISTRY_IMAGE:latest .
     - buildah push $IMAGE_TAG
+    - buildah push $CI_REGISTRY_IMAGE:latest
   only:
     - tags
