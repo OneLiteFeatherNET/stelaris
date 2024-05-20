@@ -44,7 +44,7 @@ pre-container:
   - sudo rm -rf /var/lib/apt/lists/*
   - flutter doctor
   - flutter pub get
-  - cp $API_SERVICE lib/api/api_service.dart
+  - cp $ENV_PROD lib/env/environment.dart
   - flutter pub run build_runner build --delete-conflicting-outputs
   - flutter build web --release --base-href /
   artifacts:
