@@ -21,6 +21,7 @@ pages:
   - sudo rm -rf /var/lib/apt/lists/*
   - flutter doctor
   - flutter pub get
+  - flutter clean
   - flutter pub run build_runner build --delete-conflicting-outputs
   - flutter build web --release --base-href /
   - mv build/web public
@@ -45,6 +46,7 @@ pre-container:
   - flutter doctor
   - flutter pub get
   - cp $ENV_PROD lib/env/environment.dart
+  - flutter clean
   - flutter pub run build_runner build --delete-conflicting-outputs
   - flutter build web --release --base-href /
   artifacts:
