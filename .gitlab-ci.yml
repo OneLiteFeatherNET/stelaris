@@ -22,6 +22,7 @@ pages:
   - flutter doctor
   - flutter pub get
   - flutter pub run build_runner build --delete-conflicting-outputs
+  - flutter clean
   - flutter build web --release --base-href /
   - mv build/web public
   - chmod 777 -R public
@@ -46,6 +47,7 @@ pre-container:
   - flutter pub get
   - cp $ENV_PROD lib/env/environment.dart
   - flutter pub run build_runner build --delete-conflicting-outputs
+  - flutter clean
   - flutter build web --release --base-href /
   artifacts:
     paths:
