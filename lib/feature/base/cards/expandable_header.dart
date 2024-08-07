@@ -18,7 +18,7 @@ class ExpandableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = Theme.of(context).colorScheme.onBackground;
+    final textColor = Theme.of(context).colorScheme.onSurface;
     final expandedColor = Theme.of(context).colorScheme.primary;
     return ExpandableButton(
       child: Container(
