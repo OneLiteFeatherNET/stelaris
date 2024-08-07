@@ -9,9 +9,9 @@ import 'package:stelaris_ui/api/state/factory/item/item_vm_state.dart';
 import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris_ui/feature/base/model_text.dart';
 import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris_ui/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris_ui/feature/item/general/item_general_page.dart';
 import 'package:stelaris_ui/feature/item/lore/lore_page.dart';
-import 'package:stelaris_ui/feature/item/meta/item_meta_page.dart';
 import 'package:stelaris_ui/util/constants.dart';
 import 'package:stelaris_ui/util/functions.dart';
 
@@ -99,7 +99,7 @@ class ItemPage extends StatelessWidget {
       case 'General':
         return ItemGeneralPage();
       case 'Meta':
-        return const ItemMetaPage();
+        return const EnchantmentPage();
       case 'Lore':
         return LorePage(
           key: UniqueKey(),

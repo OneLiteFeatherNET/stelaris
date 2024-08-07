@@ -20,10 +20,12 @@ class ItemEnchantmentAddDialog extends StatefulWidget {
   });
 
   @override
-  State<ItemEnchantmentAddDialog> createState() => _ItemEnchantmentAddDialogState();
+  State<ItemEnchantmentAddDialog> createState() =>
+      _ItemEnchantmentAddDialogState();
 }
 
-class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog> with EnchantmentReducer {
+class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
+    with EnchantmentReducer {
   final TextEditingController _controller = TextEditingController();
   final ValueNotifier<Enchantment?> _selected = ValueNotifier(null);
   final _key = GlobalKey<FormState>();
@@ -37,7 +39,15 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog> wit
 
   @override
   Widget build(BuildContext context) {
-    final List<DropdownMenuItem<Enchantment>> enchantments = getEnchantments(widget.model);
+    final List<DropdownMenuItem<Enchantment>> enchantments =
+        getEnchantments(widget.model)
+            .map(
+              (e) => DropdownMenuItem<Enchantment>(
+                value: e,
+                child: Text(e.name),
+              ),
+            )
+            .toList();
     _selected.value = enchantments[0].value;
     return SimpleDialog(
       title: Text(
@@ -71,17 +81,19 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog> wit
         ),
         verticalSpacing25,
         TextButton(
-            onPressed: () {
-              if (!_key.currentState!.validate()) return;
-              if (_selected.value == null) return;
-              widget.addEnchantmentCallback(
-                _selected.value!,
-                int.parse(
-                  _controller.value.text,
-                ),
-              );
-            },
-            child: Text(context.l10n.button_add))
+          onPressed: () {
+            if (!_key.currentState!.validate()) return;
+            if (_selected.value == null) return;
+            widget.addEnchantmentCallback(
+              _selected.value!,
+              int.parse(
+                _controller.value.text,
+              ),
+            );
+            _selected.value = null;
+          },
+          child: Text(context.l10n.button_add),
+        )
       ],
     );
   }
