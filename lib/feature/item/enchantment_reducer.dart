@@ -1,88 +1,83 @@
-import 'package:flutter/material.dart';
 import 'package:stelaris_ui/api/model/item_model.dart';
 import 'package:stelaris_ui/api/util/minecraft/enchantment.dart';
 import 'package:stelaris_ui/feature/item/item_group.dart';
 
 const List<Enchantment> values = Enchantment.values;
 
-final Map<Enchantment, DropdownMenuItem<Enchantment>> enchantments = { for (var e in values) e : DropdownMenuItem(
-    value: e,
-    child: Text(e.display)) };
-
 mixin EnchantmentReducer {
 
-  final List<DropdownMenuItem<Enchantment>> toolEnchantments = [
-    enchantments[Enchantment.efficiency]!,
-    enchantments[Enchantment.fortune]!,
-    enchantments[Enchantment.luckOfTheSea]!,
-    enchantments[Enchantment.lure]!,
-    enchantments[Enchantment.silkTouch]!,
-    enchantments[Enchantment.mending]!,
-    enchantments[Enchantment.unbreaking]!,
-    enchantments[Enchantment.vanishCourse]!
+  final List<Enchantment> toolEnchantments = [
+    Enchantment.efficiency,
+    Enchantment.fortune,
+    Enchantment.luckOfTheSea,
+    Enchantment.lure,
+    Enchantment.silkTouch,
+    Enchantment.mending,
+    Enchantment.unbreaking,
+    Enchantment.vanishCourse
   ];
 
-  final List<DropdownMenuItem<Enchantment>> meeleEnchantments = [
-    enchantments[Enchantment.baneOfArthropods]!,
-    enchantments[Enchantment.efficiency]!,
-    enchantments[Enchantment.fireAspect]!,
-    enchantments[Enchantment.looting]!,
-    enchantments[Enchantment.impaling]!,
-    enchantments[Enchantment.knockback]!,
-    enchantments[Enchantment.sharpness]!,
-    enchantments[Enchantment.smite]!,
-    enchantments[Enchantment.sweeping]!,
-    enchantments[Enchantment.mending]!,
-    enchantments[Enchantment.unbreaking]!,
-    enchantments[Enchantment.vanishCourse]!
+  final List<Enchantment> meeleEnchantments = [
+    Enchantment.baneOfArthropods,
+    Enchantment.efficiency,
+    Enchantment.fireAspect,
+    Enchantment.looting,
+    Enchantment.impaling,
+    Enchantment.knockback,
+    Enchantment.sharpness,
+    Enchantment.smite,
+    Enchantment.sweeping,
+    Enchantment.mending,
+    Enchantment.unbreaking,
+    Enchantment.vanishCourse
   ];
 
-  final List<DropdownMenuItem<Enchantment>> rangedEnchantments = [
-    enchantments[Enchantment.channeling]!,
-    enchantments[Enchantment.flame]!,
-    enchantments[Enchantment.impaling]!,
-    enchantments[Enchantment.infinity]!,
-    enchantments[Enchantment.loyalty]!,
-    enchantments[Enchantment.riptide]!,
-    enchantments[Enchantment.multishot]!,
-    enchantments[Enchantment.piercing]!,
-    enchantments[Enchantment.power]!,
-    enchantments[Enchantment.punch]!,
-    enchantments[Enchantment.quickCharge]!,
-    enchantments[Enchantment.mending]!,
-    enchantments[Enchantment.unbreaking]!,
-    enchantments[Enchantment.vanishCourse]!
+  final List<Enchantment> rangedEnchantments = [
+    Enchantment.channeling,
+    Enchantment.flame,
+    Enchantment.impaling,
+    Enchantment.infinity,
+    Enchantment.loyalty,
+    Enchantment.riptide,
+    Enchantment.multishot,
+    Enchantment.piercing,
+    Enchantment.power,
+    Enchantment.punch,
+    Enchantment.quickCharge,
+    Enchantment.mending,
+    Enchantment.unbreaking,
+    Enchantment.vanishCourse
   ];
 
-  final List<DropdownMenuItem<Enchantment>> armorEnchantments = [
-    enchantments[Enchantment.aquaAffinity]!,
-    enchantments[Enchantment.blastProtection]!,
-    enchantments[Enchantment.bindingCurse]!,
-    enchantments[Enchantment.depthStrider]!,
-    enchantments[Enchantment.featherFalling]!,
-    enchantments[Enchantment.fireProtection]!,
-    enchantments[Enchantment.frostWalker]!,
-    enchantments[Enchantment.projectTileProtection]!,
-    enchantments[Enchantment.protection]!,
-    enchantments[Enchantment.respiration]!,
-    enchantments[Enchantment.soulSpeed]!,
-    enchantments[Enchantment.thorns]!,
-    enchantments[Enchantment.mending]!,
-    enchantments[Enchantment.unbreaking]!,
-    enchantments[Enchantment.vanishCourse]!
+  final List<Enchantment> armorEnchantments = [
+    Enchantment.aquaAffinity,
+    Enchantment.blastProtection,
+    Enchantment.bindingCurse,
+    Enchantment.depthStrider,
+    Enchantment.featherFalling,
+    Enchantment.fireProtection,
+    Enchantment.frostWalker,
+    Enchantment.projectTileProtection,
+    Enchantment.protection,
+    Enchantment.respiration,
+    Enchantment.soulSpeed,
+    Enchantment.thorns,
+    Enchantment.mending,
+    Enchantment.unbreaking,
+    Enchantment.vanishCourse
   ];
 
-  final List<DropdownMenuItem<Enchantment>> miscEnchantments = List.from(enchantments.values);
+  final List<Enchantment> miscEnchantments = List.from(values);
 
-  List<DropdownMenuItem<Enchantment>> _getTools(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group.hasSameGroup(ItemGroup.tools)) {
+  List<Enchantment> _getTools(ItemModel itemModel) {
+    if (itemModel.enchantments == null && itemModel.group == ItemGroup.tools) {
       return toolEnchantments;
     }
 
     final newList = List.of(toolEnchantments, growable: true);
 
     for (var value in toolEnchantments) {
-      if (itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
+      if (itemModel.enchantments!.containsKey(value.minecraftValue)) {
         newList.remove(value);
       }
     }
@@ -90,15 +85,15 @@ mixin EnchantmentReducer {
     return newList;
   }
 
-  List<DropdownMenuItem<Enchantment>> _getMeele(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group.hasSameGroup(ItemGroup.meeleWeapon)) {
+  List<Enchantment> _getMeele(ItemModel itemModel) {
+    if (itemModel.enchantments == null && itemModel.group == ItemGroup.meeleWeapon) {
       return meeleEnchantments;
     }
 
     final newList = List.of(meeleEnchantments, growable: true);
 
     for (var value in meeleEnchantments) {
-      if (itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
+      if (itemModel.enchantments!.containsKey(value.minecraftValue)) {
         newList.remove(value);
       }
     }
@@ -106,15 +101,15 @@ mixin EnchantmentReducer {
     return newList;
   }
 
-  List<DropdownMenuItem<Enchantment>> _getRanged(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group.hasSameGroup(ItemGroup.rangedWeapon)) {
+  List<Enchantment> _getRanged(ItemModel itemModel) {
+    if (itemModel.enchantments == null && itemModel.group == ItemGroup.rangedWeapon) {
       return rangedEnchantments;
     }
 
     final newList = List.of(rangedEnchantments, growable: true);
 
     for (var value in rangedEnchantments) {
-      if (itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
+      if (itemModel.enchantments!.containsKey(value.minecraftValue)) {
         newList.remove(value);
       }
     }
@@ -122,15 +117,15 @@ mixin EnchantmentReducer {
     return newList;
   }
 
-  List<DropdownMenuItem<Enchantment>> _getMisc(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group.hasSameGroup(ItemGroup.misc)) {
+  List<Enchantment> _getMisc(ItemModel itemModel) {
+    if (itemModel.enchantments == null && itemModel.group == ItemGroup.misc) {
       return miscEnchantments;
     }
 
     final newList = List.of(miscEnchantments, growable: true);
 
     for (var value in miscEnchantments) {
-      if (itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
+      if (itemModel.enchantments!.containsKey(value.minecraftValue)) {
         newList.remove(value);
       }
     }
@@ -138,15 +133,15 @@ mixin EnchantmentReducer {
     return newList;
   }
 
-  List<DropdownMenuItem<Enchantment>> _getArmor(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group.hasSameGroup(ItemGroup.armor)) {
+  List<Enchantment> _getArmor(ItemModel itemModel) {
+    if (itemModel.enchantments == null && itemModel.group == ItemGroup.armor) {
       return miscEnchantments;
     }
 
     final newList = List.of(armorEnchantments, growable: true);
 
     for (var value in armorEnchantments) {
-      if (itemModel.enchantments!.containsKey(value.value!.minecraftValue)) {
+      if (itemModel.enchantments!.containsKey(value.minecraftValue)) {
         newList.remove(value);
       }
     }
@@ -154,7 +149,7 @@ mixin EnchantmentReducer {
     return newList;
   }
 
-  List<DropdownMenuItem<Enchantment>> getEnchantments(ItemModel model) {
+  List<Enchantment> getEnchantments(ItemModel model) {
     if (identical(model.group, ItemGroup.armor.display)) {
       return _getArmor(model);
     }
@@ -174,7 +169,7 @@ mixin EnchantmentReducer {
     return _getMisc(model);
   }
 
-  List<DropdownMenuItem<Enchantment>> _getEnchantments(ItemGroup group) {
+  List<Enchantment> _getEnchantments(ItemGroup group) {
     switch (group) {
       case ItemGroup.misc:
         return miscEnchantments;
@@ -191,7 +186,7 @@ mixin EnchantmentReducer {
 
   bool canAdd(ItemModel model) {
     if (model.enchantments == null) return true;
-    final group = ItemGroup.values.firstWhere((element) => element.hasSameGroup(model.group));
+    final group = ItemGroup.values.firstWhere((element) => identical(model.group, element));
 
     switch(group) {
       case ItemGroup.misc:
@@ -207,22 +202,22 @@ mixin EnchantmentReducer {
     }
   }
 
-  List<String> _getAsString(List<DropdownMenuItem<Enchantment>> items) {
+  List<String> _getAsString(List<Enchantment> items) {
     final List<String> values = [];
 
     for (var value in items) {
-      values.add(value.value!.minecraftValue);
+      values.add(value.minecraftValue);
     }
 
     return values;
   }
 
   Enchantment? getByGroup(ItemModel model, String enchantment) {
-    final groupEnchantments = _getEnchantments(ItemGroup.values.firstWhere((element) => element.hasSameGroup(model.group)));
+    final groupEnchantments = _getEnchantments(ItemGroup.values.firstWhere((element) => identical(element, model.group)));
 
     for (var value in groupEnchantments) {
-      if (value.value!.minecraftValue == enchantment) {
-        return value.value!;
+      if (value.minecraftValue == enchantment) {
+        return value;
       }
     }
     return null;
