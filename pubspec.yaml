@@ -25,15 +25,12 @@ dependencies:
   expandable: ^5.0.1
   web: ^1.0.0
 
-dependency_overrides:
-  analyzer: ^6.5.0
-  meta: ^1.15.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
-  build_runner: ^2.4.11
+  build_runner: ^2.4.12
   freezed: ^2.5.7
   json_serializable: ^6.8.0
 
