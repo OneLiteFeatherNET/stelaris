@@ -1,3 +1,3 @@
-FROM docker.io/nginx:1.27.1-alpine
+FROM docker.io/nginx:1.27.3-alpine
 WORKDIR /usr/share/nginx/html
 COPY build/web ./
