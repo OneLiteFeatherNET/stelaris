@@ -1,5 +1,5 @@
-name: stelaris_ui
-description: UI for stelaris
+name: Stelaris
+description: UI for Stelaris
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
