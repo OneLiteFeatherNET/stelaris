@@ -1,13 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:stelaris_ui/api/model/data_model.dart';
-import 'package:stelaris_ui/feature/item/item_group.dart';
+import 'package:stelaris/feature/item/item_group.dart';
+import 'data_model.dart';
 
-part 'item_model.freezed.dart';
 part 'item_model.g.dart';
+part 'item_model.freezed.dart';
 
 @freezed
-class ItemModel extends DataModel with _$ItemModel {
-
+class ItemModel with _$ItemModel, DataModel {
   const factory ItemModel({
     String? id,
     String? modelName,
@@ -21,7 +20,8 @@ class ItemModel extends DataModel with _$ItemModel {
     Map<String, int>? enchantments,
     Set<String>? flags,
     List<String>? lore,
-}) = _ItemModel;
+  }) = _ItemModel;
 
-  factory ItemModel.fromJson(Map<String, dynamic> json) => _$ItemModelFromJson(json);
+  factory ItemModel.fromJson(Map<String, dynamic> json) =>
+      _$ItemModelFromJson(json);
 }

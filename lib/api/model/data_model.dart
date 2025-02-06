@@ -1,1 +1,1 @@
-class DataModel {}
+mixin DataModel {}

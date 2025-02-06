@@ -30,8 +30,12 @@ mixin _$FontModel {
   int? get height => throw _privateConstructorUsedError;
   List<double>? get shift => throw _privateConstructorUsedError;
 
+  /// Serializes this FontModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of FontModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $FontModelCopyWith<FontModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -63,6 +67,8 @@ class _$FontModelCopyWithImpl<$Res, $Val extends FontModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of FontModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -145,6 +151,8 @@ class __$$FontModelImplCopyWithImpl<$Res>
       _$FontModelImpl _value, $Res Function(_$FontModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of FontModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -208,7 +216,7 @@ class _$FontModelImpl implements _FontModel {
       this.name,
       this.description,
       this.type = FontType.bitmap,
-      final List<String>? chars,
+      final List<String>? chars = const [],
       this.ascent = 0,
       this.height = 0,
       final List<double>? shift = const []})
@@ -231,6 +239,7 @@ class _$FontModelImpl implements _FontModel {
   final FontType type;
   final List<String>? _chars;
   @override
+  @JsonKey()
   List<String>? get chars {
     final value = _chars;
     if (value == null) return null;
@@ -279,7 +288,7 @@ class _$FontModelImpl implements _FontModel {
             const DeepCollectionEquality().equals(other._shift, _shift));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -293,7 +302,9 @@ class _$FontModelImpl implements _FontModel {
       height,
       const DeepCollectionEquality().hash(_shift));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of FontModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$FontModelImplCopyWith<_$FontModelImpl> get copyWith =>
@@ -340,8 +351,11 @@ abstract class _FontModel implements FontModel {
   int? get height;
   @override
   List<double>? get shift;
+
+  /// Create a copy of FontModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$FontModelImplCopyWith<_$FontModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

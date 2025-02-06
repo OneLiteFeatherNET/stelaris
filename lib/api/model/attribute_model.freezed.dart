@@ -27,8 +27,12 @@ mixin _$AttributeModel {
   double? get defaultValue => throw _privateConstructorUsedError;
   double? get maximumValue => throw _privateConstructorUsedError;
 
+  /// Serializes this AttributeModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AttributeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $AttributeModelCopyWith<AttributeModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -57,6 +61,8 @@ class _$AttributeModelCopyWithImpl<$Res, $Val extends AttributeModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of AttributeModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -115,6 +121,8 @@ class __$$AttributeModelImplCopyWithImpl<$Res>
       _$AttributeModelImpl _value, $Res Function(_$AttributeModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AttributeModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -196,12 +204,14 @@ class _$AttributeModelImpl implements _AttributeModel {
                 other.maximumValue == maximumValue));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, id, modelName, name, defaultValue, maximumValue);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AttributeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AttributeModelImplCopyWith<_$AttributeModelImpl> get copyWith =>
@@ -238,8 +248,11 @@ abstract class _AttributeModel implements AttributeModel {
   double? get defaultValue;
   @override
   double? get maximumValue;
+
+  /// Create a copy of AttributeModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AttributeModelImplCopyWith<_$AttributeModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
