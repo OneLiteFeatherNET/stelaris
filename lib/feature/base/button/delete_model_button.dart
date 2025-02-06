@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/model/data_model.dart';
-import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
-import 'package:stelaris_ui/util/l10n_ext.dart';
-import 'package:stelaris_ui/util/constants.dart';
-import 'package:stelaris_ui/util/typedefs.dart';
+import 'package:stelaris/api/model/data_model.dart';
+import 'package:stelaris/feature/dialogs/delete_dialog.dart';
+import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/typedefs.dart';
 
 class DeleteModelButton<E extends DataModel> extends StatelessWidget {
   final E value;

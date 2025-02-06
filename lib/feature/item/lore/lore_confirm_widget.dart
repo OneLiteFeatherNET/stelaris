@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/util/l10n_ext.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/constants.dart';
 
 class LoreConfirmWidget extends StatelessWidget {
   final VoidCallback onConfirm;

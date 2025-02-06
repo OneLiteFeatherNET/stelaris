@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/state/factory/item/enchantment_view_state.dart';
-import 'package:stelaris_ui/api/util/minecraft/enchantment.dart';
-import 'package:stelaris_ui/feature/item/enchantment/enchantment_card.dart';
-import 'package:stelaris_ui/feature/item/enchantment/page_indicator.dart';
+import 'package:stelaris/api/state/factory/item/enchantment_view_state.dart';
+import 'package:stelaris/api/util/minecraft/enchantment.dart';
+import 'package:stelaris/feature/item/enchantment/enchantment_card.dart';
+import 'package:stelaris/feature/item/enchantment/page_indicator.dart';
 
 const int maxItemPerPage = 4;
 

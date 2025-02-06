@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/feature/build/branch_option.dart';
-import 'package:stelaris_ui/util/constants.dart';
-import 'package:stelaris_ui/util/formatter/version_input_formatter.dart';
+import 'package:stelaris/feature/build/branch_option.dart';
+import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/formatter/version_input_formatter.dart';
 
 VersionInputFormatter versionFormatter = const VersionInputFormatter();
 

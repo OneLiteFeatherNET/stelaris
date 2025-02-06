@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/model/data_model.dart';
-import 'package:stelaris_ui/util/constants.dart';
-import 'package:stelaris_ui/util/typedefs.dart';
+import 'package:stelaris/api/model/data_model.dart';
+import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/typedefs.dart';
 
 class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
   final E? selectedItem;

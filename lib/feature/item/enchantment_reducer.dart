@@ -1,6 +1,6 @@
-import 'package:stelaris_ui/api/model/item_model.dart';
-import 'package:stelaris_ui/api/util/minecraft/enchantment.dart';
-import 'package:stelaris_ui/feature/item/item_group.dart';
+import 'package:stelaris/api/model/item_model.dart';
+import 'package:stelaris/api/util/minecraft/enchantment.dart';
+import 'package:stelaris/feature/item/item_group.dart';
 
 const List<Enchantment> values = Enchantment.values;
 

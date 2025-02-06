@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:stelaris_ui/api/model/font_model.dart';
-import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/feature/font/font_page.dart';
+import 'package:stelaris/api/model/font_model.dart';
+import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/font/font_page.dart';
 
 class FontVmFactory extends VmFactory<AppState, FontPage, FontViewModel> {
 

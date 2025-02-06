@@ -2,17 +2,17 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nil/nil.dart';
-import 'package:stelaris_ui/api/model/font_model.dart';
-import 'package:stelaris_ui/api/state/actions/font_actions.dart';
-import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/font/font_vm_state.dart';
-import 'package:stelaris_ui/feature/base/base_model_view_tabs.dart';
-import 'package:stelaris_ui/feature/base/model_text.dart';
-import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris_ui/feature/font/chars/char_card.dart';
-import 'package:stelaris_ui/feature/font/font_general_page.dart';
-import 'package:stelaris_ui/util/constants.dart';
-import 'package:stelaris_ui/util/functions.dart';
+import 'package:stelaris/api/model/font_model.dart';
+import 'package:stelaris/api/state/actions/font_actions.dart';
+import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/factory/font/font_vm_state.dart';
+import 'package:stelaris/feature/base/base_model_view_tabs.dart';
+import 'package:stelaris/feature/base/model_text.dart';
+import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris/feature/font/chars/char_card.dart';
+import 'package:stelaris/feature/font/font_general_page.dart';
+import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/functions.dart';
 
 class FontPage extends StatelessWidget {
   const FontPage({super.key});

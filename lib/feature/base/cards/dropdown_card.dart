@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/feature/base/base_card.dart';
-import 'package:stelaris_ui/util/constants.dart';
-import 'package:stelaris_ui/util/typedefs.dart';
+import 'package:stelaris/feature/base/base_card.dart';
+import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/typedefs.dart';
 
 class DropdownCard<E, T> extends StatefulWidget {
   final String display;

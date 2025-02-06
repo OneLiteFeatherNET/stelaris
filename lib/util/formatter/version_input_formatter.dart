@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris/util/constants.dart';
 
 class VersionInputFormatter extends TextInputFormatter {
 

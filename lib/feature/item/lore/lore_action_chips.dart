@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/feature/item/lore/lore_count_chip.dart';
-import 'package:stelaris_ui/util/l10n_ext.dart';
+import 'package:stelaris/feature/item/lore/lore_count_chip.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 /// The [LoreActionChips] is a widget that displays mostly three different action chips.
 /// Each action chip has a different function which is passed as a parameter.

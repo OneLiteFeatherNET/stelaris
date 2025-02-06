@@ -1,6 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/state/actions/app_actions.dart';
+import 'package:stelaris/api/state/actions/app_actions.dart';
 
 class ToggleNavigationBar extends StatelessWidget {
   const ToggleNavigationBar({

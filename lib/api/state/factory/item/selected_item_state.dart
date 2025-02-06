@@ -1,8 +1,8 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/model/item_model.dart';
-import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris/api/model/item_model.dart';
+import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/util/constants.dart';
 
 class SelectedItemFactory<T extends Widget>
     extends VmFactory<AppState, T, SelectedItemView> {

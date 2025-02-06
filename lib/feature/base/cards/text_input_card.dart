@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stelaris_ui/feature/base/base_card.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris/feature/base/base_card.dart';
+import 'package:stelaris/util/constants.dart';
 
 class TextInputCard<E> extends StatefulWidget {
   final String display;

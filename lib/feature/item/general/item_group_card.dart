@@ -1,12 +1,12 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/model/item_model.dart';
-import 'package:stelaris_ui/api/state/actions/item_actions.dart';
-import 'package:stelaris_ui/feature/base/button/cancel_button.dart';
-import 'package:stelaris_ui/feature/base/cards/dropdown_card.dart';
-import 'package:stelaris_ui/feature/item/item_group.dart';
-import 'package:stelaris_ui/util/l10n_ext.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris/api/model/item_model.dart';
+import 'package:stelaris/api/state/actions/item_actions.dart';
+import 'package:stelaris/feature/base/button/cancel_button.dart';
+import 'package:stelaris/feature/base/cards/dropdown_card.dart';
+import 'package:stelaris/feature/item/item_group.dart';
+import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/constants.dart';
 
 class ItemGroupCard extends StatelessWidget {
   final ItemModel model;

@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/api_service.dart';
-import 'package:stelaris_ui/feature/base/snackbar/info_bar.dart';
-import 'package:stelaris_ui/feature/build/parts/dev_build_option.dart';
-import 'package:stelaris_ui/util/l10n_ext.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/feature/base/snackbar/info_bar.dart';
+import 'package:stelaris/feature/build/parts/dev_build_option.dart';
+import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:web/web.dart' as web;
 
 class DownloadSelection extends StatefulWidget {

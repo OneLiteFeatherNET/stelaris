@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
-import 'package:stelaris_ui/util/constants.dart';
-import 'package:stelaris_ui/util/typedefs.dart';
+import 'package:stelaris/feature/dialogs/delete_dialog.dart';
+import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/typedefs.dart';
 
 class DeleteEntryButton<E> extends StatelessWidget {
   final String title;

@@ -1,11 +1,11 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/model/font_model.dart';
-import 'package:stelaris_ui/api/state/actions/font_actions.dart';
-import 'package:stelaris_ui/api/state/factory/font/select_font_vm.dart';
-import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris_ui/feature/font/chars/char_delete_checkbox.dart';
-import 'package:stelaris_ui/util/edit_mode.dart';
+import 'package:stelaris/api/model/font_model.dart';
+import 'package:stelaris/api/state/actions/font_actions.dart';
+import 'package:stelaris/api/state/factory/font/select_font_vm.dart';
+import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris/feature/font/chars/char_delete_checkbox.dart';
+import 'package:stelaris/util/edit_mode.dart';
 
 class CharListView extends StatelessWidget {
   const CharListView({

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/feature/build/branch_option.dart';
+import 'package:stelaris/feature/build/branch_option.dart';
 
 class BuildBranchSelection extends StatefulWidget {
   final ValueNotifier<BranchOption> branchOption;

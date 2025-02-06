@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/api_service.dart';
-import 'package:stelaris_ui/feature/build/branch_option.dart';
-import 'package:stelaris_ui/feature/build/parts/build_branch_selection.dart';
-import 'package:stelaris_ui/feature/build/parts/version_update_input.dart';
-import 'package:stelaris_ui/feature/build/version_group_selection.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/feature/build/branch_option.dart';
+import 'package:stelaris/feature/build/parts/build_branch_selection.dart';
+import 'package:stelaris/feature/build/parts/version_update_input.dart';
+import 'package:stelaris/feature/build/version_group_selection.dart';
+import 'package:stelaris/util/constants.dart';
 
 class BuildTrigger extends StatefulWidget {
   const BuildTrigger({required this.version, super.key});

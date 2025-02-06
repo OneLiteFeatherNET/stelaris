@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris/api/state/app_state.dart';
 
 class UpdateNavigationAction extends ReduxAction<AppState> {
 
