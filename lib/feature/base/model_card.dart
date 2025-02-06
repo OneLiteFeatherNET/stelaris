@@ -26,26 +26,24 @@ class ModelCard<E extends DataModel> extends StatefulWidget {
 }
 
 class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
-  bool isHovered = false;
+  bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: Card(
-        shape: widget.selected ? widget.selectedCardShape : null,
-        color: isHovered
-            ? Theme.of(context).colorScheme.secondary.withOpacity(0.1)
-            : null,
-        child: MouseRegion(
-          onEnter: (event) => _toggleHoverState(),
-          onExit: (event) => _toggleHoverState(),
-          child: ListTile(
-            title: widget.mapToDataModelItem(widget.rawModel),
-            trailing: DeleteModelButton<E>(
-              value: widget.rawModel,
-              mapToDeleteDialog: widget.mapToDeleteDialog,
-              mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
-            ),
+    return Card(
+      shape: widget.selected ? widget.selectedCardShape : null,
+      color: _isHovered
+          ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1)
+          : null,
+      child: MouseRegion(
+        onEnter: (event) => _toggleHoverState(),
+        onExit: (event) => _toggleHoverState(),
+        child: ListTile(
+          title: widget.mapToDataModelItem(widget.rawModel),
+          trailing: DeleteModelButton<E>(
+            value: widget.rawModel,
+            mapToDeleteDialog: widget.mapToDeleteDialog,
+            mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
           ),
         ),
       ),
@@ -55,7 +53,7 @@ class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
   /// Toggles the hover state of the card
   void _toggleHoverState() {
     setState(() {
-      isHovered = !isHovered;
+      _isHovered = !_isHovered;
     });
   }
 }
