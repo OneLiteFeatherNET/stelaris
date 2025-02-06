@@ -15,7 +15,8 @@ _$FontModelImpl _$$FontModelImplFromJson(Map<String, dynamic> json) =>
       type: $enumDecodeNullable(_$FontTypeEnumMap, json['type']) ??
           FontType.bitmap,
       chars:
-          (json['chars'] as List<dynamic>?)?.map((e) => e as String).toList(),
+          (json['chars'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+              const [],
       ascent: (json['ascent'] as num?)?.toInt() ?? 0,
       height: (json['height'] as num?)?.toInt() ?? 0,
       shift: (json['shift'] as List<dynamic>?)

@@ -37,8 +37,12 @@ mixin _$AppState {
   @JsonKey(includeToJson: false)
   AttributeModel? get selectedAttribute => throw _privateConstructorUsedError;
 
+  /// Serializes this AppState to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $AppStateCopyWith<AppState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -76,6 +80,8 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -134,6 +140,8 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
     ) as $Val);
   }
 
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ItemModelCopyWith<$Res>? get selectedItem {
@@ -146,6 +154,8 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
     });
   }
 
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $NotificationModelCopyWith<$Res>? get selectedNotification {
@@ -159,6 +169,8 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
     });
   }
 
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $FontModelCopyWith<$Res>? get selectedFont {
@@ -171,6 +183,8 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
     });
   }
 
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $AttributeModelCopyWith<$Res>? get selectedAttribute {
@@ -222,6 +236,8 @@ class __$$AppStateImplCopyWithImpl<$Res>
       _$AppStateImpl _value, $Res Function(_$AppStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -291,10 +307,10 @@ class _$AppStateImpl implements _AppState {
       final List<AttributeModel> attributes = const <AttributeModel>[],
       this.openNavigation = true,
       this.nightMode = true,
-      @JsonKey(includeToJson: false) this.selectedItem = null,
-      @JsonKey(includeToJson: false) this.selectedNotification = null,
-      @JsonKey(includeToJson: false) this.selectedFont = null,
-      @JsonKey(includeToJson: false) this.selectedAttribute = null})
+      @JsonKey(includeToJson: false) this.selectedItem,
+      @JsonKey(includeToJson: false) this.selectedNotification,
+      @JsonKey(includeToJson: false) this.selectedFont,
+      @JsonKey(includeToJson: false) this.selectedAttribute})
       : _items = items,
         _notifications = notifications,
         _fonts = fonts,
@@ -388,7 +404,7 @@ class _$AppStateImpl implements _AppState {
                 other.selectedAttribute == selectedAttribute));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -403,7 +419,9 @@ class _$AppStateImpl implements _AppState {
       selectedFont,
       selectedAttribute);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AppStateImplCopyWith<_$AppStateImpl> get copyWith =>
@@ -459,8 +477,11 @@ abstract class _AppState implements AppState {
   @override
   @JsonKey(includeToJson: false)
   AttributeModel? get selectedAttribute;
+
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AppStateImplCopyWith<_$AppStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

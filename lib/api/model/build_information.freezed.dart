@@ -22,8 +22,12 @@ BuildInformation _$BuildInformationFromJson(Map<String, dynamic> json) {
 mixin _$BuildInformation {
   Map<String, String>? get data => throw _privateConstructorUsedError;
 
+  /// Serializes this BuildInformation to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of BuildInformation
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $BuildInformationCopyWith<BuildInformation> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -47,6 +51,8 @@ class _$BuildInformationCopyWithImpl<$Res, $Val extends BuildInformation>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of BuildInformation
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -80,6 +86,8 @@ class __$$BuildInformationImplCopyWithImpl<$Res>
       $Res Function(_$BuildInformationImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of BuildInformation
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -126,12 +134,14 @@ class _$BuildInformationImpl implements _BuildInformation {
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of BuildInformation
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$BuildInformationImplCopyWith<_$BuildInformationImpl> get copyWith =>
@@ -155,8 +165,11 @@ abstract class _BuildInformation implements BuildInformation {
 
   @override
   Map<String, String>? get data;
+
+  /// Create a copy of BuildInformation
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$BuildInformationImplCopyWith<_$BuildInformationImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

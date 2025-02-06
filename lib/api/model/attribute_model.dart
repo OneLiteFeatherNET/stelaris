@@ -1,11 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:stelaris_ui/api/model/data_model.dart';
+
+import 'data_model.dart';
 
 part 'attribute_model.g.dart';
 part 'attribute_model.freezed.dart';
 
 @freezed
-class AttributeModel extends DataModel with _$AttributeModel {
+class AttributeModel with _$AttributeModel, DataModel {
 
   const factory AttributeModel({
     String? id,
