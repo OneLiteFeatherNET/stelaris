@@ -30,20 +30,22 @@ class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: widget.selected ? widget.selectedCardShape : null,
-      color: isHovered
-          ? Theme.of(context).colorScheme.secondary.withOpacity(0.1)
-          : null,
-      child: MouseRegion(
-        onEnter: (event) => _toggleHoverState(),
-        onExit: (event) => _toggleHoverState(),
-        child: ListTile(
-          title: widget.mapToDataModelItem(widget.rawModel),
-          trailing: DeleteModelButton<E>(
-            value: widget.rawModel,
-            mapToDeleteDialog: widget.mapToDeleteDialog,
-            mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
+    return RepaintBoundary(
+      child: Card(
+        shape: widget.selected ? widget.selectedCardShape : null,
+        color: isHovered
+            ? Theme.of(context).colorScheme.secondary.withOpacity(0.1)
+            : null,
+        child: MouseRegion(
+          onEnter: (event) => _toggleHoverState(),
+          onExit: (event) => _toggleHoverState(),
+          child: ListTile(
+            title: widget.mapToDataModelItem(widget.rawModel),
+            trailing: DeleteModelButton<E>(
+              value: widget.rawModel,
+              mapToDeleteDialog: widget.mapToDeleteDialog,
+              mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
+            ),
           ),
         ),
       ),
