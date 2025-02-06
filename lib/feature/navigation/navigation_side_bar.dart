@@ -1,9 +1,9 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/navigation_vm_state.dart';
-import 'package:stelaris_ui/api/util/navigation.dart';
+import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/factory/navigation_vm_state.dart';
+import 'package:stelaris/api/util/navigation.dart';
 
 const double maxXOffset = 180;
 const navigationEntries = NavigationEntry.values;

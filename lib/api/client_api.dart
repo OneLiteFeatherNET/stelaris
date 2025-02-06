@@ -1,4 +1,4 @@
-import 'package:stelaris_ui/api/model/data_model.dart';
+import 'package:stelaris/api/model/data_model.dart';
 
 /// The class represents each function which a implementation fo the ClientAPI should have.
 abstract class ClientAPI<T extends DataModel> {

@@ -1,10 +1,10 @@
-import 'package:stelaris_ui/api/api_client.dart';
-import 'package:stelaris_ui/api/service/attributes_api.dart';
-import 'package:stelaris_ui/api/service/font_api.dart';
-import 'package:stelaris_ui/api/service/generate_api.dart';
-import 'package:stelaris_ui/api/service/item_api.dart';
-import 'package:stelaris_ui/api/service/notification_api.dart';
-import 'package:stelaris_ui/env/environment.dart';
+import 'package:stelaris/api/api_client.dart';
+import 'package:stelaris/api/service/attributes_api.dart';
+import 'package:stelaris/api/service/font_api.dart';
+import 'package:stelaris/api/service/generate_api.dart';
+import 'package:stelaris/api/service/item_api.dart';
+import 'package:stelaris/api/service/notification_api.dart';
+import 'package:stelaris/env/environment.dart';
 
 /// The [ApiService] class contains all web services which are used in the app to communicate with the backend.
 class ApiService {

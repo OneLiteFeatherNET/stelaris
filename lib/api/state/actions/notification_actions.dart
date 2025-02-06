@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:stelaris_ui/api/api_service.dart';
-import 'package:stelaris_ui/api/model/notification_model.dart';
-import 'package:stelaris_ui/api/state/app_state.dart';
+import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/model/notification_model.dart';
+import 'package:stelaris/api/state/app_state.dart';
 
 class SelectedNotificationAction extends ReduxAction<AppState> {
   final NotificationModel model;

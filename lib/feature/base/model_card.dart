@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/model/data_model.dart';
-import 'package:stelaris_ui/feature/base/button/delete_model_button.dart';
-import 'package:stelaris_ui/util/typedefs.dart';
+import 'package:stelaris/api/model/data_model.dart';
+import 'package:stelaris/feature/base/button/delete_model_button.dart';
+import 'package:stelaris/util/typedefs.dart';
 
 class ModelCard<E extends DataModel> extends StatefulWidget {
   final bool selected;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris/util/constants.dart';
 
 class SettingsHeaderTile extends StatelessWidget {
   const SettingsHeaderTile({super.key});

@@ -1,8 +1,8 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:stelaris_ui/api/model/notification_model.dart';
-import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/feature/notification/notification_page_general.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris/api/model/notification_model.dart';
+import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/notification/notification_page_general.dart';
+import 'package:stelaris/util/constants.dart';
 
 class SelectedNotificationFactory
     extends VmFactory<AppState, NotificationGeneralPage, SelectedNotificationView> {

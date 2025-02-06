@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris/util/constants.dart';
 
 class EnchantmentText extends StatelessWidget {
   const EnchantmentText({required this.enchantment, super.key});

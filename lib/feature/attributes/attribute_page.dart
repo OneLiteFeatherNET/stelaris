@@ -1,16 +1,16 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stelaris_ui/api/model/attribute_model.dart';
-import 'package:stelaris_ui/api/state/actions/attribute_actions.dart';
-import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/attribute/attribute_vm_state.dart';
-import 'package:stelaris_ui/feature/attributes/attribute_general_page.dart';
-import 'package:stelaris_ui/feature/base/base_model_view.dart';
-import 'package:stelaris_ui/feature/base/model_text.dart';
-import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris_ui/util/constants.dart';
-import 'package:stelaris_ui/util/functions.dart';
+import 'package:stelaris/api/model/attribute_model.dart';
+import 'package:stelaris/api/state/actions/attribute_actions.dart';
+import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/factory/attribute/attribute_vm_state.dart';
+import 'package:stelaris/feature/attributes/attribute_general_page.dart';
+import 'package:stelaris/feature/base/base_model_view.dart';
+import 'package:stelaris/feature/base/model_text.dart';
+import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/functions.dart';
 
 class AttributePage extends StatelessWidget {
   const AttributePage({super.key});

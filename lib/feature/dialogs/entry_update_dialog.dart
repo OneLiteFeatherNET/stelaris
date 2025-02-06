@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stelaris_ui/util/l10n_ext.dart';
-import 'package:stelaris_ui/util/constants.dart';
-import 'package:stelaris_ui/util/typedefs.dart';
+import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/typedefs.dart';
 
 class EntryUpdateDialog extends StatefulWidget {
   final String title;

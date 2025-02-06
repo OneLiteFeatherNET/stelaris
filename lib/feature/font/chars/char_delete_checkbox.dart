@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/state/factory/font/select_font_vm.dart';
+import 'package:stelaris/api/state/factory/font/select_font_vm.dart';
 
 class CharDeleteCheckbox extends StatefulWidget {
   const CharDeleteCheckbox({

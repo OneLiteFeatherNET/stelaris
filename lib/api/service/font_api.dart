@@ -1,7 +1,7 @@
-import 'package:stelaris_ui/api/api_client.dart';
-import 'package:stelaris_ui/api/client_api.dart';
-import 'package:stelaris_ui/api/converter/model_list_converter.dart';
-import 'package:stelaris_ui/api/model/font_model.dart';
+import 'package:stelaris/api/api_client.dart';
+import 'package:stelaris/api/client_api.dart';
+import 'package:stelaris/api/converter/model_list_converter.dart';
+import 'package:stelaris/api/model/font_model.dart';
 
 class FontAPI implements ClientAPI<FontModel> {
 

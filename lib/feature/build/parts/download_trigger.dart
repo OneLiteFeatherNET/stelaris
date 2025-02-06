@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/api_service.dart';
-import 'package:stelaris_ui/feature/base/model_text.dart';
-import 'package:stelaris_ui/feature/build/parts/download_selection.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/feature/base/model_text.dart';
+import 'package:stelaris/feature/build/parts/download_selection.dart';
+import 'package:stelaris/util/constants.dart';
 
 class DownloadTrigger extends StatelessWidget {
   final List<String>? filter;

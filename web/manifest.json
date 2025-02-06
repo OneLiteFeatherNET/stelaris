@@ -1,6 +1,6 @@
 {
-    "name": "stelaris_ui",
-    "short_name": "stelaris_ui",
+    "name": "stelaris",
+    "short_name": "stelaris",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

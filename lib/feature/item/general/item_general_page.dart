@@ -1,16 +1,16 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stelaris_ui/api/state/actions/item_actions.dart';
-import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/item/selected_item_state.dart';
-import 'package:stelaris_ui/feature/base/button/save_button.dart';
-import 'package:stelaris_ui/feature/base/cards/text_input_card.dart';
-import 'package:stelaris_ui/feature/item/enchantment_reducer.dart';
-import 'package:stelaris_ui/feature/item/general/item_group_card.dart';
-import 'package:stelaris_ui/util/l10n_ext.dart';
-import 'package:stelaris_ui/util/constants.dart';
-import 'package:stelaris_ui/util/functions.dart';
+import 'package:stelaris/api/state/actions/item_actions.dart';
+import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/factory/item/selected_item_state.dart';
+import 'package:stelaris/feature/base/button/save_button.dart';
+import 'package:stelaris/feature/base/cards/text_input_card.dart';
+import 'package:stelaris/feature/item/enchantment_reducer.dart';
+import 'package:stelaris/feature/item/general/item_group_card.dart';
+import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/functions.dart';
 
 class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
   ItemGeneralPage({

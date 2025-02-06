@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:stelaris_ui/api/model/data_model.dart';
+import 'package:stelaris/api/model/data_model.dart';
 
 class ModelListConverter<T extends DataModel> implements JsonConverter<List<T>, List<dynamic>> {
 

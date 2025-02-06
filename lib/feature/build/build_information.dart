@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:stelaris_ui/api/api_service.dart';
-import 'package:stelaris_ui/api/model/build_information.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/model/build_information.dart';
+import 'package:stelaris/util/constants.dart';
 
 DateFormat inputFormat = DateFormat("EEE MMM dd HH:mm:ss 'CEST' yyyy", 'en_US');
 DateFormat outputFormat = DateFormat('yyyy-MM-dd HH:mm:ss', 'en_US');

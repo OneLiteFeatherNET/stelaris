@@ -1,6 +1,6 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/feature/base/cards/expandable_header.dart';
+import 'package:stelaris/feature/base/cards/expandable_header.dart';
 
 class ExpandableDataCard extends StatelessWidget {
 

@@ -1,16 +1,16 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stelaris_ui/api/model/notification_model.dart';
-import 'package:stelaris_ui/api/state/actions/notification_actions.dart';
-import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/notification/notification_vm_state.dart';
-import 'package:stelaris_ui/feature/base/base_model_view.dart';
-import 'package:stelaris_ui/feature/base/model_text.dart';
-import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris_ui/feature/notification/notification_page_general.dart';
-import 'package:stelaris_ui/util/constants.dart';
-import 'package:stelaris_ui/util/functions.dart';
+import 'package:stelaris/api/model/notification_model.dart';
+import 'package:stelaris/api/state/actions/notification_actions.dart';
+import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/factory/notification/notification_vm_state.dart';
+import 'package:stelaris/feature/base/base_model_view.dart';
+import 'package:stelaris/feature/base/model_text.dart';
+import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris/feature/notification/notification_page_general.dart';
+import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/functions.dart';
 
 class NotificationPage extends StatelessWidget {
   const NotificationPage({super.key});

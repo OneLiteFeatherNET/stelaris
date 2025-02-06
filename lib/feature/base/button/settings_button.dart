@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/feature/settings/settings_dialog.dart';
+import 'package:stelaris/feature/settings/settings_dialog.dart';
 
 class SettingsButton extends StatefulWidget {
   const SettingsButton({super.key});

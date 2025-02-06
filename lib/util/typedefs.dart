@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/model/data_model.dart';
-import 'package:stelaris_ui/api/util/minecraft/enchantment.dart';
+import 'package:stelaris/api/model/data_model.dart';
+import 'package:stelaris/api/util/minecraft/enchantment.dart';
 
 /// Defines all typedef function for the card which displays data from a model
 typedef ValueUpdate<E> = void Function(E? value);

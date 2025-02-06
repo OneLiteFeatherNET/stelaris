@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:stelaris_ui/api/api_client.dart';
-import 'package:stelaris_ui/api/model/build_information.dart';
+import 'package:stelaris/api/api_client.dart';
+import 'package:stelaris/api/model/build_information.dart';
 
 class GenerateApi {
 

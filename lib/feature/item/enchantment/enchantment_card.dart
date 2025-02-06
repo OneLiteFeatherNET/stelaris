@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/feature/item/enchantment/enchantment_box.dart';
-import 'package:stelaris_ui/feature/item/enchantment/enchantment_text.dart';
+import 'package:stelaris/feature/item/enchantment/enchantment_box.dart';
+import 'package:stelaris/feature/item/enchantment/enchantment_text.dart';
 
 class EnchantmentCard extends StatefulWidget {
   const EnchantmentCard({

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/feature/build/build_information.dart';
-import 'package:stelaris_ui/feature/build/parts/build_trigger.dart';
-import 'package:stelaris_ui/feature/build/parts/download_trigger.dart';
-import 'package:stelaris_ui/feature/build/tabs/build_tabs.dart';
-import 'package:stelaris_ui/util/constants.dart';
+import 'package:stelaris/feature/build/build_information.dart';
+import 'package:stelaris/feature/build/parts/build_trigger.dart';
+import 'package:stelaris/feature/build/parts/download_trigger.dart';
+import 'package:stelaris/feature/build/tabs/build_tabs.dart';
+import 'package:stelaris/util/constants.dart';
 
 class BuildDrawer extends StatelessWidget {
   const BuildDrawer({super.key});

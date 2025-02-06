@@ -1,19 +1,19 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris_ui/api/api_service.dart';
-import 'package:stelaris_ui/api/state/actions/font_actions.dart';
-import 'package:stelaris_ui/api/state/app_state.dart';
-import 'package:stelaris_ui/api/state/factory/font/select_font_vm.dart';
-import 'package:stelaris_ui/feature/base/chips/action_chips.dart';
-import 'package:stelaris_ui/feature/base/chips/edit_action_chips.dart';
-import 'package:stelaris_ui/feature/dialogs/abort_add_dialog.dart';
-import 'package:stelaris_ui/feature/dialogs/delete_dialog.dart';
-import 'package:stelaris_ui/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris_ui/feature/font/chars/char_list_view.dart';
-import 'package:stelaris_ui/feature/base/empty_data_widget.dart';
-import 'package:stelaris_ui/util/constants.dart';
-import 'package:stelaris_ui/util/edit_mode.dart';
-import 'package:stelaris_ui/util/l10n_ext.dart';
+import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/font_actions.dart';
+import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/factory/font/select_font_vm.dart';
+import 'package:stelaris/feature/base/chips/action_chips.dart';
+import 'package:stelaris/feature/base/chips/edit_action_chips.dart';
+import 'package:stelaris/feature/dialogs/abort_add_dialog.dart';
+import 'package:stelaris/feature/dialogs/delete_dialog.dart';
+import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris/feature/font/chars/char_list_view.dart';
+import 'package:stelaris/feature/base/empty_data_widget.dart';
+import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/edit_mode.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 const List<EditMode> editModes = EditMode.values;
 
