@@ -27,9 +27,32 @@ class ModelCard<E extends DataModel> extends StatefulWidget {
   State<ModelCard> createState() => _ModelCardState<E>();
 }
 
-class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
+class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> with AutomaticKeepAliveClientMixin {
   bool _isHovered = false;
   Timer? _debounceTimer;
+  late final Widget _title;
+  late final DeleteModelButton<E> _deleteButton;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-build expensive widgets
+    _title = widget.mapToDataModelItem(widget.rawModel);
+    _deleteButton = DeleteModelButton<E>(
+      value: widget.rawModel,
+      mapToDeleteDialog: widget.mapToDeleteDialog,
+      mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
+    );
+  }
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
 
   void _debouncedSetState(bool hoveredState) {
     _debounceTimer?.cancel();
@@ -43,13 +66,9 @@ class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
   }
 
   @override
-  void dispose() {
-    _debounceTimer?.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    super.build(context);
+    
     return Card(
       shape: widget.selected ? widget.selectedCardShape : null,
       color: _isHovered
@@ -59,21 +78,10 @@ class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
         onEnter: (event) => _debouncedSetState(true),
         onExit: (event) => _debouncedSetState(false),
         child: ListTile(
-          title: widget.mapToDataModelItem(widget.rawModel),
-          trailing: DeleteModelButton<E>(
-            value: widget.rawModel,
-            mapToDeleteDialog: widget.mapToDeleteDialog,
-            mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
-          ),
+          title: _title,
+          trailing: _deleteButton,
         ),
       ),
     );
-  }
-
-  /// Toggles the hover state of the card
-  void _toggleHoverState() {
-    setState(() {
-      _isHovered = !_isHovered;
-    });
   }
 }

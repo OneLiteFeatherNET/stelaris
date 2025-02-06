@@ -34,6 +34,18 @@ class ModelList<E extends DataModel> extends StatefulWidget {
 class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
 
   final ScrollController _scrollController = ScrollController();
+  
+  // Cache the card shape to avoid rebuilds
+  late final RoundedRectangleBorder _defaultCardShape;
+  
+  @override
+  void initState() {
+    super.initState();
+    _defaultCardShape = RoundedRectangleBorder(
+      side: BorderSide(color: Theme.of(context).colorScheme.secondary),
+      borderRadius: BorderRadius.circular(12),
+    );
+  }
 
   @override
   void dispose() {
@@ -52,24 +64,21 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
             child: ListView.builder(
               controller: _scrollController,
               itemCount: widget.models.length,
+              addAutomaticKeepAlives: true,
+              clipBehavior: Clip.none, // Reduce overdraw
               itemBuilder: (context, index) {
                 final E rawModel = widget.models[index];
-                final selectedCardShape = RoundedRectangleBorder(
-                  side: BorderSide(
-                      color: Theme.of(context).colorScheme.secondary),
-                  borderRadius: BorderRadius.circular(12),
-                );
-                return GestureDetector(
-                  onTap: () {
-                    widget.callFunction.call(rawModel);
-                  },
-                  child: ModelCard<E>(
-                    selected: widget.compareFunction.call(rawModel),
-                    selectedCardShape: selectedCardShape,
-                    mapToDeleteDialog: widget.mapToDeleteDialog,
-                    mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
-                    mapToDataModelItem: widget.mapToDataModelItem,
-                    rawModel: rawModel,
+                return RepaintBoundary(
+                  child: GestureDetector(
+                    onTap: () => widget.callFunction.call(rawModel),
+                    child: ModelCard<E>(
+                      selected: widget.compareFunction.call(rawModel),
+                      selectedCardShape: _defaultCardShape,
+                      mapToDeleteDialog: widget.mapToDeleteDialog,
+                      mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
+                      mapToDataModelItem: widget.mapToDataModelItem,
+                      rawModel: rawModel,
+                    ),
                   ),
                 );
               },
