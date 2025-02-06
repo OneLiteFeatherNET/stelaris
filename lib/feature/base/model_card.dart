@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:stelaris/api/model/data_model.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
 import 'package:stelaris/util/typedefs.dart';
@@ -67,5 +68,12 @@ class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
         ),
       ),
     );
+  }
+
+  /// Toggles the hover state of the card
+  void _toggleHoverState() {
+    setState(() {
+      _isHovered = !_isHovered;
+    });
   }
 }
