@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:stelaris/api/model/data_model.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
 import 'package:stelaris/util/typedefs.dart';
@@ -27,6 +28,24 @@ class ModelCard<E extends DataModel> extends StatefulWidget {
 
 class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
   bool _isHovered = false;
+  Timer? _debounceTimer;
+
+  void _debouncedSetState(bool hoveredState) {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 50), () {
+      if (mounted) {
+        setState(() {
+          _isHovered = hoveredState;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +55,8 @@ class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
           ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1)
           : null,
       child: MouseRegion(
-        onEnter: (event) => _toggleHoverState(),
-        onExit: (event) => _toggleHoverState(),
+        onEnter: (event) => _debouncedSetState(true),
+        onExit: (event) => _debouncedSetState(false),
         child: ListTile(
           title: widget.mapToDataModelItem(widget.rawModel),
           trailing: DeleteModelButton<E>(
@@ -48,12 +67,5 @@ class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
         ),
       ),
     );
-  }
-
-  /// Toggles the hover state of the card
-  void _toggleHoverState() {
-    setState(() {
-      _isHovered = !_isHovered;
-    });
   }
 }
