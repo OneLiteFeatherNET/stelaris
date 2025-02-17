@@ -41,6 +41,12 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
     _defaultCardShape = RoundedRectangleBorder(
       side: BorderSide(color: Theme.of(context).colorScheme.secondary),
       borderRadius: BorderRadius.circular(12),
