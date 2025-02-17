@@ -12,7 +12,8 @@ part of 'font_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 FontModel _$FontModelFromJson(Map<String, dynamic> json) {
   return _FontModel.fromJson(json);
@@ -45,16 +46,17 @@ abstract class $FontModelCopyWith<$Res> {
   factory $FontModelCopyWith(FontModel value, $Res Function(FontModel) then) =
       _$FontModelCopyWithImpl<$Res, FontModel>;
   @useResult
-  $Res call(
-      {String? id,
-      String? modelName,
-      String? name,
-      String? description,
-      FontType type,
-      List<String>? chars,
-      int? ascent,
-      int? height,
-      List<double>? shift});
+  $Res call({
+    String? id,
+    String? modelName,
+    String? name,
+    String? description,
+    FontType type,
+    List<String>? chars,
+    int? ascent,
+    int? height,
+    List<double>? shift,
+  });
 }
 
 /// @nodoc
@@ -82,44 +84,56 @@ class _$FontModelCopyWithImpl<$Res, $Val extends FontModel>
     Object? height = freezed,
     Object? shift = freezed,
   }) {
-    return _then(_value.copyWith(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String?,
-      modelName: freezed == modelName
-          ? _value.modelName
-          : modelName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-      description: freezed == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as FontType,
-      chars: freezed == chars
-          ? _value.chars
-          : chars // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-      ascent: freezed == ascent
-          ? _value.ascent
-          : ascent // ignore: cast_nullable_to_non_nullable
-              as int?,
-      height: freezed == height
-          ? _value.height
-          : height // ignore: cast_nullable_to_non_nullable
-              as int?,
-      shift: freezed == shift
-          ? _value.shift
-          : shift // ignore: cast_nullable_to_non_nullable
-              as List<double>?,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            id:
+                freezed == id
+                    ? _value.id
+                    : id // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            modelName:
+                freezed == modelName
+                    ? _value.modelName
+                    : modelName // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            name:
+                freezed == name
+                    ? _value.name
+                    : name // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            description:
+                freezed == description
+                    ? _value.description
+                    : description // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            type:
+                null == type
+                    ? _value.type
+                    : type // ignore: cast_nullable_to_non_nullable
+                        as FontType,
+            chars:
+                freezed == chars
+                    ? _value.chars
+                    : chars // ignore: cast_nullable_to_non_nullable
+                        as List<String>?,
+            ascent:
+                freezed == ascent
+                    ? _value.ascent
+                    : ascent // ignore: cast_nullable_to_non_nullable
+                        as int?,
+            height:
+                freezed == height
+                    ? _value.height
+                    : height // ignore: cast_nullable_to_non_nullable
+                        as int?,
+            shift:
+                freezed == shift
+                    ? _value.shift
+                    : shift // ignore: cast_nullable_to_non_nullable
+                        as List<double>?,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -127,20 +141,22 @@ class _$FontModelCopyWithImpl<$Res, $Val extends FontModel>
 abstract class _$$FontModelImplCopyWith<$Res>
     implements $FontModelCopyWith<$Res> {
   factory _$$FontModelImplCopyWith(
-          _$FontModelImpl value, $Res Function(_$FontModelImpl) then) =
-      __$$FontModelImplCopyWithImpl<$Res>;
+    _$FontModelImpl value,
+    $Res Function(_$FontModelImpl) then,
+  ) = __$$FontModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {String? id,
-      String? modelName,
-      String? name,
-      String? description,
-      FontType type,
-      List<String>? chars,
-      int? ascent,
-      int? height,
-      List<double>? shift});
+  $Res call({
+    String? id,
+    String? modelName,
+    String? name,
+    String? description,
+    FontType type,
+    List<String>? chars,
+    int? ascent,
+    int? height,
+    List<double>? shift,
+  });
 }
 
 /// @nodoc
@@ -148,8 +164,9 @@ class __$$FontModelImplCopyWithImpl<$Res>
     extends _$FontModelCopyWithImpl<$Res, _$FontModelImpl>
     implements _$$FontModelImplCopyWith<$Res> {
   __$$FontModelImplCopyWithImpl(
-      _$FontModelImpl _value, $Res Function(_$FontModelImpl) _then)
-      : super(_value, _then);
+    _$FontModelImpl _value,
+    $Res Function(_$FontModelImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of FontModel
   /// with the given fields replaced by the non-null parameter values.
@@ -166,62 +183,73 @@ class __$$FontModelImplCopyWithImpl<$Res>
     Object? height = freezed,
     Object? shift = freezed,
   }) {
-    return _then(_$FontModelImpl(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String?,
-      modelName: freezed == modelName
-          ? _value.modelName
-          : modelName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-      description: freezed == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as FontType,
-      chars: freezed == chars
-          ? _value._chars
-          : chars // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-      ascent: freezed == ascent
-          ? _value.ascent
-          : ascent // ignore: cast_nullable_to_non_nullable
-              as int?,
-      height: freezed == height
-          ? _value.height
-          : height // ignore: cast_nullable_to_non_nullable
-              as int?,
-      shift: freezed == shift
-          ? _value._shift
-          : shift // ignore: cast_nullable_to_non_nullable
-              as List<double>?,
-    ));
+    return _then(
+      _$FontModelImpl(
+        id:
+            freezed == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        modelName:
+            freezed == modelName
+                ? _value.modelName
+                : modelName // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        name:
+            freezed == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        description:
+            freezed == description
+                ? _value.description
+                : description // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        type:
+            null == type
+                ? _value.type
+                : type // ignore: cast_nullable_to_non_nullable
+                    as FontType,
+        chars:
+            freezed == chars
+                ? _value._chars
+                : chars // ignore: cast_nullable_to_non_nullable
+                    as List<String>?,
+        ascent:
+            freezed == ascent
+                ? _value.ascent
+                : ascent // ignore: cast_nullable_to_non_nullable
+                    as int?,
+        height:
+            freezed == height
+                ? _value.height
+                : height // ignore: cast_nullable_to_non_nullable
+                    as int?,
+        shift:
+            freezed == shift
+                ? _value._shift
+                : shift // ignore: cast_nullable_to_non_nullable
+                    as List<double>?,
+      ),
+    );
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$FontModelImpl implements _FontModel {
-  const _$FontModelImpl(
-      {this.id,
-      this.modelName,
-      this.name,
-      this.description,
-      this.type = FontType.bitmap,
-      final List<String>? chars = const [],
-      this.ascent = 0,
-      this.height = 0,
-      final List<double>? shift = const []})
-      : _chars = chars,
-        _shift = shift;
+  const _$FontModelImpl({
+    this.id,
+    this.modelName,
+    this.name,
+    this.description,
+    this.type = FontType.bitmap,
+    final List<String>? chars = const [],
+    this.ascent = 0,
+    this.height = 0,
+    final List<double>? shift = const [],
+  }) : _chars = chars,
+       _shift = shift;
 
   factory _$FontModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$FontModelImplFromJson(json);
@@ -291,16 +319,17 @@ class _$FontModelImpl implements _FontModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      modelName,
-      name,
-      description,
-      type,
-      const DeepCollectionEquality().hash(_chars),
-      ascent,
-      height,
-      const DeepCollectionEquality().hash(_shift));
+    runtimeType,
+    id,
+    modelName,
+    name,
+    description,
+    type,
+    const DeepCollectionEquality().hash(_chars),
+    ascent,
+    height,
+    const DeepCollectionEquality().hash(_shift),
+  );
 
   /// Create a copy of FontModel
   /// with the given fields replaced by the non-null parameter values.
@@ -312,23 +341,22 @@ class _$FontModelImpl implements _FontModel {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$FontModelImplToJson(
-      this,
-    );
+    return _$$FontModelImplToJson(this);
   }
 }
 
 abstract class _FontModel implements FontModel {
-  const factory _FontModel(
-      {final String? id,
-      final String? modelName,
-      final String? name,
-      final String? description,
-      final FontType type,
-      final List<String>? chars,
-      final int? ascent,
-      final int? height,
-      final List<double>? shift}) = _$FontModelImpl;
+  const factory _FontModel({
+    final String? id,
+    final String? modelName,
+    final String? name,
+    final String? description,
+    final FontType type,
+    final List<String>? chars,
+    final int? ascent,
+    final int? height,
+    final List<double>? shift,
+  }) = _$FontModelImpl;
 
   factory _FontModel.fromJson(Map<String, dynamic> json) =
       _$FontModelImpl.fromJson;

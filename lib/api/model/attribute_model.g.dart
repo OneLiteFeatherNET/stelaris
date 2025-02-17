@@ -16,11 +16,11 @@ _$AttributeModelImpl _$$AttributeModelImplFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$$AttributeModelImplToJson(
-        _$AttributeModelImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'modelName': instance.modelName,
-      'name': instance.name,
-      'defaultValue': instance.defaultValue,
-      'maximumValue': instance.maximumValue,
-    };
+  _$AttributeModelImpl instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'modelName': instance.modelName,
+  'name': instance.name,
+  'defaultValue': instance.defaultValue,
+  'maximumValue': instance.maximumValue,
+};
