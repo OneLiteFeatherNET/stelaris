@@ -9,6 +9,7 @@ class ModelListConverter<T extends DataModel> implements JsonConverter<List<T>, 
 
   @override
   List<T> fromJson(List<dynamic> json) {
+    if (json.isEmpty) return List.empty();
     return json.map((e) => fromJsonConverter(e)).toList();
   }
   @override
