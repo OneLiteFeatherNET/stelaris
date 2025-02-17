@@ -12,7 +12,8 @@ part of 'build_information.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 BuildInformation _$BuildInformationFromJson(Map<String, dynamic> json) {
   return _BuildInformation.fromJson(json);
@@ -35,8 +36,9 @@ mixin _$BuildInformation {
 /// @nodoc
 abstract class $BuildInformationCopyWith<$Res> {
   factory $BuildInformationCopyWith(
-          BuildInformation value, $Res Function(BuildInformation) then) =
-      _$BuildInformationCopyWithImpl<$Res, BuildInformation>;
+    BuildInformation value,
+    $Res Function(BuildInformation) then,
+  ) = _$BuildInformationCopyWithImpl<$Res, BuildInformation>;
   @useResult
   $Res call({Map<String, String>? data});
 }
@@ -55,24 +57,27 @@ class _$BuildInformationCopyWithImpl<$Res, $Val extends BuildInformation>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? data = freezed,
-  }) {
-    return _then(_value.copyWith(
-      data: freezed == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
-    ) as $Val);
+  $Res call({Object? data = freezed}) {
+    return _then(
+      _value.copyWith(
+            data:
+                freezed == data
+                    ? _value.data
+                    : data // ignore: cast_nullable_to_non_nullable
+                        as Map<String, String>?,
+          )
+          as $Val,
+    );
   }
 }
 
 /// @nodoc
 abstract class _$$BuildInformationImplCopyWith<$Res>
     implements $BuildInformationCopyWith<$Res> {
-  factory _$$BuildInformationImplCopyWith(_$BuildInformationImpl value,
-          $Res Function(_$BuildInformationImpl) then) =
-      __$$BuildInformationImplCopyWithImpl<$Res>;
+  factory _$$BuildInformationImplCopyWith(
+    _$BuildInformationImpl value,
+    $Res Function(_$BuildInformationImpl) then,
+  ) = __$$BuildInformationImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({Map<String, String>? data});
@@ -82,23 +87,25 @@ abstract class _$$BuildInformationImplCopyWith<$Res>
 class __$$BuildInformationImplCopyWithImpl<$Res>
     extends _$BuildInformationCopyWithImpl<$Res, _$BuildInformationImpl>
     implements _$$BuildInformationImplCopyWith<$Res> {
-  __$$BuildInformationImplCopyWithImpl(_$BuildInformationImpl _value,
-      $Res Function(_$BuildInformationImpl) _then)
-      : super(_value, _then);
+  __$$BuildInformationImplCopyWithImpl(
+    _$BuildInformationImpl _value,
+    $Res Function(_$BuildInformationImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of BuildInformation
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? data = freezed,
-  }) {
-    return _then(_$BuildInformationImpl(
-      data: freezed == data
-          ? _value._data
-          : data // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
-    ));
+  $Res call({Object? data = freezed}) {
+    return _then(
+      _$BuildInformationImpl(
+        data:
+            freezed == data
+                ? _value._data
+                : data // ignore: cast_nullable_to_non_nullable
+                    as Map<String, String>?,
+      ),
+    );
   }
 }
 
@@ -106,7 +113,7 @@ class __$$BuildInformationImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$BuildInformationImpl implements _BuildInformation {
   const _$BuildInformationImpl({final Map<String, String>? data})
-      : _data = data;
+    : _data = data;
 
   factory _$BuildInformationImpl.fromJson(Map<String, dynamic> json) =>
       _$$BuildInformationImplFromJson(json);
@@ -146,13 +153,13 @@ class _$BuildInformationImpl implements _BuildInformation {
   @pragma('vm:prefer-inline')
   _$$BuildInformationImplCopyWith<_$BuildInformationImpl> get copyWith =>
       __$$BuildInformationImplCopyWithImpl<_$BuildInformationImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$BuildInformationImplToJson(
-      this,
-    );
+    return _$$BuildInformationImplToJson(this);
   }
 }
 

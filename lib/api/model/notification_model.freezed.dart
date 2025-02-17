@@ -12,7 +12,8 @@ part of 'notification_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 NotificationModel _$NotificationModelFromJson(Map<String, dynamic> json) {
   return _Notification.fromJson(json);
@@ -41,17 +42,19 @@ mixin _$NotificationModel {
 /// @nodoc
 abstract class $NotificationModelCopyWith<$Res> {
   factory $NotificationModelCopyWith(
-          NotificationModel value, $Res Function(NotificationModel) then) =
-      _$NotificationModelCopyWithImpl<$Res, NotificationModel>;
+    NotificationModel value,
+    $Res Function(NotificationModel) then,
+  ) = _$NotificationModelCopyWithImpl<$Res, NotificationModel>;
   @useResult
-  $Res call(
-      {String? id,
-      String? modelName,
-      String? name,
-      String? material,
-      FrameType frameType,
-      String? title,
-      String? description});
+  $Res call({
+    String? id,
+    String? modelName,
+    String? name,
+    String? material,
+    FrameType frameType,
+    String? title,
+    String? description,
+  });
 }
 
 /// @nodoc
@@ -77,36 +80,46 @@ class _$NotificationModelCopyWithImpl<$Res, $Val extends NotificationModel>
     Object? title = freezed,
     Object? description = freezed,
   }) {
-    return _then(_value.copyWith(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String?,
-      modelName: freezed == modelName
-          ? _value.modelName
-          : modelName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-      material: freezed == material
-          ? _value.material
-          : material // ignore: cast_nullable_to_non_nullable
-              as String?,
-      frameType: null == frameType
-          ? _value.frameType
-          : frameType // ignore: cast_nullable_to_non_nullable
-              as FrameType,
-      title: freezed == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String?,
-      description: freezed == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            id:
+                freezed == id
+                    ? _value.id
+                    : id // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            modelName:
+                freezed == modelName
+                    ? _value.modelName
+                    : modelName // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            name:
+                freezed == name
+                    ? _value.name
+                    : name // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            material:
+                freezed == material
+                    ? _value.material
+                    : material // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            frameType:
+                null == frameType
+                    ? _value.frameType
+                    : frameType // ignore: cast_nullable_to_non_nullable
+                        as FrameType,
+            title:
+                freezed == title
+                    ? _value.title
+                    : title // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            description:
+                freezed == description
+                    ? _value.description
+                    : description // ignore: cast_nullable_to_non_nullable
+                        as String?,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -114,18 +127,20 @@ class _$NotificationModelCopyWithImpl<$Res, $Val extends NotificationModel>
 abstract class _$$NotificationImplCopyWith<$Res>
     implements $NotificationModelCopyWith<$Res> {
   factory _$$NotificationImplCopyWith(
-          _$NotificationImpl value, $Res Function(_$NotificationImpl) then) =
-      __$$NotificationImplCopyWithImpl<$Res>;
+    _$NotificationImpl value,
+    $Res Function(_$NotificationImpl) then,
+  ) = __$$NotificationImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {String? id,
-      String? modelName,
-      String? name,
-      String? material,
-      FrameType frameType,
-      String? title,
-      String? description});
+  $Res call({
+    String? id,
+    String? modelName,
+    String? name,
+    String? material,
+    FrameType frameType,
+    String? title,
+    String? description,
+  });
 }
 
 /// @nodoc
@@ -133,8 +148,9 @@ class __$$NotificationImplCopyWithImpl<$Res>
     extends _$NotificationModelCopyWithImpl<$Res, _$NotificationImpl>
     implements _$$NotificationImplCopyWith<$Res> {
   __$$NotificationImplCopyWithImpl(
-      _$NotificationImpl _value, $Res Function(_$NotificationImpl) _then)
-      : super(_value, _then);
+    _$NotificationImpl _value,
+    $Res Function(_$NotificationImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of NotificationModel
   /// with the given fields replaced by the non-null parameter values.
@@ -149,50 +165,60 @@ class __$$NotificationImplCopyWithImpl<$Res>
     Object? title = freezed,
     Object? description = freezed,
   }) {
-    return _then(_$NotificationImpl(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String?,
-      modelName: freezed == modelName
-          ? _value.modelName
-          : modelName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-      material: freezed == material
-          ? _value.material
-          : material // ignore: cast_nullable_to_non_nullable
-              as String?,
-      frameType: null == frameType
-          ? _value.frameType
-          : frameType // ignore: cast_nullable_to_non_nullable
-              as FrameType,
-      title: freezed == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String?,
-      description: freezed == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
+    return _then(
+      _$NotificationImpl(
+        id:
+            freezed == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        modelName:
+            freezed == modelName
+                ? _value.modelName
+                : modelName // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        name:
+            freezed == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        material:
+            freezed == material
+                ? _value.material
+                : material // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        frameType:
+            null == frameType
+                ? _value.frameType
+                : frameType // ignore: cast_nullable_to_non_nullable
+                    as FrameType,
+        title:
+            freezed == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        description:
+            freezed == description
+                ? _value.description
+                : description // ignore: cast_nullable_to_non_nullable
+                    as String?,
+      ),
+    );
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$NotificationImpl implements _Notification {
-  const _$NotificationImpl(
-      {this.id,
-      this.modelName,
-      this.name,
-      this.material,
-      this.frameType = FrameType.task,
-      this.title,
-      this.description});
+  const _$NotificationImpl({
+    this.id,
+    this.modelName,
+    this.name,
+    this.material,
+    this.frameType = FrameType.task,
+    this.title,
+    this.description,
+  });
 
   factory _$NotificationImpl.fromJson(Map<String, dynamic> json) =>
       _$$NotificationImplFromJson(json);
@@ -238,8 +264,16 @@ class _$NotificationImpl implements _Notification {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, modelName, name, material,
-      frameType, title, description);
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    modelName,
+    name,
+    material,
+    frameType,
+    title,
+    description,
+  );
 
   /// Create a copy of NotificationModel
   /// with the given fields replaced by the non-null parameter values.
@@ -251,21 +285,20 @@ class _$NotificationImpl implements _Notification {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$NotificationImplToJson(
-      this,
-    );
+    return _$$NotificationImplToJson(this);
   }
 }
 
 abstract class _Notification implements NotificationModel {
-  const factory _Notification(
-      {final String? id,
-      final String? modelName,
-      final String? name,
-      final String? material,
-      final FrameType frameType,
-      final String? title,
-      final String? description}) = _$NotificationImpl;
+  const factory _Notification({
+    final String? id,
+    final String? modelName,
+    final String? name,
+    final String? material,
+    final FrameType frameType,
+    final String? title,
+    final String? description,
+  }) = _$NotificationImpl;
 
   factory _Notification.fromJson(Map<String, dynamic> json) =
       _$NotificationImpl.fromJson;

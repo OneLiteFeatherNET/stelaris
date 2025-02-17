@@ -13,7 +13,8 @@ _$ItemModelImpl _$$ItemModelImplFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String?,
       description: json['description'] as String?,
       displayName: json['displayName'] as String?,
-      group: $enumDecodeNullable(_$ItemGroupEnumMap, json['group']) ??
+      group:
+          $enumDecodeNullable(_$ItemGroupEnumMap, json['group']) ??
           ItemGroup.misc,
       material: json['material'] as String?,
       customModelId: (json['customModelId'] as num?)?.toInt(),
