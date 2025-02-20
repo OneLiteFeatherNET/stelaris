@@ -12,28 +12,33 @@ import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 
-const List<FrameType> types = FrameType.values;
-List<DropdownMenuItem<FrameType>> items = List.generate(
-  types.length,
-  (index) => DropdownMenuItem(
-    value: types[index],
-    child: Text(types[index].value),
-  ),
-);
-
+/// A widget that represents the general notification management page.
+///
+/// The [NotificationGeneralPage] allows users to view and edit the details
+/// of a selected notification, including its name, material, title, description,
+/// and frame type. It provides a form for input and a save button to commit changes.
 class NotificationGeneralPage extends StatelessWidget {
-  NotificationGeneralPage({
-    super.key,
-  });
+  /// Creates an instance of [NotificationGeneralPage].
+  NotificationGeneralPage({super.key});
 
+  /// A global key for the form to manage its state and validation.
   final _key = GlobalKey<FormState>();
+
+  /// A list of dropdown menu items for frame types.
+  static const List<FrameType> types = FrameType.values;
+  static final List<DropdownMenuItem<FrameType>> items = List.generate(
+    types.length,
+    (index) =>
+        DropdownMenuItem(value: types[index], child: Text(types[index].value)),
+  );
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, SelectedNotificationView>(
       vm: () => SelectedNotificationFactory(),
-      onDispose: (store) =>
-          store.dispatch(RemoveSelectNotificationAction(), notify: false),
+      onDispose:
+          (store) =>
+              store.dispatch(RemoveSelectNotificationAction(), notify: false),
       builder: (context, vm) {
         return Expanded(
           child: Stack(
@@ -49,13 +54,14 @@ class NotificationGeneralPage extends StatelessWidget {
                       display: context.l10n.card_name,
                       currentValue: vm.name,
                       formatter: [
-                        FilteringTextInputFormatter.allow(stringPattern)
+                        FilteringTextInputFormatter.allow(stringPattern),
                       ],
                       valueUpdate: (value) {
-                        if (value == vm.name) return;
-                        final oldModel = vm.selected;
-                        final newEntry = oldModel.copyWith(name: value);
-                        context.dispatch(UpdateNotificationAction(newEntry));
+                        if (value != vm.name) {
+                          final oldModel = vm.selected;
+                          final newEntry = oldModel.copyWith(name: value);
+                          context.dispatch(UpdateNotificationAction(newEntry));
+                        }
                       },
                       formValidator: (value) {
                         if (value.trim().isEmpty) {
@@ -69,10 +75,11 @@ class NotificationGeneralPage extends StatelessWidget {
                       currentValue: vm.selected.material ?? emptyString,
                       hintText: defaultMaterial,
                       valueUpdate: (value) {
-                        if (value == vm.selected.material) return;
-                        final oldModel = vm.selected;
-                        final newEntry = oldModel.copyWith(material: value);
-                        context.dispatch(UpdateNotificationAction(newEntry));
+                        if (value != vm.selected.material) {
+                          final oldModel = vm.selected;
+                          final newEntry = oldModel.copyWith(material: value);
+                          context.dispatch(UpdateNotificationAction(newEntry));
+                        }
                       },
                       formValidator: (value) {
                         if (value == null) return null;
@@ -87,20 +94,24 @@ class NotificationGeneralPage extends StatelessWidget {
                       display: context.l10n.card_title,
                       currentValue: vm.selected.title ?? emptyString,
                       valueUpdate: (value) {
-                        if (value == vm.selected.title) return;
-                        final oldModel = vm.selected;
-                        final newEntry = oldModel.copyWith(title: value);
-                        context.dispatch(UpdateNotificationAction(newEntry));
+                        if (value != vm.selected.title) {
+                          final oldModel = vm.selected;
+                          final newEntry = oldModel.copyWith(title: value);
+                          context.dispatch(UpdateNotificationAction(newEntry));
+                        }
                       },
                     ),
                     TextInputCard<String>(
                       display: context.l10n.card_description,
                       currentValue: vm.selected.description ?? emptyString,
                       valueUpdate: (value) {
-                        if (value == vm.selected.description) return;
-                        final oldModel = vm.selected;
-                        final newEntry = oldModel.copyWith(description: value);
-                        context.dispatch(UpdateNotificationAction(newEntry));
+                        if (value != vm.selected.description) {
+                          final oldModel = vm.selected;
+                          final newEntry = oldModel.copyWith(
+                            description: value,
+                          );
+                          context.dispatch(UpdateNotificationAction(newEntry));
+                        }
                       },
                     ),
                     DropdownCard<FrameType, NotificationModel>(
@@ -108,10 +119,12 @@ class NotificationGeneralPage extends StatelessWidget {
                       display: context.l10n.card_frame_type,
                       items: items,
                       valueUpdate: (FrameType? value) {
-                        if (value == vm.selected.frameType) return;
-                        final newEntry =
-                            vm.selected.copyWith(frameType: value!);
-                        context.dispatch(UpdateNotificationAction(newEntry));
+                        if (value != vm.selected.frameType) {
+                          final newEntry = vm.selected.copyWith(
+                            frameType: value!,
+                          );
+                          context.dispatch(UpdateNotificationAction(newEntry));
+                        }
                       },
                       defaultValue: (value) => value.frameType,
                     ),
