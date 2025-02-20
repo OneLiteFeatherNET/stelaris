@@ -12,7 +12,13 @@ import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
 
+/// A widget that represents the attribute management page.
+///
+/// The [AttributePage] allows users to view, select, and manage attributes.
+/// It provides a dialog for creating new attributes and handles the state
+/// management through Redux.
 class AttributePage extends StatelessWidget {
+  /// Creates an instance of [AttributePage].
   const AttributePage({super.key});
 
   @override
@@ -42,11 +48,19 @@ class AttributePage extends StatelessWidget {
     );
   }
 
+  /// Maps the selected [AttributeModel] to a widget.
+  ///
+  /// Returns an instance of [AttributeGeneralPage] if a model is selected,
+  /// otherwise returns null.
   Widget? _mapModelToWidget(AttributeModel? model) {
     if (model == null) return null;
     return AttributeGeneralPage();
   }
 
+  /// Opens a dialog for creating a new attribute.
+  ///
+  /// The dialog includes a text field for the attribute name and handles
+  /// validation and state management for adding the new attribute.
   void _openDialog(BuildContext context) {
     showDialog(
       context: context,

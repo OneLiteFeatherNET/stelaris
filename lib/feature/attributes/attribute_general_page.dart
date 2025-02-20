@@ -11,9 +11,16 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
 
+/// A widget that represents the general attributes management page.
+///
+/// The [AttributeGeneralPage] allows users to view and edit the details
+/// of a selected attribute, including its name, default value, and maximum value.
+/// It provides a form for input and a save button to commit changes.
 class AttributeGeneralPage extends StatelessWidget {
+  /// Creates an instance of [AttributeGeneralPage].
   AttributeGeneralPage({super.key});
 
+  /// A global key for the form to manage its state and validation.
   final _key = GlobalKey<FormState>();
 
   @override
@@ -34,13 +41,14 @@ class AttributeGeneralPage extends StatelessWidget {
                       tooltipMessage: context.l10n.tooltip_name,
                       currentValue: vm.name,
                       formatter: [
-                        FilteringTextInputFormatter.allow(stringPattern)
+                        FilteringTextInputFormatter.allow(stringPattern),
                       ],
                       valueUpdate: (value) {
                         if (value == vm.selected.name) return;
                         final AttributeModel oldModel = vm.selected;
-                        final AttributeModel newEntry =
-                            oldModel.copyWith(name: value);
+                        final AttributeModel newEntry = oldModel.copyWith(
+                          name: value,
+                        );
                         context.dispatch(UpdateAttributeAction(newEntry));
                       },
                       formValidator: (value) {
@@ -57,8 +65,9 @@ class AttributeGeneralPage extends StatelessWidget {
                         final parsedValue = double.tryParse(value) ?? 0;
                         if (parsedValue == vm.selected.defaultValue) return;
                         final oldModel = vm.selected;
-                        final newEntry =
-                            oldModel.copyWith(defaultValue: parsedValue);
+                        final newEntry = oldModel.copyWith(
+                          defaultValue: parsedValue,
+                        );
                         context.dispatch(UpdateAttributeAction(newEntry));
                       },
                       maxLength: 100,
@@ -71,8 +80,9 @@ class AttributeGeneralPage extends StatelessWidget {
                         final parsedValue = double.tryParse(value) ?? 0;
                         if (parsedValue == vm.selected.maximumValue) return;
                         final oldModel = vm.selected;
-                        final newEntry =
-                            oldModel.copyWith(maximumValue: parsedValue);
+                        final newEntry = oldModel.copyWith(
+                          maximumValue: parsedValue,
+                        );
                         context.dispatch(UpdateAttributeAction(newEntry));
                       },
                       maxLength: 100,
@@ -80,10 +90,12 @@ class AttributeGeneralPage extends StatelessWidget {
                   ],
                 ),
               ),
-              SaveButton(callback: () {
-                if (!_key.currentState!.validate()) return;
-                context.dispatchAndWait(AttributeDatabaseUpdate());
-              })
+              SaveButton(
+                callback: () {
+                  if (!_key.currentState!.validate()) return;
+                  context.dispatchAndWait(AttributeDatabaseUpdate());
+                },
+              ),
             ],
           ),
         );
