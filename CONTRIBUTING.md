@@ -1,4 +1,4 @@
-# Contributing to [Your Project Name]
+# Contributing to [Stelaris]
 
 Thank you for your interest in contributing to this project! 
 This Flutter app allows users to add data through a UI for specific elements in Minecraft. 
