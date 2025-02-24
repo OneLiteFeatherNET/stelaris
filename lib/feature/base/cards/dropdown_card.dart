@@ -8,7 +8,7 @@ class DropdownCard<E, T> extends StatefulWidget {
   final ValueUpdate<E> valueUpdate;
   final DefaultValue<E, T> defaultValue;
   final T currentValue;
-  final String? tooltipMessage;
+  final String tooltipMessage;
   final List<DropdownMenuItem<E>>? items;
   final Key? formKey;
 
@@ -17,7 +17,7 @@ class DropdownCard<E, T> extends StatefulWidget {
     required this.valueUpdate,
     required this.defaultValue,
     required this.currentValue,
-    this.tooltipMessage,
+    this.tooltipMessage = emptyString,
     this.items,
     this.formKey,
     super.key,
@@ -34,7 +34,6 @@ class _DropdownCardState<E, T> extends State<DropdownCard<E, T>> {
       padding: padding,
       child: BaseCard(
         display: widget.display,
-        message: widget.tooltipMessage,
         widget: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
           child: SizedBox(
@@ -52,6 +51,7 @@ class _DropdownCardState<E, T> extends State<DropdownCard<E, T>> {
             ),
           ),
         ),
+        message: widget.tooltipMessage,
       ),
     );
   }

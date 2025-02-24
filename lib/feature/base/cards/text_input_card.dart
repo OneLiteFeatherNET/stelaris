@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:stelaris/feature/base/base_card.dart';
 import 'package:stelaris/util/constants.dart';
 
+/// A card widget that contains a text input field with validation and formatting options.
 class TextInputCard<E> extends StatefulWidget {
   final String display;
   final void Function(String value) valueUpdate;
@@ -10,7 +11,7 @@ class TextInputCard<E> extends StatefulWidget {
   final TextInputType? inputType;
   final int maxLength;
   final bool isNumber;
-  final String? tooltipMessage;
+  final String tooltipMessage;
   final String? hintText;
   final List<TextInputFormatter>? formatter;
   final FormFieldValidator? formValidator;
@@ -19,7 +20,7 @@ class TextInputCard<E> extends StatefulWidget {
     required this.display,
     required this.valueUpdate,
     required this.currentValue,
-    this.tooltipMessage,
+    this.tooltipMessage = emptyString, // Default to an empty string
     this.hintText,
     this.inputType,
     this.formatter,
@@ -38,7 +39,7 @@ class _TextInputCardState extends State<TextInputCard> {
   final FocusNode _focusNode = FocusNode();
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     _editController.text = widget.currentValue;
   }
@@ -56,9 +57,8 @@ class _TextInputCardState extends State<TextInputCard> {
       padding: padding,
       child: BaseCard(
         display: widget.display,
-        message: widget.tooltipMessage,
         widget: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
             child: Focus(
@@ -77,17 +77,19 @@ class _TextInputCardState extends State<TextInputCard> {
                   hintText: widget.hintText,
                 ),
                 textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
+                onFieldSubmitted: (value) => _handleFieldSubmitted(value),
               ),
-              onFocusChange: (focus) {
-                if (focus) return;
-                final String value = _editController.value.text;
-                if (value.trim().isEmpty) return;
-                widget.valueUpdate(value);
-              },
             ),
           ),
         ),
+        message: widget.tooltipMessage,
       ),
     );
+  }
+
+  void _handleFieldSubmitted(String value) {
+    if (value.trim().isNotEmpty) {
+      widget.valueUpdate(value);
+    }
   }
 }

@@ -101,8 +101,8 @@ class _CharCardState extends State<CharCard> {
   Widget _getActionWidget(SelectedFontView view, BuildContext context) {
     return editMode == EditMode.edit
         ? ActionChips(
-            addFunction: () => _addDialog(view, context),
-            saveFunction: () {
+            addCallback: () => _addDialog(view, context),
+            saveCallback: () {
               ApiService().fontAPI.update(view.selected);
             },
           )
