@@ -6,13 +6,16 @@ import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class DeleteModelButton<E extends DataModel> extends StatelessWidget {
+  const DeleteModelButton({
+    required this.value,
+    required this.mapToDeleteDialog,
+    required this.mapToDeleteSuccessfully,
+    super.key,
+  });
+
   final E value;
   final MapToDeleteDialog<E> mapToDeleteDialog;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
-
-  const DeleteModelButton({
-    required this.value, required this.mapToDeleteDialog, required this.mapToDeleteSuccessfully, super.key,
-  });
 
   @override
   Widget build(BuildContext context) {

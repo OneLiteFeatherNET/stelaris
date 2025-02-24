@@ -8,15 +8,6 @@ import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class EntryButtons extends StatelessWidget {
-  final String editTitle;
-  final ItemModel model;
-  final String? name;
-  final String? value;
-  final ValueUpdate<ItemModel> delete;
-  final DoubleValueUpdate<String, String> update;
-  final List<TextInputFormatter>? inputFormatters;
-  final FormFieldValidator formFieldValidator;
-
   const EntryButtons({
     required this.editTitle,
     required this.model,
@@ -28,6 +19,15 @@ class EntryButtons extends StatelessWidget {
     this.inputFormatters,
     super.key,
   });
+
+  final String editTitle;
+  final ItemModel model;
+  final String? name;
+  final String? value;
+  final ValueUpdate<ItemModel> delete;
+  final DoubleValueUpdate<String, String> update;
+  final List<TextInputFormatter>? inputFormatters;
+  final FormFieldValidator formFieldValidator;
 
   @override
   Widget build(BuildContext context) {

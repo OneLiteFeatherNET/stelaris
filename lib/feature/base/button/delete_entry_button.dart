@@ -4,14 +4,18 @@ import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class DeleteEntryButton<E> extends StatelessWidget {
+  const DeleteEntryButton({
+    required this.title,
+    required this.header,
+    required this.value,
+    required this.mapToDeleteSuccessfully,
+    super.key,
+  });
+
   final String title;
   final List<TextSpan> header;
   final E value;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
-
-  const DeleteEntryButton({
-    required this.title, required this.header, required this.value, required this.mapToDeleteSuccessfully, super.key,
-  });
 
   @override
   Widget build(BuildContext context) {
