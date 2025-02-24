@@ -22,7 +22,6 @@ dependencies:
   nil: ^1.1.1
   intl: ^0.19.0
   json_annotation: 4.9.0
-  expandable: ^5.0.1
   web: ^1.1.0
 
 dev_dependencies:
