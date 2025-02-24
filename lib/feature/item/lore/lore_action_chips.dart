@@ -8,9 +8,9 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// In this special case the confirm widget is a [FilledButton.icon].
 /// For more details visit the [LorePage] class.
 class LoreActionChips extends StatelessWidget {
-  final Function() dialogFunction;
+  final VoidCallback dialogFunction;
   final Widget confirmWidget;
-  final Function() deleteFunction;
+  final VoidCallback deleteFunction;
   final int currentIndex;
 
   const LoreActionChips({

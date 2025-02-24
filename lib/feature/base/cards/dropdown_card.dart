@@ -4,14 +4,6 @@ import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class DropdownCard<E, T> extends StatefulWidget {
-  final String display;
-  final ValueUpdate<E> valueUpdate;
-  final DefaultValue<E, T> defaultValue;
-  final T currentValue;
-  final String tooltipMessage;
-  final List<DropdownMenuItem<E>>? items;
-  final Key? formKey;
-
   const DropdownCard({
     required this.display,
     required this.valueUpdate,
@@ -22,6 +14,14 @@ class DropdownCard<E, T> extends StatefulWidget {
     this.formKey,
     super.key,
   });
+
+  final String display;
+  final ValueUpdate<E> valueUpdate;
+  final DefaultValue<E, T> defaultValue;
+  final T currentValue;
+  final String tooltipMessage;
+  final List<DropdownMenuItem<E>>? items;
+  final Key? formKey;
 
   @override
   State<DropdownCard<E, T>> createState() => _DropdownCardState<E, T>();

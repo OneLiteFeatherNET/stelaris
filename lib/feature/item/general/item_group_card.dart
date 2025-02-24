@@ -9,14 +9,14 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 
 class ItemGroupCard extends StatelessWidget {
-  final ItemModel model;
-  final GlobalKey<FormState> groupKey;
-
   const ItemGroupCard({
     required this.model,
     required this.groupKey,
     super.key,
   });
+
+  final ItemModel model;
+  final GlobalKey<FormState> groupKey;
 
   @override
   Widget build(BuildContext context) {
