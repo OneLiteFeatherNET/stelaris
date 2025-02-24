@@ -4,14 +4,14 @@ import 'package:stelaris/util/constants.dart';
 /// The class represents the save button widget which is used to save the changes.
 /// It is only used in such structures which require a save button.
 class SaveButton extends StatelessWidget {
-  final Function callback;
-  final String? text;
-
   const SaveButton({
     required this.callback,
-    this.text,
+    this.text = emptyString,
     super.key,
   });
+
+  final VoidCallback callback;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -19,17 +19,17 @@ class SaveButton extends StatelessWidget {
       alignment: Alignment.bottomRight,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 25, right: 10),
-        child: _getButton(text),
+        child:
+            text == emptyString ? _getButtonWithOutLabel() : _getButton(text),
       ),
     );
   }
 
   /// Returns the button which should be displayed
-  Widget _getButton(String? text) {
-    if (text == null) return _getButtonWithOutLabel();
+  Widget _getButton(String text) {
     return FloatingActionButton.extended(
       heroTag: UniqueKey(),
-      onPressed: () => callback.call(),
+      onPressed: callback,
       label: Text(text),
       icon: saveIcon,
     );
@@ -39,7 +39,7 @@ class SaveButton extends StatelessWidget {
   Widget _getButtonWithOutLabel() {
     return FloatingActionButton(
       heroTag: UniqueKey(),
-      onPressed: () => callback.call(),
+      onPressed: callback,
       child: saveIcon,
     );
   }
