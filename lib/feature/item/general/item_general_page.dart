@@ -103,12 +103,10 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
                         vm.selected.customModelId?.toString() ?? zeroString,
                     valueUpdate: (value) {
                       final newValue = int.tryParse(value) ?? 0;
-                      debugPrint('New value is $newValue');
                       if (newValue == vm.selected.customModelId) return;
                       final oldModel = vm.selected;
                       final newEntry =
                           oldModel.copyWith(customModelId: newValue);
-                      debugPrint("New entry is $newEntry");
                       context.dispatch(UpdateItemAction(newEntry));
                     },
                     maxLength: 30,
