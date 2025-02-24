@@ -15,7 +15,7 @@ class EditActionChips extends StatelessWidget {
       children: [
         FilledButton.icon(
           label: const Text('Confirm'),
-          onPressed: () => deleteConfirm(),
+          onPressed: deleteConfirm,
           icon: const Icon(Icons.check),
         ),
       ],
