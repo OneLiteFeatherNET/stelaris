@@ -3,7 +3,6 @@ import 'package:stelaris/util/constants.dart';
 
 /// A customizable card widget that displays a title, an optional message, and a child widget.
 class BaseCard extends StatelessWidget {
-
   const BaseCard({
     required this.display,
     required this.widget,

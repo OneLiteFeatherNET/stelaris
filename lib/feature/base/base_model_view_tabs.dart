@@ -5,19 +5,6 @@ import 'package:stelaris/feature/base/model_content_tab_page.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class BaseModelViewTabs<E extends DataModel> extends StatelessWidget {
-
-  final MapToDataModelItem<E> mapToDataModelItem;
-  final VoidCallback openFunction;
-  final E? selectedItem;
-  final MapToDeleteDialog<E> mapToDeleteDialog;
-  final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
-  final Function(E) callFunction;
-  final TabMapFunction<E> page;
-  final MapToTabPages tabPages;
-  final List<E> models;
-  final bool Function(E) compareFunction;
-  final List<Tab> tabs;
-
   const BaseModelViewTabs({
     required this.mapToDataModelItem,
     required this.openFunction,
@@ -32,6 +19,18 @@ class BaseModelViewTabs<E extends DataModel> extends StatelessWidget {
     required this.tabs,
     super.key
   });
+
+  final MapToDataModelItem<E> mapToDataModelItem;
+  final VoidCallback openFunction;
+  final E? selectedItem;
+  final MapToDeleteDialog<E> mapToDeleteDialog;
+  final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
+  final Function(E) callFunction;
+  final TabMapFunction<E> page;
+  final MapToTabPages tabPages;
+  final List<E> models;
+  final bool Function(E) compareFunction;
+  final List<Tab> tabs;
 
   @override
   Widget build(BuildContext context) {
