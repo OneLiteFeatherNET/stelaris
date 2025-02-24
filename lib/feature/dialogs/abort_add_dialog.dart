@@ -3,14 +3,14 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 
 class AbortAddDialog extends StatelessWidget {
-  final String title;
-  final String content;
-
   const AbortAddDialog({
     required this.title,
     required this.content,
     super.key,
   });
+
+  final String title;
+  final String content;
 
   @override
   Widget build(BuildContext context) {

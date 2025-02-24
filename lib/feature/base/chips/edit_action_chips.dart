@@ -6,7 +6,7 @@ class EditActionChips extends StatelessWidget {
     super.key,
   });
 
-  final Function() deleteConfirm;
+  final VoidCallback deleteConfirm;
 
   @override
   Widget build(BuildContext context) {

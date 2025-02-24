@@ -5,11 +5,6 @@ import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class DeleteDialog<E> extends StatelessWidget {
-  final Text title;
-  final List<TextSpan> header;
-  final E value;
-  final MapToDeleteSuccessfully<E> successfully;
-
   const DeleteDialog({
     required this.title,
     required this.header,
@@ -17,6 +12,11 @@ class DeleteDialog<E> extends StatelessWidget {
     required this.successfully,
     super.key,
   });
+
+  final Text title;
+  final List<TextSpan> header;
+  final E value;
+  final MapToDeleteSuccessfully<E> successfully;
 
   @override
   Widget build(BuildContext context) {

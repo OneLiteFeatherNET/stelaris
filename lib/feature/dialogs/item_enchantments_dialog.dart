@@ -8,9 +8,6 @@ import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class ItemEnchantmentAddDialog extends StatefulWidget {
-  final AddEnchantmentCallback addEnchantmentCallback;
-  final ItemModel model;
-  final FormFieldValidator formFieldValidator;
 
   const ItemEnchantmentAddDialog({
     required this.addEnchantmentCallback,
@@ -18,6 +15,10 @@ class ItemEnchantmentAddDialog extends StatefulWidget {
     required this.formFieldValidator,
     super.key,
   });
+
+  final AddEnchantmentCallback addEnchantmentCallback;
+  final ItemModel model;
+  final FormFieldValidator formFieldValidator;
 
   @override
   State<ItemEnchantmentAddDialog> createState() =>

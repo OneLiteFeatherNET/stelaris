@@ -8,8 +8,8 @@ class EnchantmentActions extends StatelessWidget {
     super.key,
   });
 
-  final Function() resetFunction;
-  final Function() saveFunction;
+  final VoidCallback resetFunction;
+  final VoidCallback saveFunction;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class EnchantmentActions extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ActionChip(
-          onPressed: () => resetFunction(),
+          onPressed: () => resetFunction,
           avatar: const Icon(Icons.refresh_sharp),
           label: const Text('Reset'),
         ),
@@ -25,7 +25,7 @@ class EnchantmentActions extends StatelessWidget {
         FilledButton.icon(
           icon: const Icon(Icons.save),
           label: const Text('Save'),
-          onPressed: () => saveFunction()
+          onPressed: () => saveFunction,
         ),
       ],
     );

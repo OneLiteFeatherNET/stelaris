@@ -5,17 +5,6 @@ import 'package:stelaris/util/constants.dart';
 
 /// A card widget that contains a text input field with validation and formatting options.
 class TextInputCard<E> extends StatefulWidget {
-  final String display;
-  final void Function(String value) valueUpdate;
-  final String currentValue;
-  final TextInputType? inputType;
-  final int maxLength;
-  final bool isNumber;
-  final String tooltipMessage;
-  final String? hintText;
-  final List<TextInputFormatter>? formatter;
-  final FormFieldValidator? formValidator;
-
   const TextInputCard({
     required this.display,
     required this.valueUpdate,
@@ -29,6 +18,17 @@ class TextInputCard<E> extends StatefulWidget {
     this.isNumber = false,
     super.key,
   });
+
+  final String display;
+  final void Function(String value) valueUpdate;
+  final String currentValue;
+  final TextInputType? inputType;
+  final int maxLength;
+  final bool isNumber;
+  final String tooltipMessage;
+  final String? hintText;
+  final List<TextInputFormatter>? formatter;
+  final FormFieldValidator? formValidator;
 
   @override
   State<TextInputCard> createState() => _TextInputCardState();
@@ -79,8 +79,8 @@ class _TextInputCardState extends State<TextInputCard> {
                 textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
               ),
               onFocusChange: (focus) {
-                  if (focus) return;
-                  _handleFieldSubmitted(_editController.text);
+                if (focus) return;
+                _handleFieldSubmitted(_editController.text);
               },
             ),
           ),

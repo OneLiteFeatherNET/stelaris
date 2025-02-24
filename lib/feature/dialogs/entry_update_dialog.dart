@@ -5,15 +5,6 @@ import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class EntryUpdateDialog extends StatefulWidget {
-  final String title;
-  final GlobalKey<FormState> formKey;
-  final ValueUpdate<String> valueUpdate;
-  final FormFieldValidator? formFieldValidator;
-  final List<TextInputFormatter>? formatters;
-  final String? hintText;
-  final bool Function(String)? clearFunction;
-  final String? data;
-
   const EntryUpdateDialog({
     required this.title,
     required this.formKey,
@@ -25,6 +16,15 @@ class EntryUpdateDialog extends StatefulWidget {
     this.data,
     super.key,
   });
+
+  final String title;
+  final GlobalKey<FormState> formKey;
+  final ValueUpdate<String> valueUpdate;
+  final FormFieldValidator? formFieldValidator;
+  final List<TextInputFormatter>? formatters;
+  final String? hintText;
+  final bool Function(String)? clearFunction;
+  final String? data;
 
   @override
   State<EntryUpdateDialog> createState() => _EntryUpdateDialogState();
