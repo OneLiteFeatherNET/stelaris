@@ -1,19 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris/feature/settings/settings_dialog.dart';
 
-class SettingsButton extends StatefulWidget {
+class SettingsButton extends StatelessWidget {
   const SettingsButton({super.key});
-
-  @override
-  State<SettingsButton> createState() => _SettingsButtonState();
-}
-
-class _SettingsButtonState extends State<SettingsButton> {
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
