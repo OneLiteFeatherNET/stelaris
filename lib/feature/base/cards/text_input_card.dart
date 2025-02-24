@@ -77,8 +77,11 @@ class _TextInputCardState extends State<TextInputCard> {
                   hintText: widget.hintText,
                 ),
                 textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
-                onFieldSubmitted: (value) => _handleFieldSubmitted(value),
               ),
+              onFocusChange: (focus) {
+                  if (focus) return;
+                  _handleFieldSubmitted(_editController.text);
+              },
             ),
           ),
         ),
