@@ -36,7 +36,8 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
   final ScrollController _scrollController = ScrollController();
   
   // Cache the card shape to avoid rebuilds
-  late final RoundedRectangleBorder _defaultCardShape;
+  // Don't make this variable final otherwise it will cause issues during theme change
+  late RoundedRectangleBorder _defaultCardShape;
   
   @override
   void initState() {
