@@ -40,11 +40,6 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
   late RoundedRectangleBorder _defaultCardShape;
   
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();

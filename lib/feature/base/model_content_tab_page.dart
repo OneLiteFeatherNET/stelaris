@@ -4,11 +4,6 @@ import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
-  final E? selectedItem;
-  final MapToTabPages tabPages;
-  final TabMapFunction<E> page;
-  final List<Tab> tabs;
-
   const ModelContentTabPage({
     required this.selectedItem,
     required this.tabPages,
@@ -16,6 +11,11 @@ class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
     required this.tabs,
     super.key,
   });
+
+  final E? selectedItem;
+  final MapToTabPages tabPages;
+  final TabMapFunction<E> page;
+  final List<Tab> tabs;
 
   @override
   Widget build(BuildContext context) {

@@ -7,9 +7,9 @@ import 'package:stelaris/feature/navigation/navigation_side_bar.dart';
 import 'package:stelaris/util/constants.dart';
 
 class BasePage extends StatelessWidget {
-  final Widget child;
-
   const BasePage({required this.child, super.key});
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

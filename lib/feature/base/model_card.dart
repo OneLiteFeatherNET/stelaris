@@ -6,13 +6,6 @@ import 'package:stelaris/feature/base/button/delete_model_button.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class ModelCard<E extends DataModel> extends StatefulWidget {
-  final bool selected;
-  final RoundedRectangleBorder selectedCardShape;
-  final MapToDeleteDialog<E> mapToDeleteDialog;
-  final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
-  final MapToDataModelItem<E> mapToDataModelItem;
-  final E rawModel;
-
   const ModelCard({
     required this.selected,
     required this.selectedCardShape,
@@ -23,11 +16,19 @@ class ModelCard<E extends DataModel> extends StatefulWidget {
     super.key,
   });
 
+  final bool selected;
+  final RoundedRectangleBorder selectedCardShape;
+  final MapToDeleteDialog<E> mapToDeleteDialog;
+  final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
+  final MapToDataModelItem<E> mapToDataModelItem;
+  final E rawModel;
+
   @override
   State<ModelCard> createState() => _ModelCardState<E>();
 }
 
-class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> with AutomaticKeepAliveClientMixin {
+class _ModelCardState<E extends DataModel> extends State<ModelCard<E>>
+    with AutomaticKeepAliveClientMixin {
   bool _isHovered = false;
   Timer? _debounceTimer;
   late final Widget _title;
@@ -68,7 +69,7 @@ class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> with Auto
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    
+
     return Card(
       shape: widget.selected ? widget.selectedCardShape : null,
       color: _isHovered

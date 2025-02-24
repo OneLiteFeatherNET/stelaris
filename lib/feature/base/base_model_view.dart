@@ -4,16 +4,6 @@ import 'package:stelaris/feature/base/model_list.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class BaseModelView<E extends DataModel> extends StatelessWidget {
-  final MapToDataModelItem<E> mapToDataModelItem;
-  final VoidCallback openFunction;
-  final E? selectedItem;
-  final MapToDeleteDialog<E> mapToDeleteDialog;
-  final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
-  final Function(E) callFunction;
-  final List<E> models;
-  final Widget? child;
-  final bool Function(E) compareFunction;
-
   const BaseModelView({
     required this.mapToDataModelItem,
     required this.openFunction,
@@ -26,6 +16,16 @@ class BaseModelView<E extends DataModel> extends StatelessWidget {
     required this.compareFunction,
     super.key,
   });
+
+  final MapToDataModelItem<E> mapToDataModelItem;
+  final VoidCallback openFunction;
+  final E? selectedItem;
+  final MapToDeleteDialog<E> mapToDeleteDialog;
+  final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
+  final Function(E) callFunction;
+  final List<E> models;
+  final Widget? child;
+  final bool Function(E) compareFunction;
 
   @override
   Widget build(BuildContext context) {
