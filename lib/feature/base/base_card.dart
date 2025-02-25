@@ -6,7 +6,7 @@ class BaseCard extends StatelessWidget {
   const BaseCard({
     required this.display,
     required this.widget,
-    this.message = emptyString, // Default to an empty string
+    this.message = emptyString,
     this.width = 350,
     this.height = 200,
     super.key,
@@ -14,37 +14,63 @@ class BaseCard extends StatelessWidget {
 
   final String display;
   final Widget widget;
-  final String message; // Changed to non-nullable with a default value
+  final String message;
   final double width;
   final double height;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return SizedBox(
       width: width,
       height: height,
       child: Card(
-        clipBehavior: Clip.hardEdge,
+        elevation: 2,
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+            color: colorScheme.outlineVariant,
+            width: 1,
+          ),
+        ),
         child: Column(
           children: [
             Container(
-              color: Theme.of(context).secondaryHeaderColor,
-              height: sizeFifty,
-              child: ListTile(
-                title: Text(display, style: whiteStyle),
-                trailing: message.isNotEmpty
-                    ? Tooltip(
-                  message: message,
-                  child: const Icon(
-                    Icons.info,
-                    color: Colors.white,
+              decoration: BoxDecoration(
+                color: colorScheme.secondaryContainer,
+                border: Border(
+                  bottom: BorderSide(
+                    color: colorScheme.outlineVariant,
+                    width: 1,
                   ),
-                )
-                    : null,
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      display,
+                      style: TextStyle(
+                        color: colorScheme.onSecondaryContainer,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  if (message.isNotEmpty)
+                    Tooltip(
+                      message: message,
+                      child: const Icon(
+                        Icons.info_outline_rounded,
+                        size: 20,
+                      ),
+                    ),
+                ],
               ),
             ),
-            const SizedBox(height: 10), // Use SizedBox for spacing
-            widget,
+            Expanded(child: widget),
           ],
         ),
       ),
