@@ -6,18 +6,29 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/selected_item_state.dart';
 import 'package:stelaris/feature/base/button/save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
-import 'package:stelaris/feature/item/enchantment_reducer.dart';
 import 'package:stelaris/feature/item/general/item_group_card.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
 
-class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
-  ItemGeneralPage({
+class ItemGeneralPage extends StatefulWidget {
+  const ItemGeneralPage({
     super.key,
   });
 
+  @override
+  State<ItemGeneralPage> createState() => _ItemGeneralPageState();
+}
+
+class _ItemGeneralPageState extends State<ItemGeneralPage> {
   final _formKey = GlobalKey<FormState>();
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +47,11 @@ class ItemGeneralPage extends StatelessWidget with EnchantmentReducer {
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       return Scrollbar(
+                        controller: _scrollController,
                         thumbVisibility: true,
                         trackVisibility: true,
                         child: SingleChildScrollView(
+                          controller: _scrollController,
                           child: Padding(
                             padding: const EdgeInsets.all(16),
                             child: Wrap(
