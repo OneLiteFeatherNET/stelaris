@@ -53,14 +53,16 @@ class _TextInputCardState extends State<TextInputCard> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final borderRadius = BorderRadius.circular(8);
+
     return Padding(
       padding: padding,
       child: BaseCard(
         display: widget.display,
-        widget: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
+        widget: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 300),
             child: Focus(
               focusNode: _focusNode,
               child: TextFormField(
@@ -73,8 +75,51 @@ class _TextInputCardState extends State<TextInputCard> {
                 keyboardType: widget.inputType,
                 inputFormatters: widget.formatter,
                 validator: widget.formValidator,
+                style: TextStyle(
+                  color: colorScheme.onSurface,
+                  fontSize: 16,
+                ),
                 decoration: InputDecoration(
                   hintText: widget.hintText,
+                  hintStyle: TextStyle(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: borderRadius,
+                    borderSide: BorderSide(
+                      color: colorScheme.outline,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: borderRadius,
+                    borderSide: BorderSide(
+                      color: colorScheme.outline,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: borderRadius,
+                    borderSide: BorderSide(
+                      color: colorScheme.primary,
+                      width: 2,
+                    ),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: borderRadius,
+                    borderSide: BorderSide(
+                      color: colorScheme.error,
+                    ),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: borderRadius,
+                    borderSide: BorderSide(
+                      color: colorScheme.error,
+                      width: 2,
+                    ),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
                 textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
               ),

@@ -25,6 +25,8 @@ class ItemGroupCard extends StatelessWidget {
       currentValue: model,
       formKey: groupKey,
       items: getGroupItems(),
+      tooltipMessage: 'Change Item group',
+      matchTextInputHeight: true,
       valueUpdate: (ItemGroup? value) {
         if (value == null) return;
         final ItemGroup selected = value;
