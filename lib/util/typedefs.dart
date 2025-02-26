@@ -6,8 +6,6 @@ import 'package:stelaris/api/util/minecraft/enchantment.dart';
 typedef ValueUpdate<E> = void Function(E? value);
 typedef DoubleValueUpdate<E, K> = void Function(E? value, K? key);
 typedef DefaultValue<E,T> = E Function(T value);
-typedef StringValueUpdate = void Function(String value);
-typedef Validator<String> = bool Function(String?)?;
 
 /// DismissDialog functions
 typedef MapToDeleteSuccessfully<E> = bool Function(E value);
