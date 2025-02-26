@@ -97,7 +97,7 @@ class ItemPage extends StatelessWidget {
     if (listenable == null) return nil;
     switch (value) {
       case 'General':
-        return ItemGeneralPage();
+        return const ItemGeneralPage();
       case 'Meta':
         return const EnchantmentPage();
       case 'Lore':
