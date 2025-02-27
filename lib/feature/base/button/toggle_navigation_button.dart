@@ -11,8 +11,7 @@ class ToggleNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: const Icon(Icons.menu),
-      onPressed: () => StoreProvider.dispatch(
-        context,
+      onPressed: () => context.dispatch(
         UpdateNavigationAction(),
       ),
     );
