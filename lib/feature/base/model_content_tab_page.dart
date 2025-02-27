@@ -26,30 +26,35 @@ class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: tabs.length,
-      initialIndex: 0,
-      child: Expanded(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: DefaultTabController(
+        length: tabs.length,
+        initialIndex: 0,
         child: Scaffold(
-          appBar: AppBar(
-            toolbarHeight: 0,
-            bottom: TabBar(
-              tabs: tabs,
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight),
+            child: AppBar(
+              toolbarHeight: 0,
+              bottom: TabBar(tabs: tabs),
             ),
           ),
           body: TabBarView(
-            children: tabs.map(
-              (element) {
-                final Text text = element.child as Text;
-                return page(
-                  text.data ?? emptyString,
-                  selectedItem,
-                );
-              },
-            ).toList(),
+            children: _buildTabPages(),
           ),
         ),
       ),
     );
+  }
+
+  /// Builds the tab pages based on the provided tabs.
+  List<Widget> _buildTabPages() {
+    return tabs.map((tab) {
+      if (tab.child is! Text) {
+        throw StateError('Tab child must be a Text widget');
+      }
+      final text = (tab.child as Text).data ?? emptyString;
+      return page(text, selectedItem);
+    }).toList();
   }
 }
