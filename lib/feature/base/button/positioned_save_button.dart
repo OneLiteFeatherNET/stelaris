@@ -27,6 +27,5 @@ class PositionedSaveButton extends StatelessWidget {
       bottom: bottom,
       child: SaveButton(callback: callback),
     );
-    return const Placeholder();
   }
 }
