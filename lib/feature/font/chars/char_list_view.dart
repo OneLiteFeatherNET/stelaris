@@ -7,7 +7,7 @@ import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/font/chars/char_delete_checkbox.dart';
 import 'package:stelaris/util/edit_mode.dart';
 
-class CharListView extends StatelessWidget {
+class CharListView extends StatefulWidget {
   const CharListView({
     required this.fontModel,
     required this.editMode,
@@ -18,16 +18,35 @@ class CharListView extends StatelessWidget {
   final EditMode editMode;
 
   @override
+  State<CharListView> createState() => _CharListViewState();
+}
+
+class _CharListViewState extends State<CharListView> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: fontModel.chars.length,
-      itemBuilder: (context, index) {
-        final key = fontModel.chars[index];
-        return ListTile(
-          title: Text(key),
-          trailing: _getTrailingWidget(context, index),
-        );
-      },
+    return Scrollbar(
+      controller: _scrollController,
+      thumbVisibility: true,
+      trackVisibility: true,
+      child: ListView.builder(
+        controller: _scrollController,
+        itemCount: widget.fontModel.chars.length,
+        itemBuilder: (context, index) {
+          final key = widget.fontModel.chars[index];
+          return ListTile(
+            title: Text(key),
+            trailing: _getTrailingWidget(context, index),
+          );
+        },
+      ),
     );
   }
 
@@ -36,10 +55,10 @@ class CharListView extends StatelessWidget {
   /// If the [editMode] is deleting, the method returns a [CharDeleteCheckbox] widget.
   /// If the [editMode] is editing, the method returns an [IconButton] widget with an edit icon.
   Widget _getTrailingWidget(BuildContext context, int index) {
-    final charEntry = fontModel.chars[index];
-    if (editMode == EditMode.deleting) {
+    final charEntry = widget.fontModel.chars[index];
+    if (widget.editMode == EditMode.deleting) {
       return CharDeleteCheckbox(
-        selectedFontView: fontModel,
+        selectedFontView: widget.fontModel,
         charIndex: charEntry,
       );
     } else {
@@ -64,11 +83,11 @@ class CharListView extends StatelessWidget {
           valueUpdate: (value) {
             final String updatedValue = value!;
             if (updatedValue.isEmpty || updatedValue == originalData) return;
-            final List<String> modelChars = List.of(fontModel.chars, growable: true);
+            final List<String> modelChars = List.of(widget.fontModel.chars, growable: true);
             modelChars.removeAt(index);
             modelChars.insert(index, updatedValue);
             final FontModel updatedModel =
-                fontModel.selected.copyWith(chars: modelChars);
+                widget.fontModel.selected.copyWith(chars: modelChars);
             context.dispatch(UpdateFontAction(updatedModel));
             Navigator.of(context).pop(true);
           },

@@ -12,10 +12,14 @@ class AddButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton.extended(
-      onPressed: openFunction,
-      label: Text(context.l10n.button_add),
-      icon: addModelIcon,
+    return SizedBox(
+      width: double.infinity,
+      height: 50, // Set a fixed height for the button
+      child: FloatingActionButton.extended(
+        onPressed: openFunction,
+        label: Text(context.l10n.button_add),
+        icon: addModelIcon,
+      ),
     );
   }
 }
