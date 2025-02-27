@@ -30,26 +30,23 @@ class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
       length: tabs.length,
       initialIndex: 0,
       child: Expanded(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Scaffold(
-            appBar: AppBar(
-              toolbarHeight: 0,
-              bottom: TabBar(
-                tabs: tabs,
-              ),
+        child: Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 0,
+            bottom: TabBar(
+              tabs: tabs,
             ),
-            body: TabBarView(
-              children: tabs.map(
-                (element) {
-                  final Text text = element.child as Text;
-                  return page(
-                    text.data ?? emptyString,
-                    selectedItem,
-                  );
-                },
-              ).toList(),
-            ),
+          ),
+          body: TabBarView(
+            children: tabs.map(
+              (element) {
+                final Text text = element.child as Text;
+                return page(
+                  text.data ?? emptyString,
+                  selectedItem,
+                );
+              },
+            ).toList(),
           ),
         ),
       ),
