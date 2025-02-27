@@ -150,19 +150,19 @@ mixin EnchantmentReducer {
   }
 
   List<Enchantment> getEnchantments(ItemModel model) {
-    if (identical(model.group, ItemGroup.armor.display)) {
+    if (identical(model.group, ItemGroup.armor)) {
       return _getArmor(model);
     }
 
-    if (identical(model.group, ItemGroup.tools.display)) {
+    if (identical(model.group, ItemGroup.tools)) {
       return _getTools(model);
     }
 
-    if (identical(model.group, ItemGroup.meeleWeapon.display)) {
+    if (identical(model.group, ItemGroup.meeleWeapon)) {
       return _getMeele(model);
     }
 
-    if (identical(model.group, ItemGroup.rangedWeapon.display)) {
+    if (identical(model.group, ItemGroup.rangedWeapon)) {
       return _getRanged(model);
     }
 
