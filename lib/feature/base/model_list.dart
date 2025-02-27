@@ -5,6 +5,10 @@ import 'package:stelaris/feature/base/model_card.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
+/// A generic list widget that displays a collection of data models.
+///
+/// [E] represents the type of data model being displayed.
+/// The list supports selection, deletion, and adding new items.
 class ModelList<E extends DataModel> extends StatefulWidget {
   final MapToDataModelItem<E> mapToDataModelItem;
   final E? selectedItem;
@@ -66,7 +70,6 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
             child: ListView.builder(
               controller: _scrollController,
               itemCount: widget.models.length,
-              addAutomaticKeepAlives: true,
               clipBehavior: Clip.none, // Reduce overdraw
               itemBuilder: (context, index) {
                 final E rawModel = widget.models[index];
