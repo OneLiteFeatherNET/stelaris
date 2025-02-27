@@ -69,6 +69,6 @@ class NotificationPage extends StatelessWidget {
 
   Widget? _mapPageToWidget(NotificationModel? model) {
     if (model == null) return null;
-    return NotificationGeneralPage();
+    return const NotificationGeneralPage();
   }
 }
