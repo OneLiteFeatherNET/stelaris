@@ -23,24 +23,30 @@ class LoreActionChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        ActionChip(
-          avatar: const Icon(Icons.add),
-          label: Text(context.l10n.button_add),
-          onPressed: () => dialogFunction.call(),
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ActionChip(
+              avatar: const Icon(Icons.add),
+              label: Text(context.l10n.button_add),
+              onPressed: () => dialogFunction.call(),
+            ),
+            ActionChip(
+              avatar: const Icon(Icons.delete),
+              label: const Text('Delete'),
+              onPressed: () => deleteFunction.call(),
+            ),
+            confirmWidget,
+            LoreCountChip(
+              currentIndex: currentIndex,
+            ),
+          ],
         ),
-        ActionChip(
-          avatar: const Icon(Icons.delete),
-          label: const Text('Delete'),
-          onPressed: () => deleteFunction.call(),
-        ),
-        confirmWidget,
-        LoreCountChip(
-          currentIndex: currentIndex,
-        ),
-      ],
+      ),
     );
   }
 }
