@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/selected_item_state.dart';
-import 'package:stelaris/feature/base/button/save_button.dart';
+import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/feature/item/general/item_group_card.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -63,28 +63,37 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                   tooltipMessage: context.l10n.tooltip_name,
                                   currentValue: vm.selected.name ?? emptyString,
                                   formatter: [
-                                    FilteringTextInputFormatter.allow(stringPattern)
+                                    FilteringTextInputFormatter.allow(
+                                        stringPattern)
                                   ],
                                   valueUpdate: (value) {
                                     if (value == vm.selected.name) return;
                                     final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(name: value);
-                                    context.dispatch(UpdateItemAction(newEntry));
+                                    final newEntry =
+                                        oldModel.copyWith(name: value);
+                                    context
+                                        .dispatch(UpdateItemAction(newEntry));
                                   },
                                   formValidator: (value) {
                                     final String input = value as String;
-                                    return checkIfEmptyAndReturnErrorString(input, context);
+                                    return checkIfEmptyAndReturnErrorString(
+                                        input, context);
                                   },
                                   maxLength: 30,
                                 ),
                                 TextInputCard<String>(
                                   display: context.l10n.card_description,
-                                  currentValue: vm.selected.description ?? emptyString,
+                                  currentValue:
+                                      vm.selected.description ?? emptyString,
                                   valueUpdate: (value) {
-                                    if (value == vm.selected.description) return;
+                                    if (value == vm.selected.description) {
+                                      return;
+                                    }
                                     final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(description: value);
-                                    context.dispatch(UpdateItemAction(newEntry));
+                                    final newEntry =
+                                        oldModel.copyWith(description: value);
+                                    context
+                                        .dispatch(UpdateItemAction(newEntry));
                                   },
                                   maxLength: 30,
                                 ),
@@ -95,67 +104,88 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                 TextInputCard<String>(
                                   display: context.l10n.card_material,
                                   hintText: defaultMaterial,
-                                  currentValue: vm.selected.material ?? emptyString,
+                                  currentValue:
+                                      vm.selected.material ?? emptyString,
                                   valueUpdate: (value) {
                                     if (value == vm.selected.material) return;
                                     final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(material: value);
-                                    context.dispatch(UpdateItemAction(newEntry));
+                                    final newEntry =
+                                        oldModel.copyWith(material: value);
+                                    context
+                                        .dispatch(UpdateItemAction(newEntry));
                                   },
                                   formValidator: (value) {
                                     if (value == null) return null;
                                     if (!minecraftPattern.hasMatch(value)) {
-                                      return context.l10n.input_validation_material;
+                                      return context
+                                          .l10n.input_validation_material;
                                     }
                                     return null;
                                   },
                                   maxLength: 30,
                                 ),
                                 TextInputCard<String>(
-                                  tooltipMessage: context.l10n.tooltip_displayname,
+                                  tooltipMessage:
+                                      context.l10n.tooltip_displayname,
                                   display: context.l10n.card_display_name,
-                                  currentValue: vm.selected.displayName ?? emptyString,
+                                  currentValue:
+                                      vm.selected.displayName ?? emptyString,
                                   valueUpdate: (value) {
-                                    if (value == vm.selected.displayName) return;
+                                    if (value == vm.selected.displayName)
+                                      return;
                                     final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(displayName: value);
-                                    context.dispatch(UpdateItemAction(newEntry));
+                                    final newEntry =
+                                        oldModel.copyWith(displayName: value);
+                                    context
+                                        .dispatch(UpdateItemAction(newEntry));
                                   },
                                   maxLength: 30,
                                 ),
                                 TextInputCard<int>(
-                                  tooltipMessage: context.l10n.tooltip_model_data,
+                                  tooltipMessage:
+                                      context.l10n.tooltip_model_data,
                                   display: context.l10n.card_model_data,
                                   currentValue:
-                                      vm.selected.customModelId?.toString() ?? zeroString,
+                                      vm.selected.customModelId?.toString() ??
+                                          zeroString,
                                   valueUpdate: (value) {
                                     final newValue = int.tryParse(value) ?? 0;
-                                    if (newValue == vm.selected.customModelId) return;
+                                    if (newValue == vm.selected.customModelId)
+                                      return;
                                     final oldModel = vm.selected;
-                                    final newEntry =
-                                        oldModel.copyWith(customModelId: newValue);
-                                    context.dispatch(UpdateItemAction(newEntry));
+                                    final newEntry = oldModel.copyWith(
+                                        customModelId: newValue);
+                                    context
+                                        .dispatch(UpdateItemAction(newEntry));
                                   },
                                   maxLength: 30,
                                   inputType: numberInput,
                                   formatter: [
-                                    FilteringTextInputFormatter.allow(numberPattern)
+                                    FilteringTextInputFormatter.allow(
+                                        numberPattern)
                                   ],
                                   isNumber: true,
                                 ),
                                 TextInputCard<int>(
                                   display: context.l10n.card_amount,
-                                  currentValue: vm.selected.amount?.toString() ?? zeroString,
+                                  currentValue:
+                                      vm.selected.amount?.toString() ??
+                                          zeroString,
                                   valueUpdate: (value) {
-                                    final updatedValue = int.tryParse(value) ?? 0;
-                                    if (updatedValue == vm.selected.amount) return;
+                                    final updatedValue =
+                                        int.tryParse(value) ?? 0;
+                                    if (updatedValue == vm.selected.amount)
+                                      return;
                                     final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(amount: updatedValue);
-                                    context.dispatch(UpdateItemAction(newEntry));
+                                    final newEntry =
+                                        oldModel.copyWith(amount: updatedValue);
+                                    context
+                                        .dispatch(UpdateItemAction(newEntry));
                                   },
                                   inputType: numberInput,
                                   formatter: [
-                                    FilteringTextInputFormatter.allow(numberPattern)
+                                    FilteringTextInputFormatter.allow(
+                                        numberPattern)
                                   ],
                                   formValidator: (value) {
                                     if (value == null) return null;
@@ -181,16 +211,13 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                   ),
                 ),
               ),
-              Positioned(
-                right: 15,
-                bottom: 0,
-                child: SaveButton(
-                  callback: () {
-                    if (!_formKey.currentState!.validate()) return;
+              PositionedSaveButton.standard(
+                callback: () {
+                  if (_formKey.currentState?.validate() ?? false) {
                     context.dispatch(ItemDatabaseUpdate());
-                  },
-                ),
-              ),
+                  }
+                },
+              )
             ],
           ),
         );
