@@ -19,7 +19,9 @@ class EnchantmentViewFactory
 }
 
 class EnchantmentView extends Vm with EnchantmentReducer {
-  EnchantmentView({required this.selected}) : super(equals: [selected]);
+  EnchantmentView({
+    required this.selected,
+  }) : super(equals: [selected]);
 
   final ItemModel selected;
 
@@ -33,4 +35,11 @@ class EnchantmentView extends Vm with EnchantmentReducer {
 
   String getEnchantmentLevel(String enchantment) => enchantments[enchantment].toString();
 
+  Enchantment? findEnchantmentByValue(String value) {
+    try {
+      return Enchantment.values.firstWhere((e) => e.minecraftValue == value);
+    } catch (e) {
+      return null;
+    }
+  }
 }
