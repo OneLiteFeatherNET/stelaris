@@ -3,6 +3,13 @@ import 'package:stelaris/api/model/data_model.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
+/// A widget that displays tab-based content for a data model.
+///
+/// [E] represents the type of data model being displayed.
+/// [selectedItem] is the currently selected model item.
+/// [tabPages] defines how pages are mapped to tabs.
+/// [page] is a function that creates content for each tab.
+/// [tabs] is the list of tabs to display.
 class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
   const ModelContentTabPage({
     required this.selectedItem,
@@ -20,7 +27,6 @@ class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      animationDuration: const Duration(milliseconds: 300),
       length: tabs.length,
       initialIndex: 0,
       child: Expanded(
@@ -34,7 +40,6 @@ class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
               ),
             ),
             body: TabBarView(
-              physics: const AlwaysScrollableScrollPhysics(),
               children: tabs.map(
                 (element) {
                   final Text text = element.child as Text;
