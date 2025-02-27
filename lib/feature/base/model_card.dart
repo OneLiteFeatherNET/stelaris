@@ -27,15 +27,11 @@ class ModelCard<E extends DataModel> extends StatefulWidget {
   State<ModelCard> createState() => _ModelCardState<E>();
 }
 
-class _ModelCardState<E extends DataModel> extends State<ModelCard<E>>
-    with AutomaticKeepAliveClientMixin {
+class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
   bool _isHovered = false;
   Timer? _debounceTimer;
   late final Widget _title;
   late final DeleteModelButton<E> _deleteButton;
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -68,16 +64,15 @@ class _ModelCardState<E extends DataModel> extends State<ModelCard<E>>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
+    // Combine Card and MouseRegion to reduce nesting
     return Card(
       shape: widget.selected ? widget.selectedCardShape : null,
       color: _isHovered
           ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1)
           : null,
       child: MouseRegion(
-        onEnter: (event) => _debouncedSetState(true),
-        onExit: (event) => _debouncedSetState(false),
+        onEnter: (_) => _debouncedSetState(true),
+        onExit: (_) => _debouncedSetState(false),
         child: ListTile(
           title: _title,
           trailing: _deleteButton,

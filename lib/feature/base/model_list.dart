@@ -10,6 +10,10 @@ import 'package:stelaris/util/typedefs.dart';
 /// [E] represents the type of data model being displayed.
 /// The list supports selection, deletion, and adding new items.
 class ModelList<E extends DataModel> extends StatefulWidget {
+  static const double _listWidth = 250.0;
+  static const double _bottomPadding = 25.0;
+  static const double _borderRadius = 12.0;
+
   final MapToDataModelItem<E> mapToDataModelItem;
   final E? selectedItem;
   final VoidCallback openFunction;
@@ -36,20 +40,15 @@ class ModelList<E extends DataModel> extends StatefulWidget {
 }
 
 class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
-
   final ScrollController _scrollController = ScrollController();
-  
-  // Cache the card shape to avoid rebuilds
-  // Don't make this variable final otherwise it will cause issues during theme change
   late RoundedRectangleBorder _defaultCardShape;
   
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _defaultCardShape = RoundedRectangleBorder(
       side: BorderSide(color: Theme.of(context).colorScheme.secondary),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(ModelList._borderRadius),
     );
   }
 
@@ -61,44 +60,48 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Expanded(
-          child: SizedBox(
-            width: 250,
-            child: ListView.builder(
-              controller: _scrollController,
-              itemCount: widget.models.length,
-              clipBehavior: Clip.none, // Reduce overdraw
-              itemBuilder: (context, index) {
-                final E rawModel = widget.models[index];
-                return RepaintBoundary(
-                  child: GestureDetector(
-                    onTap: () => widget.callFunction.call(rawModel),
-                    child: ModelCard<E>(
-                      selected: widget.compareFunction.call(rawModel),
-                      selectedCardShape: _defaultCardShape,
-                      mapToDeleteDialog: widget.mapToDeleteDialog,
-                      mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
-                      mapToDataModelItem: widget.mapToDataModelItem,
-                      rawModel: rawModel,
-                    ),
-                  ),
-                );
-              },
-            ),
+    // Combine Column and SizedBox to reduce nesting
+    return SizedBox(
+      width: ModelList._listWidth,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: _buildListView(),
           ),
-        ),
-        verticalSpacing10,
-        SizedBox(
-          width: 250,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 25),
+          verticalSpacing10,
+          Padding(
+            padding: const EdgeInsets.only(bottom: ModelList._bottomPadding),
             child: AddButton(openFunction: widget.openFunction),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildListView() {
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: widget.models.length,
+      clipBehavior: Clip.none,
+      itemBuilder: _buildListItem,
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, int index) {
+    final E model = widget.models[index];
+    return RepaintBoundary(
+      child: GestureDetector(
+        onTap: () => widget.callFunction(model),
+        child: ModelCard<E>(
+          selected: widget.compareFunction(model),
+          selectedCardShape: _defaultCardShape,
+          mapToDeleteDialog: widget.mapToDeleteDialog,
+          mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
+          mapToDataModelItem: widget.mapToDataModelItem,
+          rawModel: model,
+        ),
+      ),
     );
   }
 }
