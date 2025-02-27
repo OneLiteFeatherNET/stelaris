@@ -10,9 +10,9 @@ import 'package:stelaris/util/typedefs.dart';
 /// [E] represents the type of data model being displayed.
 /// The list supports selection, deletion, and adding new items.
 class ModelList<E extends DataModel> extends StatefulWidget {
-  static const double _listWidth = 250.0;
-  static const double _bottomPadding = 25.0;
-  static const double _borderRadius = 12.0;
+  static const double _listWidth = 250;
+  static const double _bottomPadding = 25;
+  static const double _borderRadius = 12;
 
   final MapToDataModelItem<E> mapToDataModelItem;
   final E? selectedItem;
