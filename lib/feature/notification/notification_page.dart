@@ -28,7 +28,7 @@ class NotificationPage extends StatelessWidget {
           selectedItem: vm.selected,
           mapToDeleteDialog: (value) => createDeleteText(value.modelName, context),
           mapToDeleteSuccessfully: (value) {
-            StoreProvider.dispatch(context, RemoveNotificationAction(value));
+            context.dispatch(RemoveNotificationAction(value));
             return true;
           },
           callFunction: (model) => context.dispatch(SelectedNotificationAction(model)),
