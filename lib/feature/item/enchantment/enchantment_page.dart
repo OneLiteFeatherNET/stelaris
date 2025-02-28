@@ -97,19 +97,14 @@ class _EnchantmentPageState extends State<EnchantmentPage> {
   }
 
   void _resetFunction(BuildContext context, EnchantmentView vm) {
-    // Reset enchantments
-    StoreProvider.dispatch(
-      context,
-      ResetEnchantmentsAction(
-        onComplete: () {
-          // Always disable delete mode after reset
-          setState(() {
-            _isDeleteMode = false;
-          });
-        },
-      ),
-    );
+    context.dispatch(ResetEnchantmentsAction(onComplete: _resetDeleteMode));
   }
+
+  void _resetDeleteMode() {
+    setState(() {
+        _isDeleteMode = false;
+    });
+}
 
   void _saveFunction(BuildContext context, EnchantmentView vm) {
     // Exit delete mode if active
@@ -118,10 +113,9 @@ class _EnchantmentPageState extends State<EnchantmentPage> {
         _isDeleteMode = false;
       });
     }
-    
+
     // Save enchantments
-    StoreProvider.dispatch(
-      context,
+    context.dispatch(
       SaveEnchantmentsAction(
         onSuccess: () {
           // Show success message
