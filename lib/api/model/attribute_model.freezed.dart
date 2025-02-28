@@ -12,8 +12,7 @@ part of 'attribute_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 AttributeModel _$AttributeModelFromJson(Map<String, dynamic> json) {
   return _AttributeModel.fromJson(json);
@@ -41,17 +40,15 @@ mixin _$AttributeModel {
 /// @nodoc
 abstract class $AttributeModelCopyWith<$Res> {
   factory $AttributeModelCopyWith(
-    AttributeModel value,
-    $Res Function(AttributeModel) then,
-  ) = _$AttributeModelCopyWithImpl<$Res, AttributeModel>;
+          AttributeModel value, $Res Function(AttributeModel) then) =
+      _$AttributeModelCopyWithImpl<$Res, AttributeModel>;
   @useResult
-  $Res call({
-    String? id,
-    String? modelName,
-    String? name,
-    @freezed double? defaultValue,
-    double? maximumValue,
-  });
+  $Res call(
+      {String? id,
+      String? modelName,
+      String? name,
+      @freezed double? defaultValue,
+      double? maximumValue});
 }
 
 /// @nodoc
@@ -75,55 +72,45 @@ class _$AttributeModelCopyWithImpl<$Res, $Val extends AttributeModel>
     Object? defaultValue = freezed,
     Object? maximumValue = freezed,
   }) {
-    return _then(
-      _value.copyWith(
-            id:
-                freezed == id
-                    ? _value.id
-                    : id // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            modelName:
-                freezed == modelName
-                    ? _value.modelName
-                    : modelName // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            name:
-                freezed == name
-                    ? _value.name
-                    : name // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            defaultValue:
-                freezed == defaultValue
-                    ? _value.defaultValue
-                    : defaultValue // ignore: cast_nullable_to_non_nullable
-                        as double?,
-            maximumValue:
-                freezed == maximumValue
-                    ? _value.maximumValue
-                    : maximumValue // ignore: cast_nullable_to_non_nullable
-                        as double?,
-          )
-          as $Val,
-    );
+    return _then(_value.copyWith(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      modelName: freezed == modelName
+          ? _value.modelName
+          : modelName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      defaultValue: freezed == defaultValue
+          ? _value.defaultValue
+          : defaultValue // ignore: cast_nullable_to_non_nullable
+              as double?,
+      maximumValue: freezed == maximumValue
+          ? _value.maximumValue
+          : maximumValue // ignore: cast_nullable_to_non_nullable
+              as double?,
+    ) as $Val);
   }
 }
 
 /// @nodoc
 abstract class _$$AttributeModelImplCopyWith<$Res>
     implements $AttributeModelCopyWith<$Res> {
-  factory _$$AttributeModelImplCopyWith(
-    _$AttributeModelImpl value,
-    $Res Function(_$AttributeModelImpl) then,
-  ) = __$$AttributeModelImplCopyWithImpl<$Res>;
+  factory _$$AttributeModelImplCopyWith(_$AttributeModelImpl value,
+          $Res Function(_$AttributeModelImpl) then) =
+      __$$AttributeModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({
-    String? id,
-    String? modelName,
-    String? name,
-    @freezed double? defaultValue,
-    double? maximumValue,
-  });
+  $Res call(
+      {String? id,
+      String? modelName,
+      String? name,
+      @freezed double? defaultValue,
+      double? maximumValue});
 }
 
 /// @nodoc
@@ -131,9 +118,8 @@ class __$$AttributeModelImplCopyWithImpl<$Res>
     extends _$AttributeModelCopyWithImpl<$Res, _$AttributeModelImpl>
     implements _$$AttributeModelImplCopyWith<$Res> {
   __$$AttributeModelImplCopyWithImpl(
-    _$AttributeModelImpl _value,
-    $Res Function(_$AttributeModelImpl) _then,
-  ) : super(_value, _then);
+      _$AttributeModelImpl _value, $Res Function(_$AttributeModelImpl) _then)
+      : super(_value, _then);
 
   /// Create a copy of AttributeModel
   /// with the given fields replaced by the non-null parameter values.
@@ -146,48 +132,40 @@ class __$$AttributeModelImplCopyWithImpl<$Res>
     Object? defaultValue = freezed,
     Object? maximumValue = freezed,
   }) {
-    return _then(
-      _$AttributeModelImpl(
-        id:
-            freezed == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        modelName:
-            freezed == modelName
-                ? _value.modelName
-                : modelName // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        name:
-            freezed == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        defaultValue:
-            freezed == defaultValue
-                ? _value.defaultValue
-                : defaultValue // ignore: cast_nullable_to_non_nullable
-                    as double?,
-        maximumValue:
-            freezed == maximumValue
-                ? _value.maximumValue
-                : maximumValue // ignore: cast_nullable_to_non_nullable
-                    as double?,
-      ),
-    );
+    return _then(_$AttributeModelImpl(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      modelName: freezed == modelName
+          ? _value.modelName
+          : modelName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      defaultValue: freezed == defaultValue
+          ? _value.defaultValue
+          : defaultValue // ignore: cast_nullable_to_non_nullable
+              as double?,
+      maximumValue: freezed == maximumValue
+          ? _value.maximumValue
+          : maximumValue // ignore: cast_nullable_to_non_nullable
+              as double?,
+    ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$AttributeModelImpl implements _AttributeModel {
-  const _$AttributeModelImpl({
-    this.id,
-    this.modelName,
-    this.name,
-    @freezed this.defaultValue = 0.0,
-    this.maximumValue = 0.0,
-  });
+  const _$AttributeModelImpl(
+      {this.id,
+      this.modelName,
+      this.name,
+      @freezed this.defaultValue = 0.0,
+      this.maximumValue = 0.0});
 
   factory _$AttributeModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$AttributeModelImplFromJson(json);
@@ -238,24 +216,23 @@ class _$AttributeModelImpl implements _AttributeModel {
   @pragma('vm:prefer-inline')
   _$$AttributeModelImplCopyWith<_$AttributeModelImpl> get copyWith =>
       __$$AttributeModelImplCopyWithImpl<_$AttributeModelImpl>(
-        this,
-        _$identity,
-      );
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$AttributeModelImplToJson(this);
+    return _$$AttributeModelImplToJson(
+      this,
+    );
   }
 }
 
 abstract class _AttributeModel implements AttributeModel {
-  const factory _AttributeModel({
-    final String? id,
-    final String? modelName,
-    final String? name,
-    @freezed final double? defaultValue,
-    final double? maximumValue,
-  }) = _$AttributeModelImpl;
+  const factory _AttributeModel(
+      {final String? id,
+      final String? modelName,
+      final String? name,
+      @freezed final double? defaultValue,
+      final double? maximumValue}) = _$AttributeModelImpl;
 
   factory _AttributeModel.fromJson(Map<String, dynamic> json) =
       _$AttributeModelImpl.fromJson;

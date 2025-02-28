@@ -1,139 +1,69 @@
-import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/state/actions/app_actions.dart';
-import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/settings/row/settings_base_row.dart';
-import 'package:stelaris/feature/settings/settings_divider.dart';
+import 'package:stelaris/feature/settings/rows/accessibility_settings_row.dart';
+import 'package:stelaris/feature/settings/rows/misc_settings_row.dart';
+import 'package:stelaris/feature/settings/rows/theme_settings_row.dart';
 import 'package:stelaris/feature/settings/settings_end_tile.dart';
 import 'package:stelaris/feature/settings/settings_header_tile.dart';
-import 'package:stelaris/feature/settings/settings_text_tile.dart';
-import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
-import 'package:stelaris/util/url_launcher.dart';
-
-const settingsDivider = SettingsDivider();
 
 class SettingsDialog extends StatelessWidget {
   const SettingsDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, bool>(
-      converter: (store) => store.state.nightMode,
-      builder: (context, vm) {
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOutCubic,
+      tween: Tween<double>(begin: 0, end: 1),
+      builder: (context, value, child) {
         return Dialog(
           clipBehavior: Clip.hardEdge,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              minWidth: 1000,
-              minHeight: 600,
-              maxHeight: 600,
-              maxWidth: 1000,
-            ),
-            child: Column(
-              children: [
-                const SettingsHeaderTile(),
-                verticalSpacing25,
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      heightTen,
-                      SettingsBaseRow(
-                        title: context.l10n.settings_display_title,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SettingsTextTile(
-                              headerLine: context.l10n.settings_display_header,
-                              bodyLine: context.l10n.settings_display_body,
+          child: Opacity(
+            opacity: value,
+            child: Transform.scale(
+              scale: 0.5 + (value * 0.5),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final double width = constraints.maxWidth < 1000 ? constraints.maxWidth : 1000;
+                  final double height = constraints.maxHeight < 600 ? constraints.maxHeight : 600;
+                  return ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minWidth: width * 0.8,
+                      minHeight: height * 0.8,
+                      maxHeight: height,
+                      maxWidth: width,
+                    ),
+                    child: const Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SettingsHeaderTile(),
+                        verticalSpacing25,
+                        Flexible(
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 24),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  heightTen,
+                                  ThemeSettingsRow(),
+                                  verticalSpacing25,
+                                  AccessibilitySettingsRow(),
+                                  verticalSpacing25,
+                                  MiscSettingsRow(),
+                                  verticalSpacing25,
+                                  SettingsEndTile(),
+                                  heightTen
+                                ],
+                              ),
                             ),
-                            const Spacer(),
-                            settingsDivider,
-                            Switch(
-                              value: vm,
-                              onChanged: (value) {
-                                StoreProvider.dispatch(
-                                  context,
-                                  ChangeThemeStateAction(),
-                                );
-                              },
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                      verticalSpacing25,
-                      SettingsBaseRow(
-                        title: context.l10n.settings_accessibility_title,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SettingsTextTile(
-                              headerLine:
-                                  context.l10n.settings_accessibility_body,
-                              bodyLine:
-                                  context.l10n.settings_accessibility_header,
-                            ),
-                            OutlinedButton(
-                              onPressed: () =>
-                                  UriLauncher().launchUrlInTab(conceptURL),
-                              child: Text(
-                                  context.l10n.settings_accessibility_button),
-                            ),
-                          ],
-                        ),
-                      ),
-                      verticalSpacing25,
-                      SettingsBaseRow(
-                        title: context.l10n.settings_misc_title,
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SettingsTextTile(
-                                  headerLine:
-                                      context.l10n.settings_misc_bug_header,
-                                  bodyLine: context.l10n.settings_misc_bug_body,
-                                ),
-                                OutlinedButton(
-                                  onPressed: () =>
-                                      UriLauncher().launchUrlInTab(gitUrl),
-                                  child: Text(
-                                      context.l10n.settings_misc_bug_button),
-                                ),
-                              ],
-                            ),
-                            verticalSpacing25,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SettingsTextTile(
-                                  headerLine: context
-                                      .l10n.settings_misc_suggestion_header,
-                                  bodyLine: context
-                                      .l10n.settings_misc_suggestion_body,
-                                ),
-                                OutlinedButton(
-                                  onPressed: () =>
-                                      UriLauncher().launchUrlInTab(gitUrl),
-                                  child: Text(context
-                                      .l10n.settings_misc_suggestion_button),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: fiftyLength,
-                      ),
-                      const SettingsEndTile(),
-                    ],
-                  ),
-                ),
-              ],
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         );

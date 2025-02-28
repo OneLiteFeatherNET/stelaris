@@ -5,24 +5,24 @@ class SettingsEndTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        RichText(
-          text: TextSpan(
+    final textTheme = Theme.of(context).textTheme;
+    return SizedBox(
+      width: double.infinity,
+      child: Center(
+        child: Text.rich(
+          TextSpan(
             children: [
               TextSpan(
-                text: '@2024 Onelitefeather',
-                style: Theme.of(context).textTheme.bodyMedium,
+                text: '@2025 Onelitefeather',
+                style: textTheme.bodyMedium,
               ),
               TextSpan(
                 text: ' • ',
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: textTheme.bodyMedium,
               ),
               TextSpan(
                 text: 'Made with',
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: textTheme.bodyMedium,
               ),
               const TextSpan(
                 text: ' \u2764 ',
@@ -30,12 +30,13 @@ class SettingsEndTile extends StatelessWidget {
               ),
               TextSpan(
                 text: 'by the team',
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: textTheme.bodyMedium,
               ),
             ],
           ),
-        )
-      ],
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }
