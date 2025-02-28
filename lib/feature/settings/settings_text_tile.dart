@@ -13,6 +13,7 @@ class SettingsTextTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -20,12 +21,12 @@ class SettingsTextTile extends StatelessWidget {
         Text(
           headerLine,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: theme.textTheme.bodyMedium,
         ),
         heightTen,
         Text(
           bodyLine,
-          style: Theme.of(context).textTheme.bodySmall,
+          style: theme.textTheme.bodySmall,
         ),
       ],
     );

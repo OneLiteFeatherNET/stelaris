@@ -6,25 +6,24 @@ part of 'font_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$FontModelImpl _$$FontModelImplFromJson(
-  Map<String, dynamic> json,
-) => _$FontModelImpl(
-  id: json['id'] as String?,
-  modelName: json['modelName'] as String?,
-  name: json['name'] as String?,
-  description: json['description'] as String?,
-  type: $enumDecodeNullable(_$FontTypeEnumMap, json['type']) ?? FontType.bitmap,
-  chars:
-      (json['chars'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const [],
-  ascent: (json['ascent'] as num?)?.toInt() ?? 0,
-  height: (json['height'] as num?)?.toInt() ?? 0,
-  shift:
-      (json['shift'] as List<dynamic>?)
-          ?.map((e) => (e as num).toDouble())
-          .toList() ??
-      const [],
-);
+_$FontModelImpl _$$FontModelImplFromJson(Map<String, dynamic> json) =>
+    _$FontModelImpl(
+      id: json['id'] as String?,
+      modelName: json['modelName'] as String?,
+      name: json['name'] as String?,
+      description: json['description'] as String?,
+      type: $enumDecodeNullable(_$FontTypeEnumMap, json['type']) ??
+          FontType.bitmap,
+      chars:
+          (json['chars'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+              const [],
+      ascent: (json['ascent'] as num?)?.toInt() ?? 0,
+      height: (json['height'] as num?)?.toInt() ?? 0,
+      shift: (json['shift'] as List<dynamic>?)
+              ?.map((e) => (e as num).toDouble())
+              .toList() ??
+          const [],
+    );
 
 Map<String, dynamic> _$$FontModelImplToJson(_$FontModelImpl instance) =>
     <String, dynamic>{

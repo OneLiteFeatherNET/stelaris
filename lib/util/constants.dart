@@ -11,7 +11,6 @@ const loader = SizedBox(height: 25, width: 25, child: CircularProgressIndicator(
 const divider = Divider();
 
 Text appTitle = const Text('S T E L A R I S');
-Text emptyText = const Text(emptyString);
 
 /// Regs
 RegExp numberPattern = RegExp('[1-9]\\d*');
