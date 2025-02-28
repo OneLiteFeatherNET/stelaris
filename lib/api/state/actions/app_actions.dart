@@ -10,11 +10,3 @@ class UpdateNavigationAction extends ReduxAction<AppState> {
     return state.copyWith(openNavigation: !state.openNavigation);
   }
 }
-
-class ChangeThemeStateAction extends ReduxAction<AppState> {
-
-  @override
-  Future<AppState> reduce() async {
-    return state.copyWith(nightMode: !state.nightMode);
-  }
-}

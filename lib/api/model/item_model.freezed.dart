@@ -12,8 +12,7 @@ part of 'item_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 ItemModel _$ItemModelFromJson(Map<String, dynamic> json) {
   return _ItemModel.fromJson(json);
@@ -49,20 +48,19 @@ abstract class $ItemModelCopyWith<$Res> {
   factory $ItemModelCopyWith(ItemModel value, $Res Function(ItemModel) then) =
       _$ItemModelCopyWithImpl<$Res, ItemModel>;
   @useResult
-  $Res call({
-    String? id,
-    String? modelName,
-    String? name,
-    String? description,
-    String? displayName,
-    ItemGroup group,
-    String? material,
-    int? customModelId,
-    int? amount,
-    Map<String, int>? enchantments,
-    Set<String>? flags,
-    List<String>? lore,
-  });
+  $Res call(
+      {String? id,
+      String? modelName,
+      String? name,
+      String? description,
+      String? displayName,
+      ItemGroup group,
+      String? material,
+      int? customModelId,
+      int? amount,
+      Map<String, int>? enchantments,
+      Set<String>? flags,
+      List<String>? lore});
 }
 
 /// @nodoc
@@ -93,71 +91,56 @@ class _$ItemModelCopyWithImpl<$Res, $Val extends ItemModel>
     Object? flags = freezed,
     Object? lore = freezed,
   }) {
-    return _then(
-      _value.copyWith(
-            id:
-                freezed == id
-                    ? _value.id
-                    : id // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            modelName:
-                freezed == modelName
-                    ? _value.modelName
-                    : modelName // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            name:
-                freezed == name
-                    ? _value.name
-                    : name // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            description:
-                freezed == description
-                    ? _value.description
-                    : description // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            displayName:
-                freezed == displayName
-                    ? _value.displayName
-                    : displayName // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            group:
-                null == group
-                    ? _value.group
-                    : group // ignore: cast_nullable_to_non_nullable
-                        as ItemGroup,
-            material:
-                freezed == material
-                    ? _value.material
-                    : material // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            customModelId:
-                freezed == customModelId
-                    ? _value.customModelId
-                    : customModelId // ignore: cast_nullable_to_non_nullable
-                        as int?,
-            amount:
-                freezed == amount
-                    ? _value.amount
-                    : amount // ignore: cast_nullable_to_non_nullable
-                        as int?,
-            enchantments:
-                freezed == enchantments
-                    ? _value.enchantments
-                    : enchantments // ignore: cast_nullable_to_non_nullable
-                        as Map<String, int>?,
-            flags:
-                freezed == flags
-                    ? _value.flags
-                    : flags // ignore: cast_nullable_to_non_nullable
-                        as Set<String>?,
-            lore:
-                freezed == lore
-                    ? _value.lore
-                    : lore // ignore: cast_nullable_to_non_nullable
-                        as List<String>?,
-          )
-          as $Val,
-    );
+    return _then(_value.copyWith(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      modelName: freezed == modelName
+          ? _value.modelName
+          : modelName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      displayName: freezed == displayName
+          ? _value.displayName
+          : displayName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      group: null == group
+          ? _value.group
+          : group // ignore: cast_nullable_to_non_nullable
+              as ItemGroup,
+      material: freezed == material
+          ? _value.material
+          : material // ignore: cast_nullable_to_non_nullable
+              as String?,
+      customModelId: freezed == customModelId
+          ? _value.customModelId
+          : customModelId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      amount: freezed == amount
+          ? _value.amount
+          : amount // ignore: cast_nullable_to_non_nullable
+              as int?,
+      enchantments: freezed == enchantments
+          ? _value.enchantments
+          : enchantments // ignore: cast_nullable_to_non_nullable
+              as Map<String, int>?,
+      flags: freezed == flags
+          ? _value.flags
+          : flags // ignore: cast_nullable_to_non_nullable
+              as Set<String>?,
+      lore: freezed == lore
+          ? _value.lore
+          : lore // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+    ) as $Val);
   }
 }
 
@@ -165,25 +148,23 @@ class _$ItemModelCopyWithImpl<$Res, $Val extends ItemModel>
 abstract class _$$ItemModelImplCopyWith<$Res>
     implements $ItemModelCopyWith<$Res> {
   factory _$$ItemModelImplCopyWith(
-    _$ItemModelImpl value,
-    $Res Function(_$ItemModelImpl) then,
-  ) = __$$ItemModelImplCopyWithImpl<$Res>;
+          _$ItemModelImpl value, $Res Function(_$ItemModelImpl) then) =
+      __$$ItemModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({
-    String? id,
-    String? modelName,
-    String? name,
-    String? description,
-    String? displayName,
-    ItemGroup group,
-    String? material,
-    int? customModelId,
-    int? amount,
-    Map<String, int>? enchantments,
-    Set<String>? flags,
-    List<String>? lore,
-  });
+  $Res call(
+      {String? id,
+      String? modelName,
+      String? name,
+      String? description,
+      String? displayName,
+      ItemGroup group,
+      String? material,
+      int? customModelId,
+      int? amount,
+      Map<String, int>? enchantments,
+      Set<String>? flags,
+      List<String>? lore});
 }
 
 /// @nodoc
@@ -191,9 +172,8 @@ class __$$ItemModelImplCopyWithImpl<$Res>
     extends _$ItemModelCopyWithImpl<$Res, _$ItemModelImpl>
     implements _$$ItemModelImplCopyWith<$Res> {
   __$$ItemModelImplCopyWithImpl(
-    _$ItemModelImpl _value,
-    $Res Function(_$ItemModelImpl) _then,
-  ) : super(_value, _then);
+      _$ItemModelImpl _value, $Res Function(_$ItemModelImpl) _then)
+      : super(_value, _then);
 
   /// Create a copy of ItemModel
   /// with the given fields replaced by the non-null parameter values.
@@ -213,92 +193,78 @@ class __$$ItemModelImplCopyWithImpl<$Res>
     Object? flags = freezed,
     Object? lore = freezed,
   }) {
-    return _then(
-      _$ItemModelImpl(
-        id:
-            freezed == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        modelName:
-            freezed == modelName
-                ? _value.modelName
-                : modelName // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        name:
-            freezed == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        description:
-            freezed == description
-                ? _value.description
-                : description // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        displayName:
-            freezed == displayName
-                ? _value.displayName
-                : displayName // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        group:
-            null == group
-                ? _value.group
-                : group // ignore: cast_nullable_to_non_nullable
-                    as ItemGroup,
-        material:
-            freezed == material
-                ? _value.material
-                : material // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        customModelId:
-            freezed == customModelId
-                ? _value.customModelId
-                : customModelId // ignore: cast_nullable_to_non_nullable
-                    as int?,
-        amount:
-            freezed == amount
-                ? _value.amount
-                : amount // ignore: cast_nullable_to_non_nullable
-                    as int?,
-        enchantments:
-            freezed == enchantments
-                ? _value._enchantments
-                : enchantments // ignore: cast_nullable_to_non_nullable
-                    as Map<String, int>?,
-        flags:
-            freezed == flags
-                ? _value._flags
-                : flags // ignore: cast_nullable_to_non_nullable
-                    as Set<String>?,
-        lore:
-            freezed == lore
-                ? _value._lore
-                : lore // ignore: cast_nullable_to_non_nullable
-                    as List<String>?,
-      ),
-    );
+    return _then(_$ItemModelImpl(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      modelName: freezed == modelName
+          ? _value.modelName
+          : modelName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      displayName: freezed == displayName
+          ? _value.displayName
+          : displayName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      group: null == group
+          ? _value.group
+          : group // ignore: cast_nullable_to_non_nullable
+              as ItemGroup,
+      material: freezed == material
+          ? _value.material
+          : material // ignore: cast_nullable_to_non_nullable
+              as String?,
+      customModelId: freezed == customModelId
+          ? _value.customModelId
+          : customModelId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      amount: freezed == amount
+          ? _value.amount
+          : amount // ignore: cast_nullable_to_non_nullable
+              as int?,
+      enchantments: freezed == enchantments
+          ? _value._enchantments
+          : enchantments // ignore: cast_nullable_to_non_nullable
+              as Map<String, int>?,
+      flags: freezed == flags
+          ? _value._flags
+          : flags // ignore: cast_nullable_to_non_nullable
+              as Set<String>?,
+      lore: freezed == lore
+          ? _value._lore
+          : lore // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+    ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$ItemModelImpl implements _ItemModel {
-  const _$ItemModelImpl({
-    this.id,
-    this.modelName,
-    this.name,
-    this.description,
-    this.displayName,
-    this.group = ItemGroup.misc,
-    this.material,
-    this.customModelId,
-    this.amount = 1,
-    final Map<String, int>? enchantments,
-    final Set<String>? flags,
-    final List<String>? lore,
-  }) : _enchantments = enchantments,
-       _flags = flags,
-       _lore = lore;
+  const _$ItemModelImpl(
+      {this.id,
+      this.modelName,
+      this.name,
+      this.description,
+      this.displayName,
+      this.group = ItemGroup.misc,
+      this.material,
+      this.customModelId,
+      this.amount = 1,
+      final Map<String, int>? enchantments,
+      final Set<String>? flags,
+      final List<String>? lore})
+      : _enchantments = enchantments,
+        _flags = flags,
+        _lore = lore;
 
   factory _$ItemModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ItemModelImplFromJson(json);
@@ -377,10 +343,8 @@ class _$ItemModelImpl implements _ItemModel {
             (identical(other.customModelId, customModelId) ||
                 other.customModelId == customModelId) &&
             (identical(other.amount, amount) || other.amount == amount) &&
-            const DeepCollectionEquality().equals(
-              other._enchantments,
-              _enchantments,
-            ) &&
+            const DeepCollectionEquality()
+                .equals(other._enchantments, _enchantments) &&
             const DeepCollectionEquality().equals(other._flags, _flags) &&
             const DeepCollectionEquality().equals(other._lore, _lore));
   }
@@ -388,20 +352,19 @@ class _$ItemModelImpl implements _ItemModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    modelName,
-    name,
-    description,
-    displayName,
-    group,
-    material,
-    customModelId,
-    amount,
-    const DeepCollectionEquality().hash(_enchantments),
-    const DeepCollectionEquality().hash(_flags),
-    const DeepCollectionEquality().hash(_lore),
-  );
+      runtimeType,
+      id,
+      modelName,
+      name,
+      description,
+      displayName,
+      group,
+      material,
+      customModelId,
+      amount,
+      const DeepCollectionEquality().hash(_enchantments),
+      const DeepCollectionEquality().hash(_flags),
+      const DeepCollectionEquality().hash(_lore));
 
   /// Create a copy of ItemModel
   /// with the given fields replaced by the non-null parameter values.
@@ -413,25 +376,26 @@ class _$ItemModelImpl implements _ItemModel {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$ItemModelImplToJson(this);
+    return _$$ItemModelImplToJson(
+      this,
+    );
   }
 }
 
 abstract class _ItemModel implements ItemModel {
-  const factory _ItemModel({
-    final String? id,
-    final String? modelName,
-    final String? name,
-    final String? description,
-    final String? displayName,
-    final ItemGroup group,
-    final String? material,
-    final int? customModelId,
-    final int? amount,
-    final Map<String, int>? enchantments,
-    final Set<String>? flags,
-    final List<String>? lore,
-  }) = _$ItemModelImpl;
+  const factory _ItemModel(
+      {final String? id,
+      final String? modelName,
+      final String? name,
+      final String? description,
+      final String? displayName,
+      final ItemGroup group,
+      final String? material,
+      final int? customModelId,
+      final int? amount,
+      final Map<String, int>? enchantments,
+      final Set<String>? flags,
+      final List<String>? lore}) = _$ItemModelImpl;
 
   factory _ItemModel.fromJson(Map<String, dynamic> json) =
       _$ItemModelImpl.fromJson;

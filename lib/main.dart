@@ -8,6 +8,7 @@ import 'package:stelaris/feature/home/home.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initLocalStorage();
+  
   final persistor = AppPersistor();
   final initialState = await persistor.readState();
 
@@ -15,6 +16,6 @@ Future<void> main() async {
     persistor: persistor,
     initialState: initialState,
   );
+
   runApp(StoreProvider(store: store, child: const StelarisApp()));
 }
-

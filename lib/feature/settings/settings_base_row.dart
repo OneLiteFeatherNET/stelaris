@@ -11,27 +11,37 @@ class SettingsBaseRow extends StatelessWidget {
   const SettingsBaseRow({
     required this.title,
     required this.child,
+    this.semanticsLabel,
     super.key,
   });
 
   final String title;
   final Widget child;
+  final String? semanticsLabel;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
-          ),
+    final theme = Theme.of(context);
+    return Semantics(
+      label: semanticsLabel ?? title,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: theme.colorScheme.surface,
         ),
-        const Divider(thickness: 1),
-        heightTen,
-        child,
-      ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title),
+            const Divider(thickness: 1),
+            heightTen,
+            child,
+          ],
+        ),
+      ),
     );
   }
 }
