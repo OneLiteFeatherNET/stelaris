@@ -22,7 +22,7 @@ class AccessibilitySettingsRow extends StatelessWidget {
             ),
           ),
           OutlinedButton(
-            onPressed: () => UriLauncher().launchUrlInTab(conceptURL),
+            onPressed: () => UriLauncher.launchUrlInTab(conceptURL),
             child: Text(context.l10n.settings_accessibility_button),
           ),
         ],
