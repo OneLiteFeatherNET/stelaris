@@ -24,7 +24,7 @@ class MiscSettingsRow extends StatelessWidget {
                 ),
               ),
               OutlinedButton(
-                onPressed: () => UriLauncher().launchUrlInTab(gitUrl),
+                onPressed: () => UriLauncher.launchUrlInTab(gitUrl),
                 child: Text(context.l10n.settings_misc_bug_button),
               ),
             ],
@@ -40,7 +40,7 @@ class MiscSettingsRow extends StatelessWidget {
                 ),
               ),
               OutlinedButton(
-                onPressed: () => UriLauncher().launchUrlInTab(gitUrl),
+                onPressed: () => UriLauncher.launchUrlInTab(gitUrl),
                 child: Text(context.l10n.settings_misc_suggestion_button),
               ),
             ],
