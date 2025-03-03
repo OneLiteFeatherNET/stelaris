@@ -29,7 +29,7 @@ class NotificationAPI implements ClientAPI<NotificationModel> {
   }
 
   @override
-  Future<List<NotificationModel>> getAll() async {
+  Future<List<NotificationModel>> getAll([int page = 1, int items = 20]) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/notification/getAll');
