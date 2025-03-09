@@ -103,8 +103,9 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                         stringPattern)
                                   ],
                                   valueUpdate: (value) {
-                                    if (value == vm.selected.description)
+                                    if (value == vm.selected.description) {
                                       return;
+                                    }
                                     final oldModel = vm.selected;
                                     final newEntry =
                                         oldModel.copyWith(description: value);
@@ -122,8 +123,9 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   valueUpdate: (value) {
                                     final parsedValue =
                                         int.tryParse(value) ?? 0;
-                                    if (parsedValue == vm.selected.ascent)
+                                    if (parsedValue == vm.selected.ascent) {
                                       return;
+                                    }
                                     final oldModel = vm.selected;
                                     final newEntry = oldModel.copyWith(
                                         ascent: parsedValue);
@@ -146,8 +148,9 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   valueUpdate: (value) {
                                     final parsedValue =
                                         int.tryParse(value) ?? 0;
-                                    if (parsedValue == vm.selected.height)
+                                    if (parsedValue == vm.selected.height) {
                                       return;
+                                    }
                                     final oldModel = vm.selected;
                                     final newEntry = oldModel.copyWith(
                                         height: parsedValue);

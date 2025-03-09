@@ -131,8 +131,9 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                   currentValue:
                                       vm.selected.displayName ?? emptyString,
                                   valueUpdate: (value) {
-                                    if (value == vm.selected.displayName)
+                                    if (value == vm.selected.displayName) {
                                       return;
+                                    }
                                     final oldModel = vm.selected;
                                     final newEntry =
                                         oldModel.copyWith(displayName: value);
@@ -150,8 +151,9 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                           zeroString,
                                   valueUpdate: (value) {
                                     final newValue = int.tryParse(value) ?? 0;
-                                    if (newValue == vm.selected.customModelId)
+                                    if (newValue == vm.selected.customModelId) {
                                       return;
+                                    }
                                     final oldModel = vm.selected;
                                     final newEntry = oldModel.copyWith(
                                         customModelId: newValue);
@@ -174,8 +176,9 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                   valueUpdate: (value) {
                                     final updatedValue =
                                         int.tryParse(value) ?? 0;
-                                    if (updatedValue == vm.selected.amount)
+                                    if (updatedValue == vm.selected.amount) {
                                       return;
+                                    }
                                     final oldModel = vm.selected;
                                     final newEntry =
                                         oldModel.copyWith(amount: updatedValue);
