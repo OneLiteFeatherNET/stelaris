@@ -14,7 +14,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   go_router: ^14.8.1
-  freezed_annotation: ^2.4.4
+  freezed_annotation: ^3.0.0
   dio: ^5.8.0+1
   dio_cache_interceptor: ^3.5.1
   localstorage: ^5.0.0
