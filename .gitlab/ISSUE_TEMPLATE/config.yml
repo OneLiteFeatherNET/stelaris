@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/OneLiteFeatherNET/stelaris/discussions
+    about: If you have any questions or concerns (if you dont want to use Discord), please post them in our GitHub Discussions.
+  - name: OneLiteFeather Discord
+    url: https://discord.onelitefeather.net/
+    about: Please join our Discord server if you have any questions or concerns.
