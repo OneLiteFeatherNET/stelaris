@@ -29,7 +29,7 @@ class FontAPI implements ClientAPI<FontModel> {
   }
 
   @override
-  Future<List<FontModel>> getAll() async {
+  Future<List<FontModel>> getAll([int page = 1, int items = 20]) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/font/getAll');

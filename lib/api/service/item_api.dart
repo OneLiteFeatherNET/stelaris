@@ -32,7 +32,7 @@ class ItemApi implements ClientAPI<ItemModel> {
   }
 
   @override
-  Future<List<ItemModel>> getAll() async {
+  Future<List<ItemModel>> getAll([int page = 1, int items = 20]) async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(
