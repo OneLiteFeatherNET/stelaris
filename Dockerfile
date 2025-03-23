@@ -1,24 +1,23 @@
+# Stage 1: Build the Flutter web app
+FROM cirrusci/flutter:latest AS builder
 LABEL maintainer="OneLiteFeatherNET <contact@onelitefeather.net>"
-LABEL version="1.0.0"
-LABEL description="Dockerfile for Stelaris UI project"
-
-# Use the Dart SDK base image
-FROM dart:stable
-
-# Set working directory
+LABEL stage="builder"
 WORKDIR /app
-
-# Copy build artifacts
-COPY build/web /app
-
-# Install HTTP server package
-RUN dart pub add shelf
-
-# Copy the server code
-COPY bin/server.dart bin/server.dart
-
-# Expose port 8080
-EXPOSE 8080
-
-# Start the Dart server
-CMD ["dart", "bin/server.dart"]
+# Kopiere den Code in den Container
+COPY . .
+RUN flutter pub get
+RUN flutter pub run build_runner build --delete-conflicting-outputs
+# Baue die Web-Version (im Release-Modus für kleinere, optimierte Assets)
+RUN flutter build web --release
+# Stage 2: Serve the web app with NGINX
+FROM nginx:alpine
+LABEL maintainer="OneLiteFeatherNET <contact@onelitefeather.net>"
+LABEL stage="production"
+# Entferne die Standard-NGINX-Konfiguration, falls nötig, und kopiere deine eigene Konfiguration
+COPY nginx.conf /etc/nginx/nginx.conf
+# Kopiere die gebaute Anwendung in das Verzeichnis, das NGINX bereitstellt
+COPY --from=builder /app/build/web /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+LABEL version="1.0"
+LABEL description="Stelaris UI web application"
