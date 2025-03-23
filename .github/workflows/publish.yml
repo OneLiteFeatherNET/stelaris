@@ -72,11 +72,11 @@ jobs:
         with:
           username: ${{ secrets.HARBOR_USERNAME }}
           password: ${{ secrets.HARBOR_PASSWORD }}
-          registry: harbor.onelitefeather.dev
+          registry: ${{ secrets.HARBOR_REGISTRY }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: harbor.onelitefeather.dev/stelaris/stelaris-ui:${{ github.ref_name }},harbor.onelitefeather.dev/stelaris/stelaris-ui:latest
+          tags: ${{ secrets.HARBOR_REGISTRY }}/stelaris/stelaris-ui:${{ github.ref_name }},${{ secrets.HARBOR_REGISTRY }}/stelaris/stelaris-ui:latest
