@@ -10,56 +10,8 @@ on:
 
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Enable Flutter web
-        run: flutter config --enable-web
-
-      - name: Install Chromium
-        run: sudo apt-get install -y chromium-browser
-
-      - name: Run Flutter doctor
-        run: flutter doctor
-
-  build:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build web
-        run: flutter build web --release --base-href /
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: web-build
-          path: build/web
-
   docker:
     runs-on: ubuntu-latest
-    needs: build
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
