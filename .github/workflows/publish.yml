@@ -20,6 +20,8 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: 'latest'
+          architecture: x64
+
 
       - name: Install dependencies
         run: flutter pub get
