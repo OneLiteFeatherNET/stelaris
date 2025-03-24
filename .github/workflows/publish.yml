@@ -1,12 +1,14 @@
 name: CI
 
 on:
+  schedule:
+    - cron: "0 10 * * *"
   push:
     branches:
-      - feature/migration
+      - "**"
     tags:
-      - '*'
-  workflow_dispatch:
+      - "v*.*.*"
+  pull_request:
 
 jobs:
   flutter:
@@ -60,7 +62,7 @@ jobs:
             type=semver,pattern={{major}}
             type=sha
       - name: Log in to OneLiteFeather Harbor
-#        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.HARBOR_USERNAME }}
