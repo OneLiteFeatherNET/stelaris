@@ -43,8 +43,6 @@ jobs:
         with:
           name: build
           path: build
-      - name: Show files
-        run: ls -l build
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5

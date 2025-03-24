@@ -2,7 +2,7 @@ FROM nginx:alpine
 LABEL maintainer="OneLiteFeatherNET <contact@onelitefeather.net>"
 LABEL stage="production"
 WORKDIR /usr/share/nginx/html
-COPY build/web ./
+COPY web ./
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 LABEL version="1.0"
