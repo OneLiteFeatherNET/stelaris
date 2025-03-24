@@ -5,6 +5,9 @@ LABEL stage="builder"
 WORKDIR /app
 # Kopiere den Code in den Container
 COPY . .
+RUN flutter config --enable-web
+RUN flutter doctor
+RUN flutter --version
 RUN flutter pub get
 RUN flutter pub run build_runner build --delete-conflicting-outputs
 # Baue die Web-Version (im Release-Modus für kleinere, optimierte Assets)
