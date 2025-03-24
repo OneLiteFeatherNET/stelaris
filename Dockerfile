@@ -13,8 +13,6 @@ RUN flutter build web --release
 FROM nginx:alpine
 LABEL maintainer="OneLiteFeatherNET <contact@onelitefeather.net>"
 LABEL stage="production"
-# Entferne die Standard-NGINX-Konfiguration, falls nötig, und kopiere deine eigene Konfiguration
-COPY nginx.conf /etc/nginx/nginx.conf
 # Kopiere die gebaute Anwendung in das Verzeichnis, das NGINX bereitstellt
 COPY --from=builder /app/build/web /usr/share/nginx/html
 EXPOSE 80
