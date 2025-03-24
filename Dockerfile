@@ -1,3 +1,9 @@
-FROM docker.io/nginx:1.27.3-alpine
+FROM nginx:1.27.4-alpine
+LABEL maintainer="OneLiteFeatherNET <contact@onelitefeather.net>"
+LABEL stage="production"
 WORKDIR /usr/share/nginx/html
-COPY build/web ./
+COPY web ./
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+LABEL version="1.0"
+LABEL description="Stelaris UI web application"
