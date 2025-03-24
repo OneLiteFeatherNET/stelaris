@@ -12,7 +12,7 @@ jobs:
   flutter:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         name: Checkout
       - name: Set Up Flutter
         uses: subosito/flutter-action@v2
@@ -26,9 +26,9 @@ jobs:
       - name: Build Web
         run: flutter build web --release
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: build-web
+          name: build
           path: build/web
 
   docker:
@@ -36,8 +36,10 @@ jobs:
     needs:
       - flutter
     steps:
+      - uses: actions/checkout@v4
+        name: Checkout
       - name: Download build artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: build-web
           path: build/web
