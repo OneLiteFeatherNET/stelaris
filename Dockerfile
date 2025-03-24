@@ -5,6 +5,7 @@ LABEL stage="builder"
 WORKDIR /app
 # Kopiere den Code in den Container
 COPY . .
+RUN flutter channel stable
 RUN flutter config --enable-web
 RUN flutter doctor
 RUN flutter --version
