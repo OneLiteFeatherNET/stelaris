@@ -49,7 +49,6 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            stelaris/stelaris-ui
             ${{ secrets.HARBOR_REGISTRY }}/stelaris/stelaris-ui
           # generate Docker tags based on the following events/attributes
           tags: |
