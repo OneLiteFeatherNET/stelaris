@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build
-          path: build/web
+          path: build
 
   docker:
     runs-on: ubuntu-latest
@@ -41,8 +41,8 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-web
-          path: build/web
+          name: build
+          path: build
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
