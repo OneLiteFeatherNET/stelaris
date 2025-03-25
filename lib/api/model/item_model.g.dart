@@ -6,8 +6,7 @@ part of 'item_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ItemModelImpl _$$ItemModelImplFromJson(Map<String, dynamic> json) =>
-    _$ItemModelImpl(
+_ItemModel _$ItemModelFromJson(Map<String, dynamic> json) => _ItemModel(
       id: json['id'] as String?,
       modelName: json['modelName'] as String?,
       name: json['name'] as String?,
@@ -25,7 +24,7 @@ _$ItemModelImpl _$$ItemModelImplFromJson(Map<String, dynamic> json) =>
       lore: (json['lore'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$$ItemModelImplToJson(_$ItemModelImpl instance) =>
+Map<String, dynamic> _$ItemModelToJson(_ItemModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'modelName': instance.modelName,

@@ -6,8 +6,8 @@ part 'attribute_model.g.dart';
 part 'attribute_model.freezed.dart';
 
 @freezed
-class AttributeModel with _$AttributeModel, DataModel {
-
+abstract class AttributeModel with _$AttributeModel, DataModel {
+  const AttributeModel._(); // Add this private constructor
   const factory AttributeModel({
     String? id,
     String? modelName,

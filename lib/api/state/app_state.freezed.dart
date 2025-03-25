@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,48 +10,86 @@ part of 'app_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-AppState _$AppStateFromJson(Map<String, dynamic> json) {
-  return _AppState.fromJson(json);
-}
 
 /// @nodoc
 mixin _$AppState {
-  List<ItemModel> get items => throw _privateConstructorUsedError;
-  List<NotificationModel> get notifications =>
-      throw _privateConstructorUsedError;
-  List<FontModel> get fonts => throw _privateConstructorUsedError;
-  List<AttributeModel> get attributes => throw _privateConstructorUsedError;
-  bool get openNavigation => throw _privateConstructorUsedError;
-  ThemeSettings get themeSettings => throw _privateConstructorUsedError;
+  List<ItemModel> get items;
+  List<NotificationModel> get notifications;
+  List<FontModel> get fonts;
+  List<AttributeModel> get attributes;
+  bool get openNavigation;
+  ThemeSettings get themeSettings;
   @JsonKey(includeToJson: false)
-  ItemModel? get selectedItem => throw _privateConstructorUsedError;
+  ItemModel? get selectedItem;
   @JsonKey(includeToJson: false)
-  NotificationModel? get selectedNotification =>
-      throw _privateConstructorUsedError;
+  NotificationModel? get selectedNotification;
   @JsonKey(includeToJson: false)
-  FontModel? get selectedFont => throw _privateConstructorUsedError;
+  FontModel? get selectedFont;
   @JsonKey(includeToJson: false)
-  AttributeModel? get selectedAttribute => throw _privateConstructorUsedError;
-
-  /// Serializes this AppState to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  AttributeModel? get selectedAttribute;
 
   /// Create a copy of AppState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $AppStateCopyWith<AppState> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$AppStateCopyWithImpl<AppState>(this as AppState, _$identity);
+
+  /// Serializes this AppState to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is AppState &&
+            const DeepCollectionEquality().equals(other.items, items) &&
+            const DeepCollectionEquality()
+                .equals(other.notifications, notifications) &&
+            const DeepCollectionEquality().equals(other.fonts, fonts) &&
+            const DeepCollectionEquality()
+                .equals(other.attributes, attributes) &&
+            (identical(other.openNavigation, openNavigation) ||
+                other.openNavigation == openNavigation) &&
+            (identical(other.themeSettings, themeSettings) ||
+                other.themeSettings == themeSettings) &&
+            (identical(other.selectedItem, selectedItem) ||
+                other.selectedItem == selectedItem) &&
+            (identical(other.selectedNotification, selectedNotification) ||
+                other.selectedNotification == selectedNotification) &&
+            (identical(other.selectedFont, selectedFont) ||
+                other.selectedFont == selectedFont) &&
+            (identical(other.selectedAttribute, selectedAttribute) ||
+                other.selectedAttribute == selectedAttribute));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(items),
+      const DeepCollectionEquality().hash(notifications),
+      const DeepCollectionEquality().hash(fonts),
+      const DeepCollectionEquality().hash(attributes),
+      openNavigation,
+      themeSettings,
+      selectedItem,
+      selectedNotification,
+      selectedFont,
+      selectedAttribute);
+
+  @override
+  String toString() {
+    return 'AppState(items: $items, notifications: $notifications, fonts: $fonts, attributes: $attributes, openNavigation: $openNavigation, themeSettings: $themeSettings, selectedItem: $selectedItem, selectedNotification: $selectedNotification, selectedFont: $selectedFont, selectedAttribute: $selectedAttribute)';
+  }
 }
 
 /// @nodoc
-abstract class $AppStateCopyWith<$Res> {
-  factory $AppStateCopyWith(AppState value, $Res Function(AppState) then) =
-      _$AppStateCopyWithImpl<$Res, AppState>;
+abstract mixin class $AppStateCopyWith<$Res> {
+  factory $AppStateCopyWith(AppState value, $Res Function(AppState) _then) =
+      _$AppStateCopyWithImpl;
   @useResult
   $Res call(
       {List<ItemModel> items,
@@ -71,14 +110,11 @@ abstract class $AppStateCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
-    implements $AppStateCopyWith<$Res> {
-  _$AppStateCopyWithImpl(this._value, this._then);
+class _$AppStateCopyWithImpl<$Res> implements $AppStateCopyWith<$Res> {
+  _$AppStateCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final AppState _self;
+  final $Res Function(AppState) _then;
 
   /// Create a copy of AppState
   /// with the given fields replaced by the non-null parameter values.
@@ -96,48 +132,48 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
     Object? selectedFont = freezed,
     Object? selectedAttribute = freezed,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       items: null == items
-          ? _value.items
+          ? _self.items
           : items // ignore: cast_nullable_to_non_nullable
               as List<ItemModel>,
       notifications: null == notifications
-          ? _value.notifications
+          ? _self.notifications
           : notifications // ignore: cast_nullable_to_non_nullable
               as List<NotificationModel>,
       fonts: null == fonts
-          ? _value.fonts
+          ? _self.fonts
           : fonts // ignore: cast_nullable_to_non_nullable
               as List<FontModel>,
       attributes: null == attributes
-          ? _value.attributes
+          ? _self.attributes
           : attributes // ignore: cast_nullable_to_non_nullable
               as List<AttributeModel>,
       openNavigation: null == openNavigation
-          ? _value.openNavigation
+          ? _self.openNavigation
           : openNavigation // ignore: cast_nullable_to_non_nullable
               as bool,
       themeSettings: null == themeSettings
-          ? _value.themeSettings
+          ? _self.themeSettings
           : themeSettings // ignore: cast_nullable_to_non_nullable
               as ThemeSettings,
       selectedItem: freezed == selectedItem
-          ? _value.selectedItem
+          ? _self.selectedItem
           : selectedItem // ignore: cast_nullable_to_non_nullable
               as ItemModel?,
       selectedNotification: freezed == selectedNotification
-          ? _value.selectedNotification
+          ? _self.selectedNotification
           : selectedNotification // ignore: cast_nullable_to_non_nullable
               as NotificationModel?,
       selectedFont: freezed == selectedFont
-          ? _value.selectedFont
+          ? _self.selectedFont
           : selectedFont // ignore: cast_nullable_to_non_nullable
               as FontModel?,
       selectedAttribute: freezed == selectedAttribute
-          ? _value.selectedAttribute
+          ? _self.selectedAttribute
           : selectedAttribute // ignore: cast_nullable_to_non_nullable
               as AttributeModel?,
-    ) as $Val);
+    ));
   }
 
   /// Create a copy of AppState
@@ -145,12 +181,12 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
   @override
   @pragma('vm:prefer-inline')
   $ItemModelCopyWith<$Res>? get selectedItem {
-    if (_value.selectedItem == null) {
+    if (_self.selectedItem == null) {
       return null;
     }
 
-    return $ItemModelCopyWith<$Res>(_value.selectedItem!, (value) {
-      return _then(_value.copyWith(selectedItem: value) as $Val);
+    return $ItemModelCopyWith<$Res>(_self.selectedItem!, (value) {
+      return _then(_self.copyWith(selectedItem: value));
     });
   }
 
@@ -159,13 +195,13 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
   @override
   @pragma('vm:prefer-inline')
   $NotificationModelCopyWith<$Res>? get selectedNotification {
-    if (_value.selectedNotification == null) {
+    if (_self.selectedNotification == null) {
       return null;
     }
 
-    return $NotificationModelCopyWith<$Res>(_value.selectedNotification!,
+    return $NotificationModelCopyWith<$Res>(_self.selectedNotification!,
         (value) {
-      return _then(_value.copyWith(selectedNotification: value) as $Val);
+      return _then(_self.copyWith(selectedNotification: value));
     });
   }
 
@@ -174,12 +210,12 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
   @override
   @pragma('vm:prefer-inline')
   $FontModelCopyWith<$Res>? get selectedFont {
-    if (_value.selectedFont == null) {
+    if (_self.selectedFont == null) {
       return null;
     }
 
-    return $FontModelCopyWith<$Res>(_value.selectedFont!, (value) {
-      return _then(_value.copyWith(selectedFont: value) as $Val);
+    return $FontModelCopyWith<$Res>(_self.selectedFont!, (value) {
+      return _then(_self.copyWith(selectedFont: value));
     });
   }
 
@@ -188,119 +224,20 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
   @override
   @pragma('vm:prefer-inline')
   $AttributeModelCopyWith<$Res>? get selectedAttribute {
-    if (_value.selectedAttribute == null) {
+    if (_self.selectedAttribute == null) {
       return null;
     }
 
-    return $AttributeModelCopyWith<$Res>(_value.selectedAttribute!, (value) {
-      return _then(_value.copyWith(selectedAttribute: value) as $Val);
+    return $AttributeModelCopyWith<$Res>(_self.selectedAttribute!, (value) {
+      return _then(_self.copyWith(selectedAttribute: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$AppStateImplCopyWith<$Res>
-    implements $AppStateCopyWith<$Res> {
-  factory _$$AppStateImplCopyWith(
-          _$AppStateImpl value, $Res Function(_$AppStateImpl) then) =
-      __$$AppStateImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {List<ItemModel> items,
-      List<NotificationModel> notifications,
-      List<FontModel> fonts,
-      List<AttributeModel> attributes,
-      bool openNavigation,
-      ThemeSettings themeSettings,
-      @JsonKey(includeToJson: false) ItemModel? selectedItem,
-      @JsonKey(includeToJson: false) NotificationModel? selectedNotification,
-      @JsonKey(includeToJson: false) FontModel? selectedFont,
-      @JsonKey(includeToJson: false) AttributeModel? selectedAttribute});
-
-  @override
-  $ItemModelCopyWith<$Res>? get selectedItem;
-  @override
-  $NotificationModelCopyWith<$Res>? get selectedNotification;
-  @override
-  $FontModelCopyWith<$Res>? get selectedFont;
-  @override
-  $AttributeModelCopyWith<$Res>? get selectedAttribute;
-}
-
-/// @nodoc
-class __$$AppStateImplCopyWithImpl<$Res>
-    extends _$AppStateCopyWithImpl<$Res, _$AppStateImpl>
-    implements _$$AppStateImplCopyWith<$Res> {
-  __$$AppStateImplCopyWithImpl(
-      _$AppStateImpl _value, $Res Function(_$AppStateImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of AppState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? items = null,
-    Object? notifications = null,
-    Object? fonts = null,
-    Object? attributes = null,
-    Object? openNavigation = null,
-    Object? themeSettings = null,
-    Object? selectedItem = freezed,
-    Object? selectedNotification = freezed,
-    Object? selectedFont = freezed,
-    Object? selectedAttribute = freezed,
-  }) {
-    return _then(_$AppStateImpl(
-      items: null == items
-          ? _value._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<ItemModel>,
-      notifications: null == notifications
-          ? _value._notifications
-          : notifications // ignore: cast_nullable_to_non_nullable
-              as List<NotificationModel>,
-      fonts: null == fonts
-          ? _value._fonts
-          : fonts // ignore: cast_nullable_to_non_nullable
-              as List<FontModel>,
-      attributes: null == attributes
-          ? _value._attributes
-          : attributes // ignore: cast_nullable_to_non_nullable
-              as List<AttributeModel>,
-      openNavigation: null == openNavigation
-          ? _value.openNavigation
-          : openNavigation // ignore: cast_nullable_to_non_nullable
-              as bool,
-      themeSettings: null == themeSettings
-          ? _value.themeSettings
-          : themeSettings // ignore: cast_nullable_to_non_nullable
-              as ThemeSettings,
-      selectedItem: freezed == selectedItem
-          ? _value.selectedItem
-          : selectedItem // ignore: cast_nullable_to_non_nullable
-              as ItemModel?,
-      selectedNotification: freezed == selectedNotification
-          ? _value.selectedNotification
-          : selectedNotification // ignore: cast_nullable_to_non_nullable
-              as NotificationModel?,
-      selectedFont: freezed == selectedFont
-          ? _value.selectedFont
-          : selectedFont // ignore: cast_nullable_to_non_nullable
-              as FontModel?,
-      selectedAttribute: freezed == selectedAttribute
-          ? _value.selectedAttribute
-          : selectedAttribute // ignore: cast_nullable_to_non_nullable
-              as AttributeModel?,
-    ));
-  }
-}
-
-/// @nodoc
 @JsonSerializable()
-class _$AppStateImpl implements _AppState {
-  const _$AppStateImpl(
+class _AppState implements AppState {
+  const _AppState(
       {final List<ItemModel> items = const [],
       final List<NotificationModel> notifications = const [],
       final List<FontModel> fonts = const [],
@@ -320,9 +257,8 @@ class _$AppStateImpl implements _AppState {
         _notifications = notifications,
         _fonts = fonts,
         _attributes = attributes;
-
-  factory _$AppStateImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AppStateImplFromJson(json);
+  factory _AppState.fromJson(Map<String, dynamic> json) =>
+      _$AppStateFromJson(json);
 
   final List<ItemModel> _items;
   @override
@@ -379,16 +315,26 @@ class _$AppStateImpl implements _AppState {
   @JsonKey(includeToJson: false)
   final AttributeModel? selectedAttribute;
 
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'AppState(items: $items, notifications: $notifications, fonts: $fonts, attributes: $attributes, openNavigation: $openNavigation, themeSettings: $themeSettings, selectedItem: $selectedItem, selectedNotification: $selectedNotification, selectedFont: $selectedFont, selectedAttribute: $selectedAttribute)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$AppStateCopyWith<_AppState> get copyWith =>
+      __$AppStateCopyWithImpl<_AppState>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$AppStateToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AppStateImpl &&
+            other is _AppState &&
             const DeepCollectionEquality().equals(other._items, _items) &&
             const DeepCollectionEquality()
                 .equals(other._notifications, _notifications) &&
@@ -424,69 +370,164 @@ class _$AppStateImpl implements _AppState {
       selectedFont,
       selectedAttribute);
 
-  /// Create a copy of AppState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$AppStateImplCopyWith<_$AppStateImpl> get copyWith =>
-      __$$AppStateImplCopyWithImpl<_$AppStateImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$AppStateImplToJson(
-      this,
-    );
+  String toString() {
+    return 'AppState(items: $items, notifications: $notifications, fonts: $fonts, attributes: $attributes, openNavigation: $openNavigation, themeSettings: $themeSettings, selectedItem: $selectedItem, selectedNotification: $selectedNotification, selectedFont: $selectedFont, selectedAttribute: $selectedAttribute)';
   }
 }
 
-abstract class _AppState implements AppState {
-  const factory _AppState(
-      {final List<ItemModel> items,
-      final List<NotificationModel> notifications,
-      final List<FontModel> fonts,
-      final List<AttributeModel> attributes,
-      final bool openNavigation,
-      final ThemeSettings themeSettings,
-      @JsonKey(includeToJson: false) final ItemModel? selectedItem,
-      @JsonKey(includeToJson: false)
-      final NotificationModel? selectedNotification,
-      @JsonKey(includeToJson: false) final FontModel? selectedFont,
-      @JsonKey(includeToJson: false)
-      final AttributeModel? selectedAttribute}) = _$AppStateImpl;
+/// @nodoc
+abstract mixin class _$AppStateCopyWith<$Res>
+    implements $AppStateCopyWith<$Res> {
+  factory _$AppStateCopyWith(_AppState value, $Res Function(_AppState) _then) =
+      __$AppStateCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {List<ItemModel> items,
+      List<NotificationModel> notifications,
+      List<FontModel> fonts,
+      List<AttributeModel> attributes,
+      bool openNavigation,
+      ThemeSettings themeSettings,
+      @JsonKey(includeToJson: false) ItemModel? selectedItem,
+      @JsonKey(includeToJson: false) NotificationModel? selectedNotification,
+      @JsonKey(includeToJson: false) FontModel? selectedFont,
+      @JsonKey(includeToJson: false) AttributeModel? selectedAttribute});
 
-  factory _AppState.fromJson(Map<String, dynamic> json) =
-      _$AppStateImpl.fromJson;
+  @override
+  $ItemModelCopyWith<$Res>? get selectedItem;
+  @override
+  $NotificationModelCopyWith<$Res>? get selectedNotification;
+  @override
+  $FontModelCopyWith<$Res>? get selectedFont;
+  @override
+  $AttributeModelCopyWith<$Res>? get selectedAttribute;
+}
 
-  @override
-  List<ItemModel> get items;
-  @override
-  List<NotificationModel> get notifications;
-  @override
-  List<FontModel> get fonts;
-  @override
-  List<AttributeModel> get attributes;
-  @override
-  bool get openNavigation;
-  @override
-  ThemeSettings get themeSettings;
-  @override
-  @JsonKey(includeToJson: false)
-  ItemModel? get selectedItem;
-  @override
-  @JsonKey(includeToJson: false)
-  NotificationModel? get selectedNotification;
-  @override
-  @JsonKey(includeToJson: false)
-  FontModel? get selectedFont;
-  @override
-  @JsonKey(includeToJson: false)
-  AttributeModel? get selectedAttribute;
+/// @nodoc
+class __$AppStateCopyWithImpl<$Res> implements _$AppStateCopyWith<$Res> {
+  __$AppStateCopyWithImpl(this._self, this._then);
+
+  final _AppState _self;
+  final $Res Function(_AppState) _then;
 
   /// Create a copy of AppState
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AppStateImplCopyWith<_$AppStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? items = null,
+    Object? notifications = null,
+    Object? fonts = null,
+    Object? attributes = null,
+    Object? openNavigation = null,
+    Object? themeSettings = null,
+    Object? selectedItem = freezed,
+    Object? selectedNotification = freezed,
+    Object? selectedFont = freezed,
+    Object? selectedAttribute = freezed,
+  }) {
+    return _then(_AppState(
+      items: null == items
+          ? _self._items
+          : items // ignore: cast_nullable_to_non_nullable
+              as List<ItemModel>,
+      notifications: null == notifications
+          ? _self._notifications
+          : notifications // ignore: cast_nullable_to_non_nullable
+              as List<NotificationModel>,
+      fonts: null == fonts
+          ? _self._fonts
+          : fonts // ignore: cast_nullable_to_non_nullable
+              as List<FontModel>,
+      attributes: null == attributes
+          ? _self._attributes
+          : attributes // ignore: cast_nullable_to_non_nullable
+              as List<AttributeModel>,
+      openNavigation: null == openNavigation
+          ? _self.openNavigation
+          : openNavigation // ignore: cast_nullable_to_non_nullable
+              as bool,
+      themeSettings: null == themeSettings
+          ? _self.themeSettings
+          : themeSettings // ignore: cast_nullable_to_non_nullable
+              as ThemeSettings,
+      selectedItem: freezed == selectedItem
+          ? _self.selectedItem
+          : selectedItem // ignore: cast_nullable_to_non_nullable
+              as ItemModel?,
+      selectedNotification: freezed == selectedNotification
+          ? _self.selectedNotification
+          : selectedNotification // ignore: cast_nullable_to_non_nullable
+              as NotificationModel?,
+      selectedFont: freezed == selectedFont
+          ? _self.selectedFont
+          : selectedFont // ignore: cast_nullable_to_non_nullable
+              as FontModel?,
+      selectedAttribute: freezed == selectedAttribute
+          ? _self.selectedAttribute
+          : selectedAttribute // ignore: cast_nullable_to_non_nullable
+              as AttributeModel?,
+    ));
+  }
+
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ItemModelCopyWith<$Res>? get selectedItem {
+    if (_self.selectedItem == null) {
+      return null;
+    }
+
+    return $ItemModelCopyWith<$Res>(_self.selectedItem!, (value) {
+      return _then(_self.copyWith(selectedItem: value));
+    });
+  }
+
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $NotificationModelCopyWith<$Res>? get selectedNotification {
+    if (_self.selectedNotification == null) {
+      return null;
+    }
+
+    return $NotificationModelCopyWith<$Res>(_self.selectedNotification!,
+        (value) {
+      return _then(_self.copyWith(selectedNotification: value));
+    });
+  }
+
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $FontModelCopyWith<$Res>? get selectedFont {
+    if (_self.selectedFont == null) {
+      return null;
+    }
+
+    return $FontModelCopyWith<$Res>(_self.selectedFont!, (value) {
+      return _then(_self.copyWith(selectedFont: value));
+    });
+  }
+
+  /// Create a copy of AppState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AttributeModelCopyWith<$Res>? get selectedAttribute {
+    if (_self.selectedAttribute == null) {
+      return null;
+    }
+
+    return $AttributeModelCopyWith<$Res>(_self.selectedAttribute!, (value) {
+      return _then(_self.copyWith(selectedAttribute: value));
+    });
+  }
 }
+
+// dart format on
