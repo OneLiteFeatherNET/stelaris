@@ -5,7 +5,9 @@ part 'build_information.freezed.dart';
 part 'build_information.g.dart';
 
 @freezed
-class BuildInformation with _$BuildInformation {
+abstract class BuildInformation with _$BuildInformation {
+  const BuildInformation._(); // Add this private constructor
+
   const factory BuildInformation({Map<String, String>? data}) =
       _BuildInformation;
 

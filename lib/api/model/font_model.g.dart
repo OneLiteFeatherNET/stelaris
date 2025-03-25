@@ -6,8 +6,7 @@ part of 'font_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$FontModelImpl _$$FontModelImplFromJson(Map<String, dynamic> json) =>
-    _$FontModelImpl(
+_FontModel _$FontModelFromJson(Map<String, dynamic> json) => _FontModel(
       id: json['id'] as String?,
       modelName: json['modelName'] as String?,
       name: json['name'] as String?,
@@ -25,7 +24,7 @@ _$FontModelImpl _$$FontModelImplFromJson(Map<String, dynamic> json) =>
           const [],
     );
 
-Map<String, dynamic> _$$FontModelImplToJson(_$FontModelImpl instance) =>
+Map<String, dynamic> _$FontModelToJson(_FontModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'modelName': instance.modelName,

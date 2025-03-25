@@ -6,8 +6,7 @@ part of 'app_state.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AppStateImpl _$$AppStateImplFromJson(Map<String, dynamic> json) =>
-    _$AppStateImpl(
+_AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
       items: (json['items'] as List<dynamic>?)
               ?.map((e) => ItemModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -51,8 +50,7 @@ _$AppStateImpl _$$AppStateImplFromJson(Map<String, dynamic> json) =>
               json['selectedAttribute'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$AppStateImplToJson(_$AppStateImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
       'items': instance.items,
       'notifications': instance.notifications,
       'fonts': instance.fonts,

@@ -6,7 +6,8 @@ part 'item_model.g.dart';
 part 'item_model.freezed.dart';
 
 @freezed
-class ItemModel with _$ItemModel, DataModel {
+abstract class ItemModel with _$ItemModel, DataModel {
+  const ItemModel._(); // Add this private constructor
   const factory ItemModel({
     String? id,
     String? modelName,
