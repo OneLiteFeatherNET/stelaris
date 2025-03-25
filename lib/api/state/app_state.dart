@@ -10,7 +10,7 @@ part 'app_state.g.dart';
 part 'app_state.freezed.dart';
 
 @freezed
-class AppState with _$AppState {
+abstract class AppState with _$AppState {
   const factory AppState({
     @Default([]) List<ItemModel> items,
     @Default([]) List<NotificationModel> notifications,

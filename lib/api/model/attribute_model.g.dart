@@ -6,8 +6,8 @@ part of 'attribute_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AttributeModelImpl _$$AttributeModelImplFromJson(Map<String, dynamic> json) =>
-    _$AttributeModelImpl(
+_AttributeModel _$AttributeModelFromJson(Map<String, dynamic> json) =>
+    _AttributeModel(
       id: json['id'] as String?,
       modelName: json['modelName'] as String?,
       name: json['name'] as String?,
@@ -15,8 +15,7 @@ _$AttributeModelImpl _$$AttributeModelImplFromJson(Map<String, dynamic> json) =>
       maximumValue: (json['maximumValue'] as num?)?.toDouble() ?? 0.0,
     );
 
-Map<String, dynamic> _$$AttributeModelImplToJson(
-        _$AttributeModelImpl instance) =>
+Map<String, dynamic> _$AttributeModelToJson(_AttributeModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'modelName': instance.modelName,

@@ -7,7 +7,9 @@ part 'notification_model.g.dart';
 part 'notification_model.freezed.dart';
 
 @freezed
-class NotificationModel with _$NotificationModel, DataModel {
+abstract class NotificationModel with _$NotificationModel, DataModel {
+  const NotificationModel._(); // Add this private constructor
+
   const factory NotificationModel({
     String? id,
     String? modelName,
