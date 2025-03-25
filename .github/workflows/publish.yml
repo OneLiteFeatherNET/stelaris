@@ -63,7 +63,7 @@ jobs:
             type=sha
       - name: Log in to OneLiteFeather Harbor
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.HARBOR_USERNAME }}
           password: ${{ secrets.HARBOR_PASSWORD }}
