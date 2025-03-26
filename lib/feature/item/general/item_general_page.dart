@@ -22,7 +22,7 @@ class ItemGeneralPage extends StatefulWidget {
 
 class _ItemGeneralPageState extends State<ItemGeneralPage> {
   final _formKey = GlobalKey<FormState>();
-  final _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void dispose() {
