@@ -14,7 +14,10 @@ class SelectedItemFactory<T extends Widget>
 }
 
 class SelectedItemView extends Vm {
-  SelectedItemView({required this.selected}) : super(equals: [selected]) {
+  SelectedItemView({required this.selected}) 
+      // Include both the ID and the selected object itself
+      // The ID helps detect model switches, while the object reference helps detect property updates
+      : super(equals: [selected, selected.id]) {
     loreLines = List.of(selected.lore ?? [], growable: true);
   }
 
