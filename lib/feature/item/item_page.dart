@@ -23,20 +23,21 @@ class ItemPage extends StatelessWidget {
     return StoreConnector<AppState, ItemViewModel>(
       vm: () => ItemVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitItemAction()),
-      onDispose: (store) => store.dispatch(RemoveSelectItemAction(), notify: false),
+      onDispose: (store) =>
+          store.dispatch(RemoveSelectItemAction(), notify: false),
       builder: (context, vm) {
         return BaseModelViewTabs<ItemModel>(
           mapToDataModelItem: (value) =>
               ModelText(displayName: value.modelName),
           openFunction: () => _openCreationDialog(context),
           selectedItem: vm.selected,
-          mapToDeleteDialog: (value) => createDeleteText(value.modelName, context),
+          mapToDeleteDialog: (value) =>
+              createDeleteText(value.modelName, context),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(RemoveItemAction(value));
             return true;
           },
-          callFunction: (model) =>
-              context.dispatch(SelectedItemAction(model)),
+          callFunction: (model) => context.dispatch(SelectedItemAction(model)),
           page: (page, model) => _mapPageToWidget(page, model),
           models: vm.itemModels,
           tabPages: (pages) => pages,
@@ -97,7 +98,10 @@ class ItemPage extends StatelessWidget {
     if (listenable == null) return nil;
     switch (value) {
       case 'General':
-        return const ItemGeneralPage();
+        // Add a key based on the selected item's ID to force a rebuild when the selected item changes
+        return ItemGeneralPage(
+          key: ValueKey('item_${listenable.id}'),
+        );
       case 'Meta':
         return const EnchantmentPage();
       case 'Lore':
