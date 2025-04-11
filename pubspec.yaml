@@ -16,7 +16,7 @@ dependencies:
   go_router: ^14.8.1
   freezed_annotation: ^3.0.0
   dio: ^5.8.0+1
-  dio_cache_interceptor: ^3.5.1
+  dio_cache_interceptor: ^4.0.0
   localstorage: ^6.0.0
   async_redux: ^25.0.0
   nil: ^1.1.1
