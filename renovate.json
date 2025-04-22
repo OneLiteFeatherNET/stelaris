@@ -15,15 +15,6 @@
       "automerge": true
     },
     {
-      "matchUpdateTypes": [
-        "minor"
-      ],
-      "automerge": false,
-      "schedule": [
-        "before 6:00am every friday"
-      ]
-    },
-    {
       "description": "Dependencies whose updates shouldn't be done automatically",
       "matchPackageNames": [
         "intl"
