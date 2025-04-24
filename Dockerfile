@@ -1,4 +1,4 @@
-FROM nginx:1.27.5-alpine
+FROM nginx:1.28.0-alpine
 LABEL maintainer="OneLiteFeatherNET <contact@onelitefeather.net>"
 LABEL stage="production"
 WORKDIR /usr/share/nginx/html
