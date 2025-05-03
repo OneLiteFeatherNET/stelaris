@@ -85,6 +85,11 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                   display: context.l10n.card_description,
                                   currentValue:
                                       vm.selected.description ?? emptyString,
+                                  formatter: [
+                                    FilteringTextInputFormatter.allow(
+                                        stringWithSpacePattern
+                                    ),
+                                  ],
                                   valueUpdate: (value) {
                                     if (value == vm.selected.description) {
                                       return;
