@@ -2,9 +2,9 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
+import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/routes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StelarisApp extends StatelessWidget {
   const StelarisApp({super.key});
