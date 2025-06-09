@@ -14,6 +14,4 @@ _BuildInformation _$BuildInformationFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$BuildInformationToJson(_BuildInformation instance) =>
-    <String, dynamic>{
-      'data': instance.data,
-    };
+    <String, dynamic>{'data': instance.data};

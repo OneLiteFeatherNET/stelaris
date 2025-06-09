@@ -3,7 +3,7 @@ import 'package:stelaris/api/model/data_model.dart';
 import 'package:stelaris/api/util/minecraft/enchantment.dart';
 
 /// Defines all typedef function for the card which displays data from a model
-typedef ValueUpdate<E> = void Function(E? value);
+typedef ValueUpdate<E> = void Function(E value);
 typedef DoubleValueUpdate<E, K> = void Function(E? value, K? key);
 typedef DefaultValue<E,T> = E Function(T value);
 

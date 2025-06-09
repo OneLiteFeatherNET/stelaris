@@ -12,7 +12,8 @@ _Notification _$NotificationFromJson(Map<String, dynamic> json) =>
       modelName: json['modelName'] as String?,
       name: json['name'] as String?,
       material: json['material'] as String?,
-      frameType: $enumDecodeNullable(_$FrameTypeEnumMap, json['frameType']) ??
+      frameType:
+          $enumDecodeNullable(_$FrameTypeEnumMap, json['frameType']) ??
           FrameType.task,
       title: json['title'] as String?,
       description: json['description'] as String?,

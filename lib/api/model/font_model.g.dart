@@ -7,38 +7,30 @@ part of 'font_model.dart';
 // **************************************************************************
 
 _FontModel _$FontModelFromJson(Map<String, dynamic> json) => _FontModel(
-      id: json['id'] as String?,
-      modelName: json['modelName'] as String?,
-      name: json['name'] as String?,
-      description: json['description'] as String?,
-      type: $enumDecodeNullable(_$FontTypeEnumMap, json['type']) ??
-          FontType.bitmap,
-      chars:
-          (json['chars'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-              const [],
-      ascent: (json['ascent'] as num?)?.toInt() ?? 0,
-      height: (json['height'] as num?)?.toInt() ?? 0,
-      shift: (json['shift'] as List<dynamic>?)
-              ?.map((e) => (e as num).toDouble())
-              .toList() ??
-          const [],
-    );
+  uiName: json['uiName'] as String,
+  id: json['id'] as String?,
+  variableName: json['variableName'] as String?,
+  provider: json['provider'] as String?,
+  texturePath: json['texturePath'] as String?,
+  comment: json['comment'] as String?,
+  mapper: json['mapper'] as String? ?? 'font',
+  ascent: (json['ascent'] as num?)?.toInt() ?? 0,
+  height: (json['height'] as num?)?.toInt() ?? 0,
+  chars:
+      (json['chars'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+);
 
 Map<String, dynamic> _$FontModelToJson(_FontModel instance) =>
     <String, dynamic>{
+      'uiName': instance.uiName,
       'id': instance.id,
-      'modelName': instance.modelName,
-      'name': instance.name,
-      'description': instance.description,
-      'type': _$FontTypeEnumMap[instance.type]!,
-      'chars': instance.chars,
+      'variableName': instance.variableName,
+      'provider': instance.provider,
+      'texturePath': instance.texturePath,
+      'comment': instance.comment,
+      'mapper': instance.mapper,
       'ascent': instance.ascent,
       'height': instance.height,
-      'shift': instance.shift,
+      'chars': instance.chars,
     };
-
-const _$FontTypeEnumMap = {
-  FontType.bitmap: 'bitmap',
-  FontType.legacyUnicode: 'legacyUnicode',
-  FontType.ttf: 'ttf',
-};
