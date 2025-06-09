@@ -18,5 +18,5 @@ class SelectedFontView extends Vm {
 
   final FontModel selected;
 
-  String get name => selected.name ?? unknownEntry;
+  String get name => selected.uiName;
 }

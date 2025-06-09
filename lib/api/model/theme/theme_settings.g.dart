@@ -9,10 +9,12 @@ part of 'theme_settings.dart';
 ThemeSettings _$ThemeSettingsFromJson(Map<String, dynamic> json) =>
     ThemeSettings(
       isDarkMode: json['isDarkMode'] as bool,
-      primaryColor:
-          ThemeSettings._colorFromJson((json['primaryColor'] as num).toInt()),
-      accentColor:
-          ThemeSettings._colorFromJson((json['accentColor'] as num).toInt()),
+      primaryColor: ThemeSettings._colorFromJson(
+        (json['primaryColor'] as num).toInt(),
+      ),
+      accentColor: ThemeSettings._colorFromJson(
+        (json['accentColor'] as num).toInt(),
+      ),
       fontScale: (json['fontScale'] as num).toDouble(),
       useSystemTheme: json['useSystemTheme'] as bool,
     );
