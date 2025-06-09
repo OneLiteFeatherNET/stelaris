@@ -114,7 +114,6 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   },
                                 ),
                                 TextInputCard<int>(
-                                  isNumber: true,
                                   tooltipMessage: context.l10n.tooltip_ascent,
                                   display: context.l10n.card_ascent,
                                   currentValue:
@@ -139,7 +138,6 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   ],
                                 ),
                                 TextInputCard<int>(
-                                  isNumber: true,
                                   tooltipMessage: context.l10n.tooltip_height,
                                   display: context.l10n.card_height,
                                   currentValue:

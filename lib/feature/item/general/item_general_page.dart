@@ -171,7 +171,6 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                     FilteringTextInputFormatter.allow(
                                         numberPattern)
                                   ],
-                                  isNumber: true,
                                 ),
                                 TextInputCard<int>(
                                   display: context.l10n.card_amount,
@@ -208,7 +207,6 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                     return null;
                                   },
                                   maxLength: 30,
-                                  isNumber: true,
                                 ),
                               ],
                             ),

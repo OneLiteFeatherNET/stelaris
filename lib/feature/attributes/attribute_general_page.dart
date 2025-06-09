@@ -61,6 +61,9 @@ class AttributeGeneralPage extends StatelessWidget {
                       display: 'Default value',
                       currentValue:
                           vm.selected.defaultValue?.toString() ?? zeroString,
+                      formatter: [
+                        FilteringTextInputFormatter.allow(numberPattern),
+                      ],
                       valueUpdate: (value) {
                         final parsedValue = double.tryParse(value) ?? 0;
                         if (parsedValue == vm.selected.defaultValue) return;
@@ -86,6 +89,9 @@ class AttributeGeneralPage extends StatelessWidget {
                         context.dispatch(UpdateAttributeAction(newEntry));
                       },
                       maxLength: 100,
+                      formatter: [
+                        FilteringTextInputFormatter.allow(numberPattern),
+                      ],
                     ),
                   ],
                 ),
