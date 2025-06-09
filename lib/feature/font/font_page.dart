@@ -26,11 +26,11 @@ class FontPage extends StatelessWidget {
       builder: (context, vm) {
         return BaseModelViewTabs<FontModel>(
           mapToDataModelItem: (value) =>
-              ModelText(displayName: value.modelName),
+              ModelText(displayName: value.uiName),
           openFunction: () => _openDialog(context),
           selectedItem: vm.selected,
           mapToDeleteDialog: (value) =>
-              createDeleteText(value.modelName, context),
+              createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(RemoveFontsAction(value));
             return true;
@@ -54,7 +54,7 @@ class FontPage extends StatelessWidget {
         return EntryUpdateDialog(
           title: 'Create new font',
           valueUpdate: (value) {
-            final FontModel model = FontModel(modelName: value);
+            final FontModel model = FontModel(uiName: value);
             context.dispatch(AddFontAction(model));
             Navigator.pop(context, true);
           },
