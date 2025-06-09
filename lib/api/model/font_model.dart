@@ -9,8 +9,8 @@ abstract class FontModel with _$FontModel, DataModel {
   const FontModel._(); // Add this private constructor
 
   const factory FontModel({
-    String? id,
     required String uiName,
+    String? id,
     String? variableName,
     String? provider,
     String? texturePath,

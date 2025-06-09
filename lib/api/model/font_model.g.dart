@@ -7,8 +7,8 @@ part of 'font_model.dart';
 // **************************************************************************
 
 _FontModel _$FontModelFromJson(Map<String, dynamic> json) => _FontModel(
-  id: json['id'] as String?,
   uiName: json['uiName'] as String,
+  id: json['id'] as String?,
   variableName: json['variableName'] as String?,
   provider: json['provider'] as String?,
   texturePath: json['texturePath'] as String?,
@@ -23,8 +23,8 @@ _FontModel _$FontModelFromJson(Map<String, dynamic> json) => _FontModel(
 
 Map<String, dynamic> _$FontModelToJson(_FontModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'uiName': instance.uiName,
+      'id': instance.id,
       'variableName': instance.variableName,
       'provider': instance.provider,
       'texturePath': instance.texturePath,

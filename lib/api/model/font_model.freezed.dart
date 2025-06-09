@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$FontModel {
 
- String? get id; String get uiName; String? get variableName; String? get provider; String? get texturePath; String? get comment; String get mapper; int get ascent; int get height; List<String> get chars;
+ String get uiName; String? get id; String? get variableName; String? get provider; String? get texturePath; String? get comment; String get mapper; int get ascent; int get height; List<String> get chars;
 /// Create a copy of FontModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $FontModelCopyWith<FontModel> get copyWith => _$FontModelCopyWithImpl<FontModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FontModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.texturePath, texturePath) || other.texturePath == texturePath)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.mapper, mapper) || other.mapper == mapper)&&(identical(other.ascent, ascent) || other.ascent == ascent)&&(identical(other.height, height) || other.height == height)&&const DeepCollectionEquality().equals(other.chars, chars));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FontModel&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.texturePath, texturePath) || other.texturePath == texturePath)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.mapper, mapper) || other.mapper == mapper)&&(identical(other.ascent, ascent) || other.ascent == ascent)&&(identical(other.height, height) || other.height == height)&&const DeepCollectionEquality().equals(other.chars, chars));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,uiName,variableName,provider,texturePath,comment,mapper,ascent,height,const DeepCollectionEquality().hash(chars));
+int get hashCode => Object.hash(runtimeType,uiName,id,variableName,provider,texturePath,comment,mapper,ascent,height,const DeepCollectionEquality().hash(chars));
 
 @override
 String toString() {
-  return 'FontModel(id: $id, uiName: $uiName, variableName: $variableName, provider: $provider, texturePath: $texturePath, comment: $comment, mapper: $mapper, ascent: $ascent, height: $height, chars: $chars)';
+  return 'FontModel(uiName: $uiName, id: $id, variableName: $variableName, provider: $provider, texturePath: $texturePath, comment: $comment, mapper: $mapper, ascent: $ascent, height: $height, chars: $chars)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $FontModelCopyWith<$Res>  {
   factory $FontModelCopyWith(FontModel value, $Res Function(FontModel) _then) = _$FontModelCopyWithImpl;
 @useResult
 $Res call({
- String? id, String uiName, String? variableName, String? provider, String? texturePath, String? comment, String mapper, int ascent, int height, List<String> chars
+ String uiName, String? id, String? variableName, String? provider, String? texturePath, String? comment, String mapper, int ascent, int height, List<String> chars
 });
 
 
@@ -66,11 +66,11 @@ class _$FontModelCopyWithImpl<$Res>
 
 /// Create a copy of FontModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? uiName = null,Object? variableName = freezed,Object? provider = freezed,Object? texturePath = freezed,Object? comment = freezed,Object? mapper = null,Object? ascent = null,Object? height = null,Object? chars = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? provider = freezed,Object? texturePath = freezed,Object? comment = freezed,Object? mapper = null,Object? ascent = null,Object? height = null,Object? chars = null,}) {
   return _then(_self.copyWith(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String?,uiName: null == uiName ? _self.uiName : uiName // ignore: cast_nullable_to_non_nullable
-as String,variableName: freezed == variableName ? _self.variableName : variableName // ignore: cast_nullable_to_non_nullable
+uiName: null == uiName ? _self.uiName : uiName // ignore: cast_nullable_to_non_nullable
+as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,variableName: freezed == variableName ? _self.variableName : variableName // ignore: cast_nullable_to_non_nullable
 as String?,provider: freezed == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
 as String?,texturePath: freezed == texturePath ? _self.texturePath : texturePath // ignore: cast_nullable_to_non_nullable
 as String?,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
@@ -89,11 +89,11 @@ as List<String>,
 @JsonSerializable()
 
 class _FontModel extends FontModel {
-  const _FontModel({this.id, required this.uiName, this.variableName, this.provider, this.texturePath, this.comment, this.mapper = 'font', this.ascent = 0, this.height = 0, final  List<String> chars = const []}): _chars = chars,super._();
+  const _FontModel({required this.uiName, this.id, this.variableName, this.provider, this.texturePath, this.comment, this.mapper = 'font', this.ascent = 0, this.height = 0, final  List<String> chars = const []}): _chars = chars,super._();
   factory _FontModel.fromJson(Map<String, dynamic> json) => _$FontModelFromJson(json);
 
-@override final  String? id;
 @override final  String uiName;
+@override final  String? id;
 @override final  String? variableName;
 @override final  String? provider;
 @override final  String? texturePath;
@@ -122,16 +122,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FontModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.texturePath, texturePath) || other.texturePath == texturePath)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.mapper, mapper) || other.mapper == mapper)&&(identical(other.ascent, ascent) || other.ascent == ascent)&&(identical(other.height, height) || other.height == height)&&const DeepCollectionEquality().equals(other._chars, _chars));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FontModel&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.texturePath, texturePath) || other.texturePath == texturePath)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.mapper, mapper) || other.mapper == mapper)&&(identical(other.ascent, ascent) || other.ascent == ascent)&&(identical(other.height, height) || other.height == height)&&const DeepCollectionEquality().equals(other._chars, _chars));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,uiName,variableName,provider,texturePath,comment,mapper,ascent,height,const DeepCollectionEquality().hash(_chars));
+int get hashCode => Object.hash(runtimeType,uiName,id,variableName,provider,texturePath,comment,mapper,ascent,height,const DeepCollectionEquality().hash(_chars));
 
 @override
 String toString() {
-  return 'FontModel(id: $id, uiName: $uiName, variableName: $variableName, provider: $provider, texturePath: $texturePath, comment: $comment, mapper: $mapper, ascent: $ascent, height: $height, chars: $chars)';
+  return 'FontModel(uiName: $uiName, id: $id, variableName: $variableName, provider: $provider, texturePath: $texturePath, comment: $comment, mapper: $mapper, ascent: $ascent, height: $height, chars: $chars)';
 }
 
 
@@ -142,7 +142,7 @@ abstract mixin class _$FontModelCopyWith<$Res> implements $FontModelCopyWith<$Re
   factory _$FontModelCopyWith(_FontModel value, $Res Function(_FontModel) _then) = __$FontModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String uiName, String? variableName, String? provider, String? texturePath, String? comment, String mapper, int ascent, int height, List<String> chars
+ String uiName, String? id, String? variableName, String? provider, String? texturePath, String? comment, String mapper, int ascent, int height, List<String> chars
 });
 
 
@@ -159,11 +159,11 @@ class __$FontModelCopyWithImpl<$Res>
 
 /// Create a copy of FontModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? uiName = null,Object? variableName = freezed,Object? provider = freezed,Object? texturePath = freezed,Object? comment = freezed,Object? mapper = null,Object? ascent = null,Object? height = null,Object? chars = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? provider = freezed,Object? texturePath = freezed,Object? comment = freezed,Object? mapper = null,Object? ascent = null,Object? height = null,Object? chars = null,}) {
   return _then(_FontModel(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String?,uiName: null == uiName ? _self.uiName : uiName // ignore: cast_nullable_to_non_nullable
-as String,variableName: freezed == variableName ? _self.variableName : variableName // ignore: cast_nullable_to_non_nullable
+uiName: null == uiName ? _self.uiName : uiName // ignore: cast_nullable_to_non_nullable
+as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,variableName: freezed == variableName ? _self.variableName : variableName // ignore: cast_nullable_to_non_nullable
 as String?,provider: freezed == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
 as String?,texturePath: freezed == texturePath ? _self.texturePath : texturePath // ignore: cast_nullable_to_non_nullable
 as String?,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
