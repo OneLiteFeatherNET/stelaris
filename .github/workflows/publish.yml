@@ -8,7 +8,6 @@ on:
       - "**"
     tags:
       - "v*.*.*"
-  pull_request:
 
 jobs:
   flutter:
@@ -23,7 +22,7 @@ jobs:
           channel: 'stable'
       - name: Install Dependencies
         run: flutter pub get
-      - name: Run pub runn build_runner build
+      - name: Run pub run build_runner build
         run: flutter pub run build_runner build --delete-conflicting-outputs
       - name: Build Web
         run: flutter build web --release
