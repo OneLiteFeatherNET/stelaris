@@ -60,7 +60,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                 TextInputCard<String>(
                                   display: 'Variable Name',
                                   currentValue:
-                                      vm.selected.variableName ?? zeroString,
+                                      vm.selected.variableName ?? emptyString,
                                   formatter: [
                                     FilteringTextInputFormatter.allow(
                                       stringPattern,
