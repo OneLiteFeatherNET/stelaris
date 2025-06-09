@@ -82,8 +82,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                     display: context.l10n.card_name,
                                     currentValue: vm.name,
                                     formatter: [
-                                      FilteringTextInputFormatter.allow(
-                                          stringPattern),
+                                      FilteringTextInputFormatter.allow(stringPattern),
                                     ],
                                     valueUpdate: (value) {
                                       if (value != vm.name) {
@@ -138,6 +137,11 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                             UpdateNotificationAction(newEntry));
                                       }
                                     },
+                                    formatter: [
+                                      FilteringTextInputFormatter.allow(
+                                          stringWithSpacePattern
+                                      ),
+                                    ],
                                   ),
                                   TextInputCard<String>(
                                     display: context.l10n.card_description,
@@ -145,7 +149,8 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                         vm.selected.description ?? emptyString,
                                     formatter: [
                                       FilteringTextInputFormatter.allow(
-                                          stringPattern),
+                                          stringWithSpacePattern
+                                      ),
                                     ],
                                     valueUpdate: (value) {
                                       if (value != vm.selected.description) {
