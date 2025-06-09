@@ -85,6 +85,11 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                   display: context.l10n.card_description,
                                   currentValue:
                                       vm.selected.description ?? emptyString,
+                                  formatter: [
+                                    FilteringTextInputFormatter.allow(
+                                        stringWithSpacePattern
+                                    ),
+                                  ],
                                   valueUpdate: (value) {
                                     if (value == vm.selected.description) {
                                       return;
@@ -166,7 +171,6 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                     FilteringTextInputFormatter.allow(
                                         numberPattern)
                                   ],
-                                  isNumber: true,
                                 ),
                                 TextInputCard<int>(
                                   display: context.l10n.card_amount,
@@ -203,7 +207,6 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                     return null;
                                   },
                                   maxLength: 30,
-                                  isNumber: true,
                                 ),
                               ],
                             ),
