@@ -15,410 +15,191 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$ItemModel {
-  String? get id;
-  String? get modelName;
-  String? get name;
-  String? get description;
-  String? get displayName;
-  ItemGroup get group;
-  String? get material;
-  int? get customModelId;
-  int? get amount;
-  Map<String, int>? get enchantments;
-  Set<String>? get flags;
-  List<String>? get lore;
 
-  /// Create a copy of ItemModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $ItemModelCopyWith<ItemModel> get copyWith =>
-      _$ItemModelCopyWithImpl<ItemModel>(this as ItemModel, _$identity);
+ String? get id; String? get modelName; String? get name; String? get description; String? get displayName; ItemGroup get group; String? get material; int? get customModelId; int? get amount; Map<String, int>? get enchantments; Set<String>? get flags; List<String>? get lore;
+/// Create a copy of ItemModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ItemModelCopyWith<ItemModel> get copyWith => _$ItemModelCopyWithImpl<ItemModel>(this as ItemModel, _$identity);
 
   /// Serializes this ItemModel to a JSON map.
   Map<String, dynamic> toJson();
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is ItemModel &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.modelName, modelName) ||
-                other.modelName == modelName) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            (identical(other.displayName, displayName) ||
-                other.displayName == displayName) &&
-            (identical(other.group, group) || other.group == group) &&
-            (identical(other.material, material) ||
-                other.material == material) &&
-            (identical(other.customModelId, customModelId) ||
-                other.customModelId == customModelId) &&
-            (identical(other.amount, amount) || other.amount == amount) &&
-            const DeepCollectionEquality()
-                .equals(other.enchantments, enchantments) &&
-            const DeepCollectionEquality().equals(other.flags, flags) &&
-            const DeepCollectionEquality().equals(other.lore, lore));
-  }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      modelName,
-      name,
-      description,
-      displayName,
-      group,
-      material,
-      customModelId,
-      amount,
-      const DeepCollectionEquality().hash(enchantments),
-      const DeepCollectionEquality().hash(flags),
-      const DeepCollectionEquality().hash(lore));
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.modelName, modelName) || other.modelName == modelName)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.group, group) || other.group == group)&&(identical(other.material, material) || other.material == material)&&(identical(other.customModelId, customModelId) || other.customModelId == customModelId)&&(identical(other.amount, amount) || other.amount == amount)&&const DeepCollectionEquality().equals(other.enchantments, enchantments)&&const DeepCollectionEquality().equals(other.flags, flags)&&const DeepCollectionEquality().equals(other.lore, lore));
+}
 
-  @override
-  String toString() {
-    return 'ItemModel(id: $id, modelName: $modelName, name: $name, description: $description, displayName: $displayName, group: $group, material: $material, customModelId: $customModelId, amount: $amount, enchantments: $enchantments, flags: $flags, lore: $lore)';
-  }
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,modelName,name,description,displayName,group,material,customModelId,amount,const DeepCollectionEquality().hash(enchantments),const DeepCollectionEquality().hash(flags),const DeepCollectionEquality().hash(lore));
+
+@override
+String toString() {
+  return 'ItemModel(id: $id, modelName: $modelName, name: $name, description: $description, displayName: $displayName, group: $group, material: $material, customModelId: $customModelId, amount: $amount, enchantments: $enchantments, flags: $flags, lore: $lore)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class $ItemModelCopyWith<$Res> {
-  factory $ItemModelCopyWith(ItemModel value, $Res Function(ItemModel) _then) =
-      _$ItemModelCopyWithImpl;
-  @useResult
-  $Res call(
-      {String? id,
-      String? modelName,
-      String? name,
-      String? description,
-      String? displayName,
-      ItemGroup group,
-      String? material,
-      int? customModelId,
-      int? amount,
-      Map<String, int>? enchantments,
-      Set<String>? flags,
-      List<String>? lore});
-}
+abstract mixin class $ItemModelCopyWith<$Res>  {
+  factory $ItemModelCopyWith(ItemModel value, $Res Function(ItemModel) _then) = _$ItemModelCopyWithImpl;
+@useResult
+$Res call({
+ String? id, String? modelName, String? name, String? description, String? displayName, ItemGroup group, String? material, int? customModelId, int? amount, Map<String, int>? enchantments, Set<String>? flags, List<String>? lore
+});
 
+
+
+
+}
 /// @nodoc
-class _$ItemModelCopyWithImpl<$Res> implements $ItemModelCopyWith<$Res> {
+class _$ItemModelCopyWithImpl<$Res>
+    implements $ItemModelCopyWith<$Res> {
   _$ItemModelCopyWithImpl(this._self, this._then);
 
   final ItemModel _self;
   final $Res Function(ItemModel) _then;
 
-  /// Create a copy of ItemModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = freezed,
-    Object? modelName = freezed,
-    Object? name = freezed,
-    Object? description = freezed,
-    Object? displayName = freezed,
-    Object? group = null,
-    Object? material = freezed,
-    Object? customModelId = freezed,
-    Object? amount = freezed,
-    Object? enchantments = freezed,
-    Object? flags = freezed,
-    Object? lore = freezed,
-  }) {
-    return _then(_self.copyWith(
-      id: freezed == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String?,
-      modelName: freezed == modelName
-          ? _self.modelName
-          : modelName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      name: freezed == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-      description: freezed == description
-          ? _self.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-      displayName: freezed == displayName
-          ? _self.displayName
-          : displayName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      group: null == group
-          ? _self.group
-          : group // ignore: cast_nullable_to_non_nullable
-              as ItemGroup,
-      material: freezed == material
-          ? _self.material
-          : material // ignore: cast_nullable_to_non_nullable
-              as String?,
-      customModelId: freezed == customModelId
-          ? _self.customModelId
-          : customModelId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      amount: freezed == amount
-          ? _self.amount
-          : amount // ignore: cast_nullable_to_non_nullable
-              as int?,
-      enchantments: freezed == enchantments
-          ? _self.enchantments
-          : enchantments // ignore: cast_nullable_to_non_nullable
-              as Map<String, int>?,
-      flags: freezed == flags
-          ? _self.flags
-          : flags // ignore: cast_nullable_to_non_nullable
-              as Set<String>?,
-      lore: freezed == lore
-          ? _self.lore
-          : lore // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ));
-  }
+/// Create a copy of ItemModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? modelName = freezed,Object? name = freezed,Object? description = freezed,Object? displayName = freezed,Object? group = null,Object? material = freezed,Object? customModelId = freezed,Object? amount = freezed,Object? enchantments = freezed,Object? flags = freezed,Object? lore = freezed,}) {
+  return _then(_self.copyWith(
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,modelName: freezed == modelName ? _self.modelName : modelName // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
+as String?,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
+as ItemGroup,material: freezed == material ? _self.material : material // ignore: cast_nullable_to_non_nullable
+as String?,customModelId: freezed == customModelId ? _self.customModelId : customModelId // ignore: cast_nullable_to_non_nullable
+as int?,amount: freezed == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as int?,enchantments: freezed == enchantments ? _self.enchantments : enchantments // ignore: cast_nullable_to_non_nullable
+as Map<String, int>?,flags: freezed == flags ? _self.flags : flags // ignore: cast_nullable_to_non_nullable
+as Set<String>?,lore: freezed == lore ? _self.lore : lore // ignore: cast_nullable_to_non_nullable
+as List<String>?,
+  ));
 }
+
+}
+
 
 /// @nodoc
 @JsonSerializable()
+
 class _ItemModel extends ItemModel {
-  const _ItemModel(
-      {this.id,
-      this.modelName,
-      this.name,
-      this.description,
-      this.displayName,
-      this.group = ItemGroup.misc,
-      this.material,
-      this.customModelId,
-      this.amount = 1,
-      final Map<String, int>? enchantments,
-      final Set<String>? flags,
-      final List<String>? lore})
-      : _enchantments = enchantments,
-        _flags = flags,
-        _lore = lore,
-        super._();
-  factory _ItemModel.fromJson(Map<String, dynamic> json) =>
-      _$ItemModelFromJson(json);
+  const _ItemModel({this.id, this.modelName, this.name, this.description, this.displayName, this.group = ItemGroup.misc, this.material, this.customModelId, this.amount = 1, final  Map<String, int>? enchantments, final  Set<String>? flags, final  List<String>? lore}): _enchantments = enchantments,_flags = flags,_lore = lore,super._();
+  factory _ItemModel.fromJson(Map<String, dynamic> json) => _$ItemModelFromJson(json);
 
-  @override
-  final String? id;
-  @override
-  final String? modelName;
-  @override
-  final String? name;
-  @override
-  final String? description;
-  @override
-  final String? displayName;
-  @override
-  @JsonKey()
-  final ItemGroup group;
-  @override
-  final String? material;
-  @override
-  final int? customModelId;
-  @override
-  @JsonKey()
-  final int? amount;
-  final Map<String, int>? _enchantments;
-  @override
-  Map<String, int>? get enchantments {
-    final value = _enchantments;
-    if (value == null) return null;
-    if (_enchantments is EqualUnmodifiableMapView) return _enchantments;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
+@override final  String? id;
+@override final  String? modelName;
+@override final  String? name;
+@override final  String? description;
+@override final  String? displayName;
+@override@JsonKey() final  ItemGroup group;
+@override final  String? material;
+@override final  int? customModelId;
+@override@JsonKey() final  int? amount;
+ final  Map<String, int>? _enchantments;
+@override Map<String, int>? get enchantments {
+  final value = _enchantments;
+  if (value == null) return null;
+  if (_enchantments is EqualUnmodifiableMapView) return _enchantments;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
+}
 
-  final Set<String>? _flags;
-  @override
-  Set<String>? get flags {
-    final value = _flags;
-    if (value == null) return null;
-    if (_flags is EqualUnmodifiableSetView) return _flags;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableSetView(value);
-  }
+ final  Set<String>? _flags;
+@override Set<String>? get flags {
+  final value = _flags;
+  if (value == null) return null;
+  if (_flags is EqualUnmodifiableSetView) return _flags;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableSetView(value);
+}
 
-  final List<String>? _lore;
-  @override
-  List<String>? get lore {
-    final value = _lore;
-    if (value == null) return null;
-    if (_lore is EqualUnmodifiableListView) return _lore;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
+ final  List<String>? _lore;
+@override List<String>? get lore {
+  final value = _lore;
+  if (value == null) return null;
+  if (_lore is EqualUnmodifiableListView) return _lore;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
 
-  /// Create a copy of ItemModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$ItemModelCopyWith<_ItemModel> get copyWith =>
-      __$ItemModelCopyWithImpl<_ItemModel>(this, _$identity);
 
-  @override
-  Map<String, dynamic> toJson() {
-    return _$ItemModelToJson(
-      this,
-    );
-  }
+/// Create a copy of ItemModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ItemModelCopyWith<_ItemModel> get copyWith => __$ItemModelCopyWithImpl<_ItemModel>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _ItemModel &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.modelName, modelName) ||
-                other.modelName == modelName) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            (identical(other.displayName, displayName) ||
-                other.displayName == displayName) &&
-            (identical(other.group, group) || other.group == group) &&
-            (identical(other.material, material) ||
-                other.material == material) &&
-            (identical(other.customModelId, customModelId) ||
-                other.customModelId == customModelId) &&
-            (identical(other.amount, amount) || other.amount == amount) &&
-            const DeepCollectionEquality()
-                .equals(other._enchantments, _enchantments) &&
-            const DeepCollectionEquality().equals(other._flags, _flags) &&
-            const DeepCollectionEquality().equals(other._lore, _lore));
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$ItemModelToJson(this, );
+}
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      modelName,
-      name,
-      description,
-      displayName,
-      group,
-      material,
-      customModelId,
-      amount,
-      const DeepCollectionEquality().hash(_enchantments),
-      const DeepCollectionEquality().hash(_flags),
-      const DeepCollectionEquality().hash(_lore));
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.modelName, modelName) || other.modelName == modelName)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.group, group) || other.group == group)&&(identical(other.material, material) || other.material == material)&&(identical(other.customModelId, customModelId) || other.customModelId == customModelId)&&(identical(other.amount, amount) || other.amount == amount)&&const DeepCollectionEquality().equals(other._enchantments, _enchantments)&&const DeepCollectionEquality().equals(other._flags, _flags)&&const DeepCollectionEquality().equals(other._lore, _lore));
+}
 
-  @override
-  String toString() {
-    return 'ItemModel(id: $id, modelName: $modelName, name: $name, description: $description, displayName: $displayName, group: $group, material: $material, customModelId: $customModelId, amount: $amount, enchantments: $enchantments, flags: $flags, lore: $lore)';
-  }
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,modelName,name,description,displayName,group,material,customModelId,amount,const DeepCollectionEquality().hash(_enchantments),const DeepCollectionEquality().hash(_flags),const DeepCollectionEquality().hash(_lore));
+
+@override
+String toString() {
+  return 'ItemModel(id: $id, modelName: $modelName, name: $name, description: $description, displayName: $displayName, group: $group, material: $material, customModelId: $customModelId, amount: $amount, enchantments: $enchantments, flags: $flags, lore: $lore)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class _$ItemModelCopyWith<$Res>
-    implements $ItemModelCopyWith<$Res> {
-  factory _$ItemModelCopyWith(
-          _ItemModel value, $Res Function(_ItemModel) _then) =
-      __$ItemModelCopyWithImpl;
-  @override
-  @useResult
-  $Res call(
-      {String? id,
-      String? modelName,
-      String? name,
-      String? description,
-      String? displayName,
-      ItemGroup group,
-      String? material,
-      int? customModelId,
-      int? amount,
-      Map<String, int>? enchantments,
-      Set<String>? flags,
-      List<String>? lore});
-}
+abstract mixin class _$ItemModelCopyWith<$Res> implements $ItemModelCopyWith<$Res> {
+  factory _$ItemModelCopyWith(_ItemModel value, $Res Function(_ItemModel) _then) = __$ItemModelCopyWithImpl;
+@override @useResult
+$Res call({
+ String? id, String? modelName, String? name, String? description, String? displayName, ItemGroup group, String? material, int? customModelId, int? amount, Map<String, int>? enchantments, Set<String>? flags, List<String>? lore
+});
 
+
+
+
+}
 /// @nodoc
-class __$ItemModelCopyWithImpl<$Res> implements _$ItemModelCopyWith<$Res> {
+class __$ItemModelCopyWithImpl<$Res>
+    implements _$ItemModelCopyWith<$Res> {
   __$ItemModelCopyWithImpl(this._self, this._then);
 
   final _ItemModel _self;
   final $Res Function(_ItemModel) _then;
 
-  /// Create a copy of ItemModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? id = freezed,
-    Object? modelName = freezed,
-    Object? name = freezed,
-    Object? description = freezed,
-    Object? displayName = freezed,
-    Object? group = null,
-    Object? material = freezed,
-    Object? customModelId = freezed,
-    Object? amount = freezed,
-    Object? enchantments = freezed,
-    Object? flags = freezed,
-    Object? lore = freezed,
-  }) {
-    return _then(_ItemModel(
-      id: freezed == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String?,
-      modelName: freezed == modelName
-          ? _self.modelName
-          : modelName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      name: freezed == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-      description: freezed == description
-          ? _self.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-      displayName: freezed == displayName
-          ? _self.displayName
-          : displayName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      group: null == group
-          ? _self.group
-          : group // ignore: cast_nullable_to_non_nullable
-              as ItemGroup,
-      material: freezed == material
-          ? _self.material
-          : material // ignore: cast_nullable_to_non_nullable
-              as String?,
-      customModelId: freezed == customModelId
-          ? _self.customModelId
-          : customModelId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      amount: freezed == amount
-          ? _self.amount
-          : amount // ignore: cast_nullable_to_non_nullable
-              as int?,
-      enchantments: freezed == enchantments
-          ? _self._enchantments
-          : enchantments // ignore: cast_nullable_to_non_nullable
-              as Map<String, int>?,
-      flags: freezed == flags
-          ? _self._flags
-          : flags // ignore: cast_nullable_to_non_nullable
-              as Set<String>?,
-      lore: freezed == lore
-          ? _self._lore
-          : lore // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ));
-  }
+/// Create a copy of ItemModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? modelName = freezed,Object? name = freezed,Object? description = freezed,Object? displayName = freezed,Object? group = null,Object? material = freezed,Object? customModelId = freezed,Object? amount = freezed,Object? enchantments = freezed,Object? flags = freezed,Object? lore = freezed,}) {
+  return _then(_ItemModel(
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,modelName: freezed == modelName ? _self.modelName : modelName // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
+as String?,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
+as ItemGroup,material: freezed == material ? _self.material : material // ignore: cast_nullable_to_non_nullable
+as String?,customModelId: freezed == customModelId ? _self.customModelId : customModelId // ignore: cast_nullable_to_non_nullable
+as int?,amount: freezed == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as int?,enchantments: freezed == enchantments ? _self._enchantments : enchantments // ignore: cast_nullable_to_non_nullable
+as Map<String, int>?,flags: freezed == flags ? _self._flags : flags // ignore: cast_nullable_to_non_nullable
+as Set<String>?,lore: freezed == lore ? _self._lore : lore // ignore: cast_nullable_to_non_nullable
+as List<String>?,
+  ));
+}
+
+
 }
 
 // dart format on
