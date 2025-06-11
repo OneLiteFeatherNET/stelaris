@@ -9,9 +9,9 @@ part 'attribute_model.freezed.dart';
 abstract class AttributeModel with _$AttributeModel, DataModel {
   const AttributeModel._(); // Add this private constructor
   const factory AttributeModel({
+    required String uiName,
     String? id,
-    String? modelName,
-    String? name,
+    String? variableName,
     @freezed@Default(0.0) double? defaultValue,
     @Default(0.0) double? maximumValue
   }) = _AttributeModel;

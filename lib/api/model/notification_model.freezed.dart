@@ -23,7 +23,7 @@ NotificationModel _$NotificationModelFromJson(
 /// @nodoc
 mixin _$NotificationModel {
 
- String? get id; String? get modelName; String? get name; String? get material; FrameType get frameType; String? get title; String? get description;
+ String get uiName; String? get id; String? get variableName; String? get material; FrameType get frameType; String? get title; String? get comment;
 /// Create a copy of NotificationModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -36,16 +36,16 @@ $NotificationModelCopyWith<NotificationModel> get copyWith => _$NotificationMode
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationModel&&(identical(other.id, id) || other.id == id)&&(identical(other.modelName, modelName) || other.modelName == modelName)&&(identical(other.name, name) || other.name == name)&&(identical(other.material, material) || other.material == material)&&(identical(other.frameType, frameType) || other.frameType == frameType)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationModel&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.material, material) || other.material == material)&&(identical(other.frameType, frameType) || other.frameType == frameType)&&(identical(other.title, title) || other.title == title)&&(identical(other.comment, comment) || other.comment == comment));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,modelName,name,material,frameType,title,description);
+int get hashCode => Object.hash(runtimeType,uiName,id,variableName,material,frameType,title,comment);
 
 @override
 String toString() {
-  return 'NotificationModel(id: $id, modelName: $modelName, name: $name, material: $material, frameType: $frameType, title: $title, description: $description)';
+  return 'NotificationModel(uiName: $uiName, id: $id, variableName: $variableName, material: $material, frameType: $frameType, title: $title, comment: $comment)';
 }
 
 
@@ -56,7 +56,7 @@ abstract mixin class $NotificationModelCopyWith<$Res>  {
   factory $NotificationModelCopyWith(NotificationModel value, $Res Function(NotificationModel) _then) = _$NotificationModelCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? modelName, String? name, String? material, FrameType frameType, String? title, String? description
+ String uiName, String? id, String? variableName, String? material, FrameType frameType, String? title, String? comment
 });
 
 
@@ -73,15 +73,15 @@ class _$NotificationModelCopyWithImpl<$Res>
 
 /// Create a copy of NotificationModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? modelName = freezed,Object? name = freezed,Object? material = freezed,Object? frameType = null,Object? title = freezed,Object? description = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? material = freezed,Object? frameType = null,Object? title = freezed,Object? comment = freezed,}) {
   return _then(_self.copyWith(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String?,modelName: freezed == modelName ? _self.modelName : modelName // ignore: cast_nullable_to_non_nullable
-as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+uiName: null == uiName ? _self.uiName : uiName // ignore: cast_nullable_to_non_nullable
+as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,variableName: freezed == variableName ? _self.variableName : variableName // ignore: cast_nullable_to_non_nullable
 as String?,material: freezed == material ? _self.material : material // ignore: cast_nullable_to_non_nullable
 as String?,frameType: null == frameType ? _self.frameType : frameType // ignore: cast_nullable_to_non_nullable
 as FrameType,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -93,16 +93,16 @@ as String?,
 @JsonSerializable()
 
 class _Notification extends NotificationModel {
-  const _Notification({this.id, this.modelName, this.name, this.material, this.frameType = FrameType.task, this.title, this.description}): super._();
+  const _Notification({required this.uiName, this.id, this.variableName, this.material, this.frameType = FrameType.task, this.title, this.comment}): super._();
   factory _Notification.fromJson(Map<String, dynamic> json) => _$NotificationFromJson(json);
 
+@override final  String uiName;
 @override final  String? id;
-@override final  String? modelName;
-@override final  String? name;
+@override final  String? variableName;
 @override final  String? material;
 @override@JsonKey() final  FrameType frameType;
 @override final  String? title;
-@override final  String? description;
+@override final  String? comment;
 
 /// Create a copy of NotificationModel
 /// with the given fields replaced by the non-null parameter values.
@@ -117,16 +117,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Notification&&(identical(other.id, id) || other.id == id)&&(identical(other.modelName, modelName) || other.modelName == modelName)&&(identical(other.name, name) || other.name == name)&&(identical(other.material, material) || other.material == material)&&(identical(other.frameType, frameType) || other.frameType == frameType)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Notification&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.material, material) || other.material == material)&&(identical(other.frameType, frameType) || other.frameType == frameType)&&(identical(other.title, title) || other.title == title)&&(identical(other.comment, comment) || other.comment == comment));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,modelName,name,material,frameType,title,description);
+int get hashCode => Object.hash(runtimeType,uiName,id,variableName,material,frameType,title,comment);
 
 @override
 String toString() {
-  return 'NotificationModel(id: $id, modelName: $modelName, name: $name, material: $material, frameType: $frameType, title: $title, description: $description)';
+  return 'NotificationModel(uiName: $uiName, id: $id, variableName: $variableName, material: $material, frameType: $frameType, title: $title, comment: $comment)';
 }
 
 
@@ -137,7 +137,7 @@ abstract mixin class _$NotificationCopyWith<$Res> implements $NotificationModelC
   factory _$NotificationCopyWith(_Notification value, $Res Function(_Notification) _then) = __$NotificationCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? modelName, String? name, String? material, FrameType frameType, String? title, String? description
+ String uiName, String? id, String? variableName, String? material, FrameType frameType, String? title, String? comment
 });
 
 
@@ -154,15 +154,15 @@ class __$NotificationCopyWithImpl<$Res>
 
 /// Create a copy of NotificationModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? modelName = freezed,Object? name = freezed,Object? material = freezed,Object? frameType = null,Object? title = freezed,Object? description = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? material = freezed,Object? frameType = null,Object? title = freezed,Object? comment = freezed,}) {
   return _then(_Notification(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String?,modelName: freezed == modelName ? _self.modelName : modelName // ignore: cast_nullable_to_non_nullable
-as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+uiName: null == uiName ? _self.uiName : uiName // ignore: cast_nullable_to_non_nullable
+as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,variableName: freezed == variableName ? _self.variableName : variableName // ignore: cast_nullable_to_non_nullable
 as String?,material: freezed == material ? _self.material : material // ignore: cast_nullable_to_non_nullable
 as String?,frameType: null == frameType ? _self.frameType : frameType // ignore: cast_nullable_to_non_nullable
 as FrameType,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

@@ -9,10 +9,10 @@ part 'item_model.freezed.dart';
 abstract class ItemModel with _$ItemModel, DataModel {
   const ItemModel._(); // Add this private constructor
   const factory ItemModel({
+    required String uiName,
     String? id,
-    String? modelName,
-    String? name,
-    String? description,
+    String? variableName,
+    String? comment,
     String? displayName,
     @Default(ItemGroup.misc) ItemGroup group,
     String? material,

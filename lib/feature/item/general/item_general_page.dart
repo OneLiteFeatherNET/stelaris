@@ -61,16 +61,16 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                 TextInputCard<String>(
                                   display: context.l10n.card_name,
                                   tooltipMessage: context.l10n.tooltip_name,
-                                  currentValue: vm.selected.name ?? emptyString,
+                                  currentValue: vm.selected.variableName ?? emptyString,
                                   formatter: [
                                     FilteringTextInputFormatter.allow(
                                         stringPattern)
                                   ],
                                   valueUpdate: (value) {
-                                    if (value == vm.selected.name) return;
+                                    if (value == vm.selected.variableName) return;
                                     final oldModel = vm.selected;
                                     final newEntry =
-                                        oldModel.copyWith(name: value);
+                                        oldModel.copyWith(variableName: value);
                                     context
                                         .dispatch(UpdateItemAction(newEntry));
                                   },
@@ -84,19 +84,19 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                 TextInputCard<String>(
                                   display: context.l10n.card_description,
                                   currentValue:
-                                      vm.selected.description ?? emptyString,
+                                      vm.selected.comment ?? emptyString,
                                   formatter: [
                                     FilteringTextInputFormatter.allow(
                                         stringWithSpacePattern
                                     ),
                                   ],
                                   valueUpdate: (value) {
-                                    if (value == vm.selected.description) {
+                                    if (value == vm.selected.comment) {
                                       return;
                                     }
                                     final oldModel = vm.selected;
                                     final newEntry =
-                                        oldModel.copyWith(description: value);
+                                        oldModel.copyWith(comment: value);
                                     context
                                         .dispatch(UpdateItemAction(newEntry));
                                   },

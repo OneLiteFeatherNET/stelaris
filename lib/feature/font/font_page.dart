@@ -26,7 +26,7 @@ class FontPage extends StatelessWidget {
       builder: (context, vm) {
         return BaseModelViewTabs<FontModel>(
           mapToDataModelItem: (value) =>
-              ModelText(displayName: value.uiName),
+              TextWidget(displayName: value.uiName),
           openFunction: () => _openDialog(context),
           selectedItem: vm.selected,
           mapToDeleteDialog: (value) =>

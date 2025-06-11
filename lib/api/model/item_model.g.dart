@@ -7,10 +7,10 @@ part of 'item_model.dart';
 // **************************************************************************
 
 _ItemModel _$ItemModelFromJson(Map<String, dynamic> json) => _ItemModel(
+  uiName: json['uiName'] as String,
   id: json['id'] as String?,
-  modelName: json['modelName'] as String?,
-  name: json['name'] as String?,
-  description: json['description'] as String?,
+  variableName: json['variableName'] as String?,
+  comment: json['comment'] as String?,
   displayName: json['displayName'] as String?,
   group:
       $enumDecodeNullable(_$ItemGroupEnumMap, json['group']) ?? ItemGroup.misc,
@@ -26,10 +26,10 @@ _ItemModel _$ItemModelFromJson(Map<String, dynamic> json) => _ItemModel(
 
 Map<String, dynamic> _$ItemModelToJson(_ItemModel instance) =>
     <String, dynamic>{
+      'uiName': instance.uiName,
       'id': instance.id,
-      'modelName': instance.modelName,
-      'name': instance.name,
-      'description': instance.description,
+      'variableName': instance.variableName,
+      'comment': instance.comment,
       'displayName': instance.displayName,
       'group': _$ItemGroupEnumMap[instance.group]!,
       'material': instance.material,
