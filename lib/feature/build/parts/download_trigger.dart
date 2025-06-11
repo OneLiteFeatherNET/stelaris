@@ -21,7 +21,7 @@ class DownloadTrigger extends StatelessWidget {
         }
         if (snapshot.hasError) {
           return const Center(
-            child: ModelText(
+            child: TextWidget(
               displayName: 'An error occurred during data fetching',
             ),
           );
@@ -29,7 +29,7 @@ class DownloadTrigger extends StatelessWidget {
 
         if (!snapshot.hasData) {
           return const Center(
-            child: ModelText(
+            child: TextWidget(
               displayName: 'Found no data!',
             ),
           );

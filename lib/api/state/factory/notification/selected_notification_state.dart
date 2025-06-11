@@ -17,6 +17,4 @@ class SelectedNotificationView extends Vm {
   SelectedNotificationView({required this.selected}) : super(equals: [selected]);
 
   final NotificationModel selected;
-
-  String get name => selected.name ?? unknownEntry;
 }

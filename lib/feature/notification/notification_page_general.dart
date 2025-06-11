@@ -80,15 +80,15 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                 children: [
                                   TextInputCard<String>(
                                     display: context.l10n.card_name,
-                                    currentValue: vm.name,
+                                    currentValue: vm.selected.variableName ?? emptyString,
                                     formatter: [
                                       FilteringTextInputFormatter.allow(stringPattern),
                                     ],
                                     valueUpdate: (value) {
-                                      if (value != vm.name) {
+                                      if (value != vm.selected.variableName) {
                                         final oldModel = vm.selected;
                                         final newEntry =
-                                            oldModel.copyWith(name: value);
+                                            oldModel.copyWith(variableName: value);
                                         context.dispatch(
                                             UpdateNotificationAction(newEntry));
                                       }
@@ -146,17 +146,17 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                   TextInputCard<String>(
                                     display: context.l10n.card_description,
                                     currentValue:
-                                        vm.selected.description ?? emptyString,
+                                        vm.selected.comment ?? emptyString,
                                     formatter: [
                                       FilteringTextInputFormatter.allow(
                                           stringWithSpacePattern
                                       ),
                                     ],
                                     valueUpdate: (value) {
-                                      if (value != vm.selected.description) {
+                                      if (value != vm.selected.comment) {
                                         final oldModel = vm.selected;
                                         final newEntry = oldModel.copyWith(
-                                            description: value);
+                                            comment: value);
                                         context.dispatch(
                                             UpdateNotificationAction(newEntry));
                                       }
@@ -167,7 +167,6 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                     currentValue: vm.selected,
                                     items: items,
                                     valueUpdate: (value) {
-                                      if (value == null) return;
                                       if (value != vm.selected.frameType) {
                                         final oldModel = vm.selected;
                                         final newEntry =

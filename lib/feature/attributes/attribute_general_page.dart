@@ -39,15 +39,15 @@ class AttributeGeneralPage extends StatelessWidget {
                     TextInputCard<String>(
                       display: context.l10n.card_name,
                       tooltipMessage: context.l10n.tooltip_name,
-                      currentValue: vm.name,
+                      currentValue: vm.selected.variableName ?? emptyString,
                       formatter: [
                         FilteringTextInputFormatter.allow(stringPattern),
                       ],
                       valueUpdate: (value) {
-                        if (value == vm.selected.name) return;
+                        if (value == vm.selected.variableName) return;
                         final AttributeModel oldModel = vm.selected;
                         final AttributeModel newEntry = oldModel.copyWith(
-                          name: value,
+                          variableName: value,
                         );
                         context.dispatch(UpdateAttributeAction(newEntry));
                       },

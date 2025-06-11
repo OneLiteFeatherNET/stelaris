@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AttributeModel {
 
- String? get id; String? get modelName; String? get name;@freezed double? get defaultValue; double? get maximumValue;
+ String get uiName; String? get id; String? get variableName;@freezed double? get defaultValue; double? get maximumValue;
 /// Create a copy of AttributeModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $AttributeModelCopyWith<AttributeModel> get copyWith => _$AttributeModelCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AttributeModel&&(identical(other.id, id) || other.id == id)&&(identical(other.modelName, modelName) || other.modelName == modelName)&&(identical(other.name, name) || other.name == name)&&(identical(other.defaultValue, defaultValue) || other.defaultValue == defaultValue)&&(identical(other.maximumValue, maximumValue) || other.maximumValue == maximumValue));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AttributeModel&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.defaultValue, defaultValue) || other.defaultValue == defaultValue)&&(identical(other.maximumValue, maximumValue) || other.maximumValue == maximumValue));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,modelName,name,defaultValue,maximumValue);
+int get hashCode => Object.hash(runtimeType,uiName,id,variableName,defaultValue,maximumValue);
 
 @override
 String toString() {
-  return 'AttributeModel(id: $id, modelName: $modelName, name: $name, defaultValue: $defaultValue, maximumValue: $maximumValue)';
+  return 'AttributeModel(uiName: $uiName, id: $id, variableName: $variableName, defaultValue: $defaultValue, maximumValue: $maximumValue)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $AttributeModelCopyWith<$Res>  {
   factory $AttributeModelCopyWith(AttributeModel value, $Res Function(AttributeModel) _then) = _$AttributeModelCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? modelName, String? name,@freezed double? defaultValue, double? maximumValue
+ String uiName, String? id, String? variableName,@freezed double? defaultValue, double? maximumValue
 });
 
 
@@ -66,11 +66,11 @@ class _$AttributeModelCopyWithImpl<$Res>
 
 /// Create a copy of AttributeModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? modelName = freezed,Object? name = freezed,Object? defaultValue = freezed,Object? maximumValue = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? defaultValue = freezed,Object? maximumValue = freezed,}) {
   return _then(_self.copyWith(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String?,modelName: freezed == modelName ? _self.modelName : modelName // ignore: cast_nullable_to_non_nullable
-as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+uiName: null == uiName ? _self.uiName : uiName // ignore: cast_nullable_to_non_nullable
+as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,variableName: freezed == variableName ? _self.variableName : variableName // ignore: cast_nullable_to_non_nullable
 as String?,defaultValue: freezed == defaultValue ? _self.defaultValue : defaultValue // ignore: cast_nullable_to_non_nullable
 as double?,maximumValue: freezed == maximumValue ? _self.maximumValue : maximumValue // ignore: cast_nullable_to_non_nullable
 as double?,
@@ -84,12 +84,12 @@ as double?,
 @JsonSerializable()
 
 class _AttributeModel extends AttributeModel {
-  const _AttributeModel({this.id, this.modelName, this.name, @freezed this.defaultValue = 0.0, this.maximumValue = 0.0}): super._();
+  const _AttributeModel({required this.uiName, this.id, this.variableName, @freezed this.defaultValue = 0.0, this.maximumValue = 0.0}): super._();
   factory _AttributeModel.fromJson(Map<String, dynamic> json) => _$AttributeModelFromJson(json);
 
+@override final  String uiName;
 @override final  String? id;
-@override final  String? modelName;
-@override final  String? name;
+@override final  String? variableName;
 @override@JsonKey()@freezed final  double? defaultValue;
 @override@JsonKey() final  double? maximumValue;
 
@@ -106,16 +106,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AttributeModel&&(identical(other.id, id) || other.id == id)&&(identical(other.modelName, modelName) || other.modelName == modelName)&&(identical(other.name, name) || other.name == name)&&(identical(other.defaultValue, defaultValue) || other.defaultValue == defaultValue)&&(identical(other.maximumValue, maximumValue) || other.maximumValue == maximumValue));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AttributeModel&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.defaultValue, defaultValue) || other.defaultValue == defaultValue)&&(identical(other.maximumValue, maximumValue) || other.maximumValue == maximumValue));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,modelName,name,defaultValue,maximumValue);
+int get hashCode => Object.hash(runtimeType,uiName,id,variableName,defaultValue,maximumValue);
 
 @override
 String toString() {
-  return 'AttributeModel(id: $id, modelName: $modelName, name: $name, defaultValue: $defaultValue, maximumValue: $maximumValue)';
+  return 'AttributeModel(uiName: $uiName, id: $id, variableName: $variableName, defaultValue: $defaultValue, maximumValue: $maximumValue)';
 }
 
 
@@ -126,7 +126,7 @@ abstract mixin class _$AttributeModelCopyWith<$Res> implements $AttributeModelCo
   factory _$AttributeModelCopyWith(_AttributeModel value, $Res Function(_AttributeModel) _then) = __$AttributeModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? modelName, String? name,@freezed double? defaultValue, double? maximumValue
+ String uiName, String? id, String? variableName,@freezed double? defaultValue, double? maximumValue
 });
 
 
@@ -143,11 +143,11 @@ class __$AttributeModelCopyWithImpl<$Res>
 
 /// Create a copy of AttributeModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? modelName = freezed,Object? name = freezed,Object? defaultValue = freezed,Object? maximumValue = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? defaultValue = freezed,Object? maximumValue = freezed,}) {
   return _then(_AttributeModel(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String?,modelName: freezed == modelName ? _self.modelName : modelName // ignore: cast_nullable_to_non_nullable
-as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+uiName: null == uiName ? _self.uiName : uiName // ignore: cast_nullable_to_non_nullable
+as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,variableName: freezed == variableName ? _self.variableName : variableName // ignore: cast_nullable_to_non_nullable
 as String?,defaultValue: freezed == defaultValue ? _self.defaultValue : defaultValue // ignore: cast_nullable_to_non_nullable
 as double?,maximumValue: freezed == maximumValue ? _self.maximumValue : maximumValue // ignore: cast_nullable_to_non_nullable
 as double?,
