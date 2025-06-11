@@ -11,9 +11,9 @@ abstract class NotificationModel with _$NotificationModel, DataModel {
   const NotificationModel._(); // Add this private constructor
 
   const factory NotificationModel({
+    required String uiName,
     String? id,
-    String? modelName,
-    String? name,
+    String? variableName,
     String? material,
     @Default(FrameType.task) FrameType frameType,
     String? title,
