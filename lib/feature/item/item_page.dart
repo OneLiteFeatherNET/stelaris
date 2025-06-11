@@ -28,11 +28,11 @@ class ItemPage extends StatelessWidget {
       builder: (context, vm) {
         return BaseModelViewTabs<ItemModel>(
           mapToDataModelItem: (value) =>
-              ModelText(displayName: value.modelName),
+              ModelText(displayName: value.uiName),
           openFunction: () => _openCreationDialog(context),
           selectedItem: vm.selected,
           mapToDeleteDialog: (value) =>
-              createDeleteText(value.modelName, context),
+              createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(RemoveItemAction(value));
             return true;
@@ -56,7 +56,7 @@ class ItemPage extends StatelessWidget {
         return EntryUpdateDialog(
           title: 'Create new item',
           valueUpdate: (value) {
-            final model = ItemModel(modelName: value);
+            final model = ItemModel(uiName: value);
             context.dispatch(AddItemAction(model));
             Navigator.pop(context, true);
           },

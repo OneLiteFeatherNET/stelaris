@@ -61,16 +61,16 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                 TextInputCard<String>(
                                   display: context.l10n.card_name,
                                   tooltipMessage: context.l10n.tooltip_name,
-                                  currentValue: vm.selected.name ?? emptyString,
+                                  currentValue: vm.selected.variableName ?? emptyString,
                                   formatter: [
                                     FilteringTextInputFormatter.allow(
                                         stringPattern)
                                   ],
                                   valueUpdate: (value) {
-                                    if (value == vm.selected.name) return;
+                                    if (value == vm.selected.variableName) return;
                                     final oldModel = vm.selected;
                                     final newEntry =
-                                        oldModel.copyWith(name: value);
+                                        oldModel.copyWith(variableName: value);
                                     context
                                         .dispatch(UpdateItemAction(newEntry));
                                   },

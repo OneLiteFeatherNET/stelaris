@@ -7,9 +7,9 @@ part of 'item_model.dart';
 // **************************************************************************
 
 _ItemModel _$ItemModelFromJson(Map<String, dynamic> json) => _ItemModel(
+  uiName: json['uiName'] as String,
   id: json['id'] as String?,
-  modelName: json['modelName'] as String?,
-  name: json['name'] as String?,
+  variableName: json['variableName'] as String?,
   description: json['description'] as String?,
   displayName: json['displayName'] as String?,
   group:
@@ -26,9 +26,9 @@ _ItemModel _$ItemModelFromJson(Map<String, dynamic> json) => _ItemModel(
 
 Map<String, dynamic> _$ItemModelToJson(_ItemModel instance) =>
     <String, dynamic>{
+      'uiName': instance.uiName,
       'id': instance.id,
-      'modelName': instance.modelName,
-      'name': instance.name,
+      'variableName': instance.variableName,
       'description': instance.description,
       'displayName': instance.displayName,
       'group': _$ItemGroupEnumMap[instance.group]!,

@@ -25,7 +25,6 @@ class SelectedItemView extends Vm {
   late final List<String> loreLines;
   final Set<String> fieldsToDelete = {};
 
-  String get name => selected.name ?? unknownEntry;
   String get material => selected.material ?? defaultMaterial;
 
   bool get hasLoreLines => loreLines.isNotEmpty;
