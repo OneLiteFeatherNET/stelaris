@@ -2,7 +2,6 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/model/attribute_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/attributes/attribute_page.dart';
-import 'package:stelaris/util/constants.dart';
 
 class SelectedAttributeFactory
     extends VmFactory<AppState, AttributePage, SelectedAttributeView> {
@@ -18,5 +17,4 @@ class SelectedAttributeView extends Vm {
 
   final AttributeModel selected;
 
-  String get name => selected.name ?? unknownEntry;
 }

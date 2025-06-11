@@ -30,11 +30,11 @@ class AttributePage extends StatelessWidget {
       builder: (context, vm) {
         return BaseModelView<AttributeModel>(
           mapToDataModelItem: (value) =>
-              ModelText(displayName: value.modelName),
+              ModelText(displayName: value.uiName),
           openFunction: () => _openDialog(context),
           selectedItem: vm.selected,
           mapToDeleteDialog: (value) =>
-              createDeleteText(value.modelName, context),
+              createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(AttributeRemoveAction(value));
             return true;
@@ -69,7 +69,7 @@ class AttributePage extends StatelessWidget {
         return EntryUpdateDialog(
           title: 'Create new attribute',
           valueUpdate: (value) {
-            final AttributeModel attributeModel = AttributeModel(modelName: value);
+            final AttributeModel attributeModel = AttributeModel(uiName: value);
             context.dispatchAndWait(AttributeAddAction(attributeModel));
             Navigator.pop(context, true);
           },
