@@ -80,15 +80,15 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                 children: [
                                   TextInputCard<String>(
                                     display: context.l10n.card_name,
-                                    currentValue: vm.name,
+                                    currentValue: vm.selected.variableName ?? emptyString,
                                     formatter: [
                                       FilteringTextInputFormatter.allow(stringPattern),
                                     ],
                                     valueUpdate: (value) {
-                                      if (value != vm.name) {
+                                      if (value != vm.selected.variableName) {
                                         final oldModel = vm.selected;
                                         final newEntry =
-                                            oldModel.copyWith(name: value);
+                                            oldModel.copyWith(variableName: value);
                                         context.dispatch(
                                             UpdateNotificationAction(newEntry));
                                       }

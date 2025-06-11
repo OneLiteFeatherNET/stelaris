@@ -23,10 +23,10 @@ class NotificationPage extends StatelessWidget {
       builder: (context, vm) {
         return BaseModelView<NotificationModel>(
           mapToDataModelItem: (value) =>
-              ModelText(displayName: value.modelName),
+              ModelText(displayName: value.uiName),
           openFunction: () => _openCreationDialog(context),
           selectedItem: vm.selected,
-          mapToDeleteDialog: (value) => createDeleteText(value.modelName, context),
+          mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(RemoveNotificationAction(value));
             return true;
@@ -48,7 +48,7 @@ class NotificationPage extends StatelessWidget {
         return EntryUpdateDialog(
           title: 'Create new notification',
           valueUpdate: (value) {
-            final NotificationModel model = NotificationModel(modelName: value);
+            final NotificationModel model = NotificationModel(uiName: value);
             context.dispatchAndWait(NotificationAddAction(model));
             Navigator.pop(context, true);
           },

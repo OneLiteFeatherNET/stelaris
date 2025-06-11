@@ -8,9 +8,9 @@ part of 'notification_model.dart';
 
 _Notification _$NotificationFromJson(Map<String, dynamic> json) =>
     _Notification(
+      uiName: json['uiName'] as String,
       id: json['id'] as String?,
-      modelName: json['modelName'] as String?,
-      name: json['name'] as String?,
+      variableName: json['variableName'] as String?,
       material: json['material'] as String?,
       frameType:
           $enumDecodeNullable(_$FrameTypeEnumMap, json['frameType']) ??
@@ -21,9 +21,9 @@ _Notification _$NotificationFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$NotificationToJson(_Notification instance) =>
     <String, dynamic>{
+      'uiName': instance.uiName,
       'id': instance.id,
-      'modelName': instance.modelName,
-      'name': instance.name,
+      'variableName': instance.variableName,
       'material': instance.material,
       'frameType': _$FrameTypeEnumMap[instance.frameType]!,
       'title': instance.title,
