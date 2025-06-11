@@ -10,7 +10,7 @@ _ItemModel _$ItemModelFromJson(Map<String, dynamic> json) => _ItemModel(
   uiName: json['uiName'] as String,
   id: json['id'] as String?,
   variableName: json['variableName'] as String?,
-  description: json['description'] as String?,
+  comment: json['comment'] as String?,
   displayName: json['displayName'] as String?,
   group:
       $enumDecodeNullable(_$ItemGroupEnumMap, json['group']) ?? ItemGroup.misc,
@@ -29,7 +29,7 @@ Map<String, dynamic> _$ItemModelToJson(_ItemModel instance) =>
       'uiName': instance.uiName,
       'id': instance.id,
       'variableName': instance.variableName,
-      'description': instance.description,
+      'comment': instance.comment,
       'displayName': instance.displayName,
       'group': _$ItemGroupEnumMap[instance.group]!,
       'material': instance.material,

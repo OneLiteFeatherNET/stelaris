@@ -84,19 +84,19 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                 TextInputCard<String>(
                                   display: context.l10n.card_description,
                                   currentValue:
-                                      vm.selected.description ?? emptyString,
+                                      vm.selected.comment ?? emptyString,
                                   formatter: [
                                     FilteringTextInputFormatter.allow(
                                         stringWithSpacePattern
                                     ),
                                   ],
                                   valueUpdate: (value) {
-                                    if (value == vm.selected.description) {
+                                    if (value == vm.selected.comment) {
                                       return;
                                     }
                                     final oldModel = vm.selected;
                                     final newEntry =
-                                        oldModel.copyWith(description: value);
+                                        oldModel.copyWith(comment: value);
                                     context
                                         .dispatch(UpdateItemAction(newEntry));
                                   },

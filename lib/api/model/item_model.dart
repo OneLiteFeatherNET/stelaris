@@ -12,7 +12,7 @@ abstract class ItemModel with _$ItemModel, DataModel {
     required String uiName,
     String? id,
     String? variableName,
-    String? description,
+    String? comment,
     String? displayName,
     @Default(ItemGroup.misc) ItemGroup group,
     String? material,

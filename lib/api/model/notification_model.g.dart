@@ -16,7 +16,7 @@ _Notification _$NotificationFromJson(Map<String, dynamic> json) =>
           $enumDecodeNullable(_$FrameTypeEnumMap, json['frameType']) ??
           FrameType.task,
       title: json['title'] as String?,
-      description: json['description'] as String?,
+      comment: json['comment'] as String?,
     );
 
 Map<String, dynamic> _$NotificationToJson(_Notification instance) =>
@@ -27,7 +27,7 @@ Map<String, dynamic> _$NotificationToJson(_Notification instance) =>
       'material': instance.material,
       'frameType': _$FrameTypeEnumMap[instance.frameType]!,
       'title': instance.title,
-      'description': instance.description,
+      'comment': instance.comment,
     };
 
 const _$FrameTypeEnumMap = {

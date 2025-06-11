@@ -17,7 +17,7 @@ abstract class NotificationModel with _$NotificationModel, DataModel {
     String? material,
     @Default(FrameType.task) FrameType frameType,
     String? title,
-    String? description,
+    String? comment,
   }) = _Notification;
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) =>
