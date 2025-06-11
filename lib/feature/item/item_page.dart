@@ -28,7 +28,7 @@ class ItemPage extends StatelessWidget {
       builder: (context, vm) {
         return BaseModelViewTabs<ItemModel>(
           mapToDataModelItem: (value) =>
-              ModelText(displayName: value.uiName),
+              TextWidget(displayName: value.uiName),
           openFunction: () => _openCreationDialog(context),
           selectedItem: vm.selected,
           mapToDeleteDialog: (value) =>
