@@ -39,7 +39,7 @@ class AttributeGeneralPage extends StatelessWidget {
                     TextInputCard<String>(
                       display: context.l10n.card_name,
                       tooltipMessage: context.l10n.tooltip_name,
-                      currentValue: vm.selected.variableName ?? zeroString,
+                      currentValue: vm.selected.variableName ?? emptyString,
                       formatter: [
                         FilteringTextInputFormatter.allow(stringPattern),
                       ],
