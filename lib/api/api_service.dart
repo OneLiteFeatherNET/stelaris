@@ -9,6 +9,7 @@ import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/model/notification_model.dart';
 import 'package:stelaris/api/service/generate_api.dart';
+import 'package:stelaris/api/service/sound/sound_api.dart';
 import 'package:stelaris/env/environment.dart';
 
 /// The [ApiService] class contains all web services which are used in the app to communicate with the backend.
@@ -59,6 +60,8 @@ class ApiService {
       fromJson: (p0) => SoundEventModel.fromJson(p0),
       toJson: (model) => model.toJson(),
   );
+
+  late final SoundAPI soundAPI = SoundAPI(_apiClient);
 
   /// Creates an instance of [ApiClient] with the backend URL.
   ApiClient _createApiClient() => ApiClient(Environment.backendURl);
