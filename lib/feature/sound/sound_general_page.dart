@@ -1,12 +1,15 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stelaris/api/model/sound/sound_event_model.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/sound/selected_sound_state.dart';
 import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
+import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/sound/card/sound_file_card.dart';
+import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 
@@ -42,20 +45,6 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
       vm: () => SelectedSoundState(),
       onDispose: (store) =>
           store.dispatch(RemoveSelectedSoundEvent(), notify: false),
-      /*builder: (context, vm) {
-        return Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: 2, // Example: 10 items
-            itemBuilder: (context, index) {
-              return const Padding(
-                padding: EdgeInsets.only(bottom: 12),
-                child: SoundFileCard(),
-              );
-            },
-          ),
-        );
-      },*/
       builder: (context, vm) {
         return Expanded(
           child: Form(
@@ -111,7 +100,7 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                                   TextInputCard<String>(
                                     display: 'Key',
                                     currentValue:
-                                    vm.selected.keyName ?? emptyString,
+                                        vm.selected.keyName ?? emptyString,
                                     formatter: [
                                       FilteringTextInputFormatter.allow(
                                         stringPattern,
@@ -136,9 +125,9 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                                     },
                                   ),
                                   TextInputCard<String>(
-                                    display: 'Key',
+                                    display: 'Subtitle',
                                     currentValue:
-                                    vm.selected.subTitle ?? emptyString,
+                                        vm.selected.subTitle ?? emptyString,
                                     formatter: [
                                       FilteringTextInputFormatter.allow(
                                         stringPattern,
