@@ -1,6 +1,9 @@
 import 'package:stelaris/api/api_client.dart';
 import 'package:stelaris/api/base_api.dart';
 import 'package:stelaris/api/client_api.dart';
+import 'package:stelaris/api/model/sound/sound_event_model.dart';
+import 'package:stelaris/api/base_api.dart';
+import 'package:stelaris/api/client_api.dart';
 import 'package:stelaris/api/model/attribute_model.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/model/item_model.dart';
@@ -48,6 +51,13 @@ class ApiService {
     endpoint: 'attribute',
     fromJson: (p0) => AttributeModel.fromJson(p0),
     toJson: (model) => model.toJson(),
+  );
+
+  late final ClientAPI<SoundEventModel> soundApi = BaseApi(
+      apiClient: _apiClient,
+      endpoint: 'sound',
+      fromJson: (p0) => SoundEventModel.fromJson(p0),
+      toJson: (model) => model.toJson(),
   );
 
   /// Creates an instance of [ApiClient] with the backend URL.
