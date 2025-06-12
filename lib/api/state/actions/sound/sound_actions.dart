@@ -21,9 +21,9 @@ class RemoveSelectedSoundEvent extends ReduxAction<AppState> {
   }
 }
 
-class InitFontAction extends ReduxAction<AppState> {
+class InitSoundAction extends ReduxAction<AppState> {
 
-  InitFontAction();
+  InitSoundAction();
 
   @override
   Future<AppState?> reduce() async {
@@ -33,10 +33,10 @@ class InitFontAction extends ReduxAction<AppState> {
   }
 }
 
-class RemoveFontsAction extends ReduxAction<AppState> {
+class RemoveSoundAction extends ReduxAction<AppState> {
   final SoundEventModel model;
 
-  RemoveFontsAction(this.model);
+  RemoveSoundAction(this.model);
 
   @override
   Future<AppState?> reduce() async {
@@ -47,10 +47,10 @@ class RemoveFontsAction extends ReduxAction<AppState> {
   }
 }
 
-class AddFontAction extends ReduxAction<AppState> {
+class AddSoundAction extends ReduxAction<AppState> {
   final SoundEventModel _model;
 
-  AddFontAction(this._model);
+  AddSoundAction(this._model);
 
   @override
   Future<AppState?> reduce() async {
@@ -61,18 +61,18 @@ class AddFontAction extends ReduxAction<AppState> {
   }
 }
 
-class UpdateFontAction extends ReduxAction<AppState> {
+class UpdateSoundAction extends ReduxAction<AppState> {
   final SoundEventModel newEntry;
 
-  UpdateFontAction(this.newEntry);
+  UpdateSoundAction(this.newEntry);
 
   @override
   Future<AppState?> reduce() async => state.copyWith(selectedSoundEvent: newEntry);
 }
 
-class FontDatabaseUpdate extends ReduxAction<AppState> {
+class SoundDatabaseUpdate extends ReduxAction<AppState> {
 
-  FontDatabaseUpdate();
+  SoundDatabaseUpdate();
 
   @override
   Future<AppState?> reduce() async {
