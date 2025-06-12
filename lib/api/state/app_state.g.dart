@@ -27,6 +27,11 @@ _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
           ?.map((e) => AttributeModel.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const <AttributeModel>[],
+  soundEvents:
+      (json['soundEvents'] as List<dynamic>?)
+          ?.map((e) => SoundEventModel.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const <SoundEventModel>[],
   openNavigation: json['openNavigation'] as bool? ?? true,
   themeSettings: json['themeSettings'] == null
       ? const ThemeSettings(
@@ -53,6 +58,11 @@ _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
       : AttributeModel.fromJson(
           json['selectedAttribute'] as Map<String, dynamic>,
         ),
+  selectedSoundEvent: json['selectedSoundEvent'] == null
+      ? null
+      : SoundEventModel.fromJson(
+          json['selectedSoundEvent'] as Map<String, dynamic>,
+        ),
 );
 
 Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
@@ -60,6 +70,7 @@ Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
   'notifications': instance.notifications,
   'fonts': instance.fonts,
   'attributes': instance.attributes,
+  'soundEvents': instance.soundEvents,
   'openNavigation': instance.openNavigation,
   'themeSettings': instance.themeSettings,
 };

@@ -4,6 +4,7 @@ import 'package:stelaris/api/model/attribute_model.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/model/notification_model.dart';
+import 'package:stelaris/api/model/sound/sound_event_model.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 
 part 'app_state.g.dart';
@@ -16,6 +17,7 @@ abstract class AppState with _$AppState {
     @Default([]) List<NotificationModel> notifications,
     @Default([]) List<FontModel> fonts,
     @Default(<AttributeModel>[]) List<AttributeModel> attributes,
+    @Default(<SoundEventModel>[]) List<SoundEventModel> soundEvents,
     @Default(true) bool openNavigation,
     @Default(ThemeSettings(
       isDarkMode: false,
@@ -28,6 +30,7 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false) NotificationModel? selectedNotification,
     @JsonKey(includeToJson: false) FontModel? selectedFont,
     @JsonKey(includeToJson: false) AttributeModel? selectedAttribute,
+    @JsonKey(includeToJson: false) SoundEventModel? selectedSoundEvent,
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, dynamic> json) =>
