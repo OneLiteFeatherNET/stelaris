@@ -85,7 +85,7 @@ class _VersionUpdateInputState extends State<VersionUpdateInput> {
     );
   }
 
-  _callback() {
+  void _callback() {
     setState(() {
       if (widget.branchOption.value == BranchOption.snapshot) {
         cache = widget.controller.text;
