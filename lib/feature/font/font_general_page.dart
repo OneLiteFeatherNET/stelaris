@@ -67,8 +67,9 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                     ),
                                   ],
                                   valueUpdate: (value) {
-                                    if (value == vm.selected.variableName)
+                                    if (value == vm.selected.variableName) {
                                       return;
+                                    }
                                     final oldModel = vm.selected;
                                     final newEntry = oldModel.copyWith(
                                       variableName: value,
