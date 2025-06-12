@@ -28,8 +28,8 @@ class InitSoundAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final List<SoundEventModel> sounds = await ApiService().soundAPI.getAll();
-    if (sounds.isEmpty) return null;
-    return state.copyWith(soundEvents: sounds);
+    if (sounds.isEmpty) return state.copyWith(soundEvents: [], selectedSoundEvent: null);
+    return state.copyWith(soundEvents: sounds, selectedSoundEvent: null);
   }
 }
 
@@ -47,17 +47,17 @@ class RemoveSoundAction extends ReduxAction<AppState> {
   }
 }
 
-class AddSoundAction extends ReduxAction<AppState> {
+class SoundAddAction extends ReduxAction<AppState> {
   final SoundEventModel _model;
 
-  AddSoundAction(this._model);
+  SoundAddAction(this._model);
 
   @override
   Future<AppState?> reduce() async {
-    final SoundEventModel added = await ApiService().soundAPI.add(_model);
+   // final SoundEventModel added = await ApiService().soundAPI.add(_model);
     final List<SoundEventModel> sounds = List.of(state.soundEvents, growable: true);
-    sounds.add(added);
-    return state.copyWith(soundEvents: sounds, selectedSoundEvent: added);
+    sounds.add(_model);
+    return state.copyWith(soundEvents: sounds, selectedSoundEvent: _model);
   }
 }
 
