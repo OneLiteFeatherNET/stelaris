@@ -96,7 +96,7 @@ class _LorePageState extends State<LorePage> {
       builder: (BuildContext context) {
         return EntryUpdateDialog(
           valueUpdate: (value) {
-            _updateLore(view, value!, true);
+            _updateLore(view, value, true);
             Navigator.pop(context);
           },
           formFieldValidator: (value) {
