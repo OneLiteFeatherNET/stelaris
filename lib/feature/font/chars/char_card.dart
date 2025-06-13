@@ -37,8 +37,8 @@ class _CharCardState extends State<CharCard> {
     return StoreConnector<AppState, SelectedFontView>(
       vm: () => SelectedFontFactory<CharCard>(),
       onWillChange: (context, store, previousVm, newVm) {
-        if ((previousVm.selected.chars?.length ?? 0) >
-            (newVm.selected.chars?.length ?? 0)) {
+        if ((previousVm.selected.chars.length) >
+            (newVm.selected.chars.length)) {
           editMode = EditMode.edit;
         }
       },
@@ -147,7 +147,7 @@ class _CharCardState extends State<CharCard> {
             if (!view.hasChars) return false;
             final oldEntry = view.selected;
             final List<String> chars =
-                List.of(view.selected.chars ?? [], growable: true);
+                List.of(view.selected.chars, growable: true);
 
             for (String element in view.selectedFields) {
               chars.remove(element);
@@ -170,7 +170,7 @@ class _CharCardState extends State<CharCard> {
       builder: (BuildContext context) {
         return EntryUpdateDialog(
           valueUpdate: (value) {
-            final String charValue = value!;
+            final String charValue = value;
             if (view.hasChar(charValue)) {
               showDialog(
                 context: context,
@@ -184,7 +184,7 @@ class _CharCardState extends State<CharCard> {
               return;
             }
             final oldEntry = view.selected;
-            final List<String> chars = List.of(oldEntry.chars ?? []);
+            final List<String> chars = List.of(oldEntry.chars);
             chars.add(value);
             final newEntry = oldEntry.copyWith(chars: chars);
             context.dispatch(UpdateFontAction(newEntry));

@@ -81,7 +81,7 @@ class _CharListViewState extends State<CharListView> {
           formKey: GlobalKey<FormState>(),
           data: originalData,
           valueUpdate: (value) {
-            final String updatedValue = value!;
+            final String updatedValue = value;
             if (updatedValue.isEmpty || updatedValue == originalData) return;
             final List<String> modelChars = List.of(widget.fontModel.chars, growable: true);
             modelChars.removeAt(index);
