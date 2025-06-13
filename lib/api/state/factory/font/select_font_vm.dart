@@ -20,9 +20,9 @@ class SelectedFontView extends Vm {
   final FontModel selected;
   final Set<String> selectedFields = {};
 
-  bool get hasChars => selected.chars == null || selected.chars!.isNotEmpty;
+  bool get hasChars => selected.chars.isNotEmpty;
 
-  List<String> get chars => selected.chars ?? [];
+  List<String> get chars => selected.chars;
 
   bool hasChar(String index) => chars.contains(index);
 
