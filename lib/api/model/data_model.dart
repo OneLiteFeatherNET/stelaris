@@ -1,1 +1,4 @@
-mixin DataModel {}
+mixin DataModel {
+
+  String? get id;
+}
