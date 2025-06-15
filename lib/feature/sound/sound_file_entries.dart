@@ -34,18 +34,15 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
                   ? const Flexible(flex: 1, child: const EmptyDataWidget())
                   : Expanded(
                 child: ListView.builder(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(8),
                   itemCount: vm.fileCount, // Example: 10 items
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          minWidth: 220,
-                          maxWidth: 400,
-                        ),
-                        child: SoundFileCard(eventModel: vm[index]),
+                    return ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minWidth: 220,
+                        maxWidth: 400,
                       ),
+                      child: SoundFileCard(eventModel: vm[index]),
                     );
                   },
                 ),
