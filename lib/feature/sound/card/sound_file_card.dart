@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/sound/sound_event_model.dart';
-import 'package:stelaris/feature/sound/card/small_sound_card.dart';
+import 'package:stelaris/api/model/sound/sound_file_source.dart';
+import 'package:stelaris/feature/sound/card/folder_icon.dart';
+import 'package:stelaris/feature/sound/card/small_file_card.dart';
 import 'package:stelaris/feature/sound/modal/sound_file_modal.dart';
 
 class SoundFileCard extends StatelessWidget {
-  SoundFileCard({required this.eventModel, super.key});
+  const SoundFileCard({required this.eventModel, super.key});
 
-  SoundEventModel eventModel;
+  final SoundFileSource eventModel;
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +15,8 @@ class SoundFileCard extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         // If the card is too narrow, show only the icon centered in a card
-        if (constraints.maxWidth < 250) {
-          return const SmallSoundCard();
+        if (constraints.maxWidth < 230) {
+          return const SmallFileCard();
         }
         // Otherwise, show the full card layout
         return Card(
@@ -26,19 +27,7 @@ class SoundFileCard extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
-                // Folder Icon
-                Container(
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.secondaryContainer,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.all(8),
-                  child: Icon(
-                    Icons.folder,
-                    color: theme.colorScheme.onSecondaryContainer,
-                    size: 28,
-                  ),
-                ),
+                const FolderIcon(),
                 const SizedBox(width: 12),
                 // Text Info
                 Expanded(
@@ -46,7 +35,7 @@ class SoundFileCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Sub-Module A',
+                        eventModel.name,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: theme.colorScheme.onSurface,
                           fontWeight: FontWeight.bold,
@@ -54,7 +43,7 @@ class SoundFileCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Description of Sub-Module A',
+                        eventModel.name,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
