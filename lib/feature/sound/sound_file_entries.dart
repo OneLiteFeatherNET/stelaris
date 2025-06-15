@@ -4,6 +4,7 @@ import 'package:stelaris/api/model/sound/sound_file_source.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/sound/selected_sound_state.dart';
 import 'package:stelaris/feature/base/chips/action_chips.dart';
+import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/sound/card/sound_file_card.dart';
 import 'package:stelaris/feature/sound/modal/sound_file_modal.dart';
 import 'package:stelaris/util/constants.dart';
@@ -27,14 +28,14 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               verticalSpacing25,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [Flexible(child: _getActionWidget(context))],
-              ),
-              Expanded(
+              _getActionWidget(context),
+              const SizedBox(height: 16,),
+              vm.hasNoFiles
+                  ? const Flexible(flex: 1, child: const EmptyDataWidget())
+                  : Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.all(16),
-                  itemCount: 2, // Example: 10 items
+                  itemCount: vm.fileCount, // Example: 10 items
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
@@ -43,7 +44,7 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
                           minWidth: 220,
                           maxWidth: 400,
                         ),
-                        child: SoundFileCard(),
+                        child: SoundFileCard(eventModel: vm[index]),
                       ),
                     );
                   },
