@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 
-class SoundEditDialog extends StatefulWidget {
+class SoundFileModal extends StatefulWidget {
   final void Function({
-  required double volume,
-  required double pitch,
-  required int weight,
-  required bool stream,
-  required int attenuationDistance,
-  required bool preload,
-  required String type,
-  })? onSave;
+    required double volume,
+    required double pitch,
+    required int weight,
+    required bool stream,
+    required int attenuationDistance,
+    required bool preload,
+    required String type,
+  })?
+  onSave;
 
-  const SoundEditDialog({super.key, this.onSave});
+  final bool create;
+
+  const SoundFileModal({required this.create, required this.onSave, super.key});
 
   @override
-  State<SoundEditDialog> createState() => _SoundEditDialogState();
+  State<SoundFileModal> createState() => _SoundFileModalState();
 }
 
-class _SoundEditDialogState extends State<SoundEditDialog> {
+class _SoundFileModalState extends State<SoundFileModal> {
   double _volume = 1.0;
   double _pitch = 1.0;
   int _weight = 1;
@@ -51,7 +54,10 @@ class _SoundEditDialogState extends State<SoundEditDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Edit Sound', style: Theme.of(context).textTheme.titleLarge),
+                Text(
+                  widget.create ? 'Create Sound' : 'Edit Sound',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
                 const SizedBox(height: 24),
                 // Section 1: Volume & Pitch
                 Container(
@@ -62,9 +68,23 @@ class _SoundEditDialogState extends State<SoundEditDialog> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      _sliderRow('Volume', _volume, (v) => setState(() => _volume = v), min: 0, max: 2, divisions: 100),
+                      _sliderRow(
+                        'Volume',
+                        _volume,
+                        (v) => setState(() => _volume = v),
+                        min: 0,
+                        max: 2,
+                        divisions: 100,
+                      ),
                       const SizedBox(height: 12),
-                      _sliderRow('Pitch', _pitch, (v) => setState(() => _pitch = v), min: 0, max: 2, divisions: 100),
+                      _sliderRow(
+                        'Pitch',
+                        _pitch,
+                        (v) => setState(() => _pitch = v),
+                        min: 0,
+                        max: 2,
+                        divisions: 100,
+                      ),
                     ],
                   ),
                 ),
@@ -81,27 +101,36 @@ class _SoundEditDialogState extends State<SoundEditDialog> {
                       TextFormField(
                         controller: _weightController,
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(labelText: 'Weight', border: OutlineInputBorder()),
+                        decoration: const InputDecoration(
+                          labelText: 'Weight',
+                          border: OutlineInputBorder(),
+                        ),
                         validator: (v) {
                           if (v == null || v.isEmpty) return 'Enter a weight';
                           final val = int.tryParse(v);
                           if (val == null) return 'Enter a valid integer';
                           return null;
                         },
-                        onChanged: (v) => setState(() => _weight = int.tryParse(v) ?? 1),
+                        onChanged: (v) =>
+                            setState(() => _weight = int.tryParse(v) ?? 1),
                       ),
                       const SizedBox(height: 12),
                       TextFormField(
                         controller: _attenuationController,
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(labelText: 'Attenuation Distance', border: OutlineInputBorder()),
+                        decoration: const InputDecoration(
+                          labelText: 'Attenuation Distance',
+                          border: OutlineInputBorder(),
+                        ),
                         validator: (v) {
                           if (v == null || v.isEmpty) return 'Enter a distance';
                           final val = int.tryParse(v);
                           if (val == null) return 'Enter a valid integer';
                           return null;
                         },
-                        onChanged: (v) => setState(() => _attenuationDistance = int.tryParse(v) ?? 16),
+                        onChanged: (v) => setState(
+                          () => _attenuationDistance = int.tryParse(v) ?? 16,
+                        ),
                       ),
                     ],
                   ),
@@ -118,7 +147,12 @@ class _SoundEditDialogState extends State<SoundEditDialog> {
                     children: [
                       Row(
                         children: [
-                          Expanded(child: Text('Stream', style: Theme.of(context).textTheme.bodyLarge)),
+                          Expanded(
+                            child: Text(
+                              'Stream',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ),
                           Switch(
                             value: _stream,
                             onChanged: (v) => setState(() => _stream = v),
@@ -127,7 +161,12 @@ class _SoundEditDialogState extends State<SoundEditDialog> {
                       ),
                       Row(
                         children: [
-                          Expanded(child: Text('Preload', style: Theme.of(context).textTheme.bodyLarge)),
+                          Expanded(
+                            child: Text(
+                              'Preload',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ),
                           Switch(
                             value: _preload,
                             onChanged: (v) => setState(() => _preload = v),
@@ -147,7 +186,10 @@ class _SoundEditDialogState extends State<SoundEditDialog> {
                   padding: const EdgeInsets.all(16),
                   child: DropdownButtonFormField<String>(
                     value: _type,
-                    decoration: const InputDecoration(labelText: 'Type', border: OutlineInputBorder()),
+                    decoration: const InputDecoration(
+                      labelText: 'Type',
+                      border: OutlineInputBorder(),
+                    ),
                     items: const [
                       DropdownMenuItem(value: 'file', child: Text('File')),
                       DropdownMenuItem(value: 'event', child: Text('Event')),
@@ -191,11 +233,20 @@ class _SoundEditDialogState extends State<SoundEditDialog> {
     );
   }
 
-  Widget _sliderRow(String label, double value, ValueChanged<double> onChanged,
-      {double min = 0, double max = 1, int? divisions}) {
+  Widget _sliderRow(
+    String label,
+    double value,
+    ValueChanged<double> onChanged, {
+    double min = 0,
+    double max = 1,
+    int? divisions,
+  }) {
     return Row(
       children: [
-        SizedBox(width: 100, child: Text(label, style: Theme.of(context).textTheme.bodyLarge)),
+        SizedBox(
+          width: 100,
+          child: Text(label, style: Theme.of(context).textTheme.bodyLarge),
+        ),
         Expanded(
           child: Slider(
             value: value,
