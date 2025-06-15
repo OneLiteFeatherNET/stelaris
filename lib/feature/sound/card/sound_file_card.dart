@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stelaris/api/model/sound/sound_file_source.dart';
 import 'package:stelaris/feature/sound/card/folder_icon.dart';
 import 'package:stelaris/feature/sound/card/small_file_card.dart';
-import 'package:stelaris/feature/sound/modal/sound_file_modal.dart';
+import 'package:stelaris/feature/sound/card/sound_card_button.dart';
 
 class SoundFileCard extends StatelessWidget {
   const SoundFileCard({required this.eventModel, super.key});
@@ -24,7 +24,7 @@ class SoundFileCard extends StatelessWidget {
           surfaceTintColor: theme.colorScheme.surfaceTint,
           elevation: 1,
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.only(right: 16),
             child: Row(
               children: [
                 const FolderIcon(),
@@ -52,39 +52,7 @@ class SoundFileCard extends StatelessWidget {
                   ),
                 ),
                 // "View" Button
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.secondaryContainer,
-                    foregroundColor: theme.colorScheme.onSecondaryContainer,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                  ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => SoundFileModal(
-                        create: false,
-                        onSave: ({
-                          required volume,
-                          required pitch,
-                          required weight,
-                          required stream,
-                          required attenuationDistance,
-                          required preload,
-                          required type,
-                        }) {
-                          // Handle save logic here
-                        },
-                      ),
-                    );
-                  },
-                  child: const Text('View'),
-                ),
+                const SoundCardButton()
               ],
             ),
           ),
