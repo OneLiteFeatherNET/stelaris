@@ -26,7 +26,7 @@ class SelectedSoundView extends Vm {
   final SoundEventModel selected;
 
   /// Returns a boolean indicator if the selected sound event contains sound files or not.
-  bool get hasFiles => selected.files != null || selected.files!.isNotEmpty;
+  bool get hasNoFiles => selected.files == null || selected.files!.isEmpty;
 
   /// Returns a list of sound file sources associated with the selected sound event.
   List<SoundFileSource> get sources => selected.files ?? <SoundFileSource>[];
