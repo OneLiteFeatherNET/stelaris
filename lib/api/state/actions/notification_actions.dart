@@ -25,7 +25,7 @@ class InitNotificationAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final List<NotificationModel> notifications =
-        await ApiService().notificationAPI.getAll();
+        await ApiService().notificationApi.getAll();
     if (notifications.isEmpty) return null;
     return state.copyWith(notifications: notifications);
   }
@@ -50,7 +50,7 @@ class NotificationAddAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final NotificationModel added = await ApiService().notificationAPI.add(model);
+    final NotificationModel added = await ApiService().notificationApi.add(model);
     final models = List.of(state.notifications, growable: true);
     models.add(added);
     return state.copyWith(notifications: models, selectedNotification: added);
@@ -64,7 +64,7 @@ class RemoveNotificationAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final removedModel = await ApiService().notificationAPI.remove(model);
+    final removedModel = await ApiService().notificationApi.remove(model);
     final models = List.of(state.notifications, growable: true);
     models.remove(removedModel);
     return state.copyWith(notifications: models);
@@ -80,7 +80,7 @@ class NotificationDatabaseUpdate extends ReduxAction<AppState> {
   Future<AppState?> reduce() async {
     if (state.selectedNotification == null) return null;
     final NotificationModel selected = state.selectedNotification!;
-    final NotificationModel dbModel = await ApiService().notificationAPI.update(selected);
+    final NotificationModel dbModel = await ApiService().notificationApi.update(selected);
     final List<NotificationModel> models = List.of(state.notifications, growable: true);
     final int index = models.indexWhere((element) => element.id == selected.id);
     models.removeAt(index);

@@ -1,9 +1,11 @@
 import 'package:stelaris/api/api_client.dart';
-import 'package:stelaris/api/service/attributes_api.dart';
-import 'package:stelaris/api/service/font_api.dart';
+import 'package:stelaris/api/base_api.dart';
+import 'package:stelaris/api/client_api.dart';
+import 'package:stelaris/api/model/attribute_model.dart';
+import 'package:stelaris/api/model/font_model.dart';
+import 'package:stelaris/api/model/item_model.dart';
+import 'package:stelaris/api/model/notification_model.dart';
 import 'package:stelaris/api/service/generate_api.dart';
-import 'package:stelaris/api/service/item_api.dart';
-import 'package:stelaris/api/service/notification_api.dart';
 import 'package:stelaris/env/environment.dart';
 
 /// The [ApiService] class contains all web services which are used in the app to communicate with the backend.
@@ -20,13 +22,33 @@ class ApiService {
 
   late final GenerateApi generateApi = GenerateApi(_generatorClient);
 
-  late final ItemApi itemApi = ItemApi(_apiClient);
+  late final ClientAPI<ItemModel> itemApi = BaseApi(
+    apiClient: _apiClient,
+    endpoint: 'item',
+    fromJson: (p0) => ItemModel.fromJson(p0),
+    toJson: (model) => model.toJson(),
+  );
 
-  late final NotificationAPI notificationAPI = NotificationAPI(_apiClient);
+  late final ClientAPI<NotificationModel> notificationApi = BaseApi(
+    apiClient: _apiClient,
+    endpoint: 'notification',
+    fromJson: (p0) => NotificationModel.fromJson(p0),
+    toJson: (model) => model.toJson(),
+  );
 
-  late final FontAPI fontAPI = FontAPI(_apiClient);
+  late final ClientAPI<FontModel> fontApi = BaseApi(
+    apiClient: _apiClient,
+    endpoint: 'font',
+    fromJson: (p0) => FontModel.fromJson(p0),
+    toJson: (model) => model.toJson(),
+  );
 
-  late final AttributesAPI attributesAPI = AttributesAPI(_apiClient);
+  late final ClientAPI<AttributeModel> attributeApi = BaseApi(
+    apiClient: _apiClient,
+    endpoint: 'attribute',
+    fromJson: (p0) => AttributeModel.fromJson(p0),
+    toJson: (model) => model.toJson(),
+  );
 
   /// Creates an instance of [ApiClient] with the backend URL.
   ApiClient _createApiClient() => ApiClient(Environment.backendURl);

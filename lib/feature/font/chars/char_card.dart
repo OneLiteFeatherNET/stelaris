@@ -103,7 +103,7 @@ class _CharCardState extends State<CharCard> {
         ? ActionChips(
             addCallback: () => _addDialog(view, context),
             saveCallback: () {
-              ApiService().fontAPI.update(view.selected);
+              ApiService().fontApi.update(view.selected);
             },
           )
         : EditActionChips(

@@ -27,7 +27,7 @@ class InitFontAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final List<FontModel> fonts = await ApiService().fontAPI.getAll();
+    final List<FontModel> fonts = await ApiService().fontApi.getAll();
     if (fonts.isEmpty) return null;
     return state.copyWith(fonts: fonts);
   }
@@ -40,7 +40,7 @@ class RemoveFontsAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final removed = await ApiService().fontAPI.remove(model);
+    final removed = await ApiService().fontApi.remove(model);
     final fonts = List.of(state.fonts, growable: true);
     fonts.remove(removed);
     return state.copyWith(fonts: fonts);
@@ -54,7 +54,7 @@ class AddFontAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final FontModel added = await ApiService().fontAPI.add(_model);
+    final FontModel added = await ApiService().fontApi.add(_model);
     final List<FontModel> fonts = List.of(state.fonts, growable: true);
     fonts.add(added);
     return state.copyWith(fonts: fonts, selectedFont: added);
@@ -78,7 +78,7 @@ class FontDatabaseUpdate extends ReduxAction<AppState> {
   Future<AppState?> reduce() async {
     if (state.selectedFont == null) return null;
     final FontModel selected = state.selectedFont!;
-    final FontModel dbModel = await ApiService().fontAPI.update(selected);
+    final FontModel dbModel = await ApiService().fontApi.update(selected);
     final List<FontModel> models = List.of(state.fonts, growable: true);
     final int index = models.indexWhere((element) => element.id == selected.id);
     models.removeAt(index);
