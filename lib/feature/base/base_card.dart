@@ -9,6 +9,8 @@ class BaseCard extends StatelessWidget {
     this.message = emptyString,
     this.width = 350,
     this.height = 200,
+    this.margin,
+    this.padding = generalPadding,
     super.key,
   });
 
@@ -17,14 +19,18 @@ class BaseCard extends StatelessWidget {
   final String message;
   final double width;
   final double height;
+  final EdgeInsets padding;
+  final EdgeInsets? margin;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     
-    return SizedBox(
+    return Container(
       width: width,
       height: height,
+      margin: margin,
+      padding: padding,
       child: Card(
         elevation: 2,
         clipBehavior: Clip.antiAlias,
