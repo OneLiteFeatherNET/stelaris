@@ -4,7 +4,7 @@ import 'package:stelaris/api/paginated_result.dart';
 
 // Create a simple test model that implements DataModel
 class TestModel with DataModel {
-  final int id;
+  final String id;
   final String name;
 
   TestModel({required this.id, required this.name});
@@ -12,7 +12,7 @@ class TestModel with DataModel {
   // For JSON serialization tests
   factory TestModel.fromJson(Map<String, dynamic> json) {
     return TestModel(
-      id: json['id'] as int,
+      id: json['id'].toString(),
       name: json['name'] as String,
     );
   }
@@ -40,9 +40,9 @@ void main() {
   group('PaginatedResult', () {
     // Sample data for tests
     final testItems = [
-      TestModel(id: 1, name: 'Item 1'),
-      TestModel(id: 2, name: 'Item 2'),
-      TestModel(id: 3, name: 'Item 3'),
+      TestModel(id: '1', name: 'Item 1'),
+      TestModel(id: '2', name: 'Item 2'),
+      TestModel(id: '3', name: 'Item 3'),
     ];
 
     test('constructor creates instance with correct values', () {
@@ -139,7 +139,7 @@ void main() {
       expect(fullPage.endIndex, equals(3));
 
       // Page with partial items (last page)
-      final partialItems = [TestModel(id: 10, name: 'Last Item')];
+      final partialItems = [TestModel(id: '10', name: 'Last Item')];
       final partialPage = PaginatedResult<TestModel>(
         items: partialItems, // 1 item
         totalItems: 10,
@@ -159,7 +159,7 @@ void main() {
         pageSize: 3,
       );
 
-      final newItems = [TestModel(id: 4, name: 'Item 4')];
+      final newItems = [TestModel(id: '4', name: 'Item 4')];
       final copied = original.copyWith(
         items: newItems,
         currentPage: 2,
@@ -193,8 +193,8 @@ void main() {
       test('fromJson creates correct instance', () {
         final json = {
           'items': [
-            {'id': 1, 'name': 'Item 1'},
-            {'id': 2, 'name': 'Item 2'},
+            {'id': '1', 'name': 'Item 1'},
+            {'id': '2', 'name': 'Item 2'},
           ],
           'totalItems': 10,
           'totalPages': 5,
@@ -208,9 +208,9 @@ void main() {
         );
 
         expect(result.items.length, equals(2));
-        expect(result.items[0].id, equals(1));
+        expect(result.items[0].id, equals('1'));
         expect(result.items[0].name, equals('Item 1'));
-        expect(result.items[1].id, equals(2));
+        expect(result.items[1].id, equals('2'));
         expect(result.items[1].name, equals('Item 2'));
         expect(result.totalItems, equals(10));
         expect(result.totalPages, equals(5));
@@ -221,7 +221,7 @@ void main() {
       test('fromJson handles missing fields gracefully', () {
         final json = {
           'items': [
-            {'id': 1, 'name': 'Item 1'},
+            {'id': '1', 'name': 'Item 1'},
           ],
         };
 
@@ -231,7 +231,7 @@ void main() {
         );
 
         expect(result.items.length, equals(1));
-        expect(result.items[0].id, equals(1));
+        expect(result.items[0].id, equals('1'));
         expect(result.totalItems, equals(0));
         expect(result.totalPages, equals(0));
         expect(result.currentPage, equals(1));
@@ -250,7 +250,7 @@ void main() {
         final json = result.toJson((item) => item.toJson());
 
         expect(json['items'].length, equals(3));
-        expect(json['items'][0]['id'], equals(1));
+        expect(json['items'][0]['id'], equals('1'));
         expect(json['items'][0]['name'], equals('Item 1'));
         expect(json['totalItems'], equals(10));
         expect(json['totalPages'], equals(4));
