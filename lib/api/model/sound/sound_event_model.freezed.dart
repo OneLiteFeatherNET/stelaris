@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SoundEventModel {
 
- String get uiName; String? get id; String? get variableName; String? get keyName; String? get subTitle;
+ String get uiName; String? get id; String? get variableName; String? get keyName; String? get subTitle; List<SoundFileSource>? get files;
 /// Create a copy of SoundEventModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $SoundEventModelCopyWith<SoundEventModel> get copyWith => _$SoundEventModelCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SoundEventModel&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.keyName, keyName) || other.keyName == keyName)&&(identical(other.subTitle, subTitle) || other.subTitle == subTitle));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SoundEventModel&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.keyName, keyName) || other.keyName == keyName)&&(identical(other.subTitle, subTitle) || other.subTitle == subTitle)&&const DeepCollectionEquality().equals(other.files, files));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uiName,id,variableName,keyName,subTitle);
+int get hashCode => Object.hash(runtimeType,uiName,id,variableName,keyName,subTitle,const DeepCollectionEquality().hash(files));
 
 @override
 String toString() {
-  return 'SoundEventModel(uiName: $uiName, id: $id, variableName: $variableName, keyName: $keyName, subTitle: $subTitle)';
+  return 'SoundEventModel(uiName: $uiName, id: $id, variableName: $variableName, keyName: $keyName, subTitle: $subTitle, files: $files)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $SoundEventModelCopyWith<$Res>  {
   factory $SoundEventModelCopyWith(SoundEventModel value, $Res Function(SoundEventModel) _then) = _$SoundEventModelCopyWithImpl;
 @useResult
 $Res call({
- String uiName, String? id, String? variableName, String? keyName, String? subTitle
+ String uiName, String? id, String? variableName, String? keyName, String? subTitle, List<SoundFileSource>? files
 });
 
 
@@ -66,14 +66,15 @@ class _$SoundEventModelCopyWithImpl<$Res>
 
 /// Create a copy of SoundEventModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? keyName = freezed,Object? subTitle = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? keyName = freezed,Object? subTitle = freezed,Object? files = freezed,}) {
   return _then(_self.copyWith(
 uiName: null == uiName ? _self.uiName : uiName // ignore: cast_nullable_to_non_nullable
 as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,variableName: freezed == variableName ? _self.variableName : variableName // ignore: cast_nullable_to_non_nullable
 as String?,keyName: freezed == keyName ? _self.keyName : keyName // ignore: cast_nullable_to_non_nullable
 as String?,subTitle: freezed == subTitle ? _self.subTitle : subTitle // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,files: freezed == files ? _self.files : files // ignore: cast_nullable_to_non_nullable
+as List<SoundFileSource>?,
   ));
 }
 
@@ -84,7 +85,7 @@ as String?,
 @JsonSerializable()
 
 class _SoundEventModel extends SoundEventModel {
-  const _SoundEventModel({required this.uiName, this.id, this.variableName, this.keyName, this.subTitle}): super._();
+  const _SoundEventModel({required this.uiName, this.id, this.variableName, this.keyName, this.subTitle, final  List<SoundFileSource>? files = null}): _files = files,super._();
   factory _SoundEventModel.fromJson(Map<String, dynamic> json) => _$SoundEventModelFromJson(json);
 
 @override final  String uiName;
@@ -92,6 +93,15 @@ class _SoundEventModel extends SoundEventModel {
 @override final  String? variableName;
 @override final  String? keyName;
 @override final  String? subTitle;
+ final  List<SoundFileSource>? _files;
+@override@JsonKey() List<SoundFileSource>? get files {
+  final value = _files;
+  if (value == null) return null;
+  if (_files is EqualUnmodifiableListView) return _files;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of SoundEventModel
 /// with the given fields replaced by the non-null parameter values.
@@ -106,16 +116,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SoundEventModel&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.keyName, keyName) || other.keyName == keyName)&&(identical(other.subTitle, subTitle) || other.subTitle == subTitle));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SoundEventModel&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.keyName, keyName) || other.keyName == keyName)&&(identical(other.subTitle, subTitle) || other.subTitle == subTitle)&&const DeepCollectionEquality().equals(other._files, _files));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uiName,id,variableName,keyName,subTitle);
+int get hashCode => Object.hash(runtimeType,uiName,id,variableName,keyName,subTitle,const DeepCollectionEquality().hash(_files));
 
 @override
 String toString() {
-  return 'SoundEventModel(uiName: $uiName, id: $id, variableName: $variableName, keyName: $keyName, subTitle: $subTitle)';
+  return 'SoundEventModel(uiName: $uiName, id: $id, variableName: $variableName, keyName: $keyName, subTitle: $subTitle, files: $files)';
 }
 
 
@@ -126,7 +136,7 @@ abstract mixin class _$SoundEventModelCopyWith<$Res> implements $SoundEventModel
   factory _$SoundEventModelCopyWith(_SoundEventModel value, $Res Function(_SoundEventModel) _then) = __$SoundEventModelCopyWithImpl;
 @override @useResult
 $Res call({
- String uiName, String? id, String? variableName, String? keyName, String? subTitle
+ String uiName, String? id, String? variableName, String? keyName, String? subTitle, List<SoundFileSource>? files
 });
 
 
@@ -143,14 +153,15 @@ class __$SoundEventModelCopyWithImpl<$Res>
 
 /// Create a copy of SoundEventModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? keyName = freezed,Object? subTitle = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? keyName = freezed,Object? subTitle = freezed,Object? files = freezed,}) {
   return _then(_SoundEventModel(
 uiName: null == uiName ? _self.uiName : uiName // ignore: cast_nullable_to_non_nullable
 as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,variableName: freezed == variableName ? _self.variableName : variableName // ignore: cast_nullable_to_non_nullable
 as String?,keyName: freezed == keyName ? _self.keyName : keyName // ignore: cast_nullable_to_non_nullable
 as String?,subTitle: freezed == subTitle ? _self.subTitle : subTitle // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,files: freezed == files ? _self._files : files // ignore: cast_nullable_to_non_nullable
+as List<SoundFileSource>?,
   ));
 }
 
