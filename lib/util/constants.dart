@@ -5,7 +5,7 @@ const String appName = 'Stelaris';
 const String unknownEntry = 'Unknown';
 
 /// EdgeInsets
-const EdgeInsets padding = EdgeInsets.only(top: 10, left: 10);
+const EdgeInsets generalPadding = EdgeInsets.only(top: 10, left: 10);
 
 const loader = SizedBox(height: 25, width: 25, child: CircularProgressIndicator());
 const divider = Divider();
