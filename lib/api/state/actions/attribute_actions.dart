@@ -25,7 +25,7 @@ class InitAttributeAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final List<AttributeModel> attributes =
-        await ApiService().attributesAPI.getAll();
+        await ApiService().attributeApi.getAll();
     if (attributes.isEmpty) return null;
     return state.copyWith(attributes: attributes);
   }
@@ -51,7 +51,7 @@ class AttributeAddAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final AttributeModel databaseModel =
-        await ApiService().attributesAPI.add(model);
+        await ApiService().attributeApi.add(model);
     final List<AttributeModel> attributes =
         List.of(state.attributes, growable: true);
     attributes.add(databaseModel);
@@ -67,7 +67,7 @@ class AttributeRemoveAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    await ApiService().attributesAPI.remove(model);
+    await ApiService().attributeApi.remove(model);
     final List<AttributeModel> attributes =
         List.of(state.attributes, growable: true);
     attributes.remove(model);
@@ -88,7 +88,7 @@ class AttributeDatabaseUpdate extends ReduxAction<AppState> {
   Future<AppState?> reduce() async {
     if (state.selectedAttribute == null) return null;
     final AttributeModel selected = state.selectedAttribute!;
-    final AttributeModel dbModel = await ApiService().attributesAPI.update(selected);
+    final AttributeModel dbModel = await ApiService().attributeApi.update(selected);
     final List<AttributeModel> models = List.of(state.attributes, growable: true);
     final int index = models.indexWhere((element) => element.id == selected.id);
     models.removeAt(index);
