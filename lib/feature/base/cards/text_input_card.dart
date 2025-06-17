@@ -37,6 +37,7 @@ class TextInputCard<E> extends StatefulWidget {
 class _TextInputCardState extends State<TextInputCard> {
   final TextEditingController _editController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  final _borderRadius = BorderRadius.circular(8);
 
   @override
   void initState() {
@@ -54,7 +55,12 @@ class _TextInputCardState extends State<TextInputCard> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final borderRadius = BorderRadius.circular(8);
+    final outlineBorder = OutlineInputBorder(
+      borderRadius: _borderRadius,
+      borderSide: BorderSide(
+        color: colorScheme.outline,
+      ),
+    );
 
     return BaseCard(
       display: widget.display,
@@ -82,33 +88,23 @@ class _TextInputCardState extends State<TextInputCard> {
                 hintStyle: TextStyle(
                   color: colorScheme.onSurfaceVariant,
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: borderRadius,
-                  borderSide: BorderSide(
-                    color: colorScheme.outline,
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: borderRadius,
-                  borderSide: BorderSide(
-                    color: colorScheme.outline,
-                  ),
-                ),
+                border: outlineBorder,
+                enabledBorder: outlineBorder,
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: borderRadius,
+                  borderRadius: _borderRadius,
                   borderSide: BorderSide(
                     color: colorScheme.primary,
                     width: 2,
                   ),
                 ),
                 errorBorder: OutlineInputBorder(
-                  borderRadius: borderRadius,
+                  borderRadius: _borderRadius,
                   borderSide: BorderSide(
                     color: colorScheme.error,
                   ),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: borderRadius,
+                  borderRadius: _borderRadius,
                   borderSide: BorderSide(
                     color: colorScheme.error,
                     width: 2,
