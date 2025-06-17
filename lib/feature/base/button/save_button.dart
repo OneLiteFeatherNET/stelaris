@@ -19,14 +19,14 @@ class SaveButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.bottomRight,
-      child:  Padding(
+      child: Padding(
         padding: const EdgeInsets.only(bottom: 25, right: 10),
-        child:
-            text == emptyString ? _getButtonWithOutLabel() : _getButton(text),
+        child: text == emptyString
+            ? _getButtonWithOutLabel()
+            : _getButton(text),
       ),
     );
   }
-
 
   /// Returns the button which should be displayed
   Widget _getButton(String text) {
