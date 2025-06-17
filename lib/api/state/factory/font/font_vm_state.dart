@@ -8,7 +8,7 @@ class FontVmFactory extends VmFactory<AppState, FontPage, FontViewModel> {
   FontVmFactory();
 
   @override
-  FontViewModel? fromStore() => FontViewModel(models: state.fonts, selected: state.selectedFont);
+  FontViewModel fromStore() => FontViewModel(models: state.fonts, selected: state.selectedFont);
 }
 
 class FontViewModel extends Vm {

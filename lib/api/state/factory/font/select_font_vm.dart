@@ -8,7 +8,7 @@ class SelectedFontFactory<T extends Widget>
   SelectedFontFactory();
 
   @override
-  SelectedFontView? fromStore() =>
+  SelectedFontView fromStore() =>
       SelectedFontView(selected: state.selectedFont!);
 }
 

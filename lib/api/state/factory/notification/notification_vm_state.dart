@@ -8,7 +8,7 @@ class NotificationVmFactory
   NotificationVmFactory();
 
   @override
-  NotificationViewModel? fromStore() => NotificationViewModel(
+  NotificationViewModel fromStore() => NotificationViewModel(
       models: state.notifications, selected: state.selectedNotification);
 }
 
