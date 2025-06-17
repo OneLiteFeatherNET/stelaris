@@ -22,7 +22,6 @@ dependencies:
   nil: ^1.1.1
   intl: ^0.20.2
   json_annotation: 4.9.0
-  flutter_colorpicker: ^1.1.0
   web: ^1.1.1
 
 dev_dependencies:
