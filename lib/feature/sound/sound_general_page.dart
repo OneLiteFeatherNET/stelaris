@@ -1,17 +1,13 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stelaris/api/model/sound/sound_event_model.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/sound/selected_sound_state.dart';
 import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
-import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris/feature/sound/card/sound_file_card.dart';
-import 'package:stelaris/util/functions.dart';
-import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 /// A widget that represents the general sound event management page.
 ///
@@ -19,7 +15,6 @@ import 'package:stelaris/util/constants.dart';
 /// of a selected sound event, including its name, material, title, description,
 /// and frame type. It provides a form for input and a save button to commit changes.
 class SoundGeneralPage extends StatefulWidget {
-  /// Creates an instance of [SoundGeneralPage].
   const SoundGeneralPage({super.key});
 
   @override
@@ -27,10 +22,7 @@ class SoundGeneralPage extends StatefulWidget {
 }
 
 class _SoundGeneralPageState extends State<SoundGeneralPage> {
-  /// A global key for the form to manage its state and validation.
-  final _key = GlobalKey<FormState>();
-
-  /// Scroll controller for the scrollable content
+  final _formKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -46,8 +38,10 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
       onDispose: (store) =>
           store.dispatch(RemoveSelectedSoundEvent(), notify: false),
       builder: (context, vm) {
+        final selected = vm.selected;
+
         return Form(
-          key: _key,
+          key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Stack(
             children: [
@@ -63,95 +57,60 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                         trackVisibility: true,
                         child: SingleChildScrollView(
                           controller: _scrollController,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Wrap(
-                              spacing: 16,
-                              runSpacing: 16,
-                              children: [
-                                TextInputCard<String>(
-                                  display: context.l10n.card_name,
-                                  currentValue:
-                                      vm.selected.variableName ?? emptyString,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      stringPattern,
-                                    ),
-                                  ],
-                                  valueUpdate: (value) {
-                                    if (value != vm.selected.variableName) {
-                                      final oldModel = vm.selected;
-                                      final newEntry = oldModel.copyWith(
-                                        variableName: value,
-                                      );
-                                      context.dispatch(
-                                        UpdateSoundAction(newEntry),
-                                      );
-                                    }
-                                  },
-                                  formValidator: (value) {
-                                    if (value.trim().isEmpty) {
-                                      return context.l10n.error_card_empty;
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                TextInputCard<String>(
-                                  display: 'Key',
-                                  currentValue:
-                                      vm.selected.keyName ?? emptyString,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      stringPattern,
-                                    ),
-                                  ],
-                                  valueUpdate: (value) {
-                                    if (value != vm.selected.keyName) {
-                                      final oldModel = vm.selected;
-                                      final newEntry = oldModel.copyWith(
-                                        keyName: value,
-                                      );
-                                      context.dispatch(
-                                        UpdateSoundAction(newEntry),
-                                      );
-                                    }
-                                  },
-                                  formValidator: (value) {
-                                    if (value.trim().isEmpty) {
-                                      return context.l10n.error_card_empty;
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                TextInputCard<String>(
-                                  display: 'Subtitle',
-                                  currentValue:
-                                      vm.selected.subTitle ?? emptyString,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      stringPattern,
-                                    ),
-                                  ],
-                                  valueUpdate: (value) {
-                                    if (value != vm.selected.subTitle) {
-                                      final oldModel = vm.selected;
-                                      final newEntry = oldModel.copyWith(
-                                        subTitle: value,
-                                      );
-                                      context.dispatch(
-                                        UpdateSoundAction(newEntry),
-                                      );
-                                    }
-                                  },
-                                  formValidator: (value) {
-                                    if (value.trim().isEmpty) {
-                                      return context.l10n.error_card_empty;
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ],
-                            ),
+                          padding: const EdgeInsets.all(16),
+                          child: Wrap(
+                            spacing: 16,
+                            runSpacing: 16,
+                            children: [
+                              _buildTextField(
+                                label: context.l10n.card_name,
+                                currentValue: selected.variableName,
+                                validator: (value) {
+                                  if (value!.trim().isEmpty) {
+                                    return context.l10n.error_card_empty;
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  final newEntry = selected.copyWith(
+                                    variableName: value,
+                                  );
+                                  context.dispatch(UpdateSoundAction(newEntry));
+                                },
+                              ),
+                              _buildTextField(
+                                label: 'Key',
+                                currentValue: selected.keyName,
+                                validator: (value) {
+                                  if (value!.trim().isEmpty) {
+                                    return context.l10n.error_card_empty;
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  final newEntry = selected.copyWith(
+                                    keyName: value,
+                                  );
+                                  context.dispatch(UpdateSoundAction(newEntry));
+                                },
+                              ),
+                              _buildTextField(
+                                label: 'Subtitle',
+                                currentValue: selected.subTitle,
+                                validator: (value) {
+                                  if (value!.trim().isEmpty) {
+                                    return context.l10n.error_card_empty;
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  final newEntry = selected.copyWith(
+                                    subTitle: value,
+                                  );
+                                  context.dispatch(UpdateSoundAction(newEntry));
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       );
@@ -161,7 +120,7 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
               ),
               PositionedSaveButton.standard(
                 callback: () {
-                  if (_key.currentState?.validate() ?? false) {
+                  if (_formKey.currentState?.validate() ?? false) {
                     context.dispatch(SoundDatabaseUpdate());
                   }
                 },
@@ -169,6 +128,27 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
             ],
           ),
         );
+      },
+    );
+  }
+
+  /// The method builds a reusable text input card for updating string values.
+  /// It takes different parameters to customize different aspects of the text field.
+  Widget _buildTextField({
+    required String label,
+    required String? currentValue,
+    required void Function(String) onChanged,
+    String? Function(dynamic)? validator,
+  }) {
+    return TextInputCard<String>(
+      display: label,
+      currentValue: currentValue ?? emptyString,
+      formatter: [FilteringTextInputFormatter.allow(stringPattern)],
+      formValidator: validator,
+      valueUpdate: (value) {
+        if (value != currentValue) {
+          onChanged(value);
+        }
       },
     );
   }
