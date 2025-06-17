@@ -37,6 +37,7 @@ class TextInputCard<E> extends StatefulWidget {
 class _TextInputCardState extends State<TextInputCard> {
   final TextEditingController _editController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  final _borderRadius = BorderRadius.circular(8);
 
   @override
   void initState() {
@@ -54,84 +55,76 @@ class _TextInputCardState extends State<TextInputCard> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final borderRadius = BorderRadius.circular(8);
+    final outlineBorder = OutlineInputBorder(
+      borderRadius: _borderRadius,
+      borderSide: BorderSide(
+        color: colorScheme.outline,
+      ),
+    );
 
-    return Padding(
-      padding: padding,
-      child: BaseCard(
-        display: widget.display,
-        widget: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 300),
-            child: Focus(
-              focusNode: _focusNode,
-              child: TextFormField(
-                maxLength: widget.maxLength,
-                autovalidateMode: widget.formValidator != null
-                    ? AutovalidateMode.onUserInteraction
-                    : AutovalidateMode.disabled,
-                autocorrect: false,
-                controller: _editController,
-                keyboardType: widget.inputType,
-                inputFormatters: widget.formatter,
-                validator: widget.formValidator,
-                style: TextStyle(
-                  color: colorScheme.onSurface,
-                  fontSize: 16,
-                ),
-                decoration: InputDecoration(
-                  hintText: widget.hintText,
-                  hintStyle: TextStyle(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: borderRadius,
-                    borderSide: BorderSide(
-                      color: colorScheme.outline,
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: borderRadius,
-                    borderSide: BorderSide(
-                      color: colorScheme.outline,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: borderRadius,
-                    borderSide: BorderSide(
-                      color: colorScheme.primary,
-                      width: 2,
-                    ),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderRadius: borderRadius,
-                    borderSide: BorderSide(
-                      color: colorScheme.error,
-                    ),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: borderRadius,
-                    borderSide: BorderSide(
-                      color: colorScheme.error,
-                      width: 2,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                ),
-                textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
+    return BaseCard(
+      display: widget.display,
+      widget: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 300),
+          child: Focus(
+            focusNode: _focusNode,
+            child: TextFormField(
+              maxLength: widget.maxLength,
+              autovalidateMode: widget.formValidator != null
+                  ? AutovalidateMode.onUserInteraction
+                  : AutovalidateMode.disabled,
+              autocorrect: false,
+              controller: _editController,
+              keyboardType: widget.inputType,
+              inputFormatters: widget.formatter,
+              validator: widget.formValidator,
+              style: TextStyle(
+                color: colorScheme.onSurface,
+                fontSize: 16,
               ),
-              onFocusChange: (focus) {
-                if (focus) return;
-                _handleFieldSubmitted(_editController.text);
-              },
+              decoration: InputDecoration(
+                hintText: widget.hintText,
+                hintStyle: TextStyle(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                border: outlineBorder,
+                enabledBorder: outlineBorder,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: _borderRadius,
+                  borderSide: BorderSide(
+                    color: colorScheme.primary,
+                    width: 2,
+                  ),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderRadius: _borderRadius,
+                  borderSide: BorderSide(
+                    color: colorScheme.error,
+                  ),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: _borderRadius,
+                  borderSide: BorderSide(
+                    color: colorScheme.error,
+                    width: 2,
+                  ),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+              ),
+              textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
             ),
+            onFocusChange: (focus) {
+              if (focus) return;
+              _handleFieldSubmitted(_editController.text);
+            },
           ),
         ),
-        message: widget.tooltipMessage,
       ),
+      message: widget.tooltipMessage,
     );
   }
 

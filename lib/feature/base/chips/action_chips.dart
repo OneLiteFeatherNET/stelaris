@@ -24,21 +24,34 @@ class ActionChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ActionChip(
-          avatar: const Icon(Icons.add),
-          label: Text(context.l10n.button_add),
-          onPressed: addCallback,
-        ),
-        SizedBox(width: spacing),
-        FilledButton.icon(
-          icon: const Icon(Icons.check),
-          label: Text(context.l10n.button_save),
-          onPressed: saveCallback,
-        ),
-      ],
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      final bool spaceIsToLow = constraints.maxWidth < 230;
+      return Flex(
+        direction: spaceIsToLow ? Axis.vertical : Axis.horizontal,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: ActionChip(
+              avatar: const Icon(Icons.add),
+              label: Text(context.l10n.button_add),
+              onPressed: addCallback,
+            ),
+          ),
+          SizedBox(
+            width: spaceIsToLow ? 0 : spacing,
+            height: spaceIsToLow ? spacing : 0,
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: FilledButton.icon(
+              icon: const Icon(Icons.check),
+              label: Text(context.l10n.button_save),
+              onPressed: saveCallback,
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
