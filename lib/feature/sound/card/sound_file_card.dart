@@ -38,7 +38,6 @@ class SoundFileCard extends StatelessWidget {
                         eventModel.name,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: theme.colorScheme.onSurface,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 4),
