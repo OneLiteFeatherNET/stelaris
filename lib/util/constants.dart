@@ -62,4 +62,4 @@ const double sizeFifty = 50;
 const borderRadius12 = BorderRadius.all(Radius.circular(12));
 
 const String conceptURL = 'https://docs.onelitefeather.network/doc/stelaris-S1nldMzySr#h-43-build-page';
-const String gitUrl = 'https://gitlab.onelitefeather.dev/dungeon/frontend/stelaris-ui/-/issues/new';
+const String gitUrl = 'https://github.com/OneLiteFeatherNET/stelaris/issues1';
