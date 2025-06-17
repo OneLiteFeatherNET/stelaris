@@ -6,7 +6,6 @@ import 'package:stelaris/api/model/sound/sound_file_source.dart';
 part 'sound_event_model.freezed.dart';
 part 'sound_event_model.g.dart';
 
-
 @freezed
 abstract class SoundEventModel with _$SoundEventModel, DataModel {
 
