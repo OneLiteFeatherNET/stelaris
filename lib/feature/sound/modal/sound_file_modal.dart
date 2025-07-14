@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SoundFileModal extends StatefulWidget {
   final void Function({
@@ -42,7 +43,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
 
   @override
   Widget build(BuildContext context) {
-    final surfaceVariant = Theme.of(context).colorScheme.surfaceVariant;
+    final surfaceVariant = Theme.of(context).colorScheme.surfaceContainerHighest;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Padding(
@@ -105,6 +106,9 @@ class _SoundFileModalState extends State<SoundFileModal> {
                           labelText: 'Weight',
                           border: OutlineInputBorder(),
                         ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                         validator: (v) {
                           if (v == null || v.isEmpty) return 'Enter a weight';
                           final val = int.tryParse(v);
@@ -122,6 +126,9 @@ class _SoundFileModalState extends State<SoundFileModal> {
                           labelText: 'Attenuation Distance',
                           border: OutlineInputBorder(),
                         ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                         validator: (v) {
                           if (v == null || v.isEmpty) return 'Enter a distance';
                           final val = int.tryParse(v);
