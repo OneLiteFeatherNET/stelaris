@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stelaris/feature/sound/modal/section/volume_section.dart';
 
 class SoundFileModal extends StatefulWidget {
   final void Function({
@@ -61,33 +62,11 @@ class _SoundFileModalState extends State<SoundFileModal> {
                 ),
                 const SizedBox(height: 24),
                 // Section 1: Volume & Pitch
-                Container(
-                  decoration: BoxDecoration(
-                    color: surfaceVariant,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      _sliderRow(
-                        'Volume',
-                        _volume,
-                        (v) => setState(() => _volume = v),
-                        min: 0,
-                        max: 2,
-                        divisions: 100,
-                      ),
-                      const SizedBox(height: 12),
-                      _sliderRow(
-                        'Pitch',
-                        _pitch,
-                        (v) => setState(() => _pitch = v),
-                        min: 0,
-                        max: 2,
-                        divisions: 100,
-                      ),
-                    ],
-                  ),
+                VolumeSection(
+                  initialPitch: _pitch,
+                  initialVolume: _volume,
+                  onPitchFinalized: (v) => setState(() => _pitch = v),
+                  onVolumeFinalized: (v) => setState(() => _volume = v),
                 ),
                 const SizedBox(height: 16),
                 // Section 2: Integer fields
@@ -237,34 +216,6 @@ class _SoundFileModalState extends State<SoundFileModal> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _sliderRow(
-    String label,
-    double value,
-    ValueChanged<double> onChanged, {
-    double min = 0,
-    double max = 1,
-    int? divisions,
-  }) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 100,
-          child: Text(label, style: Theme.of(context).textTheme.bodyLarge),
-        ),
-        Expanded(
-          child: Slider(
-            value: value,
-            min: min,
-            max: max,
-            divisions: divisions,
-            label: value.toStringAsFixed(2),
-            onChanged: onChanged,
-          ),
-        ),
-      ],
     );
   }
 }
