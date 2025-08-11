@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stelaris/feature/base/button/cancel_button.dart';
+import 'package:stelaris/feature/sound/modal/section/integer_fields_section.dart';
+import 'package:stelaris/feature/sound/modal/section/sound_switch_section.dart';
 import 'package:stelaris/feature/sound/modal/section/volume_section.dart';
 
 class SoundFileModal extends StatefulWidget {
@@ -12,7 +15,7 @@ class SoundFileModal extends StatefulWidget {
     required bool preload,
     required String type,
   })?
-  onSave;
+      onSave;
 
   final bool create;
 
@@ -32,19 +35,12 @@ class _SoundFileModalState extends State<SoundFileModal> {
   String _type = 'file';
 
   final _formKey = GlobalKey<FormState>();
-  final _weightController = TextEditingController(text: '1');
-  final _attenuationController = TextEditingController(text: '16');
-
-  @override
-  void dispose() {
-    _weightController.dispose();
-    _attenuationController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    final surfaceVariant = Theme.of(context).colorScheme.surfaceContainerHighest;
+    final surfaceVariant = Theme.of(
+      context,
+    ).colorScheme.surfaceContainerHighest;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Padding(
@@ -69,98 +65,28 @@ class _SoundFileModalState extends State<SoundFileModal> {
                   onVolumeFinalized: (v) => setState(() => _volume = v),
                 ),
                 const SizedBox(height: 16),
-                // Section 2: Integer fields
                 Container(
                   decoration: BoxDecoration(
                     color: surfaceVariant,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: _weightController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: 'Weight',
-                          border: OutlineInputBorder(),
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        validator: (v) {
-                          if (v == null || v.isEmpty) return 'Enter a weight';
-                          final val = int.tryParse(v);
-                          if (val == null) return 'Enter a valid integer';
-                          return null;
-                        },
-                        onChanged: (v) =>
-                            setState(() => _weight = int.tryParse(v) ?? 1),
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: _attenuationController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: 'Attenuation Distance',
-                          border: OutlineInputBorder(),
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        validator: (v) {
-                          if (v == null || v.isEmpty) return 'Enter a distance';
-                          final val = int.tryParse(v);
-                          if (val == null) return 'Enter a valid integer';
-                          return null;
-                        },
-                        onChanged: (v) => setState(
-                          () => _attenuationDistance = int.tryParse(v) ?? 16,
-                        ),
-                      ),
-                    ],
+                  child: IntegerFieldsSection(
+                    initialWeight: _weight,
+                    initialAttenuationDistance: _attenuationDistance,
+                    onWeightChanged: (v) => setState(() => _weight = v),
+                    onAttenuationDistanceChanged: (v) =>
+                        setState(() => _attenuationDistance = v),
                   ),
                 ),
                 const SizedBox(height: 16),
                 // Section 3: Switches
-                Container(
-                  decoration: BoxDecoration(
-                    color: surfaceVariant,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Stream',
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                          ),
-                          Switch(
-                            value: _stream,
-                            onChanged: (v) => setState(() => _stream = v),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Preload',
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                          ),
-                          Switch(
-                            value: _preload,
-                            onChanged: (v) => setState(() => _preload = v),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                SwitchesSection(
+                  streamValue: _stream,
+                  onStreamChanged: (v) => setState(() => _stream = v),
+                  preloadValue: _preload,
+                  onPreloadChanged: (v) => setState(() => _preload = v),
+                  backgroundColor: surfaceVariant, // Pass the color
                 ),
                 const SizedBox(height: 16),
                 // Section 4: Type dropdown
@@ -187,10 +113,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    OutlinedButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Cancel'),
-                    ),
+                    CancelButton(callback: () => Navigator.pop(context)),
                     const SizedBox(width: 12),
                     FilledButton(
                       onPressed: () {
