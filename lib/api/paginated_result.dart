@@ -71,19 +71,6 @@ class PaginatedResult<T> {
     );
   }
 
-  /// Creates an empty paginated result.
-  ///
-  /// Useful for initializing state before data is loaded.
-  factory PaginatedResult.empty() {
-    return PaginatedResult<T>(
-      items: [],
-      totalItems: 0,
-      totalPages: 0,
-      currentPage: 1,
-      pageSize: 0,
-    );
-  }
-
   /// Creates a paginated result from a JSON map.
   ///
   /// The [fromJson] parameter is a function that converts a JSON object
