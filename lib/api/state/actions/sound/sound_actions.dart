@@ -54,10 +54,10 @@ class SoundAddAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-   // final SoundEventModel added = await ApiService().soundApi.add(_model);
+    final SoundEventModel added = await ApiService().soundApi.add(_model);
     final List<SoundEventModel> sounds = List.of(state.soundEvents, growable: true);
-    sounds.add(_model);
-    return state.copyWith(soundEvents: sounds, selectedSoundEvent: _model);
+    sounds.add(added);
+    return state.copyWith(soundEvents: sounds, selectedSoundEvent: added);
   }
 }
 
@@ -76,7 +76,7 @@ class SoundDatabaseUpdate extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    if (state.selectedFont == null) return null;
+    if (state.selectedSoundEvent == null) return null;
     final SoundEventModel selected = state.selectedSoundEvent!;
     final SoundEventModel dbModel = await ApiService().soundApi.update(selected);
     final List<SoundEventModel> models = List.of(state.soundEvents, growable: true);
