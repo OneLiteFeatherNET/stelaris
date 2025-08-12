@@ -10,9 +10,9 @@ import 'package:stelaris/api/model/data_model.dart';
 /// For example, it expects the following endpoint structure for each model type:
 ///   - GET    /<endpoint>
 ///   - POST   /<endpoint>
-///   - GET    /<endpoint>/getAll
+///   - GET    /<endpoint>/all
 ///   - POST   /<endpoint>/update
-///   - DELETE /<endpoint>/remove/<id>
+///   - DELETE /<endpoint>/delete/<id>
 ///
 /// Only use this base class when your API strictly adheres to this pattern for all CRUD operations. If your endpoints or data formats differ, consider implementing a custom service instead.
 ///
@@ -52,7 +52,7 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
   @override
   Future<List<T>> getAll([int page = 1, int items = 20]) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/getAll');
+    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/all');
     final result = await apiClient.dio.getUri(uri);
     return _formatter.fromJson(result.data!);
   }
