@@ -13,11 +13,14 @@ _SoundEventModel _$SoundEventModelFromJson(Map<String, dynamic> json) =>
       variableName: json['variableName'] as String?,
       keyName: json['keyName'] as String?,
       subTitle: json['subTitle'] as String?,
-      files:
-          (json['files'] as List<dynamic>?)
-              ?.map((e) => SoundFileSource.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          null,
+      files: json['files'] == null
+          ? SoundEventModel._defaultFiles
+          : PaginatedResult<SoundFileSource>.fromJson(
+              json['files'] as Map<String, dynamic>,
+              (value) =>
+                  SoundFileSource.fromJson(value as Map<String, dynamic>),
+            ),
+      isLoading: json['isLoading'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$SoundEventModelToJson(_SoundEventModel instance) =>
@@ -27,5 +30,5 @@ Map<String, dynamic> _$SoundEventModelToJson(_SoundEventModel instance) =>
       'variableName': instance.variableName,
       'keyName': instance.keyName,
       'subTitle': instance.subTitle,
-      'files': instance.files,
+      'files': instance.files.toJson((value) => value),
     };
