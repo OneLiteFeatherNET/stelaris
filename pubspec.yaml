@@ -24,6 +24,10 @@ dependencies:
   intl: ^0.20.2
   json_annotation: 4.9.0
   web: ^1.1.1
+  vulpes_backend_client:
+    git:
+      url: https://github.com/OneLiteFeatherNET/vulpes-backend-client-dart.git
+    version: 1.2.0-beta.23
 
 dev_dependencies:
   flutter_test:
