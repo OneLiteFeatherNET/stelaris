@@ -55,7 +55,7 @@ class _DropdownCardState<E, T> extends State<DropdownCard<E, T>> {
                   key: widget.formKey,
                   child: DropdownButtonFormField<E>(
                     items: widget.items,
-                    value: widget.defaultValue(widget.currentValue),
+                    initialValue: widget.defaultValue(widget.currentValue),
                     onChanged: (E? value) {
                       if (value == null) return;
                       setState(() => widget.valueUpdate(value));

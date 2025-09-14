@@ -61,7 +61,7 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
         horizontalSpacing10,
         DropdownButtonFormField<Enchantment?>(
           autofocus: true,
-          value: _selected.value,
+          initialValue: _selected.value,
           items: enchantments,
           onChanged: (value) {
             _selected.value = value;
