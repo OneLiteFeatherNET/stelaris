@@ -90,7 +90,7 @@ class FontDatabaseUpdate extends ReduxAction<AppState> {
 
 /// Fetches additional characters for the selected font and updates the state.
 /// Requires the id of the [FontModel] to fetch the characters for it.
-class FontCharAction extends ReduxAction<AppState> {
+class FontCharFetchAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
