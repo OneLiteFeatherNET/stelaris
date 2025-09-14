@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ItemLoreModel {
 
- String get id; Map<String, int> get enchantments;
+ String get id; List<String> get lore;
 /// Create a copy of ItemLoreModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ItemLoreModelCopyWith<ItemLoreModel> get copyWith => _$ItemLoreModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ItemLoreModel&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.enchantments, enchantments));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ItemLoreModel&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.lore, lore));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(enchantments));
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(lore));
 
 @override
 String toString() {
-  return 'ItemLoreModel(id: $id, enchantments: $enchantments)';
+  return 'ItemLoreModel(id: $id, lore: $lore)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ItemLoreModelCopyWith<$Res>  {
   factory $ItemLoreModelCopyWith(ItemLoreModel value, $Res Function(ItemLoreModel) _then) = _$ItemLoreModelCopyWithImpl;
 @useResult
 $Res call({
- String id, Map<String, int> enchantments
+ String id, List<String> lore
 });
 
 
@@ -65,11 +65,11 @@ class _$ItemLoreModelCopyWithImpl<$Res>
 
 /// Create a copy of ItemLoreModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? enchantments = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? lore = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,enchantments: null == enchantments ? _self.enchantments : enchantments // ignore: cast_nullable_to_non_nullable
-as Map<String, int>,
+as String,lore: null == lore ? _self.lore : lore // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -154,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  Map<String, int> enchantments)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  List<String> lore)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ItemLoreModel() when $default != null:
-return $default(_that.id,_that.enchantments);case _:
+return $default(_that.id,_that.lore);case _:
   return orElse();
 
 }
@@ -175,10 +175,10 @@ return $default(_that.id,_that.enchantments);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  Map<String, int> enchantments)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  List<String> lore)  $default,) {final _that = this;
 switch (_that) {
 case _ItemLoreModel():
-return $default(_that.id,_that.enchantments);case _:
+return $default(_that.id,_that.lore);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +195,10 @@ return $default(_that.id,_that.enchantments);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  Map<String, int> enchantments)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  List<String> lore)?  $default,) {final _that = this;
 switch (_that) {
 case _ItemLoreModel() when $default != null:
-return $default(_that.id,_that.enchantments);case _:
+return $default(_that.id,_that.lore);case _:
   return null;
 
 }
@@ -210,15 +210,15 @@ return $default(_that.id,_that.enchantments);case _:
 @JsonSerializable()
 
 class _ItemLoreModel extends ItemLoreModel {
-  const _ItemLoreModel({required this.id, required final  Map<String, int> enchantments}): _enchantments = enchantments,super._();
+  const _ItemLoreModel({required this.id, required final  List<String> lore}): _lore = lore,super._();
   factory _ItemLoreModel.fromJson(Map<String, dynamic> json) => _$ItemLoreModelFromJson(json);
 
 @override final  String id;
- final  Map<String, int> _enchantments;
-@override Map<String, int> get enchantments {
-  if (_enchantments is EqualUnmodifiableMapView) return _enchantments;
+ final  List<String> _lore;
+@override List<String> get lore {
+  if (_lore is EqualUnmodifiableListView) return _lore;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_enchantments);
+  return EqualUnmodifiableListView(_lore);
 }
 
 
@@ -235,16 +235,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ItemLoreModel&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other._enchantments, _enchantments));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ItemLoreModel&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other._lore, _lore));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_enchantments));
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_lore));
 
 @override
 String toString() {
-  return 'ItemLoreModel(id: $id, enchantments: $enchantments)';
+  return 'ItemLoreModel(id: $id, lore: $lore)';
 }
 
 
@@ -255,7 +255,7 @@ abstract mixin class _$ItemLoreModelCopyWith<$Res> implements $ItemLoreModelCopy
   factory _$ItemLoreModelCopyWith(_ItemLoreModel value, $Res Function(_ItemLoreModel) _then) = __$ItemLoreModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, Map<String, int> enchantments
+ String id, List<String> lore
 });
 
 
@@ -272,11 +272,11 @@ class __$ItemLoreModelCopyWithImpl<$Res>
 
 /// Create a copy of ItemLoreModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? enchantments = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? lore = null,}) {
   return _then(_ItemLoreModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,enchantments: null == enchantments ? _self._enchantments : enchantments // ignore: cast_nullable_to_non_nullable
-as Map<String, int>,
+as String,lore: null == lore ? _self._lore : lore // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ItemFlagModel {
 
- String get id; List<String> get flags;
+ String get id; Set<String> get flags;
 /// Create a copy of ItemFlagModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $ItemFlagModelCopyWith<$Res>  {
   factory $ItemFlagModelCopyWith(ItemFlagModel value, $Res Function(ItemFlagModel) _then) = _$ItemFlagModelCopyWithImpl;
 @useResult
 $Res call({
- String id, List<String> flags
+ String id, Set<String> flags
 });
 
 
@@ -69,7 +69,7 @@ class _$ItemFlagModelCopyWithImpl<$Res>
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,flags: null == flags ? _self.flags : flags // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as Set<String>,
   ));
 }
 
@@ -154,7 +154,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  List<String> flags)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  Set<String> flags)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ItemFlagModel() when $default != null:
 return $default(_that.id,_that.flags);case _:
@@ -175,7 +175,7 @@ return $default(_that.id,_that.flags);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  List<String> flags)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  Set<String> flags)  $default,) {final _that = this;
 switch (_that) {
 case _ItemFlagModel():
 return $default(_that.id,_that.flags);case _:
@@ -195,7 +195,7 @@ return $default(_that.id,_that.flags);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  List<String> flags)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  Set<String> flags)?  $default,) {final _that = this;
 switch (_that) {
 case _ItemFlagModel() when $default != null:
 return $default(_that.id,_that.flags);case _:
@@ -210,15 +210,15 @@ return $default(_that.id,_that.flags);case _:
 @JsonSerializable()
 
 class _ItemFlagModel extends ItemFlagModel {
-  const _ItemFlagModel({required this.id, required final  List<String> flags}): _flags = flags,super._();
+  const _ItemFlagModel({required this.id, required final  Set<String> flags}): _flags = flags,super._();
   factory _ItemFlagModel.fromJson(Map<String, dynamic> json) => _$ItemFlagModelFromJson(json);
 
 @override final  String id;
- final  List<String> _flags;
-@override List<String> get flags {
-  if (_flags is EqualUnmodifiableListView) return _flags;
+ final  Set<String> _flags;
+@override Set<String> get flags {
+  if (_flags is EqualUnmodifiableSetView) return _flags;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_flags);
+  return EqualUnmodifiableSetView(_flags);
 }
 
 
@@ -255,7 +255,7 @@ abstract mixin class _$ItemFlagModelCopyWith<$Res> implements $ItemFlagModelCopy
   factory _$ItemFlagModelCopyWith(_ItemFlagModel value, $Res Function(_ItemFlagModel) _then) = __$ItemFlagModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, List<String> flags
+ String id, Set<String> flags
 });
 
 
@@ -276,7 +276,7 @@ class __$ItemFlagModelCopyWithImpl<$Res>
   return _then(_ItemFlagModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,flags: null == flags ? _self._flags : flags // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as Set<String>,
   ));
 }
 

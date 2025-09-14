@@ -2,6 +2,9 @@ import 'dart:ui';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/model/item/item_enchantment_model.dart';
+import 'package:stelaris/api/model/item/item_flag_model.dart';
+import 'package:stelaris/api/model/item/item_lore_model.dart';
 import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/minecraft/enchantment.dart';
@@ -18,7 +21,6 @@ class SelectedItemAction extends ReduxAction<AppState> {
 }
 
 class RemoveSelectItemAction extends ReduxAction<AppState> {
-
   RemoveSelectItemAction();
 
   @override
@@ -40,7 +42,6 @@ class UpdateItemAction extends ReduxAction<AppState> {
 }
 
 class ItemFlagResetAction extends ReduxAction<AppState> {
-
   @override
   Future<AppState?> reduce() async {
     if (state.selectedItem == null) return null;
@@ -89,7 +90,6 @@ class RemoveItemAction extends ReduxAction<AppState> {
 }
 
 class ItemDatabaseUpdate extends ReduxAction<AppState> {
-
   ItemDatabaseUpdate();
 
   @override
@@ -120,9 +120,7 @@ class AddEnchantmentAction extends ReduxAction<AppState> {
 
     final updatedItem = selectedItem.copyWith(enchantments: enchantments);
 
-    return state.copyWith(
-      selectedItem: updatedItem,
-    );
+    return state.copyWith(selectedItem: updatedItem);
   }
 }
 
@@ -188,9 +186,7 @@ class UpdateEnchantmentLevelAction extends ReduxAction<AppState> {
 
     final updatedItem = selectedItem.copyWith(enchantments: enchantments);
 
-    return state.copyWith(
-      selectedItem: updatedItem,
-    );
+    return state.copyWith(selectedItem: updatedItem);
   }
 }
 
@@ -208,9 +204,7 @@ class DeleteEnchantmentAction extends ReduxAction<AppState> {
 
     final updatedItem = selectedItem.copyWith(enchantments: enchantments);
 
-    return state.copyWith(
-      selectedItem: updatedItem,
-    );
+    return state.copyWith(selectedItem: updatedItem);
   }
 
   @override
@@ -231,9 +225,7 @@ class ResetEnchantmentsAction extends ReduxAction<AppState> {
     final selectedItem = state.selectedItem!;
     final updatedItem = selectedItem.copyWith(enchantments: {});
 
-    return state.copyWith(
-      selectedItem: updatedItem,
-    );
+    return state.copyWith(selectedItem: updatedItem);
   }
 
   @override
@@ -241,5 +233,47 @@ class ResetEnchantmentsAction extends ReduxAction<AppState> {
     if (onComplete != null) {
       onComplete!();
     }
+  }
+}
+
+/// Fetches lore for the selected item and appends it to existing lore.
+/// Requires the id of the [ItemModel] to fetch the lore for it.
+class ItemLoreFetchAction extends ReduxAction<AppState> {
+  @override
+  Future<AppState?> reduce() async {
+    if (state.selectedItem == null) return null;
+    final ItemModel selected = state.selectedItem!;
+    final ItemLoreModel lore = await ApiService().itemApi.getLore(selected.id!);
+    final ItemModel updatedItem = selected.copyWith(lore: lore.lore);
+    return state.copyWith(selectedItem: updatedItem);
+  }
+}
+
+/// Fetches enchantments for the selected item and appends it to existing enchantments.
+/// Requires the id of the [ItemModel] to fetch the enchantments for it.
+class ItemEnchantmentFetchAction extends ReduxAction<AppState> {
+  @override
+  Future<AppState?> reduce() async {
+    if (state.selectedItem == null) return null;
+    final ItemModel selected = state.selectedItem!;
+    final ItemEnchantmentModel dbModel = await ApiService().itemApi
+        .getEnchantments(selected.id!);
+    final ItemModel updatedItem = selected.copyWith(
+      enchantments: dbModel.enchantments,
+    );
+    return state.copyWith(selectedItem: updatedItem);
+  }
+}
+
+class ItemFlagFetchAction extends ReduxAction<AppState> {
+  @override
+  Future<AppState?> reduce() async {
+    if (state.selectedItem == null) return null;
+    final ItemModel selected = state.selectedItem!;
+    final ItemFlagModel dbModel = await ApiService().itemApi.getFlags(selected.id!);
+    final ItemModel updatedItem  = selected.copyWith(
+      flags: dbModel.flags,
+    );
+    return state.copyWith(selectedItem: updatedItem);
   }
 }
