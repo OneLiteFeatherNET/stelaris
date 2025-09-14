@@ -17,27 +17,28 @@ class _VersionGroupSelectionState extends State<VersionGroupSelection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        RadioListTile(
-          title: Text(VersionPart.major.description),
-          value: VersionPart.major,
-          groupValue: _selectedPart,
-          onChanged: (VersionPart? value) => _updateGroupValue(value ?? VersionPart.major),
-        ),
-        RadioListTile(
-          title: Text(VersionPart.minor.description),
-          value: VersionPart.minor,
-          groupValue: _selectedPart,
-          onChanged: (VersionPart? value) => _updateGroupValue(value ?? VersionPart.minor),
-        ),
-        RadioListTile(
-          title: Text(VersionPart.patch.description),
-          value: VersionPart.patch,
-          groupValue: _selectedPart,
-          onChanged: (VersionPart? value) => _updateGroupValue(value ?? VersionPart.patch),
-        ),
-      ],
+    return RadioGroup(
+      groupValue: _selectedPart,
+      onChanged: (VersionPart? value) {
+        if (value == null) return;
+        _updateGroupValue(value);
+      },
+      child: Column(
+        children: [
+          RadioListTile(
+            title: Text(VersionPart.major.description),
+            value: VersionPart.major,
+          ),
+          RadioListTile(
+            title: Text(VersionPart.minor.description),
+            value: VersionPart.minor,
+          ),
+          RadioListTile(
+            title: Text(VersionPart.patch.description),
+            value: VersionPart.patch,
+          ),
+        ],
+      ),
     );
   }
 
