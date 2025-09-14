@@ -10,7 +10,7 @@ abstract class ItemLoreModel with _$ItemLoreModel {
 
   const factory ItemLoreModel({
     required String id,
-    required Map<String, int> enchantments,
+    required List<String> lore,
   }) = _ItemLoreModel;
 
   factory ItemLoreModel.fromJson(Map<String, dynamic> json) =>

@@ -10,7 +10,7 @@ abstract class ItemFlagModel with _$ItemFlagModel {
 
   const factory ItemFlagModel({
     required String id,
-    required List<String> flags,
+    required Set<String> flags,
   }) = _ItemFlagModel;
 
   factory ItemFlagModel.fromJson(Map<String, dynamic> json) =>
