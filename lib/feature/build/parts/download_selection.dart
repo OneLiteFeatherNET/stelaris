@@ -54,7 +54,7 @@ class _DownloadSelectionState extends State<DownloadSelection> {
             width: 300,
             child: DropdownButtonFormField<String>(
               items: widget.branches,
-              value: defaultValue,
+              initialValue: defaultValue,
               onChanged: (String? value) {
                 if (value == null) return;
                 defaultValue = value;
