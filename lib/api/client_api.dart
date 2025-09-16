@@ -1,4 +1,5 @@
 import 'package:stelaris/api/model/data_model.dart';
+import 'package:stelaris/api/paginated_result.dart';
 
 /// A generic client API interface for CRUD operations on data models.
 ///
@@ -59,6 +60,11 @@ abstract class ClientAPI<T extends DataModel> {
   /// final secondPage = await api.getAll(2, 50);
   /// ```
   Future<List<T>> getAll([int page = 1, int items = 20]);
+
+  /// Retrieves a paginated page of models with metadata.
+  ///
+  /// Returns a [PaginatedResult] which includes items and pagination info.
+  Future<PaginatedResult<T>> getPage({int page = 1, int size = 20});
 
   /// Updates an existing model in the data store.
   ///

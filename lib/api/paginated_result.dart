@@ -101,16 +101,48 @@ class PaginatedResult<T extends DataModel> {
       Map<String, dynamic> json,
       T Function(Map<String, dynamic>) fromJson,
       ) {
-    final itemsList = (json['items'] as List?)
-        ?.map((item) => fromJson(item as Map<String, dynamic>))
-        .toList() ?? [];
+    // Accept items under common keys: items, content, data
+    final dynamic rawItems =
+        json['items'] ?? json['content'] ?? json['data'];
+    final List<T> itemsList = (rawItems is List)
+        ? rawItems
+        .whereType<Map<String, dynamic>>()
+        .map((e) => fromJson(e))
+        .toList()
+        : <T>[];
+
+    // Page size: pageSize | size | pageable.size | default to items length
+    final int pageSize = _asInt(
+      json['pageSize'] ?? json['size'] ?? (json['pageable'] is Map
+          ? (json['pageable'] as Map)['size']
+          : null),
+    ) ?? itemsList.length;
+
+    // Total items: totalItems | totalSize | totalElements | default to items length
+    final int totalItems = _asInt(
+      json['totalItems'] ?? json['totalSize'] ?? json['totalElements'],
+    ) ?? itemsList.length;
+
+    // Current page (1-based): currentPage | page | pageable.number (0-based)
+    final int currentZero = _asInt(
+      json['page'] ?? json['currentPage'] ?? (json['pageable'] is Map
+          ? (json['pageable'] as Map)['number']
+          : null),
+    ) ?? 0;
+    final int currentPage = (json['currentPage'] is int)
+        ? (json['currentPage'] as int)
+        : (currentZero + 1);
+
+    // Total pages: provided or compute from totalItems and pageSize
+    final int totalPages = _asInt(json['totalPages']) ??
+        ((pageSize > 0) ? ((totalItems + pageSize - 1) ~/ pageSize) : 1);
 
     return PaginatedResult<T>(
       items: itemsList,
-      totalItems: json['totalItems'] as int? ?? 0,
-      totalPages: json['totalPages'] as int? ?? 0,
-      currentPage: json['currentPage'] as int? ?? 1,
-      pageSize: json['pageSize'] as int? ?? itemsList.length,
+      totalItems: totalItems,
+      totalPages: totalPages,
+      currentPage: currentPage,
+      pageSize: pageSize,
     );
   }
 
@@ -120,12 +152,21 @@ class PaginatedResult<T extends DataModel> {
   /// of type [T] to a JSON object.
   Map<String, dynamic> toJson(Map<String, dynamic> Function(T) toJson) {
     return {
+      // Persist under a stable key
       'items': items.map(toJson).toList(),
       'totalItems': totalItems,
       'totalPages': totalPages,
       'currentPage': currentPage,
       'pageSize': pageSize,
     };
+  }
+
+  // Helper to safely parse ints from dynamic values
+  static int? _asInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value);
+    return null;
   }
 
   /// Returns a string representation of this paginated result.
