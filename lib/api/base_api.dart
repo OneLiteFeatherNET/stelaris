@@ -72,7 +72,6 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
     );
     final result = await apiClient.dio.getUri(uri);
     final data = result.data;
-    debugPrint('data is $data');
     return PaginatedResult.fromJson(data, fromJson);
   }
 
