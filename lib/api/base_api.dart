@@ -2,6 +2,7 @@ import 'package:stelaris/api/api_client.dart';
 import 'package:stelaris/api/client_api.dart';
 import 'package:stelaris/api/converter/model_list_converter.dart';
 import 'package:stelaris/api/model/data_model.dart';
+import 'package:stelaris/api/paginated_result.dart';
 
 /// A generic base class for CRUD API services.
 ///
@@ -71,5 +72,28 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
     final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/delete/${model.id}');
     final result = await apiClient.dio.deleteUri(uri);
     return fromJson(result.data!);
+  }
+
+  @override
+  Future<PaginatedResult<T>> getPage({int page = 1, int size = 10}) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    // Reuse the /all endpoint with query params if that's the convention.
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/$endpoint/all',
+      queryParameters: {
+        'page': (page - 1).toString(), // many backends use 0-based
+        'size': size.toString(),
+      },
+    );
+    final result = await apiClient.dio.getUri(uri);
+    final data = result.data;
+    return PaginatedResult.fromJson(data, fromJson);
+  }
+
+  int? _asInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value);
+    return null;
   }
 }
