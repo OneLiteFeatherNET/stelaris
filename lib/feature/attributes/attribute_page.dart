@@ -35,7 +35,6 @@ class _AttributePageState extends State<AttributePage> {
       onInit: (store) => store.dispatchAndWait(InitAttributeAction()),
       onDispose: (store) => store.dispatch(RemoveSelectAttributeAction(), notify: false),
       builder: (context, vm) {
-        const hasMore = false; // Using store-sourced list; no local load-more.
         return Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,9 +51,11 @@ class _AttributePageState extends State<AttributePage> {
               callFunction: (model) => context.dispatch(SelectAttributeAction(model)),
               models: vm.models,
               compareFunction: (model) => vm.isSelectedItem(model),
-              hasMore: hasMore,
-              isLoadingMore: false,
-              onLoadMore: null,
+              hasMore: vm.hasNextPage,
+              isLoadingMore: vm.isLoadingMore,
+              onLoadMore: vm.hasNextPage && !vm.isLoadingMore
+                  ? () => context.dispatch(InitAttributeAction())
+                  : null,
             ),
             if (vm.selected != null) _mapModelToWidget(vm.selected)!,
           ],
