@@ -17,6 +17,7 @@ abstract class AppState with _$AppState {
     @Default([]) List<ItemModel> items,
     @Default([]) List<NotificationModel> notifications,
     @Default([]) List<FontModel> fonts,
+    @AttributePaginatedResultConverter()
     @Default(
       const PaginatedResult<AttributeModel>(
         items: [],
@@ -27,6 +28,9 @@ abstract class AppState with _$AppState {
       ),
     )
     PaginatedResult<AttributeModel> attributes,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool isLoadingAttributesMore,
     @Default(true) bool openNavigation,
     @Default(ThemeSettings(
       isDarkMode: false,

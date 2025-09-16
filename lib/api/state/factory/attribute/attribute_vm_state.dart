@@ -13,6 +13,7 @@ class AttributeVmFactory
         selected: state.selectedAttribute,
         totalItems: state.attributes.totalItems,
         hasNextPage: state.attributes.hasNextPage,
+        isLoadingMore: state.isLoadingAttributesMore,
       );
 }
 
@@ -21,13 +22,15 @@ class AttributeViewModel extends Vm {
   final AttributeModel? selected;
   final int totalItems;
   final bool hasNextPage;
+  final bool isLoadingMore;
 
   AttributeViewModel({
     required this.models,
     required this.selected,
     required this.totalItems,
     required this.hasNextPage,
-  }) : super(equals: [models, selected, totalItems, hasNextPage]);
+    required this.isLoadingMore,
+  }) : super(equals: [models, selected, totalItems, hasNextPage, isLoadingMore]);
 
   bool isSelectedItem(AttributeModel model) {
     if (selected == null) return false;
