@@ -22,11 +22,6 @@ _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
           ?.map((e) => FontModel.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
-  attributes:
-      (json['attributes'] as List<dynamic>?)
-          ?.map((e) => AttributeModel.fromJson(e as Map<String, dynamic>))
-          .toList() ??
-      const <AttributeModel>[],
   openNavigation: json['openNavigation'] as bool? ?? true,
   themeSettings: json['themeSettings'] == null
       ? const ThemeSettings(
@@ -59,7 +54,6 @@ Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
   'items': instance.items,
   'notifications': instance.notifications,
   'fonts': instance.fonts,
-  'attributes': instance.attributes,
   'openNavigation': instance.openNavigation,
   'themeSettings': instance.themeSettings,
 };

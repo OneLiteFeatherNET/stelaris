@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris/api/model/attribute_model.dart';
+import 'package:stelaris/api/paginated_result.dart';
+import 'package:stelaris/api/converter/attribute_paginated_result_converter.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/model/notification_model.dart';
@@ -15,7 +17,16 @@ abstract class AppState with _$AppState {
     @Default([]) List<ItemModel> items,
     @Default([]) List<NotificationModel> notifications,
     @Default([]) List<FontModel> fonts,
-    @Default(<AttributeModel>[]) List<AttributeModel> attributes,
+    @Default(
+      const PaginatedResult<AttributeModel>(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+    )
+    PaginatedResult<AttributeModel> attributes,
     @Default(true) bool openNavigation,
     @Default(ThemeSettings(
       isDarkMode: false,
