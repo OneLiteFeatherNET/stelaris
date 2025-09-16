@@ -6,7 +6,7 @@ import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/attribute/attribute_vm_state.dart';
 import 'package:stelaris/feature/attributes/attribute_general_page.dart';
-import 'package:stelaris/feature/base/base_model_view.dart';
+import 'package:stelaris/feature/base/paginated_model_list.dart';
 import 'package:stelaris/feature/base/model_text.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/util/constants.dart';
@@ -17,9 +17,16 @@ import 'package:stelaris/util/functions.dart';
 /// The [AttributePage] allows users to view, select, and manage attributes.
 /// It provides a dialog for creating new attributes and handles the state
 /// management through Redux.
-class AttributePage extends StatelessWidget {
+class AttributePage extends StatefulWidget {
   /// Creates an instance of [AttributePage].
   const AttributePage({super.key});
+
+  @override
+  State<AttributePage> createState() => _AttributePageState();
+}
+
+class _AttributePageState extends State<AttributePage> {
+  // No local pagination here. The list items are fully sourced from the store (vm.models).
 
   @override
   Widget build(BuildContext context) {
@@ -28,21 +35,29 @@ class AttributePage extends StatelessWidget {
       onInit: (store) => store.dispatchAndWait(InitAttributeAction()),
       onDispose: (store) => store.dispatch(RemoveSelectAttributeAction(), notify: false),
       builder: (context, vm) {
-        return BaseModelView<AttributeModel>(
-          mapToDataModelItem: (value) =>
-              TextWidget(displayName: value.uiName),
-          openFunction: () => _openDialog(context),
-          selectedItem: vm.selected,
-          mapToDeleteDialog: (value) =>
-              createDeleteText(value.uiName, context),
-          mapToDeleteSuccessfully: (value) {
-            context.dispatch(AttributeRemoveAction(value));
-            return true;
-          },
-          callFunction: (model) => context.dispatch(SelectAttributeAction(model)),
-          models: vm.models,
-          child: _mapModelToWidget(vm.selected),
-          compareFunction: (model) => vm.isSelectedItem(model),
+        const hasMore = false; // Using store-sourced list; no local load-more.
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PaginatedModelList<AttributeModel>(
+              mapToDataModelItem: (value) => TextWidget(displayName: value.uiName),
+              openFunction: () => _openDialog(context),
+              selectedItem: vm.selected,
+              mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
+              mapToDeleteSuccessfully: (value) {
+                context.dispatch(AttributeRemoveAction(value));
+                return true;
+              },
+              callFunction: (model) => context.dispatch(SelectAttributeAction(model)),
+              models: vm.models,
+              compareFunction: (model) => vm.isSelectedItem(model),
+              hasMore: hasMore,
+              isLoadingMore: false,
+              onLoadMore: null,
+            ),
+            if (vm.selected != null) _mapModelToWidget(vm.selected)!,
+          ],
         );
       },
     );
