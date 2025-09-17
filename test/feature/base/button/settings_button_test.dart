@@ -8,8 +8,6 @@ import 'package:stelaris/l10n/app_localizations.dart';
 void main() {
   group('Settings button test', () {
     testWidgets('layout', (tester) async {
-      final SettingsButton settingsButton = const SettingsButton();
-
       await tester.pumpWidget(
         const MaterialApp(home: Scaffold(body: SettingsButton())),
       );
@@ -24,7 +22,7 @@ void main() {
     testWidgets('dialog popup', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          localizationsDelegates: const [
+          localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
