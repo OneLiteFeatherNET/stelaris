@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:stelaris/api/api_client.dart';
 import 'package:stelaris/api/client_api.dart';
 import 'package:stelaris/api/converter/model_list_converter.dart';
