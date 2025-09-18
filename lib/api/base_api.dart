@@ -59,29 +59,6 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
   }
 
   @override
-  Future<PaginatedResult<T>> getPage({int page = 1, int size = 10}) async {
-    final baseUri = Uri.parse(apiClient.baseUrl);
-    // Reuse the /all endpoint with query params if that's the convention.
-    final uri = baseUri.replace(
-      path: '${baseUri.path}/$endpoint/all',
-      queryParameters: {
-        'page': (page - 1).toString(), // many backends use 0-based
-        'size': size.toString(),
-      },
-    );
-    final result = await apiClient.dio.getUri(uri);
-    final data = result.data;
-    return PaginatedResult.fromJson(data, fromJson);
-  }
-
-  int? _asInt(dynamic value) {
-    if (value == null) return null;
-    if (value is int) return value;
-    if (value is String) return int.tryParse(value);
-    return null;
-  }
-
-  @override
   Future<T> update(T model) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/update');
