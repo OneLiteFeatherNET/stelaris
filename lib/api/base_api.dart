@@ -69,7 +69,9 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
   @override
   Future<T> remove(T model) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/delete/${model.id}');
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/$endpoint/delete/${model.id}',
+    );
     final result = await apiClient.dio.deleteUri(uri);
     return fromJson(result.data!);
   }
@@ -87,13 +89,9 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
     );
     final result = await apiClient.dio.getUri(uri);
     final data = result.data;
-    return PaginatedResult.fromJson(data, fromJson);
-  }
-
-  int? _asInt(dynamic value) {
-    if (value == null) return null;
-    if (value is int) return value;
-    if (value is String) return int.tryParse(value);
-    return null;
+    return PaginatedResult.fromJson(
+      data,
+      (json) => fromJson(json as Map<String, dynamic>),
+    );
   }
 }
