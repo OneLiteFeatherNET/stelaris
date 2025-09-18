@@ -98,43 +98,53 @@ class PaginatedResult<T extends DataModel> {
   /// }
   /// ```
   factory PaginatedResult.fromJson(
-      Map<String, dynamic> json,
-      T Function(Map<String, dynamic>) fromJson,
-      ) {
+    Map<String, dynamic> json,
+    T Function(Object? json) fromJsonT,
+  ) {
     // Accept items under common keys: items, content, data
-    final dynamic rawItems =
-        json['items'] ?? json['content'] ?? json['data'];
+    final dynamic rawItems = json['items'] ?? json['content'] ?? json['data'];
     final List<T> itemsList = (rawItems is List)
         ? rawItems
-        .whereType<Map<String, dynamic>>()
-        .map((e) => fromJson(e))
-        .toList()
+              .whereType<Map<String, dynamic>>()
+              .map((e) => fromJsonT(e))
+              .toList()
         : <T>[];
 
     // Page size: pageSize | size | pageable.size | default to items length
-    final int pageSize = _asInt(
-      json['pageSize'] ?? json['size'] ?? (json['pageable'] is Map
-          ? (json['pageable'] as Map)['size']
-          : null),
-    ) ?? itemsList.length;
+    final int pageSize =
+        _asInt(
+          json['pageSize'] ??
+              json['size'] ??
+              (json['pageable'] is Map
+                  ? (json['pageable'] as Map)['size']
+                  : null),
+        ) ??
+        itemsList.length;
 
     // Total items: totalItems | totalSize | totalElements | default to items length
-    final int totalItems = _asInt(
-      json['totalItems'] ?? json['totalSize'] ?? json['totalElements'],
-    ) ?? itemsList.length;
+    final int totalItems =
+        _asInt(
+          json['totalItems'] ?? json['totalSize'] ?? json['totalElements'],
+        ) ??
+        itemsList.length;
 
     // Current page (1-based): currentPage | page | pageable.number (0-based)
-    final int currentZero = _asInt(
-      json['page'] ?? json['currentPage'] ?? (json['pageable'] is Map
-          ? (json['pageable'] as Map)['number']
-          : null),
-    ) ?? 0;
+    final int currentZero =
+        _asInt(
+          json['page'] ??
+              json['currentPage'] ??
+              (json['pageable'] is Map
+                  ? (json['pageable'] as Map)['number']
+                  : null),
+        ) ??
+        0;
     final int currentPage = (json['currentPage'] is int)
         ? (json['currentPage'] as int)
         : (currentZero + 1);
 
     // Total pages: provided or compute from totalItems and pageSize
-    final int totalPages = _asInt(json['totalPages']) ??
+    final int totalPages =
+        _asInt(json['totalPages']) ??
         ((pageSize > 0) ? ((totalItems + pageSize - 1) ~/ pageSize) : 1);
 
     return PaginatedResult<T>(
@@ -150,10 +160,10 @@ class PaginatedResult<T extends DataModel> {
   ///
   /// The [toJson] parameter is a function that converts an instance
   /// of type [T] to a JSON object.
-  Map<String, dynamic> toJson(Map<String, dynamic> Function(T) toJson) {
+  Map<String, dynamic> toJson(Object? Function(T value) toJsonT) {
     return {
       // Persist under a stable key
-      'items': items.map(toJson).toList(),
+      'items': items.map(toJsonT).toList(),
       'totalItems': totalItems,
       'totalPages': totalPages,
       'currentPage': currentPage,
