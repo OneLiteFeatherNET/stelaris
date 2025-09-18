@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppState {
 
- List<ItemModel> get items; List<NotificationModel> get notifications; List<FontModel> get fonts;@GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson) PaginatedResult<AttributeModel> get attributes;@JsonKey(includeToJson: false, includeFromJson: false) bool get isLoadingAttributesMore; bool get openNavigation; ThemeSettings get themeSettings;@JsonKey(includeToJson: false) ItemModel? get selectedItem;@JsonKey(includeToJson: false) NotificationModel? get selectedNotification;@JsonKey(includeToJson: false) FontModel? get selectedFont;@JsonKey(includeToJson: false) AttributeModel? get selectedAttribute;
+@GenericPaginatedResultConverter<ItemModel>(fromJsonT: itemModelFromJson, toJsonT: itemModelToJson) PaginatedResult<ItemModel> get items; List<NotificationModel> get notifications; List<FontModel> get fonts; List<AttributeModel> get attributes; bool get openNavigation; ThemeSettings get themeSettings;@JsonKey(includeToJson: false) ItemModel? get selectedItem;@JsonKey(includeToJson: false) NotificationModel? get selectedNotification;@JsonKey(includeToJson: false) FontModel? get selectedFont;@JsonKey(includeToJson: false) AttributeModel? get selectedAttribute;
 /// Create a copy of AppState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AppStateCopyWith<AppState> get copyWith => _$AppStateCopyWithImpl<AppState>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppState&&const DeepCollectionEquality().equals(other.items, items)&&const DeepCollectionEquality().equals(other.notifications, notifications)&&const DeepCollectionEquality().equals(other.fonts, fonts)&&(identical(other.attributes, attributes) || other.attributes == attributes)&&(identical(other.isLoadingAttributesMore, isLoadingAttributesMore) || other.isLoadingAttributesMore == isLoadingAttributesMore)&&(identical(other.openNavigation, openNavigation) || other.openNavigation == openNavigation)&&(identical(other.themeSettings, themeSettings) || other.themeSettings == themeSettings)&&(identical(other.selectedItem, selectedItem) || other.selectedItem == selectedItem)&&(identical(other.selectedNotification, selectedNotification) || other.selectedNotification == selectedNotification)&&(identical(other.selectedFont, selectedFont) || other.selectedFont == selectedFont)&&(identical(other.selectedAttribute, selectedAttribute) || other.selectedAttribute == selectedAttribute));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppState&&(identical(other.items, items) || other.items == items)&&const DeepCollectionEquality().equals(other.notifications, notifications)&&const DeepCollectionEquality().equals(other.fonts, fonts)&&const DeepCollectionEquality().equals(other.attributes, attributes)&&(identical(other.openNavigation, openNavigation) || other.openNavigation == openNavigation)&&(identical(other.themeSettings, themeSettings) || other.themeSettings == themeSettings)&&(identical(other.selectedItem, selectedItem) || other.selectedItem == selectedItem)&&(identical(other.selectedNotification, selectedNotification) || other.selectedNotification == selectedNotification)&&(identical(other.selectedFont, selectedFont) || other.selectedFont == selectedFont)&&(identical(other.selectedAttribute, selectedAttribute) || other.selectedAttribute == selectedAttribute));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items),const DeepCollectionEquality().hash(notifications),const DeepCollectionEquality().hash(fonts),attributes,isLoadingAttributesMore,openNavigation,themeSettings,selectedItem,selectedNotification,selectedFont,selectedAttribute);
+int get hashCode => Object.hash(runtimeType,items,const DeepCollectionEquality().hash(notifications),const DeepCollectionEquality().hash(fonts),const DeepCollectionEquality().hash(attributes),openNavigation,themeSettings,selectedItem,selectedNotification,selectedFont,selectedAttribute);
 
 @override
 String toString() {
-  return 'AppState(items: $items, notifications: $notifications, fonts: $fonts, attributes: $attributes, isLoadingAttributesMore: $isLoadingAttributesMore, openNavigation: $openNavigation, themeSettings: $themeSettings, selectedItem: $selectedItem, selectedNotification: $selectedNotification, selectedFont: $selectedFont, selectedAttribute: $selectedAttribute)';
+  return 'AppState(items: $items, notifications: $notifications, fonts: $fonts, attributes: $attributes, openNavigation: $openNavigation, themeSettings: $themeSettings, selectedItem: $selectedItem, selectedNotification: $selectedNotification, selectedFont: $selectedFont, selectedAttribute: $selectedAttribute)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AppStateCopyWith<$Res>  {
   factory $AppStateCopyWith(AppState value, $Res Function(AppState) _then) = _$AppStateCopyWithImpl;
 @useResult
 $Res call({
- List<ItemModel> items, List<NotificationModel> notifications, List<FontModel> fonts,@GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson) PaginatedResult<AttributeModel> attributes,@JsonKey(includeToJson: false, includeFromJson: false) bool isLoadingAttributesMore, bool openNavigation, ThemeSettings themeSettings,@JsonKey(includeToJson: false) ItemModel? selectedItem,@JsonKey(includeToJson: false) NotificationModel? selectedNotification,@JsonKey(includeToJson: false) FontModel? selectedFont,@JsonKey(includeToJson: false) AttributeModel? selectedAttribute
+@GenericPaginatedResultConverter<ItemModel>(fromJsonT: itemModelFromJson, toJsonT: itemModelToJson) PaginatedResult<ItemModel> items, List<NotificationModel> notifications, List<FontModel> fonts, List<AttributeModel> attributes, bool openNavigation, ThemeSettings themeSettings,@JsonKey(includeToJson: false) ItemModel? selectedItem,@JsonKey(includeToJson: false) NotificationModel? selectedNotification,@JsonKey(includeToJson: false) FontModel? selectedFont,@JsonKey(includeToJson: false) AttributeModel? selectedAttribute
 });
 
 
@@ -65,14 +65,13 @@ class _$AppStateCopyWithImpl<$Res>
 
 /// Create a copy of AppState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? notifications = null,Object? fonts = null,Object? attributes = null,Object? isLoadingAttributesMore = null,Object? openNavigation = null,Object? themeSettings = null,Object? selectedItem = freezed,Object? selectedNotification = freezed,Object? selectedFont = freezed,Object? selectedAttribute = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? notifications = null,Object? fonts = null,Object? attributes = null,Object? openNavigation = null,Object? themeSettings = null,Object? selectedItem = freezed,Object? selectedNotification = freezed,Object? selectedFont = freezed,Object? selectedAttribute = freezed,}) {
   return _then(_self.copyWith(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
-as List<ItemModel>,notifications: null == notifications ? _self.notifications : notifications // ignore: cast_nullable_to_non_nullable
+as PaginatedResult<ItemModel>,notifications: null == notifications ? _self.notifications : notifications // ignore: cast_nullable_to_non_nullable
 as List<NotificationModel>,fonts: null == fonts ? _self.fonts : fonts // ignore: cast_nullable_to_non_nullable
 as List<FontModel>,attributes: null == attributes ? _self.attributes : attributes // ignore: cast_nullable_to_non_nullable
-as PaginatedResult<AttributeModel>,isLoadingAttributesMore: null == isLoadingAttributesMore ? _self.isLoadingAttributesMore : isLoadingAttributesMore // ignore: cast_nullable_to_non_nullable
-as bool,openNavigation: null == openNavigation ? _self.openNavigation : openNavigation // ignore: cast_nullable_to_non_nullable
+as List<AttributeModel>,openNavigation: null == openNavigation ? _self.openNavigation : openNavigation // ignore: cast_nullable_to_non_nullable
 as bool,themeSettings: null == themeSettings ? _self.themeSettings : themeSettings // ignore: cast_nullable_to_non_nullable
 as ThemeSettings,selectedItem: freezed == selectedItem ? _self.selectedItem : selectedItem // ignore: cast_nullable_to_non_nullable
 as ItemModel?,selectedNotification: freezed == selectedNotification ? _self.selectedNotification : selectedNotification // ignore: cast_nullable_to_non_nullable
@@ -211,10 +210,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ItemModel> items,  List<NotificationModel> notifications,  List<FontModel> fonts, @GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson)  PaginatedResult<AttributeModel> attributes, @JsonKey(includeToJson: false, includeFromJson: false)  bool isLoadingAttributesMore,  bool openNavigation,  ThemeSettings themeSettings, @JsonKey(includeToJson: false)  ItemModel? selectedItem, @JsonKey(includeToJson: false)  NotificationModel? selectedNotification, @JsonKey(includeToJson: false)  FontModel? selectedFont, @JsonKey(includeToJson: false)  AttributeModel? selectedAttribute)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@GenericPaginatedResultConverter<ItemModel>(fromJsonT: itemModelFromJson, toJsonT: itemModelToJson)  PaginatedResult<ItemModel> items,  List<NotificationModel> notifications,  List<FontModel> fonts,  List<AttributeModel> attributes,  bool openNavigation,  ThemeSettings themeSettings, @JsonKey(includeToJson: false)  ItemModel? selectedItem, @JsonKey(includeToJson: false)  NotificationModel? selectedNotification, @JsonKey(includeToJson: false)  FontModel? selectedFont, @JsonKey(includeToJson: false)  AttributeModel? selectedAttribute)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppState() when $default != null:
-return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_that.isLoadingAttributesMore,_that.openNavigation,_that.themeSettings,_that.selectedItem,_that.selectedNotification,_that.selectedFont,_that.selectedAttribute);case _:
+return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_that.openNavigation,_that.themeSettings,_that.selectedItem,_that.selectedNotification,_that.selectedFont,_that.selectedAttribute);case _:
   return orElse();
 
 }
@@ -232,10 +231,10 @@ return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ItemModel> items,  List<NotificationModel> notifications,  List<FontModel> fonts, @GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson)  PaginatedResult<AttributeModel> attributes, @JsonKey(includeToJson: false, includeFromJson: false)  bool isLoadingAttributesMore,  bool openNavigation,  ThemeSettings themeSettings, @JsonKey(includeToJson: false)  ItemModel? selectedItem, @JsonKey(includeToJson: false)  NotificationModel? selectedNotification, @JsonKey(includeToJson: false)  FontModel? selectedFont, @JsonKey(includeToJson: false)  AttributeModel? selectedAttribute)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@GenericPaginatedResultConverter<ItemModel>(fromJsonT: itemModelFromJson, toJsonT: itemModelToJson)  PaginatedResult<ItemModel> items,  List<NotificationModel> notifications,  List<FontModel> fonts,  List<AttributeModel> attributes,  bool openNavigation,  ThemeSettings themeSettings, @JsonKey(includeToJson: false)  ItemModel? selectedItem, @JsonKey(includeToJson: false)  NotificationModel? selectedNotification, @JsonKey(includeToJson: false)  FontModel? selectedFont, @JsonKey(includeToJson: false)  AttributeModel? selectedAttribute)  $default,) {final _that = this;
 switch (_that) {
 case _AppState():
-return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_that.isLoadingAttributesMore,_that.openNavigation,_that.themeSettings,_that.selectedItem,_that.selectedNotification,_that.selectedFont,_that.selectedAttribute);case _:
+return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_that.openNavigation,_that.themeSettings,_that.selectedItem,_that.selectedNotification,_that.selectedFont,_that.selectedAttribute);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -252,10 +251,10 @@ return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ItemModel> items,  List<NotificationModel> notifications,  List<FontModel> fonts, @GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson)  PaginatedResult<AttributeModel> attributes, @JsonKey(includeToJson: false, includeFromJson: false)  bool isLoadingAttributesMore,  bool openNavigation,  ThemeSettings themeSettings, @JsonKey(includeToJson: false)  ItemModel? selectedItem, @JsonKey(includeToJson: false)  NotificationModel? selectedNotification, @JsonKey(includeToJson: false)  FontModel? selectedFont, @JsonKey(includeToJson: false)  AttributeModel? selectedAttribute)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@GenericPaginatedResultConverter<ItemModel>(fromJsonT: itemModelFromJson, toJsonT: itemModelToJson)  PaginatedResult<ItemModel> items,  List<NotificationModel> notifications,  List<FontModel> fonts,  List<AttributeModel> attributes,  bool openNavigation,  ThemeSettings themeSettings, @JsonKey(includeToJson: false)  ItemModel? selectedItem, @JsonKey(includeToJson: false)  NotificationModel? selectedNotification, @JsonKey(includeToJson: false)  FontModel? selectedFont, @JsonKey(includeToJson: false)  AttributeModel? selectedAttribute)?  $default,) {final _that = this;
 switch (_that) {
 case _AppState() when $default != null:
-return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_that.isLoadingAttributesMore,_that.openNavigation,_that.themeSettings,_that.selectedItem,_that.selectedNotification,_that.selectedFont,_that.selectedAttribute);case _:
+return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_that.openNavigation,_that.themeSettings,_that.selectedItem,_that.selectedNotification,_that.selectedFont,_that.selectedAttribute);case _:
   return null;
 
 }
@@ -267,16 +266,10 @@ return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_th
 @JsonSerializable()
 
 class _AppState implements AppState {
-  const _AppState({final  List<ItemModel> items = const [], final  List<NotificationModel> notifications = const [], final  List<FontModel> fonts = const [], @GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson) this.attributes = const PaginatedResult<AttributeModel>(items: [], totalItems: 0, totalPages: 0, currentPage: 1, pageSize: 0), @JsonKey(includeToJson: false, includeFromJson: false) this.isLoadingAttributesMore = false, this.openNavigation = true, this.themeSettings = const ThemeSettings(isDarkMode: false, primaryColor: Colors.blue, accentColor: Colors.blueAccent, fontScale: 1, useSystemTheme: true), @JsonKey(includeToJson: false) this.selectedItem, @JsonKey(includeToJson: false) this.selectedNotification, @JsonKey(includeToJson: false) this.selectedFont, @JsonKey(includeToJson: false) this.selectedAttribute}): _items = items,_notifications = notifications,_fonts = fonts;
+  const _AppState({@GenericPaginatedResultConverter<ItemModel>(fromJsonT: itemModelFromJson, toJsonT: itemModelToJson) this.items = const PaginatedResult<ItemModel>(items: [], totalItems: 0, totalPages: 0, currentPage: 1, pageSize: 0), final  List<NotificationModel> notifications = const [], final  List<FontModel> fonts = const [], final  List<AttributeModel> attributes = const <AttributeModel>[], this.openNavigation = true, this.themeSettings = const ThemeSettings(isDarkMode: false, primaryColor: Colors.blue, accentColor: Colors.blueAccent, fontScale: 1, useSystemTheme: true), @JsonKey(includeToJson: false) this.selectedItem, @JsonKey(includeToJson: false) this.selectedNotification, @JsonKey(includeToJson: false) this.selectedFont, @JsonKey(includeToJson: false) this.selectedAttribute}): _notifications = notifications,_fonts = fonts,_attributes = attributes;
   factory _AppState.fromJson(Map<String, dynamic> json) => _$AppStateFromJson(json);
 
- final  List<ItemModel> _items;
-@override@JsonKey() List<ItemModel> get items {
-  if (_items is EqualUnmodifiableListView) return _items;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_items);
-}
-
+@override@JsonKey()@GenericPaginatedResultConverter<ItemModel>(fromJsonT: itemModelFromJson, toJsonT: itemModelToJson) final  PaginatedResult<ItemModel> items;
  final  List<NotificationModel> _notifications;
 @override@JsonKey() List<NotificationModel> get notifications {
   if (_notifications is EqualUnmodifiableListView) return _notifications;
@@ -291,8 +284,13 @@ class _AppState implements AppState {
   return EqualUnmodifiableListView(_fonts);
 }
 
-@override@JsonKey()@GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson) final  PaginatedResult<AttributeModel> attributes;
-@override@JsonKey(includeToJson: false, includeFromJson: false) final  bool isLoadingAttributesMore;
+ final  List<AttributeModel> _attributes;
+@override@JsonKey() List<AttributeModel> get attributes {
+  if (_attributes is EqualUnmodifiableListView) return _attributes;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_attributes);
+}
+
 @override@JsonKey() final  bool openNavigation;
 @override@JsonKey() final  ThemeSettings themeSettings;
 @override@JsonKey(includeToJson: false) final  ItemModel? selectedItem;
@@ -313,16 +311,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppState&&const DeepCollectionEquality().equals(other._items, _items)&&const DeepCollectionEquality().equals(other._notifications, _notifications)&&const DeepCollectionEquality().equals(other._fonts, _fonts)&&(identical(other.attributes, attributes) || other.attributes == attributes)&&(identical(other.isLoadingAttributesMore, isLoadingAttributesMore) || other.isLoadingAttributesMore == isLoadingAttributesMore)&&(identical(other.openNavigation, openNavigation) || other.openNavigation == openNavigation)&&(identical(other.themeSettings, themeSettings) || other.themeSettings == themeSettings)&&(identical(other.selectedItem, selectedItem) || other.selectedItem == selectedItem)&&(identical(other.selectedNotification, selectedNotification) || other.selectedNotification == selectedNotification)&&(identical(other.selectedFont, selectedFont) || other.selectedFont == selectedFont)&&(identical(other.selectedAttribute, selectedAttribute) || other.selectedAttribute == selectedAttribute));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppState&&(identical(other.items, items) || other.items == items)&&const DeepCollectionEquality().equals(other._notifications, _notifications)&&const DeepCollectionEquality().equals(other._fonts, _fonts)&&const DeepCollectionEquality().equals(other._attributes, _attributes)&&(identical(other.openNavigation, openNavigation) || other.openNavigation == openNavigation)&&(identical(other.themeSettings, themeSettings) || other.themeSettings == themeSettings)&&(identical(other.selectedItem, selectedItem) || other.selectedItem == selectedItem)&&(identical(other.selectedNotification, selectedNotification) || other.selectedNotification == selectedNotification)&&(identical(other.selectedFont, selectedFont) || other.selectedFont == selectedFont)&&(identical(other.selectedAttribute, selectedAttribute) || other.selectedAttribute == selectedAttribute));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),const DeepCollectionEquality().hash(_notifications),const DeepCollectionEquality().hash(_fonts),attributes,isLoadingAttributesMore,openNavigation,themeSettings,selectedItem,selectedNotification,selectedFont,selectedAttribute);
+int get hashCode => Object.hash(runtimeType,items,const DeepCollectionEquality().hash(_notifications),const DeepCollectionEquality().hash(_fonts),const DeepCollectionEquality().hash(_attributes),openNavigation,themeSettings,selectedItem,selectedNotification,selectedFont,selectedAttribute);
 
 @override
 String toString() {
-  return 'AppState(items: $items, notifications: $notifications, fonts: $fonts, attributes: $attributes, isLoadingAttributesMore: $isLoadingAttributesMore, openNavigation: $openNavigation, themeSettings: $themeSettings, selectedItem: $selectedItem, selectedNotification: $selectedNotification, selectedFont: $selectedFont, selectedAttribute: $selectedAttribute)';
+  return 'AppState(items: $items, notifications: $notifications, fonts: $fonts, attributes: $attributes, openNavigation: $openNavigation, themeSettings: $themeSettings, selectedItem: $selectedItem, selectedNotification: $selectedNotification, selectedFont: $selectedFont, selectedAttribute: $selectedAttribute)';
 }
 
 
@@ -333,7 +331,7 @@ abstract mixin class _$AppStateCopyWith<$Res> implements $AppStateCopyWith<$Res>
   factory _$AppStateCopyWith(_AppState value, $Res Function(_AppState) _then) = __$AppStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<ItemModel> items, List<NotificationModel> notifications, List<FontModel> fonts,@GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson) PaginatedResult<AttributeModel> attributes,@JsonKey(includeToJson: false, includeFromJson: false) bool isLoadingAttributesMore, bool openNavigation, ThemeSettings themeSettings,@JsonKey(includeToJson: false) ItemModel? selectedItem,@JsonKey(includeToJson: false) NotificationModel? selectedNotification,@JsonKey(includeToJson: false) FontModel? selectedFont,@JsonKey(includeToJson: false) AttributeModel? selectedAttribute
+@GenericPaginatedResultConverter<ItemModel>(fromJsonT: itemModelFromJson, toJsonT: itemModelToJson) PaginatedResult<ItemModel> items, List<NotificationModel> notifications, List<FontModel> fonts, List<AttributeModel> attributes, bool openNavigation, ThemeSettings themeSettings,@JsonKey(includeToJson: false) ItemModel? selectedItem,@JsonKey(includeToJson: false) NotificationModel? selectedNotification,@JsonKey(includeToJson: false) FontModel? selectedFont,@JsonKey(includeToJson: false) AttributeModel? selectedAttribute
 });
 
 
@@ -350,14 +348,13 @@ class __$AppStateCopyWithImpl<$Res>
 
 /// Create a copy of AppState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? items = null,Object? notifications = null,Object? fonts = null,Object? attributes = null,Object? isLoadingAttributesMore = null,Object? openNavigation = null,Object? themeSettings = null,Object? selectedItem = freezed,Object? selectedNotification = freezed,Object? selectedFont = freezed,Object? selectedAttribute = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? items = null,Object? notifications = null,Object? fonts = null,Object? attributes = null,Object? openNavigation = null,Object? themeSettings = null,Object? selectedItem = freezed,Object? selectedNotification = freezed,Object? selectedFont = freezed,Object? selectedAttribute = freezed,}) {
   return _then(_AppState(
-items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
-as List<ItemModel>,notifications: null == notifications ? _self._notifications : notifications // ignore: cast_nullable_to_non_nullable
+items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
+as PaginatedResult<ItemModel>,notifications: null == notifications ? _self._notifications : notifications // ignore: cast_nullable_to_non_nullable
 as List<NotificationModel>,fonts: null == fonts ? _self._fonts : fonts // ignore: cast_nullable_to_non_nullable
-as List<FontModel>,attributes: null == attributes ? _self.attributes : attributes // ignore: cast_nullable_to_non_nullable
-as PaginatedResult<AttributeModel>,isLoadingAttributesMore: null == isLoadingAttributesMore ? _self.isLoadingAttributesMore : isLoadingAttributesMore // ignore: cast_nullable_to_non_nullable
-as bool,openNavigation: null == openNavigation ? _self.openNavigation : openNavigation // ignore: cast_nullable_to_non_nullable
+as List<FontModel>,attributes: null == attributes ? _self._attributes : attributes // ignore: cast_nullable_to_non_nullable
+as List<AttributeModel>,openNavigation: null == openNavigation ? _self.openNavigation : openNavigation // ignore: cast_nullable_to_non_nullable
 as bool,themeSettings: null == themeSettings ? _self.themeSettings : themeSettings // ignore: cast_nullable_to_non_nullable
 as ThemeSettings,selectedItem: freezed == selectedItem ? _self.selectedItem : selectedItem // ignore: cast_nullable_to_non_nullable
 as ItemModel?,selectedNotification: freezed == selectedNotification ? _self.selectedNotification : selectedNotification // ignore: cast_nullable_to_non_nullable
