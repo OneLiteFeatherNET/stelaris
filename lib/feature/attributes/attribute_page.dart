@@ -17,16 +17,9 @@ import 'package:stelaris/util/functions.dart';
 /// The [AttributePage] allows users to view, select, and manage attributes.
 /// It provides a dialog for creating new attributes and handles the state
 /// management through Redux.
-class AttributePage extends StatefulWidget {
+class AttributePage extends StatelessWidget {
   /// Creates an instance of [AttributePage].
   const AttributePage({super.key});
-
-  @override
-  State<AttributePage> createState() => _AttributePageState();
-}
-
-class _AttributePageState extends State<AttributePage> {
-  // No local pagination here. The list items are fully sourced from the store (vm.models).
 
   @override
   Widget build(BuildContext context) {
