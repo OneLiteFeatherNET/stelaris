@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppState {
 
- List<ItemModel> get items; List<NotificationModel> get notifications; List<FontModel> get fonts;@AttributePaginatedResultConverter() PaginatedResult<AttributeModel> get attributes;@JsonKey(includeToJson: false, includeFromJson: false) bool get isLoadingAttributesMore; bool get openNavigation; ThemeSettings get themeSettings;@JsonKey(includeToJson: false) ItemModel? get selectedItem;@JsonKey(includeToJson: false) NotificationModel? get selectedNotification;@JsonKey(includeToJson: false) FontModel? get selectedFont;@JsonKey(includeToJson: false) AttributeModel? get selectedAttribute;
+ List<ItemModel> get items; List<NotificationModel> get notifications; List<FontModel> get fonts;@GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson) PaginatedResult<AttributeModel> get attributes;@JsonKey(includeToJson: false, includeFromJson: false) bool get isLoadingAttributesMore; bool get openNavigation; ThemeSettings get themeSettings;@JsonKey(includeToJson: false) ItemModel? get selectedItem;@JsonKey(includeToJson: false) NotificationModel? get selectedNotification;@JsonKey(includeToJson: false) FontModel? get selectedFont;@JsonKey(includeToJson: false) AttributeModel? get selectedAttribute;
 /// Create a copy of AppState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $AppStateCopyWith<$Res>  {
   factory $AppStateCopyWith(AppState value, $Res Function(AppState) _then) = _$AppStateCopyWithImpl;
 @useResult
 $Res call({
- List<ItemModel> items, List<NotificationModel> notifications, List<FontModel> fonts,@AttributePaginatedResultConverter() PaginatedResult<AttributeModel> attributes,@JsonKey(includeToJson: false, includeFromJson: false) bool isLoadingAttributesMore, bool openNavigation, ThemeSettings themeSettings,@JsonKey(includeToJson: false) ItemModel? selectedItem,@JsonKey(includeToJson: false) NotificationModel? selectedNotification,@JsonKey(includeToJson: false) FontModel? selectedFont,@JsonKey(includeToJson: false) AttributeModel? selectedAttribute
+ List<ItemModel> items, List<NotificationModel> notifications, List<FontModel> fonts,@GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson) PaginatedResult<AttributeModel> attributes,@JsonKey(includeToJson: false, includeFromJson: false) bool isLoadingAttributesMore, bool openNavigation, ThemeSettings themeSettings,@JsonKey(includeToJson: false) ItemModel? selectedItem,@JsonKey(includeToJson: false) NotificationModel? selectedNotification,@JsonKey(includeToJson: false) FontModel? selectedFont,@JsonKey(includeToJson: false) AttributeModel? selectedAttribute
 });
 
 
@@ -211,7 +211,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ItemModel> items,  List<NotificationModel> notifications,  List<FontModel> fonts, @AttributePaginatedResultConverter()  PaginatedResult<AttributeModel> attributes, @JsonKey(includeToJson: false, includeFromJson: false)  bool isLoadingAttributesMore,  bool openNavigation,  ThemeSettings themeSettings, @JsonKey(includeToJson: false)  ItemModel? selectedItem, @JsonKey(includeToJson: false)  NotificationModel? selectedNotification, @JsonKey(includeToJson: false)  FontModel? selectedFont, @JsonKey(includeToJson: false)  AttributeModel? selectedAttribute)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ItemModel> items,  List<NotificationModel> notifications,  List<FontModel> fonts, @GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson)  PaginatedResult<AttributeModel> attributes, @JsonKey(includeToJson: false, includeFromJson: false)  bool isLoadingAttributesMore,  bool openNavigation,  ThemeSettings themeSettings, @JsonKey(includeToJson: false)  ItemModel? selectedItem, @JsonKey(includeToJson: false)  NotificationModel? selectedNotification, @JsonKey(includeToJson: false)  FontModel? selectedFont, @JsonKey(includeToJson: false)  AttributeModel? selectedAttribute)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppState() when $default != null:
 return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_that.isLoadingAttributesMore,_that.openNavigation,_that.themeSettings,_that.selectedItem,_that.selectedNotification,_that.selectedFont,_that.selectedAttribute);case _:
@@ -232,7 +232,7 @@ return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ItemModel> items,  List<NotificationModel> notifications,  List<FontModel> fonts, @AttributePaginatedResultConverter()  PaginatedResult<AttributeModel> attributes, @JsonKey(includeToJson: false, includeFromJson: false)  bool isLoadingAttributesMore,  bool openNavigation,  ThemeSettings themeSettings, @JsonKey(includeToJson: false)  ItemModel? selectedItem, @JsonKey(includeToJson: false)  NotificationModel? selectedNotification, @JsonKey(includeToJson: false)  FontModel? selectedFont, @JsonKey(includeToJson: false)  AttributeModel? selectedAttribute)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ItemModel> items,  List<NotificationModel> notifications,  List<FontModel> fonts, @GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson)  PaginatedResult<AttributeModel> attributes, @JsonKey(includeToJson: false, includeFromJson: false)  bool isLoadingAttributesMore,  bool openNavigation,  ThemeSettings themeSettings, @JsonKey(includeToJson: false)  ItemModel? selectedItem, @JsonKey(includeToJson: false)  NotificationModel? selectedNotification, @JsonKey(includeToJson: false)  FontModel? selectedFont, @JsonKey(includeToJson: false)  AttributeModel? selectedAttribute)  $default,) {final _that = this;
 switch (_that) {
 case _AppState():
 return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_that.isLoadingAttributesMore,_that.openNavigation,_that.themeSettings,_that.selectedItem,_that.selectedNotification,_that.selectedFont,_that.selectedAttribute);case _:
@@ -252,7 +252,7 @@ return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ItemModel> items,  List<NotificationModel> notifications,  List<FontModel> fonts, @AttributePaginatedResultConverter()  PaginatedResult<AttributeModel> attributes, @JsonKey(includeToJson: false, includeFromJson: false)  bool isLoadingAttributesMore,  bool openNavigation,  ThemeSettings themeSettings, @JsonKey(includeToJson: false)  ItemModel? selectedItem, @JsonKey(includeToJson: false)  NotificationModel? selectedNotification, @JsonKey(includeToJson: false)  FontModel? selectedFont, @JsonKey(includeToJson: false)  AttributeModel? selectedAttribute)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ItemModel> items,  List<NotificationModel> notifications,  List<FontModel> fonts, @GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson)  PaginatedResult<AttributeModel> attributes, @JsonKey(includeToJson: false, includeFromJson: false)  bool isLoadingAttributesMore,  bool openNavigation,  ThemeSettings themeSettings, @JsonKey(includeToJson: false)  ItemModel? selectedItem, @JsonKey(includeToJson: false)  NotificationModel? selectedNotification, @JsonKey(includeToJson: false)  FontModel? selectedFont, @JsonKey(includeToJson: false)  AttributeModel? selectedAttribute)?  $default,) {final _that = this;
 switch (_that) {
 case _AppState() when $default != null:
 return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_that.isLoadingAttributesMore,_that.openNavigation,_that.themeSettings,_that.selectedItem,_that.selectedNotification,_that.selectedFont,_that.selectedAttribute);case _:
@@ -267,7 +267,7 @@ return $default(_that.items,_that.notifications,_that.fonts,_that.attributes,_th
 @JsonSerializable()
 
 class _AppState implements AppState {
-  const _AppState({final  List<ItemModel> items = const [], final  List<NotificationModel> notifications = const [], final  List<FontModel> fonts = const [], @AttributePaginatedResultConverter() this.attributes = const PaginatedResult<AttributeModel>(items: [], totalItems: 0, totalPages: 0, currentPage: 1, pageSize: 0), @JsonKey(includeToJson: false, includeFromJson: false) this.isLoadingAttributesMore = false, this.openNavigation = true, this.themeSettings = const ThemeSettings(isDarkMode: false, primaryColor: Colors.blue, accentColor: Colors.blueAccent, fontScale: 1, useSystemTheme: true), @JsonKey(includeToJson: false) this.selectedItem, @JsonKey(includeToJson: false) this.selectedNotification, @JsonKey(includeToJson: false) this.selectedFont, @JsonKey(includeToJson: false) this.selectedAttribute}): _items = items,_notifications = notifications,_fonts = fonts;
+  const _AppState({final  List<ItemModel> items = const [], final  List<NotificationModel> notifications = const [], final  List<FontModel> fonts = const [], @GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson) this.attributes = const PaginatedResult<AttributeModel>(items: [], totalItems: 0, totalPages: 0, currentPage: 1, pageSize: 0), @JsonKey(includeToJson: false, includeFromJson: false) this.isLoadingAttributesMore = false, this.openNavigation = true, this.themeSettings = const ThemeSettings(isDarkMode: false, primaryColor: Colors.blue, accentColor: Colors.blueAccent, fontScale: 1, useSystemTheme: true), @JsonKey(includeToJson: false) this.selectedItem, @JsonKey(includeToJson: false) this.selectedNotification, @JsonKey(includeToJson: false) this.selectedFont, @JsonKey(includeToJson: false) this.selectedAttribute}): _items = items,_notifications = notifications,_fonts = fonts;
   factory _AppState.fromJson(Map<String, dynamic> json) => _$AppStateFromJson(json);
 
  final  List<ItemModel> _items;
@@ -291,7 +291,7 @@ class _AppState implements AppState {
   return EqualUnmodifiableListView(_fonts);
 }
 
-@override@JsonKey()@AttributePaginatedResultConverter() final  PaginatedResult<AttributeModel> attributes;
+@override@JsonKey()@GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson) final  PaginatedResult<AttributeModel> attributes;
 @override@JsonKey(includeToJson: false, includeFromJson: false) final  bool isLoadingAttributesMore;
 @override@JsonKey() final  bool openNavigation;
 @override@JsonKey() final  ThemeSettings themeSettings;
@@ -333,7 +333,7 @@ abstract mixin class _$AppStateCopyWith<$Res> implements $AppStateCopyWith<$Res>
   factory _$AppStateCopyWith(_AppState value, $Res Function(_AppState) _then) = __$AppStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<ItemModel> items, List<NotificationModel> notifications, List<FontModel> fonts,@AttributePaginatedResultConverter() PaginatedResult<AttributeModel> attributes,@JsonKey(includeToJson: false, includeFromJson: false) bool isLoadingAttributesMore, bool openNavigation, ThemeSettings themeSettings,@JsonKey(includeToJson: false) ItemModel? selectedItem,@JsonKey(includeToJson: false) NotificationModel? selectedNotification,@JsonKey(includeToJson: false) FontModel? selectedFont,@JsonKey(includeToJson: false) AttributeModel? selectedAttribute
+ List<ItemModel> items, List<NotificationModel> notifications, List<FontModel> fonts,@GenericPaginatedResultConverter<AttributeModel>(fromJsonT: attributeFromJson, toJsonT: attributeToJson) PaginatedResult<AttributeModel> attributes,@JsonKey(includeToJson: false, includeFromJson: false) bool isLoadingAttributesMore, bool openNavigation, ThemeSettings themeSettings,@JsonKey(includeToJson: false) ItemModel? selectedItem,@JsonKey(includeToJson: false) NotificationModel? selectedNotification,@JsonKey(includeToJson: false) FontModel? selectedFont,@JsonKey(includeToJson: false) AttributeModel? selectedAttribute
 });
 
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:stelaris/api/converter/paginated_result_converter.dart';
 import 'package:stelaris/api/model/attribute_model.dart';
 import 'package:stelaris/api/paginated_result.dart';
-import 'package:stelaris/api/converter/attribute_paginated_result_converter.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/model/notification_model.dart';
@@ -17,9 +17,12 @@ abstract class AppState with _$AppState {
     @Default([]) List<ItemModel> items,
     @Default([]) List<NotificationModel> notifications,
     @Default([]) List<FontModel> fonts,
-    @AttributePaginatedResultConverter()
+    @GenericPaginatedResultConverter<AttributeModel>(
+        fromJsonT: attributeFromJson,
+        toJsonT: attributeToJson,
+    )
     @Default(
-      const PaginatedResult<AttributeModel>(
+      PaginatedResult<AttributeModel>(
         items: [],
         totalItems: 0,
         totalPages: 0,

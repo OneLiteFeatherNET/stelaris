@@ -30,8 +30,9 @@ _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
           currentPage: 1,
           pageSize: 0,
         )
-      : const AttributePaginatedResultConverter().fromJson(
+      : PaginatedResult<AttributeModel>.fromJson(
           json['attributes'] as Map<String, dynamic>,
+          (value) => AttributeModel.fromJson(value as Map<String, dynamic>),
         ),
   openNavigation: json['openNavigation'] as bool? ?? true,
   themeSettings: json['themeSettings'] == null
@@ -65,9 +66,7 @@ Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
   'items': instance.items,
   'notifications': instance.notifications,
   'fonts': instance.fonts,
-  'attributes': const AttributePaginatedResultConverter().toJson(
-    instance.attributes,
-  ),
+  'attributes': instance.attributes.toJson((value) => value),
   'openNavigation': instance.openNavigation,
   'themeSettings': instance.themeSettings,
 };
