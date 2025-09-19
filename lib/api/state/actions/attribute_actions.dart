@@ -109,13 +109,13 @@ class UpdateAttributeAction extends ReduxAction<AppState> {
 /// Centralizes the logic for updating the attributes list and selected attribute
 /// in the state. This reduces code duplication across multiple actions that
 /// modify the attributes collection.
-AppState _updateAttributesInState(AppState state, List<AttributeModel> newItems, AttributeModel? selectedAttribute) {
+AppState _updateAttributesInState(AppState state, List<AttributeModel> newItems, AttributeModel? selectedAttribute, {int? totalItems}) {
   final updated = state.attributes.copyWith(
     items: newItems,
-    totalItems: newItems.length,
+    totalItems: totalItems ?? state.attributes.totalItems,
     totalPages: state.attributes.totalPages,
     currentPage: state.attributes.currentPage,
-    pageSize: newItems.length,
+    pageSize: state.attributes.pageSize,
   );
   return state.copyWith(
       attributes: updated,
@@ -168,7 +168,7 @@ class AttributeRemoveAction extends ReduxAction<AppState> {
       ..remove(model);
 
     final AttributeModel? selectedModel =
-    state.selectedAttribute?.hashCode == model.hashCode
+    state.selectedAttribute == model
         ? null
         : state.selectedAttribute;
 
