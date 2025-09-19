@@ -34,7 +34,7 @@ class ItemPage extends StatelessWidget {
           mapToDeleteDialog: (value) =>
               createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
-            context.dispatch(RemoveItemAction(value));
+            context.dispatch(ItemRemoveAction(value));
             return true;
           },
           callFunction: (model) => context.dispatch(SelectedItemAction(model)),
@@ -57,7 +57,7 @@ class ItemPage extends StatelessWidget {
           title: 'Create new item',
           valueUpdate: (value) {
             final model = ItemModel(uiName: value);
-            context.dispatch(AddItemAction(model));
+            context.dispatch(ItemAddAction(model));
             Navigator.pop(context, true);
           },
           formKey: GlobalKey<FormState>(),
