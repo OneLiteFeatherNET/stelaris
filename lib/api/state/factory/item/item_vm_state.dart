@@ -9,7 +9,7 @@ class ItemVmFactory extends VmFactory<AppState, ItemPage, ItemViewModel> {
 
   @override
   ItemViewModel fromStore() =>
-      ItemViewModel(itemModels: state.items, selected: state.selectedItem);
+      ItemViewModel(itemModels: state.items.items, selected: state.selectedItem);
 }
 
 class ItemViewModel extends Vm {
