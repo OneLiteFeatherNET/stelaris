@@ -86,7 +86,7 @@ class ItemRemoveAction extends ReduxAction<AppState> {
   Future<AppState?> reduce() async {
     final ItemModel removedEntry = await ApiService().itemApi.remove(model);
     final List<ItemModel> items = List.of(state.items.items, growable: true)
-      ..remove(removedEntry);
+      ..removeWhere((element) => element.id == removedEntry.id);
     return _updateItemInState(state, items, null);
   }
 }
