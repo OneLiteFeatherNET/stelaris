@@ -174,10 +174,10 @@ AppState _updateNotificationInState(
 }) {
   final updated = state.notifications.copyWith(
     items: newItems,
-    totalItems: totalItems ?? state.items.totalItems,
-    totalPages: state.items.totalPages,
-    currentPage: state.items.currentPage,
-    pageSize: state.items.pageSize,
+    totalItems: totalItems ?? state.notifications.totalItems,
+    totalPages: state.notifications.totalPages,
+    currentPage: state.notifications.currentPage,
+    pageSize: state.notifications.pageSize,
   );
   return state.copyWith(
     notifications: updated,
