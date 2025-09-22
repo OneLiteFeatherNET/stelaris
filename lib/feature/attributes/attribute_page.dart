@@ -6,7 +6,7 @@ import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/attribute/attribute_vm_state.dart';
 import 'package:stelaris/feature/attributes/attribute_general_page.dart';
-import 'package:stelaris/feature/base/base_model_view.dart';
+import 'package:stelaris/feature/base/paginated_model_list.dart';
 import 'package:stelaris/feature/base/model_text.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/util/constants.dart';
@@ -28,21 +28,30 @@ class AttributePage extends StatelessWidget {
       onInit: (store) => store.dispatchAndWait(InitAttributeAction()),
       onDispose: (store) => store.dispatch(RemoveSelectAttributeAction(), notify: false),
       builder: (context, vm) {
-        return BaseModelView<AttributeModel>(
-          mapToDataModelItem: (value) =>
-              TextWidget(displayName: value.uiName),
-          openFunction: () => _openDialog(context),
-          selectedItem: vm.selected,
-          mapToDeleteDialog: (value) =>
-              createDeleteText(value.uiName, context),
-          mapToDeleteSuccessfully: (value) {
-            context.dispatch(AttributeRemoveAction(value));
-            return true;
-          },
-          callFunction: (model) => context.dispatch(SelectAttributeAction(model)),
-          models: vm.models,
-          child: _mapModelToWidget(vm.selected),
-          compareFunction: (model) => vm.isSelectedItem(model),
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PaginatedModelList<AttributeModel>(
+              mapToDataModelItem: (value) => TextWidget(displayName: value.uiName),
+              openFunction: () => _openDialog(context),
+              selectedItem: vm.selected,
+              mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
+              mapToDeleteSuccessfully: (value) {
+                context.dispatch(AttributeRemoveAction(value));
+                return true;
+              },
+              callFunction: (model) => context.dispatch(SelectAttributeAction(model)),
+              models: vm.models,
+              compareFunction: (model) => vm.isSelectedItem(model),
+              hasMore: vm.hasNextPage,
+              isLoadingMore: vm.isLoadingMore,
+              onLoadMore: vm.hasNextPage && !vm.isLoadingMore
+                  ? () => context.dispatch(InitAttributeAction())
+                  : null,
+            ),
+            if (vm.selected != null) _mapModelToWidget(vm.selected)!,
+          ],
         );
       },
     );

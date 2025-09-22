@@ -9,17 +9,28 @@ class AttributeVmFactory
 
   @override
   AttributeViewModel fromStore() => AttributeViewModel(
-      models: state.attributes, selected: state.selectedAttribute);
+        models: state.attributes.items,
+        selected: state.selectedAttribute,
+        totalItems: state.attributes.totalItems,
+        hasNextPage: state.attributes.hasNextPage,
+        isLoadingMore: state.isLoadingAttributesMore,
+      );
 }
 
 class AttributeViewModel extends Vm {
   final List<AttributeModel> models;
   final AttributeModel? selected;
+  final int totalItems;
+  final bool hasNextPage;
+  final bool isLoadingMore;
 
   AttributeViewModel({
     required this.models,
     required this.selected,
-  }) : super(equals: [models, selected]);
+    required this.totalItems,
+    required this.hasNextPage,
+    required this.isLoadingMore,
+  }) : super(equals: [models, selected, totalItems, hasNextPage, isLoadingMore]);
 
   bool isSelectedItem(AttributeModel model) {
     if (selected == null) return false;
