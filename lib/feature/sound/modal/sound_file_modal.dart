@@ -96,7 +96,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
                   ),
                   padding: const EdgeInsets.all(16),
                   child: DropdownButtonFormField<String>(
-                    value: _type,
+                    initialValue: _type,
                     decoration: const InputDecoration(
                       labelText: 'Type',
                       border: OutlineInputBorder(),
