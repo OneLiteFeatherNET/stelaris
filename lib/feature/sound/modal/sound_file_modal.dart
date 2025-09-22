@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris/feature/base/button/cancel_button.dart';
+import 'package:stelaris/feature/sound/modal/section/base_section.dart';
 import 'package:stelaris/feature/sound/modal/section/integer_fields_section.dart';
 import 'package:stelaris/feature/sound/modal/section/sound_switch_section.dart';
 import 'package:stelaris/feature/sound/modal/section/volume_section.dart';
 
+import 'section/string_field_section.dart';
+
 class SoundFileModal extends StatefulWidget {
   final void Function({
+    required String name,
     required double volume,
     required double pitch,
     required int weight,
@@ -25,6 +29,7 @@ class SoundFileModal extends StatefulWidget {
 }
 
 class _SoundFileModalState extends State<SoundFileModal> {
+  String _name = '';
   double _volume = 1;
   double _pitch = 1;
   int _weight = 1;
@@ -56,7 +61,8 @@ class _SoundFileModalState extends State<SoundFileModal> {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 24),
-                // Section 1: Volume & Pitch
+                const StringInputSection(),
+                const SizedBox(height: 16),
                 VolumeSection(
                   initialPitch: _pitch,
                   initialVolume: _volume,
@@ -64,19 +70,12 @@ class _SoundFileModalState extends State<SoundFileModal> {
                   onVolumeFinalized: (v) => setState(() => _volume = v),
                 ),
                 const SizedBox(height: 16),
-                Container(
-                  decoration: BoxDecoration(
-                    color: surfaceVariant,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: IntegerFieldsSection(
-                    initialWeight: _weight,
-                    initialAttenuationDistance: _attenuationDistance,
-                    onWeightChanged: (v) => setState(() => _weight = v),
-                    onAttenuationDistanceChanged: (v) =>
-                        setState(() => _attenuationDistance = v),
-                  ),
+                IntegerFieldsSection(
+                  initialWeight: _weight,
+                  initialAttenuationDistance: _attenuationDistance,
+                  onWeightChanged: (v) => setState(() => _weight = v),
+                  onAttenuationDistanceChanged: (v) =>
+                      setState(() => _attenuationDistance = v),
                 ),
                 const SizedBox(height: 16),
                 // Section 3: Switches
@@ -89,12 +88,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
                 ),
                 const SizedBox(height: 16),
                 // Section 4: Type dropdown
-                Container(
-                  decoration: BoxDecoration(
-                    color: surfaceVariant,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding: const EdgeInsets.all(16),
+                BaseSection(
                   child: DropdownButtonFormField<String>(
                     initialValue: _type,
                     decoration: const InputDecoration(
@@ -118,6 +112,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
                           widget.onSave?.call(
+                            name: _name,
                             volume: _volume,
                             pitch: _pitch,
                             weight: _weight,

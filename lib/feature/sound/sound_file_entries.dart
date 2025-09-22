@@ -90,6 +90,7 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
         create: true,
         onSave:
             ({
+              required name,
               required volume,
               required pitch,
               required weight,
