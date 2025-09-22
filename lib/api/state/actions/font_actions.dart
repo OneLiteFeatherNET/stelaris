@@ -64,7 +64,7 @@ class InitFontAction extends ReduxAction<AppState> {
       final PaginatedResult<FontModel> result = await ApiService().fontApi
           .getPage(
             page: 1,
-            size: state.items.pageSize == 0 ? 10 : state.items.pageSize,
+            size: state.fonts.pageSize == 0 ? 10 : state.fonts.pageSize,
           );
       return state.copyWith(fonts: result);
     }
