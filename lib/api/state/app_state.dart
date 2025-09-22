@@ -48,6 +48,9 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingAttributesMore,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool isLoadingMoreItems,
     @Default(true) bool openNavigation,
     @Default(
       ThemeSettings(
