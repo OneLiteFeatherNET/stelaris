@@ -22,7 +22,7 @@ class ThemeSettings {
   final bool useSystemTheme;
 
   static Color _colorFromJson(int value) => Color(value);
-  static int _colorToJson(Color color) => color.value;
+  static int _colorToJson(Color color) => color.toARGB32();
 
   factory ThemeSettings.fromJson(Map<String, dynamic> json) =>
       _$ThemeSettingsFromJson(json);
