@@ -5,6 +5,11 @@ import 'data_model.dart';
 part 'item_model.g.dart';
 part 'item_model.freezed.dart';
 
+ItemModel itemModelFromJson(Object? json) =>
+    ItemModel.fromJson(json as Map<String, dynamic>);
+
+Map<String, dynamic> itemModelToJson(ItemModel item) => item.toJson();
+
 @freezed
 abstract class ItemModel with _$ItemModel, DataModel {
   const ItemModel._(); // Add this private constructor

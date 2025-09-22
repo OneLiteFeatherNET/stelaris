@@ -7,6 +7,7 @@ import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/model/notification_model.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
+import 'package:stelaris/api/paginated_result.dart';
 
 part 'app_state.g.dart';
 part 'app_state.freezed.dart';
@@ -14,7 +15,20 @@ part 'app_state.freezed.dart';
 @freezed
 abstract class AppState with _$AppState {
   const factory AppState({
-    @Default([]) List<ItemModel> items,
+    @GenericPaginatedResultConverter<ItemModel>(
+      fromJsonT: itemModelFromJson,
+      toJsonT: itemModelToJson,
+    )
+    @Default(
+      PaginatedResult<ItemModel>(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+    )
+    PaginatedResult<ItemModel> items,
     @Default([]) List<NotificationModel> notifications,
     @Default([]) List<FontModel> fonts,
     @GenericPaginatedResultConverter<AttributeModel>(
@@ -34,14 +48,20 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingAttributesMore,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool isLoadingMoreItems,
     @Default(true) bool openNavigation,
-    @Default(ThemeSettings(
-      isDarkMode: false,
-      primaryColor: Colors.blue,
-      accentColor: Colors.blueAccent,
-      fontScale: 1,
-      useSystemTheme: true,
-    )) ThemeSettings themeSettings,
+    @Default(
+      ThemeSettings(
+        isDarkMode: false,
+        primaryColor: Colors.blue,
+        accentColor: Colors.blueAccent,
+        fontScale: 1,
+        useSystemTheme: true,
+      ),
+    )
+    ThemeSettings themeSettings,
     @JsonKey(includeToJson: false) ItemModel? selectedItem,
     @JsonKey(includeToJson: false) NotificationModel? selectedNotification,
     @JsonKey(includeToJson: false) FontModel? selectedFont,

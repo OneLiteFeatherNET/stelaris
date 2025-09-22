@@ -6,6 +6,7 @@ import 'package:stelaris/api/model/item/item_enchantment_model.dart';
 import 'package:stelaris/api/model/item/item_flag_model.dart';
 import 'package:stelaris/api/model/item/item_lore_model.dart';
 import 'package:stelaris/api/model/item_model.dart';
+import 'package:stelaris/api/paginated_result.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/minecraft/enchantment.dart';
 
@@ -52,40 +53,80 @@ class ItemFlagResetAction extends ReduxAction<AppState> {
 }
 
 class InitItemAction extends ReduxAction<AppState> {
+
   @override
   Future<AppState?> reduce() async {
-    final List<ItemModel> items = await ApiService().itemApi.getAll();
-    return state.copyWith(items: items);
-  }
+    // If we already have items and more pages, treat this as load-more.
+    final hasExisting = state.items.items.isNotEmpty;
+    final canLoadMore = state.items.hasNextPage;
 
-  InitItemAction();
+    if (hasExisting && canLoadMore) {
+      if (state.isLoadingMoreItems) return null;
+      dispatchSync(_SetLoadMoreItemModels(true));
+      try {
+        final current = state.items;
+        final nextPage = current.currentPage + 1;
+        final size = 10;
+        final next = await ApiService().itemApi.getPage(page: nextPage, size: size);
+
+        final merged = List<ItemModel>.of(current.items)..addAll(next.items);
+        final updated = current.copyWith(
+          items: merged,
+          totalItems: next.totalItems != 0 ? next.totalItems : current.totalItems,
+          totalPages: next.totalPages != 0 ? next.totalPages : current.totalPages,
+          currentPage: next.currentPage != 0 ? next.currentPage : nextPage,
+          pageSize: next.pageSize != 0 ? next.pageSize : size,
+        );
+        return state.copyWith(items: updated);
+      } finally {
+        dispatchSync(_SetLoadMoreItemModels(false));
+      }
+    } else {
+      // Initial load (or refresh)
+      final PaginatedResult<ItemModel> result =
+      await ApiService().itemApi.getPage(page: 1, size: state.items.pageSize == 0 ? 10 : state.items.pageSize);
+      return state.copyWith(items: result);
+    }
+  }
 }
 
-class AddItemAction extends ReduxAction<AppState> {
+/// Internal action to manage the loading state for item pagination.
+///
+/// This private action controls the `isLoadingMoreItems` flag in the state,
+/// preventing multiple simultaneous load-more requests. It's used internally
+/// by InitItemAction during pagination operations.
+class _SetLoadMoreItemModels extends ReduxAction<AppState> {
+  final bool value;
+  _SetLoadMoreItemModels(this.value);
+  @override
+  AppState reduce() => state.copyWith(isLoadingMoreItems: value);
+}
+
+class ItemAddAction extends ReduxAction<AppState> {
   final ItemModel _model;
 
-  AddItemAction(this._model);
+  ItemAddAction(this._model);
 
   @override
   Future<AppState?> reduce() async {
     final ItemModel added = await ApiService().itemApi.add(_model);
-    final List<ItemModel> items = List.of(state.items, growable: true);
-    items.add(added);
-    return state.copyWith(items: items, selectedItem: added);
+    final List<ItemModel> items = List.of(state.items.items, growable: true)
+      ..add(added);
+    return _updateItemInState(state, items, added, totalItems: items.length);
   }
 }
 
-class RemoveItemAction extends ReduxAction<AppState> {
+class ItemRemoveAction extends ReduxAction<AppState> {
   final ItemModel model;
 
-  RemoveItemAction(this.model);
+  ItemRemoveAction(this.model);
 
   @override
   Future<AppState?> reduce() async {
     final ItemModel removedEntry = await ApiService().itemApi.remove(model);
-    final List<ItemModel> items = List.of(state.items, growable: true);
-    items.removeWhere((element) => element.id == removedEntry.id);
-    return state.copyWith(items: items, selectedItem: null);
+    final List<ItemModel> items = List.of(state.items.items, growable: true)
+      ..removeWhere((element) => element.id == removedEntry.id);
+    return _updateItemInState(state, items, null);
   }
 }
 
@@ -97,11 +138,20 @@ class ItemDatabaseUpdate extends ReduxAction<AppState> {
     if (state.selectedItem == null) return null;
     final ItemModel selected = state.selectedItem!;
     final ItemModel dbModel = await ApiService().itemApi.update(selected);
-    final List<ItemModel> models = List.of(state.items, growable: true);
-    final int index = models.indexWhere((element) => element.id == selected.id);
-    models.removeAt(index);
-    models.insert(index, dbModel);
-    return state.copyWith(items: models, selectedItem: dbModel);
+
+    final List<ItemModel> updatedList = List.of(
+      state.items.items,
+      growable: true,
+    );
+    final int index = updatedList.indexWhere(
+      (element) => element.id == selected.id,
+    );
+
+    if (index != -1) {
+      updatedList[index] = dbModel;
+    }
+
+    return _updateItemInState(state, updatedList, dbModel);
   }
 }
 
@@ -139,17 +189,18 @@ class SaveEnchantmentsAction extends ReduxAction<AppState> {
       final updatedItem = await ApiService().itemApi.update(selectedItem);
 
       // Update the items list with the updated item from the server
-      final updatedState = state.copyWith(
-        selectedItem: updatedItem,
-        items: state.items.map((item) {
-          if (item.id == updatedItem.id) {
-            return updatedItem;
-          }
-          return item;
-        }).toList(),
+      final List<ItemModel> updatedList = List.of(
+        state.items.items,
+        growable: true,
+      );
+      final int index = updatedList.indexWhere(
+        (element) => element.id == selectedItem.id,
       );
 
-      return updatedState;
+      if (index != -1) {
+        updatedList[index] = updatedItem;
+      }
+      return _updateItemInState(state, updatedList, updatedItem);
     } catch (e) {
       // Call the error callback if provided
       if (onError != null) {
@@ -270,10 +321,26 @@ class ItemFlagFetchAction extends ReduxAction<AppState> {
   Future<AppState?> reduce() async {
     if (state.selectedItem == null) return null;
     final ItemModel selected = state.selectedItem!;
-    final ItemFlagModel dbModel = await ApiService().itemApi.getFlags(selected.id!);
-    final ItemModel updatedItem  = selected.copyWith(
-      flags: dbModel.flags,
+    final ItemFlagModel dbModel = await ApiService().itemApi.getFlags(
+      selected.id!,
     );
+    final ItemModel updatedItem = selected.copyWith(flags: dbModel.flags);
     return state.copyWith(selectedItem: updatedItem);
   }
+}
+
+AppState _updateItemInState(
+  AppState state,
+  List<ItemModel> newItems,
+  ItemModel? selectedItem, {
+  int? totalItems,
+}) {
+  final updated = state.items.copyWith(
+    items: newItems,
+    totalItems: totalItems ?? state.items.totalItems,
+    totalPages: state.items.totalPages,
+    currentPage: state.items.currentPage,
+    pageSize: state.items.pageSize,
+  );
+  return state.copyWith(items: updated, selectedItem: selectedItem);
 }

@@ -7,11 +7,18 @@ part of 'app_state.dart';
 // **************************************************************************
 
 _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
-  items:
-      (json['items'] as List<dynamic>?)
-          ?.map((e) => ItemModel.fromJson(e as Map<String, dynamic>))
-          .toList() ??
-      const [],
+  items: json['items'] == null
+      ? const PaginatedResult<ItemModel>(
+          items: [],
+          totalItems: 0,
+          totalPages: 0,
+          currentPage: 1,
+          pageSize: 0,
+        )
+      : PaginatedResult<ItemModel>.fromJson(
+          json['items'] as Map<String, dynamic>,
+          (value) => ItemModel.fromJson(value as Map<String, dynamic>),
+        ),
   notifications:
       (json['notifications'] as List<dynamic>?)
           ?.map((e) => NotificationModel.fromJson(e as Map<String, dynamic>))
@@ -63,7 +70,7 @@ _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
 );
 
 Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
-  'items': instance.items,
+  'items': instance.items.toJson((value) => value),
   'notifications': instance.notifications,
   'fonts': instance.fonts,
   'attributes': instance.attributes.toJson((value) => value),
