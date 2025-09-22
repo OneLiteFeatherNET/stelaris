@@ -145,7 +145,7 @@ class _PaginatedModelListState<E extends DataModel>
 
   Widget _buildFooter() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Center(
         child: widget.isLoadingMore
             ? const SizedBox(

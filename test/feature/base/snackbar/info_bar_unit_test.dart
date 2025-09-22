@@ -39,7 +39,7 @@ void main() {
 
     test('create method returns a SnackBar with specified width', () {
       const String testText = 'Custom Width Test';
-      const double customWidth = 300.0;
+      const double customWidth = 300;
       final SnackBar snackBar = factory.create(testText, customWidth);
 
       // Check content
