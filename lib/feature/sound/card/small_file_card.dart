@@ -21,6 +21,7 @@ class SmallFileCard extends StatelessWidget {
             builder: (context) => SoundFileModal(
               create: false,
               onSave: ({
+                required name,
                 required volume,
                 required pitch,
                 required weight,

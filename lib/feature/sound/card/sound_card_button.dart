@@ -23,6 +23,7 @@ class SoundCardButton extends StatelessWidget {
             create: false,
             onSave:
                 ({
+                  required name,
                   required volume,
                   required pitch,
                   required weight,
