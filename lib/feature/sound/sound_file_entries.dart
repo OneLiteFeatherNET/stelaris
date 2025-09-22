@@ -98,7 +98,7 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
               required preload,
               required type,
             }) {
-              SoundFileSource fileSource = SoundFileSource(
+              final SoundFileSource fileSource = SoundFileSource(
                 name: 'Test',
                 volume: volume,
                 pitch: pitch,

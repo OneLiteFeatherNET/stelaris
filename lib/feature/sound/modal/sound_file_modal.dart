@@ -25,8 +25,8 @@ class SoundFileModal extends StatefulWidget {
 }
 
 class _SoundFileModalState extends State<SoundFileModal> {
-  double _volume = 1.0;
-  double _pitch = 1.0;
+  double _volume = 1;
+  double _pitch = 1;
   int _weight = 1;
   bool _stream = true;
   int _attenuationDistance = 16;
@@ -43,7 +43,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(24),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
