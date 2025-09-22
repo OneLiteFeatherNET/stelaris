@@ -6,8 +6,8 @@ import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/state/actions/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/font_vm_state.dart';
-import 'package:stelaris/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris/feature/base/model_text.dart';
+import 'package:stelaris/feature/base/paginated_model_view_tab.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/font/chars/char_card.dart';
 import 'package:stelaris/feature/font/font_general_page.dart';
@@ -24,13 +24,11 @@ class FontPage extends StatelessWidget {
       onInit: (store) => store.dispatchAndWait(InitFontAction()),
       onDispose: (store) => store.dispatch(RemoveSelectedFont(), notify: false),
       builder: (context, vm) {
-        return BaseModelViewTabs<FontModel>(
-          mapToDataModelItem: (value) =>
-              TextWidget(displayName: value.uiName),
+        return PaginatedBaseModelViewTabs<FontModel>(
+          mapToDataModelItem: (value) => TextWidget(displayName: value.uiName),
           openFunction: () => _openDialog(context),
           selectedItem: vm.selected,
-          mapToDeleteDialog: (value) =>
-              createDeleteText(value.uiName, context),
+          mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(FontRemoveAction(value));
             return true;
@@ -41,6 +39,11 @@ class FontPage extends StatelessWidget {
           tabPages: (pages) => pages,
           compareFunction: (model) => vm.isSelectedItem(model),
           tabs: _getTabs(),
+          isLoadingMore: vm.isLoadingMore,
+          hasMore: vm.hasNextPage,
+          onLoadMore: vm.hasNextPage && !vm.isLoadingMore
+              ? () => context.dispatch(InitFontAction())
+              : null,
         );
       },
     );
@@ -61,7 +64,7 @@ class FontPage extends StatelessWidget {
           formKey: GlobalKey<FormState>(),
           hintText: 'Example name',
           formatters: [
-            FilteringTextInputFormatter.allow(stringWithSpacePattern)
+            FilteringTextInputFormatter.allow(stringWithSpacePattern),
           ],
           formFieldValidator: (value) {
             final String input = value as String;
@@ -74,25 +77,14 @@ class FontPage extends StatelessWidget {
   }
 
   List<Tab> _getTabs() {
-    return [
-      const Tab(
-        child: Text(
-          'General',
-        ),
-      ),
-      const Tab(
-        child: Text(
-          'Chars',
-        ),
-      ),
-    ];
+    return [const Tab(child: Text('General')), const Tab(child: Text('Chars'))];
   }
 
   Widget _mapPageToWidget(String value, FontModel? clickedModel) {
     if (value.trim().isEmpty || clickedModel == null) return nil;
     switch (value) {
       case 'General':
-        return FontGeneralPage(formKey: GlobalKey<FormState>(),);
+        return FontGeneralPage(formKey: GlobalKey<FormState>());
       case 'Chars':
         return const CharCard();
     }
