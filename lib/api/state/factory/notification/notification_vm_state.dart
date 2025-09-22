@@ -9,17 +9,30 @@ class NotificationVmFactory
 
   @override
   NotificationViewModel fromStore() => NotificationViewModel(
-      models: state.notifications, selected: state.selectedNotification);
+    models: state.notifications.items,
+    selected: state.selectedNotification,
+    hasNextPage: state.notifications.hasNextPage,
+    isLoadingMore: state.isLoadingMoreNotifications,
+    currentItems: state.notifications.totalItems
+  );
 }
 
 class NotificationViewModel extends Vm {
   final List<NotificationModel> models;
   final NotificationModel? selected;
+  final int currentItems;
+  final bool hasNextPage;
+  final bool isLoadingMore;
 
   NotificationViewModel({
     required this.models,
     required this.selected,
-  }) : super(equals: [models, selected]);
+    required this.hasNextPage,
+    required this.isLoadingMore,
+    required this.currentItems,
+  }) : super(
+         equals: [models, selected, currentItems, hasNextPage, isLoadingMore],
+       );
 
   bool isSelectedItem(NotificationModel model) {
     if (selected == null) return false;

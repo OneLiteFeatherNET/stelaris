@@ -29,7 +29,20 @@ abstract class AppState with _$AppState {
       ),
     )
     PaginatedResult<ItemModel> items,
-    @Default([]) List<NotificationModel> notifications,
+    @Default(
+      PaginatedResult<NotificationModel>(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+    )
+    @GenericPaginatedResultConverter<NotificationModel>(
+      fromJsonT: notificationFromJson,
+      toJsonT: notificationModelToJson,
+    )
+    PaginatedResult<NotificationModel> notifications,
     @Default([]) List<FontModel> fonts,
     @GenericPaginatedResultConverter<AttributeModel>(
         fromJsonT: attributeFromJson,
@@ -51,6 +64,9 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingMoreItems,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool isLoadingMoreNotifications,
     @Default(true) bool openNavigation,
     @Default(
       ThemeSettings(
