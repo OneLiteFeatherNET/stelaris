@@ -4,6 +4,11 @@ import 'data_model.dart';
 part 'font_model.g.dart';
 part 'font_model.freezed.dart';
 
+FontModel fontFromJson(Object? json) =>
+    FontModel.fromJson(json as Map<String, dynamic>);
+
+Map<String, dynamic> fontToJson(FontModel item) => item.toJson();
+
 @freezed
 abstract class FontModel with _$FontModel, DataModel {
   const FontModel._(); // Add this private constructor

@@ -31,11 +31,18 @@ _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
           json['notifications'] as Map<String, dynamic>,
           (value) => NotificationModel.fromJson(value as Map<String, dynamic>),
         ),
-  fonts:
-      (json['fonts'] as List<dynamic>?)
-          ?.map((e) => FontModel.fromJson(e as Map<String, dynamic>))
-          .toList() ??
-      const [],
+  fonts: json['fonts'] == null
+      ? const PaginatedResult<FontModel>(
+          items: [],
+          totalItems: 0,
+          totalPages: 0,
+          currentPage: 1,
+          pageSize: 0,
+        )
+      : PaginatedResult<FontModel>.fromJson(
+          json['fonts'] as Map<String, dynamic>,
+          (value) => FontModel.fromJson(value as Map<String, dynamic>),
+        ),
   attributes: json['attributes'] == null
       ? const PaginatedResult<AttributeModel>(
           items: [],
@@ -79,7 +86,7 @@ _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
 Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
   'items': instance.items.toJson((value) => value),
   'notifications': instance.notifications.toJson((value) => value),
-  'fonts': instance.fonts,
+  'fonts': instance.fonts.toJson((value) => value),
   'attributes': instance.attributes.toJson((value) => value),
   'openNavigation': instance.openNavigation,
   'themeSettings': instance.themeSettings,

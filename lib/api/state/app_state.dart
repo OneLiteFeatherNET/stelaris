@@ -10,6 +10,7 @@ import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/api/paginated_result.dart';
 
 part 'app_state.g.dart';
+
 part 'app_state.freezed.dart';
 
 @freezed
@@ -43,10 +44,23 @@ abstract class AppState with _$AppState {
       toJsonT: notificationModelToJson,
     )
     PaginatedResult<NotificationModel> notifications,
-    @Default([]) List<FontModel> fonts,
+    @Default(
+      PaginatedResult<FontModel>(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+    )
+    @GenericPaginatedResultConverter(
+      fromJsonT: fontFromJson,
+      toJsonT: fontToJson,
+    )
+    PaginatedResult<FontModel> fonts,
     @GenericPaginatedResultConverter<AttributeModel>(
-        fromJsonT: attributeFromJson,
-        toJsonT: attributeToJson,
+      fromJsonT: attributeFromJson,
+      toJsonT: attributeToJson,
     )
     @Default(
       PaginatedResult<AttributeModel>(
@@ -67,6 +81,9 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingMoreNotifications,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool isLoadingMoreFonts,
     @Default(true) bool openNavigation,
     @Default(
       ThemeSettings(
