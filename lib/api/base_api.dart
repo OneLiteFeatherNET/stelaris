@@ -9,11 +9,11 @@ import 'package:stelaris/api/paginated_result.dart';
 /// This class assumes that the API endpoints and request/response formats follow a specific and consistent pattern across all models using this base.
 ///
 /// For example, it expects the following endpoint structure for each model type:
-///   - GET    /<endpoint>
-///   - POST   /<endpoint>
-///   - GET    /<endpoint>/all
-///   - POST   /<endpoint>/update
-///   - DELETE /<endpoint>/delete/<id>
+///   - GET    `/endpoint`
+///   - POST   `/endpoint`
+///   - GET    `/endpoint/all`
+///   - POST   `/endpoint/update`
+///   - DELETE `/endpoint/delete/{id}`
 ///
 /// Only use this base class when your API strictly adheres to this pattern for all CRUD operations. If your endpoints or data formats differ, consider implementing a custom service instead.
 ///
