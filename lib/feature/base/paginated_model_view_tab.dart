@@ -32,7 +32,6 @@ class PaginatedBaseModelViewTabs<E extends DataModel> extends StatelessWidget {
   final List<Tab> tabs;
 
   const PaginatedBaseModelViewTabs({
-    // List properties
     required this.mapToDataModelItem,
     required this.openFunction,
     required this.selectedItem,
@@ -41,14 +40,12 @@ class PaginatedBaseModelViewTabs<E extends DataModel> extends StatelessWidget {
     required this.callFunction,
     required this.models,
     required this.compareFunction,
-    // Pagination properties
-    this.onLoadMore,
-    this.hasMore = false,
-    this.isLoadingMore = false,
-    // Tab properties
     required this.page,
     required this.tabPages,
     required this.tabs,
+    this.onLoadMore,
+    this.hasMore = false,
+    this.isLoadingMore = false,
     super.key,
   });
 
@@ -59,7 +56,6 @@ class PaginatedBaseModelViewTabs<E extends DataModel> extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. The Paginated List on the left
           PaginatedModelList<E>(
             mapToDataModelItem: mapToDataModelItem,
             selectedItem: selectedItem,
