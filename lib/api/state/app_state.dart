@@ -7,7 +7,6 @@ import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/model/notification_model.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
-import 'package:stelaris/api/paginated_result.dart';
 
 part 'app_state.g.dart';
 
