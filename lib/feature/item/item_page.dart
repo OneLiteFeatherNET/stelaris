@@ -6,8 +6,8 @@ import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/item_vm_state.dart';
-import 'package:stelaris/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris/feature/base/model_text.dart';
+import 'package:stelaris/feature/base/paginated_model_view_tab.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/general/item_general_page.dart';
@@ -26,7 +26,7 @@ class ItemPage extends StatelessWidget {
       onDispose: (store) =>
           store.dispatch(RemoveSelectItemAction(), notify: false),
       builder: (context, vm) {
-        return BaseModelViewTabs<ItemModel>(
+        return PaginatedBaseModelViewTabs<ItemModel>(
           mapToDataModelItem: (value) =>
               TextWidget(displayName: value.uiName),
           openFunction: () => _openCreationDialog(context),
@@ -43,6 +43,9 @@ class ItemPage extends StatelessWidget {
           tabPages: (pages) => pages,
           compareFunction: (model) => vm.isSelectedItem(model),
           tabs: _getTabs(),
+            onLoadMore: vm.hasNextPage && !vm.isLoadingMore
+                ? () => context.dispatch(InitItemAction())
+                : null,
         );
       },
     );
