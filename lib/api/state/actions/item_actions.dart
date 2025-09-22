@@ -73,7 +73,7 @@ class ItemAddAction extends ReduxAction<AppState> {
     final ItemModel added = await ApiService().itemApi.add(_model);
     final List<ItemModel> items = List.of(state.items.items, growable: true)
       ..add(added);
-    return _updateItemInState(state, items, added);
+    return _updateItemInState(state, items, added, totalItems: items.length);
   }
 }
 
