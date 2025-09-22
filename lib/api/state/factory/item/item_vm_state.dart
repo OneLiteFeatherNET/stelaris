@@ -10,7 +10,7 @@ class ItemVmFactory extends VmFactory<AppState, ItemPage, ItemViewModel> {
   ItemViewModel fromStore() => ItemViewModel(
     itemModels: state.items.items,
     selected: state.selectedItem,
-    hasNextPage: state.attributes.hasNextPage,
+    hasNextPage: state.items.hasNextPage,
     isLoadingMore: state.isLoadingMoreItems,
   );
 }
