@@ -32,7 +32,7 @@ class FontPage extends StatelessWidget {
           mapToDeleteDialog: (value) =>
               createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
-            context.dispatch(RemoveFontsAction(value));
+            context.dispatch(FontRemoveAction(value));
             return true;
           },
           callFunction: (model) => context.dispatch(SelectFontAction(model)),
@@ -55,7 +55,7 @@ class FontPage extends StatelessWidget {
           title: 'Create new font',
           valueUpdate: (value) {
             final FontModel model = FontModel(uiName: value);
-            context.dispatch(AddFontAction(model));
+            context.dispatch(FontAddAction(model));
             Navigator.pop(context, true);
           },
           formKey: GlobalKey<FormState>(),
