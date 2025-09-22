@@ -53,14 +53,53 @@ class ItemFlagResetAction extends ReduxAction<AppState> {
 }
 
 class InitItemAction extends ReduxAction<AppState> {
+
   @override
   Future<AppState?> reduce() async {
-    final PaginatedResult<ItemModel> items = await ApiService().itemApi
-        .getPage();
-    return state.copyWith(items: items);
-  }
+    // If we already have items and more pages, treat this as load-more.
+    final hasExisting = state.items.items.isNotEmpty;
+    final canLoadMore = state.items.hasNextPage;
 
-  InitItemAction();
+    if (hasExisting && canLoadMore) {
+      if (state.isLoadingMoreItems) return null;
+      dispatchSync(_SetLoadMoreItemModels(true));
+      try {
+        final current = state.items;
+        final nextPage = current.currentPage + 1;
+        final size = 10;
+        final next = await ApiService().itemApi.getPage(page: nextPage, size: size);
+
+        final merged = List<ItemModel>.of(current.items)..addAll(next.items);
+        final updated = current.copyWith(
+          items: merged,
+          totalItems: next.totalItems != 0 ? next.totalItems : current.totalItems,
+          totalPages: next.totalPages != 0 ? next.totalPages : current.totalPages,
+          currentPage: next.currentPage != 0 ? next.currentPage : nextPage,
+          pageSize: next.pageSize != 0 ? next.pageSize : size,
+        );
+        return state.copyWith(items: updated);
+      } finally {
+        dispatchSync(_SetLoadMoreItemModels(false));
+      }
+    } else {
+      // Initial load (or refresh)
+      final PaginatedResult<ItemModel> result =
+      await ApiService().itemApi.getPage(page: 1, size: state.items.pageSize == 0 ? 10 : state.items.pageSize);
+      return state.copyWith(items: result);
+    }
+  }
+}
+
+/// Internal action to manage the loading state for attribute pagination.
+///
+/// This private action controls the `isLoadingMoreItems` flag in the state,
+/// preventing multiple simultaneous load-more requests. It's used internally
+/// by InitAttributeAction during pagination operations.
+class _SetLoadMoreItemModels extends ReduxAction<AppState> {
+  final bool value;
+  _SetLoadMoreItemModels(this.value);
+  @override
+  AppState reduce() => state.copyWith(isLoadingMoreItems: value);
 }
 
 class ItemAddAction extends ReduxAction<AppState> {
