@@ -90,11 +90,11 @@ class InitItemAction extends ReduxAction<AppState> {
   }
 }
 
-/// Internal action to manage the loading state for attribute pagination.
+/// Internal action to manage the loading state for item pagination.
 ///
 /// This private action controls the `isLoadingMoreItems` flag in the state,
 /// preventing multiple simultaneous load-more requests. It's used internally
-/// by InitAttributeAction during pagination operations.
+/// by InitItemAction during pagination operations.
 class _SetLoadMoreItemModels extends ReduxAction<AppState> {
   final bool value;
   _SetLoadMoreItemModels(this.value);
