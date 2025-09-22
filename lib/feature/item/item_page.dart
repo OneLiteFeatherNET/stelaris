@@ -42,6 +42,8 @@ class ItemPage extends StatelessWidget {
           models: vm.itemModels,
           tabPages: (pages) => pages,
           compareFunction: (model) => vm.isSelectedItem(model),
+          isLoadingMore: vm.isLoadingMore,
+          hasMore: vm.hasNextPage,
           tabs: _getTabs(),
             onLoadMore: vm.hasNextPage && !vm.isLoadingMore
                 ? () => context.dispatch(InitItemAction())
