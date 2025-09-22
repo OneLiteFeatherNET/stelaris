@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stelaris/feature/sound/modal/section/base_section.dart';
 
 class IntegerFieldsSection extends StatefulWidget {
   final int initialWeight;
@@ -41,47 +42,49 @@ class _IntegerFieldsSectionState extends State<IntegerFieldsSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextFormField(
-          controller: _weightController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            labelText: 'Weight',
-            border: OutlineInputBorder(),
+    return BaseSection(
+      child: Column(
+        children: [
+          TextFormField(
+            controller: _weightController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              labelText: 'Weight',
+              border: OutlineInputBorder(),
+            ),
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+            ],
+            validator: (v) {
+              if (v == null || v.isEmpty) return 'Enter a weight';
+              final val = int.tryParse(v);
+              if (val == null) return 'Enter a valid integer';
+              return null;
+            },
+            onChanged: (v) => widget.onWeightChanged(int.tryParse(v) ?? 1),
           ),
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-          ],
-          validator: (v) {
-            if (v == null || v.isEmpty) return 'Enter a weight';
-            final val = int.tryParse(v);
-            if (val == null) return 'Enter a valid integer';
-            return null;
-          },
-          onChanged: (v) => widget.onWeightChanged(int.tryParse(v) ?? 1),
-        ),
-        const SizedBox(height: 12),
-        TextFormField(
-          controller: _attenuationController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            labelText: 'Attenuation Distance',
-            border: OutlineInputBorder(),
+          const SizedBox(height: 12),
+          TextFormField(
+            controller: _attenuationController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              labelText: 'Attenuation Distance',
+              border: OutlineInputBorder(),
+            ),
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+            ],
+            validator: (v) {
+              if (v == null || v.isEmpty) return 'Enter a distance';
+              final val = int.tryParse(v);
+              if (val == null) return 'Enter a valid integer';
+              return null;
+            },
+            onChanged: (v) =>
+                widget.onAttenuationDistanceChanged(int.tryParse(v) ?? 16),
           ),
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-          ],
-          validator: (v) {
-            if (v == null || v.isEmpty) return 'Enter a distance';
-            final val = int.tryParse(v);
-            if (val == null) return 'Enter a valid integer';
-            return null;
-          },
-          onChanged: (v) =>
-              widget.onAttenuationDistanceChanged(int.tryParse(v) ?? 16),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

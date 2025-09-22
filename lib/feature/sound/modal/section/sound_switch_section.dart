@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris/feature/sound/modal/section/base_section.dart';
 
 class SwitchesSection extends StatelessWidget {
   final bool streamValue;
@@ -18,15 +19,7 @@ class SwitchesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveBackgroundColor =
-        backgroundColor ?? Theme.of(context).colorScheme.surfaceContainerHighest;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: effectiveBackgroundColor,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.all(16),
+    return BaseSection(
       child: Column(
         children: [
           _buildSwitchRow(

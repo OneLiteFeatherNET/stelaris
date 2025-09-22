@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris/feature/sound/modal/section/base_section.dart';
 import 'package:stelaris/feature/sound/modal/section/sound_slider.dart';
 
 /// A dedicated section for controlling sound volume and pitch settings.
@@ -43,12 +44,7 @@ class _VolumeSectionState extends State<VolumeSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.all(16),
+    return BaseSection(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

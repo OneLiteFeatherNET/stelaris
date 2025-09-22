@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris/feature/sound/modal/section/base_section.dart';
 
 /// A widget that combines a descriptive [Text] label with a [Slider].
 ///
