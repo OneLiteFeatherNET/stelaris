@@ -168,7 +168,7 @@ class AttributeRemoveAction extends ReduxAction<AppState> {
       ..remove(model);
 
     final AttributeModel? selectedModel =
-    state.selectedAttribute == model
+    state.selectedAttribute?.id == model.id
         ? null
         : state.selectedAttribute;
 
