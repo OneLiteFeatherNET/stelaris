@@ -31,7 +31,7 @@ class SoundPage extends StatelessWidget {
           selectedItem: vm.selected,
           mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
-            context.dispatch(RemoveSoundAction(value));
+            context.dispatch(SoundRemoveAction(value));
             return true;
           },
           callFunction: (model) => context.dispatch(SelectSoundAction(model)),
