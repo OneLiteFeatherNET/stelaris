@@ -7,6 +7,7 @@ import 'package:stelaris/api/state/factory/sound/selected_sound_state.dart';
 import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 /// A widget that represents the general sound event management page.
@@ -39,7 +40,6 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
           store.dispatch(RemoveSelectedSoundEvent(), notify: false),
       builder: (context, vm) {
         final selected = vm.selected;
-
         return Form(
           key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -65,12 +65,11 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                               _buildTextField(
                                 label: context.l10n.card_name,
                                 currentValue: selected.variableName,
-                                validator: (value) {
-                                  if (value!.trim().isEmpty) {
-                                    return context.l10n.error_card_empty;
-                                  }
-                                  return null;
-                                },
+                                validator: (value) =>
+                                    checkIfEmptyAndReturnErrorString(
+                                      value,
+                                      context,
+                                    ),
                                 onChanged: (value) {
                                   final newEntry = selected.copyWith(
                                     variableName: value,
@@ -81,12 +80,11 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                               _buildTextField(
                                 label: 'Key',
                                 currentValue: selected.keyName,
-                                validator: (value) {
-                                  if (value!.trim().isEmpty) {
-                                    return context.l10n.error_card_empty;
-                                  }
-                                  return null;
-                                },
+                                validator: (value) =>
+                                    checkIfEmptyAndReturnErrorString(
+                                      value,
+                                      context,
+                                    ),
                                 onChanged: (value) {
                                   final newEntry = selected.copyWith(
                                     keyName: value,
@@ -97,12 +95,11 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                               _buildTextField(
                                 label: 'Subtitle',
                                 currentValue: selected.subTitle,
-                                validator: (value) {
-                                  if (value!.trim().isEmpty) {
-                                    return context.l10n.error_card_empty;
-                                  }
-                                  return null;
-                                },
+                                validator: (value) =>
+                                    checkIfEmptyAndReturnErrorString(
+                                      value,
+                                      context,
+                                    ),
                                 onChanged: (value) {
                                   final newEntry = selected.copyWith(
                                     subTitle: value,
