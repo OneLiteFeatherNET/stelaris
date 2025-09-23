@@ -72,7 +72,20 @@ abstract class AppState with _$AppState {
       ),
     )
     PaginatedResult<AttributeModel> attributes,
-    @Default(<SoundEventModel>[]) List<SoundEventModel> soundEvents,
+    @GenericPaginatedResultConverter<SoundEventModel>(
+      fromJsonT: soundEventFromJson,
+      toJsonT: soundEventToJson,
+    )
+    @Default(
+      PaginatedResult<SoundEventModel>(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+    )
+    PaginatedResult<SoundEventModel> soundEvents,
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingAttributesMore,
@@ -85,6 +98,9 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingMoreFonts,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool isLoadingMoreSoundEvents,
     @Default(true) bool openNavigation,
     @Default(
       ThemeSettings(

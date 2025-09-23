@@ -55,11 +55,18 @@ _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
           json['attributes'] as Map<String, dynamic>,
           (value) => AttributeModel.fromJson(value as Map<String, dynamic>),
         ),
-  soundEvents:
-      (json['soundEvents'] as List<dynamic>?)
-          ?.map((e) => SoundEventModel.fromJson(e as Map<String, dynamic>))
-          .toList() ??
-      const <SoundEventModel>[],
+  soundEvents: json['soundEvents'] == null
+      ? const PaginatedResult<SoundEventModel>(
+          items: [],
+          totalItems: 0,
+          totalPages: 0,
+          currentPage: 1,
+          pageSize: 0,
+        )
+      : PaginatedResult<SoundEventModel>.fromJson(
+          json['soundEvents'] as Map<String, dynamic>,
+          (value) => SoundEventModel.fromJson(value as Map<String, dynamic>),
+        ),
   openNavigation: json['openNavigation'] as bool? ?? true,
   themeSettings: json['themeSettings'] == null
       ? const ThemeSettings(
@@ -98,7 +105,7 @@ Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
   'notifications': instance.notifications.toJson((value) => value),
   'fonts': instance.fonts.toJson((value) => value),
   'attributes': instance.attributes.toJson((value) => value),
-  'soundEvents': instance.soundEvents,
+  'soundEvents': instance.soundEvents.toJson((value) => value),
   'openNavigation': instance.openNavigation,
   'themeSettings': instance.themeSettings,
 };
