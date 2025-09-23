@@ -8,17 +8,25 @@ class SoundVmFactory extends VmFactory<AppState, SoundPage, SoundViewModel> {
 
   @override
   SoundViewModel fromStore() => SoundViewModel(
-    models: state.soundEvents,
+    models: state.soundEvents.items,
     selected: state.selectedSoundEvent,
+    hasNextPage: state.soundEvents.hasNextPage,
+    isLoadingMore: state.isLoadingMoreSoundEvents,
   );
 }
 
 class SoundViewModel extends Vm {
-  SoundViewModel({required this.models, required this.selected})
-    : super(equals: [selected, models]);
+  SoundViewModel({
+    required this.models,
+    required this.selected,
+    required this.hasNextPage,
+    required this.isLoadingMore,
+  }) : super(equals: [selected, models, hasNextPage, isLoadingMore]);
 
   final SoundEventModel? selected;
   final List<SoundEventModel> models;
+  final bool hasNextPage;
+  final bool isLoadingMore;
 
   bool isSelectedItem(SoundEventModel model) {
     if (selected == null) return false;
