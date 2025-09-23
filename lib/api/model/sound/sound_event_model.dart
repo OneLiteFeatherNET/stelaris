@@ -7,6 +7,11 @@ part 'sound_event_model.freezed.dart';
 
 part 'sound_event_model.g.dart';
 
+SoundEventModel soundEventFromJson(dynamic json) =>
+    SoundEventModel.fromJson(json as Map<String, dynamic>);
+
+Map<String, dynamic> soundEventToJson(SoundEventModel model) => model.toJson();
+
 @freezed
 abstract class SoundEventModel with _$SoundEventModel, DataModel {
   const SoundEventModel._();
