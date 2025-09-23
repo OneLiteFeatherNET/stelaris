@@ -42,7 +42,7 @@ class BasePage extends StatelessWidget {
           Expanded(child: child),
         ],
       ),
-      endDrawer: const BuildDrawer(),
+      //endDrawer: const BuildDrawer(),
     );
   }
 }
