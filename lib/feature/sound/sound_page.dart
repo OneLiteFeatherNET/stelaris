@@ -6,8 +6,8 @@ import 'package:stelaris/api/model/sound/sound_event_model.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/sound/sound_vm_state.dart';
-import 'package:stelaris/feature/base/base_model_view_tabs.dart';
 import 'package:stelaris/feature/base/model_text.dart';
+import 'package:stelaris/feature/base/paginated_model_view_tab.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/sound/sound_file_entries.dart';
 import 'package:stelaris/feature/sound/sound_general_page.dart';
@@ -25,7 +25,7 @@ class SoundPage extends StatelessWidget {
       onDispose: (store) =>
           store.dispatch(RemoveSelectedSoundEvent(), notify: false),
       builder: (context, vm) {
-        return BaseModelViewTabs<SoundEventModel>(
+        return PaginatedBaseModelViewTabs<SoundEventModel>(
           mapToDataModelItem: (value) => TextWidget(displayName: value.uiName),
           openFunction: () => _openCreationDialog(context),
           selectedItem: vm.selected,
@@ -40,6 +40,11 @@ class SoundPage extends StatelessWidget {
           compareFunction: (model) => vm.isSelectedItem(model),
           tabs: _getTabs(),
           tabPages: (pages) => pages,
+          isLoadingMore: vm.isLoadingMore,
+          hasMore: vm.hasNextPage,
+          onLoadMore: vm.hasNextPage && !vm.isLoadingMore
+              ? () => context.dispatch(InitSoundAction())
+              : null,
         );
       },
     );
