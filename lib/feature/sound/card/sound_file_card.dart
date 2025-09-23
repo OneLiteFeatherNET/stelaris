@@ -5,6 +5,9 @@ import 'package:stelaris/feature/sound/card/small_file_card.dart';
 import 'package:stelaris/feature/sound/card/sound_card_button.dart';
 
 class SoundFileCard extends StatelessWidget {
+
+  static const double _fullCardMinWidth = 230;
+
   const SoundFileCard({required this.eventModel, super.key});
 
   final SoundFileSource eventModel;
@@ -15,7 +18,7 @@ class SoundFileCard extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         // If the card is too narrow, show only the icon centered in a card
-        if (constraints.maxWidth < 230) {
+        if (constraints.maxWidth < _fullCardMinWidth) {
           return const SmallFileCard();
         }
         // Otherwise, show the full card layout
@@ -29,7 +32,6 @@ class SoundFileCard extends StatelessWidget {
               children: [
                 const FolderIcon(),
                 const SizedBox(width: 12),
-                // Text Info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +52,6 @@ class SoundFileCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                // "View" Button
                 const SoundCardButton()
               ],
             ),
