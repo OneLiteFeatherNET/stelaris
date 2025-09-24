@@ -8,7 +8,7 @@ part 'sound_event_model.freezed.dart';
 part 'sound_event_model.g.dart';
 
 SoundEventModel soundEventFromJson(dynamic json) =>
-    SoundEventModel.fromJson(json as Map<String, dynamic>);
+    SoundEventModel.fromJson(json);
 
 Map<String, dynamic> soundEventToJson(SoundEventModel model) => model.toJson();
 
