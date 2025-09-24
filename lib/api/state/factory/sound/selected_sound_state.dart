@@ -25,7 +25,12 @@ class SelectedSoundState
             selectedEvent.files.hasNextPage &&
             !selectedEvent.isLoading) {
           dispatch(
-            LoadMoreSoundFiles(pageToLoad: selectedEvent.files.currentPage + 1),
+            LoadMoreSoundFiles(
+              pageToLoad: selectedEvent.files.currentPage + 1,
+              pageSize: selectedEvent.files.pageSize > 0
+                  ? selectedEvent.files.pageSize
+                  : 20,
+            ),
           );
         }
       },

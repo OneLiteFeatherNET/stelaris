@@ -65,6 +65,16 @@ class LoadMoreSoundFiles extends ReduxAction<AppState> {
   final int pageSize;
 
   @override
+  void before() {
+    dispatch(SetSelectedSoundLoading(true));
+  }
+
+  @override
+  void after() {
+    dispatch(SetSelectedSoundLoading(false));
+  }
+
+  @override
   Future<AppState?> reduce() async {
     if (state.selectedSoundEvent == null) return null;
 
@@ -72,6 +82,8 @@ class LoadMoreSoundFiles extends ReduxAction<AppState> {
     final soundClient = ApiService().soundApi as SoundClientApi;
     final PaginatedResult<SoundFileSource> files = await soundClient.getFiles(
       model.id!,
+      pageToLoad,
+      pageSize,
     );
     final PaginatedResult<SoundFileSource> entries = model.files;
 
@@ -85,5 +97,18 @@ class LoadMoreSoundFiles extends ReduxAction<AppState> {
     );
 
     return state.copyWith(selectedSoundEvent: updatedSoundEvent);
+  }
+}
+
+class SetSelectedSoundLoading extends ReduxAction<AppState> {
+  SetSelectedSoundLoading(this.isLoading);
+
+  final bool isLoading;
+
+  @override
+  AppState? reduce() {
+    final sel = state.selectedSoundEvent;
+    if (sel == null) return null;
+    return state.copyWith(selectedSoundEvent: sel.copyWith(isLoading: isLoading));
   }
 }
