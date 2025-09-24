@@ -40,6 +40,11 @@ class SoundClientApi extends BaseApi<SoundEventModel> {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(
       path: '${baseUri.path}/$endpoint/$id/sources',
+      // Many backends expect zero-based page index; convert if needed.
+      queryParameters: {
+        'page': (page - 1).toString(),
+        'size': items.toString(),
+      },
     );
     final result = await apiClient.dio.getUri(uri);
     return PaginatedResult.fromJson(
