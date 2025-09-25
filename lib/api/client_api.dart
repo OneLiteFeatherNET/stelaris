@@ -43,24 +43,6 @@ abstract class ClientAPI<T extends DataModel> {
   /// Throws an exception if the addition fails.
   Future<T> add(T model);
 
-  /// Retrieves a paginated list of all models.
-  ///
-  /// This method supports pagination through optional parameters:
-  /// - [page]: The page number to retrieve (1-based indexing)
-  /// - [items]: The number of items per page
-  ///
-  /// Returns a [Future] that completes with a list of model instances.
-  ///
-  /// Example:
-  /// ```dart
-  /// // Get the first page with 20 items
-  /// final firstPage = await api.getAll();
-  ///
-  /// // Get the second page with 50 items per page
-  /// final secondPage = await api.getAll(2, 50);
-  /// ```
-  Future<List<T>> getAll([int page = 1, int items = 20]);
-
   /// Retrieves a paginated page of models with metadata.
   ///
   /// Returns a [PaginatedResult] which includes items and pagination info.

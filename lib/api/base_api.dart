@@ -51,14 +51,6 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
   }
 
   @override
-  Future<List<T>> getAll([int page = 1, int items = 20]) async {
-    final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/all');
-    final result = await apiClient.dio.getUri(uri);
-    return _formatter.fromJson(result.data!);
-  }
-
-  @override
   Future<T> update(T model) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/update');
