@@ -18,11 +18,11 @@ class SoundSliderRow extends StatelessWidget {
     this.onChangeEnd,
     this.min = 0.0,
     this.max = 1.0,
-    this.divisions,
-    this.labelWidth = 100.0, // Default label width
+    this.divisions = 10,
+    this.labelWidth = 100.0,
     this.labelStyle,
     this.valueDecimalPlaces = 2,
-    super.key, // For the Slider's own label
+    super.key,
   });
 
   final String label;

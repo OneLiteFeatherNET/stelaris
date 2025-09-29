@@ -51,11 +51,6 @@ class _VolumeSectionState extends State<VolumeSection> {
           SoundSliderRow(
             label: 'Volume',
             value: _currentVolume,
-            min: 0,
-            max: 2,
-            // As per your original _sliderRow call
-            divisions: 100,
-            // As per your original _sliderRow call
             onChanged: (newVolume) {
               setState(() {
                 _currentVolume = newVolume;
@@ -68,11 +63,6 @@ class _VolumeSectionState extends State<VolumeSection> {
           SoundSliderRow(
             label: 'Pitch',
             value: _currentPitch,
-            min: 0,
-            max: 2,
-            // As per your original _sliderRow call
-            divisions: 100,
-            // As per your original _sliderRow call
             onChanged: (newPitch) {
               setState(() {
                 _currentPitch = newPitch;
