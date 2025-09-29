@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:stelaris/feature/sound/modal/section/base_section.dart';
+import 'package:stelaris/util/formatter/min_value_fomatter.dart';
 
 class IntegerFieldsSection extends StatefulWidget {
   final int initialWeight;
   final int initialAttenuationDistance;
+  final int minValue;
   final ValueChanged<int> onWeightChanged;
   final ValueChanged<int> onAttenuationDistanceChanged;
 
@@ -13,6 +14,7 @@ class IntegerFieldsSection extends StatefulWidget {
     required this.initialAttenuationDistance,
     required this.onWeightChanged,
     required this.onAttenuationDistanceChanged,
+    this.minValue = 1,
     super.key,
   });
 
@@ -53,7 +55,7 @@ class _IntegerFieldsSectionState extends State<IntegerFieldsSection> {
               border: OutlineInputBorder(),
             ),
             inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
+              MinValueFormatter(widget.minValue)
             ],
             validator: (v) {
               if (v == null || v.isEmpty) return 'Enter a weight';
@@ -61,7 +63,10 @@ class _IntegerFieldsSectionState extends State<IntegerFieldsSection> {
               if (val == null) return 'Enter a valid integer';
               return null;
             },
-            onChanged: (v) => widget.onWeightChanged(int.tryParse(v) ?? 1),
+            onChanged: (v) {
+              final parsed = int.tryParse(v);
+              if (parsed != null) widget.onWeightChanged(parsed);
+            },
           ),
           const SizedBox(height: 12),
           TextFormField(
@@ -72,7 +77,7 @@ class _IntegerFieldsSectionState extends State<IntegerFieldsSection> {
               border: OutlineInputBorder(),
             ),
             inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
+              MinValueFormatter(widget.minValue)
             ],
             validator: (v) {
               if (v == null || v.isEmpty) return 'Enter a distance';
@@ -80,8 +85,10 @@ class _IntegerFieldsSectionState extends State<IntegerFieldsSection> {
               if (val == null) return 'Enter a valid integer';
               return null;
             },
-            onChanged: (v) =>
-                widget.onAttenuationDistanceChanged(int.tryParse(v) ?? 16),
+            onChanged: (v) {
+              final parsed = int.tryParse(v);
+              if (parsed != null) widget.onAttenuationDistanceChanged(parsed);
+            },
           ),
         ],
       ),
