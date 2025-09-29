@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris/feature/base/button/cancel_button.dart';
 import 'package:stelaris/feature/sound/modal/section/base_section.dart';
-import 'package:stelaris/feature/sound/modal/section/integer_fields_section.dart';
-import 'package:stelaris/feature/sound/modal/section/sound_switch_section.dart';
-import 'package:stelaris/feature/sound/modal/section/volume_section.dart';
+import 'package:stelaris/feature/sound/modal/type/integer_fields_section.dart';
+import 'package:stelaris/feature/sound/modal/type/sound_switch_section.dart';
+import 'package:stelaris/feature/sound/modal/type/volume_section.dart';
 
 import 'section/string_field_section.dart';
 
@@ -18,7 +18,7 @@ class SoundFileModal extends StatefulWidget {
     required bool preload,
     required String type,
   })?
-      onSave;
+  onSave;
 
   final bool create;
 
@@ -71,10 +71,10 @@ class _SoundFileModalState extends State<SoundFileModal> {
                 ),
                 const SizedBox(height: 16),
                 IntegerFieldsSection(
-                  initialWeight: _weight,
-                  initialAttenuationDistance: _attenuationDistance,
+                  weight: _weight,
+                  attenuation: _attenuationDistance,
                   onWeightChanged: (v) => setState(() => _weight = v),
-                  onAttenuationDistanceChanged: (v) =>
+                  onAttenuationChanged: (v) =>
                       setState(() => _attenuationDistance = v),
                 ),
                 const SizedBox(height: 16),
