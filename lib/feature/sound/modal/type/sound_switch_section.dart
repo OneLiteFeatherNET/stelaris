@@ -20,7 +20,8 @@ class SwitchesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseSection(
-      child: Column(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           _buildSwitchRow(
             context: context,
@@ -47,12 +48,11 @@ class SwitchesSection extends StatelessWidget {
     required ValueChanged<bool> onChanged,
   }) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Expanded(
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
         Switch(
           value: value,

@@ -56,10 +56,9 @@ class _VolumeSectionState extends State<VolumeSection> {
                 _currentVolume = newVolume;
               });
             },
-            onChangeEnd:
-                widget.onVolumeFinalized, // Pass through the finalized callback
+            onChangeEnd: widget.onVolumeFinalized,
           ),
-          const SizedBox(height: 12), // Your existing spacer
+          const SizedBox(height: 12),
           SoundSliderRow(
             label: 'Pitch',
             value: _currentPitch,
@@ -68,8 +67,7 @@ class _VolumeSectionState extends State<VolumeSection> {
                 _currentPitch = newPitch;
               });
             },
-            onChangeEnd:
-                widget.onPitchFinalized, // Pass through the finalized callback
+            onChangeEnd: widget.onPitchFinalized,
           ),
         ],
       ),
