@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:stelaris/feature/base/button/build_button.dart';
 import 'package:stelaris/feature/base/button/settings_button.dart';
 import 'package:stelaris/feature/base/button/toggle_navigation_button.dart';
-import 'package:stelaris/feature/build/build_drawer.dart';
 import 'package:stelaris/feature/navigation/navigation_side_bar.dart';
 import 'package:stelaris/util/constants.dart';
 

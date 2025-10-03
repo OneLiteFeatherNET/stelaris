@@ -1,6 +1,5 @@
 import 'package:stelaris/api/api_client.dart';
 import 'package:stelaris/api/client_api.dart';
-import 'package:stelaris/api/converter/model_list_converter.dart';
 import 'package:stelaris/api/model/data_model.dart';
 import 'package:stelaris/api/paginated_result.dart';
 
@@ -25,14 +24,13 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
   final String endpoint;
   final T Function(Map<String, dynamic>) fromJson;
   final Map<String, dynamic> Function(T) toJson;
-  final ModelListConverter<T> _formatter;
 
   BaseApi({
     required this.apiClient,
     required this.endpoint,
     required this.fromJson,
     required this.toJson,
-  }) : _formatter = ModelListConverter((p0) => fromJson(p0));
+  });
 
   @override
   Future<T> get() async {
