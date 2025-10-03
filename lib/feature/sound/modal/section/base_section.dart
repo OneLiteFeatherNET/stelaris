@@ -43,6 +43,8 @@ class BaseSection extends StatelessWidget {
   /// ```
   const BaseSection({
     required this.child,
+    this.title,
+    this.padding,
     super.key,
   });
 
@@ -51,6 +53,12 @@ class BaseSection extends StatelessWidget {
   /// This can be any widget - from simple text to complex layouts.
   /// The child will be wrapped with consistent padding and background styling.
   final Widget child;
+
+  /// Optional title shown above [child]. If null, only [child] is rendered.
+  final String? title;
+
+  /// Optional padding override. Defaults to EdgeInsets.all(20).
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +71,21 @@ class BaseSection extends StatelessWidget {
         color: surfaceVariant,
         borderRadius: BorderRadius.circular(16),
       ),
-      padding: const EdgeInsets.all(20),
-      child: child,
+      padding: padding ?? const EdgeInsets.all(20),
+      child: title == null
+          ? child
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title!,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                const SizedBox(height: 12),
+                child,
+              ],
+            ),
     );
   }
 }

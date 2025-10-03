@@ -15,7 +15,7 @@ class _StringInputSectionState extends State<StringInputSection> {
   @override
   void initState() {
     super.initState();
-    this._controller = TextEditingController();
+    _controller = TextEditingController();
   }
 
   @override
@@ -28,6 +28,7 @@ class _StringInputSectionState extends State<StringInputSection> {
       ),
     );
     return BaseSection(
+      title: 'Name',
       child: TextField(
         controller: _controller,
         decoration: InputDecoration(
@@ -36,7 +37,7 @@ class _StringInputSectionState extends State<StringInputSection> {
           border: outlineBorder,
           suffixIcon: const Tooltip(
             message: 'test',
-            child: const Icon(Icons.info_outline),
+            child: Icon(Icons.info_outline),
           ),
           enabledBorder: outlineBorder,
           focusedBorder: OutlineInputBorder(

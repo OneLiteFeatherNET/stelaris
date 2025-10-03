@@ -42,93 +42,115 @@ class _SoundFileModalState extends State<SoundFileModal> {
 
   @override
   Widget build(BuildContext context) {
-    final surfaceVariant = Theme.of(
-      context,
-    ).colorScheme.surfaceContainerHighest;
+    final media = MediaQuery.of(context);
+    final isDense = media.size.height < 500;
+    final smallGap = isDense ? 12.0 : 16.0;
+    final largeGap = isDense ? 20.0 : 32.0;
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.create ? 'Create Sound' : 'Edit Sound',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 24),
-                const StringInputSection(),
-                const SizedBox(height: 16),
-                VolumeSection(
-                  initialPitch: _pitch,
-                  initialVolume: _volume,
-                  onPitchFinalized: (v) => setState(() => _pitch = v),
-                  onVolumeFinalized: (v) => setState(() => _volume = v),
-                ),
-                const SizedBox(height: 16),
-                IntegerFieldsSection(
-                  weight: _weight,
-                  attenuation: _attenuationDistance,
-                  onWeightChanged: (v) => setState(() => _weight = v),
-                  onAttenuationChanged: (v) =>
-                      setState(() => _attenuationDistance = v),
-                ),
-                const SizedBox(height: 16),
-                // Section 3: Switches
-                SwitchesSection(
-                  streamValue: _stream,
-                  onStreamChanged: (v) => setState(() => _stream = v),
-                  preloadValue: _preload,
-                  onPreloadChanged: (v) => setState(() => _preload = v),
-                  backgroundColor: surfaceVariant, // Pass the color
-                ),
-                const SizedBox(height: 16),
-                // Section 4: Type dropdown
-                BaseSection(
-                  child: DropdownButtonFormField<String>(
-                    initialValue: _type,
-                    decoration: const InputDecoration(
-                      labelText: 'Type',
-                      border: OutlineInputBorder(),
-                    ),
-                    items: const [
-                      DropdownMenuItem(value: 'file', child: Text('File')),
-                      DropdownMenuItem(value: 'event', child: Text('Event')),
-                    ],
-                    onChanged: (v) => setState(() => _type = v ?? 'file'),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: 400,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.create ? 'Create Sound' : 'Edit Sound',
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                ),
-                const SizedBox(height: 32),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    CancelButton(callback: () => Navigator.pop(context)),
-                    const SizedBox(width: 12),
-                    FilledButton(
-                      onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          widget.onSave?.call(
-                            name: _name,
-                            volume: _volume,
-                            pitch: _pitch,
-                            weight: _weight,
-                            stream: _stream,
-                            attenuationDistance: _attenuationDistance,
-                            preload: _preload,
-                            type: _type,
-                          );
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: const Text('Save'),
+                  const SizedBox(height: 24),
+                  const StringInputSection(),
+                  const SizedBox(height: 16),
+                  VolumeSection(
+                    initialPitch: _pitch,
+                    initialVolume: _volume,
+                    onPitchFinalized: (v) => setState(() => _pitch = v),
+                    onVolumeFinalized: (v) => setState(() => _volume = v),
+                  ),
+                  SizedBox(height: smallGap),
+                  IntegerFieldsSection(
+                    weight: _weight,
+                    attenuation: _attenuationDistance,
+                    onWeightChanged: (v) => setState(() => _weight = v),
+                    onAttenuationChanged: (v) =>
+                        setState(() => _attenuationDistance = v),
+                    dense: isDense,
+                  ),
+                  SizedBox(height: smallGap),
+                  // Combined Section: Switches + Type dropdown
+                  BaseSection(
+                    title: 'Options',
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            final horizontal = constraints.maxWidth >= 420;
+                            return SwitchesSection(
+                              streamValue: _stream,
+                              onStreamChanged: (v) => setState(() => _stream = v),
+                              preloadValue: _preload,
+                              onPreloadChanged: (v) => setState(() => _preload = v),
+                              wrapInBaseSection: false,
+                              vertical: !horizontal,
+                            );
+                          },
+                        ),
+                        SizedBox(height: smallGap),
+                        const Divider(height: 1),
+                        SizedBox(height: smallGap),
+                        DropdownButtonFormField<String>(
+                          initialValue: _type,
+                          decoration: const InputDecoration(
+                            labelText: 'Type',
+                            border: OutlineInputBorder(),
+                          ),
+                          items: const [
+                            DropdownMenuItem(value: 'file', child: Text('File')),
+                            DropdownMenuItem(value: 'event', child: Text('Event')),
+                          ],
+                          onChanged: (v) => setState(() => _type = v ?? 'file'),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  SizedBox(height: largeGap),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CancelButton(callback: () => Navigator.pop(context)),
+                      const SizedBox(width: 12),
+                      FilledButton(
+                        onPressed: () {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            widget.onSave?.call(
+                              name: _name,
+                              volume: _volume,
+                              pitch: _pitch,
+                              weight: _weight,
+                              stream: _stream,
+                              attenuationDistance: _attenuationDistance,
+                              preload: _preload,
+                              type: _type,
+                            );
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: const Text('Save'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

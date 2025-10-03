@@ -45,6 +45,7 @@ class _VolumeSectionState extends State<VolumeSection> {
   @override
   Widget build(BuildContext context) {
     return BaseSection(
+      title: 'Volume & Pitch',
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
