@@ -8,7 +8,7 @@ import 'package:stelaris/api/model/data_model.dart';
 ///
 /// Type parameter [T] represents the specific [DataModel] implementation
 /// contained in this paginated result.
-class PaginatedResult<T extends DataModel> {
+class PaginatedResult<T> {
   /// The list of items for the current page.
   final List<T> items;
 
@@ -39,6 +39,8 @@ class PaginatedResult<T extends DataModel> {
     required this.currentPage,
     required this.pageSize,
   });
+
+  bool get hasItems => items.isNotEmpty;
 
   /// Whether there are more pages available after the current page.
   bool get hasNextPage => currentPage < totalPages;
