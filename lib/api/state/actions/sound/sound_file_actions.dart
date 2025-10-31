@@ -32,29 +32,31 @@ class InitSoundFileAction extends ReduxAction<AppState> {
   }
 }
 
-class SoundFileSourceAddAction extends ReduxAction<AppState> {
+class SoundFileLinkAction extends ReduxAction<AppState> {
 
-  final SoundFileSource model;
+  final SoundFileSource source;
 
-  SoundFileSourceAddAction(this.model);
+  SoundFileLinkAction(this.source);
 
   @override
   Future<AppState?> reduce() async {
     if (state.selectedSoundEvent == null) return null;
 
     final SoundEventModel soundModel = state.selectedSoundEvent!;
+    final List<SoundFileSource> list = List.of(soundModel.files.items, growable: true);
+    final SoundClientApi soundApi = ApiService().soundApi as SoundClientApi;
+    final SoundFileSource linkedFile = await soundApi.linkFile(soundModel.id!, source);
 
-    // Create a NEW list that is growable and add the new item
-    final List<SoundFileSource> newItemsList = List.of(soundModel.files.items, growable: true);
-    newItemsList.add(model); // 'model' is your new SoundFileSource
+    list.add(linkedFile);
 
     // Create a new PaginatedResult with the new list and updated counts
     final PaginatedResult<SoundFileSource> updatedSources = soundModel.files.copyWith(
-      items: newItemsList,
+      items: list,
       totalItems: soundModel.files.totalItems + 1, // Adjust counts as necessary
       // Potentially update totalPages if this new item pushes it to a new page
     );
     return state.copyWith(selectedSoundEvent: soundModel.copyWith(files: updatedSources));
+
   }
 }
 

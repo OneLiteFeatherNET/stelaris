@@ -98,7 +98,7 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
                 type: type,
                 weight: weight,
               );
-              context.dispatch(SoundFileSourceAddAction(fileSource));
+              context.dispatch(SoundFileLinkAction(fileSource));
               // Handle save logic here
             },
           ),

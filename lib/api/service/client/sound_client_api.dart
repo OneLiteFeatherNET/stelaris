@@ -52,4 +52,18 @@ class SoundClientApi extends BaseApi<SoundEventModel> {
           (jsonSource) => SoundFileSource.fromJson(jsonSource as Map<String, dynamic>),
     );
   }
+
+  /// Links a [SoundFileSource] to a specific sound event.
+  ///
+  /// The request is the updated entry from the backend
+  /// - [modelId]: The unique id of the sound event
+  /// - [fileToLink]: The [SoundFileSource] which should be linked
+  Future<SoundFileSource> linkFile(String modelId, SoundFileSource fileToLink) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/$endpoint/$modelId/sources',
+    );
+    final result = await apiClient.dio.postUri(uri, data: fileToLink.toJson());
+    return SoundFileSource.fromJson(result.data);
+  }
 }
