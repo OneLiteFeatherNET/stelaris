@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris/feature/sound/modal/section/base_section.dart';
+import 'package:stelaris/util/typedefs.dart';
 
 class StringInputSection extends StatefulWidget {
-  const StringInputSection({super.key});
+  const StringInputSection({
+    required this.onUpdate,
+    required this.initialValue,
+    super.key,
+  });
+
+  final String initialValue;
+  final ValueUpdate<String> onUpdate;
 
   @override
   State<StringInputSection> createState() => _StringInputSectionState();
@@ -15,7 +23,7 @@ class _StringInputSectionState extends State<StringInputSection> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _controller = TextEditingController(text: widget.initialValue);
   }
 
   @override
@@ -23,14 +31,16 @@ class _StringInputSectionState extends State<StringInputSection> {
     final colorScheme = Theme.of(context).colorScheme;
     final outlineBorder = OutlineInputBorder(
       borderRadius: _borderRadius,
-      borderSide: BorderSide(
-        color: colorScheme.outline,
-      ),
+      borderSide: BorderSide(color: colorScheme.outline),
     );
     return BaseSection(
       title: 'Name',
       child: TextField(
         controller: _controller,
+        onChanged: (value) {
+          if (value.isNotEmpty && value.trim().isEmpty) return;
+          widget.onUpdate(value);
+        },
         decoration: InputDecoration(
           hintText: 'Enter your sound name',
           hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),

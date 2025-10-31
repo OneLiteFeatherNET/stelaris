@@ -8,18 +8,19 @@ class SoundFileCard extends StatelessWidget {
 
   static const double _fullCardMinWidth = 230;
 
-  const SoundFileCard({required this.eventModel, super.key});
+  const SoundFileCard({required this.source, super.key});
 
-  final SoundFileSource eventModel;
+  final SoundFileSource source;
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('Build file card with model ' + source.toString());
     final theme = Theme.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         // If the card is too narrow, show only the icon centered in a card
         if (constraints.maxWidth < _fullCardMinWidth) {
-          return const SmallFileCard();
+          return SmallFileCard(fileSource: source);
         }
         // Otherwise, show the full card layout
         return Card(
@@ -37,14 +38,14 @@ class SoundFileCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        eventModel.name,
+                        source.name,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: theme.colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        eventModel.name,
+                        source.name,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
@@ -52,7 +53,7 @@ class SoundFileCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SoundCardButton()
+                SoundCardButton(source: source)
               ],
             ),
           ),

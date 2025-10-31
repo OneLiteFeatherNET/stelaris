@@ -78,29 +78,7 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
       builder: (context) =>
           SoundFileModal(
             create: true,
-            onSave:
-                ({
-              required name,
-              required volume,
-              required pitch,
-              required weight,
-              required stream,
-              required attenuationDistance,
-              required preload,
-              required type,
-            }) {
-              final SoundFileSource fileSource = SoundFileSource(
-                name: 'Test',
-                volume: volume,
-                pitch: pitch,
-                attenuationDistance: attenuationDistance,
-                preload: preload,
-                type: type,
-                weight: weight,
-              );
-              context.dispatch(SoundFileLinkAction(fileSource));
-              // Handle save logic here
-            },
+            onSave: (soundFile) => context.dispatch(SoundFileLinkAction(soundFile))
           ),
     );
   }
@@ -123,7 +101,7 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
             minWidth: 220,
             maxWidth: 400,
           ),
-          child: SoundFileCard(eventModel: files.items[index]),
+          child: SoundFileCard(source: files.items[index]),
         );
       },
     );

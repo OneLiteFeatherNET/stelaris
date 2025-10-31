@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris/api/model/sound/sound_file_source.dart';
 import 'package:stelaris/feature/base/button/cancel_button.dart';
 import 'package:stelaris/feature/sound/modal/section/base_section.dart';
 import 'package:stelaris/feature/sound/modal/type/integer_fields_section.dart';
@@ -8,37 +9,53 @@ import 'package:stelaris/feature/sound/modal/type/volume_section.dart';
 import 'section/string_field_section.dart';
 
 class SoundFileModal extends StatefulWidget {
-  final void Function({
-    required String name,
-    required double volume,
-    required double pitch,
-    required int weight,
-    required bool stream,
-    required int attenuationDistance,
-    required bool preload,
-    required String type,
-  })?
-  onSave;
 
+  const SoundFileModal({
+    required this.create,
+    required this.onSave,
+    this.initialData,
+    super.key,
+  });
+
+  final void Function(SoundFileSource soundFile)? onSave;
   final bool create;
-
-  const SoundFileModal({required this.create, required this.onSave, super.key});
+  final SoundFileSource? initialData;
 
   @override
   State<SoundFileModal> createState() => _SoundFileModalState();
 }
 
+
 class _SoundFileModalState extends State<SoundFileModal> {
-  String _name = '';
-  double _volume = 1;
-  double _pitch = 1;
-  int _weight = 1;
-  bool _stream = true;
-  int _attenuationDistance = 16;
-  bool _preload = false;
-  String _type = 'file';
+  late String _name;
+  late double _volume;
+  late double _pitch;
+  late int _weight;
+  late bool _stream;
+  late int _attenuationDistance;
+  late bool _preload;
+  late String _type;
 
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('Read data from');
+    if (widget.initialData != null) {
+      debugPrint('Exsts');
+      debugPrint(widget.initialData!.toString());
+    }
+    final data = widget.initialData;
+    _name = data?.name ?? '';
+    _volume = data?.volume ?? 1;
+    _pitch = data?.pitch ?? 1;
+    _weight = data?.weight ?? 1;
+    _stream = true;
+    _attenuationDistance = data?.attenuationDistance ?? 16;
+    _preload = data?.preload ?? false;
+    _type = data?.type ?? 'file';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +84,10 @@ class _SoundFileModalState extends State<SoundFileModal> {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 24),
-                  const StringInputSection(),
+                  StringInputSection(
+                    initialValue: _name,
+                    onUpdate: (value) => _name = value,
+                  ),
                   const SizedBox(height: 16),
                   VolumeSection(
                     initialPitch: _pitch,
@@ -133,15 +153,17 @@ class _SoundFileModalState extends State<SoundFileModal> {
                         onPressed: () {
                           if (_formKey.currentState?.validate() ?? false) {
                             widget.onSave?.call(
-                              name: _name,
-                              volume: _volume,
-                              pitch: _pitch,
-                              weight: _weight,
-                              stream: _stream,
-                              attenuationDistance: _attenuationDistance,
-                              preload: _preload,
-                              type: _type,
+                              SoundFileSource(
+                                name: _name,
+                                volume: _volume,
+                                pitch: _pitch,
+                                weight: _weight,
+                                attenuationDistance: _attenuationDistance,
+                                preload: _preload,
+                                type: _type,
+                              ),
                             );
+
                             Navigator.pop(context);
                           }
                         },

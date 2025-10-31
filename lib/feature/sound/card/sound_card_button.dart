@@ -1,10 +1,15 @@
+import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:stelaris/api/model/sound/sound_file_source.dart';
+import 'package:stelaris/api/state/actions/sound/sound_file_actions.dart';
 import 'package:stelaris/feature/sound/modal/sound_file_modal.dart';
 
 /// The [SoundCardButton] is a widget that displays a specific button on a sound card which triggers a dialog to view sound file details.
 /// It is styled with the theme's secondary container colors and has a rounded rectangle shape.
 class SoundCardButton extends StatelessWidget {
-  const SoundCardButton({super.key});
+  const SoundCardButton({required this.source, super.key});
+
+  final SoundFileSource source;
 
   @override
   Widget build(BuildContext context) {
@@ -20,20 +25,9 @@ class SoundCardButton extends StatelessWidget {
         showDialog(
           context: context,
           builder: (context) => SoundFileModal(
+            initialData: source,
             create: false,
-            onSave:
-                ({
-                  required name,
-                  required volume,
-                  required pitch,
-                  required weight,
-                  required stream,
-                  required attenuationDistance,
-                  required preload,
-                  required type,
-                }) {
-                  // Handle save logic here
-                },
+            onSave: (soundFile) => context.dispatch(SoundFileLinkAction(soundFile))
           ),
         );
       },
