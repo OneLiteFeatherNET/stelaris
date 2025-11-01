@@ -147,7 +147,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      CancelButton(callback: () => Navigator.pop(context)),
+                      const CancelButton(),
                       const SizedBox(width: 12),
                       FilledButton(
                         onPressed: () {
