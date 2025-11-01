@@ -154,6 +154,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
                           if (_formKey.currentState?.validate() ?? false) {
                             widget.onSave?.call(
                               SoundFileSource(
+                                id: widget.initialData?.id,
                                 name: _name,
                                 volume: _volume,
                                 pitch: _pitch,
