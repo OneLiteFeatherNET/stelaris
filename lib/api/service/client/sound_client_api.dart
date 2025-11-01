@@ -66,4 +66,13 @@ class SoundClientApi extends BaseApi<SoundEventModel> {
     final result = await apiClient.dio.postUri(uri, data: fileToLink.toJson());
     return SoundFileSource.fromJson(result.data);
   }
+
+  Future<SoundFileSource> updateFile(String modelId, SoundFileSource file) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/$endpoint/$modelId/sources/update',
+    );
+    final result = await apiClient.dio.postUri(uri, data: file.toJson());
+    return SoundFileSource.fromJson(result.data);
+  }
 }

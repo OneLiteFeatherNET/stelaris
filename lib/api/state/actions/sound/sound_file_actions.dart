@@ -60,6 +60,38 @@ class SoundFileLinkAction extends ReduxAction<AppState> {
   }
 }
 
+class SoundFileUpdateAction extends ReduxAction<AppState> {
+  final SoundFileSource soundFile;
+
+  SoundFileUpdateAction(this.soundFile);
+
+  @override
+  Future<AppState?> reduce() async {
+    if (state.selectedSoundEvent == null) return null;
+
+    final SoundEventModel soundModel = state.selectedSoundEvent!;
+    final SoundClientApi soundApi = ApiService().soundApi as SoundClientApi;
+
+    // Call the API to update the file
+    final SoundFileSource updatedFile = await soundApi.updateFile(soundModel.id!, soundFile);
+
+    // Create a new list with the updated item
+    final List<SoundFileSource> list = List.of(soundModel.files.items);
+    final int index = list.indexWhere((file) => file.id == updatedFile.id);
+    if (index != -1) {
+      list[index] = updatedFile;
+    }
+
+    // Create a new PaginatedResult with the updated list
+    final PaginatedResult<SoundFileSource> updatedSources = soundModel.files.copyWith(
+      items: list,
+    );
+
+    return state.copyWith(selectedSoundEvent: soundModel.copyWith(files: updatedSources));
+  }
+}
+
+
 class LoadMoreSoundFiles extends ReduxAction<AppState> {
   LoadMoreSoundFiles({required this.pageToLoad, this.pageSize = 1});
 
