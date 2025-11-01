@@ -14,7 +14,6 @@ class SoundFileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('Build file card with model ' + source.toString());
     final theme = Theme.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {

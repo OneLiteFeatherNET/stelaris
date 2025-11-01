@@ -9,7 +9,7 @@ import 'package:stelaris/api/state/factory/sound/selected_sound_state.dart';
 import 'package:stelaris/feature/base/chips/action_chips.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/sound/card/sound_file_card.dart';
-import 'package:stelaris/feature/sound/modal/sound_file_modal.dart';
+import 'package:stelaris/feature/sound/modal/sound_file_modal_helper.dart';
 import 'package:stelaris/util/constants.dart';
 
 class SoundFileEntryPage extends StatefulWidget {
@@ -67,19 +67,8 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
 
   Widget _getActionWidget(BuildContext context) {
     return ActionChips(
-      addCallback: () => _openAddDialog(),
+      addCallback: () => showSoundFileModal(context: context, create: true),
       saveCallback: () => context.dispatch(SoundDatabaseUpdate()),
-    );
-  }
-
-  void _openAddDialog() {
-    showDialog(
-      context: context,
-      builder: (context) =>
-          SoundFileModal(
-            create: true,
-            onSave: (soundFile) => context.dispatch(SoundFileLinkAction(soundFile))
-          ),
     );
   }
 

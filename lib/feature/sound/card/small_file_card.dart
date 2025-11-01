@@ -1,12 +1,9 @@
-import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris/api/model/sound/sound_file_source.dart';
-import 'package:stelaris/api/state/actions/sound/sound_file_actions.dart';
 import 'package:stelaris/feature/sound/card/folder_icon.dart';
-import 'package:stelaris/feature/sound/modal/sound_file_modal.dart';
+import 'package:stelaris/feature/sound/modal/sound_file_modal_helper.dart';
 
 class SmallFileCard extends StatelessWidget {
-
   const SmallFileCard({required this.fileSource, super.key});
 
   final SoundFileSource fileSource;
@@ -21,17 +18,11 @@ class SmallFileCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: (context) => SoundFileModal(
-              initialData: fileSource,
-              create: false,
-              onSave: (soundFile) =>
-                  context.dispatch(SoundFileLinkAction(soundFile)),
-            ),
-          );
-        },
+        onTap: () => showSoundFileModal(
+          context: context,
+          create: false,
+          source: fileSource,
+        ),
         child: const FolderIcon(),
       ),
     );
