@@ -8,9 +8,10 @@ class SoundFileCard extends StatelessWidget {
 
   static const double _fullCardMinWidth = 230;
 
-  const SoundFileCard({required this.source, super.key});
+  const SoundFileCard({required this.source, this.onDeleteRequested, super.key});
 
   final SoundFileSource source;
+  final VoidCallback? onDeleteRequested;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,13 @@ class SoundFileCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                SoundCardButton(source: source)
+                SoundCardButton(source: source),
+                const SizedBox(width: 8),
+                if (onDeleteRequested != null)
+                  OutlinedButton(
+                    onPressed: onDeleteRequested,
+                    child: const Text('Delete'),
+                  ),
               ],
             ),
           ),

@@ -90,7 +90,10 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
             minWidth: 220,
             maxWidth: 400,
           ),
-          child: SoundFileCard(source: files.items[index]),
+          child: SoundFileCard(
+            source: files.items[index],
+            onDeleteRequested: () => _confirmAndDelete(context, files.items[index]),
+          ),
         );
       },
     );
@@ -122,5 +125,29 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
             : const SizedBox.shrink(),
       ),
     );
+  }
+
+  Future<void> _confirmAndDelete(BuildContext context, SoundFileSource source) async {
+    final bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete file'),
+        content: const Text('Unlink this file from the sound event?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      context.dispatch(SoundFileSourceDeleteAction(source));
+    }
   }
 }
