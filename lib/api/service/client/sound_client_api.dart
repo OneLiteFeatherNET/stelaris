@@ -16,11 +16,11 @@ class SoundClientApi extends BaseApi<SoundEventModel> {
   /// Serialization and deserialization for [SoundEventModel] are handled
   /// by [SoundEventModel.fromJson] and [SoundEventModel.toJson] respectively.
   SoundClientApi({required super.apiClient})
-      : super(
-    endpoint: 'sound',
-    fromJson: SoundEventModel.fromJson,
-    toJson: (p0) => p0.toJson(),
-  );
+    : super(
+        endpoint: 'sound',
+        fromJson: SoundEventModel.fromJson,
+        toJson: (p0) => p0.toJson(),
+      );
 
   /// Fetches a paginated list of [SoundFileSource] objects associated with a specific sound event.
   ///
@@ -33,10 +33,10 @@ class SoundClientApi extends BaseApi<SoundEventModel> {
   /// Returns a [Future] that completes with a [PaginatedResult] containing
   /// a list of [SoundFileSource] and pagination details.
   Future<PaginatedResult<SoundFileSource>> getFiles(
-      String id, [
-        int page = 1,
-        int items = 20,
-      ]) async {
+    String id, [
+    int page = 1,
+    int items = 20,
+  ]) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(
       path: '${baseUri.path}/$endpoint/$id/sources',
@@ -49,7 +49,8 @@ class SoundClientApi extends BaseApi<SoundEventModel> {
     final result = await apiClient.dio.getUri(uri);
     return PaginatedResult.fromJson(
       result.data,
-          (jsonSource) => SoundFileSource.fromJson(jsonSource as Map<String, dynamic>),
+      (jsonSource) =>
+          SoundFileSource.fromJson(jsonSource as Map<String, dynamic>),
     );
   }
 
@@ -58,7 +59,10 @@ class SoundClientApi extends BaseApi<SoundEventModel> {
   /// The request is the updated entry from the backend
   /// - [modelId]: The unique id of the sound event
   /// - [fileToLink]: The [SoundFileSource] which should be linked
-  Future<SoundFileSource> linkFile(String modelId, SoundFileSource fileToLink) async {
+  Future<SoundFileSource> linkFile(
+    String modelId,
+    SoundFileSource fileToLink,
+  ) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(
       path: '${baseUri.path}/$endpoint/$modelId/sources',
@@ -67,12 +71,35 @@ class SoundClientApi extends BaseApi<SoundEventModel> {
     return SoundFileSource.fromJson(result.data);
   }
 
-  Future<SoundFileSource> updateFile(String modelId, SoundFileSource file) async {
+  Future<SoundFileSource> updateFile(
+    String modelId,
+    SoundFileSource file,
+  ) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(
       path: '${baseUri.path}/$endpoint/$modelId/sources/update',
     );
     final result = await apiClient.dio.postUri(uri, data: file.toJson());
+    return SoundFileSource.fromJson(result.data);
+  }
+
+  /// Deletes a [SoundFileSource] associated with a specific sound event.
+  ///
+  /// The request is made to the `/sound/{id}/sources/delete` endpoint.
+  ///
+  /// - [modelId]: The unique identifier of the sound event.
+  /// - [file]: The [SoundFileSource] to be deleted.
+  ///
+  /// Returns a [Future] that completes with the deleted [SoundFileSource].
+  Future<SoundFileSource> deleteFile(
+    String modelId,
+    SoundFileSource file,
+  ) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/$endpoint/$modelId/sources/delete',
+    );
+    final result = await apiClient.dio.deleteUri(uri, data: file.toJson());
     return SoundFileSource.fromJson(result.data);
   }
 }
