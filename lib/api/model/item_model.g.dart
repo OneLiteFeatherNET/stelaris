@@ -15,7 +15,7 @@ _ItemModel _$ItemModelFromJson(Map<String, dynamic> json) => _ItemModel(
   group:
       $enumDecodeNullable(_$ItemGroupEnumMap, json['group']) ?? ItemGroup.misc,
   material: json['material'] as String?,
-  customModelId: (json['customModelId'] as num?)?.toInt(),
+  customModelData: (json['customModelData'] as num?)?.toInt(),
   amount: (json['amount'] as num?)?.toInt() ?? 1,
   enchantments: (json['enchantments'] as Map<String, dynamic>?)?.map(
     (k, e) => MapEntry(k, (e as num).toInt()),
@@ -33,7 +33,7 @@ Map<String, dynamic> _$ItemModelToJson(_ItemModel instance) =>
       'displayName': instance.displayName,
       'group': _$ItemGroupEnumMap[instance.group]!,
       'material': instance.material,
-      'customModelId': instance.customModelId,
+      'customModelData': instance.customModelData,
       'amount': instance.amount,
       'enchantments': instance.enchantments,
       'flags': instance.flags?.toList(),

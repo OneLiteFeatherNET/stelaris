@@ -152,16 +152,16 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                       context.l10n.tooltip_model_data,
                                   display: context.l10n.card_model_data,
                                   currentValue:
-                                      vm.selected.customModelId?.toString() ??
+                                      vm.selected.customModelData?.toString() ??
                                           zeroString,
                                   valueUpdate: (value) {
                                     final newValue = int.tryParse(value) ?? 0;
-                                    if (newValue == vm.selected.customModelId) {
+                                    if (newValue == vm.selected.customModelData) {
                                       return;
                                     }
                                     final oldModel = vm.selected;
                                     final newEntry = oldModel.copyWith(
-                                        customModelId: newValue);
+                                        customModelData: newValue);
                                     context
                                         .dispatch(UpdateItemAction(newEntry));
                                   },

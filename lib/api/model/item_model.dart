@@ -21,7 +21,7 @@ abstract class ItemModel with _$ItemModel, DataModel {
     String? displayName,
     @Default(ItemGroup.misc) ItemGroup group,
     String? material,
-    int? customModelId,
+    int? customModelData,
     @Default(1) int? amount,
     Map<String, int>? enchantments,
     Set<String>? flags,
