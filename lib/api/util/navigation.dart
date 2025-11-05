@@ -25,7 +25,14 @@ enum NavigationEntry {
     '/fonts',
     Icons.font_download_outlined,
     Icons.font_download,
-  );
+  ),
+  sound(
+    'Sound',
+    '/sound',
+    Icons.volume_up_outlined,
+    Icons.volume_up,
+  )
+  ;
 
   final String display;
   final String route;

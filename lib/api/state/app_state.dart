@@ -6,6 +6,7 @@ import 'package:stelaris/api/paginated_result.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/model/notification_model.dart';
+import 'package:stelaris/api/model/sound/sound_event_model.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 
 part 'app_state.g.dart';
@@ -71,6 +72,20 @@ abstract class AppState with _$AppState {
       ),
     )
     PaginatedResult<AttributeModel> attributes,
+    @GenericPaginatedResultConverter<SoundEventModel>(
+      fromJsonT: soundEventFromJson,
+      toJsonT: soundEventToJson,
+    )
+    @Default(
+      PaginatedResult<SoundEventModel>(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+    )
+    PaginatedResult<SoundEventModel> soundEvents,
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingAttributesMore,
@@ -83,6 +98,9 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingMoreFonts,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool isLoadingMoreSoundEvents,
     @Default(true) bool openNavigation,
     @Default(
       ThemeSettings(
@@ -98,6 +116,7 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false) NotificationModel? selectedNotification,
     @JsonKey(includeToJson: false) FontModel? selectedFont,
     @JsonKey(includeToJson: false) AttributeModel? selectedAttribute,
+    @JsonKey(includeToJson: false) SoundEventModel? selectedSoundEvent,
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, dynamic> json) =>
