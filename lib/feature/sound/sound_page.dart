@@ -1,11 +1,11 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nil/nil.dart';
 import 'package:stelaris/api/model/sound/sound_event_model.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/sound/sound_vm_state.dart';
+import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/model_text.dart';
 import 'package:stelaris/feature/base/paginated_model_view_tab.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
@@ -50,22 +50,6 @@ class SoundPage extends StatelessWidget {
     );
   }
 
-  Widget _mapPageToWidget(String value, SoundEventModel? listenable) {
-    if (value.trim().isEmpty) return nil;
-    if (listenable == null) return nil;
-    switch (value) {
-      case 'General':
-      // Add a key based on the selected item's ID to force a rebuild when the selected item changes
-        return SoundGeneralPage(
-          key: ValueKey('sound${listenable.id}'),
-        );
-        case 'Entries':
-          return const SoundFileEntryPage();
-
-    }
-    return nil;
-  }
-
   void _openCreationDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -98,5 +82,22 @@ class SoundPage extends StatelessWidget {
       const Tab(child: Text('General')),
       const Tab(child: Text('Entries')),
     ];
+  }
+
+  /// Maps the given [SoundEventModel] to the right widget.
+  /// If the model is null, it returns an [Expanded] widget with an [EmptyDataWidget].
+  /// Otherwise, it returns an instance of [SoundGeneralPage] or [SoundFileEntryPage].
+  Widget _mapPageToWidget(String value, SoundEventModel? listenable) {
+    if (value.trim().isEmpty || listenable == null) {
+      return const EmptyDataWidget.standard(
+        header: 'No data selected',
+        subHeader: 'Please create or selected a model',
+      );
+    }
+    return switch (value) {
+      'General' => SoundGeneralPage(key: ValueKey('sound${listenable.id}')),
+      'Meta' => const SoundFileEntryPage(),
+      _ => const Placeholder(), // optional default case
+    };
   }
 }

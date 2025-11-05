@@ -6,6 +6,7 @@ import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/attribute/attribute_vm_state.dart';
 import 'package:stelaris/feature/attributes/attribute_general_page.dart';
+import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/paginated_model_list.dart';
 import 'package:stelaris/feature/base/model_text.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
@@ -26,22 +27,26 @@ class AttributePage extends StatelessWidget {
     return StoreConnector<AppState, AttributeViewModel>(
       vm: () => AttributeVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitAttributeAction()),
-      onDispose: (store) => store.dispatch(RemoveSelectAttributeAction(), notify: false),
+      onDispose: (store) =>
+          store.dispatch(RemoveSelectAttributeAction(), notify: false),
       builder: (context, vm) {
         return Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PaginatedModelList<AttributeModel>(
-              mapToDataModelItem: (value) => TextWidget(displayName: value.uiName),
+              mapToDataModelItem: (value) =>
+                  TextWidget(displayName: value.uiName),
               openFunction: () => _openDialog(context),
               selectedItem: vm.selected,
-              mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
+              mapToDeleteDialog: (value) =>
+                  createDeleteText(value.uiName, context),
               mapToDeleteSuccessfully: (value) {
                 context.dispatch(AttributeRemoveAction(value));
                 return true;
               },
-              callFunction: (model) => context.dispatch(SelectAttributeAction(model)),
+              callFunction: (model) =>
+                  context.dispatch(SelectAttributeAction(model)),
               models: vm.models,
               compareFunction: (model) => vm.isSelectedItem(model),
               hasMore: vm.hasNextPage,
@@ -50,19 +55,25 @@ class AttributePage extends StatelessWidget {
                   ? () => context.dispatch(InitAttributeAction())
                   : null,
             ),
-            if (vm.selected != null) _mapModelToWidget(vm.selected)!,
+            _mapModelToWidget(vm.selected),
           ],
         );
       },
     );
   }
 
-  /// Maps the selected [AttributeModel] to a widget.
-  ///
-  /// Returns an instance of [AttributeGeneralPage] if a model is selected,
-  /// otherwise returns null.
-  Widget? _mapModelToWidget(AttributeModel? model) {
-    if (model == null) return null;
+  /// Maps the given [AttributeModel] to the right widget.
+  /// If the model is null, it returns an [Expanded] widget with an [EmptyDataWidget].
+  /// Otherwise, it returns an instance of [AttributeGeneralPage].
+  Widget _mapModelToWidget(AttributeModel? model) {
+    if (model == null) {
+      return const Expanded(
+        child: EmptyDataWidget.standard(
+          header: 'No data selected',
+          subHeader: 'Please create or selected a model',
+        ),
+      );
+    }
     return AttributeGeneralPage();
   }
 
@@ -85,7 +96,7 @@ class AttributePage extends StatelessWidget {
           formKey: GlobalKey<FormState>(),
           hintText: 'Example name',
           formatters: [
-            FilteringTextInputFormatter.allow(stringWithSpacePattern)
+            FilteringTextInputFormatter.allow(stringWithSpacePattern),
           ],
           formFieldValidator: (value) {
             final String input = value as String;
