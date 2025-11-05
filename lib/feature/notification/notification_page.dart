@@ -5,6 +5,7 @@ import 'package:stelaris/api/model/notification_model.dart';
 import 'package:stelaris/api/state/actions/notification_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/notification/notification_vm_state.dart';
+import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/model_text.dart';
 import 'package:stelaris/feature/base/paginated_model_list.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
@@ -46,7 +47,7 @@ class NotificationPage extends StatelessWidget {
                   ? () => context.dispatch(InitNotificationAction())
                   : null,
             ),
-            if (vm.selected != null) _mapPageToWidget(vm.selected)!,
+            _mapModelToWidget(vm.selected),
           ],
         );
       },
@@ -68,23 +69,30 @@ class NotificationPage extends StatelessWidget {
           formKey: GlobalKey<FormState>(),
           hintText: 'Example name',
           formatters: [
-            FilteringTextInputFormatter.allow(stringWithSpacePattern)
+            FilteringTextInputFormatter.allow(stringWithSpacePattern),
           ],
           formFieldValidator: (value) {
             final input = value as String;
             return checkIfEmptyAndReturnErrorString(input, context);
           },
-          clearFunction: (text) =>
-          text
-              .trim()
-              .isNotEmpty,
+          clearFunction: (text) => text.trim().isNotEmpty,
         );
       },
     );
   }
 
-  Widget? _mapPageToWidget(NotificationModel? model) {
-    if (model == null) return null;
+  /// Maps the given [NotificationModel] to the right widget.
+  /// If the model is null, it returns an [Expanded] widget with an [EmptyDataWidget].
+  /// Otherwise, it returns an instance of [NotificationGeneralPage].
+  Widget _mapModelToWidget(NotificationModel? model) {
+    if (model == null) {
+      return const Expanded(
+        child: EmptyDataWidget.standard(
+          header: 'No data selected',
+          subHeader: 'Please create or selected a model',
+        ),
+      );
+    }
     return const NotificationGeneralPage();
   }
 }

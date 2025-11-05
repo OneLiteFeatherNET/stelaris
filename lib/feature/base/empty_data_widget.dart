@@ -49,6 +49,7 @@ class EmptyDataWidget extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             header,
+            textAlign: TextAlign.center,
             style: theme.textTheme.titleMedium?.copyWith(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             ),
@@ -56,8 +57,9 @@ class EmptyDataWidget extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             subHeader,
+            textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+              color: theme.colorScheme.onSurface.withValues(alpha:0.5),
             ),
           ),
         ],
