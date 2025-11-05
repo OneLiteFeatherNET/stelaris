@@ -46,7 +46,7 @@ class _StringInputSectionState extends State<StringInputSection> {
           hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
           border: outlineBorder,
           suffixIcon: const Tooltip(
-            message: 'test',
+            message: 'The name of the sound',
             child: Icon(Icons.info_outline),
           ),
           enabledBorder: outlineBorder,
