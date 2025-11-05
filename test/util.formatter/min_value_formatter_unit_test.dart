@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stelaris/util/formatter/min_value_fomatter.dart';
+import 'package:stelaris/util/formatter/min_value_formatter.dart';
 
 void main() {
   group('MinValueFormatter', () {

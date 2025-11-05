@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris/util/formatter/min_value_fomatter.dart';
+import 'package:stelaris/util/formatter/min_value_formatter.dart';
 
 class BaseIntegerField extends StatefulWidget {
   final String label;

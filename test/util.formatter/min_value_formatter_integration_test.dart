@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stelaris/util/formatter/min_value_fomatter.dart';
+import 'package:stelaris/util/formatter/min_value_formatter.dart';
 
 void main() {
   testWidgets('TextField with MinValueFormatter behaves correctly',
