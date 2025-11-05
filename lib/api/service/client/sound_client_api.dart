@@ -97,9 +97,9 @@ class SoundClientApi extends BaseApi<SoundEventModel> {
   ) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(
-      path: '${baseUri.path}/$endpoint/$modelId/sources/delete',
+      path: '${baseUri.path}/$endpoint/$modelId/sources/delete/${file.id}',
     );
-    final result = await apiClient.dio.deleteUri(uri, data: file.toJson());
+    final result = await apiClient.dio.deleteUri(uri);
     return SoundFileSource.fromJson(result.data);
   }
 }
