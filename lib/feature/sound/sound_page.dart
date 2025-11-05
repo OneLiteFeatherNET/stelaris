@@ -96,7 +96,7 @@ class SoundPage extends StatelessWidget {
     }
     return switch (value) {
       'General' => SoundGeneralPage(key: ValueKey('sound${listenable.id}')),
-      'Meta' => const SoundFileEntryPage(),
+      'Entries' => const SoundFileEntryPage(),
       _ => const Placeholder(), // optional default case
     };
   }
