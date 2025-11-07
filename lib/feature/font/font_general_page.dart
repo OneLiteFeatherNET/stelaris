@@ -6,14 +6,11 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/selected_font_state.dart';
 import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
-import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
 
 class FontGeneralPage extends StatefulWidget {
-  const FontGeneralPage({required this.formKey, super.key});
-
-  final GlobalKey<FormState> formKey;
+  const FontGeneralPage({super.key});
 
   @override
   State<FontGeneralPage> createState() => _FontGeneralPageState();
@@ -22,6 +19,8 @@ class FontGeneralPage extends StatefulWidget {
 class _FontGeneralPageState extends State<FontGeneralPage> {
   /// Scroll controller for the scrollable content
   final ScrollController _scrollController = ScrollController();
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
+
 
   @override
   void dispose() {
@@ -35,7 +34,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
       vm: () => SelectedFontFactory(),
       builder: (context, vm) {
         return Form(
-          key: widget.formKey,
+          key: _key,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Stack(
             children: [
@@ -109,28 +108,6 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   },
                                 ),
                                 TextInputCard<String>(
-                                  display: 'Texture Path',
-                                  currentValue:
-                                  vm.selected.texturePath ?? emptyString,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      stringPattern,
-                                    ),
-                                  ],
-                                  valueUpdate: (value) {
-                                    if (value == vm.selected.texturePath) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      texturePath: value,
-                                    );
-                                    context.dispatch(
-                                      UpdateFontAction(newEntry),
-                                    );
-                                  },
-                                ),
-                                TextInputCard<String>(
                                   display: 'Comment',
                                   currentValue:
                                   vm.selected.comment ?? emptyString,
@@ -152,58 +129,6 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                     );
                                   },
                                 ),
-                                TextInputCard<int>(
-                                  tooltipMessage: context.l10n.tooltip_ascent,
-                                  display: context.l10n.card_ascent,
-                                  currentValue:
-                                      vm.selected.ascent.toString(),
-                                  valueUpdate: (value) {
-                                    final parsedValue =
-                                        int.tryParse(value) ?? 0;
-                                    if (parsedValue == vm.selected.ascent) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      ascent: parsedValue,
-                                    );
-                                    context.dispatch(
-                                      UpdateFontAction(newEntry),
-                                    );
-                                  },
-                                  inputType: numberInput,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      fontNumberPattern,
-                                    ),
-                                  ],
-                                ),
-                                TextInputCard<int>(
-                                  tooltipMessage: context.l10n.tooltip_height,
-                                  display: context.l10n.card_height,
-                                  currentValue:
-                                      vm.selected.height.toString(),
-                                  valueUpdate: (value) {
-                                    final parsedValue =
-                                        int.tryParse(value) ?? 0;
-                                    if (parsedValue == vm.selected.height) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      height: parsedValue,
-                                    );
-                                    context.dispatch(
-                                      UpdateFontAction(newEntry),
-                                    );
-                                  },
-                                  inputType: numberInput,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      fontNumberPattern,
-                                    ),
-                                  ],
-                                ),
                               ],
                             ),
                           ),
@@ -215,7 +140,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
               ),
               PositionedSaveButton.standard(
                 callback: () {
-                  if (widget.formKey.currentState?.validate() ?? false) {
+                  if (_key.currentState?.validate() ?? false) {
                     context.dispatch(FontDatabaseUpdate());
                   }
                 },
