@@ -10,6 +10,7 @@ import 'package:stelaris/feature/base/model_text.dart';
 import 'package:stelaris/feature/base/paginated_model_view_tab.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/font/chars/char_card.dart';
+import 'package:stelaris/feature/font/face/font_face_page.dart';
 import 'package:stelaris/feature/font/font_general_page.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
@@ -77,7 +78,11 @@ class FontPage extends StatelessWidget {
   }
 
   List<Tab> _getTabs() {
-    return [const Tab(child: Text('General')), const Tab(child: Text('Chars'))];
+    return [
+      const Tab(child: Text('General')),
+      const Tab(child: Text('FontFace')),
+      const Tab(child: Text('Chars')),
+    ];
   }
 
   /// Maps the given [FontModel] to the right widget.
@@ -91,7 +96,8 @@ class FontPage extends StatelessWidget {
       );
     }
     return switch (value) {
-      'General' => FontGeneralPage(formKey: GlobalKey<FormState>()),
+      'General' => const FontGeneralPage(),
+      'FontFace' => const FontFacePage(),
       'Chars' => const CharCard(),
       _ => const Placeholder(), // optional default case
     };

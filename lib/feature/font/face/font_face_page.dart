@@ -3,24 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris/api/state/actions/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/api/state/factory/font/selected_font_state.dart';
+import 'package:stelaris/api/state/factory/font/select_font_vm.dart';
 import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
-import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
-class FontGeneralPage extends StatefulWidget {
-  const FontGeneralPage({super.key});
+class FontFacePage extends StatefulWidget {
+  const FontFacePage({super.key});
 
   @override
-  State<FontGeneralPage> createState() => _FontGeneralPageState();
+  State<FontFacePage> createState() => _FontFacePageState();
 }
 
-class _FontGeneralPageState extends State<FontGeneralPage> {
-  /// Scroll controller for the scrollable content
+class _FontFacePageState extends State<FontFacePage> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
-
 
   @override
   void dispose() {
@@ -57,77 +55,76 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                               runSpacing: 16,
                               children: [
                                 TextInputCard<String>(
-                                  display: 'Variable Name',
+                                  display: 'Texture Path',
                                   currentValue:
-                                      vm.selected.variableName ?? emptyString,
+                                      vm.selected.texturePath ?? emptyString,
                                   formatter: [
                                     FilteringTextInputFormatter.allow(
                                       stringPattern,
                                     ),
                                   ],
                                   valueUpdate: (value) {
-                                    if (value == vm.selected.variableName) {
+                                    if (value == vm.selected.texturePath) {
                                       return;
                                     }
                                     final oldModel = vm.selected;
                                     final newEntry = oldModel.copyWith(
-                                      variableName: value,
-                                    );
-                                    context.dispatch(
-                                      UpdateFontAction(newEntry),
-                                    );
-                                  },
-                                  formValidator: (value) {
-                                    final input = value as String;
-                                    return checkIfEmptyAndReturnErrorString(
-                                      input,
-                                      context,
-                                    );
-                                  },
-                                ),
-                                TextInputCard<String>(
-                                  display: 'Provider',
-                                  currentValue:
-                                      vm.selected.provider ?? emptyString,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      stringPattern,
-                                    ),
-                                  ],
-                                  valueUpdate: (value) {
-                                    if (value == vm.selected.provider) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      provider: value,
+                                      texturePath: value,
                                     );
                                     context.dispatch(
                                       UpdateFontAction(newEntry),
                                     );
                                   },
                                 ),
-                                TextInputCard<String>(
-                                  display: 'Comment',
-                                  currentValue:
-                                  vm.selected.comment ?? emptyString,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      stringPattern,
-                                    ),
-                                  ],
+                                TextInputCard<int>(
+                                  tooltipMessage: context.l10n.tooltip_ascent,
+                                  display: context.l10n.card_ascent,
+                                  currentValue: vm.selected.ascent.toString(),
                                   valueUpdate: (value) {
-                                    if (value == vm.selected.comment) {
+                                    final parsedValue =
+                                        int.tryParse(value) ?? 0;
+                                    if (parsedValue == vm.selected.ascent) {
                                       return;
                                     }
                                     final oldModel = vm.selected;
                                     final newEntry = oldModel.copyWith(
-                                      comment: value,
+                                      ascent: parsedValue,
                                     );
                                     context.dispatch(
                                       UpdateFontAction(newEntry),
                                     );
                                   },
+                                  inputType: numberInput,
+                                  formatter: [
+                                    FilteringTextInputFormatter.allow(
+                                      fontNumberPattern,
+                                    ),
+                                  ],
+                                ),
+                                TextInputCard<int>(
+                                  tooltipMessage: context.l10n.tooltip_height,
+                                  display: context.l10n.card_height,
+                                  currentValue: vm.selected.height.toString(),
+                                  valueUpdate: (value) {
+                                    final parsedValue =
+                                        int.tryParse(value) ?? 0;
+                                    if (parsedValue == vm.selected.height) {
+                                      return;
+                                    }
+                                    final oldModel = vm.selected;
+                                    final newEntry = oldModel.copyWith(
+                                      height: parsedValue,
+                                    );
+                                    context.dispatch(
+                                      UpdateFontAction(newEntry),
+                                    );
+                                  },
+                                  inputType: numberInput,
+                                  formatter: [
+                                    FilteringTextInputFormatter.allow(
+                                      fontNumberPattern,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
