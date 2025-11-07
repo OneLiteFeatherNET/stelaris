@@ -8,14 +8,14 @@ import 'package:stelaris/feature/item/enchantment/enchantment_actions.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_list.dart';
 import 'package:stelaris/util/constants.dart';
 
-class EnchantmentPage extends StatefulWidget {
-  const EnchantmentPage({super.key});
+class ItemEnchantmentPage extends StatefulWidget {
+  const ItemEnchantmentPage({super.key});
 
   @override
-  State<EnchantmentPage> createState() => _EnchantmentPageState();
+  State<ItemEnchantmentPage> createState() => _ItemEnchantmentPageState();
 }
 
-class _EnchantmentPageState extends State<EnchantmentPage> {
+class _ItemEnchantmentPageState extends State<ItemEnchantmentPage> {
   bool _isDeleteMode = false;
 
   @override

@@ -12,6 +12,7 @@ import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/general/item_general_page.dart';
 import 'package:stelaris/feature/item/lore/lore_page.dart';
+import 'package:stelaris/feature/item/meta/item_meta_page.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
 
@@ -82,13 +83,14 @@ class ItemPage extends StatelessWidget {
     return [
       const Tab(child: Text('General')),
       const Tab(child: Text('Meta')),
+      const Tab(child: Text('Enchantments')),
       const Tab(child: Text('Lore')),
     ];
   }
 
   /// Maps the given [ItemModel] to the right widget.
   /// If the model is null, it returns an [Expanded] widget with an [EmptyDataWidget].
-  /// Otherwise, it returns an instance of [ItemGeneralPage],[EnchantmentPage] or [LorePage].
+  /// Otherwise, it returns an instance of [ItemGeneralPage],[ItemEnchantmentPage] or [LorePage].
   Widget _mapPageToWidget(String value, ItemModel? listenable) {
     if (value.trim().isEmpty || listenable == null) {
       return const EmptyDataWidget.standard(
@@ -98,7 +100,8 @@ class ItemPage extends StatelessWidget {
     }
     return switch (value) {
       'General' => ItemGeneralPage(key: ValueKey('item_${listenable.id}')),
-      'Meta' => const EnchantmentPage(),
+      'Meta' => const ItemMetaPage(),
+      'Enchantments' => const ItemEnchantmentPage(),
       'Lore' => LorePage(key: UniqueKey()),
       _ => const Placeholder(), // optional default case
     };
