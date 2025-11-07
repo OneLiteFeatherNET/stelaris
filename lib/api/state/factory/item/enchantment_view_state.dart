@@ -6,7 +6,7 @@ import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/enchantment_reducer.dart';
 
 class EnchantmentViewFactory
-    extends VmFactory<AppState, EnchantmentPage, EnchantmentView> {
+    extends VmFactory<AppState, ItemEnchantmentPage, EnchantmentView> {
   EnchantmentViewFactory();
 
 
