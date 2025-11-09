@@ -27,3 +27,8 @@ jobs:
         run: flutter analyze
       - name: Run tests
         run: flutter test --no-pub --coverage
+      - name: Dart Coverage Assistant
+        uses: VeryGoodOpenSource/dart-coverage-assistant@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: coverage/lcov.info
