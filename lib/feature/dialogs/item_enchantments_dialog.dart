@@ -30,6 +30,37 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
   final TextEditingController _controller = TextEditingController();
   final ValueNotifier<Enchantment?> _selected = ValueNotifier(null);
   final _key = GlobalKey<FormState>();
+  late List<DropdownMenuItem<Enchantment>> _enchantments;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateEnchantments();
+  }
+
+  @override
+  void didUpdateWidget(ItemEnchantmentAddDialog oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.model != oldWidget.model) {
+      _updateEnchantments();
+    }
+  }
+
+  void _updateEnchantments() {
+    _enchantments = getEnchantments(widget.model)
+        .map(
+          (e) => DropdownMenuItem<Enchantment>(
+            value: e,
+            child: Text(e.name),
+          ),
+        )
+        .toList();
+    if (_enchantments.isNotEmpty) {
+      _selected.value = _enchantments[0].value;
+    } else {
+      _selected.value = null;
+    }
+  }
 
   @override
   void dispose() {
@@ -40,16 +71,6 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
 
   @override
   Widget build(BuildContext context) {
-    final List<DropdownMenuItem<Enchantment>> enchantments =
-        getEnchantments(widget.model)
-            .map(
-              (e) => DropdownMenuItem<Enchantment>(
-                value: e,
-                child: Text(e.name),
-              ),
-            )
-            .toList();
-    _selected.value = enchantments[0].value;
     return SimpleDialog(
       title: Text(
         context.l10n.dialog_enchantment_title,
@@ -59,12 +80,17 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
       children: [
         Text(context.l10n.dialog_enchantment_enchantment),
         horizontalSpacing10,
-        DropdownButtonFormField<Enchantment?>(
-          autofocus: true,
-          initialValue: _selected.value,
-          items: enchantments,
-          onChanged: (value) {
-            _selected.value = value;
+        ValueListenableBuilder<Enchantment?>(
+          valueListenable: _selected,
+          builder: (context, selectedEnchantment, child) {
+            return DropdownButtonFormField<Enchantment?>(
+              autofocus: true,
+              initialValue: selectedEnchantment,
+              items: _enchantments,
+              onChanged: (value) {
+                _selected.value = value;
+              },
+            );
           },
         ),
         verticalSpacing25,
