@@ -4,10 +4,7 @@ jobs:
   build_pr:
     if: github.repository_owner == 'OneLiteFeatherNET'
     name: Build Pull Request Branch
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,12 +21,14 @@ jobs:
             build
           key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.yaml') }}
           restore-keys: ${{ runner.os }}-pub-
+      - name: Enable Flutter Web
+        run: flutter config --enable-web
       - name: Install dependencies
         run: flutter pub get
       - name: Run analyzer
         run: flutter analyze || true
-      - name: Run tests
-        run: flutter test --no-pub --coverage
+      - name: Run tests (Web)
+        run: flutter test --platform chrome --coverage
       - name: Dart Coverage Assistant
         id: coverage-report
         uses: whynotmake-it/dart-coverage-assistant@v1
