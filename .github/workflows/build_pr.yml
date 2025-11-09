@@ -11,27 +11,27 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-          - name: Init Flutter
-            uses: subosito/flutter-action@v2
-            with:
-              flutter-version: '3.35.7'
-              channel: 'stable'
-          - name: Cache Flutter dependencies
-            uses: actions/cache@v4
-            with:
-              path: |
-                ~/.pub-cache
-                build
-              key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.yaml') }}
-              restore-keys: ${{ runner.os }}-pub-
-          - name: Install dependencies
-            run: flutter pub get
-          - name: Run analyzer
-            run: flutter analyze
-          - name: Run tests
-            run: flutter test --no-pub --coverage
-          - name: Dart Coverage Assistant
-            uses: VeryGoodOpenSource/dart-coverage-assistant@v3
-            with:
-              github-token: ${{ secrets.GITHUB_TOKEN }}
-              path: coverage/lcov.info
+      - name: Init Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.7'
+          channel: 'stable'
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+            build
+          key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-pub-
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Run analyzer
+        run: flutter analyze
+      - name: Run tests
+        run: flutter test --no-pub --coverage
+      - name: Dart Coverage Assistant
+        uses: VeryGoodOpenSource/dart-coverage-assistant@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: coverage/lcov.info
