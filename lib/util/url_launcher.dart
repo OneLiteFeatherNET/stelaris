@@ -1,45 +1,36 @@
-import 'package:web/web.dart' as web;
+import 'package:url_launcher/url_launcher.dart';
 
-/// A utility class for launching URLs in the browser.
+/// A utility class for launching URLs in a cross-platform manner.
 ///
-/// This class provides methods to open URLs in the current browser window
-/// or in a new browser tab. It uses the web package to interact with the
-/// browser's window API.
+/// This class provides methods to open URLs, abstracting away platform-specific
+/// implementations by using the `url_launcher` package.
 ///
 /// Usage:
 /// ```dart
-/// // Open URL in the current window
+/// // Open URL (platform handles whether it's in a new tab/window or app)
 /// UriLauncher.launchURL('https://example.com');
-/// 
-/// // Open URL in a new tab
-/// UriLauncher.launchUrlInTab('https://example.com');
 /// ```
 final class UriLauncher {
 
   /// Private constructor to prevent instantiation.
-  /// 
-  /// This class is not meant to be instantiated as all methods are static.
   UriLauncher._();
 
-  /// Opens a URL in the current browser window.
-  /// 
-  /// This method uses the browser's window.open() function to navigate
-  /// to the specified URL in the current window.
-  /// 
+  /// Opens a URL using the platform's default application.
+  ///
+  /// On web, this typically opens in a new tab/window.
+  /// On mobile, this might open a browser app.
+  ///
   /// Parameters:
-  ///   [url] - The URL to open. Should be a valid URL string.
-  static void launchURL(String url) async {
-    web.window.open(url);
-  }
-
-  /// Opens a URL in a new browser tab.
-  /// 
-  /// This method uses the browser's window.open() function with the 'new tab'
-  /// target to open the specified URL in a new browser tab.
-  /// 
-  /// Parameters:
-  ///   [url] - The URL to open. Should be a valid URL string.
-  static void launchUrlInTab(String url) async {
-    web.window.open(url, 'new tab');
+  ///   [url] - The URL string to launch. Must be a valid URI.
+  /// Returns `true` if the URL was successfully launched, `false` otherwise.
+  static Future<bool> launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      return launchUrl(uri);
+    } else {
+      // Log an error or show a user-friendly message
+      // For now, we'll just return false.
+      return false;
+    }
   }
 }
