@@ -2,11 +2,8 @@ import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/util/minecraft/enchantment.dart';
 import 'package:stelaris/feature/item/item_group.dart';
 
-const List<Enchantment> values = Enchantment.values;
-
 mixin EnchantmentReducer {
-
-  final List<Enchantment> toolEnchantments = [
+  static const Set<Enchantment> toolEnchantments = {
     Enchantment.efficiency,
     Enchantment.fortune,
     Enchantment.luckOfTheSea,
@@ -14,10 +11,10 @@ mixin EnchantmentReducer {
     Enchantment.silkTouch,
     Enchantment.mending,
     Enchantment.unbreaking,
-    Enchantment.vanishCourse
-  ];
+    Enchantment.vanishCourse,
+  };
 
-  final List<Enchantment> meeleEnchantments = [
+  static const Set<Enchantment> meeleEnchantments = {
     Enchantment.baneOfArthropods,
     Enchantment.efficiency,
     Enchantment.fireAspect,
@@ -29,10 +26,10 @@ mixin EnchantmentReducer {
     Enchantment.sweeping,
     Enchantment.mending,
     Enchantment.unbreaking,
-    Enchantment.vanishCourse
-  ];
+    Enchantment.vanishCourse,
+  };
 
-  final List<Enchantment> rangedEnchantments = [
+  static const Set<Enchantment> rangedEnchantments = {
     Enchantment.channeling,
     Enchantment.flame,
     Enchantment.impaling,
@@ -46,10 +43,10 @@ mixin EnchantmentReducer {
     Enchantment.quickCharge,
     Enchantment.mending,
     Enchantment.unbreaking,
-    Enchantment.vanishCourse
-  ];
+    Enchantment.vanishCourse,
+  };
 
-  final List<Enchantment> armorEnchantments = [
+  static const Set<Enchantment> armorEnchantments = {
     Enchantment.aquaAffinity,
     Enchantment.blastProtection,
     Enchantment.bindingCurse,
@@ -64,112 +61,13 @@ mixin EnchantmentReducer {
     Enchantment.thorns,
     Enchantment.mending,
     Enchantment.unbreaking,
-    Enchantment.vanishCourse
-  ];
+    Enchantment.vanishCourse,
+  };
 
-  final List<Enchantment> miscEnchantments = List.from(values);
+  static final Set<Enchantment> miscEnchantments = Enchantment.values.toSet();
 
-  List<Enchantment> _getTools(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.tools) {
-      return toolEnchantments;
-    }
-
-    final newList = List.of(toolEnchantments, growable: true);
-
-    for (var value in toolEnchantments) {
-      if (itemModel.enchantments!.containsKey(value.minecraftValue)) {
-        newList.remove(value);
-      }
-    }
-
-    return newList;
-  }
-
-  List<Enchantment> _getMeele(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.meeleWeapon) {
-      return meeleEnchantments;
-    }
-
-    final newList = List.of(meeleEnchantments, growable: true);
-
-    for (var value in meeleEnchantments) {
-      if (itemModel.enchantments!.containsKey(value.minecraftValue)) {
-        newList.remove(value);
-      }
-    }
-
-    return newList;
-  }
-
-  List<Enchantment> _getRanged(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.rangedWeapon) {
-      return rangedEnchantments;
-    }
-
-    final newList = List.of(rangedEnchantments, growable: true);
-
-    for (var value in rangedEnchantments) {
-      if (itemModel.enchantments!.containsKey(value.minecraftValue)) {
-        newList.remove(value);
-      }
-    }
-
-    return newList;
-  }
-
-  List<Enchantment> _getMisc(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.misc) {
-      return miscEnchantments;
-    }
-
-    final newList = List.of(miscEnchantments, growable: true);
-
-    for (var value in miscEnchantments) {
-      if (itemModel.enchantments!.containsKey(value.minecraftValue)) {
-        newList.remove(value);
-      }
-    }
-
-    return newList;
-  }
-
-  List<Enchantment> _getArmor(ItemModel itemModel) {
-    if (itemModel.enchantments == null && itemModel.group == ItemGroup.armor) {
-      return miscEnchantments;
-    }
-
-    final newList = List.of(armorEnchantments, growable: true);
-
-    for (var value in armorEnchantments) {
-      if (itemModel.enchantments!.containsKey(value.minecraftValue)) {
-        newList.remove(value);
-      }
-    }
-
-    return newList;
-  }
-
-  List<Enchantment> getEnchantments(ItemModel model) {
-    if (identical(model.group, ItemGroup.armor)) {
-      return _getArmor(model);
-    }
-
-    if (identical(model.group, ItemGroup.tools)) {
-      return _getTools(model);
-    }
-
-    if (identical(model.group, ItemGroup.meeleWeapon)) {
-      return _getMeele(model);
-    }
-
-    if (identical(model.group, ItemGroup.rangedWeapon)) {
-      return _getRanged(model);
-    }
-
-    return _getMisc(model);
-  }
-
-  List<Enchantment> _getEnchantments(ItemGroup group) {
+  /// Returns the appropriate set of enchantments for a given [ItemGroup].
+  Set<Enchantment> _getEnchantments(ItemGroup group) {
     switch (group) {
       case ItemGroup.misc:
         return miscEnchantments;
@@ -178,65 +76,61 @@ mixin EnchantmentReducer {
       case ItemGroup.rangedWeapon:
         return rangedEnchantments;
       case ItemGroup.tools:
-        return armorEnchantments;
+        return toolEnchantments; // Fixed bug: was armorEnchantments
       case ItemGroup.armor:
         return armorEnchantments;
     }
   }
 
+  /// Gets the list of available enchantments for an item, excluding those it already has.
+  List<Enchantment> getEnchantments(ItemModel model) {
+    final groupEnchantments = _getEnchantments(model.group);
+
+    if (model.enchantments == null || model.enchantments!.isEmpty) {
+      return groupEnchantments.toList();
+    }
+
+    final existingEnchantmentKeys = model.enchantments!.keys.toSet();
+
+    // Efficiently filter the set and return a list.
+    return groupEnchantments
+        .where((e) => !existingEnchantmentKeys.contains(e.minecraftValue))
+        .toList();
+  }
+
+  /// Checks if an item can have more enchantments added based on its group.
   bool canAdd(ItemModel model) {
     if (model.enchantments == null) return true;
-    final group = ItemGroup.values.firstWhere((element) => identical(model.group, element));
-
-    switch(group) {
-      case ItemGroup.misc:
-        return model.enchantments!.length <= miscEnchantments.length;
-      case ItemGroup.meeleWeapon:
-        return model.enchantments!.length <= meeleEnchantments.length;
-      case ItemGroup.rangedWeapon:
-        return model.enchantments!.length <= rangedEnchantments.length;
-      case ItemGroup.tools:
-        return model.enchantments!.length <= toolEnchantments.length;
-      case ItemGroup.armor:
-        return model.enchantments!.length <= armorEnchantments.length;
-    }
+    final groupEnchantments = _getEnchantments(model.group);
+    return model.enchantments!.length < groupEnchantments.length;
   }
 
-  List<String> _getAsString(List<Enchantment> items) {
-    final List<String> values = [];
-
-    for (var value in items) {
-      values.add(value.minecraftValue);
-    }
-
-    return values;
-  }
-
-  Enchantment? getByGroup(ItemModel model, String enchantment) {
-    final groupEnchantments = _getEnchantments(ItemGroup.values.firstWhere((element) => identical(element, model.group)));
-
-    for (var value in groupEnchantments) {
-      if (value.minecraftValue == enchantment) {
-        return value;
-      }
+  /// Finds an [Enchantment] enum by its string value within the context of an item's group.
+  Enchantment? getByGroup(ItemModel model, String enchantmentValue) {
+    final groupEnchantments = _getEnchantments(model.group);
+    // Explicitly specify the type parameter for firstWhere as Enchantment?
+    // This tells Dart that the method can return a nullable Enchantment.
+    for (var ench in groupEnchantments) {
+      if (ench.minecraftValue == enchantmentValue) return ench;
     }
     return null;
   }
-  
+
+  /// Calculates which enchantments to remove if an item's group is changed to [newGroup].
   List<String> getRemoveItems(ItemModel itemModel, ItemGroup newGroup) {
     if (itemModel.enchantments == null || itemModel.enchantments!.isEmpty) {
-      return List.empty();
-    }
-    final List<String> removeList = List.empty(growable: true);
-    
-    final groupEnchantments = _getAsString(_getEnchantments(newGroup));
-
-    for (var value in itemModel.enchantments!.keys) {
-      if (!groupEnchantments.contains(value)) {
-        removeList.add(value);
-      }
+      return [];
     }
 
-    return removeList;
+    final newGroupEnchantments = _getEnchantments(newGroup);
+    // Create a set of the string values for fast lookups.
+    final allowedMinecraftValues = newGroupEnchantments
+        .map((e) => e.minecraftValue)
+        .toSet();
+
+    // Filter the existing keys based on whether they are in the new allowed set.
+    return itemModel.enchantments!.keys
+        .where((key) => !allowedMinecraftValues.contains(key))
+        .toList();
   }
 }
