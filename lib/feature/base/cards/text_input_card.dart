@@ -46,6 +46,15 @@ class _TextInputCardState extends State<TextInputCard> {
   }
 
   @override
+  void didUpdateWidget(TextInputCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.currentValue != oldWidget.currentValue &&
+        widget.currentValue != _editController.text) {
+      _editController.text = widget.currentValue;
+    }
+  }
+
+  @override
   void dispose() {
     _editController.dispose();
     _focusNode.dispose();
@@ -57,9 +66,7 @@ class _TextInputCardState extends State<TextInputCard> {
     final colorScheme = Theme.of(context).colorScheme;
     final outlineBorder = OutlineInputBorder(
       borderRadius: _borderRadius,
-      borderSide: BorderSide(
-        color: colorScheme.outline,
-      ),
+      borderSide: BorderSide(color: colorScheme.outline),
     );
 
     return BaseCard(
@@ -79,36 +86,23 @@ class _TextInputCardState extends State<TextInputCard> {
               keyboardType: widget.inputType,
               inputFormatters: widget.formatter,
               validator: widget.formValidator,
-              style: TextStyle(
-                color: colorScheme.onSurface,
-                fontSize: 16,
-              ),
+              style: TextStyle(color: colorScheme.onSurface, fontSize: 16),
               decoration: InputDecoration(
                 hintText: widget.hintText,
-                hintStyle: TextStyle(
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
                 border: outlineBorder,
                 enabledBorder: outlineBorder,
                 focusedBorder: OutlineInputBorder(
                   borderRadius: _borderRadius,
-                  borderSide: BorderSide(
-                    color: colorScheme.primary,
-                    width: 2,
-                  ),
+                  borderSide: BorderSide(color: colorScheme.primary, width: 2),
                 ),
                 errorBorder: OutlineInputBorder(
                   borderRadius: _borderRadius,
-                  borderSide: BorderSide(
-                    color: colorScheme.error,
-                  ),
+                  borderSide: BorderSide(color: colorScheme.error),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
                   borderRadius: _borderRadius,
-                  borderSide: BorderSide(
-                    color: colorScheme.error,
-                    width: 2,
-                  ),
+                  borderSide: BorderSide(color: colorScheme.error, width: 2),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
@@ -128,6 +122,7 @@ class _TextInputCardState extends State<TextInputCard> {
     );
   }
 
+  /// Handles the submission of the given input to the outer update logic.
   void _handleFieldSubmitted(String value) {
     if (value.trim().isNotEmpty) {
       widget.valueUpdate(value);
