@@ -51,36 +51,33 @@ class PaginatedBaseModelViewTabs<E extends DataModel> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          PaginatedModelList<E>(
-            mapToDataModelItem: mapToDataModelItem,
-            selectedItem: selectedItem,
-            openFunction: openFunction,
-            mapToDeleteDialog: mapToDeleteDialog,
-            mapToDeleteSuccessfully: mapToDeleteSuccessfully,
-            callFunction: callFunction,
-            models: models,
-            compareFunction: compareFunction,
-            onLoadMore: onLoadMore,
-            hasMore: hasMore,
-            isLoadingMore: isLoadingMore,
-          ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        PaginatedModelList<E>(
+          mapToDataModelItem: mapToDataModelItem,
+          selectedItem: selectedItem,
+          openFunction: openFunction,
+          mapToDeleteDialog: mapToDeleteDialog,
+          mapToDeleteSuccessfully: mapToDeleteSuccessfully,
+          callFunction: callFunction,
+          models: models,
+          compareFunction: compareFunction,
+          onLoadMore: onLoadMore,
+          hasMore: hasMore,
+          isLoadingMore: isLoadingMore,
+        ),
 
-          verticalSpacing10,
-          Expanded(
-            child: ModelContentTabPage<E>(
-              selectedItem: selectedItem,
-              page: page,
-              tabPages: tabPages,
-              tabs: tabs,
-            ),
+        verticalSpacing10,
+        Expanded(
+          child: ModelContentTabPage<E>(
+            selectedItem: selectedItem,
+            page: page,
+            tabPages: tabPages,
+            tabs: tabs,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

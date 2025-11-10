@@ -89,21 +89,24 @@ class _PaginatedModelListState<E extends DataModel>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: PaginatedModelList._listWidth,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(
-            child: _buildListView(),
-          ),
-          verticalSpacing10,
-          Padding(
-            padding: const EdgeInsets.only(
-                bottom: PaginatedModelList._bottomPadding),
-            child: AddButton(openFunction: widget.openFunction),
-          )
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: SizedBox(
+        width: PaginatedModelList._listWidth,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: _buildListView(),
+            ),
+            verticalSpacing10,
+            Padding(
+              padding: const EdgeInsets.only(
+                  bottom: PaginatedModelList._bottomPadding),
+              child: AddButton(openFunction: widget.openFunction),
+            )
+          ],
+        ),
       ),
     );
   }
