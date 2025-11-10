@@ -12,9 +12,7 @@ import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
 
 class ItemGeneralPage extends StatefulWidget {
-  const ItemGeneralPage({
-    super.key,
-  });
+  const ItemGeneralPage({super.key});
 
   @override
   State<ItemGeneralPage> createState() => _ItemGeneralPageState();
@@ -61,25 +59,33 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                 TextInputCard<String>(
                                   display: context.l10n.card_name,
                                   tooltipMessage: context.l10n.tooltip_name,
-                                  currentValue: vm.selected.variableName ?? emptyString,
+                                  currentValue:
+                                      vm.selected.variableName ?? emptyString,
                                   formatter: [
                                     FilteringTextInputFormatter.allow(
-                                        stringPattern)
+                                      stringPattern,
+                                    ),
                                   ],
                                   valueUpdate: (value) {
-                                    if (value == vm.selected.variableName) return;
+                                    if (value == vm.selected.variableName)
+                                      return;
                                     final oldModel = vm.selected;
-                                    final newEntry =
-                                        oldModel.copyWith(variableName: value);
-                                    context
-                                        .dispatch(UpdateItemAction(newEntry));
+                                    final newEntry = oldModel.copyWith(
+                                      variableName: value,
+                                    );
+                                    context.dispatch(
+                                      UpdateItemAction(newEntry),
+                                    );
                                   },
                                   formValidator: (value) {
                                     final String input = value as String;
                                     return checkIfEmptyAndReturnErrorString(
-                                        input, context);
+                                      input,
+                                      context,
+                                    );
                                   },
                                   maxLength: 30,
+                                  focusOrder: const NumericFocusOrder(1),
                                 ),
                                 TextInputCard<String>(
                                   display: context.l10n.card_description,
@@ -87,7 +93,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                       vm.selected.comment ?? emptyString,
                                   formatter: [
                                     FilteringTextInputFormatter.allow(
-                                        stringWithSpacePattern
+                                      stringWithSpacePattern,
                                     ),
                                   ],
                                   valueUpdate: (value) {
@@ -95,16 +101,20 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                       return;
                                     }
                                     final oldModel = vm.selected;
-                                    final newEntry =
-                                        oldModel.copyWith(comment: value);
-                                    context
-                                        .dispatch(UpdateItemAction(newEntry));
+                                    final newEntry = oldModel.copyWith(
+                                      comment: value,
+                                    );
+                                    context.dispatch(
+                                      UpdateItemAction(newEntry),
+                                    );
                                   },
                                   maxLength: 30,
+                                  focusOrder: const NumericFocusOrder(2),
                                 ),
                                 ItemGroupCard(
                                   model: vm.selected,
                                   groupKey: GlobalKey<FormState>(),
+                                  focusOrder: const NumericFocusOrder(3),
                                 ),
                               ],
                             ),
@@ -121,7 +131,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                     context.dispatch(ItemDatabaseUpdate());
                   }
                 },
-              )
+              ),
             ],
           ),
         );

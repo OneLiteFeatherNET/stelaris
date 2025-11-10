@@ -12,11 +12,13 @@ class ItemGroupCard extends StatelessWidget {
   const ItemGroupCard({
     required this.model,
     required this.groupKey,
+    this.focusOrder,
     super.key,
   });
 
   final ItemModel model;
   final GlobalKey<FormState> groupKey;
+  final FocusOrder? focusOrder;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class ItemGroupCard extends StatelessWidget {
       items: getGroupItems(),
       tooltipMessage: 'Change Item group',
       matchTextInputHeight: true,
+      focusOrder: focusOrder,
       valueUpdate: (ItemGroup? value) {
         if (value == null) return;
         final ItemGroup selected = value;
@@ -35,7 +38,10 @@ class ItemGroupCard extends StatelessWidget {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: const Text('Group change', textAlign: TextAlign.center,),
+              title: const Text(
+                'Group change',
+                textAlign: TextAlign.center,
+              ),
               contentPadding: dialogPadding,
               content: const SizedBox(
                 height: 75,

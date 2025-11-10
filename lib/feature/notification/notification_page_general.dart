@@ -99,6 +99,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                       }
                                       return null;
                                     },
+                                    focusOrder: const NumericFocusOrder(1),
                                   ),
                                   TextInputCard<String>(
                                     display: context.l10n.card_material,
@@ -123,6 +124,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                       return null;
                                     },
                                     maxLength: 30,
+                                    focusOrder: const NumericFocusOrder(2),
                                   ),
                                   TextInputCard<String>(
                                     display: context.l10n.card_title,
@@ -142,6 +144,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                           stringWithSpacePattern
                                       ),
                                     ],
+                                    focusOrder: const NumericFocusOrder(3),
                                   ),
                                   TextInputCard<String>(
                                     display: context.l10n.card_description,
@@ -161,6 +164,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                             UpdateNotificationAction(newEntry));
                                       }
                                     },
+                                    focusOrder: const NumericFocusOrder(4),
                                   ),
                                   DropdownCard<FrameType, NotificationModel>(
                                     display: context.l10n.card_frame_type,
@@ -177,6 +181,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                     },
                                     defaultValue: (value) => value.frameType,
                                     matchTextInputHeight: true,
+                                    focusOrder: const NumericFocusOrder(5),
                                   ),
                                 ],
                               ),

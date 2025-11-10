@@ -76,6 +76,7 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                                   );
                                   context.dispatch(UpdateSoundAction(newEntry));
                                 },
+                                focusOrder: 1,
                               ),
                               _buildTextField(
                                 label: 'Key',
@@ -91,6 +92,7 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                                   );
                                   context.dispatch(UpdateSoundAction(newEntry));
                                 },
+                                focusOrder: 2,
                               ),
                               _buildTextField(
                                 label: 'Subtitle',
@@ -106,6 +108,7 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                                   );
                                   context.dispatch(UpdateSoundAction(newEntry));
                                 },
+                                focusOrder: 3,
                               ),
                             ],
                           ),
@@ -135,6 +138,7 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
     required String label,
     required String? currentValue,
     required void Function(String) onChanged,
+    required double focusOrder,
     String? Function(dynamic)? validator,
   }) {
     return TextInputCard<String>(
@@ -147,6 +151,7 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
           onChanged(value);
         }
       },
+      focusOrder: NumericFocusOrder(focusOrder),
     );
   }
 }

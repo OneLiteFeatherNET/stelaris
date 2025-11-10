@@ -18,7 +18,7 @@ class StelarisApp extends StatelessWidget {
         final systemDarkMode = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
         final effectiveDarkMode = themeSettings.useSystemTheme ? systemDarkMode : themeSettings.isDarkMode;
 
-        final baseTextTheme = Typography.material2021();
+        final baseTextTheme = Typography.material2014();
         final scaledTextTheme = TextTheme(
           displayLarge: baseTextTheme.black.displayLarge!.copyWith(fontSize: 96 * themeSettings.fontScale),
           displayMedium: baseTextTheme.black.displayMedium!.copyWith(fontSize: 60 * themeSettings.fontScale),
