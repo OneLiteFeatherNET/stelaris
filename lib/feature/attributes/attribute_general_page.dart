@@ -56,6 +56,7 @@ class AttributeGeneralPage extends StatelessWidget {
                         return checkIfEmptyAndReturnErrorString(input, context);
                       },
                       maxLength: 30,
+                      focusOrder: const NumericFocusOrder(1),
                     ),
                     TextInputCard<double>(
                       display: 'Default value',
@@ -74,6 +75,7 @@ class AttributeGeneralPage extends StatelessWidget {
                         context.dispatch(UpdateAttributeAction(newEntry));
                       },
                       maxLength: 100,
+                      focusOrder: const NumericFocusOrder(2),
                     ),
                     TextInputCard<double>(
                       display: 'Maximum value',
@@ -92,6 +94,7 @@ class AttributeGeneralPage extends StatelessWidget {
                       formatter: [
                         FilteringTextInputFormatter.allow(numberPattern),
                       ],
+                      focusOrder: const NumericFocusOrder(3),
                     ),
                   ],
                 ),

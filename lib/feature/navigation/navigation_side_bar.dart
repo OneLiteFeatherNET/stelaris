@@ -26,13 +26,15 @@ class NavigationSideBar extends StatelessWidget {
     return StoreConnector<AppState, NavigationViewModel>(
       vm: () => NavigationStateFactory(),
       builder: (context, vm) {
-        return NavigationRail(
-          minExtendedWidth: maxXOffset,
-          extended: MediaQuery.of(context).size.width >= 1000 ? vm.openNavigation : false,
-          onDestinationSelected: (index) => _onDestinationSelected(context, index),
-          labelType: NavigationRailLabelType.none,
-          destinations: _buildNavigationView(),
-          selectedIndex: selectedIndex != -1 ? selectedIndex : 0,
+        return FocusTraversalGroup(
+          child: NavigationRail(
+            minExtendedWidth: maxXOffset,
+            extended: MediaQuery.of(context).size.width >= 1000 ? vm.openNavigation : false,
+            onDestinationSelected: (index) => _onDestinationSelected(context, index),
+            labelType: NavigationRailLabelType.none,
+            destinations: _buildNavigationView(),
+            selectedIndex: selectedIndex != -1 ? selectedIndex : 0,
+          ),
         );
       },
     );

@@ -75,6 +75,7 @@ class _FontFacePageState extends State<FontFacePage> {
                                       UpdateFontAction(newEntry),
                                     );
                                   },
+                                  focusOrder: const NumericFocusOrder(1),
                                 ),
                                 TextInputCard<int>(
                                   tooltipMessage: context.l10n.tooltip_ascent,
@@ -100,6 +101,7 @@ class _FontFacePageState extends State<FontFacePage> {
                                       fontNumberPattern,
                                     ),
                                   ],
+                                  focusOrder: const NumericFocusOrder(2),
                                 ),
                                 TextInputCard<int>(
                                   tooltipMessage: context.l10n.tooltip_height,
@@ -125,6 +127,7 @@ class _FontFacePageState extends State<FontFacePage> {
                                       fontNumberPattern,
                                     ),
                                   ],
+                                  focusOrder: const NumericFocusOrder(3),
                                 ),
                               ],
                             ),

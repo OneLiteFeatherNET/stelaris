@@ -83,6 +83,7 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
                                     return null;
                                   },
                                   maxLength: 30,
+                                  focusOrder: const NumericFocusOrder(1)
                                 ),
                                 TextInputCard<String>(
                                   tooltipMessage:
@@ -126,6 +127,7 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
                                     FilteringTextInputFormatter.allow(
                                         numberPattern)
                                   ],
+                                    focusOrder: const NumericFocusOrder(2)
                                 ),
                                 TextInputCard<int>(
                                   display: context.l10n.card_amount,
@@ -162,6 +164,7 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
                                     return null;
                                   },
                                   maxLength: 30,
+                                    focusOrder: const NumericFocusOrder(3)
                                 ),
                               ],
                             ),

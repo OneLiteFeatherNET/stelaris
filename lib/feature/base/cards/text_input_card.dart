@@ -16,6 +16,7 @@ class TextInputCard<E> extends StatefulWidget {
     this.formValidator,
     this.maxLength = 30,
     this.isNumber = false,
+    this.focusOrder,
     super.key,
   });
 
@@ -29,6 +30,7 @@ class TextInputCard<E> extends StatefulWidget {
   final String? hintText;
   final List<TextInputFormatter>? formatter;
   final FormFieldValidator? formValidator;
+  final FocusOrder? focusOrder;
 
   @override
   State<TextInputCard> createState() => _TextInputCardState();
@@ -74,51 +76,63 @@ class _TextInputCardState extends State<TextInputCard> {
       widget: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 300),
-          child: Focus(
-            focusNode: _focusNode,
-            child: TextFormField(
-              maxLength: widget.maxLength,
-              autovalidateMode: widget.formValidator != null
-                  ? AutovalidateMode.onUserInteraction
-                  : AutovalidateMode.disabled,
-              autocorrect: false,
-              controller: _editController,
-              keyboardType: widget.inputType,
-              inputFormatters: widget.formatter,
-              validator: widget.formValidator,
-              style: TextStyle(color: colorScheme.onSurface, fontSize: 16),
-              decoration: InputDecoration(
-                hintText: widget.hintText,
-                hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
-                border: outlineBorder,
-                enabledBorder: outlineBorder,
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: _borderRadius,
-                  borderSide: BorderSide(color: colorScheme.primary, width: 2),
+          child: _wrapWithFocusOrder(
+            Focus(
+              focusNode: _focusNode,
+              onFocusChange: (focus) {
+                if (focus) return;
+                _handleFieldSubmitted(_editController.text);
+              },
+              child: TextFormField(
+                maxLength: widget.maxLength,
+                autovalidateMode: widget.formValidator != null
+                    ? AutovalidateMode.onUserInteraction
+                    : AutovalidateMode.disabled,
+                autocorrect: false,
+                controller: _editController,
+                keyboardType: widget.inputType,
+                inputFormatters: widget.formatter,
+                validator: widget.formValidator,
+                style: TextStyle(color: colorScheme.onSurface, fontSize: 16),
+                decoration: InputDecoration(
+                  hintText: widget.hintText,
+                  hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+                  border: outlineBorder,
+                  enabledBorder: outlineBorder,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: _borderRadius,
+                    borderSide:
+                        BorderSide(color: colorScheme.primary, width: 2),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: _borderRadius,
+                    borderSide: BorderSide(color: colorScheme.error),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: _borderRadius,
+                    borderSide: BorderSide(color: colorScheme.error, width: 2),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: _borderRadius,
-                  borderSide: BorderSide(color: colorScheme.error),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: _borderRadius,
-                  borderSide: BorderSide(color: colorScheme.error, width: 2),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
+                textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
               ),
-              textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
             ),
-            onFocusChange: (focus) {
-              if (focus) return;
-              _handleFieldSubmitted(_editController.text);
-            },
           ),
         ),
       ),
       message: widget.tooltipMessage,
+    );
+  }
+
+  Widget _wrapWithFocusOrder(Widget child) {
+    final focusOrder = widget.focusOrder;
+    if (focusOrder == null) return child;
+    return FocusTraversalOrder(
+      order: focusOrder,
+      child: child,
     );
   }
 

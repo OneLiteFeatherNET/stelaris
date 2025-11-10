@@ -84,6 +84,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                       context,
                                     );
                                   },
+                                  focusOrder: const NumericFocusOrder(1),
                                 ),
                                 TextInputCard<String>(
                                   display: 'Provider',
@@ -106,6 +107,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                       UpdateFontAction(newEntry),
                                     );
                                   },
+                                  focusOrder: const NumericFocusOrder(2),
                                 ),
                                 TextInputCard<String>(
                                   display: 'Comment',
@@ -128,6 +130,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                       UpdateFontAction(newEntry),
                                     );
                                   },
+                                  focusOrder: const NumericFocusOrder(3),
                                 ),
                               ],
                             ),
