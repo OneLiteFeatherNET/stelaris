@@ -47,7 +47,7 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
   }
 
   void _updateEnchantments() {
-    _enchantments = getEnchantments(widget.model)
+    _enchantments = getEnchantments(widget.model, true)
         .map(
           (e) => DropdownMenuItem<Enchantment>(
             value: e,

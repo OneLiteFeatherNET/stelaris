@@ -65,7 +65,7 @@ mixin EnchantmentReducer {
   }
 
   /// Gets the list of available enchantments for an item, excluding those it already has.
-  List<Enchantment> getEnchantments(ItemModel model) {
+  List<Enchantment> getEnchantments(ItemModel model, [bool exclude = false]) {
     final groupEnchantments = _getEnchantments(model.group);
 
     if (model.enchantments == null || model.enchantments!.isEmpty) {
@@ -75,9 +75,10 @@ mixin EnchantmentReducer {
     final existingEnchantmentKeys = model.enchantments!.keys.toSet();
 
     // Efficiently filter the set and return a list.
-    return groupEnchantments
+    return exclude ? groupEnchantments
         .where((e) => !existingEnchantmentKeys.contains(e.minecraftValue))
-        .toList();
+        .toList()
+        : groupEnchantments.toList();
   }
 
   /// Checks if an item can have more enchantments added based on its group.
