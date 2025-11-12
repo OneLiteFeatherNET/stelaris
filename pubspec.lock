@@ -799,7 +799,7 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: d3b82f914c88010ff2ee528457276ebcb80f5adc
+      resolved-ref: "3937d1a8fb3ae1aae9fb6a7ac78e6e747e45a1b7"
       url: "https://github.com/OneLiteFeatherNET/vulpes-minecraft-dart.git"
     source: git
     version: "1.0.0"
