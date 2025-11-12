@@ -24,6 +24,10 @@ dependencies:
   intl: ^0.20.2
   json_annotation: 4.9.0
   web: ^1.1.1
+  vulpes_data:
+    git:
+      url: https://github.com/OneLiteFeatherNET/vulpes-minecraft-dart.git
+      ref: master
 
 dev_dependencies:
   flutter_test:

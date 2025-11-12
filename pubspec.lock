@@ -794,6 +794,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "15.0.2"
+  vulpes_data:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: master
+      resolved-ref: d3b82f914c88010ff2ee528457276ebcb80f5adc
+      url: "https://github.com/OneLiteFeatherNET/vulpes-minecraft-dart.git"
+    source: git
+    version: "1.0.0"
   watcher:
     dependency: transitive
     description:
