@@ -8,7 +8,7 @@ import 'package:stelaris/api/model/item/item_lore_model.dart';
 import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/paginated_result.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/api/util/minecraft/enchantment.dart';
+import 'package:vulpes_data/api/enchantment.dart';
 
 class SelectedItemAction extends ReduxAction<AppState> {
   final ItemModel model;
