@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:stelaris/api/util/minecraft/frame_type.dart';
+import 'package:vulpes_data/frame_type.dart';
 
 import 'data_model.dart';
 
