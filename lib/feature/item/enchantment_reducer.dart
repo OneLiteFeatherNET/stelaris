@@ -10,18 +10,18 @@ mixin EnchantmentReducer {
   static const Set<ToolEnchantment> toolEnchantments = {
     ToolEnchantment.efficiency,
     ToolEnchantment.fortune,
-    ToolEnchantment.luck_of_the_sea,
+    ToolEnchantment.luckOfTheSea,
     ToolEnchantment.lure,
-    ToolEnchantment.silk_touch,
+    ToolEnchantment.silkTouch,
   };
 
-  static const Set<MetaEnchantment> meeleEnchantments = {
+  static const Set<MetaEnchantment> metaEnchantments = {
     MetaEnchantment.mending,
     MetaEnchantment.unbreaking,
-    MetaEnchantment.vanishing_curse
+    MetaEnchantment.vanishingCurse
   };
 
-  static const Set<WeaponEnchantment> rangedEnchantments = {
+  static const Set<WeaponEnchantment> weaponEnchantments = {
     WeaponEnchantment.channeling,
     WeaponEnchantment.flame,
     WeaponEnchantment.impaling,
@@ -32,39 +32,35 @@ mixin EnchantmentReducer {
     WeaponEnchantment.piercing,
     WeaponEnchantment.power,
     WeaponEnchantment.punch,
-    WeaponEnchantment.quick_charge,
+    WeaponEnchantment.quickCharge,
   };
 
   static const Set<ArmorEnchantment> armorEnchantments = {
-    ArmorEnchantment.aqua_affinity,
-    ArmorEnchantment.blast_protection,
-    ArmorEnchantment.binding_curse,
-    ArmorEnchantment.depth_strider,
-    ArmorEnchantment.feather_falling,
-    ArmorEnchantment.fire_protection,
-    ArmorEnchantment.frost_walker,
-    ArmorEnchantment.projectile_protection,
+    ArmorEnchantment.aquaAffinity,
+    ArmorEnchantment.blastProtection,
+    ArmorEnchantment.bindingCurse,
+    ArmorEnchantment.depthStrider,
+    ArmorEnchantment.featherFalling,
+    ArmorEnchantment.fireProtection,
+    ArmorEnchantment.frostWalker,
+    ArmorEnchantment.projectileProtection,
     ArmorEnchantment.protection,
     ArmorEnchantment.respiration,
-    ArmorEnchantment.soul_speed,
+    ArmorEnchantment.soulSpeed,
     ArmorEnchantment.thorns,
   };
 
-  static final Set<Enchantment> miscEnchantments = Enchantment.values.toSet();
-
-  /// Returns the appropriate set of enchantments for a given [ItemGroup].
-  Set<Enchantment> _getEnchantments(ItemGroup group) {
+  /// Returns the appropriate set of enchantments for a given [EnchantmentGroup].
+  Set<Enchantment> _getEnchantments(EnchantmentGroup group) {
     switch (group) {
-      case ItemGroup.misc:
-        return meeleEnchantments;
-      case ItemGroup.meeleWeapon:
-        return meeleEnchantments;
-      case ItemGroup.rangedWeapon:
-        return rangedEnchantments;
-      case ItemGroup.tools:
+      case EnchantmentGroup.meta:
+        return metaEnchantments;
+      case EnchantmentGroup.tools:
         return toolEnchantments; // Fixed bug: was armorEnchantments
-      case ItemGroup.armor:
+      case EnchantmentGroup.armor:
         return armorEnchantments;
+      case EnchantmentGroup.weapon:
+        return weaponEnchantments;
     }
   }
 
@@ -103,7 +99,7 @@ mixin EnchantmentReducer {
   }
 
   /// Calculates which enchantments to remove if an item's group is changed to [newGroup].
-  List<String> getRemoveItems(ItemModel itemModel, ItemGroup newGroup) {
+  List<String> getRemoveItems(ItemModel itemModel, EnchantmentGroup newGroup) {
     if (itemModel.enchantments == null || itemModel.enchantments!.isEmpty) {
       return [];
     }
