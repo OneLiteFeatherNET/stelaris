@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stelaris/api/util/minecraft/enchantment.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_item.dart';
+import 'package:vulpes_data/api/enchantment.dart';
 
 class EnchantmentList extends StatelessWidget {
   const EnchantmentList({

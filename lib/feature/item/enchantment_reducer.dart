@@ -1,67 +1,53 @@
 import 'package:stelaris/api/model/item_model.dart';
-import 'package:stelaris/api/util/minecraft/enchantment.dart';
 import 'package:stelaris/feature/item/item_group.dart';
+import 'package:vulpes_data/api/enchantment.dart';
+import 'package:vulpes_data/enchantment/armor_enchantment.dart';
+import 'package:vulpes_data/enchantment/meta_enchantment.dart';
+import 'package:vulpes_data/enchantment/tool_enchantment.dart';
+import 'package:vulpes_data/enchantment/weapon_enchantment.dart';
 
 mixin EnchantmentReducer {
-  static const Set<Enchantment> toolEnchantments = {
-    Enchantment.efficiency,
-    Enchantment.fortune,
-    Enchantment.luckOfTheSea,
-    Enchantment.lure,
-    Enchantment.silkTouch,
-    Enchantment.mending,
-    Enchantment.unbreaking,
-    Enchantment.vanishCourse,
+  static const Set<ToolEnchantment> toolEnchantments = {
+    ToolEnchantment.efficiency,
+    ToolEnchantment.fortune,
+    ToolEnchantment.luck_of_the_sea,
+    ToolEnchantment.lure,
+    ToolEnchantment.silk_touch,
   };
 
-  static const Set<Enchantment> meeleEnchantments = {
-    Enchantment.baneOfArthropods,
-    Enchantment.efficiency,
-    Enchantment.fireAspect,
-    Enchantment.looting,
-    Enchantment.impaling,
-    Enchantment.knockback,
-    Enchantment.sharpness,
-    Enchantment.smite,
-    Enchantment.sweeping,
-    Enchantment.mending,
-    Enchantment.unbreaking,
-    Enchantment.vanishCourse,
+  static const Set<MetaEnchantment> meeleEnchantments = {
+    MetaEnchantment.mending,
+    MetaEnchantment.unbreaking,
+    MetaEnchantment.vanishing_curse
   };
 
-  static const Set<Enchantment> rangedEnchantments = {
-    Enchantment.channeling,
-    Enchantment.flame,
-    Enchantment.impaling,
-    Enchantment.infinity,
-    Enchantment.loyalty,
-    Enchantment.riptide,
-    Enchantment.multishot,
-    Enchantment.piercing,
-    Enchantment.power,
-    Enchantment.punch,
-    Enchantment.quickCharge,
-    Enchantment.mending,
-    Enchantment.unbreaking,
-    Enchantment.vanishCourse,
+  static const Set<WeaponEnchantment> rangedEnchantments = {
+    WeaponEnchantment.channeling,
+    WeaponEnchantment.flame,
+    WeaponEnchantment.impaling,
+    WeaponEnchantment.infinity,
+    WeaponEnchantment.loyalty,
+    WeaponEnchantment.riptide,
+    WeaponEnchantment.multishot,
+    WeaponEnchantment.piercing,
+    WeaponEnchantment.power,
+    WeaponEnchantment.punch,
+    WeaponEnchantment.quick_charge,
   };
 
-  static const Set<Enchantment> armorEnchantments = {
-    Enchantment.aquaAffinity,
-    Enchantment.blastProtection,
-    Enchantment.bindingCurse,
-    Enchantment.depthStrider,
-    Enchantment.featherFalling,
-    Enchantment.fireProtection,
-    Enchantment.frostWalker,
-    Enchantment.projectTileProtection,
-    Enchantment.protection,
-    Enchantment.respiration,
-    Enchantment.soulSpeed,
-    Enchantment.thorns,
-    Enchantment.mending,
-    Enchantment.unbreaking,
-    Enchantment.vanishCourse,
+  static const Set<ArmorEnchantment> armorEnchantments = {
+    ArmorEnchantment.aqua_affinity,
+    ArmorEnchantment.blast_protection,
+    ArmorEnchantment.binding_curse,
+    ArmorEnchantment.depth_strider,
+    ArmorEnchantment.feather_falling,
+    ArmorEnchantment.fire_protection,
+    ArmorEnchantment.frost_walker,
+    ArmorEnchantment.projectile_protection,
+    ArmorEnchantment.protection,
+    ArmorEnchantment.respiration,
+    ArmorEnchantment.soul_speed,
+    ArmorEnchantment.thorns,
   };
 
   static final Set<Enchantment> miscEnchantments = Enchantment.values.toSet();
@@ -70,7 +56,7 @@ mixin EnchantmentReducer {
   Set<Enchantment> _getEnchantments(ItemGroup group) {
     switch (group) {
       case ItemGroup.misc:
-        return miscEnchantments;
+        return meeleEnchantments;
       case ItemGroup.meeleWeapon:
         return meeleEnchantments;
       case ItemGroup.rangedWeapon:

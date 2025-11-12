@@ -5,12 +5,12 @@ import 'package:stelaris/api/model/notification_model.dart';
 import 'package:stelaris/api/state/actions/notification_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/notification/selected_notification_state.dart';
-import 'package:stelaris/api/util/minecraft/frame_type.dart';
 import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:vulpes_data/frame_type.dart';
 
 /// A widget that represents the general notification management page.
 ///
@@ -38,7 +38,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
   static final List<DropdownMenuItem<FrameType>> items = List.generate(
     types.length,
     (index) =>
-        DropdownMenuItem(value: types[index], child: Text(types[index].value)),
+        DropdownMenuItem(value: types[index], child: Text(types[index].display)),
   );
 
   @override

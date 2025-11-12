@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stelaris/api/util/minecraft/enchantment.dart';
+import 'package:vulpes_data/api/enchantment.dart';
 
 class EnchantmentItem extends StatefulWidget {
   const EnchantmentItem({
@@ -56,7 +56,7 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           title: Text(
-            widget.enchantment.display,
+            widget.enchantment.displayName,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -102,7 +102,7 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
                   onPressed: widget.onDelete,
                 )
               : Text(
-                  widget.enchantment.minecraftValue,
+                  widget.enchantment.displayName,
                   style: theme.textTheme.bodySmall?.copyWith(
                     fontStyle: FontStyle.italic,
                     color: theme.colorScheme.secondary,
