@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/util/minecraft/enchantment.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_item.dart';
+import 'package:vulpes_data/api/enchantment.dart';
 
 class EnchantmentList extends StatelessWidget {
   const EnchantmentList({
@@ -22,18 +22,15 @@ class EnchantmentList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Extract enchantments that are in the item
-    final activeEnchantmentValues = selectedEnchantments.keys.toList();
-    final activeEnchantments = activeEnchantmentValues
-        .map((value) => Enchantment.values.firstWhere(
-              (e) => e.minecraftValue == value,
-              orElse: () => Enchantment.values.first,
-            ))
-        .toList();
+    final activeEnchantments = [];
+    for (var ench in enchantments) {
+      if (selectedEnchantments.containsKey(ench.minecraftValue)) {
+        activeEnchantments.add(ench);
+      }
+    }
 
     if (activeEnchantments.isEmpty) {
-      return const EmptyDataWidget(
-        header: 'No enchantments added yet',
-      );
+      return const EmptyDataWidget(header: 'No enchantments added yet');
     }
 
     return ListView.builder(

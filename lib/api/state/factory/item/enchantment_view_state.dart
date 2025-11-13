@@ -1,14 +1,13 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/api/util/minecraft/enchantment.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/enchantment_reducer.dart';
+import 'package:vulpes_data/api/enchantment.dart';
 
 class EnchantmentViewFactory
     extends VmFactory<AppState, ItemEnchantmentPage, EnchantmentView> {
   EnchantmentViewFactory();
-
 
   @override
   EnchantmentView fromStore() {
@@ -34,12 +33,4 @@ class EnchantmentView extends Vm with EnchantmentReducer {
   }
 
   String getEnchantmentLevel(String enchantment) => enchantments[enchantment].toString();
-
-  Enchantment? findEnchantmentByValue(String value) {
-    try {
-      return Enchantment.values.firstWhere((e) => e.minecraftValue == value);
-    } catch (e) {
-      return null;
-    }
-  }
 }

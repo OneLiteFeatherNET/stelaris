@@ -22,7 +22,7 @@ class ItemGroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownCard<ItemGroup, ItemModel>(
+    return DropdownCard<EnchantmentGroup, ItemModel>(
       display: context.l10n.card_group,
       currentValue: model,
       formKey: groupKey,
@@ -30,9 +30,9 @@ class ItemGroupCard extends StatelessWidget {
       tooltipMessage: 'Change Item group',
       matchTextInputHeight: true,
       focusOrder: focusOrder,
-      valueUpdate: (ItemGroup? value) {
+      valueUpdate: (EnchantmentGroup? value) {
         if (value == null) return;
-        final ItemGroup selected = value;
+        final EnchantmentGroup selected = value;
         if (selected.hasSameGroup(model.group)) return;
         showDialog(
           context: context,

@@ -13,7 +13,8 @@ _ItemModel _$ItemModelFromJson(Map<String, dynamic> json) => _ItemModel(
   comment: json['comment'] as String?,
   displayName: json['displayName'] as String?,
   group:
-      $enumDecodeNullable(_$ItemGroupEnumMap, json['group']) ?? ItemGroup.misc,
+      $enumDecodeNullable(_$EnchantmentGroupEnumMap, json['group']) ??
+      EnchantmentGroup.meta,
   material: json['material'] as String?,
   customModelData: (json['customModelData'] as num?)?.toInt(),
   amount: (json['amount'] as num?)?.toInt() ?? 1,
@@ -31,7 +32,7 @@ Map<String, dynamic> _$ItemModelToJson(_ItemModel instance) =>
       'variableName': instance.variableName,
       'comment': instance.comment,
       'displayName': instance.displayName,
-      'group': _$ItemGroupEnumMap[instance.group]!,
+      'group': _$EnchantmentGroupEnumMap[instance.group]!,
       'material': instance.material,
       'customModelData': instance.customModelData,
       'amount': instance.amount,
@@ -40,10 +41,9 @@ Map<String, dynamic> _$ItemModelToJson(_ItemModel instance) =>
       'lore': instance.lore,
     };
 
-const _$ItemGroupEnumMap = {
-  ItemGroup.misc: 'misc',
-  ItemGroup.armor: 'armor',
-  ItemGroup.meeleWeapon: 'meeleWeapon',
-  ItemGroup.rangedWeapon: 'rangedWeapon',
-  ItemGroup.tools: 'tools',
+const _$EnchantmentGroupEnumMap = {
+  EnchantmentGroup.armor: 'armor',
+  EnchantmentGroup.weapon: 'weapon',
+  EnchantmentGroup.meta: 'meta',
+  EnchantmentGroup.tools: 'tools',
 };

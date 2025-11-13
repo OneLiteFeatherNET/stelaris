@@ -19,7 +19,7 @@ abstract class ItemModel with _$ItemModel, DataModel {
     String? variableName,
     String? comment,
     String? displayName,
-    @Default(ItemGroup.misc) ItemGroup group,
+    @Default(EnchantmentGroup.meta) EnchantmentGroup group,
     String? material,
     int? customModelData,
     @Default(1) int? amount,

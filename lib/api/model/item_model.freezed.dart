@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ItemModel {
 
- String get uiName; String? get id; String? get variableName; String? get comment; String? get displayName; ItemGroup get group; String? get material; int? get customModelData; int? get amount; Map<String, int>? get enchantments; Set<String>? get flags; List<String>? get lore;
+ String get uiName; String? get id; String? get variableName; String? get comment; String? get displayName; EnchantmentGroup get group; String? get material; int? get customModelData; int? get amount; Map<String, int>? get enchantments; Set<String>? get flags; List<String>? get lore;
 /// Create a copy of ItemModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $ItemModelCopyWith<$Res>  {
   factory $ItemModelCopyWith(ItemModel value, $Res Function(ItemModel) _then) = _$ItemModelCopyWithImpl;
 @useResult
 $Res call({
- String uiName, String? id, String? variableName, String? comment, String? displayName, ItemGroup group, String? material, int? customModelData, int? amount, Map<String, int>? enchantments, Set<String>? flags, List<String>? lore
+ String uiName, String? id, String? variableName, String? comment, String? displayName, EnchantmentGroup group, String? material, int? customModelData, int? amount, Map<String, int>? enchantments, Set<String>? flags, List<String>? lore
 });
 
 
@@ -73,7 +73,7 @@ as String?,variableName: freezed == variableName ? _self.variableName : variable
 as String?,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
 as String?,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
-as ItemGroup,material: freezed == material ? _self.material : material // ignore: cast_nullable_to_non_nullable
+as EnchantmentGroup,material: freezed == material ? _self.material : material // ignore: cast_nullable_to_non_nullable
 as String?,customModelData: freezed == customModelData ? _self.customModelData : customModelData // ignore: cast_nullable_to_non_nullable
 as int?,amount: freezed == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as int?,enchantments: freezed == enchantments ? _self.enchantments : enchantments // ignore: cast_nullable_to_non_nullable
@@ -164,7 +164,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uiName,  String? id,  String? variableName,  String? comment,  String? displayName,  ItemGroup group,  String? material,  int? customModelData,  int? amount,  Map<String, int>? enchantments,  Set<String>? flags,  List<String>? lore)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uiName,  String? id,  String? variableName,  String? comment,  String? displayName,  EnchantmentGroup group,  String? material,  int? customModelData,  int? amount,  Map<String, int>? enchantments,  Set<String>? flags,  List<String>? lore)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ItemModel() when $default != null:
 return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.displayName,_that.group,_that.material,_that.customModelData,_that.amount,_that.enchantments,_that.flags,_that.lore);case _:
@@ -185,7 +185,7 @@ return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.dis
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uiName,  String? id,  String? variableName,  String? comment,  String? displayName,  ItemGroup group,  String? material,  int? customModelData,  int? amount,  Map<String, int>? enchantments,  Set<String>? flags,  List<String>? lore)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uiName,  String? id,  String? variableName,  String? comment,  String? displayName,  EnchantmentGroup group,  String? material,  int? customModelData,  int? amount,  Map<String, int>? enchantments,  Set<String>? flags,  List<String>? lore)  $default,) {final _that = this;
 switch (_that) {
 case _ItemModel():
 return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.displayName,_that.group,_that.material,_that.customModelData,_that.amount,_that.enchantments,_that.flags,_that.lore);case _:
@@ -205,7 +205,7 @@ return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.dis
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uiName,  String? id,  String? variableName,  String? comment,  String? displayName,  ItemGroup group,  String? material,  int? customModelData,  int? amount,  Map<String, int>? enchantments,  Set<String>? flags,  List<String>? lore)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uiName,  String? id,  String? variableName,  String? comment,  String? displayName,  EnchantmentGroup group,  String? material,  int? customModelData,  int? amount,  Map<String, int>? enchantments,  Set<String>? flags,  List<String>? lore)?  $default,) {final _that = this;
 switch (_that) {
 case _ItemModel() when $default != null:
 return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.displayName,_that.group,_that.material,_that.customModelData,_that.amount,_that.enchantments,_that.flags,_that.lore);case _:
@@ -220,7 +220,7 @@ return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.dis
 @JsonSerializable()
 
 class _ItemModel extends ItemModel {
-  const _ItemModel({required this.uiName, this.id, this.variableName, this.comment, this.displayName, this.group = ItemGroup.misc, this.material, this.customModelData, this.amount = 1, final  Map<String, int>? enchantments, final  Set<String>? flags, final  List<String>? lore}): _enchantments = enchantments,_flags = flags,_lore = lore,super._();
+  const _ItemModel({required this.uiName, this.id, this.variableName, this.comment, this.displayName, this.group = EnchantmentGroup.meta, this.material, this.customModelData, this.amount = 1, final  Map<String, int>? enchantments, final  Set<String>? flags, final  List<String>? lore}): _enchantments = enchantments,_flags = flags,_lore = lore,super._();
   factory _ItemModel.fromJson(Map<String, dynamic> json) => _$ItemModelFromJson(json);
 
 @override final  String uiName;
@@ -228,7 +228,7 @@ class _ItemModel extends ItemModel {
 @override final  String? variableName;
 @override final  String? comment;
 @override final  String? displayName;
-@override@JsonKey() final  ItemGroup group;
+@override@JsonKey() final  EnchantmentGroup group;
 @override final  String? material;
 @override final  int? customModelData;
 @override@JsonKey() final  int? amount;
@@ -293,7 +293,7 @@ abstract mixin class _$ItemModelCopyWith<$Res> implements $ItemModelCopyWith<$Re
   factory _$ItemModelCopyWith(_ItemModel value, $Res Function(_ItemModel) _then) = __$ItemModelCopyWithImpl;
 @override @useResult
 $Res call({
- String uiName, String? id, String? variableName, String? comment, String? displayName, ItemGroup group, String? material, int? customModelData, int? amount, Map<String, int>? enchantments, Set<String>? flags, List<String>? lore
+ String uiName, String? id, String? variableName, String? comment, String? displayName, EnchantmentGroup group, String? material, int? customModelData, int? amount, Map<String, int>? enchantments, Set<String>? flags, List<String>? lore
 });
 
 
@@ -318,7 +318,7 @@ as String?,variableName: freezed == variableName ? _self.variableName : variable
 as String?,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
 as String?,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
-as ItemGroup,material: freezed == material ? _self.material : material // ignore: cast_nullable_to_non_nullable
+as EnchantmentGroup,material: freezed == material ? _self.material : material // ignore: cast_nullable_to_non_nullable
 as String?,customModelData: freezed == customModelData ? _self.customModelData : customModelData // ignore: cast_nullable_to_non_nullable
 as int?,amount: freezed == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as int?,enchantments: freezed == enchantments ? _self._enchantments : enchantments // ignore: cast_nullable_to_non_nullable

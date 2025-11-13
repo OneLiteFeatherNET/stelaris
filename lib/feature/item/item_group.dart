@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 
-enum ItemGroup {
-  misc('Misc'),
+enum EnchantmentGroup {
   armor('Armor'),
-  meeleWeapon('Melee Weapon'),
-  rangedWeapon('Range Weapon'),
+  weapon('Weapon'),
+  meta('Meta'),
   tools('Tools');
 
   final String display;
 
-  const ItemGroup(this.display);
+  const EnchantmentGroup(this.display);
 
-  bool hasSameGroup(ItemGroup current) =>
+  bool hasSameGroup(EnchantmentGroup current) =>
       index == current.index;
 }
 
-List<DropdownMenuItem<ItemGroup>> getGroupItems() {
-  return ItemGroup.values
+List<DropdownMenuItem<EnchantmentGroup>> getGroupItems() {
+  return EnchantmentGroup.values
       .map((e) => DropdownMenuItem(
             value: e,
             child: Text(e.display),

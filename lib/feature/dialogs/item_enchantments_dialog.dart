@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris/api/model/item_model.dart';
-import 'package:stelaris/api/util/minecraft/enchantment.dart';
 import 'package:stelaris/feature/item/enchantment_reducer.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
+import 'package:vulpes_data/api/enchantment.dart';
 
 class ItemEnchantmentAddDialog extends StatefulWidget {
 
@@ -47,11 +47,11 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
   }
 
   void _updateEnchantments() {
-    _enchantments = getEnchantments(widget.model)
+    _enchantments = getEnchantments(widget.model, true)
         .map(
           (e) => DropdownMenuItem<Enchantment>(
             value: e,
-            child: Text(e.name),
+            child: Text(e.displayName),
           ),
         )
         .toList();
