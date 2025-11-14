@@ -153,16 +153,6 @@ class _ItemEnchantmentPageState extends State<ItemEnchantmentPage> {
           Navigator.of(context).pop();
         },
         model: vm.selected,
-        formFieldValidator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter a level';
-          }
-          final level = int.tryParse(value);
-          if (level == null) {
-            return 'Please enter a valid number';
-          }
-          return null;
-        },
       ),
     );
   }
