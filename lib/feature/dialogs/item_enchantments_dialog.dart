@@ -8,17 +8,14 @@ import 'package:stelaris/util/typedefs.dart';
 import 'package:vulpes_data/api/enchantment.dart';
 
 class ItemEnchantmentAddDialog extends StatefulWidget {
-
   const ItemEnchantmentAddDialog({
     required this.addEnchantmentCallback,
     required this.model,
-    required this.formFieldValidator,
     super.key,
   });
 
   final AddEnchantmentCallback addEnchantmentCallback;
   final ItemModel model;
-  final FormFieldValidator formFieldValidator;
 
   @override
   State<ItemEnchantmentAddDialog> createState() =>
@@ -36,6 +33,7 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
   void initState() {
     super.initState();
     _updateEnchantments();
+    _resetController();
   }
 
   @override
@@ -89,6 +87,7 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
               items: _enchantments,
               onChanged: (value) {
                 _selected.value = value;
+                _resetController();
               },
             );
           },
@@ -103,7 +102,10 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
             autocorrect: false,
             keyboardType: numberInput,
             inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
-            validator: widget.formFieldValidator,
+            validator: (value) => _validateInput(
+              value: value ?? "",
+              maxLevel: _selected.value?.maxLevel ?? 1,
+            ),
           ),
         ),
         verticalSpacing25,
@@ -113,15 +115,36 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
             if (_selected.value == null) return;
             widget.addEnchantmentCallback(
               _selected.value!,
-              int.parse(
-                _controller.value.text,
-              ),
+              int.parse(_controller.value.text),
             );
             _selected.value = null;
           },
           child: Text(context.l10n.button_add),
-        )
+        ),
       ],
     );
+  }
+
+  void _resetController() {
+    if (_controller.text != '1') {
+      _controller.text = '1';
+    }
+  }
+
+  ///
+  String? _validateInput({required String value, required int maxLevel}) {
+    if (value.trim().isEmpty) {
+      return 'Please enter a level';
+    }
+    final level = int.tryParse(value);
+    if (level == null) {
+      return 'Please enter a valid number';
+    }
+
+    if (level > maxLevel) {
+      return 'The maximum is $maxLevel';
+    }
+
+    return null;
   }
 }
