@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris/api/model/font/font_string_dto.dart';
 import 'package:stelaris/api/state/factory/font/select_font_vm.dart';
 
 class CharDeleteCheckbox extends StatefulWidget {
@@ -9,7 +10,7 @@ class CharDeleteCheckbox extends StatefulWidget {
   });
 
   final SelectedFontView selectedFontView;
-  final String charIndex;
+  final FontStringDTO charIndex;
 
   @override
   State<CharDeleteCheckbox> createState() => _CharDeleteCheckboxState();

@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stelaris/api/state/actions/font_actions.dart';
+import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/selected_font_state.dart';
 import 'package:stelaris/feature/base/button/positioned_save_button.dart';
