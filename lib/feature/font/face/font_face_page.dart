@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/api/state/factory/font/select_font_vm.dart';
+import 'package:stelaris/api/state/factory/font/selected_font_char_state.dart';
+import 'package:stelaris/api/state/factory/font/selected_font_state.dart';
 import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
@@ -28,7 +29,7 @@ class _FontFacePageState extends State<FontFacePage> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, SelectedFontView>(
+    return StoreConnector<AppState, SelectedFontCharView>(
       vm: () => SelectedFontFactory(),
       builder: (context, vm) {
         return Form(

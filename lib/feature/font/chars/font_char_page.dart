@@ -5,7 +5,7 @@ import 'package:stelaris/api/model/font/font_string_dto.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_string_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/api/state/factory/font/select_font_vm.dart';
+import 'package:stelaris/api/state/factory/font/selected_font_char_state.dart';
 import 'package:stelaris/feature/base/chips/action_chips.dart';
 import 'package:stelaris/feature/base/chips/edit_action_chips.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
@@ -34,8 +34,8 @@ class _FontCharPageState extends State<FontCharPage> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, SelectedFontView>(
-      vm: () => SelectedFontFactory<FontCharPage>(),
+    return StoreConnector<AppState, SelectedFontCharView>(
+      vm: () => SelectedFontCharFactory<FontCharPage>(),
       onInit: (store) => store.dispatchAndWait(FontCharFetchAction()),
       onWillChange: (context, store, previousVm, newVm) {
         if ((previousVm.selected.chars.items.length) >
@@ -99,7 +99,7 @@ class _FontCharPageState extends State<FontCharPage> {
     );
   }
 
-  Widget _getActionWidget(SelectedFontView view, BuildContext context) {
+  Widget _getActionWidget(SelectedFontCharView view, BuildContext context) {
     return editMode == EditMode.edit
         ? ActionChips(
             addCallback: () {},//_addDialog(view, context),
@@ -132,7 +132,7 @@ class _FontCharPageState extends State<FontCharPage> {
     return spanTiles;
   }
 
-  void _showDeleteDialog(SelectedFontView view, BuildContext context) {
+  void _showDeleteDialog(SelectedFontCharView view, BuildContext context) {
     if (view.selectedFields.isEmpty) return;
     showDialog(
       context: context,

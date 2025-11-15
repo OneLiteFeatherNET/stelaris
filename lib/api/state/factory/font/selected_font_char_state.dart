@@ -4,17 +4,17 @@ import 'package:stelaris/api/model/font/font_string_dto.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
-class SelectedFontFactory<T extends Widget>
-    extends VmFactory<AppState, T, SelectedFontView> {
-  SelectedFontFactory();
+class SelectedFontCharFactory<T extends Widget>
+    extends VmFactory<AppState, T, SelectedFontCharView> {
+  SelectedFontCharFactory();
 
   @override
-  SelectedFontView fromStore() =>
-      SelectedFontView(selected: state.selectedFont!);
+  SelectedFontCharView fromStore() =>
+      SelectedFontCharView(selected: state.selectedFont!);
 }
 
-class SelectedFontView extends Vm {
-  SelectedFontView({
+class SelectedFontCharView extends Vm {
+  SelectedFontCharView({
     required this.selected,
   }) : super(equals: [selected]);
 

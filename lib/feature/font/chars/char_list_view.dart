@@ -2,7 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
-import 'package:stelaris/api/state/factory/font/select_font_vm.dart';
+import 'package:stelaris/api/state/factory/font/selected_font_char_state.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/font/chars/char_delete_checkbox.dart';
 import 'package:stelaris/util/edit_mode.dart';
@@ -14,7 +14,7 @@ class CharListView extends StatefulWidget {
     super.key,
   });
 
-  final SelectedFontView fontModel;
+  final SelectedFontCharView fontModel;
   final EditMode editMode;
 
   @override
