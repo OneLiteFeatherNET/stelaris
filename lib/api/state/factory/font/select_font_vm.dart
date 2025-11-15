@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:stelaris/api/model/font/font_string_dto.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
@@ -18,19 +19,19 @@ class SelectedFontView extends Vm {
   }) : super(equals: [selected]);
 
   final FontModel selected;
-  final Set<String> selectedFields = {};
+  final Set<FontStringDTO> selectedFields = {};
 
-  bool get hasChars => selected.chars.isNotEmpty;
+  bool get hasChars => selected.chars.hasItems;
 
-  List<String> get chars => selected.chars;
+  List<FontStringDTO> get chars => selected.chars.items;
 
-  bool hasChar(String index) => chars.contains(index);
+  bool hasChar(FontStringDTO index) => chars.contains(index);
 
-  bool addCharToDeleted(String index) {
+  bool addCharToDeleted(FontStringDTO index) {
     return selectedFields.add(index);
   }
 
-  bool removeCharFromDeleted(String index) {
+  bool removeCharFromDeleted(FontStringDTO index) {
     return selectedFields.remove(index);
   }
 
