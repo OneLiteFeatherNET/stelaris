@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris/api/model/font/font_string_dto.dart';
 import 'package:stelaris/api/paginated_result.dart';
 import 'data_model.dart';
+import 'font/font_model_dto.dart';
 
 part 'font_model.g.dart';
 part 'font_model.freezed.dart';

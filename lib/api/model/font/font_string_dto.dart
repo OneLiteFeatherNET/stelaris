@@ -10,9 +10,9 @@ abstract class FontStringDTO with _$FontStringDTO {
   const FontStringDTO._(); // Add this private constructor
 
   const factory FontStringDTO({
-    required String id,
     required String line,
-    required int orderIndex,
+    @Default("") String? id,
+    @Default(0) int? orderIndex,
   }) = _FontStringDto;
 
   factory FontStringDTO.fromJson(Map<String, dynamic> json) =>

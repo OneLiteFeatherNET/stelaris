@@ -8,14 +8,14 @@ part of 'font_string_dto.dart';
 
 _FontStringDto _$FontStringDtoFromJson(Map<String, dynamic> json) =>
     _FontStringDto(
-      id: json['id'] as String,
       line: json['line'] as String,
-      orderIndex: (json['orderIndex'] as num).toInt(),
+      id: json['id'] as String? ?? "",
+      orderIndex: (json['orderIndex'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$FontStringDtoToJson(_FontStringDto instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'line': instance.line,
+      'id': instance.id,
       'orderIndex': instance.orderIndex,
     };
