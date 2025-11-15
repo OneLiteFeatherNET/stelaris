@@ -115,7 +115,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   vm.selected.comment ?? emptyString,
                                   formatter: [
                                     FilteringTextInputFormatter.allow(
-                                      stringPattern,
+                                      stringWithSpacePattern,
                                     ),
                                   ],
                                   valueUpdate: (value) {
