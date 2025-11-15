@@ -8,6 +8,7 @@ import 'package:stelaris/api/state/factory/font/selected_font_state.dart';
 import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class FontFacePage extends StatefulWidget {
@@ -29,7 +30,7 @@ class _FontFacePageState extends State<FontFacePage> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, SelectedFontCharView>(
+    return StoreConnector<AppState, SelectedFontView>(
       vm: () => SelectedFontFactory(),
       builder: (context, vm) {
         return Form(
@@ -59,11 +60,7 @@ class _FontFacePageState extends State<FontFacePage> {
                                   display: 'Texture Path',
                                   currentValue:
                                       vm.selected.texturePath ?? emptyString,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      stringPattern,
-                                    ),
-                                  ],
+                                  formatter: [stringPatternFormatter],
                                   valueUpdate: (value) {
                                     if (value == vm.selected.texturePath) {
                                       return;
