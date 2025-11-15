@@ -1,12 +1,12 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/selected_font_state.dart';
 import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/functions.dart';
 
 class FontGeneralPage extends StatefulWidget {
@@ -20,7 +20,6 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
   /// Scroll controller for the scrollable content
   final ScrollController _scrollController = ScrollController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
-
 
   @override
   void dispose() {
@@ -60,76 +59,49 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   display: 'Variable Name',
                                   currentValue:
                                       vm.selected.variableName ?? emptyString,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      stringPattern,
+                                  formatter: [withSpacesFormatter],
+                                  valueUpdate: (value) => _updateFont(
+                                    context,
+                                    value,
+                                    vm.selected.variableName,
+                                    (newValue) => vm.selected.copyWith(
+                                      variableName: newValue,
                                     ),
-                                  ],
-                                  valueUpdate: (value) {
-                                    if (value == vm.selected.variableName) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      variableName: value,
-                                    );
-                                    context.dispatch(
-                                      UpdateFontAction(newEntry),
-                                    );
-                                  },
-                                  formValidator: (value) {
-                                    final input = value as String;
-                                    return checkIfEmptyAndReturnErrorString(
-                                      input,
-                                      context,
-                                    );
-                                  },
+                                  ),
+                                  formValidator: (value) =>
+                                      checkIfEmptyAndReturnErrorString(
+                                        value as String,
+                                        context,
+                                      ),
                                   focusOrder: const NumericFocusOrder(1),
                                 ),
                                 TextInputCard<String>(
                                   display: 'Provider',
                                   currentValue:
                                       vm.selected.provider ?? emptyString,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      stringPattern,
+                                  formatter: [withSpacesFormatter],
+                                  valueUpdate: (value) => _updateFont(
+                                    context,
+                                    value,
+                                    vm.selected.provider,
+                                    (newValue) => vm.selected.copyWith(
+                                      provider: newValue,
                                     ),
-                                  ],
-                                  valueUpdate: (value) {
-                                    if (value == vm.selected.provider) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      provider: value,
-                                    );
-                                    context.dispatch(
-                                      UpdateFontAction(newEntry),
-                                    );
-                                  },
+                                  ),
                                   focusOrder: const NumericFocusOrder(2),
                                 ),
                                 TextInputCard<String>(
                                   display: 'Comment',
                                   currentValue:
-                                  vm.selected.comment ?? emptyString,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      stringWithSpacePattern,
-                                    ),
-                                  ],
-                                  valueUpdate: (value) {
-                                    if (value == vm.selected.comment) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      comment: value,
-                                    );
-                                    context.dispatch(
-                                      UpdateFontAction(newEntry),
-                                    );
-                                  },
+                                      vm.selected.comment ?? emptyString,
+                                  formatter: [withSpacesFormatter],
+                                  valueUpdate: (value) => _updateFont(
+                                    context,
+                                    value,
+                                    vm.selected.comment,
+                                    (newValue) =>
+                                        vm.selected.copyWith(comment: newValue),
+                                  ),
                                   focusOrder: const NumericFocusOrder(3),
                                 ),
                               ],
@@ -153,5 +125,19 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
         );
       },
     );
+  }
+
+  void _updateFont(
+    BuildContext context,
+    String value,
+    String? currentValue,
+    dynamic Function(String) createNewModel,
+  ) {
+    if (value == currentValue) {
+      return;
+    }
+
+    final newEntry = createNewModel(value);
+    context.dispatch(UpdateFontAction(newEntry));
   }
 }

@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -12,7 +11,7 @@ import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/font/chars/font_char_page.dart';
 import 'package:stelaris/feature/font/face/font_face_page.dart';
 import 'package:stelaris/feature/font/font_general_page.dart';
-import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/functions.dart';
 
 class FontPage extends StatelessWidget {
@@ -64,9 +63,7 @@ class FontPage extends StatelessWidget {
           },
           formKey: GlobalKey<FormState>(),
           hintText: 'Example name',
-          formatters: [
-            FilteringTextInputFormatter.allow(stringWithSpacePattern),
-          ],
+          formatters: [withSpacesFormatter],
           formFieldValidator: (value) {
             final String input = value as String;
             return checkIfEmptyAndReturnErrorString(input, context);
