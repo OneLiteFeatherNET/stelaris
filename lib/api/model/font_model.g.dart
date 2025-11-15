@@ -16,9 +16,13 @@ _FontModel _$FontModelFromJson(Map<String, dynamic> json) => _FontModel(
   mapper: json['mapper'] as String? ?? 'font',
   ascent: (json['ascent'] as num?)?.toInt() ?? 0,
   height: (json['height'] as num?)?.toInt() ?? 0,
-  chars:
-      (json['chars'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const [],
+  chars: json['chars'] == null
+      ? FontModel._defaultFiles
+      : PaginatedResult<FontStringDTO>.fromJson(
+          json['chars'] as Map<String, dynamic>,
+          (value) => FontStringDTO.fromJson(value as Map<String, dynamic>),
+        ),
+  isLoadingChars: json['isLoadingChars'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$FontModelToJson(_FontModel instance) =>
@@ -32,5 +36,5 @@ Map<String, dynamic> _$FontModelToJson(_FontModel instance) =>
       'mapper': instance.mapper,
       'ascent': instance.ascent,
       'height': instance.height,
-      'chars': instance.chars,
+      'chars': instance.chars.toJson((value) => value),
     };
