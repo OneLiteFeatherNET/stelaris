@@ -1,14 +1,14 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/state/actions/font_actions.dart';
+import 'package:stelaris/api/model/font/font_string_dto.dart';
+import 'package:stelaris/api/state/actions/font/font_actions.dart';
+import 'package:stelaris/api/state/actions/font/font_string_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/select_font_vm.dart';
 import 'package:stelaris/feature/base/chips/action_chips.dart';
 import 'package:stelaris/feature/base/chips/edit_action_chips.dart';
-import 'package:stelaris/feature/dialogs/abort_add_dialog.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
-import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/font/chars/char_list_view.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/util/constants.dart';
@@ -17,14 +17,14 @@ import 'package:stelaris/util/l10n_ext.dart';
 
 const List<EditMode> editModes = EditMode.values;
 
-class CharCard extends StatefulWidget {
-  const CharCard({super.key});
+class FontCharPage extends StatefulWidget {
+  const FontCharPage({super.key});
 
   @override
-  State<CharCard> createState() => _CharCardState();
+  State<FontCharPage> createState() => _FontCharPageState();
 }
 
-class _CharCardState extends State<CharCard> {
+class _FontCharPageState extends State<FontCharPage> {
   EditMode editMode = EditMode.edit;
 
   @override
@@ -35,10 +35,11 @@ class _CharCardState extends State<CharCard> {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, SelectedFontView>(
-      vm: () => SelectedFontFactory<CharCard>(),
+      vm: () => SelectedFontFactory<FontCharPage>(),
+      onInit: (store) => store.dispatchAndWait(FontCharFetchAction()),
       onWillChange: (context, store, previousVm, newVm) {
-        if ((previousVm.selected.chars.length) >
-            (newVm.selected.chars.length)) {
+        if ((previousVm.selected.chars.items.length) >
+            (newVm.selected.chars.items.length)) {
           editMode = EditMode.edit;
         }
       },
@@ -101,7 +102,7 @@ class _CharCardState extends State<CharCard> {
   Widget _getActionWidget(SelectedFontView view, BuildContext context) {
     return editMode == EditMode.edit
         ? ActionChips(
-            addCallback: () => _addDialog(view, context),
+            addCallback: () {},//_addDialog(view, context),
             saveCallback: () {
               ApiService().fontApi.update(view.selected);
             },
@@ -136,27 +137,27 @@ class _CharCardState extends State<CharCard> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return DeleteDialog<Set<String>>(
+        return DeleteDialog<Set<FontStringDTO>>(
           title: Text(
             context.l10n.dialog_delete_confirm,
             textAlign: TextAlign.center,
           ),
-          header: _getDeleteHeader(context, view.selectedFields.toList()),
+          header: _getDeleteHeader(context, ["Hallo"]),//view.selectedFields.toList()),
           value: view.selectedFields,
           successfully: (value) {
             if (!view.hasChars) return false;
             final oldEntry = view.selected;
-            final List<String> chars =
-                List.of(view.selected.chars, growable: true);
+            final List<FontStringDTO> chars =
+                List.of(view.selected.chars.items, growable: true);
 
-            for (String element in view.selectedFields) {
+            for (FontStringDTO element in view.selectedFields) {
               chars.remove(element);
             }
 
             view.clearDeleted();
 
-            final newEntry = oldEntry.copyWith(chars: chars);
-            context.dispatch(UpdateFontAction(newEntry));
+           // final newEntry = oldEntry.copyWith(chars: chars);
+            context.dispatch(UpdateFontAction(oldEntry));
             return true;
           },
         );
@@ -164,6 +165,7 @@ class _CharCardState extends State<CharCard> {
     );
   }
 
+  /*
   void _addDialog(SelectedFontView view, BuildContext context) {
     showDialog(
       context: context,
@@ -196,7 +198,7 @@ class _CharCardState extends State<CharCard> {
         );
       },
     );
-  }
+  }*/
 
   String? _validateCharInput(BuildContext context, String input) {
     if (input.trim().isEmpty) {
