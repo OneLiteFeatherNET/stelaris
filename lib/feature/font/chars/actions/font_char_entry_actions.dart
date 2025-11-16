@@ -11,12 +11,6 @@ class FontCharEntryActions extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
-  // Statische const Widgets außerhalb von build
-  static const _editIcon = Icon(Icons.edit);
-  static const _deleteIcon = Icon(Icons.delete_forever);
-  static const _moreIcon = Icon(Icons.more_vert);
-  static const _spacing = SizedBox(width: 8);
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
@@ -28,9 +22,9 @@ class FontCharEntryActions extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        IconButton(onPressed: onDelete, icon: _deleteIcon),
-        _spacing,
-        IconButton(onPressed: onEdit, icon: _editIcon),
+        IconButton(onPressed: onDelete, icon: Icon(Icons.delete_forever)),
+        const SizedBox(width: 8),
+        IconButton(onPressed: onEdit, icon: Icon(Icons.edit)),
       ],
     );
   }
