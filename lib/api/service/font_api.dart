@@ -1,5 +1,7 @@
 import 'package:stelaris/api/base_api.dart';
+import 'package:stelaris/api/extensions/font_extension.dart';
 import 'package:stelaris/api/model/font/font_char_model.dart';
+import 'package:stelaris/api/model/font/font_model_dto.dart';
 import 'package:stelaris/api/model/font/font_string_dto.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/paginated_result.dart';
@@ -9,8 +11,8 @@ class FontAPI extends BaseApi<FontModel> {
   FontAPI({required super.apiClient})
     : super(
         endpoint: 'font',
-        fromJson: (p0) => FontModel.fromJson(p0),
-        toJson: (model) => model.toJson(),
+        fromJson: (p0) => FontModelDto.fromJson(p0).toModel(),
+        toJson: (model) => model.toDto().toJson(),
       );
 
   /// Fetches the character set for a specific font by its ID.
@@ -40,6 +42,17 @@ class FontAPI extends BaseApi<FontModel> {
     });
   }
 
+  /// Adds a new character set to a specific font by its ID.
+  /// [id] is the unique identifier of the font.
+  /// [dto] is the character set to be added.
+  /// Returns a [FontStringDTO] containing the added character set.
+  Future<FontStringDTO> addFontEntry(String id, FontStringDTO dto) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/chars/$id');
+    final result = await apiClient.dio.putUri(uri, data: dto.toJson());
+    return FontStringDTO.fromJson(result.data);
+  }
+
   /// Updates the character set for a specific font by its ID.
   /// [id] is the unique identifier of the font.
   /// [dto] is the updated character set.
@@ -57,7 +70,9 @@ class FontAPI extends BaseApi<FontModel> {
   /// Returns a [FontStringDTO] containing the deleted character set.
   Future<FontStringDTO> deleteFontEntry(String id, FontStringDTO dto) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/chars/$id');
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/$endpoint/chars/$id/${dto.id}',
+    );
     final result = await apiClient.dio.deleteUri(uri, data: dto.toJson());
     return FontStringDTO.fromJson(result.data);
   }
