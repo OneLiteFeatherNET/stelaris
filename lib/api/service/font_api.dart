@@ -19,7 +19,7 @@ class FontAPI extends BaseApi<FontModel> {
   /// [id] is the unique identifier of the font.
   /// [page] is the page number of the character set.
   /// [size] is the number of characters per page.
-  /// Returns a [FontCharModel] containing the character set.
+  /// Returns a [PaginatedResult<FontStringDTO>] containing the character set.
   Future<PaginatedResult<FontStringDTO>> getChars(
     String id, {
     int page = 1,

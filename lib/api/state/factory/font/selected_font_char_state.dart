@@ -19,7 +19,7 @@ class SelectedFontCharView extends Vm {
   final FontModel selected;
   final Set<FontStringDTO> selectedFields = {};
 
-  /// Returns a indicator if there model contains any kind of chars
+  /// Returns an indicator if the model contains any kind of chars
   bool get hasChars => selected.chars.hasItems;
 
   /// Returns a indicator if there is a additional loading process active

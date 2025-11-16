@@ -59,7 +59,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   display: 'Variable Name',
                                   currentValue:
                                       vm.selected.variableName ?? emptyString,
-                                  formatter: [withSpacesFormatter],
+                                  formatter: [stringPatternFormatter],
                                   valueUpdate: (value) => _updateFont(
                                     context,
                                     value,
@@ -79,7 +79,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   display: 'Provider',
                                   currentValue:
                                       vm.selected.provider ?? emptyString,
-                                  formatter: [withSpacesFormatter],
+                                  formatter: [stringPatternFormatter],
                                   valueUpdate: (value) => _updateFont(
                                     context,
                                     value,
