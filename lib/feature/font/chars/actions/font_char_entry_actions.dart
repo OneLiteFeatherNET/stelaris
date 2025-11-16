@@ -22,9 +22,9 @@ class FontCharEntryActions extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        IconButton(onPressed: onDelete, icon: Icon(Icons.delete_forever)),
+        IconButton(onPressed: onDelete, icon: const Icon(Icons.delete_forever)),
         const SizedBox(width: 8),
-        IconButton(onPressed: onEdit, icon: Icon(Icons.edit)),
+        IconButton(onPressed: onEdit, icon: const Icon(Icons.edit)),
       ],
     );
   }
