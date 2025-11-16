@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/font/font_string_dto.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/paginated_result.dart';
+import 'package:stelaris/api/service/font_api.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
 /// Fetches additional characters for the selected font and updates the state.
@@ -64,6 +67,29 @@ class FontCharFetchAction extends ReduxAction<AppState> {
   }
 }
 
+class FontStringAddAction extends ReduxAction<AppState> {
+  final FontStringDTO dto;
+
+  FontStringAddAction(this.dto);
+
+  @override
+  Future<AppState?> reduce() async {
+    if (state.selectedFont == null) return null;
+    final FontModel selected = state.selectedFont!;
+
+    final FontAPI api = ApiService().fontApi;
+    final FontStringDTO added = await api.addFontEntry(selected.id!, dto);
+
+    final FontModel updated = selected.copyWith(
+      chars: selected.chars.copyWith(
+        totalItems: selected.chars.totalItems + 1,
+        items: [...selected.chars.items, added],
+      ),
+    );
+    return state.copyWith(selectedFont: updated);
+  }
+}
+
 class FontStringUpdateAction extends ReduxAction<AppState> {
   final FontStringDTO dto;
 
@@ -80,6 +106,32 @@ class FontStringUpdateAction extends ReduxAction<AppState> {
     final FontModel newModel = selected.copyWith();
 
     return state.copyWith(selectedFont: newModel);
+  }
+}
+
+class FontStringDelete extends ReduxAction<AppState> {
+  final String id;
+  final FontStringDTO dto;
+
+  FontStringDelete(this.id, this.dto);
+
+  @override
+  Future<AppState?> reduce() async {
+    if (state.selectedFont == null) return null;
+    final FontModel selected = state.selectedFont!;
+    final FontStringDTO removed = await ApiService().fontApi.deleteFontEntry(id, dto);
+    
+    final PaginatedResult<FontStringDTO> chars = selected.chars;
+    final List<FontStringDTO> dtos = chars.items;
+    dtos.removeWhere((element) => element.id == removed.id);
+
+    final FontModel updated = selected.copyWith(
+      chars: chars.copyWith(
+        totalItems: chars.totalItems - 1,
+        items: dtos,
+      )
+    );
+    return state.copyWith(selectedFont: updated);
   }
 }
 
