@@ -71,7 +71,7 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
     final baseUri = Uri.parse(apiClient.baseUrl);
     // Reuse the /all endpoint with query params if that's the convention.
     final uri = baseUri.replace(
-      path: '${baseUri.path}/$endpoint/all',
+      path: '${baseUri.path}/$endpoint',
       queryParameters: {
         'page': (page - 1).toString(), // many backends use 0-based
         'size': size.toString(),
