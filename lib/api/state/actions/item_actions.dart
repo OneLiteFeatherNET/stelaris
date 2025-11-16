@@ -1,14 +1,8 @@
-import 'dart:ui';
-
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/item/item_enchantment_model.dart';
-import 'package:stelaris/api/model/item/item_flag_model.dart';
-import 'package:stelaris/api/model/item/item_lore_model.dart';
 import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/paginated_result.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:vulpes_data/api/enchantment.dart';
 
 class SelectedItemAction extends ReduxAction<AppState> {
   final ItemModel model;
@@ -39,16 +33,6 @@ class UpdateItemAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     return state.copyWith(selectedItem: newEntry);
-  }
-}
-
-class ItemFlagResetAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    if (state.selectedItem == null) return null;
-    final ItemModel oldEntry = state.selectedItem!;
-    if (oldEntry.flags == null) return null;
-    return state.copyWith(selectedItem: oldEntry.copyWith(flags: {}));
   }
 }
 
@@ -155,177 +139,16 @@ class ItemDatabaseUpdate extends ReduxAction<AppState> {
   }
 }
 
-// Actions for state management
-class AddEnchantmentAction extends ReduxAction<AppState> {
-  final Enchantment enchantment;
-  final int level;
-
-  AddEnchantmentAction({required this.enchantment, required this.level});
-
-  @override
-  AppState reduce() {
-    final selectedItem = state.selectedItem!;
-    final enchantments = Map<String, int>.from(selectedItem.enchantments ?? {});
-    enchantments[enchantment.minecraftValue] = level;
-
-    final updatedItem = selectedItem.copyWith(enchantments: enchantments);
-
-    return state.copyWith(selectedItem: updatedItem);
-  }
-}
-
-class SaveEnchantmentsAction extends ReduxAction<AppState> {
-  final Function? onSuccess;
-  final Function(dynamic)? onError;
-
-  SaveEnchantmentsAction({this.onSuccess, this.onError});
-
-  @override
-  Future<AppState> reduce() async {
-    final selectedItem = state.selectedItem!;
-
-    try {
-      // Call the API to update the item with enchantments
-      final updatedItem = await ApiService().itemApi.update(selectedItem);
-
-      // Update the items list with the updated item from the server
-      final List<ItemModel> updatedList = List.of(
-        state.items.items,
-        growable: true,
-      );
-      final int index = updatedList.indexWhere(
-        (element) => element.id == selectedItem.id,
-      );
-
-      if (index != -1) {
-        updatedList[index] = updatedItem;
-      }
-      return _updateItemInState(state, updatedList, updatedItem);
-    } catch (e) {
-      // Call the error callback if provided
-      if (onError != null) {
-        onError!(e);
-      }
-      // Return unchanged state on error
-      return state;
-    }
-  }
-
-  @override
-  void after() {
-    // Call the success callback if no error occurred
-    if (onSuccess != null) {
-      onSuccess!();
-    }
-  }
-}
-
-class UpdateEnchantmentLevelAction extends ReduxAction<AppState> {
-  final Enchantment enchantment;
-  final int level;
-
-  UpdateEnchantmentLevelAction({
-    required this.enchantment,
-    required this.level,
-  });
-
-  @override
-  AppState reduce() {
-    final selectedItem = state.selectedItem!;
-    final enchantments = Map<String, int>.from(selectedItem.enchantments ?? {});
-    enchantments[enchantment.minecraftValue] = level;
-
-    final updatedItem = selectedItem.copyWith(enchantments: enchantments);
-
-    return state.copyWith(selectedItem: updatedItem);
-  }
-}
-
-class DeleteEnchantmentAction extends ReduxAction<AppState> {
-  final Enchantment enchantment;
-  final VoidCallback? onComplete;
-
-  DeleteEnchantmentAction({required this.enchantment, this.onComplete});
-
-  @override
-  AppState reduce() {
-    final selectedItem = state.selectedItem!;
-    final enchantments = Map<String, int>.from(selectedItem.enchantments ?? {});
-    enchantments.remove(enchantment.minecraftValue);
-
-    final updatedItem = selectedItem.copyWith(enchantments: enchantments);
-
-    return state.copyWith(selectedItem: updatedItem);
-  }
-
-  @override
-  void after() {
-    if (onComplete != null) {
-      onComplete!();
-    }
-  }
-}
-
-class ResetEnchantmentsAction extends ReduxAction<AppState> {
-  final VoidCallback? onComplete;
-
-  ResetEnchantmentsAction({this.onComplete});
-
-  @override
-  AppState reduce() {
-    final selectedItem = state.selectedItem!;
-    final updatedItem = selectedItem.copyWith(enchantments: {});
-
-    return state.copyWith(selectedItem: updatedItem);
-  }
-
-  @override
-  void after() {
-    if (onComplete != null) {
-      onComplete!();
-    }
-  }
-}
-
-/// Fetches lore for the selected item and appends it to existing lore.
-/// Requires the id of the [ItemModel] to fetch the lore for it.
-class ItemLoreFetchAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    if (state.selectedItem == null) return null;
-    final ItemModel selected = state.selectedItem!;
-    final ItemLoreModel lore = await ApiService().itemApi.getLore(selected.id!);
-    final ItemModel updatedItem = selected.copyWith(lore: lore.lore);
-    return state.copyWith(selectedItem: updatedItem);
-  }
-}
-
-/// Fetches enchantments for the selected item and appends it to existing enchantments.
-/// Requires the id of the [ItemModel] to fetch the enchantments for it.
-class ItemEnchantmentFetchAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    if (state.selectedItem == null) return null;
-    final ItemModel selected = state.selectedItem!;
-    final ItemEnchantmentModel dbModel = await ApiService().itemApi
-        .getEnchantments(selected.id!);
-    final ItemModel updatedItem = selected.copyWith(
-      enchantments: dbModel.enchantments,
-    );
-    return state.copyWith(selectedItem: updatedItem);
-  }
-}
-
 class ItemFlagFetchAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     if (state.selectedItem == null) return null;
     final ItemModel selected = state.selectedItem!;
-    final ItemFlagModel dbModel = await ApiService().itemApi.getFlags(
+    /*final ItemFlagModel dbModel = await ApiService().itemApi.getFlags(
       selected.id!,
-    );
-    final ItemModel updatedItem = selected.copyWith(flags: dbModel.flags);
-    return state.copyWith(selectedItem: updatedItem);
+    );*/
+    //final ItemModel updatedItem = selected.copyWith(flags: dbModel.flags);
+    return state.copyWith(selectedItem: selected);
   }
 }
 
