@@ -71,7 +71,6 @@ class _FontCharAddDialogState extends State<FontCharAddDialog> {
     final hex = input.trim();
 
     // Must be 4 hex digits
-    final regex = RegExp(r'^[0-9A-Fa-f]{4}$');
     if (!regex.hasMatch(hex)) {
       return 'Enter exactly 4 hex digits (e.g. E000)';
     }
