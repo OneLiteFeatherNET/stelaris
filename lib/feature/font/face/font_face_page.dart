@@ -1,12 +1,13 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stelaris/api/state/actions/font_actions.dart';
+import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/api/state/factory/font/select_font_vm.dart';
+import 'package:stelaris/api/state/factory/font/selected_font_state.dart';
 import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class FontFacePage extends StatefulWidget {
@@ -58,11 +59,7 @@ class _FontFacePageState extends State<FontFacePage> {
                                   display: 'Texture Path',
                                   currentValue:
                                       vm.selected.texturePath ?? emptyString,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      stringPattern,
-                                    ),
-                                  ],
+                                  formatter: [stringPatternFormatter],
                                   valueUpdate: (value) {
                                     if (value == vm.selected.texturePath) {
                                       return;

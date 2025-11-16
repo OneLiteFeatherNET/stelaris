@@ -22,7 +22,7 @@ FontStringDTO _$FontStringDTOFromJson(
 /// @nodoc
 mixin _$FontStringDTO {
 
- String get id; String get line; int get orderIndex;
+ String get line; String? get id; int? get orderIndex;
 /// Create a copy of FontStringDTO
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,16 +35,16 @@ $FontStringDTOCopyWith<FontStringDTO> get copyWith => _$FontStringDTOCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FontStringDTO&&(identical(other.id, id) || other.id == id)&&(identical(other.line, line) || other.line == line)&&(identical(other.orderIndex, orderIndex) || other.orderIndex == orderIndex));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FontStringDTO&&(identical(other.line, line) || other.line == line)&&(identical(other.id, id) || other.id == id)&&(identical(other.orderIndex, orderIndex) || other.orderIndex == orderIndex));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,line,orderIndex);
+int get hashCode => Object.hash(runtimeType,line,id,orderIndex);
 
 @override
 String toString() {
-  return 'FontStringDTO(id: $id, line: $line, orderIndex: $orderIndex)';
+  return 'FontStringDTO(line: $line, id: $id, orderIndex: $orderIndex)';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $FontStringDTOCopyWith<$Res>  {
   factory $FontStringDTOCopyWith(FontStringDTO value, $Res Function(FontStringDTO) _then) = _$FontStringDTOCopyWithImpl;
 @useResult
 $Res call({
- String id, String line, int orderIndex
+ String line, String? id, int? orderIndex
 });
 
 
@@ -72,12 +72,12 @@ class _$FontStringDTOCopyWithImpl<$Res>
 
 /// Create a copy of FontStringDTO
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? line = null,Object? orderIndex = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? line = null,Object? id = freezed,Object? orderIndex = freezed,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,line: null == line ? _self.line : line // ignore: cast_nullable_to_non_nullable
-as String,orderIndex: null == orderIndex ? _self.orderIndex : orderIndex // ignore: cast_nullable_to_non_nullable
-as int,
+line: null == line ? _self.line : line // ignore: cast_nullable_to_non_nullable
+as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,orderIndex: freezed == orderIndex ? _self.orderIndex : orderIndex // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -162,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String line,  int orderIndex)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String line,  String? id,  int? orderIndex)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FontStringDto() when $default != null:
-return $default(_that.id,_that.line,_that.orderIndex);case _:
+return $default(_that.line,_that.id,_that.orderIndex);case _:
   return orElse();
 
 }
@@ -183,10 +183,10 @@ return $default(_that.id,_that.line,_that.orderIndex);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String line,  int orderIndex)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String line,  String? id,  int? orderIndex)  $default,) {final _that = this;
 switch (_that) {
 case _FontStringDto():
-return $default(_that.id,_that.line,_that.orderIndex);case _:
+return $default(_that.line,_that.id,_that.orderIndex);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +203,10 @@ return $default(_that.id,_that.line,_that.orderIndex);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String line,  int orderIndex)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String line,  String? id,  int? orderIndex)?  $default,) {final _that = this;
 switch (_that) {
 case _FontStringDto() when $default != null:
-return $default(_that.id,_that.line,_that.orderIndex);case _:
+return $default(_that.line,_that.id,_that.orderIndex);case _:
   return null;
 
 }
@@ -218,12 +218,12 @@ return $default(_that.id,_that.line,_that.orderIndex);case _:
 @JsonSerializable()
 
 class _FontStringDto extends FontStringDTO {
-  const _FontStringDto({required this.id, required this.line, required this.orderIndex}): super._();
+  const _FontStringDto({required this.line, this.id = null, this.orderIndex = 0}): super._();
   factory _FontStringDto.fromJson(Map<String, dynamic> json) => _$FontStringDtoFromJson(json);
 
-@override final  String id;
 @override final  String line;
-@override final  int orderIndex;
+@override@JsonKey() final  String? id;
+@override@JsonKey() final  int? orderIndex;
 
 /// Create a copy of FontStringDTO
 /// with the given fields replaced by the non-null parameter values.
@@ -238,16 +238,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FontStringDto&&(identical(other.id, id) || other.id == id)&&(identical(other.line, line) || other.line == line)&&(identical(other.orderIndex, orderIndex) || other.orderIndex == orderIndex));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FontStringDto&&(identical(other.line, line) || other.line == line)&&(identical(other.id, id) || other.id == id)&&(identical(other.orderIndex, orderIndex) || other.orderIndex == orderIndex));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,line,orderIndex);
+int get hashCode => Object.hash(runtimeType,line,id,orderIndex);
 
 @override
 String toString() {
-  return 'FontStringDTO(id: $id, line: $line, orderIndex: $orderIndex)';
+  return 'FontStringDTO(line: $line, id: $id, orderIndex: $orderIndex)';
 }
 
 
@@ -258,7 +258,7 @@ abstract mixin class _$FontStringDtoCopyWith<$Res> implements $FontStringDTOCopy
   factory _$FontStringDtoCopyWith(_FontStringDto value, $Res Function(_FontStringDto) _then) = __$FontStringDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String line, int orderIndex
+ String line, String? id, int? orderIndex
 });
 
 
@@ -275,12 +275,12 @@ class __$FontStringDtoCopyWithImpl<$Res>
 
 /// Create a copy of FontStringDTO
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? line = null,Object? orderIndex = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? line = null,Object? id = freezed,Object? orderIndex = freezed,}) {
   return _then(_FontStringDto(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,line: null == line ? _self.line : line // ignore: cast_nullable_to_non_nullable
-as String,orderIndex: null == orderIndex ? _self.orderIndex : orderIndex // ignore: cast_nullable_to_non_nullable
-as int,
+line: null == line ? _self.line : line // ignore: cast_nullable_to_non_nullable
+as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,orderIndex: freezed == orderIndex ? _self.orderIndex : orderIndex // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 

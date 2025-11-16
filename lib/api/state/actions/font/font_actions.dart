@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/font/font_char_model.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/paginated_result.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -130,23 +129,6 @@ class FontDatabaseUpdate extends ReduxAction<AppState> {
     }
 
     return _updateItemInState(state, updatedList, dbModel);
-  }
-}
-
-/// Fetches additional characters for the selected font and updates the state.
-/// Requires the id of the [FontModel] to fetch the characters for it.
-class FontCharFetchAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    if (state.selectedFont == null) return null;
-    final FontModel selected = state.selectedFont!;
-    final FontCharModel fontChars = await ApiService().fontApi.getChars(
-      selected.id!,
-    );
-    final List<String> chars = List.of(selected.chars, growable: true);
-    chars.addAll(fontChars.chars);
-    final FontModel newModel = selected.copyWith(chars: chars);
-    return state.copyWith(selectedFont: newModel);
   }
 }
 

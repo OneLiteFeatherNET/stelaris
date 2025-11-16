@@ -1,18 +1,17 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:stelaris/api/model/font_model.dart';
-import 'package:stelaris/api/state/actions/font_actions.dart';
+import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/font_vm_state.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/model_text.dart';
 import 'package:stelaris/feature/base/paginated_model_view_tab.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris/feature/font/chars/char_card.dart';
+import 'package:stelaris/feature/font/chars/font_char_page.dart';
 import 'package:stelaris/feature/font/face/font_face_page.dart';
 import 'package:stelaris/feature/font/font_general_page.dart';
-import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/functions.dart';
 
 class FontPage extends StatelessWidget {
@@ -64,9 +63,7 @@ class FontPage extends StatelessWidget {
           },
           formKey: GlobalKey<FormState>(),
           hintText: 'Example name',
-          formatters: [
-            FilteringTextInputFormatter.allow(stringWithSpacePattern),
-          ],
+          formatters: [withSpacesFormatter],
           formFieldValidator: (value) {
             final String input = value as String;
             return checkIfEmptyAndReturnErrorString(input, context);
@@ -87,7 +84,7 @@ class FontPage extends StatelessWidget {
 
   /// Maps the given [FontModel] to the right widget.
   /// If the model is null, it returns an [Expanded] widget with an [EmptyDataWidget].
-  /// Otherwise, it returns an instance of [FontGeneralPage] or [CharCard].
+  /// Otherwise, it returns an instance of [FontGeneralPage] or [FontCharPage].
   Widget _mapPageToWidget(String value, FontModel? listenable) {
     if (value.trim().isEmpty || listenable == null) {
       return const EmptyDataWidget.standard(
@@ -98,7 +95,7 @@ class FontPage extends StatelessWidget {
     return switch (value) {
       'General' => const FontGeneralPage(),
       'FontFace' => const FontFacePage(),
-      'Chars' => const CharCard(),
+      'Chars' => const FontCharPage(),
       _ => const Placeholder(), // optional default case
     };
   }
