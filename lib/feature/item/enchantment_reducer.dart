@@ -18,7 +18,7 @@ mixin EnchantmentReducer {
   static const Set<MetaEnchantment> metaEnchantments = {
     MetaEnchantment.mending,
     MetaEnchantment.unbreaking,
-    MetaEnchantment.vanishingCurse
+    MetaEnchantment.vanishingCurse,
   };
 
   static const Set<WeaponEnchantment> weaponEnchantments = {
@@ -68,24 +68,26 @@ mixin EnchantmentReducer {
   List<Enchantment> getEnchantments(ItemModel model, [bool exclude = false]) {
     final groupEnchantments = _getEnchantments(model.group);
 
-    if (model.enchantments == null || model.enchantments!.isEmpty) {
+    if (!model.enchantments.hasItems) {
       return groupEnchantments.toList();
     }
 
-    final existingEnchantmentKeys = model.enchantments!.keys.toSet();
+    final existingEnchantmentKeys = model.enchantments.items.map(
+      (element) => element.name,
+    );
 
     // Efficiently filter the set and return a list.
-    return exclude ? groupEnchantments
-        .where((e) => !existingEnchantmentKeys.contains(e.minecraftValue))
-        .toList()
+    return exclude
+        ? groupEnchantments
+              .where((e) => !existingEnchantmentKeys.contains(e.minecraftValue))
+              .toList()
         : groupEnchantments.toList();
   }
 
   /// Checks if an item can have more enchantments added based on its group.
   bool canAdd(ItemModel model) {
-    if (model.enchantments == null) return true;
     final groupEnchantments = _getEnchantments(model.group);
-    return model.enchantments!.length < groupEnchantments.length;
+    return model.enchantments.totalItems < groupEnchantments.length;
   }
 
   /// Finds an [Enchantment] enum by its string value within the context of an item's group.
@@ -101,7 +103,7 @@ mixin EnchantmentReducer {
 
   /// Calculates which enchantments to remove if an item's group is changed to [newGroup].
   List<String> getRemoveItems(ItemModel itemModel, EnchantmentGroup newGroup) {
-    if (itemModel.enchantments == null || itemModel.enchantments!.isEmpty) {
+    if (!itemModel.enchantments.hasItems) {
       return [];
     }
 
@@ -112,8 +114,9 @@ mixin EnchantmentReducer {
         .toSet();
 
     // Filter the existing keys based on whether they are in the new allowed set.
-    return itemModel.enchantments!.keys
-        .where((key) => !allowedMinecraftValues.contains(key))
+    return itemModel.enchantments.items
+        .where((key) => !allowedMinecraftValues.contains(key.name))
+        .map((element) => element.name)
         .toList();
   }
 }
