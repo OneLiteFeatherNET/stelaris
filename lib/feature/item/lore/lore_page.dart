@@ -1,42 +1,24 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/state/actions/item_actions.dart';
+import 'package:stelaris/api/model/item/item_lore_dto.dart';
+import 'package:stelaris/api/state/actions/item/item_lore_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/api/state/factory/item/selected_item_state.dart';
+import 'package:stelaris/api/state/factory/item/item_lore_view_state.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/item/lore/lore_action_chips.dart';
-import 'package:stelaris/feature/item/lore/lore_confirm_widget.dart';
 import 'package:stelaris/feature/item/lore/lore_page_view.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
 
-class LorePage extends StatefulWidget {
+class LorePage extends StatelessWidget {
   const LorePage({super.key});
 
   @override
-  State<LorePage> createState() => _LorePageState();
-}
-
-class _LorePageState extends State<LorePage> {
-  bool isEditing = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, SelectedItemView>(
-      vm: () => SelectedItemFactory<LorePage>(),
-      onWillChange: (context, store, previousVm, newVm) {
-        if ((previousVm.selected.lore?.length ?? 0) >
-            (newVm.selected.lore?.length ?? 0)) {
-          isEditing = false;
-        }
-      },
+    return StoreConnector<AppState, ItemLoreView>(
+      vm: () => ItemLoreViewFactory(),
       builder: (context, vm) {
         return Padding(
           padding: const EdgeInsets.only(left: 25, right: 25),
@@ -47,20 +29,13 @@ class _LorePageState extends State<LorePage> {
                   verticalSpacing25,
                   LoreActionChips(
                     dialogFunction: () => _openCreateDialog(vm, context),
-                    confirmWidget: LoreConfirmWidget(
-                      onConfirm: () => _onConfirm(vm),
-                      onSave: () => context.dispatch(ItemDatabaseUpdate()),
-                      isEditing: isEditing,
-                    ),
-                    deleteFunction: _toggleDeleteState,
-                    currentIndex: vm.loreLines.length,
+                    currentIndex: vm.selected.lore.items.length,
                   ),
                   verticalSpacing25,
                   Flexible(
-                    child: !vm.hasLoreLines
+                    child: !vm.selected.lore.hasItems
                         ? const EmptyDataWidget()
                         : LorePageView(
-                            isEditing: isEditing,
                             view: vm,
                           ),
                   ),
@@ -73,30 +48,14 @@ class _LorePageState extends State<LorePage> {
     );
   }
 
-  void _toggleDeleteState() {
-    setState(() {
-      isEditing = !isEditing;
-    });
-  }
-
-  void _onConfirm(SelectedItemView view) {
-    if (view.fieldsToDelete.isEmpty) return;
-    final oldEntry = view.selected;
-    for (String element in view.fieldsToDelete) {
-      view.loreLines.remove(element);
-    }
-    final newEntry = oldEntry.copyWith(lore: view.loreLines);
-    view.clearFieldsToDelete();
-    context.dispatch(UpdateItemAction(newEntry));
-  }
-
-  void _openCreateDialog(SelectedItemView view, BuildContext context) {
+  void _openCreateDialog(ItemLoreView view, BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return EntryUpdateDialog(
           valueUpdate: (value) {
-            _updateLore(view, value, true);
+            final ItemLoreDto dto = ItemLoreDto(text: value);
+            context.dispatch(ItemLoreAddAction(dto));
             Navigator.pop(context);
           },
           formFieldValidator: (value) {
@@ -108,15 +67,5 @@ class _LorePageState extends State<LorePage> {
         );
       },
     );
-  }
-
-  void _updateLore(SelectedItemView view, String line, [bool add = true]) {
-    if (add) {
-      view.loreLines.add(line);
-    } else {
-      view.loreLines.remove(line);
-    }
-    final newEntry = view.selected.copyWith(lore: view.loreLines);
-    context.dispatch(UpdateItemAction(newEntry));
   }
 }
