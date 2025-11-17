@@ -19,6 +19,7 @@ class LorePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, ItemLoreView>(
       vm: () => ItemLoreViewFactory(),
+      onInit: (store)  => store.dispatchAndWait(ItemLoreFetchAction()),
       builder: (context, vm) {
         return Padding(
           padding: const EdgeInsets.only(left: 25, right: 25),
@@ -35,9 +36,7 @@ class LorePage extends StatelessWidget {
                   Flexible(
                     child: !vm.selected.lore.hasItems
                         ? const EmptyDataWidget()
-                        : LorePageView(
-                            view: vm,
-                          ),
+                        : LorePageView(view: vm),
                   ),
                 ],
               ),

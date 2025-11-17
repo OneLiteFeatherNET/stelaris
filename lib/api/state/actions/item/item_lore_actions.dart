@@ -1,93 +1,72 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:flutter/foundation.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/item/item_lore_dto.dart';
-import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/paginated_result.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
-/// An action that loads lore lines for the currently selected item.
-///
-/// This action supports two loading modes:
-///
-/// * **Load more** – If the item already has lore entries and more pages are
-///   available, it fetches the next page and merges the new results into the
-///   existing list.
-///
-/// * **Initial fetch** – If no lore has been loaded yet (or a refresh is needed),
-///   it loads the first page.
-///
-/// While additional pages are loading, the action sets a temporary loading
-/// flag in the state to avoid triggering multiple parallel requests.
-///
-/// If no item is selected, the action does nothing.
+/// Action for the initial fetch of lore (page 1).
 class ItemLoreFetchAction extends ReduxAction<AppState> {
-  ItemLoreFetchAction();
-
   @override
   Future<AppState?> reduce() async {
-    if (state.selectedItem == null) return null;
+    final selectedItem = state.selectedItem;
+    if (selectedItem == null) return null;
 
-    final ItemModel itemModel = state.selectedItem!;
+    final PaginatedResult<ItemLoreDto> result = await ApiService().itemApi
+        .getLore(
+      selectedItem.id!,
+      page: selectedItem.lore.currentPage,
+      size: selectedItem.lore.pageSize == 0 ? 10 : selectedItem.lore.pageSize,
+    );
+    final updatedItem = selectedItem.copyWith(lore: result);
+    debugPrint("Init ${updatedItem.lore.items.length}");
+    return state.copyWith(selectedItem: updatedItem);
+  }
+}
 
-    final hasExisting = itemModel.lore.hasItems;
-    final canLoadMore = itemModel.lore.hasNextPage;
+/// Action to fetch the next page of lore for pagination.
+class ItemLoreLoadNextPageAction extends ReduxAction<AppState> {
+  @override
+  Future<AppState?> reduce() async {
+    final selectedItem = state.selectedItem;
+    if (selectedItem == null) return null;
 
-    if (hasExisting && canLoadMore) {
-      if (state.isLoadingMoreItems) return null;
-      dispatchSync(_SetMoreLoreLoad(true));
-      try {
-        final current = itemModel.lore;
-        final nextPage = current.currentPage + 1;
-        final size = 10;
-        final next = await ApiService().itemApi.getLore(
-          itemModel.id!,
-          page: nextPage,
-          size: size,
-        );
+    final lore = selectedItem.lore;
+    final isLoading = selectedItem.isLoadingMoreLoreLines;
 
-        final merged = List<ItemLoreDto>.of(current.items)..addAll(next.items);
-        final updated = itemModel.copyWith(
-          lore: current.copyWith(
-            items: merged,
-            totalItems: next.totalItems != 0
-                ? next.totalItems
-                : current.totalItems,
-            totalPages: next.totalPages != 0
-                ? next.totalPages
-                : current.totalPages,
-            currentPage: next.currentPage != 0 ? next.currentPage : nextPage,
-            pageSize: next.pageSize != 0 ? next.pageSize : size,
-          ),
-        );
+    // Guards: Exit if already loading, or if there are no items, or no more pages.
+    if (isLoading || !lore.hasItems || !lore.hasNextPage) {
+      return null;
+    }
 
-        return state.copyWith(selectedItem: updated);
-      } finally {
-        dispatchSync(_SetMoreLoreLoad(false));
-      }
-    } else {
-      // Initial load (or refresh)
-      final PaginatedResult<ItemLoreDto> result = await ApiService().itemApi
-          .getLore(
-            itemModel.id!,
-            page: 1,
-            size: itemModel.lore.pageSize == 0 ? 10 : itemModel.lore.pageSize,
-          );
-      final ItemModel updated = itemModel.copyWith(lore: result);
-      return state.copyWith(selectedItem: updated);
+    dispatch(_SetIsLoadingLore(true));
+    try {
+      final nextPage = lore.currentPage + 1;
+      final nextResult = await ApiService().itemApi.getLore(
+        selectedItem.id!,
+        page: nextPage,
+        size: lore.pageSize,
+      );
+
+      final mergedItems = [...lore.items, ...nextResult.items];
+
+      final updatedLore = lore.copyWith(
+        items: mergedItems,
+        totalItems: nextResult.totalItems,
+        totalPages: nextResult.totalPages,
+        currentPage: nextResult.currentPage,
+      );
+
+      debugPrint("Ipdate ${updatedLore.items.length}");
+      return state.copyWith(
+        selectedItem: selectedItem.copyWith(lore: updatedLore),
+      );
+    } finally {
+      dispatch(_SetIsLoadingLore(false));
     }
   }
 }
 
-/// An action that adds a new lore line to the currently selected item.
-///
-/// This action sends the given [ItemLoreDto] to the backend, receives the
-/// newly created lore entry, and updates the selected item's lore list in
-/// the application state.
-///
-/// If no item is currently selected, the action does nothing.
-///
-/// The updated item is written back into the state so the UI can reflect the
-/// change immediately.
 class ItemLoreAddAction extends ReduxAction<AppState> {
   ItemLoreAddAction(this.itemLoreDto);
 
@@ -96,35 +75,21 @@ class ItemLoreAddAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     if (state.selectedItem == null) return null;
-
-    final ItemModel itemModel = state.selectedItem!;
-
-    final ItemLoreDto addedLore = await ApiService().itemApi.addLore(
+    final itemModel = state.selectedItem!;
+    final addedLore = await ApiService().itemApi.addLore(
       itemModel.id!,
       itemLoreDto,
     );
-
-    final PaginatedResult<ItemLoreDto> loreLines = itemModel.lore;
-    final PaginatedResult<ItemLoreDto> updatedLines = loreLines.copyWith(
+    final loreLines = itemModel.lore;
+    final updatedLines = loreLines.copyWith(
       items: [...loreLines.items, addedLore],
       totalItems: loreLines.totalItems + 1,
     );
-
-    final ItemModel updatedModel = itemModel.copyWith(lore: updatedLines);
+    final updatedModel = itemModel.copyWith(lore: updatedLines);
     return state.copyWith(selectedItem: updatedModel);
   }
 }
 
-/// An action that removes a lore line from the currently selected item.
-///
-/// This action calls the backend to delete the given [ItemLoreDto] and then
-/// updates the selected item's lore list by removing the deleted entry from
-/// the local state.
-///
-/// If no item is selected, the action does nothing.
-///
-/// Once the lore entry is removed, the updated item is written back into the
-/// state so the UI immediately reflects the change.
 class ItemLoreDeleteAction extends ReduxAction<AppState> {
   ItemLoreDeleteAction(this.itemLoreDto);
 
@@ -132,42 +97,53 @@ class ItemLoreDeleteAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    if (state.selectedItem == null) return null;
-
-    final ItemModel itemModel = state.selectedItem!;
-
-    final ItemLoreDto deletedLore = await ApiService().itemApi.deleteLore(
-      itemModel.id!,
-      itemLoreDto,
-    );
-
-    final PaginatedResult<ItemLoreDto> loreLines = itemModel.lore;
-    final PaginatedResult<ItemLoreDto> updatedLines = loreLines.copyWith(
-      items: loreLines.items.where((l) => l.id != deletedLore.id).toList(),
+    if (state.selectedItem == null || itemLoreDto.id == null) return null;
+    final itemModel = state.selectedItem!;
+    await ApiService().itemApi.deleteLore(itemModel.id!, itemLoreDto);
+    final loreLines = itemModel.lore;
+    final updatedLines = loreLines.copyWith(
+      items: loreLines.items.where((l) => l.id != itemLoreDto.id).toList(),
       totalItems: loreLines.totalItems - 1,
     );
-
-    final ItemModel updatedModel = itemModel.copyWith(lore: updatedLines);
+    final updatedModel = itemModel.copyWith(lore: updatedLines);
     return state.copyWith(selectedItem: updatedModel);
   }
 }
 
-/// Internal action to manage the loading state for item pagination.
-///
-/// This private action controls the `isLoadingMoreItems` flag in the state,
-/// preventing multiple simultaneous load-more requests. It's used internally
-/// by InitItemAction during pagination operations.
-class _SetMoreLoreLoad extends ReduxAction<AppState> {
-  final bool value;
+class ItemLoreUpdateAction extends ReduxAction<AppState> {
+  ItemLoreUpdateAction(this.dto);
 
-  _SetMoreLoreLoad(this.value);
+  final ItemLoreDto dto;
 
   @override
   Future<AppState?> reduce() async {
     if (state.selectedItem == null) return null;
+    final itemModel = state.selectedItem!;
+    final updatedLore = await ApiService().itemApi.updateLore(
+      itemModel.id!,
+      dto,
+    );
+    final loreLines = itemModel.lore;
+    final updatedLines = loreLines.copyWith(
+      items: loreLines.items
+          .map((l) => l.id == updatedLore.id ? updatedLore : l)
+          .toList(),
+    );
+    final updatedModel = itemModel.copyWith(lore: updatedLines);
+    return state.copyWith(selectedItem: updatedModel);
+  }
+}
 
-    final item = state.selectedItem!;
-    final updatedItem = item.copyWith(isLoadingMoreLoreLines: value);
+class _SetIsLoadingLore extends ReduxAction<AppState> {
+  final bool isLoading;
+
+  _SetIsLoadingLore(this.isLoading);
+
+  @override
+  AppState reduce() {
+    final currentItem = state.selectedItem;
+    if (currentItem == null) return state;
+    final updatedItem = currentItem.copyWith(isLoadingMoreLoreLines: isLoading);
     return state.copyWith(selectedItem: updatedItem);
   }
 }

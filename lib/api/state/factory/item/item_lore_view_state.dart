@@ -22,5 +22,7 @@ class ItemLoreView extends Vm {
 
   final ItemModel selected;
 
+  bool get isLoadingMore => selected.isLoadingMoreLoreLines;
+
   PaginatedResult<ItemLoreDto> get loreLines => selected.lore;
 }
