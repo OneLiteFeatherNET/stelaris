@@ -8,18 +8,15 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// In this special case the confirm widget is a [FilledButton.icon].
 /// For more details visit the [LorePage] class.
 class LoreActionChips extends StatelessWidget {
-  final VoidCallback dialogFunction;
-  final Widget confirmWidget;
-  final VoidCallback deleteFunction;
-  final int currentIndex;
 
   const LoreActionChips({
     required this.dialogFunction,
-    required this.confirmWidget,
-    required this.deleteFunction,
     required this.currentIndex,
     super.key,
   });
+
+  final VoidCallback dialogFunction;
+  final int currentIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +32,6 @@ class LoreActionChips extends StatelessWidget {
               label: Text(context.l10n.button_add),
               onPressed: () => dialogFunction.call(),
             ),
-            ActionChip(
-              avatar: const Icon(Icons.delete),
-              label: const Text('Delete'),
-              onPressed: () => deleteFunction.call(),
-            ),
-            confirmWidget,
             LoreCountChip(
               currentIndex: currentIndex,
             ),
