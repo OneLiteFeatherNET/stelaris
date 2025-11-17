@@ -147,8 +147,8 @@ class ItemAPI extends BaseApi<ItemModel> {
   /// Returns a [ItemLoreDto] containing the deleted lore
   Future<ItemLoreDto> deleteLore(String id, ItemLoreDto dto) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/$id/lore');
-    final result = await apiClient.dio.deleteUri(uri, data: dto.toJson());
+    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/$id/lore/${dto.id}');
+    final result = await apiClient.dio.deleteUri(uri);
     return ItemLoreDto.fromJson(result.data!);
   }
 }
