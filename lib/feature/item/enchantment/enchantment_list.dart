@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris/api/model/item/item_enchantment_dto.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_item.dart';
 import 'package:vulpes_data/api/enchantment.dart';
@@ -14,7 +15,7 @@ class EnchantmentList extends StatelessWidget {
   });
 
   final List<Enchantment> enchantments;
-  final Map<String, int> selectedEnchantments;
+  final List<ItemEnchantmentDto> selectedEnchantments;
   final bool isDeleteMode;
   final Function(Enchantment, int) onLevelChanged;
   final Function(Enchantment) onEnchantmentDeleted;
@@ -24,9 +25,9 @@ class EnchantmentList extends StatelessWidget {
     // Extract enchantments that are in the item
     final activeEnchantments = [];
     for (var ench in enchantments) {
-      if (selectedEnchantments.containsKey(ench.minecraftValue)) {
+      /*if (selectedEnchantments.containsKey(ench.minecraftValue)) {
         activeEnchantments.add(ench);
-      }
+      }*/
     }
 
     if (activeEnchantments.isEmpty) {
@@ -42,8 +43,7 @@ class EnchantmentList extends StatelessWidget {
 
         return EnchantmentItem(
           enchantment: enchantment,
-          level: level,
-          isDeleteMode: isDeleteMode,
+          level: 1,
           onLevelChanged: (newLevel) => onLevelChanged(enchantment, newLevel),
           onDelete: () => onEnchantmentDeleted(enchantment),
         );

@@ -6,7 +6,6 @@ class EnchantmentItem extends StatefulWidget {
   const EnchantmentItem({
     required this.enchantment,
     required this.level,
-    required this.isDeleteMode,
     required this.onLevelChanged,
     required this.onDelete,
     super.key,
@@ -14,7 +13,6 @@ class EnchantmentItem extends StatefulWidget {
 
   final Enchantment enchantment;
   final int level;
-  final bool isDeleteMode;
   final ValueChanged<int> onLevelChanged;
   final VoidCallback onDelete;
 
@@ -53,61 +51,60 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
       child: AnimatedSize(
         duration: const Duration(milliseconds: 300),
         child: ListTile(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
+          ),
           title: Text(
             widget.enchantment.displayName,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
-          subtitle: widget.isDeleteMode
-              ? null
-              : Row(
-                  children: [
-                    const Text('Level: '),
-                    SizedBox(
-                      width: 64,
-                      child: TextField(
-                        controller: _levelController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LimitRangeTextInputFormatter(
-                              1, widget.enchantment.maxLevel),
-                        ],
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          contentPadding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          final newLevel = int.tryParse(value) ?? 1;
-                          if (newLevel != widget.level) {
-                            widget.onLevelChanged(newLevel);
-                          }
-                        },
-                      ),
-                    ),
-                    Text(
-                      ' / ${widget.enchantment.maxLevel}',
-                      style: theme.textTheme.bodySmall,
+          subtitle: Row(
+            children: [
+              const Text('Level: '),
+              SizedBox(
+                width: 64,
+                child: TextField(
+                  controller: _levelController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LimitRangeTextInputFormatter(
+                      1,
+                      widget.enchantment.maxLevel,
                     ),
                   ],
-                ),
-          trailing: widget.isDeleteMode
-              ? IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: widget.onDelete,
-                )
-              : Text(
-                  widget.enchantment.displayName,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    color: theme.colorScheme.secondary,
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 8,
+                    ),
+                    border: OutlineInputBorder(),
                   ),
+                  onChanged: (value) {
+                    final newLevel = int.tryParse(value) ?? 1;
+                    if (newLevel != widget.level) {
+                      widget.onLevelChanged(newLevel);
+                    }
+                  },
                 ),
+              ),
+              Text(
+                ' / ${widget.enchantment.maxLevel}',
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
+          ),
+          trailing: Text(
+            widget.enchantment.displayName,
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontStyle: FontStyle.italic,
+              color: theme.colorScheme.secondary,
+            ),
+          ),
         ),
       ),
     );
