@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 enum _MenuAction { edit, delete }
 
-class FontCharMenu extends StatelessWidget {
+class CollapsedMenuActions extends StatelessWidget {
 
-  const FontCharMenu({
+  const CollapsedMenuActions({
     required this.onEdit,
     required this.onDelete,
     super.key,

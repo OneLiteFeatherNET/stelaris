@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris/feature/font/chars/actions/font_char_menu_actions.dart';
+import 'package:stelaris/feature/base/action/collapsed_menu_actions.dart';
 
-class FontCharEntryActions extends StatelessWidget {
-  const FontCharEntryActions({
+class EntryActions extends StatelessWidget {
+  const EntryActions({
     required this.onEdit,
     required this.onDelete,
     super.key,
@@ -16,7 +16,7 @@ class FontCharEntryActions extends StatelessWidget {
     final width = MediaQuery.sizeOf(context).width;
 
     if (width < 650) {
-      return FontCharMenu(onEdit: onEdit, onDelete: onDelete);
+      return CollapsedMenuActions(onEdit: onEdit, onDelete: onDelete);
     }
 
     return Row(
