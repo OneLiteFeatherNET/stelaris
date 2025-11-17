@@ -24,13 +24,13 @@ class EnchantmentView extends Vm with EnchantmentReducer {
 
   final ItemModel selected;
 
-  Map<String, int> get enchantments => selected.enchantments ?? {};
+  //Map<String, int> get enchantments => selected.enchantments ?? {};
 
   List<Enchantment> getEnchantmentsViaGroup(ItemModel model) => getEnchantments(model);
 
   bool hasSelectedEnchantment(String enchantment) {
-    return enchantments.containsKey(enchantment);
+    return false;
   }
 
-  String getEnchantmentLevel(String enchantment) => enchantments[enchantment].toString();
+  String getEnchantmentLevel(String enchantment) => "Test";
 }
