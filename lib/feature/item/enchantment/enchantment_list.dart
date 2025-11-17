@@ -6,30 +6,20 @@ import 'package:vulpes_data/api/enchantment.dart';
 
 class EnchantmentList extends StatelessWidget {
   const EnchantmentList({
-    required this.enchantments,
-    required this.selectedEnchantments,
-    required this.isDeleteMode,
+    required this.activeEnchantments,
+    required this.selectedEnchantmentMap,
     required this.onLevelChanged,
     required this.onEnchantmentDeleted,
     super.key,
   });
 
-  final List<Enchantment> enchantments;
-  final List<ItemEnchantmentDto> selectedEnchantments;
-  final bool isDeleteMode;
+  final List<Enchantment> activeEnchantments;
+  final Map<String, ItemEnchantmentDto> selectedEnchantmentMap;
   final Function(Enchantment, int) onLevelChanged;
   final Function(Enchantment) onEnchantmentDeleted;
 
   @override
   Widget build(BuildContext context) {
-    // Extract enchantments that are in the item
-    final activeEnchantments = [];
-    for (var ench in enchantments) {
-      /*if (selectedEnchantments.containsKey(ench.minecraftValue)) {
-        activeEnchantments.add(ench);
-      }*/
-    }
-
     if (activeEnchantments.isEmpty) {
       return const EmptyDataWidget(header: 'No enchantments added yet');
     }
@@ -39,11 +29,11 @@ class EnchantmentList extends StatelessWidget {
       itemCount: activeEnchantments.length,
       itemBuilder: (context, index) {
         final enchantment = activeEnchantments[index];
-        final level = selectedEnchantments[enchantment.minecraftValue] ?? 1;
+        final level = selectedEnchantmentMap[enchantment.minecraftValue]?.level ?? 1;
 
         return EnchantmentItem(
           enchantment: enchantment,
-          level: 1,
+          level: level,
           onLevelChanged: (newLevel) => onLevelChanged(enchantment, newLevel),
           onDelete: () => onEnchantmentDeleted(enchantment),
         );

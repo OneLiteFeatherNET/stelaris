@@ -49,7 +49,7 @@ class ItemAPI extends BaseApi<ItemModel> {
   ) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(
-      path: '${baseUri.path}/$endpoint/$id/enchantments',
+      path: '${baseUri.path}/$endpoint/$id/enchantment',
     );
     final result = await apiClient.dio.putUri(uri, data: dto.toJson());
     return ItemEnchantmentDto.fromJson(result.data!);

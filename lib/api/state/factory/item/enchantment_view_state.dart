@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:stelaris/api/model/item/item_enchantment_dto.dart';
 import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
@@ -12,8 +13,8 @@ class EnchantmentViewFactory
   @override
   EnchantmentView fromStore() {
     return EnchantmentView(
-        selected: state.selectedItem!,
-      );
+      selected: state.selectedItem!,
+    );
   }
 }
 
@@ -24,13 +25,15 @@ class EnchantmentView extends Vm with EnchantmentReducer {
 
   final ItemModel selected;
 
-  //Map<String, int> get enchantments => selected.enchantments ?? {};
+  /// A lookup map of selected enchantments for efficient access.
+  Map<String, ItemEnchantmentDto> get selectedEnchantmentMap =>
+      {for (var e in selected.enchantments.items) e.name: e};
 
-  List<Enchantment> getEnchantmentsViaGroup(ItemModel model) => getEnchantments(model);
-
-  bool hasSelectedEnchantment(String enchantment) {
-    return false;
+  /// A filtered list of active enchantments based on what's been selected.
+  List<Enchantment> get activeEnchantments {
+    final allEnchantments = getEnchantments(selected);
+    return allEnchantments
+        .where((ench) => selectedEnchantmentMap.containsKey(ench.minecraftValue))
+        .toList();
   }
-
-  String getEnchantmentLevel(String enchantment) => "Test";
 }

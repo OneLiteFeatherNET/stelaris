@@ -5,9 +5,9 @@ import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/enchantment_view_state.dart';
 import 'package:stelaris/feature/dialogs/item_enchantments_dialog.dart';
-import 'package:stelaris/feature/item/enchantment/enchantment_actions.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_list.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class ItemEnchantmentPage extends StatefulWidget {
   const ItemEnchantmentPage({super.key});
@@ -17,41 +17,34 @@ class ItemEnchantmentPage extends StatefulWidget {
 }
 
 class _ItemEnchantmentPageState extends State<ItemEnchantmentPage> {
-  bool _isDeleteMode = false;
-
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, EnchantmentView>(
       vm: () => EnchantmentViewFactory(),
       builder: (context, vm) {
-        final enchantments = vm.getEnchantmentsViaGroup(vm.selected);
-        final hasEnchantments = vm.selected.enchantments.hasItems;
-        final canAddMoreEnchantments = vm.canAdd(vm.selected);
-
-        // Automatically disable delete mode if no enchantments are present
-        if (_isDeleteMode && !hasEnchantments) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            setState(() {
-              _isDeleteMode = false;
-            });
-          });
-        }
-
         return Padding(
           padding: const EdgeInsets.only(left: 25, right: 25),
           child: Column(
             children: [
-              verticalSpacing10,
+              verticalSpacing25,
+              Align(
+                alignment: Alignment.center,
+                child: ActionChip(
+                  avatar: const Icon(Icons.add),
+                  label: Text(context.l10n.button_add),
+                  onPressed: () => _showAddEnchantmentDialog(context, vm),
+                ),
+              ),
               verticalSpacing10,
               Expanded(
                 child: EnchantmentList(
-                  enchantments: enchantments,
-                  selectedEnchantments: vm.selected.enchantments.items,
-                  isDeleteMode: _isDeleteMode,
+                  activeEnchantments: vm.activeEnchantments,
+                  selectedEnchantmentMap: vm.selectedEnchantmentMap,
                   onLevelChanged: (enchantment, level) {
+                    // Handle level change
                   },
                   onEnchantmentDeleted: (enchantment) {
-                    //context.dispatch(ItemEnchantmentDeleteAction(null));
+
                   },
                 ),
               ),
@@ -60,15 +53,6 @@ class _ItemEnchantmentPageState extends State<ItemEnchantmentPage> {
         );
       },
     );
-  }
-
-  void _saveFunction(BuildContext context, EnchantmentView vm) {
-    // Exit delete mode if active
-    if (_isDeleteMode) {
-      setState(() {
-        _isDeleteMode = false;
-      });
-    }
   }
 
   void _showAddEnchantmentDialog(BuildContext context, EnchantmentView vm) {
