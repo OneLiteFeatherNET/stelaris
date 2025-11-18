@@ -21,6 +21,7 @@ class _ItemEnchantmentPageState extends State<ItemEnchantmentPage> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, EnchantmentView>(
       vm: () => EnchantmentViewFactory(),
+      onInit: (store) => store.dispatchAndWait(ItemEnchantmentFetchAction()),
       builder: (context, vm) {
         return Padding(
           padding: const EdgeInsets.only(left: 25, right: 25),
