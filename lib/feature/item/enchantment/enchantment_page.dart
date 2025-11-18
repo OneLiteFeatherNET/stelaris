@@ -9,14 +9,9 @@ import 'package:stelaris/feature/item/enchantment/enchantment_list.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
-class ItemEnchantmentPage extends StatefulWidget {
+class ItemEnchantmentPage extends StatelessWidget {
   const ItemEnchantmentPage({super.key});
 
-  @override
-  State<ItemEnchantmentPage> createState() => _ItemEnchantmentPageState();
-}
-
-class _ItemEnchantmentPageState extends State<ItemEnchantmentPage> {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, EnchantmentView>(
@@ -39,7 +34,7 @@ class _ItemEnchantmentPageState extends State<ItemEnchantmentPage> {
               verticalSpacing10,
               Expanded(
                 child: EnchantmentList(
-                  activeEnchantments: vm.activeEnchantments,
+                  view: vm,
                   selectedEnchantmentMap: vm.selectedEnchantmentMap,
                   onLevelChanged: (enchantment, level) {
                     // Handle level change

@@ -1,43 +1,99 @@
+import 'dart:async';
+
+import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris/api/model/item/item_enchantment_dto.dart';
+import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
+import 'package:stelaris/api/state/factory/item/enchantment_view_state.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_item.dart';
 import 'package:vulpes_data/api/enchantment.dart';
 
-class EnchantmentList extends StatelessWidget {
+class EnchantmentList extends StatefulWidget {
   const EnchantmentList({
-    required this.activeEnchantments,
+    required this.view,
     required this.selectedEnchantmentMap,
     required this.onLevelChanged,
     required this.onEnchantmentDeleted,
     super.key,
   });
 
-  final List<Enchantment> activeEnchantments;
+  final EnchantmentView view;
   final Map<String, ItemEnchantmentDto> selectedEnchantmentMap;
   final Function(Enchantment, int) onLevelChanged;
   final Function(Enchantment) onEnchantmentDeleted;
 
   @override
+  State<EnchantmentList> createState() => _EnchantmentListState();
+}
+
+class _EnchantmentListState extends State<EnchantmentList> {
+
+  final ScrollController _scrollController = ScrollController();
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
-    if (activeEnchantments.isEmpty) {
+    if (!widget.view.hasEnchantments) {
       return const EmptyDataWidget(header: 'No enchantments added yet');
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: activeEnchantments.length,
-      itemBuilder: (context, index) {
-        final enchantment = activeEnchantments[index];
-        final level = selectedEnchantmentMap[enchantment.minecraftValue]?.level ?? 1;
+    return Scrollbar(
+      controller: _scrollController,
+      child: ListView.builder(
+        controller: _scrollController,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: widget.view.activeEnchantments.length,
+        itemBuilder: (context, index) {
+          final enchantment = widget.view[index];
+          final level = widget.selectedEnchantmentMap[enchantment.minecraftValue]?.level ?? 1;
 
-        return EnchantmentItem(
-          enchantment: enchantment,
-          level: level,
-          onLevelChanged: (newLevel) => onLevelChanged(enchantment, newLevel),
-          onDelete: () => onEnchantmentDeleted(enchantment),
-        );
-      },
+          return EnchantmentItem(
+            enchantment: enchantment,
+            level: level,
+            onLevelChanged: (newLevel) => widget.onLevelChanged(enchantment, newLevel),
+            onDelete: () => widget.onEnchantmentDeleted(enchantment),
+          );
+        },
+      ),
     );
+  }
+
+  void _onScroll() {
+    if (widget.view.isLoadingMore) return;
+    if (!_scrollController.hasClients) return;
+
+    final enchantments = widget.view.selected.enchantments;
+    if (!enchantments.hasNextPage) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    if (maxScroll <= 0) return;
+
+    final currentScroll = _scrollController.position.pixels;
+    final triggerFetchMoreSize = maxScroll * 0.7;
+
+    if (currentScroll >= triggerFetchMoreSize) {
+      if (_debounce?.isActive ?? false) _debounce?.cancel();
+      _debounce = Timer(const Duration(milliseconds: 300), () {
+        if (mounted) {
+          context.dispatch(ItemEnchantmentLoadMoreAction());
+        }
+      });
+    }
   }
 }
