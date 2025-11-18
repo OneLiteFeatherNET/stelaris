@@ -65,7 +65,7 @@ class ItemAPI extends BaseApi<ItemModel> {
   ) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(
-      path: '${baseUri.path}/$endpoint/$id/enchantments',
+      path: '${baseUri.path}/$endpoint/$id/enchantment',
     );
     final result = await apiClient.dio.postUri(uri, data: dto.toJson());
     return ItemEnchantmentDto.fromJson(result.data!);
@@ -81,7 +81,7 @@ class ItemAPI extends BaseApi<ItemModel> {
   ) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(
-      path: '${baseUri.path}/$endpoint/$id/enchantments',
+      path: '${baseUri.path}/$endpoint/enchantment/$id/${dto.id}',
     );
     final result = await apiClient.dio.deleteUri(uri, data: dto.toJson());
     return ItemEnchantmentDto.fromJson(result.data!);
