@@ -5,84 +5,62 @@ import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/paginated_result.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
-/// An action that loads enchantments for the currently selected item.
-///
-/// This action supports two loading modes:
-///
-/// * **Load more** – If the item already has enchantments loaded and additional
-///   pages exist, it fetches the next page and merges the results into the
-///   existing list.
-///
-/// * **Initial fetch** – If no enchantments have been loaded yet (or a refresh
-///   is needed), it loads the first page.
-///
-/// To prevent multiple parallel requests, a temporary loading flag is set on
-/// the item while additional pages are being fetched.
-///
-/// If no item is selected, the action does nothing.
 class ItemEnchantmentFetchAction extends ReduxAction<AppState> {
-  ItemEnchantmentFetchAction();
-
   @override
   Future<AppState?> reduce() async {
-    if (state.selectedItem == null) return null;
+    final selectedItem = state.selectedItem;
+    if (selectedItem == null) return null;
 
-    final ItemModel itemModel = state.selectedItem!;
+    final PaginatedResult<ItemEnchantmentDto> items = selectedItem.enchantments;
 
-    final hasExisting = itemModel.enchantments.hasItems;
-    final canLoadMore = itemModel.enchantments.hasNextPage;
+    final PaginatedResult<ItemEnchantmentDto> result = await ApiService().itemApi
+        .getEnchantments(
+      selectedItem.id!,
+      page: items.currentPage,
+      size: items.pageSize == 0 ? 10 : items.pageSize,
+    );
+    final updatedItem = selectedItem.copyWith(enchantments: result);
+    return state.copyWith(selectedItem: updatedItem);
+  }
+}
 
-    if (hasExisting && canLoadMore) {
-      // Load the next page
-      if (state.isLoadingMoreItems) return null;
-      dispatchSync(_SetMoreEnchantmentLoad(true));
+class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
+  @override
+  Future<AppState?> reduce() async {
+    final selectedItem = state.selectedItem;
+    if (selectedItem == null) return null;
 
-      try {
-        final current = itemModel.enchantments;
-        final nextPage = current.currentPage + 1;
-        final size = 10;
+    final lore = selectedItem.enchantments;
+    final isLoading = selectedItem.isLoadingMoreEnchantments;
 
-        final next = await ApiService().itemApi.getEnchantments(
-          itemModel.id!,
-          page: nextPage,
-          size: size,
-        );
+    // Guards: Exit if already loading, or if there are no items, or no more pages.
+    if (isLoading || !lore.hasItems || !lore.hasNextPage) {
+      return null;
+    }
 
-        final merged = List<ItemEnchantmentDto>.of(current.items)
-          ..addAll(next.items);
-
-        final updated = itemModel.copyWith(
-          enchantments: current.copyWith(
-            items: merged,
-            totalItems:
-            next.totalItems != 0 ? next.totalItems : current.totalItems,
-            totalPages:
-            next.totalPages != 0 ? next.totalPages : current.totalPages,
-            currentPage:
-            next.currentPage != 0 ? next.currentPage : nextPage,
-            pageSize: next.pageSize != 0 ? next.pageSize : size,
-          ),
-        );
-
-        return state.copyWith(selectedItem: updated);
-      } finally {
-        dispatchSync(_SetMoreEnchantmentLoad(false));
-      }
-    } else {
-      // Initial load or refresh
-      final PaginatedResult<ItemEnchantmentDto> result =
-      await ApiService().itemApi.getEnchantments(
-        itemModel.id!,
-        page: 1,
-        size: itemModel.enchantments.pageSize == 0
-            ? 10
-            : itemModel.enchantments.pageSize,
+    dispatch(_SetMoreEnchantmentLoad(true));
+    try {
+      final nextPage = lore.currentPage + 1;
+      final nextResult = await ApiService().itemApi.getEnchantments(
+        selectedItem.id!,
+        page: nextPage,
+        size: lore.pageSize,
       );
 
-      final ItemModel updated =
-      itemModel.copyWith(enchantments: result);
+      final mergedItems = [...lore.items, ...nextResult.items];
 
-      return state.copyWith(selectedItem: updated);
+      final updatedEnchantments = lore.copyWith(
+        items: mergedItems,
+        totalItems: nextResult.totalItems,
+        totalPages: nextResult.totalPages,
+        currentPage: nextResult.currentPage,
+      );
+
+      return state.copyWith(
+        selectedItem: selectedItem.copyWith(enchantments: updatedEnchantments),
+      );
+    } finally {
+      dispatch(_SetMoreEnchantmentLoad(false));
     }
   }
 }
