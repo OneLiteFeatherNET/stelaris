@@ -61,13 +61,9 @@ class _EnchantmentListState extends State<EnchantmentList> {
         itemCount: widget.view.activeEnchantments.length,
         itemBuilder: (context, index) {
           final enchantment = widget.view[index];
-          final level = widget.selectedEnchantmentMap[enchantment.minecraftValue]?.level ?? 1;
-
           return EnchantmentItem(
+            dto: widget.view.selectedEnchantmentMap[enchantment.minecraftValue]!,
             enchantment: enchantment,
-            level: level,
-            onLevelChanged: (newLevel) => widget.onLevelChanged(enchantment, newLevel),
-            onDelete: () => widget.onEnchantmentDeleted(enchantment),
           );
         },
       ),
