@@ -6,7 +6,6 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/selected_item_state.dart';
 import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
-import 'package:stelaris/feature/item/general/item_general_page.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -31,7 +30,7 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, SelectedItemView>(
-      vm: () => SelectedItemFactory<ItemGeneralPage>(),
+      vm: () => SelectedItemFactory<ItemMetaPage>(),
       builder: (context, vm) {
         return Form(
           key: _formKey,
