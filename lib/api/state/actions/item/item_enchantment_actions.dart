@@ -17,7 +17,7 @@ class ItemEnchantmentFetchAction extends ReduxAction<AppState> {
         .getEnchantments(
       selectedItem.id!,
       page: items.currentPage,
-      size: items.pageSize == 0 ? 10 : items.pageSize,
+      size: items.pageSize == 0 ? 5 : items.pageSize,
     );
     final updatedItem = selectedItem.copyWith(enchantments: result);
     return state.copyWith(selectedItem: updatedItem);
@@ -30,26 +30,26 @@ class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
     final selectedItem = state.selectedItem;
     if (selectedItem == null) return null;
 
-    final lore = selectedItem.enchantments;
+    final enchantments = selectedItem.enchantments;
     final isLoading = selectedItem.isLoadingMoreEnchantments;
 
     // Guards: Exit if already loading, or if there are no items, or no more pages.
-    if (isLoading || !lore.hasItems || !lore.hasNextPage) {
+    if (isLoading || !enchantments.hasItems || !enchantments.hasNextPage) {
       return null;
     }
 
     dispatch(_SetMoreEnchantmentLoad(true));
     try {
-      final nextPage = lore.currentPage + 1;
+      final nextPage = enchantments.currentPage + 1;
       final nextResult = await ApiService().itemApi.getEnchantments(
         selectedItem.id!,
         page: nextPage,
-        size: lore.pageSize,
+        size: enchantments.pageSize,
       );
 
-      final mergedItems = [...lore.items, ...nextResult.items];
+      final mergedItems = [...enchantments.items, ...nextResult.items];
 
-      final updatedEnchantments = lore.copyWith(
+      final updatedEnchantments = enchantments.copyWith(
         items: mergedItems,
         totalItems: nextResult.totalItems,
         totalPages: nextResult.totalPages,
