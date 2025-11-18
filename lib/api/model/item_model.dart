@@ -19,7 +19,7 @@ abstract class ItemModel with _$ItemModel, DataModel {
 
   // Define the specific const default directly within the class that uses it.
   // This is well-encapsulated.
-  static const PaginatedResult<ItemEnchantmentDto> _defaultEnchantments = PaginatedResult(
+  static const PaginatedResult<ItemEnchantmentDto> defaultEnchantments = PaginatedResult(
     items: <ItemEnchantmentDto>[],
     totalItems: 0,
     totalPages: 0,
@@ -59,7 +59,7 @@ abstract class ItemModel with _$ItemModel, DataModel {
     String? material,
     int? customModelData,
     @Default(1) int? amount,
-    @Default(ItemModel._defaultEnchantments)
+    @Default(ItemModel.defaultEnchantments)
     PaginatedResult<ItemEnchantmentDto> enchantments,
     @Default(ItemModel._defaultLore)
     PaginatedResult<ItemLoreDto> lore,

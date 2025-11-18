@@ -70,6 +70,7 @@ class ItemGroupCard extends StatelessWidget {
                   onPressed: () {
                     final newEntry = model.copyWith(
                       group: value,
+                      enchantments: ItemModel.defaultEnchantments,
                     );
                     context.dispatch(UpdateItemAction(newEntry));
                     Navigator.of(context).pop(true);
