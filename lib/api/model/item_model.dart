@@ -23,7 +23,7 @@ abstract class ItemModel with _$ItemModel, DataModel {
     items: <ItemEnchantmentDto>[],
     totalItems: 0,
     totalPages: 0,
-    currentPage: 0,
+    currentPage: 1,
     pageSize: 0,
   );
 
@@ -33,7 +33,7 @@ abstract class ItemModel with _$ItemModel, DataModel {
     items: <ItemLoreDto>[],
     totalItems: 0,
     totalPages: 0,
-    currentPage: 0,
+    currentPage: 1,
     pageSize: 0,
   );
 
