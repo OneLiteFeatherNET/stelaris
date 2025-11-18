@@ -7,21 +7,16 @@ import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/api/state/factory/item/enchantment_view_state.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_item.dart';
-import 'package:vulpes_data/api/enchantment.dart';
 
 class EnchantmentList extends StatefulWidget {
   const EnchantmentList({
     required this.view,
     required this.selectedEnchantmentMap,
-    required this.onLevelChanged,
-    required this.onEnchantmentDeleted,
     super.key,
   });
 
   final EnchantmentView view;
   final Map<String, ItemEnchantmentDto> selectedEnchantmentMap;
-  final Function(Enchantment, int) onLevelChanged;
-  final Function(Enchantment) onEnchantmentDeleted;
 
   @override
   State<EnchantmentList> createState() => _EnchantmentListState();

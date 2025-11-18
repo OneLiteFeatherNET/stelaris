@@ -5,7 +5,7 @@ import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/enchantment_view_state.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
-import 'package:stelaris/feature/dialogs/item_enchantments_dialog.dart';
+import 'package:stelaris/feature/item/enchantment/dialog/item_enchantments_dialog.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_list.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -37,10 +37,6 @@ class ItemEnchantmentPage extends StatelessWidget {
                 child: EnchantmentList(
                   view: vm,
                   selectedEnchantmentMap: vm.selectedEnchantmentMap,
-                  onLevelChanged: (enchantment, level) {
-                    // Handle level change
-                  },
-                  onEnchantmentDeleted: (enchantment) {},
                 ),
               ),
             ],
