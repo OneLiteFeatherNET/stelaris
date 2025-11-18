@@ -4,6 +4,7 @@ import 'package:stelaris/api/model/item/item_enchantment_dto.dart';
 import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/enchantment_view_state.dart';
+import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/dialogs/item_enchantments_dialog.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_list.dart';
 import 'package:stelaris/util/constants.dart';
@@ -39,9 +40,7 @@ class ItemEnchantmentPage extends StatelessWidget {
                   onLevelChanged: (enchantment, level) {
                     // Handle level change
                   },
-                  onEnchantmentDeleted: (enchantment) {
-
-                  },
+                  onEnchantmentDeleted: (enchantment) {},
                 ),
               ),
             ],
@@ -52,6 +51,13 @@ class ItemEnchantmentPage extends StatelessWidget {
   }
 
   void _showAddEnchantmentDialog(BuildContext context, EnchantmentView vm) {
+    if (vm.activeEnchantments.length - vm.selectedEnchantmentMap.length == 0) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        InfoBarFactory().create('All enchantments has been set for this group!')
+      );
+      return;
+    }
     showDialog(
       context: context,
       builder: (context) => ItemEnchantmentAddDialog(

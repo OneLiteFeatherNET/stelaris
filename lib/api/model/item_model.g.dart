@@ -12,14 +12,14 @@ _ItemModel _$ItemModelFromJson(Map<String, dynamic> json) => _ItemModel(
   variableName: json['variableName'] as String?,
   comment: json['comment'] as String?,
   displayName: json['displayName'] as String?,
-  group:
-      $enumDecodeNullable(_$EnchantmentGroupEnumMap, json['group']) ??
+  groupName:
+      $enumDecodeNullable(_$EnchantmentGroupEnumMap, json['groupName']) ??
       EnchantmentGroup.meta,
   material: json['material'] as String?,
   customModelData: (json['customModelData'] as num?)?.toInt(),
   amount: (json['amount'] as num?)?.toInt() ?? 1,
   enchantments: json['enchantments'] == null
-      ? ItemModel._defaultEnchantments
+      ? ItemModel.defaultEnchantments
       : PaginatedResult<ItemEnchantmentDto>.fromJson(
           json['enchantments'] as Map<String, dynamic>,
           (value) => ItemEnchantmentDto.fromJson(value as Map<String, dynamic>),
@@ -48,7 +48,7 @@ Map<String, dynamic> _$ItemModelToJson(_ItemModel instance) =>
       'variableName': instance.variableName,
       'comment': instance.comment,
       'displayName': instance.displayName,
-      'group': _$EnchantmentGroupEnumMap[instance.group]!,
+      'groupName': _$EnchantmentGroupEnumMap[instance.groupName]!,
       'material': instance.material,
       'customModelData': instance.customModelData,
       'amount': instance.amount,

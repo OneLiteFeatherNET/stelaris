@@ -66,7 +66,7 @@ mixin EnchantmentReducer {
 
   /// Gets the list of available enchantments for an item, excluding those it already has.
   List<Enchantment> getEnchantments(ItemModel model, [bool exclude = false]) {
-    final groupEnchantments = _getEnchantments(model.group);
+    final groupEnchantments = _getEnchantments(model.groupName);
 
     if (!model.enchantments.hasItems) {
       return groupEnchantments.toList();
@@ -86,13 +86,13 @@ mixin EnchantmentReducer {
 
   /// Checks if an item can have more enchantments added based on its group.
   bool canAdd(ItemModel model) {
-    final groupEnchantments = _getEnchantments(model.group);
+    final groupEnchantments = _getEnchantments(model.groupName);
     return model.enchantments.totalItems < groupEnchantments.length;
   }
 
   /// Finds an [Enchantment] enum by its string value within the context of an item's group.
   Enchantment? getByGroup(ItemModel model, String enchantmentValue) {
-    final groupEnchantments = _getEnchantments(model.group);
+    final groupEnchantments = _getEnchantments(model.groupName);
     // Explicitly specify the type parameter for firstWhere as Enchantment?
     // This tells Dart that the method can return a nullable Enchantment.
     for (var ench in groupEnchantments) {

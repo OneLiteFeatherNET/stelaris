@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ItemModel {
 
- String get uiName; String? get id; String? get variableName; String? get comment; String? get displayName; EnchantmentGroup get group; String? get material; int? get customModelData; int? get amount; PaginatedResult<ItemEnchantmentDto> get enchantments; PaginatedResult<ItemLoreDto> get lore; PaginatedResult<ItemFlagDto> get flags;@JsonKey(includeToJson: false) bool get isLoadingMoreEnchantments;@JsonKey(includeToJson: false) bool get isLoadingMoreLoreLines;
+ String get uiName; String? get id; String? get variableName; String? get comment; String? get displayName; EnchantmentGroup get groupName; String? get material; int? get customModelData; int? get amount; PaginatedResult<ItemEnchantmentDto> get enchantments; PaginatedResult<ItemLoreDto> get lore; PaginatedResult<ItemFlagDto> get flags;@JsonKey(includeToJson: false) bool get isLoadingMoreEnchantments;@JsonKey(includeToJson: false) bool get isLoadingMoreLoreLines;
 /// Create a copy of ItemModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ItemModelCopyWith<ItemModel> get copyWith => _$ItemModelCopyWithImpl<ItemModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ItemModel&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.group, group) || other.group == group)&&(identical(other.material, material) || other.material == material)&&(identical(other.customModelData, customModelData) || other.customModelData == customModelData)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.enchantments, enchantments) || other.enchantments == enchantments)&&(identical(other.lore, lore) || other.lore == lore)&&(identical(other.flags, flags) || other.flags == flags)&&(identical(other.isLoadingMoreEnchantments, isLoadingMoreEnchantments) || other.isLoadingMoreEnchantments == isLoadingMoreEnchantments)&&(identical(other.isLoadingMoreLoreLines, isLoadingMoreLoreLines) || other.isLoadingMoreLoreLines == isLoadingMoreLoreLines));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ItemModel&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.groupName, groupName) || other.groupName == groupName)&&(identical(other.material, material) || other.material == material)&&(identical(other.customModelData, customModelData) || other.customModelData == customModelData)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.enchantments, enchantments) || other.enchantments == enchantments)&&(identical(other.lore, lore) || other.lore == lore)&&(identical(other.flags, flags) || other.flags == flags)&&(identical(other.isLoadingMoreEnchantments, isLoadingMoreEnchantments) || other.isLoadingMoreEnchantments == isLoadingMoreEnchantments)&&(identical(other.isLoadingMoreLoreLines, isLoadingMoreLoreLines) || other.isLoadingMoreLoreLines == isLoadingMoreLoreLines));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uiName,id,variableName,comment,displayName,group,material,customModelData,amount,enchantments,lore,flags,isLoadingMoreEnchantments,isLoadingMoreLoreLines);
+int get hashCode => Object.hash(runtimeType,uiName,id,variableName,comment,displayName,groupName,material,customModelData,amount,enchantments,lore,flags,isLoadingMoreEnchantments,isLoadingMoreLoreLines);
 
 @override
 String toString() {
-  return 'ItemModel(uiName: $uiName, id: $id, variableName: $variableName, comment: $comment, displayName: $displayName, group: $group, material: $material, customModelData: $customModelData, amount: $amount, enchantments: $enchantments, lore: $lore, flags: $flags, isLoadingMoreEnchantments: $isLoadingMoreEnchantments, isLoadingMoreLoreLines: $isLoadingMoreLoreLines)';
+  return 'ItemModel(uiName: $uiName, id: $id, variableName: $variableName, comment: $comment, displayName: $displayName, groupName: $groupName, material: $material, customModelData: $customModelData, amount: $amount, enchantments: $enchantments, lore: $lore, flags: $flags, isLoadingMoreEnchantments: $isLoadingMoreEnchantments, isLoadingMoreLoreLines: $isLoadingMoreLoreLines)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ItemModelCopyWith<$Res>  {
   factory $ItemModelCopyWith(ItemModel value, $Res Function(ItemModel) _then) = _$ItemModelCopyWithImpl;
 @useResult
 $Res call({
- String uiName, String? id, String? variableName, String? comment, String? displayName, EnchantmentGroup group, String? material, int? customModelData, int? amount, PaginatedResult<ItemEnchantmentDto> enchantments, PaginatedResult<ItemLoreDto> lore, PaginatedResult<ItemFlagDto> flags,@JsonKey(includeToJson: false) bool isLoadingMoreEnchantments,@JsonKey(includeToJson: false) bool isLoadingMoreLoreLines
+ String uiName, String? id, String? variableName, String? comment, String? displayName, EnchantmentGroup groupName, String? material, int? customModelData, int? amount, PaginatedResult<ItemEnchantmentDto> enchantments, PaginatedResult<ItemLoreDto> lore, PaginatedResult<ItemFlagDto> flags,@JsonKey(includeToJson: false) bool isLoadingMoreEnchantments,@JsonKey(includeToJson: false) bool isLoadingMoreLoreLines
 });
 
 
@@ -65,14 +65,14 @@ class _$ItemModelCopyWithImpl<$Res>
 
 /// Create a copy of ItemModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? comment = freezed,Object? displayName = freezed,Object? group = null,Object? material = freezed,Object? customModelData = freezed,Object? amount = freezed,Object? enchantments = null,Object? lore = null,Object? flags = null,Object? isLoadingMoreEnchantments = null,Object? isLoadingMoreLoreLines = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? comment = freezed,Object? displayName = freezed,Object? groupName = null,Object? material = freezed,Object? customModelData = freezed,Object? amount = freezed,Object? enchantments = null,Object? lore = null,Object? flags = null,Object? isLoadingMoreEnchantments = null,Object? isLoadingMoreLoreLines = null,}) {
   return _then(_self.copyWith(
 uiName: null == uiName ? _self.uiName : uiName // ignore: cast_nullable_to_non_nullable
 as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,variableName: freezed == variableName ? _self.variableName : variableName // ignore: cast_nullable_to_non_nullable
 as String?,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
 as String?,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
-as String?,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
+as String?,groupName: null == groupName ? _self.groupName : groupName // ignore: cast_nullable_to_non_nullable
 as EnchantmentGroup,material: freezed == material ? _self.material : material // ignore: cast_nullable_to_non_nullable
 as String?,customModelData: freezed == customModelData ? _self.customModelData : customModelData // ignore: cast_nullable_to_non_nullable
 as int?,amount: freezed == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
@@ -166,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uiName,  String? id,  String? variableName,  String? comment,  String? displayName,  EnchantmentGroup group,  String? material,  int? customModelData,  int? amount,  PaginatedResult<ItemEnchantmentDto> enchantments,  PaginatedResult<ItemLoreDto> lore,  PaginatedResult<ItemFlagDto> flags, @JsonKey(includeToJson: false)  bool isLoadingMoreEnchantments, @JsonKey(includeToJson: false)  bool isLoadingMoreLoreLines)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uiName,  String? id,  String? variableName,  String? comment,  String? displayName,  EnchantmentGroup groupName,  String? material,  int? customModelData,  int? amount,  PaginatedResult<ItemEnchantmentDto> enchantments,  PaginatedResult<ItemLoreDto> lore,  PaginatedResult<ItemFlagDto> flags, @JsonKey(includeToJson: false)  bool isLoadingMoreEnchantments, @JsonKey(includeToJson: false)  bool isLoadingMoreLoreLines)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ItemModel() when $default != null:
-return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.displayName,_that.group,_that.material,_that.customModelData,_that.amount,_that.enchantments,_that.lore,_that.flags,_that.isLoadingMoreEnchantments,_that.isLoadingMoreLoreLines);case _:
+return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.displayName,_that.groupName,_that.material,_that.customModelData,_that.amount,_that.enchantments,_that.lore,_that.flags,_that.isLoadingMoreEnchantments,_that.isLoadingMoreLoreLines);case _:
   return orElse();
 
 }
@@ -187,10 +187,10 @@ return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.dis
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uiName,  String? id,  String? variableName,  String? comment,  String? displayName,  EnchantmentGroup group,  String? material,  int? customModelData,  int? amount,  PaginatedResult<ItemEnchantmentDto> enchantments,  PaginatedResult<ItemLoreDto> lore,  PaginatedResult<ItemFlagDto> flags, @JsonKey(includeToJson: false)  bool isLoadingMoreEnchantments, @JsonKey(includeToJson: false)  bool isLoadingMoreLoreLines)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uiName,  String? id,  String? variableName,  String? comment,  String? displayName,  EnchantmentGroup groupName,  String? material,  int? customModelData,  int? amount,  PaginatedResult<ItemEnchantmentDto> enchantments,  PaginatedResult<ItemLoreDto> lore,  PaginatedResult<ItemFlagDto> flags, @JsonKey(includeToJson: false)  bool isLoadingMoreEnchantments, @JsonKey(includeToJson: false)  bool isLoadingMoreLoreLines)  $default,) {final _that = this;
 switch (_that) {
 case _ItemModel():
-return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.displayName,_that.group,_that.material,_that.customModelData,_that.amount,_that.enchantments,_that.lore,_that.flags,_that.isLoadingMoreEnchantments,_that.isLoadingMoreLoreLines);case _:
+return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.displayName,_that.groupName,_that.material,_that.customModelData,_that.amount,_that.enchantments,_that.lore,_that.flags,_that.isLoadingMoreEnchantments,_that.isLoadingMoreLoreLines);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -207,10 +207,10 @@ return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.dis
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uiName,  String? id,  String? variableName,  String? comment,  String? displayName,  EnchantmentGroup group,  String? material,  int? customModelData,  int? amount,  PaginatedResult<ItemEnchantmentDto> enchantments,  PaginatedResult<ItemLoreDto> lore,  PaginatedResult<ItemFlagDto> flags, @JsonKey(includeToJson: false)  bool isLoadingMoreEnchantments, @JsonKey(includeToJson: false)  bool isLoadingMoreLoreLines)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uiName,  String? id,  String? variableName,  String? comment,  String? displayName,  EnchantmentGroup groupName,  String? material,  int? customModelData,  int? amount,  PaginatedResult<ItemEnchantmentDto> enchantments,  PaginatedResult<ItemLoreDto> lore,  PaginatedResult<ItemFlagDto> flags, @JsonKey(includeToJson: false)  bool isLoadingMoreEnchantments, @JsonKey(includeToJson: false)  bool isLoadingMoreLoreLines)?  $default,) {final _that = this;
 switch (_that) {
 case _ItemModel() when $default != null:
-return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.displayName,_that.group,_that.material,_that.customModelData,_that.amount,_that.enchantments,_that.lore,_that.flags,_that.isLoadingMoreEnchantments,_that.isLoadingMoreLoreLines);case _:
+return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.displayName,_that.groupName,_that.material,_that.customModelData,_that.amount,_that.enchantments,_that.lore,_that.flags,_that.isLoadingMoreEnchantments,_that.isLoadingMoreLoreLines);case _:
   return null;
 
 }
@@ -222,7 +222,7 @@ return $default(_that.uiName,_that.id,_that.variableName,_that.comment,_that.dis
 @JsonSerializable()
 
 class _ItemModel extends ItemModel {
-  const _ItemModel({required this.uiName, this.id, this.variableName, this.comment, this.displayName, this.group = EnchantmentGroup.meta, this.material, this.customModelData, this.amount = 1, this.enchantments = ItemModel._defaultEnchantments, this.lore = ItemModel._defaultLore, this.flags = ItemModel._defaultFlags, @JsonKey(includeToJson: false) this.isLoadingMoreEnchantments = false, @JsonKey(includeToJson: false) this.isLoadingMoreLoreLines = false}): super._();
+  const _ItemModel({required this.uiName, this.id, this.variableName, this.comment, this.displayName, this.groupName = EnchantmentGroup.meta, this.material, this.customModelData, this.amount = 1, this.enchantments = ItemModel.defaultEnchantments, this.lore = ItemModel._defaultLore, this.flags = ItemModel._defaultFlags, @JsonKey(includeToJson: false) this.isLoadingMoreEnchantments = false, @JsonKey(includeToJson: false) this.isLoadingMoreLoreLines = false}): super._();
   factory _ItemModel.fromJson(Map<String, dynamic> json) => _$ItemModelFromJson(json);
 
 @override final  String uiName;
@@ -230,7 +230,7 @@ class _ItemModel extends ItemModel {
 @override final  String? variableName;
 @override final  String? comment;
 @override final  String? displayName;
-@override@JsonKey() final  EnchantmentGroup group;
+@override@JsonKey() final  EnchantmentGroup groupName;
 @override final  String? material;
 @override final  int? customModelData;
 @override@JsonKey() final  int? amount;
@@ -253,16 +253,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ItemModel&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.group, group) || other.group == group)&&(identical(other.material, material) || other.material == material)&&(identical(other.customModelData, customModelData) || other.customModelData == customModelData)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.enchantments, enchantments) || other.enchantments == enchantments)&&(identical(other.lore, lore) || other.lore == lore)&&(identical(other.flags, flags) || other.flags == flags)&&(identical(other.isLoadingMoreEnchantments, isLoadingMoreEnchantments) || other.isLoadingMoreEnchantments == isLoadingMoreEnchantments)&&(identical(other.isLoadingMoreLoreLines, isLoadingMoreLoreLines) || other.isLoadingMoreLoreLines == isLoadingMoreLoreLines));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ItemModel&&(identical(other.uiName, uiName) || other.uiName == uiName)&&(identical(other.id, id) || other.id == id)&&(identical(other.variableName, variableName) || other.variableName == variableName)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.groupName, groupName) || other.groupName == groupName)&&(identical(other.material, material) || other.material == material)&&(identical(other.customModelData, customModelData) || other.customModelData == customModelData)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.enchantments, enchantments) || other.enchantments == enchantments)&&(identical(other.lore, lore) || other.lore == lore)&&(identical(other.flags, flags) || other.flags == flags)&&(identical(other.isLoadingMoreEnchantments, isLoadingMoreEnchantments) || other.isLoadingMoreEnchantments == isLoadingMoreEnchantments)&&(identical(other.isLoadingMoreLoreLines, isLoadingMoreLoreLines) || other.isLoadingMoreLoreLines == isLoadingMoreLoreLines));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uiName,id,variableName,comment,displayName,group,material,customModelData,amount,enchantments,lore,flags,isLoadingMoreEnchantments,isLoadingMoreLoreLines);
+int get hashCode => Object.hash(runtimeType,uiName,id,variableName,comment,displayName,groupName,material,customModelData,amount,enchantments,lore,flags,isLoadingMoreEnchantments,isLoadingMoreLoreLines);
 
 @override
 String toString() {
-  return 'ItemModel(uiName: $uiName, id: $id, variableName: $variableName, comment: $comment, displayName: $displayName, group: $group, material: $material, customModelData: $customModelData, amount: $amount, enchantments: $enchantments, lore: $lore, flags: $flags, isLoadingMoreEnchantments: $isLoadingMoreEnchantments, isLoadingMoreLoreLines: $isLoadingMoreLoreLines)';
+  return 'ItemModel(uiName: $uiName, id: $id, variableName: $variableName, comment: $comment, displayName: $displayName, groupName: $groupName, material: $material, customModelData: $customModelData, amount: $amount, enchantments: $enchantments, lore: $lore, flags: $flags, isLoadingMoreEnchantments: $isLoadingMoreEnchantments, isLoadingMoreLoreLines: $isLoadingMoreLoreLines)';
 }
 
 
@@ -273,7 +273,7 @@ abstract mixin class _$ItemModelCopyWith<$Res> implements $ItemModelCopyWith<$Re
   factory _$ItemModelCopyWith(_ItemModel value, $Res Function(_ItemModel) _then) = __$ItemModelCopyWithImpl;
 @override @useResult
 $Res call({
- String uiName, String? id, String? variableName, String? comment, String? displayName, EnchantmentGroup group, String? material, int? customModelData, int? amount, PaginatedResult<ItemEnchantmentDto> enchantments, PaginatedResult<ItemLoreDto> lore, PaginatedResult<ItemFlagDto> flags,@JsonKey(includeToJson: false) bool isLoadingMoreEnchantments,@JsonKey(includeToJson: false) bool isLoadingMoreLoreLines
+ String uiName, String? id, String? variableName, String? comment, String? displayName, EnchantmentGroup groupName, String? material, int? customModelData, int? amount, PaginatedResult<ItemEnchantmentDto> enchantments, PaginatedResult<ItemLoreDto> lore, PaginatedResult<ItemFlagDto> flags,@JsonKey(includeToJson: false) bool isLoadingMoreEnchantments,@JsonKey(includeToJson: false) bool isLoadingMoreLoreLines
 });
 
 
@@ -290,14 +290,14 @@ class __$ItemModelCopyWithImpl<$Res>
 
 /// Create a copy of ItemModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? comment = freezed,Object? displayName = freezed,Object? group = null,Object? material = freezed,Object? customModelData = freezed,Object? amount = freezed,Object? enchantments = null,Object? lore = null,Object? flags = null,Object? isLoadingMoreEnchantments = null,Object? isLoadingMoreLoreLines = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uiName = null,Object? id = freezed,Object? variableName = freezed,Object? comment = freezed,Object? displayName = freezed,Object? groupName = null,Object? material = freezed,Object? customModelData = freezed,Object? amount = freezed,Object? enchantments = null,Object? lore = null,Object? flags = null,Object? isLoadingMoreEnchantments = null,Object? isLoadingMoreLoreLines = null,}) {
   return _then(_ItemModel(
 uiName: null == uiName ? _self.uiName : uiName // ignore: cast_nullable_to_non_nullable
 as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,variableName: freezed == variableName ? _self.variableName : variableName // ignore: cast_nullable_to_non_nullable
 as String?,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
 as String?,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
-as String?,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
+as String?,groupName: null == groupName ? _self.groupName : groupName // ignore: cast_nullable_to_non_nullable
 as EnchantmentGroup,material: freezed == material ? _self.material : material // ignore: cast_nullable_to_non_nullable
 as String?,customModelData: freezed == customModelData ? _self.customModelData : customModelData // ignore: cast_nullable_to_non_nullable
 as int?,amount: freezed == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable

@@ -55,7 +55,7 @@ abstract class ItemModel with _$ItemModel, DataModel {
     String? variableName,
     String? comment,
     String? displayName,
-    @Default(EnchantmentGroup.meta) EnchantmentGroup group,
+    @Default(EnchantmentGroup.meta) EnchantmentGroup groupName,
     String? material,
     int? customModelData,
     @Default(1) int? amount,
