@@ -21,6 +21,9 @@ class EnchantmentView extends Vm with EnchantmentReducer {
 
   final ItemModel selected;
 
+  // General cache of the root enchantments which are available
+  List<Enchantment> get enchantments => getEnchantments(selected);
+
   /// A lookup map of selected enchantments for efficient access.
   Map<String, ItemEnchantmentDto> get selectedEnchantmentMap => {
     for (var e in selected.enchantments.items) e.name: e,
@@ -28,8 +31,7 @@ class EnchantmentView extends Vm with EnchantmentReducer {
 
   /// A filtered list of active enchantments based on what's been selected.
   List<Enchantment> get activeEnchantments {
-    final allEnchantments = getEnchantments(selected);
-    return allEnchantments
+    return enchantments
         .where(
           (ench) => selectedEnchantmentMap.containsKey(ench.minecraftValue),
         )

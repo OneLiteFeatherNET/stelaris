@@ -51,7 +51,7 @@ class ItemEnchantmentPage extends StatelessWidget {
   }
 
   void _showAddEnchantmentDialog(BuildContext context, EnchantmentView vm) {
-    if (vm.activeEnchantments.length - vm.selectedEnchantmentMap.length == 0) {
+    if (vm.selectedEnchantmentMap.length >= vm.enchantments.length) {
       ScaffoldMessenger.of(context)
           .showSnackBar(
         InfoBarFactory().create('All enchantments has been set for this group!')
