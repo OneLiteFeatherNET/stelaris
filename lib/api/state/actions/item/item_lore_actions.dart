@@ -19,7 +19,6 @@ class ItemLoreFetchAction extends ReduxAction<AppState> {
       size: selectedItem.lore.pageSize == 0 ? 10 : selectedItem.lore.pageSize,
     );
     final updatedItem = selectedItem.copyWith(lore: result);
-    debugPrint("Init ${updatedItem.lore.items.length}");
     return state.copyWith(selectedItem: updatedItem);
   }
 }
