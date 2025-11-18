@@ -104,8 +104,8 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
             keyboardType: numberInput,
             inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
             validator: (value) {
-              if (value == null) return;
-              _validateInput(
+              if (value == null) return null;
+              return _validateInput(
                 value: value,
                 maxLevel: _selected.value?.maxLevel ?? 1,);
             },
