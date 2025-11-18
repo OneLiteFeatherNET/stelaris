@@ -56,7 +56,6 @@ class ItemLoreLoadNextPageAction extends ReduxAction<AppState> {
         currentPage: nextResult.currentPage,
       );
 
-      debugPrint("Ipdate ${updatedLore.items.length}");
       return state.copyWith(
         selectedItem: selectedItem.copyWith(lore: updatedLore),
       );
