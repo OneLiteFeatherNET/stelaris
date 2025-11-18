@@ -1,12 +1,10 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:stelaris/api/model/item/item_enchantment_dto.dart';
 import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/feature/base/action/entry_actions.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
-import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/feature/item/enchantment/dialog/item_enchantment_update_dialog.dart';
 import 'package:vulpes_data/api/enchantment.dart';
 
 class EnchantmentItem extends StatefulWidget {
@@ -75,12 +73,18 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
             ],
           ),
           trailing: EntryActions(
-            onEdit: () {},
+            onEdit: () => _showUpdateDialog(widget.enchantment, widget.dto),
             onDelete: () => _showDeleteDialog(widget.dto),
           ),
         ),
       ),
     );
+  }
+
+  void _showUpdateDialog(Enchantment enchantment, ItemEnchantmentDto dto) {
+    showDialog(context: context, builder: (BuildContext context) {
+        return ItemEnchantmentUpdateDialog(enchantment: enchantment, dto: dto);
+    });
   }
 
   void _showDeleteDialog(ItemEnchantmentDto dto) {
@@ -90,8 +94,9 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
         return DeleteDialog<ItemEnchantmentDto>(
           title: const Text('Delete enchantment', textAlign: TextAlign.center),
           header: [
-            const TextSpan(
+            TextSpan(
               text: 'Are you sure you want to delete this enchantment?',
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
           value: dto,
@@ -102,67 +107,5 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
         );
       },
     );
-  }
-
-  void _showDialog(ItemEnchantmentDto dto) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return EntryUpdateDialog(
-          title: 'Edit enchantment',
-          formKey: GlobalKey<FormState>(),
-          valueUpdate: (value) {
-            final updatedDto = dto.copyWith(level: int.parse(value));
-            //context.dispatch(ItemEnchantmentUpdateAction(updatedDto));
-            Navigator.pop(context, false);
-          },
-          formFieldValidator: (value) {
-            final String input = value as String;
-            return checkIfEmptyAndReturnErrorString(input, context);
-          },
-          data: dto.level.toString(),
-        );
-      },
-    );
-  }
-}
-
-// Input formatter to limit the value range
-class LimitRangeTextInputFormatter extends TextInputFormatter {
-  final int min;
-  final int max;
-
-  LimitRangeTextInputFormatter(this.min, this.max);
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    if (newValue.text.isEmpty) {
-      return newValue;
-    }
-
-    final int? value = int.tryParse(newValue.text);
-
-    if (value == null) {
-      return oldValue;
-    }
-
-    if (value < min) {
-      return TextEditingValue(
-        text: min.toString(),
-        selection: TextSelection.collapsed(offset: min.toString().length),
-      );
-    }
-
-    if (value > max) {
-      return TextEditingValue(
-        text: max.toString(),
-        selection: TextSelection.collapsed(offset: max.toString().length),
-      );
-    }
-
-    return newValue;
   }
 }
