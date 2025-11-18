@@ -1,20 +1,23 @@
+import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stelaris/api/model/item/item_enchantment_dto.dart';
+import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
+import 'package:stelaris/feature/base/action/entry_actions.dart';
+import 'package:stelaris/feature/dialogs/delete_dialog.dart';
+import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris/util/functions.dart';
 import 'package:vulpes_data/api/enchantment.dart';
 
 class EnchantmentItem extends StatefulWidget {
   const EnchantmentItem({
+    required this.dto,
     required this.enchantment,
-    required this.level,
-    required this.onLevelChanged,
-    required this.onDelete,
     super.key,
   });
 
+  final ItemEnchantmentDto dto;
   final Enchantment enchantment;
-  final int level;
-  final ValueChanged<int> onLevelChanged;
-  final VoidCallback onDelete;
 
   @override
   State<EnchantmentItem> createState() => _EnchantmentItemState();
@@ -26,14 +29,14 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
   @override
   void initState() {
     super.initState();
-    _levelController = TextEditingController(text: widget.level.toString());
+    _levelController = TextEditingController(text: widget.dto.level.toString());
   }
 
   @override
   void didUpdateWidget(EnchantmentItem oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.level != widget.level) {
-      _levelController.text = widget.level.toString();
+    if (oldWidget.dto.level != widget.dto.level) {
+      _levelController.text = widget.dto.level.toString();
     }
   }
 
@@ -64,49 +67,62 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
           subtitle: Row(
             children: [
               const Text('Level: '),
-              SizedBox(
-                width: 64,
-                child: TextField(
-                  controller: _levelController,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LimitRangeTextInputFormatter(
-                      1,
-                      widget.enchantment.maxLevel,
-                    ),
-                  ],
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 8,
-                    ),
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    final newLevel = int.tryParse(value) ?? 1;
-                    if (newLevel != widget.level) {
-                      widget.onLevelChanged(newLevel);
-                    }
-                  },
-                ),
-              ),
+              Text(widget.dto.level.toString()),
               Text(
                 ' / ${widget.enchantment.maxLevel}',
                 style: theme.textTheme.bodySmall,
               ),
             ],
           ),
-          trailing: Text(
-            widget.enchantment.displayName,
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontStyle: FontStyle.italic,
-              color: theme.colorScheme.secondary,
-            ),
+          trailing: EntryActions(
+            onEdit: () {},
+            onDelete: () => _showDeleteDialog(widget.dto),
           ),
         ),
       ),
+    );
+  }
+
+  void _showDeleteDialog(ItemEnchantmentDto dto) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteDialog<ItemEnchantmentDto>(
+          title: const Text('Delete enchantment', textAlign: TextAlign.center),
+          header: [
+            const TextSpan(
+              text: 'Are you sure you want to delete this enchantment?',
+            ),
+          ],
+          value: dto,
+          successfully: (value) {
+            context.dispatch(ItemEnchantmentDeleteAction(value));
+            return true;
+          },
+        );
+      },
+    );
+  }
+
+  void _showDialog(ItemEnchantmentDto dto) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return EntryUpdateDialog(
+          title: 'Edit enchantment',
+          formKey: GlobalKey<FormState>(),
+          valueUpdate: (value) {
+            final updatedDto = dto.copyWith(level: int.parse(value));
+            //context.dispatch(ItemEnchantmentUpdateAction(updatedDto));
+            Navigator.pop(context, false);
+          },
+          formFieldValidator: (value) {
+            final String input = value as String;
+            return checkIfEmptyAndReturnErrorString(input, context);
+          },
+          data: dto.level.toString(),
+        );
+      },
     );
   }
 }
