@@ -7,7 +7,6 @@ import 'package:stelaris/api/state/factory/item/selected_item_state.dart';
 import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/feature/item/general/item_general_page.dart';
-import 'package:stelaris/feature/item/general/item_group_card.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -57,10 +56,6 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
                               spacing: 16,
                               runSpacing: 16,
                               children: [
-                                ItemGroupCard(
-                                  model: vm.selected,
-                                  groupKey: GlobalKey<FormState>(),
-                                ),
                                 TextInputCard<String>(
                                   display: context.l10n.card_material,
                                   hintText: defaultMaterial,
