@@ -55,11 +55,8 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
             const SizedBox(height: 16),
             vm.hasNoFiles
                 ? const Flexible(flex: 1, child: EmptyDataWidget())
-                : Expanded(
-              child: _buildListView(vm),
-            ),
-          ]
-          ,
+                : Expanded(child: _buildListView(vm)),
+          ],
         );
       },
     );
@@ -82,17 +79,15 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
       itemCount: itemCount,
       clipBehavior: Clip.none,
       itemBuilder: (context, index) {
+        final SoundFileSource source = files.items[index];
         if (index >= files.items.length) {
           return _buildFooter(state.isLoadingFiles);
         }
         return ConstrainedBox(
-          constraints: const BoxConstraints(
-            minWidth: 220,
-            maxWidth: 400,
-          ),
+          constraints: const BoxConstraints(minWidth: 220, maxWidth: 400),
           child: SoundFileCard(
-            source: files.items[index],
-            onDeleteRequested: () => _confirmAndDelete(context, files.items[index]),
+            source: source,
+            onDeleteRequested: () => _confirmAndDelete(source),
           ),
         );
       },
@@ -105,7 +100,7 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
     final SelectedSoundView view = _vm!;
 
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200 &&
+            _scrollController.position.maxScrollExtent - 200 &&
         view.hasNextPage &&
         !view.isLoadingFiles) {
       view.onLoadMoreSoundFiles();
@@ -118,36 +113,35 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
       child: Center(
         child: isLoading
             ? const SizedBox(
-          width: 20,
-          height: 20,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        )
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
             : const SizedBox.shrink(),
       ),
     );
   }
 
-  Future<void> _confirmAndDelete(BuildContext context, SoundFileSource source) async {
-    final bool? confirmed = await showDialog<bool>(
+  Future<void> _confirmAndDelete(SoundFileSource source) async {
+    showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (BuildContext context) => AlertDialog(
         title: const Text('Delete file'),
         content: const Text('Unlink this file from the sound event?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
+            onPressed: () => Navigator.of(context).pop(false),
             child: const Text('Cancel'),
           ),
           FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+              context.dispatch(SoundFileSourceDeleteAction(source));
+            },
             child: const Text('Delete'),
           ),
         ],
       ),
     );
-
-    if (confirmed == true) {
-      context.dispatch(SoundFileSourceDeleteAction(source));
-    }
   }
 }
