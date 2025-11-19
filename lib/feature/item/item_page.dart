@@ -102,7 +102,7 @@ class ItemPage extends StatelessWidget {
       'General' => ItemGeneralPage(key: ValueKey('item_${listenable.id}')),
       'Meta' => const ItemMetaPage(),
       'Enchantments' => const ItemEnchantmentPage(),
-      'Lore' => LorePage(key: UniqueKey()),
+      'Lore' => LorePage(key: ValueKey('item_${listenable.id}')),
       _ => const Placeholder(), // optional default case
     };
   }

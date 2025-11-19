@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ItemLoreDto {
 
- String get id; String get text; int get orderIndex;
+ String get text; String? get id; int get orderIndex;
 /// Create a copy of ItemLoreDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ItemLoreDtoCopyWith<ItemLoreDto> get copyWith => _$ItemLoreDtoCopyWithImpl<Item
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ItemLoreDto&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.orderIndex, orderIndex) || other.orderIndex == orderIndex));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ItemLoreDto&&(identical(other.text, text) || other.text == text)&&(identical(other.id, id) || other.id == id)&&(identical(other.orderIndex, orderIndex) || other.orderIndex == orderIndex));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,text,orderIndex);
+int get hashCode => Object.hash(runtimeType,text,id,orderIndex);
 
 @override
 String toString() {
-  return 'ItemLoreDto(id: $id, text: $text, orderIndex: $orderIndex)';
+  return 'ItemLoreDto(text: $text, id: $id, orderIndex: $orderIndex)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ItemLoreDtoCopyWith<$Res>  {
   factory $ItemLoreDtoCopyWith(ItemLoreDto value, $Res Function(ItemLoreDto) _then) = _$ItemLoreDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String text, int orderIndex
+ String text, String? id, int orderIndex
 });
 
 
@@ -65,11 +65,11 @@ class _$ItemLoreDtoCopyWithImpl<$Res>
 
 /// Create a copy of ItemLoreDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? text = null,Object? orderIndex = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? text = null,Object? id = freezed,Object? orderIndex = null,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
-as String,orderIndex: null == orderIndex ? _self.orderIndex : orderIndex // ignore: cast_nullable_to_non_nullable
+text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,orderIndex: null == orderIndex ? _self.orderIndex : orderIndex // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -155,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String text,  int orderIndex)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String text,  String? id,  int orderIndex)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ItemLoreDto() when $default != null:
-return $default(_that.id,_that.text,_that.orderIndex);case _:
+return $default(_that.text,_that.id,_that.orderIndex);case _:
   return orElse();
 
 }
@@ -176,10 +176,10 @@ return $default(_that.id,_that.text,_that.orderIndex);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String text,  int orderIndex)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String text,  String? id,  int orderIndex)  $default,) {final _that = this;
 switch (_that) {
 case _ItemLoreDto():
-return $default(_that.id,_that.text,_that.orderIndex);case _:
+return $default(_that.text,_that.id,_that.orderIndex);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +196,10 @@ return $default(_that.id,_that.text,_that.orderIndex);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String text,  int orderIndex)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String text,  String? id,  int orderIndex)?  $default,) {final _that = this;
 switch (_that) {
 case _ItemLoreDto() when $default != null:
-return $default(_that.id,_that.text,_that.orderIndex);case _:
+return $default(_that.text,_that.id,_that.orderIndex);case _:
   return null;
 
 }
@@ -211,12 +211,12 @@ return $default(_that.id,_that.text,_that.orderIndex);case _:
 @JsonSerializable()
 
 class _ItemLoreDto extends ItemLoreDto {
-  const _ItemLoreDto({required this.id, required this.text, required this.orderIndex}): super._();
+  const _ItemLoreDto({required this.text, this.id = null, this.orderIndex = 0}): super._();
   factory _ItemLoreDto.fromJson(Map<String, dynamic> json) => _$ItemLoreDtoFromJson(json);
 
-@override final  String id;
 @override final  String text;
-@override final  int orderIndex;
+@override@JsonKey() final  String? id;
+@override@JsonKey() final  int orderIndex;
 
 /// Create a copy of ItemLoreDto
 /// with the given fields replaced by the non-null parameter values.
@@ -231,16 +231,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ItemLoreDto&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.orderIndex, orderIndex) || other.orderIndex == orderIndex));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ItemLoreDto&&(identical(other.text, text) || other.text == text)&&(identical(other.id, id) || other.id == id)&&(identical(other.orderIndex, orderIndex) || other.orderIndex == orderIndex));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,text,orderIndex);
+int get hashCode => Object.hash(runtimeType,text,id,orderIndex);
 
 @override
 String toString() {
-  return 'ItemLoreDto(id: $id, text: $text, orderIndex: $orderIndex)';
+  return 'ItemLoreDto(text: $text, id: $id, orderIndex: $orderIndex)';
 }
 
 
@@ -251,7 +251,7 @@ abstract mixin class _$ItemLoreDtoCopyWith<$Res> implements $ItemLoreDtoCopyWith
   factory _$ItemLoreDtoCopyWith(_ItemLoreDto value, $Res Function(_ItemLoreDto) _then) = __$ItemLoreDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String text, int orderIndex
+ String text, String? id, int orderIndex
 });
 
 
@@ -268,11 +268,11 @@ class __$ItemLoreDtoCopyWithImpl<$Res>
 
 /// Create a copy of ItemLoreDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? text = null,Object? orderIndex = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? text = null,Object? id = freezed,Object? orderIndex = null,}) {
   return _then(_ItemLoreDto(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
-as String,orderIndex: null == orderIndex ? _self.orderIndex : orderIndex // ignore: cast_nullable_to_non_nullable
+text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+as String,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,orderIndex: null == orderIndex ? _self.orderIndex : orderIndex // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

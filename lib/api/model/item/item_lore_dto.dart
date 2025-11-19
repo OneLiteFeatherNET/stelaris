@@ -10,9 +10,9 @@ abstract class ItemLoreDto with _$ItemLoreDto {
   const ItemLoreDto._();
 
   const factory ItemLoreDto({
-    required String id,
     required String text,
-    required int orderIndex,
+    @Default(null) String? id,
+    @Default(0) int orderIndex,
   }) = _ItemLoreDto;
 
   factory ItemLoreDto.fromJson(Map<String, dynamic> json) =>

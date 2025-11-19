@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris/api/model/font/font_string_dto.dart';
-
-import 'actions/font_char_entry_actions.dart';
+import 'package:stelaris/feature/base/action/entry_actions.dart';
 
 class CharListItem extends StatelessWidget {
   const CharListItem({
@@ -30,7 +29,7 @@ class CharListItem extends StatelessWidget {
             vertical: 4,
           ),
           title: Text(fontString.line),
-          trailing: FontCharEntryActions(
+          trailing: EntryActions(
             onEdit: onEdit,
             onDelete: onDelete,
           ),

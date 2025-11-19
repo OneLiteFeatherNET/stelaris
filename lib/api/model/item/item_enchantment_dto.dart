@@ -9,9 +9,9 @@ abstract class ItemEnchantmentDto with _$ItemEnchantmentDto {
   const ItemEnchantmentDto._();
 
   const factory ItemEnchantmentDto({
-    required String id,
     required String name,
     required int level,
+    @Default(null) String? id,
   }) = _ItemEnchantmentDto;
 
   factory ItemEnchantmentDto.fromJson(Map<String, dynamic> json) =>

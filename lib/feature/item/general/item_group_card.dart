@@ -33,7 +33,7 @@ class ItemGroupCard extends StatelessWidget {
       valueUpdate: (EnchantmentGroup? value) {
         if (value == null) return;
         final EnchantmentGroup selected = value;
-        if (selected.hasSameGroup(model.group)) return;
+        if (selected.hasSameGroup(model.groupName)) return;
         showDialog(
           context: context,
           builder: (context) {
@@ -69,8 +69,8 @@ class ItemGroupCard extends StatelessWidget {
                   child: Text(context.l10n.button_yes),
                   onPressed: () {
                     final newEntry = model.copyWith(
-                      group: value,
-                      enchantments: {},
+                      groupName: value,
+                      enchantments: ItemModel.defaultEnchantments,
                     );
                     context.dispatch(UpdateItemAction(newEntry));
                     Navigator.of(context).pop(true);
@@ -81,7 +81,7 @@ class ItemGroupCard extends StatelessWidget {
           },
         );
       },
-      defaultValue: ((value) => model.group),
+      defaultValue: (value) => value.groupName,
     );
   }
 }

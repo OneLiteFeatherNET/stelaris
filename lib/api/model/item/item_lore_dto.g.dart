@@ -7,14 +7,14 @@ part of 'item_lore_dto.dart';
 // **************************************************************************
 
 _ItemLoreDto _$ItemLoreDtoFromJson(Map<String, dynamic> json) => _ItemLoreDto(
-  id: json['id'] as String,
   text: json['text'] as String,
-  orderIndex: (json['orderIndex'] as num).toInt(),
+  id: json['id'] as String? ?? null,
+  orderIndex: (json['orderIndex'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$ItemLoreDtoToJson(_ItemLoreDto instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'text': instance.text,
+      'id': instance.id,
       'orderIndex': instance.orderIndex,
     };

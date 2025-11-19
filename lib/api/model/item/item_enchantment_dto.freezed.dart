@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ItemEnchantmentDto {
 
- String get id; String get name; int get level;
+ String get name; int get level; String? get id;
 /// Create a copy of ItemEnchantmentDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ItemEnchantmentDtoCopyWith<ItemEnchantmentDto> get copyWith => _$ItemEnchantmen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ItemEnchantmentDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.level, level) || other.level == level));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ItemEnchantmentDto&&(identical(other.name, name) || other.name == name)&&(identical(other.level, level) || other.level == level)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,level);
+int get hashCode => Object.hash(runtimeType,name,level,id);
 
 @override
 String toString() {
-  return 'ItemEnchantmentDto(id: $id, name: $name, level: $level)';
+  return 'ItemEnchantmentDto(name: $name, level: $level, id: $id)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ItemEnchantmentDtoCopyWith<$Res>  {
   factory $ItemEnchantmentDtoCopyWith(ItemEnchantmentDto value, $Res Function(ItemEnchantmentDto) _then) = _$ItemEnchantmentDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, int level
+ String name, int level, String? id
 });
 
 
@@ -65,12 +65,12 @@ class _$ItemEnchantmentDtoCopyWithImpl<$Res>
 
 /// Create a copy of ItemEnchantmentDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? level = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? level = null,Object? id = freezed,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,level: null == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
-as int,
+as int,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -155,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  int level)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  int level,  String? id)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ItemEnchantmentDto() when $default != null:
-return $default(_that.id,_that.name,_that.level);case _:
+return $default(_that.name,_that.level,_that.id);case _:
   return orElse();
 
 }
@@ -176,10 +176,10 @@ return $default(_that.id,_that.name,_that.level);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  int level)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  int level,  String? id)  $default,) {final _that = this;
 switch (_that) {
 case _ItemEnchantmentDto():
-return $default(_that.id,_that.name,_that.level);case _:
+return $default(_that.name,_that.level,_that.id);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +196,10 @@ return $default(_that.id,_that.name,_that.level);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  int level)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  int level,  String? id)?  $default,) {final _that = this;
 switch (_that) {
 case _ItemEnchantmentDto() when $default != null:
-return $default(_that.id,_that.name,_that.level);case _:
+return $default(_that.name,_that.level,_that.id);case _:
   return null;
 
 }
@@ -211,12 +211,12 @@ return $default(_that.id,_that.name,_that.level);case _:
 @JsonSerializable()
 
 class _ItemEnchantmentDto extends ItemEnchantmentDto {
-  const _ItemEnchantmentDto({required this.id, required this.name, required this.level}): super._();
+  const _ItemEnchantmentDto({required this.name, required this.level, this.id = null}): super._();
   factory _ItemEnchantmentDto.fromJson(Map<String, dynamic> json) => _$ItemEnchantmentDtoFromJson(json);
 
-@override final  String id;
 @override final  String name;
 @override final  int level;
+@override@JsonKey() final  String? id;
 
 /// Create a copy of ItemEnchantmentDto
 /// with the given fields replaced by the non-null parameter values.
@@ -231,16 +231,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ItemEnchantmentDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.level, level) || other.level == level));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ItemEnchantmentDto&&(identical(other.name, name) || other.name == name)&&(identical(other.level, level) || other.level == level)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,level);
+int get hashCode => Object.hash(runtimeType,name,level,id);
 
 @override
 String toString() {
-  return 'ItemEnchantmentDto(id: $id, name: $name, level: $level)';
+  return 'ItemEnchantmentDto(name: $name, level: $level, id: $id)';
 }
 
 
@@ -251,7 +251,7 @@ abstract mixin class _$ItemEnchantmentDtoCopyWith<$Res> implements $ItemEnchantm
   factory _$ItemEnchantmentDtoCopyWith(_ItemEnchantmentDto value, $Res Function(_ItemEnchantmentDto) _then) = __$ItemEnchantmentDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, int level
+ String name, int level, String? id
 });
 
 
@@ -268,12 +268,12 @@ class __$ItemEnchantmentDtoCopyWithImpl<$Res>
 
 /// Create a copy of ItemEnchantmentDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? level = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? level = null,Object? id = freezed,}) {
   return _then(_ItemEnchantmentDto(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,level: null == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
-as int,
+as int,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

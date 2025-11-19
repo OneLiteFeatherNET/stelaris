@@ -47,11 +47,12 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
   void _updateEnchantments() {
     _enchantments = getEnchantments(widget.model, true)
         .map(
-          (e) => DropdownMenuItem<Enchantment>(
+          (e) =>
+          DropdownMenuItem<Enchantment>(
             value: e,
             child: Text(e.displayName),
           ),
-        )
+    )
         .toList();
     if (_enchantments.isNotEmpty) {
       _selected.value = _enchantments[0].value;
@@ -102,10 +103,12 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
             autocorrect: false,
             keyboardType: numberInput,
             inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
-            validator: (value) => _validateInput(
-              value: value ?? "",
-              maxLevel: _selected.value?.maxLevel ?? 1,
-            ),
+            validator: (value) {
+              if (value == null) return null;
+              return _validateInput(
+                value: value,
+                maxLevel: _selected.value?.maxLevel ?? 1,);
+            },
           ),
         ),
         verticalSpacing25,
@@ -133,7 +136,9 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
 
   ///
   String? _validateInput({required String value, required int maxLevel}) {
-    if (value.trim().isEmpty) {
+    if (value
+        .trim()
+        .isEmpty) {
       return 'Please enter a level';
     }
     final level = int.tryParse(value);
