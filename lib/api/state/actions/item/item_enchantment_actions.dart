@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/item/item_enchantment_dto.dart';
@@ -146,6 +148,58 @@ class ItemEnchantmentDeleteAction extends ReduxAction<AppState> {
           .where((l) => l.id != deletedEnchantment.id)
           .toList(),
       totalItems: enchantments.totalItems - 1,
+    );
+
+    final ItemModel updatedModel =
+    itemModel.copyWith(enchantments: updatedEnchantments);
+
+    return state.copyWith(selectedItem: updatedModel);
+  }
+}
+
+/// An action that updates an existing enchantment of the currently selected item.
+///
+/// This action sends the given [ItemEnchantmentDto] to the backend, receives
+/// the newly updated enchantment entry, and updates the selected item with the
+/// modified enchantment in the list.
+///
+/// If no item is selected, the action does nothing.
+///
+/// After the enchantment is updated, the updated item is returned to the
+/// state so the UI can immediately reflect the change.
+class ItemEnchantmentUpdateAction extends ReduxAction<AppState> {
+  ItemEnchantmentUpdateAction(this.itemEnchantmentDto);
+
+  /// The enchantment that should be updated.
+  final ItemEnchantmentDto itemEnchantmentDto;
+
+  @override
+  Future<AppState?> reduce() async {
+    if (state.selectedItem == null) return null;
+
+    final ItemModel itemModel = state.selectedItem!;
+
+    final ItemEnchantmentDto updatedEnchantment =
+    await ApiService().itemApi.updateEnchantment(
+      itemModel.id!,
+      itemEnchantmentDto,
+    );
+
+    final PaginatedResult<ItemEnchantmentDto> enchantments =
+        itemModel.enchantments;
+
+    final List<ItemEnchantmentDto> updatedEnchantmentList =
+    enchantments.items.map((enchantment) {
+      if (enchantment.id == updatedEnchantment.id) {
+        return updatedEnchantment;
+      }
+      return enchantment;
+    }).toList();
+
+
+    final PaginatedResult<ItemEnchantmentDto> updatedEnchantments =
+    enchantments.copyWith(
+      items: updatedEnchantmentList,
     );
 
     final ItemModel updatedModel =
