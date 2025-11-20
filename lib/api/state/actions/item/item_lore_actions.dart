@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/item/item_lore_dto.dart';
+import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/paginated_result.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
@@ -14,7 +15,7 @@ class ItemLoreFetchAction extends ReduxAction<AppState> {
     final PaginatedResult<ItemLoreDto> result = await ApiService().itemApi
         .getLore(
       selectedItem.id!,
-      page: selectedItem.lore.currentPage,
+      page: 2,
       size: selectedItem.lore.pageSize == 0 ? 10 : selectedItem.lore.pageSize,
     );
     final updatedItem = selectedItem.copyWith(lore: result);
@@ -83,7 +84,7 @@ class ItemLoreAddAction extends ReduxAction<AppState> {
       totalItems: loreLines.totalItems + 1,
     );
     final updatedModel = itemModel.copyWith(lore: updatedLines);
-    return state.copyWith(selectedItem: updatedModel);
+    return _updateItemAndList(state, updatedModel);
   }
 }
 
@@ -103,7 +104,7 @@ class ItemLoreDeleteAction extends ReduxAction<AppState> {
       totalItems: loreLines.totalItems - 1,
     );
     final updatedModel = itemModel.copyWith(lore: updatedLines);
-    return state.copyWith(selectedItem: updatedModel);
+    return _updateItemAndList(state, updatedModel);
   }
 }
 
@@ -127,7 +128,7 @@ class ItemLoreUpdateAction extends ReduxAction<AppState> {
           .toList(),
     );
     final updatedModel = itemModel.copyWith(lore: updatedLines);
-    return state.copyWith(selectedItem: updatedModel);
+    return _updateItemAndList(state, updatedModel);
   }
 }
 
@@ -143,4 +144,14 @@ class _SetIsLoadingLore extends ReduxAction<AppState> {
     final updatedItem = currentItem.copyWith(isLoadingMoreLoreLines: isLoading);
     return state.copyWith(selectedItem: updatedItem);
   }
+}
+
+AppState _updateItemAndList(AppState state, ItemModel updatedItem) {
+  final List<ItemModel> itemList = List.of(state.items.items);
+  final int index = itemList.indexWhere((item) => item.id == updatedItem.id);
+  if (index != -1) {
+    itemList[index] = updatedItem;
+  }
+  final updatedItems = state.items.copyWith(items: itemList);
+  return state.copyWith(selectedItem: updatedItem, items: updatedItems);
 }

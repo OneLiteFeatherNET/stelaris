@@ -107,7 +107,7 @@ class ItemEnchantmentAddAction extends ReduxAction<AppState> {
     final ItemModel updatedModel =
     itemModel.copyWith(enchantments: updatedEnchantments);
 
-    return state.copyWith(selectedItem: updatedModel);
+    return _updateItemAndList(state, updatedModel);
   }
 }
 
@@ -153,7 +153,7 @@ class ItemEnchantmentDeleteAction extends ReduxAction<AppState> {
     final ItemModel updatedModel =
     itemModel.copyWith(enchantments: updatedEnchantments);
 
-    return state.copyWith(selectedItem: updatedModel);
+    return _updateItemAndList(state, updatedModel);
   }
 }
 
@@ -205,7 +205,7 @@ class ItemEnchantmentUpdateAction extends ReduxAction<AppState> {
     final ItemModel updatedModel =
     itemModel.copyWith(enchantments: updatedEnchantments);
 
-    return state.copyWith(selectedItem: updatedModel);
+    return _updateItemAndList(state, updatedModel);
   }
 }
 
@@ -230,4 +230,14 @@ class _SetMoreEnchantmentLoad extends ReduxAction<AppState> {
 
     return state.copyWith(selectedItem: updatedItem);
   }
+}
+
+AppState _updateItemAndList(AppState state, ItemModel updatedItem) {
+  final List<ItemModel> itemList = List.of(state.items.items);
+  final int index = itemList.indexWhere((item) => item.id == updatedItem.id);
+  if (index != -1) {
+    itemList[index] = updatedItem;
+  }
+  final updatedItems = state.items.copyWith(items: itemList);
+  return state.copyWith(selectedItem: updatedItem, items: updatedItems);
 }
