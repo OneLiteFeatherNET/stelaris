@@ -13,18 +13,20 @@ class ItemEnchantmentFetchAction extends ReduxAction<AppState> {
     final selectedItem = state.selectedItem;
     if (selectedItem == null) return null;
 
-    final PaginatedResult<ItemEnchantmentDto> items = selectedItem.enchantments;
+    final current = selectedItem.enchantments;
 
-    final PaginatedResult<ItemEnchantmentDto> result = await ApiService().itemApi
-        .getEnchantments(
+    final result = await ApiService().itemApi.getEnchantments(
       selectedItem.id!,
-      page: items.currentPage,
-      size: items.pageSize == 0 ? 5 : items.pageSize,
+      page: current.currentPage,
+      size: current.pageSize == 0 ? 5 : current.pageSize,
     );
-    final updatedItem = selectedItem.copyWith(enchantments: result);
-    return state.copyWith(selectedItem: updatedItem);
+
+    // result is already safe and immutable
+    final updated = selectedItem.copyWith(enchantments: result);
+    return state.copyWith(selectedItem: updated);
   }
 }
+
 
 class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
   @override
@@ -33,39 +35,42 @@ class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
     if (selectedItem == null) return null;
 
     final enchantments = selectedItem.enchantments;
-    final isLoading = selectedItem.isLoadingMoreEnchantments;
-
-    // Guards: Exit if already loading, or if there are no items, or no more pages.
-    if (isLoading || !enchantments.hasItems || !enchantments.hasNextPage) {
+    if (selectedItem.isLoadingMoreEnchantments ||
+        !enchantments.hasItems ||
+        !enchantments.hasNextPage) {
       return null;
     }
 
     dispatch(_SetMoreEnchantmentLoad(true));
     try {
       final nextPage = enchantments.currentPage + 1;
-      final nextResult = await ApiService().itemApi.getEnchantments(
+
+      final next = await ApiService().itemApi.getEnchantments(
         selectedItem.id!,
         page: nextPage,
         size: enchantments.pageSize,
       );
 
-      final mergedItems = [...enchantments.items, ...nextResult.items];
+      final mergedItems =
+      [...enchantments.items, ...next.items]; // safe clone
 
       final updatedEnchantments = enchantments.copyWith(
         items: mergedItems,
-        totalItems: nextResult.totalItems,
-        totalPages: nextResult.totalPages,
-        currentPage: nextResult.currentPage,
+        totalItems: next.totalItems,
+        totalPages: next.totalPages,
+        currentPage: next.currentPage,
       );
 
       return state.copyWith(
-        selectedItem: selectedItem.copyWith(enchantments: updatedEnchantments),
+        selectedItem:
+        selectedItem.copyWith(enchantments: updatedEnchantments),
       );
     } finally {
       dispatch(_SetMoreEnchantmentLoad(false));
     }
   }
 }
+
 
 /// An action that adds a new enchantment to the currently selected item.
 ///
@@ -80,36 +85,31 @@ class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
 class ItemEnchantmentAddAction extends ReduxAction<AppState> {
   ItemEnchantmentAddAction(this.itemEnchantmentDto);
 
-  /// The enchantment that should be added.
   final ItemEnchantmentDto itemEnchantmentDto;
 
   @override
   Future<AppState?> reduce() async {
-    if (state.selectedItem == null) return null;
+    final selectedItem = state.selectedItem;
+    if (selectedItem == null) return null;
 
-    final ItemModel itemModel = state.selectedItem!;
-
-    final ItemEnchantmentDto addedEnchantment =
-    await ApiService().itemApi.addEnchantment(
-      itemModel.id!,
+    final added = await ApiService().itemApi.addEnchantment(
+      selectedItem.id!,
       itemEnchantmentDto,
     );
 
-    final PaginatedResult<ItemEnchantmentDto> enchantments =
-        itemModel.enchantments;
+    final ench = selectedItem.enchantments;
 
-    final PaginatedResult<ItemEnchantmentDto> updatedEnchantments =
-    enchantments.copyWith(
-      items: [...enchantments.items, addedEnchantment],
-      totalItems: enchantments.totalItems + 1,
+    final updatedEnchantments = ench.copyWith(
+      items: [...ench.items, added], // clone & append
+      totalItems: ench.totalItems + 1,
     );
 
-    final ItemModel updatedModel =
-    itemModel.copyWith(enchantments: updatedEnchantments);
+    final updated = selectedItem.copyWith(enchantments: updatedEnchantments);
 
-    return _updateItemAndList(state, updatedModel);
+    return _updateItemAndList(state, updated);
   }
 }
+
 
 /// An action that removes an enchantment from the currently selected item.
 ///
@@ -124,38 +124,33 @@ class ItemEnchantmentAddAction extends ReduxAction<AppState> {
 class ItemEnchantmentDeleteAction extends ReduxAction<AppState> {
   ItemEnchantmentDeleteAction(this.enchantmentDto);
 
-  /// The enchantment that should be removed.
   final ItemEnchantmentDto enchantmentDto;
 
   @override
   Future<AppState?> reduce() async {
-    if (state.selectedItem == null) return null;
+    final selectedItem = state.selectedItem;
+    if (selectedItem == null) return null;
 
-    final ItemModel itemModel = state.selectedItem!;
-
-    final ItemEnchantmentDto deletedEnchantment =
-    await ApiService().itemApi.deleteEnchantment(
-      itemModel.id!,
+    final removed = await ApiService().itemApi.deleteEnchantment(
+      selectedItem.id!,
       enchantmentDto,
     );
 
-    final PaginatedResult<ItemEnchantmentDto> enchantments =
-        itemModel.enchantments;
+    final ench = selectedItem.enchantments;
 
-    final PaginatedResult<ItemEnchantmentDto> updatedEnchantments =
-    enchantments.copyWith(
-      items: enchantments.items
-          .where((l) => l.id != deletedEnchantment.id)
+    final updatedEnchantments = ench.copyWith(
+      items: ench.items
+          .where((x) => x.id != removed.id)
           .toList(),
-      totalItems: enchantments.totalItems - 1,
+      totalItems: ench.totalItems - 1,
     );
 
-    final ItemModel updatedModel =
-    itemModel.copyWith(enchantments: updatedEnchantments);
+    final updated = selectedItem.copyWith(enchantments: updatedEnchantments);
 
-    return _updateItemAndList(state, updatedModel);
+    return _updateItemAndList(state, updated);
   }
 }
+
 
 /// An action that updates an existing enchantment of the currently selected item.
 ///
@@ -170,44 +165,34 @@ class ItemEnchantmentDeleteAction extends ReduxAction<AppState> {
 class ItemEnchantmentUpdateAction extends ReduxAction<AppState> {
   ItemEnchantmentUpdateAction(this.itemEnchantmentDto);
 
-  /// The enchantment that should be updated.
   final ItemEnchantmentDto itemEnchantmentDto;
 
   @override
   Future<AppState?> reduce() async {
-    if (state.selectedItem == null) return null;
+    final selectedItem = state.selectedItem;
+    if (selectedItem == null) return null;
 
-    final ItemModel itemModel = state.selectedItem!;
-
-    final ItemEnchantmentDto updatedEnchantment =
-    await ApiService().itemApi.updateEnchantment(
-      itemModel.id!,
+    final updatedEnchantment = await ApiService().itemApi.updateEnchantment(
+      selectedItem.id!,
       itemEnchantmentDto,
     );
 
-    final PaginatedResult<ItemEnchantmentDto> enchantments =
-        itemModel.enchantments;
+    final ench = selectedItem.enchantments;
 
-    final List<ItemEnchantmentDto> updatedEnchantmentList =
-    enchantments.items.map((enchantment) {
-      if (enchantment.id == updatedEnchantment.id) {
-        return updatedEnchantment;
-      }
-      return enchantment;
-    }).toList();
+    final updatedList = ench.items
+        .map((e) => e.id == updatedEnchantment.id ? updatedEnchantment : e)
+        .toList();
 
-
-    final PaginatedResult<ItemEnchantmentDto> updatedEnchantments =
-    enchantments.copyWith(
-      items: updatedEnchantmentList,
+    final updatedEnchantments = ench.copyWith(
+      items: updatedList,
     );
 
-    final ItemModel updatedModel =
-    itemModel.copyWith(enchantments: updatedEnchantments);
+    final updated = selectedItem.copyWith(enchantments: updatedEnchantments);
 
-    return _updateItemAndList(state, updatedModel);
+    return _updateItemAndList(state, updated);
   }
 }
+
 
 /// Internal action to manage the loading state for enchantment pagination.
 ///
@@ -232,12 +217,25 @@ class _SetMoreEnchantmentLoad extends ReduxAction<AppState> {
   }
 }
 
+/// Updates a single item in the list and returns a new, updated list.
+///
+/// This method is meant to be used when an item has changed and both the
+/// updated item and the surrounding list need to stay in sync. It replaces
+/// the old item in the list with the new one, keeping all other elements
+/// unchanged.
+///
+/// - [oldItem] is the item currently stored in the list.
+/// - [newItem] is the updated version that should replace it.
+/// - [items] is the original list containing the item.
+///
+/// The method returns a new list instance with the updated item in the
+/// correct position, leaving the original list untouched.
 AppState _updateItemAndList(AppState state, ItemModel updatedItem) {
-  final List<ItemModel> itemList = List.of(state.items.items);
-  final int index = itemList.indexWhere((item) => item.id == updatedItem.id);
-  if (index != -1) {
-    itemList[index] = updatedItem;
-  }
-  final updatedItems = state.items.copyWith(items: itemList);
-  return state.copyWith(selectedItem: updatedItem, items: updatedItems);
+  final list = List<ItemModel>.from(state.items.items);
+  final idx = list.indexWhere((i) => i.id == updatedItem.id);
+  if (idx != -1) list[idx] = updatedItem;
+
+  final updated = state.items.copyWith(items: list);
+
+  return state.copyWith(items: updated, selectedItem: updatedItem);
 }

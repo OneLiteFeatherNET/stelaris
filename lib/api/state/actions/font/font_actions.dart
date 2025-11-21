@@ -80,7 +80,7 @@ class FontRemoveAction extends ReduxAction<AppState> {
     final FontModel removedEntry = await ApiService().fontApi.remove(model);
     final List<FontModel> items = List.of(state.fonts.items, growable: true)
       ..removeWhere((element) => element.id == removedEntry.id);
-    return _updateItemInState(state, items, null);
+    return _updateFontInState(state, items, null);
   }
 }
 
@@ -94,7 +94,7 @@ class FontAddAction extends ReduxAction<AppState> {
     final FontModel added = await ApiService().fontApi.add(_model);
     final List<FontModel> items = List.of(state.fonts.items, growable: true)
       ..add(added);
-    return _updateItemInState(state, items, added, totalItems: items.length);
+    return _updateFontInState(state, items, added, totalItems: items.length);
   }
 }
 
@@ -128,7 +128,7 @@ class FontDatabaseUpdate extends ReduxAction<AppState> {
       updatedList[index] = dbModel;
     }
 
-    return _updateItemInState(state, updatedList, dbModel);
+    return _updateFontInState(state, updatedList, dbModel);
   }
 }
 
@@ -141,7 +141,7 @@ class _SetLoadMoreFontModels extends ReduxAction<AppState> {
   AppState reduce() => state.copyWith(isLoadingMoreFonts: value);
 }
 
-AppState _updateItemInState(
+AppState _updateFontInState(
   AppState state,
   List<FontModel> newItems,
   FontModel? selectedItem, {
