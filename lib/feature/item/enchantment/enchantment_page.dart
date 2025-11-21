@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/item/item_enchantment_dto.dart';
 import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/enchantment_view_state.dart';
@@ -57,15 +56,8 @@ class ItemEnchantmentPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => ItemEnchantmentAddDialog(
-        addEnchantmentCallback: (enchantment, level) {
-          final ItemEnchantmentDto dto = ItemEnchantmentDto(
-            name: enchantment.minecraftValue,
-            level: level,
-          );
-          context.dispatch(ItemEnchantmentAddAction(dto));
-          Navigator.of(context).pop();
-        },
         model: vm.selected,
+        view: vm,
       ),
     );
   }
