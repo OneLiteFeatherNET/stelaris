@@ -11,13 +11,8 @@ import 'package:stelaris/util/constants.dart';
 import 'package:vulpes_data/api/enchantment.dart';
 
 class ItemEnchantmentAddDialog extends StatefulWidget {
-  const ItemEnchantmentAddDialog({
-    required this.model,
-    required this.view,
-    super.key,
-  });
+  const ItemEnchantmentAddDialog({required this.view, super.key});
 
-  final ItemModel model;
   final EnchantmentView view;
 
   @override
@@ -39,14 +34,6 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
     super.initState();
     _updateEnchantments();
     _resetController();
-  }
-
-  @override
-  void didUpdateWidget(ItemEnchantmentAddDialog oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.model != oldWidget.model) {
-      _updateEnchantments();
-    }
   }
 
   @override
@@ -83,23 +70,27 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
           },
         ),
         verticalSpacing25,
-        Text(context.l10n.label_level),
-        verticalSpacing25,
         ValueListenableBuilder<bool>(
           valueListenable: _unsafe,
           builder: (context, unsafe, child) {
-            return CheckboxListTile(
-              title: const Text('Unsafe'),
-              value: unsafe,
-              onChanged: (value) {
-                _unsafe.value = value ?? false;
-                _key.currentState?.validate();
-              },
-              controlAffinity: ListTileControlAffinity.leading,
-              contentPadding: EdgeInsets.zero,
+            return Transform.translate(
+              offset: const Offset(-12, 0),
+              child: CheckboxListTile(
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                title: const Text('Unsafe'),
+                value: unsafe,
+                onChanged: (value) {
+                  _unsafe.value = value ?? false;
+                  _key.currentState?.validate();
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+                contentPadding: EdgeInsets.zero,
+              ),
             );
           },
         ),
+        verticalSpacing25,
+        Text(context.l10n.label_level),
         Form(
           key: _key,
           autovalidateMode: AutovalidateMode.always,
@@ -141,10 +132,10 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
     _enchantments = widget.view.selectableEnchantments
         .map(
           (e) => DropdownMenuItem<Enchantment>(
-        value: e,
-        child: Text(e.displayName),
-      ),
-    )
+            value: e,
+            child: Text(e.displayName),
+          ),
+        )
         .toList();
     if (_enchantments.isNotEmpty) {
       _selected = ValueNotifier(_enchantments.first.value!);

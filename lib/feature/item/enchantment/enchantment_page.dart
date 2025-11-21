@@ -56,7 +56,6 @@ class ItemEnchantmentPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => ItemEnchantmentAddDialog(
-        model: vm.selected,
         view: vm,
       ),
     );
