@@ -38,6 +38,9 @@ class EnchantmentView extends Vm with EnchantmentReducer {
         .toList();
   }
 
+  List<Enchantment> get selectableEnchantments =>
+      getEnchantments(selected, true);
+
   /// Overwrites the default index operator to access the active enchantments
   /// [index] the index to access the data
   /// Returns the [Enchantment] that matches the given [index]
