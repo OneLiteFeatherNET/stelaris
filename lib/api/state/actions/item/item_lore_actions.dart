@@ -1,5 +1,4 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:flutter/foundation.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/item/item_lore_dto.dart';
 import 'package:stelaris/api/paginated_result.dart';

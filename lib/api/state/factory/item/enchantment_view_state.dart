@@ -40,6 +40,7 @@ class EnchantmentView extends Vm with EnchantmentReducer {
 
   /// Overwrites the default index operator to access the active enchantments
   /// [index] the index to access the data
+  /// Returns the [Enchantment] that matches the given [index]
   Enchantment operator [](int index) => activeEnchantments[index];
 
   /// Returns true if there are any active enchantments
