@@ -62,16 +62,7 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          subtitle: Row(
-            children: [
-              const Text('Level: '),
-              Text(widget.dto.level.toString()),
-              Text(
-                ' / ${widget.enchantment.maxLevel}',
-                style: theme.textTheme.bodySmall,
-              ),
-            ],
-          ),
+          subtitle: _getEnchantmentSubTitle(theme, widget.dto),
           trailing: EntryActions(
             onEdit: () => _showUpdateDialog(widget.enchantment, widget.dto),
             onDelete: () => _showDeleteDialog(widget.dto),
@@ -81,10 +72,33 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
     );
   }
 
+  /// Applies the right sub title [Widget] based on the [ItemEnchantmentDto.unsafe] flag.
+  /// [theme] the current [ThemeData] to get some values from it
+  /// [dto] the [ItemEnchantmentDto] to build the widget
+  /// Returns the concrete [Widget] that displays the data
+  Widget _getEnchantmentSubTitle(ThemeData theme, ItemEnchantmentDto dto) {
+    if (dto.unsafe) {
+      return Row(children: [const Text('Level: '), Text(dto.level.toString())]);
+    }
+    return Row(
+      children: [
+        const Text('Level: '),
+        Text(widget.dto.level.toString()),
+        Text(
+          ' / ${widget.enchantment.maxLevel}',
+          style: theme.textTheme.bodySmall,
+        ),
+      ],
+    );
+  }
+
   void _showUpdateDialog(Enchantment enchantment, ItemEnchantmentDto dto) {
-    showDialog(context: context, builder: (BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
         return ItemEnchantmentUpdateDialog(enchantment: enchantment, dto: dto);
-    });
+      },
+    );
   }
 
   void _showDeleteDialog(ItemEnchantmentDto dto) {
