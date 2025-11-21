@@ -37,10 +37,10 @@ packages:
     dependency: "direct main"
     description:
       name: async_redux
-      sha256: "2e51f41845a1abe902b77110fd059565ef99b8f0f46b886f1d68e3adf2f68e70"
+      sha256: c5dfec7065dbf8a928208ac52fa79da31d40bfddd93f3dd51e9a682d8e719bda
       url: "https://pub.dev"
     source: hosted
-    version: "25.5.0"
+    version: "25.6.2"
   async_redux_core:
     dependency: transitive
     description:
@@ -101,10 +101,10 @@ packages:
     dependency: transitive
     description:
       name: built_value
-      sha256: a30f0a0e38671e89a492c44d005b5545b830a961575bbd8336d42869ff71066d
+      sha256: "426cf75afdb23aa74bd4e471704de3f9393f3c7b04c1e2d9c6f1073ae0b8b139"
       url: "https://pub.dev"
     source: hosted
-    version: "8.12.0"
+    version: "8.12.1"
   characters:
     dependency: transitive
     description:
@@ -385,10 +385,10 @@ packages:
     dependency: "direct dev"
     description:
       name: json_serializable
-      sha256: "33a040668b31b320aafa4822b7b1e177e163fc3c1e835c6750319d4ab23aa6fe"
+      sha256: c5b2ee75210a0f263c6c7b9eeea80553dbae96ea1bf57f02484e806a3ffdffa3
       url: "https://pub.dev"
     source: hosted
-    version: "6.11.1"
+    version: "6.11.2"
   leak_tracker:
     dependency: transitive
     description:
@@ -477,6 +477,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.0"
+  objective_c:
+    dependency: transitive
+    description:
+      name: objective_c
+      sha256: "1f81ed9e41909d44162d7ec8663b2c647c202317cc0b56d3d56f6a13146a0b64"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.0"
   package_config:
     dependency: transitive
     description:
@@ -513,10 +521,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_foundation
-      sha256: "97390a0719146c7c3e71b6866c34f1cde92685933165c1c671984390d2aca776"
+      sha256: "6192e477f34018ef1ea790c56fffc7302e3bc3efede9e798b934c252c8c105ba"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.4"
+    version: "2.5.0"
   path_provider_linux:
     dependency: transitive
     description:
@@ -622,10 +630,10 @@ packages:
     dependency: transitive
     description:
       name: source_gen
-      sha256: "0d6c4e1080176801112ed1111226d13cd4f74947383aabafbd9726a22083aeaa"
+      sha256: "07b277b67e0096c45196cbddddf2d8c6ffc49342e88bf31d460ce04605ddac75"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.0"
+    version: "4.1.1"
   source_helper:
     dependency: transitive
     description:
@@ -718,10 +726,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "1a109ee074e2a3b17ec3f2785248cb3e93c1e4abab878f637bc33267089f05a3"
+      sha256: "5387615091fb9bcacfe03e140437be22c3a3cd7ac53052ec9a16d2a6a370a994"
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.26"
+    version: "6.3.27"
   url_launcher_ios:
     dependency: transitive
     description:
