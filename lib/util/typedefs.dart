@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris/api/model/data_model.dart';
-import 'package:vulpes_data/api/enchantment.dart';
 
 /// Defines all typedef function for the card which displays data from a model
 typedef ValueUpdate<E> = void Function(E value);
@@ -9,9 +8,6 @@ typedef DefaultValue<E,T> = E Function(T value);
 
 /// DismissDialog functions
 typedef MapToDeleteSuccessfully<E> = bool Function(E value);
-
-/// Enchantmentdialog functions
-typedef AddEnchantmentCallback = void Function(Enchantment selected, int level);
 
 /// ModeList functions
 typedef MapToDataModelItem<E extends DataModel> = Widget Function(E value);

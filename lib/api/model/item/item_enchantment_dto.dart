@@ -11,6 +11,7 @@ abstract class ItemEnchantmentDto with _$ItemEnchantmentDto {
   const factory ItemEnchantmentDto({
     required String name,
     required int level,
+    @Default(false) bool unsafe,
     @Default(null) String? id,
   }) = _ItemEnchantmentDto;
 
