@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
 import 'package:stelaris/api/model/data_model.dart';
 import 'package:stelaris/feature/base/button/add_button.dart';
 import 'package:stelaris/feature/base/model_card.dart';
@@ -48,15 +49,8 @@ class PaginatedModelList<E extends DataModel> extends StatefulWidget {
 }
 
 class _PaginatedModelListState<E extends DataModel>
-    extends State<PaginatedModelList<E>> {
-  final ScrollController _scrollController = ScrollController();
+    extends State<PaginatedModelList<E>> with InfiniteScrollMixin<PaginatedModelList<E>> {
   late RoundedRectangleBorder _defaultCardShape;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
 
   @override
   void didChangeDependencies() {
@@ -68,23 +62,18 @@ class _PaginatedModelListState<E extends DataModel>
   }
 
   @override
-  void dispose() {
-    _scrollController
-      ..removeListener(_onScroll)
-      ..dispose();
-    super.dispose();
+  bool canLoadMore() {
+    return widget.hasMore;
   }
 
-  void _onScroll() {
-    if (widget.onLoadMore == null) return;
-    if (!widget.hasMore) return;
-    if (widget.isLoadingMore) return;
+  @override
+  bool isLoadingMore() {
+    return widget.isLoadingMore;
+  }
 
-    const threshold = 300.0; // pixels from bottom
-    final position = _scrollController.position;
-    if (position.pixels + threshold >= position.maxScrollExtent) {
-      widget.onLoadMore?.call();
-    }
+  @override
+  void onLoadMore() {
+    widget.onLoadMore?.call();
   }
 
   @override
@@ -117,7 +106,7 @@ class _PaginatedModelListState<E extends DataModel>
     final itemCount = widget.models.length + (hasFooter ? 1 : 0);
 
     return ListView.builder(
-      controller: _scrollController,
+      controller: scrollController,
       itemCount: itemCount,
       clipBehavior: Clip.none,
       itemBuilder: (context, index) {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
@@ -22,25 +23,7 @@ class EnchantmentList extends StatefulWidget {
   State<EnchantmentList> createState() => _EnchantmentListState();
 }
 
-class _EnchantmentListState extends State<EnchantmentList> {
-
-  final ScrollController _scrollController = ScrollController();
-  Timer? _debounce;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    _debounce?.cancel();
-    super.dispose();
-  }
-
+class _EnchantmentListState extends State<EnchantmentList> with InfiniteScrollMixin<EnchantmentList> {
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +32,9 @@ class _EnchantmentListState extends State<EnchantmentList> {
     }
 
     return Scrollbar(
-      controller: _scrollController,
+      controller: scrollController,
       child: ListView.builder(
-        controller: _scrollController,
+        controller: scrollController,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: widget.view.activeEnchantments.length,
         itemBuilder: (context, index) {
@@ -65,26 +48,17 @@ class _EnchantmentListState extends State<EnchantmentList> {
     );
   }
 
-  void _onScroll() {
-    if (widget.view.isLoadingMore) return;
-    if (!_scrollController.hasClients) return;
-
+  @override
+  bool canLoadMore() {
     final enchantments = widget.view.selected.enchantments;
-    if (!enchantments.hasNextPage) return;
+    return enchantments.hasNextPage;
+  }
 
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    if (maxScroll <= 0) return;
+  @override
+  bool isLoadingMore() => widget.view.isLoadingMore;
 
-    final currentScroll = _scrollController.position.pixels;
-    final triggerFetchMoreSize = maxScroll * 0.7;
-
-    if (currentScroll >= triggerFetchMoreSize) {
-      if (_debounce?.isActive ?? false) _debounce?.cancel();
-      _debounce = Timer(const Duration(milliseconds: 300), () {
-        if (mounted) {
-          context.dispatch(ItemEnchantmentLoadMoreAction());
-        }
-      });
-    }
+  @override
+  void onLoadMore() {
+    context.dispatch(ItemEnchantmentLoadMoreAction());
   }
 }

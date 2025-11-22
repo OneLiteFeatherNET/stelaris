@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:async_redux/async_redux.dart';
+import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris/api/model/sound/sound_file_source.dart';
 import 'package:stelaris/api/paginated_result.dart';
@@ -19,22 +21,8 @@ class SoundFileEntryPage extends StatefulWidget {
   State<SoundFileEntryPage> createState() => _SoundFileEntriesState();
 }
 
-class _SoundFileEntriesState extends State<SoundFileEntryPage> {
-  final ScrollController _scrollController = ScrollController();
+class _SoundFileEntriesState extends State<SoundFileEntryPage> with InfiniteScrollMixin<SoundFileEntryPage> {
   SelectedSoundView? _vm;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +62,7 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
     final hasFooter = state.isLoadingFiles || state.hasNextPage;
     final itemCount = files.items.length + (hasFooter ? 1 : 0);
     return ListView.builder(
-      controller: _scrollController,
+      controller: scrollController,
       padding: const EdgeInsets.all(8),
       itemCount: itemCount,
       clipBehavior: Clip.none,
@@ -94,17 +82,19 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
     );
   }
 
-  void _onScroll() {
-    if (_vm == null) return;
+  @override
+  bool canLoadMore() {
+    return _vm?.hasNextPage ?? false;
+  }
 
-    final SelectedSoundView view = _vm!;
+  @override
+  bool isLoadingMore() {
+    return _vm?.isLoadingFiles ?? false;
+  }
 
-    if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 200 &&
-        view.hasNextPage &&
-        !view.isLoadingFiles) {
-      view.onLoadMoreSoundFiles();
-    }
+  @override
+  void onLoadMore() {
+    _vm?.onLoadMoreSoundFiles();
   }
 
   Widget _buildFooter(bool isLoading) {
