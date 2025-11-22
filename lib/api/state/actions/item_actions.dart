@@ -122,20 +122,7 @@ class ItemDatabaseUpdate extends ReduxAction<AppState> {
     if (state.selectedItem == null) return null;
     final ItemModel selected = state.selectedItem!;
     final ItemModel dbModel = await ApiService().itemApi.update(selected);
-
-    final List<ItemModel> updatedList = List.of(
-      state.items.items,
-      growable: true,
-    );
-    final int index = updatedList.indexWhere(
-      (element) => element.id == selected.id,
-    );
-
-    if (index != -1) {
-      updatedList[index] = dbModel;
-    }
-
-    return _updateItemInState(state, updatedList, dbModel);
+    return updateSingleItemInState(state, dbModel);
   }
 }
 
@@ -150,6 +137,15 @@ class ItemFlagFetchAction extends ReduxAction<AppState> {
     //final ItemModel updatedItem = selected.copyWith(flags: dbModel.flags);
     return state.copyWith(selectedItem: selected);
   }
+}
+
+AppState updateSingleItemInState(AppState state, ItemModel updatedItem) {
+  final List<ItemModel> itemList = List.of(state.items.items);
+  final int index = itemList.indexWhere((item) => item.id == updatedItem.id);
+  if (index != -1) {
+    itemList[index] = updatedItem;
+  }
+  return _updateItemInState(state, itemList, updatedItem);
 }
 
 AppState _updateItemInState(

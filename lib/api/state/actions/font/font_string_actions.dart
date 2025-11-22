@@ -75,20 +75,26 @@ class FontStringAddAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     if (state.selectedFont == null) return null;
-    final FontModel selected = state.selectedFont!;
+    final selected = state.selectedFont!;
 
-    final FontAPI api = ApiService().fontApi;
-    final FontStringDTO added = await api.addFontEntry(selected.id!, dto);
+    final api = ApiService().fontApi;
+    final added = await api.addFontEntry(selected.id!, dto);
 
-    final FontModel updated = selected.copyWith(
-      chars: selected.chars.copyWith(
-        totalItems: selected.chars.totalItems + 1,
-        items: [...selected.chars.items, added],
-      ),
+    final updatedChars = selected.chars.copyWith(
+      totalItems: selected.chars.totalItems + 1,
+      items: [...selected.chars.items, added],
     );
-    return state.copyWith(selectedFont: updated);
+
+    final updated = selected.copyWith(chars: updatedChars);
+
+    final updatedList = List<FontModel>.from(state.fonts.items); // clone
+    final index = updatedList.indexWhere((font) => font.id == updated.id);
+    if (index != -1) updatedList[index] = updated;
+
+    return _updateFontInState(state, updatedList, updated);
   }
 }
+
 
 class FontStringUpdateAction extends ReduxAction<AppState> {
   final FontStringDTO dto;
@@ -98,14 +104,27 @@ class FontStringUpdateAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     if (state.selectedFont == null) return null;
-    final FontModel selected = state.selectedFont!;
-    final FontStringDTO savedModel = await ApiService().fontApi.updateFontEntry(
+    final selected = state.selectedFont!;
+
+    final savedModel = await ApiService().fontApi.updateFontEntry(
       selected.id!,
       dto,
     );
-    final FontModel newModel = selected.copyWith();
 
-    return state.copyWith(selectedFont: newModel);
+    // clone list BEFORE mapping
+    final updatedChars = List<FontStringDTO>.from(selected.chars.items)
+        .map((c) => c.id == savedModel.id ? savedModel : c)
+        .toList();
+
+    final newModel = selected.copyWith(
+      chars: selected.chars.copyWith(items: updatedChars),
+    );
+
+    final updatedList = List<FontModel>.from(state.fonts.items); // clone
+    final index = updatedList.indexWhere((font) => font.id == newModel.id);
+    if (index != -1) updatedList[index] = newModel;
+
+    return _updateFontInState(state, updatedList, newModel);
   }
 }
 
@@ -118,22 +137,31 @@ class FontStringDelete extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     if (state.selectedFont == null) return null;
-    final FontModel selected = state.selectedFont!;
-    final FontStringDTO removed = await ApiService().fontApi.deleteFontEntry(id, dto);
-    
-    final PaginatedResult<FontStringDTO> chars = selected.chars;
-    final List<FontStringDTO> dtos = chars.items;
-    dtos.removeWhere((element) => element.id == removed.id);
+    final selected = state.selectedFont!;
 
-    final FontModel updated = selected.copyWith(
+    final removed = await ApiService().fontApi.deleteFontEntry(id, dto);
+
+    final chars = selected.chars;
+
+    // CLONE the list before mutation
+    final updatedItems = List<FontStringDTO>.from(chars.items)
+      ..removeWhere((element) => element.id == removed.id);
+
+    final updated = selected.copyWith(
       chars: chars.copyWith(
         totalItems: chars.totalItems - 1,
-        items: dtos,
-      )
+        items: updatedItems,
+      ),
     );
-    return state.copyWith(selectedFont: updated);
+
+    final updatedList = List<FontModel>.from(state.fonts.items);
+    final index = updatedList.indexWhere((font) => font.id == updated.id);
+    if (index != -1) updatedList[index] = updated;
+
+    return _updateFontInState(state, updatedList, updated);
   }
 }
+
 
 /// Internal action to manage the loading state for item pagination.
 ///
@@ -153,4 +181,20 @@ class _SetLoreCharModelLoad extends ReduxAction<AppState> {
     final updatedStateFont = font.copyWith(isLoadingChars: value);
     return state.copyWith(selectedFont: updatedStateFont);
   }
+}
+
+AppState _updateFontInState(
+    AppState state,
+    List<FontModel> newItems,
+    FontModel? selectedItem, {
+      int? totalItems,
+    }) {
+  final updated = state.fonts.copyWith(
+    items: newItems,
+    totalItems: totalItems ?? state.fonts.totalItems,
+    totalPages: state.fonts.totalPages,
+    currentPage: state.fonts.currentPage,
+    pageSize: state.fonts.pageSize,
+  );
+  return state.copyWith(fonts: updated, selectedFont: selectedItem);
 }

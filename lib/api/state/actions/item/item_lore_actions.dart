@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/item/item_lore_dto.dart';
+import 'package:stelaris/api/model/item_model.dart';
 import 'package:stelaris/api/paginated_result.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
@@ -17,8 +18,11 @@ class ItemLoreFetchAction extends ReduxAction<AppState> {
       page: selectedItem.lore.currentPage,
       size: selectedItem.lore.pageSize == 0 ? 10 : selectedItem.lore.pageSize,
     );
+
     final updatedItem = selectedItem.copyWith(lore: result);
-    return state.copyWith(selectedItem: updatedItem);
+
+    // Updated: Keep list and selectedItem in sync
+    return _updateItemAndList(state, updatedItem);
   }
 }
 
@@ -38,8 +42,10 @@ class ItemLoreLoadNextPageAction extends ReduxAction<AppState> {
     }
 
     dispatch(_SetIsLoadingLore(true));
+
     try {
       final nextPage = lore.currentPage + 1;
+
       final nextResult = await ApiService().itemApi.getLore(
         selectedItem.id!,
         page: nextPage,
@@ -55,9 +61,10 @@ class ItemLoreLoadNextPageAction extends ReduxAction<AppState> {
         currentPage: nextResult.currentPage,
       );
 
-      return state.copyWith(
-        selectedItem: selectedItem.copyWith(lore: updatedLore),
-      );
+      final updatedItem = selectedItem.copyWith(lore: updatedLore);
+
+      // Updated: Keep list and selectedItem in sync
+      return _updateItemAndList(state, updatedItem);
     } finally {
       dispatch(_SetIsLoadingLore(false));
     }
@@ -72,18 +79,24 @@ class ItemLoreAddAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     if (state.selectedItem == null) return null;
+
     final itemModel = state.selectedItem!;
+
     final addedLore = await ApiService().itemApi.addLore(
       itemModel.id!,
       itemLoreDto,
     );
+
     final loreLines = itemModel.lore;
+
     final updatedLines = loreLines.copyWith(
       items: [...loreLines.items, addedLore],
       totalItems: loreLines.totalItems + 1,
     );
+
     final updatedModel = itemModel.copyWith(lore: updatedLines);
-    return state.copyWith(selectedItem: updatedModel);
+
+    return _updateItemAndList(state, updatedModel);
   }
 }
 
@@ -95,15 +108,21 @@ class ItemLoreDeleteAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     if (state.selectedItem == null || itemLoreDto.id == null) return null;
+
     final itemModel = state.selectedItem!;
+
     await ApiService().itemApi.deleteLore(itemModel.id!, itemLoreDto);
+
     final loreLines = itemModel.lore;
+
     final updatedLines = loreLines.copyWith(
       items: loreLines.items.where((l) => l.id != itemLoreDto.id).toList(),
       totalItems: loreLines.totalItems - 1,
     );
+
     final updatedModel = itemModel.copyWith(lore: updatedLines);
-    return state.copyWith(selectedItem: updatedModel);
+
+    return _updateItemAndList(state, updatedModel);
   }
 }
 
@@ -115,19 +134,25 @@ class ItemLoreUpdateAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     if (state.selectedItem == null) return null;
+
     final itemModel = state.selectedItem!;
+
     final updatedLore = await ApiService().itemApi.updateLore(
       itemModel.id!,
       dto,
     );
+
     final loreLines = itemModel.lore;
+
     final updatedLines = loreLines.copyWith(
       items: loreLines.items
           .map((l) => l.id == updatedLore.id ? updatedLore : l)
           .toList(),
     );
+
     final updatedModel = itemModel.copyWith(lore: updatedLines);
-    return state.copyWith(selectedItem: updatedModel);
+
+    return _updateItemAndList(state, updatedModel);
   }
 }
 
@@ -140,7 +165,31 @@ class _SetIsLoadingLore extends ReduxAction<AppState> {
   AppState reduce() {
     final currentItem = state.selectedItem;
     if (currentItem == null) return state;
-    final updatedItem = currentItem.copyWith(isLoadingMoreLoreLines: isLoading);
+
+    final updatedItem =
+    currentItem.copyWith(isLoadingMoreLoreLines: isLoading);
+
     return state.copyWith(selectedItem: updatedItem);
   }
+}
+
+/// Updates the selected item and synchronizes it with the global item list.
+///
+/// This helper ensures that when an item is modified, both the currently
+/// selected item and the shared list remain consistent. It replaces the item
+/// in the list with its updated version and updates the `selectedItem` field.
+///
+/// Returns a new state with the updated list and selected item.
+AppState _updateItemAndList(AppState state, ItemModel updatedItem) {
+  final list = List<ItemModel>.from(state.items.items);
+  final idx = list.indexWhere((i) => i.id == updatedItem.id);
+
+  if (idx != -1) list[idx] = updatedItem;
+
+  final updatedList = state.items.copyWith(items: list);
+
+  return state.copyWith(
+    items: updatedList,
+    selectedItem: updatedItem,
+  );
 }
