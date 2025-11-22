@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:stelaris/api/model/item/item_lore_dto.dart';
@@ -19,55 +20,30 @@ class LorePageView extends StatefulWidget {
   State<LorePageView> createState() => _LorePageViewState();
 }
 
-class _LorePageViewState extends State<LorePageView> {
-  final ScrollController _scrollController = ScrollController();
-  Timer? _debounce;
+class _LorePageViewState extends State<LorePageView> with InfiniteScrollMixin<LorePageView> {
 
   @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    _debounce?.cancel();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    if (widget.view.isLoadingMore) return;
-    if (!_scrollController.hasClients) return;
-
+  bool canLoadMore() {
     final lore = widget.view.selected.lore;
-    if (!lore.hasNextPage) return;
+    return lore.hasNextPage;
+  }
 
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    if (maxScroll <= 0) return;
+  @override
+  bool isLoadingMore() => widget.view.isLoadingMore;
 
-    final currentScroll = _scrollController.position.pixels;
-    final triggerFetchMoreSize = maxScroll * 0.7;
-
-    if (currentScroll >= triggerFetchMoreSize) {
-      if (_debounce?.isActive ?? false) _debounce?.cancel();
-      _debounce = Timer(const Duration(milliseconds: 300), () {
-        if (mounted) {
-          context.dispatch(ItemLoreLoadNextPageAction());
-        }
-      });
-    }
+  @override
+  void onLoadMore() {
+    context.dispatch(ItemLoreLoadNextPageAction());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
-      controller: _scrollController,
+      controller: scrollController,
       thumbVisibility: true,
       trackVisibility: true,
       child: ReorderableListView.builder(
-        scrollController: _scrollController,
+        scrollController: scrollController,
         proxyDecorator: (child, index, animation) {
           return GrabbedCard(child: child);
         },
