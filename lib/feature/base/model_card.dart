@@ -30,20 +30,7 @@ class ModelCard<E extends DataModel> extends StatefulWidget {
 class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
   bool _isHovered = false;
   Timer? _debounceTimer;
-  late final Widget _title;
-  late final DeleteModelButton<E> _deleteButton;
 
-  @override
-  void initState() {
-    super.initState();
-    // Pre-build expensive widgets
-    _title = widget.mapToDataModelItem(widget.rawModel);
-    _deleteButton = DeleteModelButton<E>(
-      value: widget.rawModel,
-      mapToDeleteDialog: widget.mapToDeleteDialog,
-      mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
-    );
-  }
 
   @override
   void dispose() {
@@ -64,18 +51,24 @@ class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
 
   @override
   Widget build(BuildContext context) {
-    // Combine Card and MouseRegion to reduce nesting
-    return Card(
-      shape: widget.selected ? widget.selectedCardShape : null,
-      color: _isHovered
-          ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1)
-          : null,
-      child: MouseRegion(
-        onEnter: (_) => _debouncedSetState(true),
-        onExit: (_) => _debouncedSetState(false),
-        child: ListTile(
-          title: _title,
-          trailing: _deleteButton,
+    return FractionallySizedBox(
+      widthFactor: 0.90,
+      child: Card(
+        shape: widget.selected ? widget.selectedCardShape : null,
+        color: _isHovered
+            ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1)
+            : null,
+        child: MouseRegion(
+          onEnter: (_) => _debouncedSetState(true),
+          onExit: (_) => _debouncedSetState(false),
+          child: ListTile(
+            title: widget.mapToDataModelItem(widget.rawModel),
+            trailing: DeleteModelButton<E>(
+              value: widget.rawModel,
+              mapToDeleteDialog: widget.mapToDeleteDialog,
+              mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
+            ),
+          ),
         ),
       ),
     );
