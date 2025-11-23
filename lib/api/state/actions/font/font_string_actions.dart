@@ -5,7 +5,6 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/font/font_string_dto.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/paginated_result.dart';
-import 'package:stelaris/api/service/font_api.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
 /// Fetches additional characters for the selected font and updates the state.

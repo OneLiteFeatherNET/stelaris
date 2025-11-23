@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
 
 import 'package:async_redux/async_redux.dart';
