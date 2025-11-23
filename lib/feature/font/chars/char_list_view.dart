@@ -39,7 +39,7 @@ class _CharListViewState extends State<CharListView>
             return CharListItem(
               key: ValueKey(key.id),
               fontString: key,
-              onEdit: () => _handleEdit(index, key.line),
+              onEdit: () => _handleEdit(key),
               onDelete: () =>
                   _handleDelete(widget.fontModel.selected.id!, key),
             );
@@ -67,23 +67,18 @@ class _CharListViewState extends State<CharListView>
   /// The method handles the edition of an existing char from the given [FontModel].
   /// For the edition, it opens a dialog with the current char value and allows the user to update it.
   /// If the user updates the char, the method updates the [FontModel] with the new value.
-  void _handleEdit(int index, String originalData) {
+  void _handleEdit(FontStringDTO dto) {
     showDialog(
       context: context,
       builder: (context) {
         return EntryUpdateDialog(
           title: 'Edit char',
           formKey: GlobalKey<FormState>(),
-          data: originalData,
+          data: dto.line,
           valueUpdate: (value) {
-            /*final String updatedValue = value;
-            if (updatedValue.isEmpty || updatedValue == originalData) return;
-            final List<String> modelChars = List.of(widget.fontModel.chars, growable: true);
-            modelChars.removeAt(index);
-            modelChars.insert(index, updatedValue);
-            final FontModel updatedModel =
-                widget.fontModel.selected.copyWith(chars: modelChars);
-            context.dispatch(UpdateFontAction(updatedModel));*/
+            final String updatedValue = value;
+            if (updatedValue.isEmpty || updatedValue == dto.line) return;
+            context.dispatch(FontStringEditAction(dto.copyWith(line: updatedValue)));
             Navigator.of(context).pop(true);
           },
         );
