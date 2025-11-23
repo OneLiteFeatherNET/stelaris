@@ -95,6 +95,37 @@ class FontStringAddAction extends ReduxAction<AppState> {
   }
 }
 
+class FontStringEditAction extends ReduxAction<AppState> {
+  final FontStringDTO dto;
+
+  FontStringEditAction(this.dto);
+
+  @override
+  Future<AppState?> reduce() async {
+    if (state.selectedFont == null) return null;
+    final selected = state.selectedFont!;
+
+    final savedModel = await ApiService().fontApi.updateFontEntry(
+      selected.id!,
+      dto,
+    );
+
+    final updatedItems = state.selectedFont!.chars.items.map((char) {
+      return char.id == savedModel.id ? savedModel : char;
+    }).toList();
+
+    final newSelectedFont = selected.copyWith(
+      chars: selected.chars.copyWith(items: updatedItems),
+    );
+
+    final allFonts = state.fonts.items.map((font) {
+      return font.id == newSelectedFont.id ? newSelectedFont : font;
+    }).toList();
+
+    return _updateFontInState(state, allFonts, newSelectedFont);
+  }
+}
+
 
 class FontStringUpdateAction extends ReduxAction<AppState> {
   final FontStringDTO dto;
