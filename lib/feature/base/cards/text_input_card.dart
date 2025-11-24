@@ -50,8 +50,7 @@ class _TextInputCardState extends State<TextInputCard> {
   @override
   void didUpdateWidget(TextInputCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.currentValue != oldWidget.currentValue &&
-        widget.currentValue != _editController.text) {
+    if (widget.currentValue != oldWidget.currentValue) {
       _editController.text = widget.currentValue;
     }
   }
