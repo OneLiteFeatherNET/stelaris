@@ -20,6 +20,7 @@ class ItemGeneralPage extends StatefulWidget {
 
 class _ItemGeneralPageState extends State<ItemGeneralPage> {
   final _formKey = GlobalKey<FormState>();
+  final _groupKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -114,7 +115,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                 ),
                                 ItemGroupCard(
                                   model: vm.selected,
-                                  groupKey: GlobalKey<FormState>(),
+                                  groupKey: _groupKey,
                                   focusOrder: const NumericFocusOrder(3),
                                 ),
                               ],
