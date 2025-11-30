@@ -25,12 +25,6 @@ final class UriLauncher {
   /// Returns `true` if the URL was successfully launched, `false` otherwise.
   static Future<bool> launchURL(String url) async {
     final Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      return launchUrl(uri);
-    } else {
-      // Log an error or show a user-friendly message
-      // For now, we'll just return false.
-      return false;
-    }
+    return launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 }
