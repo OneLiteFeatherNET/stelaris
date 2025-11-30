@@ -46,8 +46,11 @@ class StelarisApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           darkTheme: ThemeData(
             brightness: Brightness.dark,
-            colorSchemeSeed: themeSettings.primaryColor,
-            secondaryHeaderColor: themeSettings.accentColor,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: themeSettings.primaryColor,
+              brightness: Brightness.dark,
+              secondary: themeSettings.accentColor,
+            ),
             textTheme: scaledTextTheme.apply(
               bodyColor: Colors.white,
               displayColor: Colors.white,
@@ -55,8 +58,11 @@ class StelarisApp extends StatelessWidget {
           ),
           theme: ThemeData(
             brightness: Brightness.light,
-            colorSchemeSeed: themeSettings.primaryColor,
-            secondaryHeaderColor: themeSettings.accentColor,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: themeSettings.primaryColor,
+              brightness: Brightness.light,
+              secondary: themeSettings.accentColor,
+            ),
             textTheme: scaledTextTheme,
           ),
           themeMode: effectiveDarkMode ? ThemeMode.dark : ThemeMode.light,

@@ -4,6 +4,7 @@ import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/api/state/actions/theme_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/settings/settings_base_row.dart';
+import 'package:stelaris/feature/settings/settings_item.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -23,92 +24,30 @@ class ThemeSettingsRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible( // Use Flexible instead of Column directly
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Use System Theme',
-                          style: theme.textTheme.titleMedium,
-                        ),
-                        Text(
-                          "Automatically match your system's theme settings",
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                      ],
-                    ),
+              SettingsItem(
+                title: 'Use System Theme',
+                subtitle: "Automatically match your system's theme settings",
+                trailing: Switch(
+                  value: themeSettings.useSystemTheme,
+                  onChanged: (_) => context.dispatch(
+                    ToggleSystemThemeAction(systemDarkMode),
                   ),
-                  Switch(
-                    value: themeSettings.useSystemTheme,
-                    onChanged: (_) => context.dispatch(
-                      ToggleSystemThemeAction(systemDarkMode),
-                    ),
-                  ),
-                ],
+                ),
               ),
               verticalSpacing25,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Dark Mode'),
-                      Text('Update your preferred theme'),
-                    ],
-                  ),
-                  Switch(
-                    value: themeSettings.isDarkMode,
-                    onChanged: themeSettings.useSystemTheme
-                        ? null
-                        : (_) => context.dispatch(
-                              ToggleDarkModeAction(),
-                            ),
-                  ),
-                ],
+              SettingsItem(
+                title: 'Dark Mode',
+                subtitle: 'Update your preferred theme',
+                trailing: Switch(
+                  value: themeSettings.isDarkMode,
+                  onChanged: themeSettings.useSystemTheme
+                      ? null
+                      : (_) => context.dispatch(
+                            ToggleDarkModeAction(),
+                          ),
+                ),
               ),
               verticalSpacing25,
-              /*Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Theme Colors',
-                        style: theme.textTheme.titleMedium,
-                      ),
-                      Text(
-                        'Customize the primary and accent colors',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      ColorPickerButton(
-                        color: themeSettings.primaryColor,
-                        onColorChanged: (color) => context.dispatch(
-                          UpdatePrimaryColorAction(color),
-                        ),
-                        label: context.l10n.settings_primary_color,
-                      ),
-                      const SizedBox(width: 8),
-                      ColorPickerButton(
-                        color: themeSettings.accentColor,
-                        onColorChanged: (color) => context.dispatch(
-                          UpdateAccentColorAction(color),
-                        ),
-                        label: context.l10n.settings_accent_color,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              verticalSpacing25,*/
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

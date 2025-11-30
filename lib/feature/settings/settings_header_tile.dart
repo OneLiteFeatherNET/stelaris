@@ -9,7 +9,7 @@ class SettingsHeaderTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      color: theme.secondaryHeaderColor,
+      color: theme.colorScheme.primaryContainer,
       height: fiftyLength,
       child: Padding(
         padding: const EdgeInsets.only(left: 24, right: 10),
@@ -19,7 +19,9 @@ class SettingsHeaderTile extends StatelessWidget {
             Text(
               'Settings',
               textAlign: TextAlign.start,
-              style: theme.textTheme.titleLarge,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: theme.colorScheme.onPrimaryContainer,
+              ),
             ),
             Align(
               alignment: Alignment.centerRight,
@@ -27,7 +29,7 @@ class SettingsHeaderTile extends StatelessWidget {
                 onPressed: () => context.pop(false),
                 icon: Icon(
                   Icons.close,
-                  color: theme.buttonTheme.colorScheme?.secondary,
+                  color: theme.colorScheme.onPrimaryContainer,
                 ),
               ),
             ),
