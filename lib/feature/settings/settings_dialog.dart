@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris/feature/base/dialog/animated_dialog.dart';
 import 'package:stelaris/feature/settings/rows/accessibility_settings_row.dart';
 import 'package:stelaris/feature/settings/rows/misc_settings_row.dart';
 import 'package:stelaris/feature/settings/rows/theme_settings_row.dart';
@@ -11,66 +12,35 @@ class SettingsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeOutQuart,
-      tween: Tween<double>(begin: 0, end: 1),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final double width =
-              constraints.maxWidth < 1000 ? constraints.maxWidth : 1000;
-          final double height =
-              constraints.maxHeight < 600 ? constraints.maxHeight : 600;
-          return Dialog(
-            clipBehavior: Clip.hardEdge,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: width * 0.8,
-                minHeight: height * 0.8,
-                maxHeight: height,
-                maxWidth: width,
-              ),
-              child: const Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SettingsHeaderTile(),
-                  verticalSpacing25,
-                  Flexible(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            heightTen,
-                            ThemeSettingsRow(),
-                            verticalSpacing25,
-                            AccessibilitySettingsRow(),
-                            verticalSpacing25,
-                            MiscSettingsRow(),
-                            verticalSpacing25,
-                            SettingsEndTile(),
-                            heightTen
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+    return const AnimatedDialog(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SettingsHeaderTile(),
+          verticalSpacing25,
+          Flexible(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    heightTen,
+                    ThemeSettingsRow(),
+                    verticalSpacing25,
+                    AccessibilitySettingsRow(),
+                    verticalSpacing25,
+                    MiscSettingsRow(),
+                    verticalSpacing25,
+                    SettingsEndTile(),
+                    heightTen
+                  ],
+                ),
               ),
             ),
-          );
-        },
-      ),
-      builder: (context, value, child) {
-        return Opacity(
-          opacity: value,
-          child: Transform.scale(
-            scale: 0.5 + (value * 0.5),
-            child: child,
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
