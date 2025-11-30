@@ -52,16 +52,12 @@ mixin EnchantmentReducer {
 
   /// Returns the appropriate set of enchantments for a given [EnchantmentGroup].
   Set<Enchantment> _getEnchantments(EnchantmentGroup group) {
-    switch (group) {
-      case EnchantmentGroup.meta:
-        return metaEnchantments;
-      case EnchantmentGroup.tools:
-        return toolEnchantments; // Fixed bug: was armorEnchantments
-      case EnchantmentGroup.armor:
-        return armorEnchantments;
-      case EnchantmentGroup.weapon:
-        return weaponEnchantments;
-    }
+    return switch (group) {
+      EnchantmentGroup.meta => metaEnchantments,
+      EnchantmentGroup.tools => toolEnchantments,
+      EnchantmentGroup.armor => armorEnchantments,
+      EnchantmentGroup.weapon => weaponEnchantments,
+    };
   }
 
   /// Gets the list of available enchantments for an item, excluding those it already has.
