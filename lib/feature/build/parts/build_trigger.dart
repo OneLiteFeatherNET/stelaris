@@ -82,14 +82,10 @@ class _BuildTriggerState extends State<BuildTrigger> {
                 final state = _formKey.currentState;
                 if (state == null) return;
                 if (state.validate()) return;
-                String branch;
-                switch (_branchOption.value) {
-                  case BranchOption.release:
-                    branch = 'master';
-                    break;
-                  default:
-                    branch = 'develop';
-                }
+                final branch = switch (_branchOption.value) {
+                  BranchOption.release => 'master',
+                  _ => 'develop',
+                };
                 ApiService().generateApi.generate(branch);
               },
               child: const Text('Generate'),
