@@ -17,13 +17,9 @@ class CollapsedMenuActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton<_MenuAction>(
       icon: const Icon(Icons.more_horiz),
-      onSelected: (action) {
-        switch (action) {
-          case _MenuAction.edit:
-            onEdit();
-          case _MenuAction.delete:
-            onDelete();
-        }
+      onSelected: (action) => switch (action) {
+        _MenuAction.edit => onEdit(),
+        _MenuAction.delete => onDelete(),
       },
       itemBuilder: (context) => const [
         PopupMenuItem(
