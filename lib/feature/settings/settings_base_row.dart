@@ -24,9 +24,7 @@ class SettingsBaseRow extends StatelessWidget {
     final theme = Theme.of(context);
     return Semantics(
       label: semanticsLabel ?? title,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOut,
+      child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
