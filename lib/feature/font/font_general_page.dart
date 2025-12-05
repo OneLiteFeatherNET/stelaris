@@ -8,6 +8,7 @@ import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class FontGeneralPage extends StatefulWidget {
   const FontGeneralPage({super.key});
@@ -56,7 +57,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                               runSpacing: 16,
                               children: [
                                 TextInputCard<String>(
-                                  display: 'Variable Name',
+                                  display: context.l10n.card_name,
                                   currentValue:
                                       vm.selected.variableName ?? emptyString,
                                   formatter: [stringPatternFormatter],
@@ -76,7 +77,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   focusOrder: const NumericFocusOrder(1),
                                 ),
                                 TextInputCard<String>(
-                                  display: 'Provider',
+                                  display: context.l10n.card_font_provider,
                                   currentValue:
                                       vm.selected.provider ?? emptyString,
                                   formatter: [stringPatternFormatter],
@@ -91,7 +92,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   focusOrder: const NumericFocusOrder(2),
                                 ),
                                 TextInputCard<String>(
-                                  display: 'Comment',
+                                  display: context.l10n.card_comment,
                                   currentValue:
                                       vm.selected.comment ?? emptyString,
                                   formatter: [withSpacesFormatter],

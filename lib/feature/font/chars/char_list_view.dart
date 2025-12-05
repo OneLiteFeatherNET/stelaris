@@ -9,6 +9,7 @@ import 'package:stelaris/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/font/chars/char_list_item.dart';
 import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class CharListView extends StatefulWidget {
   const CharListView({
@@ -52,7 +53,7 @@ class _CharListViewState extends State<CharListView>
         context: context,
         builder: (context) {
           return DeleteDialog<FontStringDTO>(
-            title: const Text('Delete char'),
+            title: Text(context.l10n.dialog_font_char_delete),
             header: createDeleteText(key.line, context),
             value: key,
             successfully: (value) {
@@ -72,7 +73,7 @@ class _CharListViewState extends State<CharListView>
       context: context,
       builder: (context) {
         return EntryUpdateDialog(
-          title: 'Edit char',
+          title: context.l10n.dialog_font_char_edit,
           formKey: GlobalKey<FormState>(),
           data: dto.line,
           valueUpdate: (value) {

@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/feature/base/action/entry_actions.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris/feature/item/enchantment/dialog/item_enchantment_update_dialog.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/api/enchantment.dart';
 
 class EnchantmentItem extends StatefulWidget {
@@ -77,12 +78,13 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
   /// [dto] the [ItemEnchantmentDto] to build the widget
   /// Returns the concrete [Widget] that displays the data
   Widget _getEnchantmentSubTitle(ThemeData theme, ItemEnchantmentDto dto) {
+    final Text levelText = Text(context.l10n.item_level);
     if (dto.unsafe) {
-      return Row(children: [const Text('Level: '), Text(dto.level.toString())]);
+      return Row(children: [levelText, Text(dto.level.toString())]);
     }
     return Row(
       children: [
-        const Text('Level: '),
+        levelText,
         Text(widget.dto.level.toString()),
         Text(
           ' / ${widget.enchantment.maxLevel}',
@@ -106,10 +108,13 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
       context: context,
       builder: (BuildContext context) {
         return DeleteDialog<ItemEnchantmentDto>(
-          title: const Text('Delete enchantment', textAlign: TextAlign.center),
+          title: Text(
+            context.l10n.dialog_item_enchantment_delete_title,
+            textAlign: TextAlign.center,
+          ),
           header: [
             TextSpan(
-              text: 'Are you sure you want to delete this enchantment?',
+              text: context.l10n.dialog_item_enchantment_delete_header,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],

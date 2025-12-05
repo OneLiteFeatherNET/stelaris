@@ -12,6 +12,7 @@ import 'package:stelaris/feature/base/model_text.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 /// A widget that represents the attribute management page.
 ///
@@ -55,7 +56,7 @@ class AttributePage extends StatelessWidget {
                   ? () => context.dispatch(InitAttributeAction())
                   : null,
             ),
-            _mapModelToWidget(vm.selected),
+            _mapModelToWidget(context, vm.selected),
           ],
         );
       },
@@ -65,12 +66,12 @@ class AttributePage extends StatelessWidget {
   /// Maps the given [AttributeModel] to the right widget.
   /// If the model is null, it returns an [Expanded] widget with an [EmptyDataWidget].
   /// Otherwise, it returns an instance of [AttributeGeneralPage].
-  Widget _mapModelToWidget(AttributeModel? model) {
+  Widget _mapModelToWidget(BuildContext context, AttributeModel? model) {
     if (model == null) {
-      return const Expanded(
+      return Expanded(
         child: EmptyDataWidget.standard(
-          header: 'No data selected',
-          subHeader: 'Please create or selected a model',
+          header: context.l10n.empty_data_header,
+          subHeader: context.l10n.empty_data_subHeader
         ),
       );
     }
@@ -87,7 +88,7 @@ class AttributePage extends StatelessWidget {
       useRootNavigator: false,
       builder: (BuildContext context) {
         return EntryUpdateDialog(
-          title: 'Create new attribute',
+          title: context.l10n.dialog_attribute_create,
           valueUpdate: (value) {
             final AttributeModel attributeModel = AttributeModel(uiName: value);
             context.dispatchAndWait(AttributeAddAction(attributeModel));

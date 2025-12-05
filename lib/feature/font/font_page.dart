@@ -13,6 +13,7 @@ import 'package:stelaris/feature/font/face/font_face_page.dart';
 import 'package:stelaris/feature/font/font_general_page.dart';
 import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class FontPage extends StatelessWidget {
   const FontPage({super.key});
@@ -34,7 +35,7 @@ class FontPage extends StatelessWidget {
             return true;
           },
           callFunction: (model) => context.dispatch(SelectFontAction(model)),
-          page: (page, notification) => _mapPageToWidget(page, notification),
+          page: (page, notification) => _mapPageToWidget(context, page, notification),
           models: vm.models,
           tabPages: (pages) => pages,
           compareFunction: (model) => vm.isSelectedItem(model),
@@ -55,7 +56,7 @@ class FontPage extends StatelessWidget {
       useRootNavigator: false,
       builder: (BuildContext context) {
         return EntryUpdateDialog(
-          title: 'Create new font',
+          title: context.l10n.dialog_font_create_title,
           valueUpdate: (value) {
             final FontModel model = FontModel(uiName: value);
             context.dispatch(FontAddAction(model));
@@ -85,11 +86,11 @@ class FontPage extends StatelessWidget {
   /// Maps the given [FontModel] to the right widget.
   /// If the model is null, it returns an [Expanded] widget with an [EmptyDataWidget].
   /// Otherwise, it returns an instance of [FontGeneralPage] or [FontCharPage].
-  Widget _mapPageToWidget(String value, FontModel? listenable) {
+  Widget _mapPageToWidget(BuildContext context, String value, FontModel? listenable) {
     if (value.trim().isEmpty || listenable == null) {
-      return const EmptyDataWidget.standard(
-        header: 'No data selected',
-        subHeader: 'Please create or selected a model',
+      return  EmptyDataWidget.standard(
+        header: context.l10n.empty_data_header,
+        subHeader: context.l10n.empty_data_subHeader,
       );
     }
     return switch (value) {

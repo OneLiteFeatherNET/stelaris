@@ -12,6 +12,7 @@ import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/notification/notification_page_general.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class NotificationPage extends StatelessWidget {
   const NotificationPage({super.key});
@@ -47,7 +48,7 @@ class NotificationPage extends StatelessWidget {
                   ? () => context.dispatch(InitNotificationAction())
                   : null,
             ),
-            _mapModelToWidget(vm.selected),
+            _mapModelToWidget(context, vm.selected),
           ],
         );
       },
@@ -60,7 +61,7 @@ class NotificationPage extends StatelessWidget {
       useRootNavigator: false,
       builder: (BuildContext context) {
         return EntryUpdateDialog(
-          title: 'Create new notification',
+          title: context.l10n.dialog_notification_create,
           valueUpdate: (value) {
             final NotificationModel model = NotificationModel(uiName: value);
             context.dispatchAndWait(NotificationAddAction(model));
@@ -84,12 +85,12 @@ class NotificationPage extends StatelessWidget {
   /// Maps the given [NotificationModel] to the right widget.
   /// If the model is null, it returns an [Expanded] widget with an [EmptyDataWidget].
   /// Otherwise, it returns an instance of [NotificationGeneralPage].
-  Widget _mapModelToWidget(NotificationModel? model) {
+  Widget _mapModelToWidget(BuildContext context, NotificationModel? model) {
     if (model == null) {
-      return const Expanded(
+      return Expanded(
         child: EmptyDataWidget.standard(
-          header: 'No data selected',
-          subHeader: 'Please create or selected a model',
+          header: context.l10n.empty_data_header,
+          subHeader: context.l10n.empty_data_subHeader,
         ),
       );
     }

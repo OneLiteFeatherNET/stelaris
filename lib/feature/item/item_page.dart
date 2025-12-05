@@ -15,6 +15,7 @@ import 'package:stelaris/feature/item/lore/lore_page.dart';
 import 'package:stelaris/feature/item/meta/item_meta_page.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class ItemPage extends StatelessWidget {
   const ItemPage({super.key});
@@ -37,7 +38,7 @@ class ItemPage extends StatelessWidget {
             return true;
           },
           callFunction: (model) => context.dispatch(SelectedItemAction(model)),
-          page: (page, model) => _mapPageToWidget(page, model),
+          page: (page, model) => _mapPageToWidget(context, page, model),
           models: vm.itemModels,
           tabPages: (pages) => pages,
           compareFunction: (model) => vm.isSelectedItem(model),
@@ -58,7 +59,7 @@ class ItemPage extends StatelessWidget {
       useRootNavigator: false,
       builder: (BuildContext context) {
         return EntryUpdateDialog(
-          title: 'Create new item',
+          title: context.l10n.dialog_item_create,
           valueUpdate: (value) {
             final model = ItemModel(uiName: value);
             context.dispatch(ItemAddAction(model));
@@ -91,11 +92,11 @@ class ItemPage extends StatelessWidget {
   /// Maps the given [ItemModel] to the right widget.
   /// If the model is null, it returns an [Expanded] widget with an [EmptyDataWidget].
   /// Otherwise, it returns an instance of [ItemGeneralPage],[ItemEnchantmentPage] or [LorePage].
-  Widget _mapPageToWidget(String value, ItemModel? listenable) {
+  Widget _mapPageToWidget(BuildContext context, String value, ItemModel? listenable) {
     if (value.trim().isEmpty || listenable == null) {
-      return const EmptyDataWidget.standard(
-        header: 'No data selected',
-        subHeader: 'Please create or selected a model',
+      return EmptyDataWidget.standard(
+        header: context.l10n.empty_data_header,
+        subHeader: context.l10n.empty_data_subHeader,
       );
     }
     return switch (value) {

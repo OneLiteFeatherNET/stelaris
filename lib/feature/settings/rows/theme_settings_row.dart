@@ -25,8 +25,8 @@ class ThemeSettingsRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SettingsItem(
-                title: 'Use System Theme',
-                subtitle: "Automatically match your system's theme settings",
+                title: context.l10n.settings_theme_item_title,
+                subtitle: context.l10n.settings_theme_item_subtitle,
                 trailing: Switch(
                   value: themeSettings.useSystemTheme,
                   onChanged: (_) => context.dispatch(
@@ -36,8 +36,8 @@ class ThemeSettingsRow extends StatelessWidget {
               ),
               verticalSpacing25,
               SettingsItem(
-                title: 'Dark Mode',
-                subtitle: 'Update your preferred theme',
+                title: context.l10n.settings_item_dark_mode_title,
+                subtitle: context.l10n.settings_item_dark_mode_subtitle,
                 trailing: Switch(
                   value: themeSettings.isDarkMode,
                   onChanged: themeSettings.useSystemTheme
@@ -52,11 +52,11 @@ class ThemeSettingsRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Font Size',
+                    context.l10n.settings_item_font_title,
                     style: theme.textTheme.titleMedium,
                   ),
                   Text(
-                    'Adjust the text size throughout the app',
+                    context.l10n.settings_item_font_subtitle,
                     style: theme.textTheme.bodyMedium,
                   ),
                   Padding(

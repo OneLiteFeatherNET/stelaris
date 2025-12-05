@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class LoreCountChip extends StatelessWidget {
   final int currentIndex;
@@ -9,7 +10,7 @@ class LoreCountChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: 'Current line count',
+      message: context.l10n.tooltip_line_count,
       child: Chip(
           label: Text('$currentIndex / $maxLoreLines'),
           avatar: const Icon(Icons.numbers_outlined),
