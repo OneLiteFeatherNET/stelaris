@@ -59,7 +59,7 @@ class AttributeGeneralPage extends StatelessWidget {
                       focusOrder: const NumericFocusOrder(1),
                     ),
                     TextInputCard<double>(
-                      display: 'Default value',
+                      display: context.l10n.card_attribute_default_value,
                       currentValue:
                           vm.selected.defaultValue?.toString() ?? zeroString,
                       formatter: [
@@ -78,7 +78,7 @@ class AttributeGeneralPage extends StatelessWidget {
                       focusOrder: const NumericFocusOrder(2),
                     ),
                     TextInputCard<double>(
-                      display: 'Maximum value',
+                      display: context.l10n.card_attribute_maximum_value,
                       currentValue:
                           vm.selected.maximumValue?.toString() ?? zeroString,
                       valueUpdate: (value) {
