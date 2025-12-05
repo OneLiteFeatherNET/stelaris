@@ -47,17 +47,14 @@ class ItemEnchantmentPage extends StatelessWidget {
 
   void _showAddEnchantmentDialog(BuildContext context, EnchantmentView vm) {
     if (vm.selectedEnchantmentMap.length >= vm.enchantments.length) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-        InfoBarFactory().create('All enchantments has been set for this group!')
+      ScaffoldMessenger.of(context).showSnackBar(
+        InfoBarFactory().create(context.l10n.tooltip_item_enchantment_all_set),
       );
       return;
     }
     showDialog(
       context: context,
-      builder: (context) => ItemEnchantmentAddDialog(
-        view: vm,
-      ),
+      builder: (context) => ItemEnchantmentAddDialog(view: vm),
     );
   }
 }

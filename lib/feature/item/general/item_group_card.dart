@@ -27,7 +27,7 @@ class ItemGroupCard extends StatelessWidget {
       currentValue: model,
       formKey: groupKey,
       items: getGroupItems(),
-      tooltipMessage: 'Change Item group',
+      tooltipMessage: context.l10n.tooltip_item_group,
       matchTextInputHeight: true,
       focusOrder: focusOrder,
       valueUpdate: (EnchantmentGroup? value) {
@@ -38,23 +38,19 @@ class ItemGroupCard extends StatelessWidget {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: const Text(
-                'Group change',
+              title: Text(
+                context.l10n.dialog_item_group_change_title,
                 textAlign: TextAlign.center,
               ),
               contentPadding: dialogPadding,
-              content: const SizedBox(
+              content: SizedBox(
                 height: 75,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'A change of the group will reset each selected enchantment',
-                    ),
+                    Text(context.l10n.dialog_item_group_change_header),
                     heightTen,
-                    Text(
-                      'Do you want to proceed?',
-                    ),
+                    Text(context.l10n.dialog_item_group_change_confirm),
                   ],
                 ),
               ),

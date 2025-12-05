@@ -9,6 +9,7 @@ import 'package:stelaris/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/item/lore/grabbed_card.dart';
 import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class LorePageView extends StatefulWidget {
   const LorePageView({required this.view, super.key});
@@ -19,8 +20,8 @@ class LorePageView extends StatefulWidget {
   State<LorePageView> createState() => _LorePageViewState();
 }
 
-class _LorePageViewState extends State<LorePageView> with InfiniteScrollMixin<LorePageView> {
-
+class _LorePageViewState extends State<LorePageView>
+    with InfiniteScrollMixin<LorePageView> {
   @override
   bool canLoadMore() {
     final lore = widget.view.selected.lore;
@@ -86,9 +87,12 @@ class _LorePageViewState extends State<LorePageView> with InfiniteScrollMixin<Lo
       context: context,
       builder: (BuildContext context) {
         return DeleteDialog<ItemLoreDto>(
-          title: const Text('Delete lore', textAlign: TextAlign.center),
+          title: Text(
+            context.l10n.dialog_item_lore_delete_header,
+            textAlign: TextAlign.center,
+          ),
           header: [
-            const TextSpan(text: 'Are you sure you want to delete this lore?'),
+            TextSpan(text: context.l10n.dialog_item_lore_delete_header),
           ],
           value: dto,
           successfully: (value) {
@@ -105,7 +109,7 @@ class _LorePageViewState extends State<LorePageView> with InfiniteScrollMixin<Lo
       context: context,
       builder: (BuildContext context) {
         return EntryUpdateDialog(
-          title: 'Edit lore',
+          title: context.l10n.dialog_item_lore_edit_title,
           formKey: GlobalKey<FormState>(),
           valueUpdate: (value) {
             final updatedDto = dto.copyWith(text: value);

@@ -44,7 +44,10 @@ class _ItemEnchantmentUpdateDialogState
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: const Text('Update Level', textAlign: TextAlign.center),
+      title: Text(
+        context.l10n.dialog_item_enchantment_level_edit,
+        textAlign: TextAlign.center,
+      ),
       contentPadding: dialogPadding,
       children: [
         verticalSpacing25,
@@ -57,24 +60,21 @@ class _ItemEnchantmentUpdateDialogState
             autocorrect: false,
             keyboardType: numberInput,
             inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
-            validator: (value) =>
-                _validateInput(
-                  value: value!,
-                  maxLevel: widget.enchantment.maxLevel,
-                ),
+            validator: (value) => _validateInput(
+              value: value!,
+              maxLevel: widget.enchantment.maxLevel,
+            ),
           ),
         ),
         verticalSpacing25,
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            CancelButton(callback: () => context.pop(false),),
+            CancelButton(callback: () => context.pop(false)),
             TextButton(
               onPressed: () {
                 final String content = _controller.text;
-                if (content
-                    .trim()
-                    .isEmpty) {
+                if (content.trim().isEmpty) {
                   return;
                 }
 
@@ -84,7 +84,7 @@ class _ItemEnchantmentUpdateDialogState
                 }
 
                 final ItemEnchantmentDto updatedDto = widget.dto.copyWith(
-                  level: int.parse(content)
+                  level: int.parse(content),
                 );
                 context.dispatch(ItemEnchantmentUpdateAction(updatedDto));
                 context.pop(true);
@@ -92,15 +92,13 @@ class _ItemEnchantmentUpdateDialogState
               child: Text(context.l10n.button_save),
             ),
           ],
-        )
+        ),
       ],
     );
   }
 
   String? _validateInput({required String value, required int maxLevel}) {
-    if (value
-        .trim()
-        .isEmpty) {
+    if (value.trim().isEmpty) {
       return 'Please enter a level';
     }
     final level = int.tryParse(value);

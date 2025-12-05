@@ -48,12 +48,12 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
   Widget build(BuildContext context) {
     return SimpleDialog(
       title: Text(
-        context.l10n.dialog_enchantment_title,
+        context.l10n.dialog_item_enchantment_title,
         textAlign: TextAlign.center,
       ),
       contentPadding: dialogPadding,
       children: [
-        Text(context.l10n.dialog_enchantment_enchantment),
+        Text(context.l10n.dialog_item_enchantment_title),
         horizontalSpacing10,
         ValueListenableBuilder<Enchantment>(
           valueListenable: _selected,

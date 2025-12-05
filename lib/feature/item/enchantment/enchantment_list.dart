@@ -7,6 +7,7 @@ import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/api/state/factory/item/enchantment_view_state.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_item.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class EnchantmentList extends StatefulWidget {
   const EnchantmentList({
@@ -22,12 +23,12 @@ class EnchantmentList extends StatefulWidget {
   State<EnchantmentList> createState() => _EnchantmentListState();
 }
 
-class _EnchantmentListState extends State<EnchantmentList> with InfiniteScrollMixin<EnchantmentList> {
-
+class _EnchantmentListState extends State<EnchantmentList>
+    with InfiniteScrollMixin<EnchantmentList> {
   @override
   Widget build(BuildContext context) {
     if (!widget.view.hasEnchantments) {
-      return const EmptyDataWidget(header: 'No enchantments added yet');
+      return EmptyDataWidget(header: context.l10n.empty_data_no_enchantments);
     }
 
     return Scrollbar(
@@ -39,7 +40,8 @@ class _EnchantmentListState extends State<EnchantmentList> with InfiniteScrollMi
         itemBuilder: (context, index) {
           final enchantment = widget.view[index];
           return EnchantmentItem(
-            dto: widget.view.selectedEnchantmentMap[enchantment.minecraftValue]!,
+            dto:
+                widget.view.selectedEnchantmentMap[enchantment.minecraftValue]!,
             enchantment: enchantment,
           );
         },
