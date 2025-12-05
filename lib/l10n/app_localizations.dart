@@ -220,23 +220,113 @@ abstract class AppLocalizations {
   /// **'The name must start with a character not with a number'**
   String get setup_invalid_name;
 
-  /// No description provided for @dialog_enchantment_title.
+  /// No description provided for @dialog_item_enchantment_title.
   ///
   /// In en, this message translates to:
   /// **'Add a enchantment'**
-  String get dialog_enchantment_title;
+  String get dialog_item_enchantment_title;
 
-  /// No description provided for @dialog_enchantment_enchantment.
+  /// No description provided for @dialog_item_enchantment_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete enchantment'**
+  String get dialog_item_enchantment_delete_title;
+
+  /// No description provided for @dialog_item_enchantment_delete_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this enchantment?'**
+  String get dialog_item_enchantment_delete_header;
+
+  /// No description provided for @dialog_item_enchantment.
   ///
   /// In en, this message translates to:
   /// **'Enchantment'**
-  String get dialog_enchantment_enchantment;
+  String get dialog_item_enchantment;
+
+  /// No description provided for @dialog_item_enchantment_level_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Level'**
+  String get dialog_item_enchantment_level_edit;
+
+  /// No description provided for @dialog_item_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new item'**
+  String get dialog_item_create;
+
+  /// No description provided for @dialog_item_lore_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete lore'**
+  String get dialog_item_lore_delete_title;
+
+  /// No description provided for @dialog_item_lore_edit_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit lore'**
+  String get dialog_item_lore_edit_title;
+
+  /// No description provided for @dialog_item_lore_delete_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this lore?'**
+  String get dialog_item_lore_delete_header;
+
+  /// No description provided for @dialog_item_group_change_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Group change'**
+  String get dialog_item_group_change_title;
+
+  /// No description provided for @dialog_item_group_change_header.
+  ///
+  /// In en, this message translates to:
+  /// **'A change of the group will reset each selected enchantment'**
+  String get dialog_item_group_change_header;
+
+  /// No description provided for @dialog_item_group_change_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to proceed?'**
+  String get dialog_item_group_change_confirm;
 
   /// No description provided for @dialog_delete_confirm.
   ///
   /// In en, this message translates to:
   /// **'Confirm deletion'**
   String get dialog_delete_confirm;
+
+  /// No description provided for @dialog_font_create_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new font'**
+  String get dialog_font_create_title;
+
+  /// No description provided for @dialog_font_char_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add character'**
+  String get dialog_font_char_add;
+
+  /// No description provided for @dialog_font_char_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete char'**
+  String get dialog_font_char_delete;
+
+  /// No description provided for @dialog_font_char_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit char'**
+  String get dialog_font_char_edit;
+
+  /// No description provided for @dialog_notification_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new notification'**
+  String get dialog_notification_create;
 
   /// No description provided for @dialog_abort_flags_title.
   ///
@@ -418,6 +508,24 @@ abstract class AppLocalizations {
   /// **'Change height'**
   String get tooltip_height;
 
+  /// No description provided for @tooltip_line_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Current line count'**
+  String get tooltip_line_count;
+
+  /// No description provided for @tooltip_item_group.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the group of an item'**
+  String get tooltip_item_group;
+
+  /// No description provided for @tooltip_item_enchantment_all_set.
+  ///
+  /// In en, this message translates to:
+  /// **'All enchantments has been set for this group!'**
+  String get tooltip_item_enchantment_all_set;
+
   /// No description provided for @enum_dialog_flags.
   ///
   /// In en, this message translates to:
@@ -435,6 +543,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Description'**
   String get card_description;
+
+  /// No description provided for @card_comment.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment'**
+  String get card_comment;
 
   /// No description provided for @card_amount.
   ///
@@ -526,29 +640,101 @@ abstract class AppLocalizations {
   /// **'The maximum amount is 64'**
   String get card_amount_to_high;
 
+  /// No description provided for @card_font_provider.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get card_font_provider;
+
+  /// No description provided for @card_font_texture_path.
+  ///
+  /// In en, this message translates to:
+  /// **'Texture path'**
+  String get card_font_texture_path;
+
   /// No description provided for @label_level.
   ///
   /// In en, this message translates to:
   /// **'Level'**
   String get label_level;
 
+  /// No description provided for @item_level.
+  ///
+  /// In en, this message translates to:
+  /// **'Level: '**
+  String get item_level;
+
+  /// No description provided for @empty_data_header.
+  ///
+  /// In en, this message translates to:
+  /// **'No data selected'**
+  String get empty_data_header;
+
+  /// No description provided for @empty_data_subHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Please create or selected a model'**
+  String get empty_data_subHeader;
+
+  /// No description provided for @empty_data_no_enchantments.
+  ///
+  /// In en, this message translates to:
+  /// **'No enchantments added yet'**
+  String get empty_data_no_enchantments;
+
+  /// No description provided for @settings_theme_item_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Use System Theme'**
+  String get settings_theme_item_title;
+
+  /// No description provided for @settings_theme_item_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically match your system\'s theme settings'**
+  String get settings_theme_item_subtitle;
+
+  /// No description provided for @settings_item_dark_mode_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get settings_item_dark_mode_title;
+
+  /// No description provided for @settings_item_dark_mode_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your preferred theme'**
+  String get settings_item_dark_mode_subtitle;
+
+  /// No description provided for @settings_item_font_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Font Size'**
+  String get settings_item_font_title;
+
+  /// No description provided for @settings_item_font_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust the text size throughout the app'**
+  String get settings_item_font_subtitle;
+
+  /// No description provided for @settings_end_tile_made_with.
+  ///
+  /// In en, this message translates to:
+  /// **'Made with'**
+  String get settings_end_tile_made_with;
+
+  /// No description provided for @settings_end_tile_team.
+  ///
+  /// In en, this message translates to:
+  /// **'by the team'**
+  String get settings_end_tile_team;
+
   /// No description provided for @settings_display_title.
   ///
   /// In en, this message translates to:
   /// **'Display settings'**
   String get settings_display_title;
-
-  /// No description provided for @settings_display_header.
-  ///
-  /// In en, this message translates to:
-  /// **'Dark Mode'**
-  String get settings_display_header;
-
-  /// No description provided for @settings_display_body.
-  ///
-  /// In en, this message translates to:
-  /// **'Update your preferred theme'**
-  String get settings_display_body;
 
   /// No description provided for @settings_theme_colors.
   ///

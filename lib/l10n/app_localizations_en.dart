@@ -74,13 +74,61 @@ class AppLocalizationsEn extends AppLocalizations {
       'The name must start with a character not with a number';
 
   @override
-  String get dialog_enchantment_title => 'Add a enchantment';
+  String get dialog_item_enchantment_title => 'Add a enchantment';
 
   @override
-  String get dialog_enchantment_enchantment => 'Enchantment';
+  String get dialog_item_enchantment_delete_title => 'Delete enchantment';
+
+  @override
+  String get dialog_item_enchantment_delete_header =>
+      'Are you sure you want to delete this enchantment?';
+
+  @override
+  String get dialog_item_enchantment => 'Enchantment';
+
+  @override
+  String get dialog_item_enchantment_level_edit => 'Update Level';
+
+  @override
+  String get dialog_item_create => 'Create new item';
+
+  @override
+  String get dialog_item_lore_delete_title => 'Delete lore';
+
+  @override
+  String get dialog_item_lore_edit_title => 'Edit lore';
+
+  @override
+  String get dialog_item_lore_delete_header =>
+      'Are you sure you want to delete this lore?';
+
+  @override
+  String get dialog_item_group_change_title => 'Group change';
+
+  @override
+  String get dialog_item_group_change_header =>
+      'A change of the group will reset each selected enchantment';
+
+  @override
+  String get dialog_item_group_change_confirm => 'Do you want to proceed?';
 
   @override
   String get dialog_delete_confirm => 'Confirm deletion';
+
+  @override
+  String get dialog_font_create_title => 'Create new font';
+
+  @override
+  String get dialog_font_char_add => 'Add character';
+
+  @override
+  String get dialog_font_char_delete => 'Delete char';
+
+  @override
+  String get dialog_font_char_edit => 'Edit char';
+
+  @override
+  String get dialog_notification_create => 'Create new notification';
 
   @override
   String get dialog_abort_flags_title => 'Test';
@@ -178,6 +226,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tooltip_height => 'Change height';
 
   @override
+  String get tooltip_line_count => 'Current line count';
+
+  @override
+  String get tooltip_item_group => 'Change the group of an item';
+
+  @override
+  String get tooltip_item_enchantment_all_set =>
+      'All enchantments has been set for this group!';
+
+  @override
   String get enum_dialog_flags => 'Add a flag';
 
   @override
@@ -185,6 +243,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get card_description => 'Description';
+
+  @override
+  String get card_comment => 'Comment';
 
   @override
   String get card_amount => 'Amount';
@@ -232,16 +293,54 @@ class AppLocalizationsEn extends AppLocalizations {
   String get card_amount_to_high => 'The maximum amount is 64';
 
   @override
+  String get card_font_provider => 'Provider';
+
+  @override
+  String get card_font_texture_path => 'Texture path';
+
+  @override
   String get label_level => 'Level';
 
   @override
+  String get item_level => 'Level: ';
+
+  @override
+  String get empty_data_header => 'No data selected';
+
+  @override
+  String get empty_data_subHeader => 'Please create or selected a model';
+
+  @override
+  String get empty_data_no_enchantments => 'No enchantments added yet';
+
+  @override
+  String get settings_theme_item_title => 'Use System Theme';
+
+  @override
+  String get settings_theme_item_subtitle =>
+      'Automatically match your system\'s theme settings';
+
+  @override
+  String get settings_item_dark_mode_title => 'Dark Mode';
+
+  @override
+  String get settings_item_dark_mode_subtitle => 'Update your preferred theme';
+
+  @override
+  String get settings_item_font_title => 'Font Size';
+
+  @override
+  String get settings_item_font_subtitle =>
+      'Adjust the text size throughout the app';
+
+  @override
+  String get settings_end_tile_made_with => 'Made with';
+
+  @override
+  String get settings_end_tile_team => 'by the team';
+
+  @override
   String get settings_display_title => 'Display settings';
-
-  @override
-  String get settings_display_header => 'Dark Mode';
-
-  @override
-  String get settings_display_body => 'Update your preferred theme';
 
   @override
   String get settings_theme_colors => 'Theme Colors';
