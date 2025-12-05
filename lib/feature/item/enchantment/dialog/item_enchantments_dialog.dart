@@ -53,7 +53,7 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
       ),
       contentPadding: dialogPadding,
       children: [
-        Text(context.l10n.dialog_item_enchantment_title),
+        Text(context.l10n.dialog_item_enchantment),
         horizontalSpacing10,
         ValueListenableBuilder<Enchantment>(
           valueListenable: _selected,
