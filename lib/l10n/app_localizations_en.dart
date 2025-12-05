@@ -9,13 +9,10 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get delete_dialog_first_line => 'Do you really want to delete ';
-
-  @override
-  String get delete_dialog_entry => ' entry';
-
-  @override
   String get button_add => 'Add';
+
+  @override
+  String get button_add_new_line => 'Add new line';
 
   @override
   String get button_save => 'Save';
@@ -30,25 +27,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get button_trigger_go => 'Go!';
 
   @override
-  String get button_finish => 'Finish';
-
-  @override
   String get button_continue => 'Continue';
 
   @override
-  String get button_ok => 'Ok';
+  String get button_finish => 'Finish';
 
   @override
   String get button_back => 'Back';
+
+  @override
+  String get button_ok => 'Ok';
 
   @override
   String get button_yes => 'Yes';
 
   @override
   String get button_cancel => 'Cancel';
-
-  @override
-  String get button_add_new_line => 'Add new line';
 
   @override
   String get text_branch => 'Please select a branch';
@@ -67,40 +61,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'When you need help, click on the copy button the get the wiki link';
 
   @override
-  String get setup_new_model => 'Create new model';
+  String get delete_dialog_first_line => 'Do you really want to delete ';
 
   @override
-  String get setup_invalid_name =>
-      'The name must start with a character not with a number';
+  String get delete_dialog_entry => ' entry';
 
   @override
-  String get dialog_item_enchantment_title => 'Add a enchantment';
+  String get dialog_delete_confirm => 'Confirm deletion';
 
   @override
-  String get dialog_item_enchantment_delete_title => 'Delete enchantment';
-
-  @override
-  String get dialog_item_enchantment_delete_header =>
-      'Are you sure you want to delete this enchantment?';
-
-  @override
-  String get dialog_item_enchantment => 'Enchantment';
-
-  @override
-  String get dialog_item_enchantment_level_edit => 'Update Level';
+  String get dialog_attribute_create => 'Create attribute';
 
   @override
   String get dialog_item_create => 'Create new item';
-
-  @override
-  String get dialog_item_lore_delete_title => 'Delete lore';
-
-  @override
-  String get dialog_item_lore_edit_title => 'Edit lore';
-
-  @override
-  String get dialog_item_lore_delete_header =>
-      'Are you sure you want to delete this lore?';
 
   @override
   String get dialog_item_group_change_title => 'Group change';
@@ -113,7 +86,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_item_group_change_confirm => 'Do you want to proceed?';
 
   @override
-  String get dialog_delete_confirm => 'Confirm deletion';
+  String get dialog_item_enchantment_title => 'Add a enchantment';
+
+  @override
+  String get dialog_item_enchantment => 'Enchantment';
+
+  @override
+  String get dialog_item_enchantment_level_edit => 'Update Level';
+
+  @override
+  String get dialog_item_enchantment_delete_title => 'Delete enchantment';
+
+  @override
+  String get dialog_item_enchantment_delete_header =>
+      'Are you sure you want to delete this enchantment?';
+
+  @override
+  String get dialog_item_lore_edit_title => 'Edit lore';
+
+  @override
+  String get dialog_item_lore_delete_title => 'Delete lore';
+
+  @override
+  String get dialog_item_lore_delete_header =>
+      'Are you sure you want to delete this lore?';
 
   @override
   String get dialog_font_create_title => 'Create new font';
@@ -122,39 +118,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_font_char_add => 'Add character';
 
   @override
-  String get dialog_font_char_delete => 'Delete char';
-
-  @override
   String get dialog_font_char_edit => 'Edit char';
 
   @override
-  String get dialog_notification_create => 'Create new notification';
+  String get dialog_font_char_delete => 'Delete char';
 
   @override
-  String get dialog_abort_flags_title => 'Test';
-
-  @override
-  String get dialog_abort_flags =>
-      'Unable to set flags because all available flags are set';
-
-  @override
-  String get dialog_abort_enchantment_title => 'Test';
-
-  @override
-  String get dialog_level_title => 'Edit level';
-
-  @override
-  String get dialog_lore_edit_title => 'Edit lore';
-
-  @override
-  String get dialog_level_validation => 'The level can\'t be empty';
-
-  @override
-  String get dialog_level_delete_first_line => 'Do you really want to delete ';
-
-  @override
-  String get dialog_abort_enchantments =>
-      'Unable to set enchantment because all are set';
+  String get dialog_char_title => 'Add char';
 
   @override
   String get dialog_abort_chars_add => 'Unable to add char';
@@ -163,7 +133,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_abort_chars_text => 'There is already an entry called ';
 
   @override
-  String get dialog_char_title => 'Add char';
+  String get dialog_notification_create => 'Create new notification';
 
   @override
   String get dialog_group_change => 'Change group?';
@@ -171,6 +141,127 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dialog_group_change_text =>
       'The model contains enchantments which are not in the new selected group.\nAll enchantments which are not in the group will be deleted.\n\nAre you sure you want to change the group?';
+
+  @override
+  String get card_name => 'Variable Name';
+
+  @override
+  String get card_description => 'Description';
+
+  @override
+  String get card_comment => 'Comment';
+
+  @override
+  String get card_material => 'Material';
+
+  @override
+  String get card_model_data => 'ModelData';
+
+  @override
+  String get card_amount => 'Amount';
+
+  @override
+  String get card_amount_to_high => 'The maximum amount is 64';
+
+  @override
+  String get card_display_name => 'DisplayName';
+
+  @override
+  String get card_title => 'Title';
+
+  @override
+  String get card_type => 'Type';
+
+  @override
+  String get card_group => 'Group';
+
+  @override
+  String get card_enchantments => 'Enchantments';
+
+  @override
+  String get card_lore => 'Lore';
+
+  @override
+  String get card_frame_type => 'FrameType';
+
+  @override
+  String get card_ascent => 'Ascent';
+
+  @override
+  String get card_height => 'Height';
+
+  @override
+  String get card_chars => 'Chars';
+
+  @override
+  String get card_attribute_default_value => 'Default value';
+
+  @override
+  String get card_attribute_maximum_value => 'Maximum value';
+
+  @override
+  String get card_font_provider => 'Provider';
+
+  @override
+  String get card_font_texture_path => 'Texture path';
+
+  @override
+  String get label_level => 'Level';
+
+  @override
+  String get item_level => 'Level: ';
+
+  @override
+  String get tooltip_delete => 'Delete';
+
+  @override
+  String get tooltip_name => 'Change the name for the variable';
+
+  @override
+  String get tooltip_description => 'Change description';
+
+  @override
+  String get tooltip_material => 'Change the material';
+
+  @override
+  String get tooltip_model_data => 'Change the model data';
+
+  @override
+  String get tooltip_displayname => 'Change the Displayname';
+
+  @override
+  String get tooltip_title => 'Change title';
+
+  @override
+  String get tooltip_amount => 'Change amount';
+
+  @override
+  String get tooltip_flag => 'Change the flags';
+
+  @override
+  String get tooltip_ascent => 'Change ascent';
+
+  @override
+  String get tooltip_height => 'Change height';
+
+  @override
+  String get tooltip_line_count => 'Current line count';
+
+  @override
+  String get tooltip_item_group => 'Change the group of an item';
+
+  @override
+  String get tooltip_item_enchantment_all_set =>
+      'All enchantments has been set for this group!';
+
+  @override
+  String get empty_data_header => 'No data selected';
+
+  @override
+  String get empty_data_subHeader => 'Please create or selected a model';
+
+  @override
+  String get empty_data_no_enchantments => 'No enchantments added yet';
 
   @override
   String get input_validation_material =>
@@ -193,125 +284,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_card_empty => 'The value can\'t be empty';
 
   @override
-  String get tooltip_delete => 'Delete';
-
-  @override
-  String get tooltip_material => 'Change the material';
-
-  @override
-  String get tooltip_name => 'Change the name for the variable';
-
-  @override
-  String get tooltip_model_data => 'Change the model data';
-
-  @override
-  String get tooltip_description => 'Change description';
-
-  @override
-  String get tooltip_displayname => 'Change the Displayname';
-
-  @override
-  String get tooltip_title => 'Change title';
-
-  @override
-  String get tooltip_flag => 'Change the flags';
-
-  @override
-  String get tooltip_amount => 'Change amount';
-
-  @override
-  String get tooltip_ascent => 'Change ascent';
-
-  @override
-  String get tooltip_height => 'Change height';
-
-  @override
-  String get tooltip_line_count => 'Current line count';
-
-  @override
-  String get tooltip_item_group => 'Change the group of an item';
-
-  @override
-  String get tooltip_item_enchantment_all_set =>
-      'All enchantments has been set for this group!';
-
-  @override
-  String get enum_dialog_flags => 'Add a flag';
-
-  @override
-  String get card_name => 'Variable Name';
-
-  @override
-  String get card_description => 'Description';
-
-  @override
-  String get card_comment => 'Comment';
-
-  @override
-  String get card_amount => 'Amount';
-
-  @override
-  String get card_material => 'Material';
-
-  @override
-  String get card_model_data => 'ModelData';
-
-  @override
-  String get card_flags => 'Flags';
-
-  @override
-  String get card_enchantments => 'Enchantments';
-
-  @override
-  String get card_lore => 'Lore';
-
-  @override
-  String get card_display_name => 'DisplayName';
-
-  @override
-  String get card_title => 'Title';
-
-  @override
-  String get card_frame_type => 'FrameType';
-
-  @override
-  String get card_type => 'Type';
-
-  @override
-  String get card_ascent => 'Ascent';
-
-  @override
-  String get card_height => 'Height';
-
-  @override
-  String get card_chars => 'Chars';
-
-  @override
-  String get card_group => 'Group';
-
-  @override
-  String get card_amount_to_high => 'The maximum amount is 64';
-
-  @override
-  String get card_font_provider => 'Provider';
-
-  @override
-  String get card_font_texture_path => 'Texture path';
-
-  @override
-  String get label_level => 'Level';
-
-  @override
-  String get item_level => 'Level: ';
-
-  @override
-  String get empty_data_header => 'No data selected';
-
-  @override
-  String get empty_data_subHeader => 'Please create or selected a model';
-
-  @override
-  String get empty_data_no_enchantments => 'No enchantments added yet';
+  String get settings_display_title => 'Display settings';
 
   @override
   String get settings_theme_item_title => 'Use System Theme';
@@ -325,22 +298,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings_item_dark_mode_subtitle => 'Update your preferred theme';
-
-  @override
-  String get settings_item_font_title => 'Font Size';
-
-  @override
-  String get settings_item_font_subtitle =>
-      'Adjust the text size throughout the app';
-
-  @override
-  String get settings_end_tile_made_with => 'Made with';
-
-  @override
-  String get settings_end_tile_team => 'by the team';
-
-  @override
-  String get settings_display_title => 'Display settings';
 
   @override
   String get settings_theme_colors => 'Theme Colors';
@@ -358,6 +315,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settings_accent_color_desc =>
       'Choose the accent color for the app theme';
+
+  @override
+  String get settings_item_font_title => 'Font Size';
+
+  @override
+  String get settings_item_font_subtitle =>
+      'Adjust the text size throughout the app';
 
   @override
   String get settings_accessibility_title => 'Accessibility';
@@ -394,4 +358,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings_misc_suggestion_button => 'Suggest';
+
+  @override
+  String get settings_end_tile_made_with => 'Made with';
+
+  @override
+  String get settings_end_tile_team => 'by the team';
 }

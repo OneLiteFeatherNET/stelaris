@@ -18,12 +18,11 @@
   "text_version_type": "Version type",
   "text_wiki": "When you need help, click on the copy button the get the wiki link",
 
-  "setup_new_model": "Create new model",
-  "setup_invalid_name": "The name must start with a character not with a number",
-
   "delete_dialog_first_line": "Do you really want to delete ",
   "delete_dialog_entry": " entry",
   "dialog_delete_confirm": "Confirm deletion",
+
+  "dialog_attribute_create": "Create attribute",
 
   "dialog_item_create": "Create new item",
   "dialog_item_group_change_title": "Group change",
@@ -35,21 +34,10 @@
   "dialog_item_enchantment_level_edit": "Update Level",
   "dialog_item_enchantment_delete_title": "Delete enchantment",
   "dialog_item_enchantment_delete_header": "Are you sure you want to delete this enchantment?",
-  "dialog_abort_enchantment_title": "Test",
-  "dialog_abort_enchantments": "Unable to set enchantment because all are set",
-
-  "enum_dialog_flags": "Add a flag",
-  "dialog_abort_flags_title": "Test",
-  "dialog_abort_flags": "Unable to set flags because all available flags are set",
 
   "dialog_item_lore_edit_title": "Edit lore",
   "dialog_item_lore_delete_title": "Delete lore",
   "dialog_item_lore_delete_header": "Are you sure you want to delete this lore?",
-  "dialog_lore_edit_title": "Edit lore",
-
-  "dialog_level_title": "Edit level",
-  "dialog_level_validation": "The level can't be empty",
-  "dialog_level_delete_first_line": "Do you really want to delete ",
 
   "dialog_font_create_title": "Create new font",
   "dialog_font_char_add": "Add character",
@@ -75,13 +63,14 @@
   "card_title": "Title",
   "card_type": "Type",
   "card_group": "Group",
-  "card_flags": "Flags",
   "card_enchantments": "Enchantments",
   "card_lore": "Lore",
   "card_frame_type": "FrameType",
   "card_ascent": "Ascent",
   "card_height": "Height",
   "card_chars": "Chars",
+  "card_attribute_default_value": "Default value",
+  "card_attribute_maximum_value": "Maximum value",
   "card_font_provider": "Provider",
   "card_font_texture_path": "Texture path",
 
