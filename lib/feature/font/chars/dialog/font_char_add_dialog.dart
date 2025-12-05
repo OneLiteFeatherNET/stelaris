@@ -30,7 +30,10 @@ class _FontCharAddDialogState extends State<FontCharAddDialog> {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: const Text('Add character', textAlign: TextAlign.center),
+      title: Text(
+        context.l10n.dialog_font_char_add,
+        textAlign: TextAlign.center,
+      ),
       contentPadding: dialogPadding,
       children: [
         const Text('Char'),
@@ -42,9 +45,7 @@ class _FontCharAddDialogState extends State<FontCharAddDialog> {
             controller: _controller,
             autocorrect: false,
             validator: (value) => _validateHexGlyph(value),
-            decoration: const InputDecoration(
-              hintText: 'E000',
-            ),
+            decoration: const InputDecoration(hintText: 'E000'),
           ),
         ),
         verticalSpacing25,

@@ -56,7 +56,7 @@ class _FontFacePageState extends State<FontFacePage> {
                               runSpacing: 16,
                               children: [
                                 TextInputCard<String>(
-                                  display: 'Texture Path',
+                                  display: context.l10n.card_font_texture_path,
                                   currentValue:
                                       vm.selected.texturePath ?? emptyString,
                                   formatter: [stringPatternFormatter],
