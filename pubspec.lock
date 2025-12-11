@@ -37,10 +37,10 @@ packages:
     dependency: "direct main"
     description:
       name: async_redux
-      sha256: "9999255262e99e6eab98108332820791c90e639968785bd1d082aabbc739455a"
+      sha256: "5d1dfb47dde58565e9b81b46b02af5e9aafc11638ce2a0e9e832cb4b22757a27"
       url: "https://pub.dev"
     source: hosted
-    version: "26.0.0"
+    version: "26.1.0"
   async_redux_core:
     dependency: transitive
     description:

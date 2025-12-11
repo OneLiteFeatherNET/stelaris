@@ -20,7 +20,7 @@ dependencies:
   dio: ^5.9.0
   dio_cache_interceptor: ^4.0.5
   localstorage: ^6.0.0
-  async_redux: 26.0.0
+  async_redux: 26.1.0
   intl: ^0.20.2
   json_annotation: 4.9.0
   web: ^1.1.1
