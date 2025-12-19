@@ -1,66 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/feature/base/model_text.dart';
+import 'package:stelaris/feature/base/stelaris_loader.dart';
 import 'package:stelaris/feature/build/parts/download_selection.dart';
-import 'package:stelaris/util/constants.dart';
 
-class DownloadTrigger extends StatelessWidget {
-  final List<String>? filter;
+class DownloadTrigger extends StatefulWidget {
+  const DownloadTrigger({super.key});
 
-  const DownloadTrigger({this.filter, super.key});
+  @override
+  State<DownloadTrigger> createState() => _DownloadTriggerState();
+}
+
+class _DownloadTriggerState extends State<DownloadTrigger> {
+  late Future<List<String>> _branchesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _branchesFuture = ApiService().generateApi.branches();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: ApiService().generateApi.branches(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: loader,
-          );
-        }
-        if (snapshot.hasError) {
-          return const Center(
-            child: TextWidget(
-              displayName: 'An error occurred during data fetching',
-            ),
-          );
-        }
-
-        if (!snapshot.hasData) {
-          return const Center(
-            child: TextWidget(
-              displayName: 'Found no data!',
-            ),
-          );
-        } else {
-          final list = snapshot.data as List<String>;
-          final filter = this.filter;
-          final List<DropdownMenuItem<String>> items = filter == null
-              ? _getItems(list)
-              : _getItemsWithFilter(list, filter);
-          return DownloadSelection(
-            branches: items,
-          );
-        }
+    return FutureBuilder<List<String>>(
+      future: _branchesFuture,
+      builder: (context, snapshot) => switch (snapshot) {
+        AsyncSnapshot(connectionState: ConnectionState.waiting) => const StelarisLoader(),
+        AsyncSnapshot(hasError: true) => _buildErrorState(),
+        AsyncSnapshot(hasData: false) => _buildNoDataState(),
+        AsyncSnapshot(data: final branches?) => _buildDataState(branches),
+        _ => _buildNoDataState(),
       },
     );
   }
 
-  List<DropdownMenuItem<String>> _getItems(List<String> branches) {
-    return branches
-        .map((e) => DropdownMenuItem(
-              value: e,
-              child: Text(e),
-            ))
-        .toList();
+  /// Returns the [Widget] which display an error message when something went wrong
+  Widget _buildErrorState() {
+    return const Center(
+      child: TextWidget(displayName: 'An error occurred during data fetching'),
+    );
   }
 
-  List<DropdownMenuItem<String>> _getItemsWithFilter(
-      List<String> branches, List<String> filter) {
-    if (filter.isEmpty) return _getItems(branches);
+  /// Returns a [Widget] that shows some information when no data is available
+  Widget _buildNoDataState() {
+    return const Center(child: TextWidget(displayName: 'Found no data!'));
+  }
+
+  /// Builds the [DownloadSelection] widget with the given branch data
+  Widget _buildDataState(List<String> branches) {
+    final items = _getItems(branches);
+    return DownloadSelection(branches: items);
+  }
+
+  /// Returns a list of [DropdownMenuItem]s where each entry represents one branch from a repository.
+  ///
+  /// The [branches] parameter contains the raw branch names as strings.
+  List<DropdownMenuItem<String>> _getItems(List<String> branches) {
     return branches
-        .where((element) => filter.contains(element))
         .map((e) => DropdownMenuItem(value: e, child: Text(e)))
         .toList();
   }
