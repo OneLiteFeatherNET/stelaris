@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:stelaris/api/api_client.dart';
-import 'package:stelaris/api/model/build_information.dart';
+import 'package:stelaris/api/model/release/release_model.dart';
 
 class GenerateApi {
 
@@ -19,9 +19,8 @@ class GenerateApi {
   }
 
   Future<List<String>> branches() async {
-    final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/branches');
+    final uri = baseUri.replace(path: '${baseUri.path}/git/branches');
     final data = await _apiClient.dio.getUri(uri).then((value) {
       return value.data!;
     });
@@ -38,12 +37,12 @@ class GenerateApi {
     return data;
   }
 
-  Future<BuildInformation> buildInformation() async {
+  Future<ReleaseModel> buildInformation() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/build/data');
     return await _apiClient.dio.getUri(uri).then((value)  {
-      return BuildInformation.fromJson(value.data! as Map<String, dynamic>);
+      return ReleaseModel.fromJson(value.data! as Map<String, dynamic>);
     });
   }
 }
