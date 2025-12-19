@@ -10,37 +10,41 @@ class BuildDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Drawer(
+    return Drawer(
       child: DefaultTabController(
         initialIndex: 0,
-        length: 2, // Number of tabs
+        length: 2,
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: sizeFifty,
               child: ListTile(
                 title: Text(
                   'Vulpes Build',
                   textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ),
             ),
-            ListTile(
+            const ListTile(
               title: BuildInformationDisplay(),
             ),
-            divider,
+            const Divider(indent: 16, endIndent: 16),
             heightTen,
             Text(
               'What do you want to do?',
               textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            heightTen,
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: BuildTabs(),
             ),
             heightTen,
             divider,
-            BuildTabs(),
             heightTen,
-            divider,
-            heightTen,
-            Expanded(
+            const Expanded(
               flex: 1, // Adjust this value as needed
               child: TabBarView(
                 children: [
