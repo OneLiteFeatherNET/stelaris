@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/build_information.dart';
-import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/api/model/release/release_model.dart';
+import 'package:stelaris/feature/base/stelaris_loader.dart';
 
 DateFormat inputFormat = DateFormat("EEE MMM dd HH:mm:ss 'CEST' yyyy", 'en_US');
 DateFormat outputFormat = DateFormat('yyyy-MM-dd HH:mm:ss', 'en_US');
@@ -12,13 +12,11 @@ class BuildInformationDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<BuildInformation>(
+    return FutureBuilder<ReleaseModel>(
       future: ApiService().generateApi.buildInformation(),
-      builder: (context, AsyncSnapshot<BuildInformation> snapshot) {
+      builder: (context, AsyncSnapshot<ReleaseModel> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: loader,
-          );
+          return const StelarisLoader();
         }
         if (snapshot.hasError) {
           return const Align(
@@ -34,23 +32,44 @@ class BuildInformationDisplay extends StatelessWidget {
           );
         }
 
-        final BuildInformation buildInformation = snapshot.data as BuildInformation;
+        final ReleaseModel buildInformation = snapshot.data as ReleaseModel;
 
         return SizedBox(
-          height: sizeFifty,
-          child: Column(
-            children: [
-              Text("Build: ${buildInformation.data!["version"]}"),
-              Text("Release: ${_format(buildInformation.data!["created"]!)}"),
-            ],
+          height: 100, // Increased height for Card
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: Card.filled(
+              key: ValueKey(buildInformation.version),
+              margin: EdgeInsets.zero,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Build: ${buildInformation.version}',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Release: ${_format(buildInformation.publishedAt)}',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         );
       },
     );
   }
 
-  String _format(String input) {
-    final formattedDate = inputFormat.parse(input);
-    return outputFormat.format(formattedDate);
+  String _format(DateTime input) {
+    return outputFormat.format(input);
   }
 }

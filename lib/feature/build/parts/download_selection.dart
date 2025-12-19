@@ -41,18 +41,23 @@ class _DownloadSelectionState extends State<DownloadSelection> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        children: [
-          Text(
-            context.l10n.text_branch,
-            textAlign: TextAlign.center,
-          ),
-          verticalSpacing25,
-          SizedBox(
-            width: 300,
-            child: DropdownButtonFormField<String>(
+    return Card(
+      margin: const EdgeInsets.all(8),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Text(
+              context.l10n.text_branch,
+              style: Theme.of(context).textTheme.titleSmall,
+              textAlign: TextAlign.center,
+            ),
+            verticalSpacing25,
+            DropdownButtonFormField<String>(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              ),
               items: widget.branches,
               initialValue: defaultValue,
               onChanged: (String? value) {
@@ -60,35 +65,39 @@ class _DownloadSelectionState extends State<DownloadSelection> {
                 defaultValue = value;
               },
             ),
-          ),
-          verticalSpacing25,
-          DevBuildOption(
-            controller: _gitCommitController,
-            formKey: _formKey,
-          ),
-          verticalSpacing25,
-          FilledButton(
-            onPressed: () async {
-              final defaultValue = this.defaultValue;
-              final currentState = _formKey.currentState;
-              if (defaultValue == null) return;
-              if (currentState != null && currentState.validate()) return;
-              Navigator.of(context).pop();
-              final text = context.l10n.error_generation_submit;
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(InfoBarFactory().create(text));
-              final data =
-                  await ApiService().generateApi.download(defaultValue);
-              final content = base64Encode(data);
-              web.HTMLAnchorElement()
-                ..setAttribute(
-                    'href', 'data:application/octet-stream;base64,$content')
-                ..setAttribute('download', 'generated.zip')
-                ..click();
-            },
-            child: Text(context.l10n.button_download),
-          )
-        ],
+            verticalSpacing25,
+            DevBuildOption(
+              controller: _gitCommitController,
+              formKey: _formKey,
+            ),
+            verticalSpacing25,
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                icon: const Icon(Icons.download),
+                onPressed: () async {
+                  final defaultValue = this.defaultValue;
+                  final currentState = _formKey.currentState;
+                  if (defaultValue == null) return;
+                  if (currentState != null && currentState.validate()) return;
+                  Navigator.of(context).pop();
+                  final text = context.l10n.error_generation_submit;
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(InfoBarFactory().create(text));
+                  final data =
+                      await ApiService().generateApi.download(defaultValue);
+                  final content = base64Encode(data);
+                  web.HTMLAnchorElement()
+                    ..setAttribute(
+                        'href', 'data:application/octet-stream;base64,$content')
+                    ..setAttribute('download', 'generated.zip')
+                    ..click();
+                },
+                label: Text(context.l10n.button_download),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

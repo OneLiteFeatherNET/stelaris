@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/feature/base/stelaris_loader.dart';
 import 'package:stelaris/feature/build/branch_option.dart';
 import 'package:stelaris/feature/build/parts/build_branch_selection.dart';
 import 'package:stelaris/feature/build/parts/version_update_input.dart';
@@ -22,6 +23,7 @@ class _BuildTriggerState extends State<BuildTrigger> {
       ValueNotifier(BranchOption.release);
   VersionPart _versionPart = VersionPart.major;
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -41,57 +43,83 @@ class _BuildTriggerState extends State<BuildTrigger> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          heightTen,
-          TextField(
-            enabled: false,
-            decoration: const InputDecoration(
-              labelText: 'Current version',
+    return Card(
+      margin: const EdgeInsets.all(8),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+             TextField(
+              enabled: false,
+              decoration: const InputDecoration(
+                labelText: 'Current version',
+                border: OutlineInputBorder(),
+                filled: true,
+              ),
+              controller: _controller,
             ),
-            controller: _controller,
-          ),
-          verticalSpacing25,
-          const Text('Select the part of the version to update:'),
-          verticalSpacing25,
-          VersionGroupSelection(
-            onSelected: (value) {
-              _versionPart = value;
-              _newVersionController.text =
-                  _updateVersion(widget.version, _versionPart.index);
-            },
-          ),
-          heightTen,
-          const Divider(),
-          heightTen,
-          VersionUpdateInput(
-            branchOption: _branchOption,
-            controller: _newVersionController,
-            formKey: _formKey,
-          ),
-          verticalSpacing25,
-          BuildBranchSelection(branchOption: _branchOption),
-          verticalSpacing25,
-          Align(
-            alignment: Alignment.center,
-            child: FilledButton(
-              onPressed: () {
-                final state = _formKey.currentState;
-                if (state == null) return;
-                if (state.validate()) return;
-                final branch = switch (_branchOption.value) {
-                  BranchOption.release => 'master',
-                  _ => 'develop',
-                };
-                ApiService().generateApi.generate(branch);
+            verticalSpacing25,
+            Text('Select the part of the version to update:', style: Theme.of(context).textTheme.titleSmall),
+            heightTen,
+            VersionGroupSelection(
+              onSelected: (value) {
+                _versionPart = value;
+                _newVersionController.text =
+                    _updateVersion(widget.version, _versionPart.index);
               },
-              child: const Text('Generate'),
             ),
-          ),
-        ],
+            const Divider(height: 32),
+            VersionUpdateInput(
+              branchOption: _branchOption,
+              controller: _newVersionController,
+              formKey: _formKey,
+            ),
+            verticalSpacing25,
+            BuildBranchSelection(branchOption: _branchOption),
+            verticalSpacing25,
+            Align(
+              alignment: Alignment.center,
+              child: _isLoading ? const StelarisLoader() : SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  icon: const Icon(Icons.build),
+                  onPressed: () async {
+                    final state = _formKey.currentState;
+                    if (state == null) return;
+                    if (!state.validate()) return; 
+                    
+                    setState(() {
+                      _isLoading = true;
+                    });
+
+                    try {
+                      final branch = switch (_branchOption.value) {
+                        BranchOption.release => 'master',
+                        _ => 'develop',
+                      };
+                      await ApiService().generateApi.generate(branch);
+                      if (context.mounted) {
+                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Build started successfully')));
+                      }
+                    } catch (e) {
+                       if (context.mounted) {
+                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Build failed: $e')));
+                      }
+                    } finally {
+                      if (context.mounted) {
+                         setState(() {
+                          _isLoading = false;
+                        });
+                      }
+                    }
+                  },
+                  label: const Text('Generate'),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -60,10 +60,11 @@ class _DevBuildOptionState extends State<DevBuildOption> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: TextFormField(
         autocorrect: true,
-        maxLength: maxCommitLength, // TODO: Add a constant for this
+        maxLength: maxCommitLength, 
         controller: widget.controller,
         decoration: const InputDecoration(
           labelText: 'Git commit',
+          border: OutlineInputBorder(),
           suffixIcon: Tooltip(
             message: 'Enter a valid Git commit (Only the first 10 characters)',
             child: Icon(Icons.info_outline_rounded),
