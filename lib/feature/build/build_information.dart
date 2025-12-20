@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/release/release_model.dart';
 import 'package:stelaris/feature/base/stelaris_loader.dart';
+import 'package:stelaris/feature/status_card.dart';
 
 DateFormat inputFormat = DateFormat("EEE MMM dd HH:mm:ss 'CEST' yyyy", 'en_US');
 DateFormat outputFormat = DateFormat('yyyy-MM-dd HH:mm:ss', 'en_US');
@@ -19,16 +20,17 @@ class BuildInformationDisplay extends StatelessWidget {
           return const StelarisLoader();
         }
         if (snapshot.hasError) {
-          return const Align(
-            alignment: Alignment.center,
-            child: Text('Service unavailable'),
+          final colorScheme = Theme.of(context).colorScheme;
+          return StatusCard(
+            text: 'Service unavailable',
+            backgroundColor: colorScheme.errorContainer.withValues(alpha: 0.8),
+            textColor: colorScheme.onErrorContainer,
           );
         }
 
         if (!snapshot.hasData) {
-          return const Align(
-            alignment: Alignment.center,
-            child: Text('No releases found'),
+          return const StatusCard(
+            text: 'No releases found',
           );
         }
 
