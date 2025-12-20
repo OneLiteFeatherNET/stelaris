@@ -12,10 +12,10 @@ class BuildTabs extends StatelessWidget {
           icon: Icon(Icons.download),
           text: 'Download',
         ),
-        Tab(
+        /*Tab(
           text: 'Build',
           icon: Icon(Icons.construction_sharp),
-        ),
+        ),*/
       ],
     );
   }
