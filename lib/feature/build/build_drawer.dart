@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris/feature/build/build_information.dart';
+import 'package:stelaris/feature/build/parts/build_drawer_header.dart';
 import 'package:stelaris/feature/build/parts/build_trigger.dart';
 import 'package:stelaris/feature/build/parts/download_trigger.dart';
 import 'package:stelaris/feature/build/tabs/build_tabs.dart';
@@ -13,19 +14,10 @@ class BuildDrawer extends StatelessWidget {
     return Drawer(
       child: DefaultTabController(
         initialIndex: 0,
-        length: 2,
+        length: 1,
         child: Column(
           children: [
-            const SizedBox(
-              height: sizeFifty,
-              child: ListTile(
-                title: Text(
-                  'Vulpes Build',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-              ),
-            ),
+            const BuildDrawerHeader(),
             const ListTile(
               title: BuildInformationDisplay(),
             ),
