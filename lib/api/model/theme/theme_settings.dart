@@ -1,50 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'theme_settings.freezed.dart';
 part 'theme_settings.g.dart';
 
-@JsonSerializable()
-class ThemeSettings {
-  const ThemeSettings({
-    required this.isDarkMode,
-    required this.primaryColor,
-    required this.accentColor,
-    required this.fontScale,
-    required this.useSystemTheme,
-  });
+/// Manages the visual theme settings for the application, including color schemes
+/// and display preferences.
+@freezed
+abstract class ThemeSettings with _$ThemeSettings {
+  const ThemeSettings._();
 
-  final bool isDarkMode;
-  @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson)
-  final Color primaryColor;
-  @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson)
-  final Color accentColor;
-  final double fontScale;
-  final bool useSystemTheme;
+  /// Creates a configuration for the application theme.
+  const factory ThemeSettings({
+    required bool isDarkMode,
+    @JsonKey(fromJson: ThemeSettings._colorFromJson, toJson: ThemeSettings._colorToJson)
+    required Color primaryColor,
+    @JsonKey(fromJson: ThemeSettings._colorFromJson, toJson: ThemeSettings._colorToJson)
+    required Color accentColor,
+    required double fontScale,
+    required bool useSystemTheme,
+  }) = _ThemeSettings;
+
+  /// Creates a [ThemeSettings] instance from a JSON map.
+  factory ThemeSettings.fromJson(Map<String, dynamic> json) =>
+      _$ThemeSettingsFromJson(json);
 
   static Color _colorFromJson(int value) => Color(value);
   static int _colorToJson(Color color) => color.toARGB32();
 
-  factory ThemeSettings.fromJson(Map<String, dynamic> json) =>
-      _$ThemeSettingsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ThemeSettingsToJson(this);
-
-  ThemeSettings copyWith({
-    bool? isDarkMode,
-    Color? primaryColor,
-    Color? accentColor,
-    double? fontScale,
-    bool? useSystemTheme,
-  }) {
-    return ThemeSettings(
-      isDarkMode: isDarkMode ?? this.isDarkMode,
-      primaryColor: primaryColor ?? this.primaryColor,
-      accentColor: accentColor ?? this.accentColor,
-      fontScale: fontScale ?? this.fontScale,
-      useSystemTheme: useSystemTheme ?? this.useSystemTheme,
-    );
-  }
-
+  /// Returns the default theme settings used when no user preference is found.
   static ThemeSettings defaultSettings() {
     return ThemeSettings(
       isDarkMode: false,
@@ -55,11 +39,18 @@ class ThemeSettings {
     );
   }
 
+  /// Creates a copy of the current settings adapted for the specified theme mode.
+  ///
+  /// Adjusts colors based on whether [isDark] is true.
   ThemeSettings forThemeMode(bool isDark) {
     return copyWith(
       isDarkMode: isDark,
-      primaryColor: isDark ? Colors.teal[400] ?? Colors.teal : Colors.green[400] ?? Colors.green,
-      accentColor: isDark ? Colors.teal[800] ?? Colors.teal : Colors.green[200] ?? Colors.green,
+      primaryColor: isDark
+          ? Colors.teal[400] ?? Colors.teal
+          : Colors.green[400] ?? Colors.green,
+      accentColor: isDark
+          ? Colors.teal[800] ?? Colors.teal
+          : Colors.green[200] ?? Colors.green,
     );
   }
 }

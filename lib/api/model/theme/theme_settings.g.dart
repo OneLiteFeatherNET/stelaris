@@ -6,8 +6,8 @@ part of 'theme_settings.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ThemeSettings _$ThemeSettingsFromJson(Map<String, dynamic> json) =>
-    ThemeSettings(
+_ThemeSettings _$ThemeSettingsFromJson(Map<String, dynamic> json) =>
+    _ThemeSettings(
       isDarkMode: json['isDarkMode'] as bool,
       primaryColor: ThemeSettings._colorFromJson(
         (json['primaryColor'] as num).toInt(),
@@ -19,7 +19,7 @@ ThemeSettings _$ThemeSettingsFromJson(Map<String, dynamic> json) =>
       useSystemTheme: json['useSystemTheme'] as bool,
     );
 
-Map<String, dynamic> _$ThemeSettingsToJson(ThemeSettings instance) =>
+Map<String, dynamic> _$ThemeSettingsToJson(_ThemeSettings instance) =>
     <String, dynamic>{
       'isDarkMode': instance.isDarkMode,
       'primaryColor': ThemeSettings._colorToJson(instance.primaryColor),

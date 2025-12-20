@@ -52,7 +52,7 @@ $Res call({
 });
 
 
-$ItemModelCopyWith<$Res>? get selectedItem;$NotificationModelCopyWith<$Res>? get selectedNotification;$FontModelCopyWith<$Res>? get selectedFont;$AttributeModelCopyWith<$Res>? get selectedAttribute;$SoundEventModelCopyWith<$Res>? get selectedSoundEvent;
+$ThemeSettingsCopyWith<$Res> get themeSettings;$ItemModelCopyWith<$Res>? get selectedItem;$NotificationModelCopyWith<$Res>? get selectedNotification;$FontModelCopyWith<$Res>? get selectedFont;$AttributeModelCopyWith<$Res>? get selectedAttribute;$SoundEventModelCopyWith<$Res>? get selectedSoundEvent;
 
 }
 /// @nodoc
@@ -88,6 +88,15 @@ as SoundEventModel?,
   ));
 }
 /// Create a copy of AppState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ThemeSettingsCopyWith<$Res> get themeSettings {
+  
+  return $ThemeSettingsCopyWith<$Res>(_self.themeSettings, (value) {
+    return _then(_self.copyWith(themeSettings: value));
+  });
+}/// Create a copy of AppState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -343,7 +352,7 @@ $Res call({
 });
 
 
-@override $ItemModelCopyWith<$Res>? get selectedItem;@override $NotificationModelCopyWith<$Res>? get selectedNotification;@override $FontModelCopyWith<$Res>? get selectedFont;@override $AttributeModelCopyWith<$Res>? get selectedAttribute;@override $SoundEventModelCopyWith<$Res>? get selectedSoundEvent;
+@override $ThemeSettingsCopyWith<$Res> get themeSettings;@override $ItemModelCopyWith<$Res>? get selectedItem;@override $NotificationModelCopyWith<$Res>? get selectedNotification;@override $FontModelCopyWith<$Res>? get selectedFont;@override $AttributeModelCopyWith<$Res>? get selectedAttribute;@override $SoundEventModelCopyWith<$Res>? get selectedSoundEvent;
 
 }
 /// @nodoc
@@ -380,6 +389,15 @@ as SoundEventModel?,
 }
 
 /// Create a copy of AppState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ThemeSettingsCopyWith<$Res> get themeSettings {
+  
+  return $ThemeSettingsCopyWith<$Res>(_self.themeSettings, (value) {
+    return _then(_self.copyWith(themeSettings: value));
+  });
+}/// Create a copy of AppState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
