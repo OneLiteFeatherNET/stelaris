@@ -5,8 +5,6 @@ import 'package:stelaris/feature/base/button/toggle_navigation_button.dart';
 import 'package:stelaris/feature/navigation/navigation_side_bar.dart';
 import 'package:stelaris/util/constants.dart';
 
-import '../build/build_drawer.dart';
-
 /// A base page layout that provides a consistent structure across the application.
 ///
 /// This widget implements the main layout structure including:
@@ -43,7 +41,6 @@ class BasePage extends StatelessWidget {
           Expanded(child: child),
         ],
       ),
-      endDrawer: const BuildDrawer(),
     );
   }
 }
