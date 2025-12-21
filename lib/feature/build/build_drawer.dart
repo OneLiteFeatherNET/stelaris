@@ -1,4 +1,8 @@
+import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
+import 'package:stelaris/api/state/actions/build/build_actions.dart';
+import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/factory/build/build_vm_state.dart';
 import 'package:stelaris/feature/build/build_information.dart';
 import 'package:stelaris/feature/build/parts/build_drawer_header.dart';
 import 'package:stelaris/feature/build/parts/build_trigger.dart';
@@ -11,43 +15,56 @@ class BuildDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: DefaultTabController(
-        initialIndex: 0,
-        length: 1,
-        child: Column(
-          children: [
-            const BuildDrawerHeader(),
-            const ListTile(
-              title: BuildInformationDisplay(),
+    return StoreConnector<AppState, BuildViewModel>(
+      vm: () => BuildStateFactory(),
+      onInit: (store) {
+        store.dispatchAll([
+          ReleaseFetchAction(),
+          BranchFetchAction(),
+        ]);
+      },
+      builder: (context, vm) {
+        return Drawer(
+          child: DefaultTabController(
+            initialIndex: 0,
+            length: 1,
+            child: Column(
+              children: [
+                const BuildDrawerHeader(),
+                ListTile(
+                  title: BuildInformationDisplay(
+                    releaseModel: vm.releaseModel,
+                  ),
+                ),
+                const Divider(indent: 16, endIndent: 16),
+                heightTen,
+                Text(
+                  'What do you want to do?',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                heightTen,
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: BuildTabs(),
+                ),
+                heightTen,
+                divider,
+                heightTen,
+                const Expanded(
+                  flex: 1, // Adjust this value as needed
+                  child: TabBarView(
+                    children: [
+                      DownloadTrigger(),
+                      BuildTrigger(version: '1.20.5') // Your DownloadTrigger widget
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const Divider(indent: 16, endIndent: 16),
-            heightTen,
-            Text(
-              'What do you want to do?',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            heightTen,
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: BuildTabs(),
-            ),
-            heightTen,
-            divider,
-            heightTen,
-            const Expanded(
-              flex: 1, // Adjust this value as needed
-              child: TabBarView(
-                children: [
-                  DownloadTrigger(),
-                  BuildTrigger(version: '1.20.5') // Your DownloadTrigger widget
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -39,6 +39,8 @@ class _DownloadSelectionState extends State<DownloadSelection> {
     super.dispose();
   }
 
+  bool _useCommit = false;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -47,28 +49,45 @@ class _DownloadSelectionState extends State<DownloadSelection> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Text(
-              context.l10n.text_branch,
-              style: Theme.of(context).textTheme.titleSmall,
-              textAlign: TextAlign.center,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Search by Commit',
+                  style: Theme.of(context).textTheme.titleSmall,
+                  textAlign: TextAlign.center,
+                ),
+                Switch(
+                  value: _useCommit,
+                  onChanged: (value) {
+                    setState(() {
+                      _useCommit = value;
+                    });
+                  },
+                ),
+              ],
             ),
             verticalSpacing25,
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              ),
-              items: widget.branches,
-              initialValue: defaultValue,
-              onChanged: (String? value) {
-                if (value == null) return;
-                defaultValue = value;
-              },
-            ),
-            verticalSpacing25,
-            DevBuildOption(
-              controller: _gitCommitController,
-              formKey: _formKey,
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: _useCommit
+                  ? DevBuildOption(
+                      controller: _gitCommitController,
+                      formKey: _formKey,
+                    )
+                  : DropdownButtonFormField<String>(
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      ),
+                      items: widget.branches,
+                      initialValue: defaultValue,
+                      onChanged: (String? value) {
+                        if (value == null) return;
+                        defaultValue = value;
+                      },
+                    ),
             ),
             verticalSpacing25,
             SizedBox(
@@ -76,16 +95,21 @@ class _DownloadSelectionState extends State<DownloadSelection> {
               child: FilledButton.icon(
                 icon: const Icon(Icons.download),
                 onPressed: () async {
-                  final defaultValue = this.defaultValue;
-                  final currentState = _formKey.currentState;
-                  if (defaultValue == null) return;
-                  if (currentState != null && currentState.validate()) return;
+                  late String value;
+                  if (_useCommit) {
+                    if (!(_formKey.currentState?.validate() ?? false)) return;
+                    value = _gitCommitController.text;
+                  } else {
+                    final defaultValue = this.defaultValue;
+                    if (defaultValue == null) return;
+                    value = defaultValue;
+                  }
+
                   Navigator.of(context).pop();
                   final text = context.l10n.error_generation_submit;
                   ScaffoldMessenger.of(context)
                       .showSnackBar(InfoBarFactory().create(text));
-                  final data =
-                      await ApiService().generateApi.download(defaultValue);
+                  final data = await ApiService().generateApi.download(value);
                   final content = base64Encode(data);
                   web.HTMLAnchorElement()
                     ..setAttribute(

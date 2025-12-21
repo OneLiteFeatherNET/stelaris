@@ -4,64 +4,25 @@ import 'package:stelaris/util/constants.dart';
 
 const int maxCommitLength = 10;
 
-class DevBuildOption extends StatefulWidget {
+class DevBuildOption extends StatelessWidget {
   final TextEditingController controller;
   final GlobalKey<FormState> formKey;
 
-  const DevBuildOption({required this.controller, required this.formKey, super.key});
-
-  @override
-  State<DevBuildOption> createState() => _DevBuildOptionState();
-}
-
-class _DevBuildOptionState extends State<DevBuildOption> {
-  late bool devMode;
-
-  @override
-  void initState() {
-    devMode = false;
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  const DevBuildOption({
+    required this.controller,
+    required this.formKey,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Customize Git commit',
-              textAlign: TextAlign.center,
-            ),
-            Checkbox(
-              value: devMode,
-              onChanged: (value) {
-                setState(() {
-                  devMode = value!;
-                });
-              },
-            )
-          ],
-        ),
-        if (devMode) _getDevBuild()
-      ],
-    );
-  }
-
-  Widget _getDevBuild() {
     return Form(
-      key: widget.formKey,
+      key: formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: TextFormField(
         autocorrect: true,
-        maxLength: maxCommitLength, 
-        controller: widget.controller,
+        maxLength: maxCommitLength,
+        controller: controller,
         decoration: const InputDecoration(
           labelText: 'Git commit',
           border: OutlineInputBorder(),
