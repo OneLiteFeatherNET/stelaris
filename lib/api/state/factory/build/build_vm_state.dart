@@ -8,13 +8,13 @@ class BuildStateFactory extends VmFactory<AppState, BuildDrawer, BuildViewModel>
   BuildStateFactory();
 
   @override
-  BuildViewModel fromStore() => BuildViewModel(releaseModel: state.releaseModel!);
+  BuildViewModel fromStore() => BuildViewModel(releaseModel: state.releaseModel);
 }
 
 class BuildViewModel extends Vm {
 
   BuildViewModel({required this.releaseModel}) : super(equals: [releaseModel]);
 
-  final ReleaseModel releaseModel;
+  final ReleaseModel? releaseModel;
 
 }
