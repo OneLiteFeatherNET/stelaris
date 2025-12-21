@@ -98,6 +98,12 @@ _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
       : SoundEventModel.fromJson(
           json['selectedSoundEvent'] as Map<String, dynamic>,
         ),
+  releaseModel: json['releaseModel'] == null
+      ? null
+      : ReleaseModel.fromJson(json['releaseModel'] as Map<String, dynamic>),
+  branches:
+      (json['branches'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
 );
 
 Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
@@ -108,4 +114,6 @@ Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
   'soundEvents': instance.soundEvents.toJson((value) => value),
   'openNavigation': instance.openNavigation,
   'themeSettings': instance.themeSettings,
+  'releaseModel': instance.releaseModel,
+  'branches': instance.branches,
 };

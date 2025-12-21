@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris/api/converter/paginated_result_converter.dart';
 import 'package:stelaris/api/model/attribute_model.dart';
+import 'package:stelaris/api/model/release/release_model.dart';
 import 'package:stelaris/api/paginated_result.dart';
 import 'package:stelaris/api/model/font_model.dart';
 import 'package:stelaris/api/model/item_model.dart';
@@ -117,6 +118,9 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false) FontModel? selectedFont,
     @JsonKey(includeToJson: false) AttributeModel? selectedAttribute,
     @JsonKey(includeToJson: false) SoundEventModel? selectedSoundEvent,
+    ReleaseModel? releaseModel,
+    @Default([])
+    List<String> branches
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, dynamic> json) =>
