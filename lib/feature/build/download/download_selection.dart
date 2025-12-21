@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
-import 'package:stelaris/feature/build/parts/dev_build_option.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:web/web.dart' as web;
+
+import 'download_commit_option.dart';
 
 class DownloadSelection extends StatefulWidget {
   final List<DropdownMenuItem<String>> branches;

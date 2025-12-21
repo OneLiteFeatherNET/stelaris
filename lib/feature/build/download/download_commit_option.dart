@@ -23,10 +23,17 @@ class DevBuildOption extends StatelessWidget {
         autocorrect: true,
         maxLength: maxCommitLength,
         controller: controller,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           labelText: 'Git commit',
-          border: OutlineInputBorder(),
-          suffixIcon: Tooltip(
+          prefixIcon: const Icon(Icons.commit),
+          border: const OutlineInputBorder(),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.primary,
+              width: 1,
+            ),
+          ),
+          suffixIcon: const Tooltip(
             message: 'Enter a valid Git commit (Only the first 10 characters)',
             child: Icon(Icons.info_outline_rounded),
           ),
