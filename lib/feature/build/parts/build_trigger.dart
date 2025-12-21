@@ -3,7 +3,7 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/feature/base/stelaris_loader.dart';
 import 'package:stelaris/feature/build/branch_option.dart';
 import 'package:stelaris/feature/build/parts/build_branch_selection.dart';
-import 'package:stelaris/feature/build/parts/version_update_input.dart';
+import 'package:stelaris/feature/build/parts/build_version_display.dart';
 import 'package:stelaris/feature/build/version_group_selection.dart';
 import 'package:stelaris/util/constants.dart';
 
@@ -16,7 +16,7 @@ class BuildTrigger extends StatefulWidget {
   State<BuildTrigger> createState() => _BuildTriggerState();
 }
 
-class _BuildTriggerState extends State<BuildTrigger> {
+class _BuildTriggerState extends State<BuildTrigger> with AutomaticKeepAliveClientMixin {
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _newVersionController = TextEditingController();
   final ValueNotifier<BranchOption> _branchOption =
@@ -24,6 +24,9 @@ class _BuildTriggerState extends State<BuildTrigger> {
   VersionPart _versionPart = VersionPart.major;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -43,6 +46,7 @@ class _BuildTriggerState extends State<BuildTrigger> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Card(
       margin: const EdgeInsets.all(8),
       child: Padding(
@@ -50,32 +54,41 @@ class _BuildTriggerState extends State<BuildTrigger> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             TextField(
-              enabled: false,
-              decoration: const InputDecoration(
-                labelText: 'Current version',
-                border: OutlineInputBorder(),
-                filled: true,
-              ),
-              controller: _controller,
+            Row(
+              children: [
+                Expanded(
+                  child: VersionUpdateInput(
+                    labelText: 'Current version',
+                    controller: _controller,
+                  ),
+                ),
+                horizontalSpacing10,
+                const Icon(Icons.arrow_forward),
+                horizontalSpacing10,
+                Expanded(
+                  child: VersionUpdateInput(
+                    labelText: 'New Version',
+                    controller: _newVersionController,
+                    highlight: true,
+                    highlightedPart: _versionPart,
+                  ),
+                ),
+              ],
             ),
             verticalSpacing25,
-            Text('Select the part of the version to update:', style: Theme.of(context).textTheme.titleSmall),
+            Text('Select the part of the version to update:',
+                style: Theme.of(context).textTheme.titleSmall),
             heightTen,
             VersionGroupSelection(
               onSelected: (value) {
-                _versionPart = value;
-                _newVersionController.text =
-                    _updateVersion(widget.version, _versionPart.index);
+                setState(() {
+                  _versionPart = value;
+                  _newVersionController.text =
+                      _updateVersion(widget.version, _versionPart.index);
+                });
               },
             ),
             const Divider(height: 32),
-            VersionUpdateInput(
-              branchOption: _branchOption,
-              controller: _newVersionController,
-              formKey: _formKey,
-            ),
-            verticalSpacing25,
             BuildBranchSelection(branchOption: _branchOption),
             verticalSpacing25,
             Align(

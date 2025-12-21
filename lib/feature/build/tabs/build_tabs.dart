@@ -9,13 +9,25 @@ class BuildTabs extends StatelessWidget {
       dividerHeight: 0,
       tabs: [
         Tab(
-          icon: Icon(Icons.download),
-          text: 'Download',
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.download),
+              SizedBox(width: 8),
+              Text('Download'),
+            ],
+          ),
         ),
-        /*Tab(
-          text: 'Build',
-          icon: Icon(Icons.construction_sharp),
-        ),*/
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.construction_sharp),
+              SizedBox(width: 8),
+              Text('Build'),
+            ],
+          ),
+        ),
       ],
     );
   }
