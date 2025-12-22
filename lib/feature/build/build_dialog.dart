@@ -23,12 +23,10 @@ class BuildDialog extends StatelessWidget {
       child: StoreConnector<AppState, BuildViewModel>(
         vm: () => BuildStateFactory(),
         onInit: (store) {
-          store.dispatchAll([
-            ReleaseFetchAction(),
-            BranchFetchAction(),
-          ]);
+          store.dispatchAll([ReleaseFetchAction(), BranchFetchAction()]);
         },
         builder: (context, vm) {
+          final ThemeData themeData = Theme.of(context);
           return DefaultTabController(
             length: 2,
             child: Column(
@@ -49,22 +47,22 @@ class BuildDialog extends StatelessWidget {
                             Expanded(
                               child: BuildInformationDisplay(
                                 releaseModel: vm.releaseModel,
-                                glowColor: Colors.cyan,
+                                glowColor: themeData.colorScheme.primary,
                                 height: 70,
                               ),
                             ),
                             horizontalSpacing10,
-                            const Expanded(
+                            Expanded(
                               child: StatusCard(
                                 text: 'Additional Changes',
-                                glowColor: Colors.deepPurple,
+                                glowColor: themeData.colorScheme.secondary,
                                 height: 70,
                               ),
                             ),
                           ],
                         ),
                 ),
-                const SizedBox(height: 15,),
+                const SizedBox(height: 15),
                 divider,
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50),
