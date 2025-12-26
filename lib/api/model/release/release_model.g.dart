@@ -11,6 +11,8 @@ _ReleaseModel _$ReleaseModelFromJson(Map<String, dynamic> json) =>
       version: json['version'] as String,
       publishedAt: DateTime.parse(json['publishedAt'] as String),
       url: json['url'] as String?,
+      prerelease: json['prerelease'] as bool? ?? false,
+      targetCommitish: json['targetCommitish'] as String?,
     );
 
 Map<String, dynamic> _$ReleaseModelToJson(_ReleaseModel instance) =>
@@ -18,4 +20,6 @@ Map<String, dynamic> _$ReleaseModelToJson(_ReleaseModel instance) =>
       'version': instance.version,
       'publishedAt': instance.publishedAt.toIso8601String(),
       'url': instance.url,
+      'prerelease': instance.prerelease,
+      'targetCommitish': instance.targetCommitish,
     };

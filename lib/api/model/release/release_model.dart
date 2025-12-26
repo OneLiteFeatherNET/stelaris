@@ -13,6 +13,8 @@ abstract class ReleaseModel with _$ReleaseModel {
     required String version,
     required DateTime publishedAt,
     String? url,
+    @Default(false) bool prerelease,
+    String? targetCommitish,
   }) = _ReleaseModel;
 
   factory ReleaseModel.fromJson(Map<String, dynamic> json) =>

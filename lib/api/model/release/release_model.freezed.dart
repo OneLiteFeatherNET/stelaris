@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ReleaseModel {
 
- String get version; DateTime get publishedAt; String? get url;
+ String get version; DateTime get publishedAt; String? get url; bool get prerelease; String? get targetCommitish;
 /// Create a copy of ReleaseModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ReleaseModelCopyWith<ReleaseModel> get copyWith => _$ReleaseModelCopyWithImpl<R
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReleaseModel&&(identical(other.version, version) || other.version == version)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.url, url) || other.url == url));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReleaseModel&&(identical(other.version, version) || other.version == version)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.url, url) || other.url == url)&&(identical(other.prerelease, prerelease) || other.prerelease == prerelease)&&(identical(other.targetCommitish, targetCommitish) || other.targetCommitish == targetCommitish));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,version,publishedAt,url);
+int get hashCode => Object.hash(runtimeType,version,publishedAt,url,prerelease,targetCommitish);
 
 @override
 String toString() {
-  return 'ReleaseModel(version: $version, publishedAt: $publishedAt, url: $url)';
+  return 'ReleaseModel(version: $version, publishedAt: $publishedAt, url: $url, prerelease: $prerelease, targetCommitish: $targetCommitish)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ReleaseModelCopyWith<$Res>  {
   factory $ReleaseModelCopyWith(ReleaseModel value, $Res Function(ReleaseModel) _then) = _$ReleaseModelCopyWithImpl;
 @useResult
 $Res call({
- String version, DateTime publishedAt, String? url
+ String version, DateTime publishedAt, String? url, bool prerelease, String? targetCommitish
 });
 
 
@@ -65,11 +65,13 @@ class _$ReleaseModelCopyWithImpl<$Res>
 
 /// Create a copy of ReleaseModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? version = null,Object? publishedAt = null,Object? url = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? version = null,Object? publishedAt = null,Object? url = freezed,Object? prerelease = null,Object? targetCommitish = freezed,}) {
   return _then(_self.copyWith(
 version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
 as String,publishedAt: null == publishedAt ? _self.publishedAt : publishedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String?,prerelease: null == prerelease ? _self.prerelease : prerelease // ignore: cast_nullable_to_non_nullable
+as bool,targetCommitish: freezed == targetCommitish ? _self.targetCommitish : targetCommitish // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -155,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String version,  DateTime publishedAt,  String? url)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String version,  DateTime publishedAt,  String? url,  bool prerelease,  String? targetCommitish)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ReleaseModel() when $default != null:
-return $default(_that.version,_that.publishedAt,_that.url);case _:
+return $default(_that.version,_that.publishedAt,_that.url,_that.prerelease,_that.targetCommitish);case _:
   return orElse();
 
 }
@@ -176,10 +178,10 @@ return $default(_that.version,_that.publishedAt,_that.url);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String version,  DateTime publishedAt,  String? url)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String version,  DateTime publishedAt,  String? url,  bool prerelease,  String? targetCommitish)  $default,) {final _that = this;
 switch (_that) {
 case _ReleaseModel():
-return $default(_that.version,_that.publishedAt,_that.url);case _:
+return $default(_that.version,_that.publishedAt,_that.url,_that.prerelease,_that.targetCommitish);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +198,10 @@ return $default(_that.version,_that.publishedAt,_that.url);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String version,  DateTime publishedAt,  String? url)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String version,  DateTime publishedAt,  String? url,  bool prerelease,  String? targetCommitish)?  $default,) {final _that = this;
 switch (_that) {
 case _ReleaseModel() when $default != null:
-return $default(_that.version,_that.publishedAt,_that.url);case _:
+return $default(_that.version,_that.publishedAt,_that.url,_that.prerelease,_that.targetCommitish);case _:
   return null;
 
 }
@@ -211,12 +213,14 @@ return $default(_that.version,_that.publishedAt,_that.url);case _:
 @JsonSerializable()
 
 class _ReleaseModel extends ReleaseModel {
-  const _ReleaseModel({required this.version, required this.publishedAt, this.url}): super._();
+  const _ReleaseModel({required this.version, required this.publishedAt, this.url, this.prerelease = false, this.targetCommitish}): super._();
   factory _ReleaseModel.fromJson(Map<String, dynamic> json) => _$ReleaseModelFromJson(json);
 
 @override final  String version;
 @override final  DateTime publishedAt;
 @override final  String? url;
+@override@JsonKey() final  bool prerelease;
+@override final  String? targetCommitish;
 
 /// Create a copy of ReleaseModel
 /// with the given fields replaced by the non-null parameter values.
@@ -231,16 +235,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReleaseModel&&(identical(other.version, version) || other.version == version)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.url, url) || other.url == url));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReleaseModel&&(identical(other.version, version) || other.version == version)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.url, url) || other.url == url)&&(identical(other.prerelease, prerelease) || other.prerelease == prerelease)&&(identical(other.targetCommitish, targetCommitish) || other.targetCommitish == targetCommitish));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,version,publishedAt,url);
+int get hashCode => Object.hash(runtimeType,version,publishedAt,url,prerelease,targetCommitish);
 
 @override
 String toString() {
-  return 'ReleaseModel(version: $version, publishedAt: $publishedAt, url: $url)';
+  return 'ReleaseModel(version: $version, publishedAt: $publishedAt, url: $url, prerelease: $prerelease, targetCommitish: $targetCommitish)';
 }
 
 
@@ -251,7 +255,7 @@ abstract mixin class _$ReleaseModelCopyWith<$Res> implements $ReleaseModelCopyWi
   factory _$ReleaseModelCopyWith(_ReleaseModel value, $Res Function(_ReleaseModel) _then) = __$ReleaseModelCopyWithImpl;
 @override @useResult
 $Res call({
- String version, DateTime publishedAt, String? url
+ String version, DateTime publishedAt, String? url, bool prerelease, String? targetCommitish
 });
 
 
@@ -268,11 +272,13 @@ class __$ReleaseModelCopyWithImpl<$Res>
 
 /// Create a copy of ReleaseModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? version = null,Object? publishedAt = null,Object? url = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? version = null,Object? publishedAt = null,Object? url = freezed,Object? prerelease = null,Object? targetCommitish = freezed,}) {
   return _then(_ReleaseModel(
 version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
 as String,publishedAt: null == publishedAt ? _self.publishedAt : publishedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String?,prerelease: null == prerelease ? _self.prerelease : prerelease // ignore: cast_nullable_to_non_nullable
+as bool,targetCommitish: freezed == targetCommitish ? _self.targetCommitish : targetCommitish // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
