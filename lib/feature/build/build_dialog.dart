@@ -7,6 +7,7 @@ import 'package:stelaris/feature/base/dialog/animated_dialog.dart';
 import 'package:stelaris/feature/build/build_information.dart';
 import 'package:stelaris/feature/build/download/download_trigger.dart';
 import 'package:stelaris/feature/build/parts/build_trigger.dart';
+import 'package:stelaris/feature/build/release_metadata_display.dart';
 import 'package:stelaris/feature/build/tabs/build_tabs.dart';
 import 'package:stelaris/feature/settings/settings_header_tile.dart';
 import 'package:stelaris/feature/status_card.dart';
@@ -47,14 +48,14 @@ class BuildDialog extends StatelessWidget {
                             Expanded(
                               child: BuildInformationDisplay(
                                 releaseModel: vm.releaseModel,
-                                glowColor: themeData.colorScheme.primary,
+                                glowColor: themeData.colorScheme.secondary,
                                 height: 70,
                               ),
                             ),
                             horizontalSpacing10,
                             Expanded(
-                              child: StatusCard(
-                                text: 'Additional Changes',
+                              child: ReleaseMetadataDisplay(
+                                releaseModel: vm.releaseModel!,
                                 glowColor: themeData.colorScheme.secondary,
                                 height: 70,
                               ),
