@@ -1,29 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:stelaris/api/model/release/release_model.dart';
+import 'package:stelaris/feature/status_card.dart';
+import 'package:stelaris/util/constants.dart';
+
+enum ReleaseDisplayType {
+  version,
+  status,
+}
 
 class ReleaseMetadataDisplay extends StatelessWidget {
-  final ReleaseModel releaseModel;
+  final ReleaseModel? releaseModel;
   final Color? glowColor;
   final Color? backgroundColor;
   final double height;
+  final ReleaseDisplayType _type;
 
-  const ReleaseMetadataDisplay({
+  static final DateFormat _outputFormat = DateFormat('yyyy-MM-dd HH:mm:ss', 'en_US');
+
+  const ReleaseMetadataDisplay.version({
     required this.releaseModel,
     this.glowColor,
     this.backgroundColor,
     this.height = 100,
     super.key,
-  });
+  }) : _type = ReleaseDisplayType.version;
+
+  const ReleaseMetadataDisplay.status({
+    required this.releaseModel,
+    this.glowColor,
+    this.backgroundColor,
+    this.height = 100,
+    super.key,
+  }) : _type = ReleaseDisplayType.status;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
+    if (releaseModel == null) {
+      final colorScheme = theme.colorScheme;
+      return StatusCard(
+        text: 'Service unavailable',
+        backgroundColor: colorScheme.errorContainer.withValues(alpha: 0.8),
+        textColor: colorScheme.onErrorContainer,
+        height: height,
+      );
+    }
+
+    final model = releaseModel!;
+
     return Container(
       height: height,
       decoration: BoxDecoration(
         color: backgroundColor ?? theme.cardColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: borderRadius12,
         boxShadow: [
           if (glowColor != null)
             BoxShadow(
@@ -33,22 +64,18 @@ class ReleaseMetadataDisplay extends StatelessWidget {
             ),
         ],
       ),
-      child: Card.filled(
-        color: Colors.transparent,
-        margin: EdgeInsets.zero,
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: const EdgeInsets.all(8),  // Exakt wie StatusCard
-          child: Center(  // Center wie in StatusCard
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildReleaseTypeBadge(context),
-                const SizedBox(height: 6),
-                _buildCommitInfo(context),
-              ],
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: Card.filled(
+          color: Colors.transparent,
+          elevation: 0,
+          key: ValueKey('${model.version}_$_type'),
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Center(
+              child: _buildContent(context, model),
             ),
           ),
         ),
@@ -56,13 +83,53 @@ class ReleaseMetadataDisplay extends StatelessWidget {
     );
   }
 
-  Widget _buildReleaseTypeBadge(BuildContext context) {
+  Widget _buildContent(BuildContext context, ReleaseModel model) {
+    if (_type == ReleaseDisplayType.version) {
+      return _buildVersionContent(context, model);
+    } else {
+      return _buildStatusContent(context, model);
+    }
+  }
+
+  Widget _buildVersionContent(BuildContext context, ReleaseModel model) {
     final theme = Theme.of(context);
-    final isPrerelease = releaseModel.prerelease;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Build: ${model.version}',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Release: ${_format(model.publishedAt)}',
+          style: theme.textTheme.bodySmall,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatusContent(BuildContext context, ReleaseModel model) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildStatusRow(context, model),
+        const SizedBox(height: 6),
+        _buildCommitInfo(context, model),
+      ],
+    );
+  }
+
+  Widget _buildStatusRow(BuildContext context, ReleaseModel model) {
+    final theme = Theme.of(context);
+    final isPrerelease = model.prerelease;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center, // Align vertically
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           'Status: ',
@@ -75,22 +142,22 @@ class ReleaseMetadataDisplay extends StatelessWidget {
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
             color: isPrerelease ? Colors.orange : Colors.green,
-            height: 1.0, // Adjust line height to align better with bodySmall if needed
+            height: 1,
           ),
         ),
         const SizedBox(width: 6),
         Icon(
           isPrerelease ? Icons.science : Icons.check_circle,
-          size: 18, // Slightly larger to match titleMedium
+          size: 18,
           color: isPrerelease ? Colors.orange : Colors.green,
         ),
       ],
     );
   }
 
-  Widget _buildCommitInfo(BuildContext context) {
+  Widget _buildCommitInfo(BuildContext context, ReleaseModel model) {
     final theme = Theme.of(context);
-    final commit = releaseModel.targetCommitish;
+    final commit = model.targetCommitish; // Using targetCommitish as per user edit
 
     if (commit == null || commit.isEmpty) {
       return Text(
@@ -127,5 +194,9 @@ class ReleaseMetadataDisplay extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String _format(DateTime input) {
+    return _outputFormat.format(input);
   }
 }

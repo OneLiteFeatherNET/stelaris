@@ -4,13 +4,11 @@ import 'package:stelaris/api/state/actions/build/build_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/build/build_vm_state.dart';
 import 'package:stelaris/feature/base/dialog/animated_dialog.dart';
-import 'package:stelaris/feature/build/build_information.dart';
 import 'package:stelaris/feature/build/download/download_trigger.dart';
 import 'package:stelaris/feature/build/parts/build_trigger.dart';
 import 'package:stelaris/feature/build/release_metadata_display.dart';
 import 'package:stelaris/feature/build/tabs/build_tabs.dart';
 import 'package:stelaris/feature/settings/settings_header_tile.dart';
-import 'package:stelaris/feature/status_card.dart';
 import 'package:stelaris/util/constants.dart';
 
 class BuildDialog extends StatelessWidget {
@@ -39,14 +37,14 @@ class BuildDialog extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50),
                   child: vm.releaseModel == null
-                      ? BuildInformationDisplay(
+                      ? ReleaseMetadataDisplay.version(
                           releaseModel: vm.releaseModel,
                           height: 70,
                         )
                       : Row(
                           children: [
                             Expanded(
-                              child: BuildInformationDisplay(
+                              child: ReleaseMetadataDisplay.version(
                                 releaseModel: vm.releaseModel,
                                 glowColor: themeData.colorScheme.secondary,
                                 height: 70,
@@ -54,8 +52,8 @@ class BuildDialog extends StatelessWidget {
                             ),
                             horizontalSpacing10,
                             Expanded(
-                              child: ReleaseMetadataDisplay(
-                                releaseModel: vm.releaseModel!,
+                              child: ReleaseMetadataDisplay.status(
+                                releaseModel: vm.releaseModel,
                                 glowColor: themeData.colorScheme.secondary,
                                 height: 70,
                               ),
