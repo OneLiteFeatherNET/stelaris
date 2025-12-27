@@ -7,6 +7,8 @@ class StatusCard extends StatelessWidget {
     this.textColor,
     this.glowColor,
     this.height = 100,
+    this.icon,
+    this.trailing,
     super.key,
   });
 
@@ -15,6 +17,8 @@ class StatusCard extends StatelessWidget {
   final Color? textColor;
   final Color? glowColor;
   final double height;
+  final Widget? icon;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +42,26 @@ class StatusCard extends StatelessWidget {
         elevation: 0, // Remove card elevation to avoid conflict with glow
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Text(
-              text,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: textColor,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                icon!,
+                const SizedBox(width: 12),
+              ],
+              Text(
+                text,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: textColor,
+                    ),
               ),
-            ),
+              if (trailing != null) ...[
+                const SizedBox(width: 12),
+                trailing!,
+              ],
+            ],
           ),
         ),
       ),

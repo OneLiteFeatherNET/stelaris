@@ -11,18 +11,25 @@ import 'package:web/web.dart' as web;
 import 'download_commit_option.dart';
 
 class DownloadTrigger extends StatefulWidget {
-  const DownloadTrigger({required this.branches, super.key});
+  const DownloadTrigger({
+    required this.branches,
+    this.isLoading = false,
+    this.onRefresh,
+    super.key,
+  });
 
-  final List<String> branches;
+  final List<String>? branches;
+  final bool isLoading;
+  final VoidCallback? onRefresh;
 
   @override
   State<DownloadTrigger> createState() => _DownloadTriggerState();
 }
 
 class _DownloadTriggerState extends State<DownloadTrigger> {
-  String? defaultValue;
   late final TextEditingController _gitCommitController;
   final _formKey = GlobalKey<FormState>();
+  String? defaultValue;
   bool _useCommit = false;
 
   @override
@@ -41,9 +48,10 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
   }
 
   void _updateDefaultValue() {
-    if (widget.branches.isNotEmpty) {
-      if (defaultValue == null || !widget.branches.contains(defaultValue)) {
-        defaultValue = widget.branches.first;
+    final branches = widget.branches;
+    if (branches != null && branches.isNotEmpty) {
+      if (defaultValue == null || !branches.contains(defaultValue)) {
+        defaultValue = branches.first;
       }
     } else {
       defaultValue = null;
@@ -60,22 +68,62 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    if (widget.branches.isEmpty) {
+
+    if (widget.isLoading) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: StatusCard(
-            text: 'No branches found! Please create some in the repository',
-            backgroundColor: theme.colorScheme.errorContainer,
-            glowColor: theme.colorScheme.errorContainer.withValues(alpha: 0.5),
+            text: 'Fetching branches...',
+            backgroundColor:
+                theme.colorScheme.secondaryContainer.withValues(alpha: 0.5),
+            textColor: theme.colorScheme.onSecondaryContainer,
+            height: 70,
+            icon: const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (widget.branches == null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: StatusCard(
+            text: 'Service unavailable',
+            backgroundColor: theme.colorScheme.errorContainer.withValues(alpha: 0.8),
+            textColor: theme.colorScheme.onErrorContainer,
             height: 70,
           ),
         ),
       );
     }
 
+    if (widget.branches!.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: StatusCard(
+             text: 'No branches found! Please create some in the repository',
+             backgroundColor: theme.colorScheme.errorContainer,
+             glowColor: theme.colorScheme.errorContainer.withValues(alpha: 0.5),
+             height: 70,
+             trailing: IconButton(
+               icon: const Icon(Icons.refresh),
+               onPressed: widget.onRefresh,
+               tooltip: 'Refresh branches',
+             ),
+          ),
+        ),
+      );
+    }
+
     // Map branches to DropdownMenuItems
-    final branchItems = widget.branches
+    final branchItems = widget.branches!
         .map((e) => DropdownMenuItem(value: e, child: Text(e)))
         .toList();
 

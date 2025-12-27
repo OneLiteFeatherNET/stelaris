@@ -4,10 +4,7 @@ import 'package:stelaris/api/model/release/release_model.dart';
 import 'package:stelaris/feature/status_card.dart';
 import 'package:stelaris/util/constants.dart';
 
-enum ReleaseDisplayType {
-  version,
-  status,
-}
+enum ReleaseDisplayType { version, status }
 
 class ReleaseMetadataDisplay extends StatelessWidget {
   final ReleaseModel? releaseModel;
@@ -16,7 +13,10 @@ class ReleaseMetadataDisplay extends StatelessWidget {
   final double height;
   final ReleaseDisplayType _type;
 
-  static final DateFormat _outputFormat = DateFormat('yyyy-MM-dd HH:mm:ss', 'en_US');
+  static final DateFormat _outputFormat = DateFormat(
+    'yyyy-MM-dd HH:mm:ss',
+    'en_US',
+  );
 
   const ReleaseMetadataDisplay.version({
     required this.releaseModel,
@@ -71,12 +71,12 @@ class ReleaseMetadataDisplay extends StatelessWidget {
           elevation: 0,
           key: ValueKey('${model.version}_$_type'),
           margin: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(8),
-            child: Center(
-              child: _buildContent(context, model),
-            ),
+            child: Center(child: _buildContent(context, model)),
           ),
         ),
       ),
@@ -84,11 +84,9 @@ class ReleaseMetadataDisplay extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context, ReleaseModel model) {
-    if (_type == ReleaseDisplayType.version) {
-      return _buildVersionContent(context, model);
-    } else {
-      return _buildStatusContent(context, model);
-    }
+    return _type == ReleaseDisplayType.version
+        ? _buildVersionContent(context, model)
+        : _buildStatusContent(context, model);
   }
 
   Widget _buildVersionContent(BuildContext context, ReleaseModel model) {
@@ -157,7 +155,8 @@ class ReleaseMetadataDisplay extends StatelessWidget {
 
   Widget _buildCommitInfo(BuildContext context, ReleaseModel model) {
     final theme = Theme.of(context);
-    final commit = model.targetCommitish; // Using targetCommitish as per user edit
+    final commit =
+        model.targetCommitish; // Using targetCommitish as per user edit
 
     if (commit == null || commit.isEmpty) {
       return Text(
@@ -175,10 +174,7 @@ class ReleaseMetadataDisplay extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          'Commit: ',
-           style: theme.textTheme.bodySmall,
-        ),
+        Text('Commit: ', style: theme.textTheme.bodySmall),
         Icon(
           Icons.commit,
           size: 14,

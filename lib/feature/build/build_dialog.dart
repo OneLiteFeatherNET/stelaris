@@ -6,7 +6,7 @@ import 'package:stelaris/api/state/factory/build/build_vm_state.dart';
 import 'package:stelaris/feature/base/dialog/animated_dialog.dart';
 import 'package:stelaris/feature/build/download/download_trigger.dart';
 import 'package:stelaris/feature/build/parts/build_trigger.dart';
-import 'package:stelaris/feature/build/release_metadata_display.dart';
+import 'package:stelaris/feature/build/release/release_status_section.dart';
 import 'package:stelaris/feature/build/tabs/build_tabs.dart';
 import 'package:stelaris/feature/settings/settings_header_tile.dart';
 import 'package:stelaris/util/constants.dart';
@@ -25,7 +25,6 @@ class BuildDialog extends StatelessWidget {
           store.dispatchAll([ReleaseFetchAction(), BranchFetchAction()]);
         },
         builder: (context, vm) {
-          final ThemeData themeData = Theme.of(context);
           return DefaultTabController(
             length: 2,
             child: Column(
@@ -36,30 +35,7 @@ class BuildDialog extends StatelessWidget {
                 verticalSpacing25,
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: vm.releaseModel == null
-                      ? ReleaseMetadataDisplay.version(
-                          releaseModel: vm.releaseModel,
-                          height: 70,
-                        )
-                      : Row(
-                          children: [
-                            Expanded(
-                              child: ReleaseMetadataDisplay.version(
-                                releaseModel: vm.releaseModel,
-                                glowColor: themeData.colorScheme.secondary,
-                                height: 70,
-                              ),
-                            ),
-                            horizontalSpacing10,
-                            Expanded(
-                              child: ReleaseMetadataDisplay.status(
-                                releaseModel: vm.releaseModel,
-                                glowColor: themeData.colorScheme.secondary,
-                                height: 70,
-                              ),
-                            ),
-                          ],
-                        ),
+                  child: ReleaseStatusSection(vm: vm),
                 ),
                 const SizedBox(height: 15),
                 divider,
@@ -71,7 +47,11 @@ class BuildDialog extends StatelessWidget {
                 Expanded(
                   child: TabBarView(
                     children: [
-                      DownloadTrigger(branches: vm.branches),
+                      DownloadTrigger(
+                        branches: vm.branches,
+                        isLoading: vm.isLoadingBranches,
+                        onRefresh: vm.onRefreshBranches,
+                      ),
                       BuildTrigger(version: vm.version),
                     ],
                   ),
