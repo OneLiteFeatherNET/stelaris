@@ -15,7 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ReleaseModel {
 
- String get version; DateTime get publishedAt; String? get url; bool get prerelease; String? get targetCommitish;
+ String get version; DateTime get publishedAt; String? get url; bool get prerelease;// The naming of this comes from the official api https://docs.github.com/en/rest/releases/releases. Search for target_commitish
+ String? get targetCommitish;
 /// Create a copy of ReleaseModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -220,6 +221,7 @@ class _ReleaseModel extends ReleaseModel {
 @override final  DateTime publishedAt;
 @override final  String? url;
 @override@JsonKey() final  bool prerelease;
+// The naming of this comes from the official api https://docs.github.com/en/rest/releases/releases. Search for target_commitish
 @override final  String? targetCommitish;
 
 /// Create a copy of ReleaseModel
