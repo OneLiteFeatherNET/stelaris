@@ -102,6 +102,8 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingMoreSoundEvents,
+    @Default(false)
+    bool isLoadingRelease,
     @Default(true) bool openNavigation,
     @Default(
       ThemeSettings(
@@ -119,8 +121,8 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false) AttributeModel? selectedAttribute,
     @JsonKey(includeToJson: false) SoundEventModel? selectedSoundEvent,
     ReleaseModel? releaseModel,
-    @Default([])
-    List<String> branches
+    @Default(false) bool isLoadingBranches,
+    List<String>? branches,
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, dynamic> json) =>
