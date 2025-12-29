@@ -3,7 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:stelaris/util/constants.dart';
 
 class SettingsHeaderTile extends StatelessWidget {
-  const SettingsHeaderTile({super.key});
+  const SettingsHeaderTile({
+    required this.text,
+    super.key,
+  });
+
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +22,10 @@ class SettingsHeaderTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Settings',
-              textAlign: TextAlign.start,
+              text,
               style: theme.textTheme.titleLarge?.copyWith(
                 color: theme.colorScheme.onPrimaryContainer,
+                fontWeight: FontWeight.bold,
               ),
             ),
             Align(

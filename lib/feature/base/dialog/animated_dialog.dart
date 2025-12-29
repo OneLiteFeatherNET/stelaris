@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 class AnimatedDialog extends StatelessWidget {
   const AnimatedDialog({
     required this.child,
+    this.maxHeight = 800,
+    this.minHeightFactor = 0.8,
     super.key,
   });
 
   final Widget child;
+  final double maxHeight;
+  final double minHeightFactor;
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +23,13 @@ class AnimatedDialog extends StatelessWidget {
           final double width =
               constraints.maxWidth < 1000 ? constraints.maxWidth : 1000;
           final double height =
-              constraints.maxHeight < 600 ? constraints.maxHeight : 600;
+              constraints.maxHeight < maxHeight ? constraints.maxHeight : maxHeight;
           return Dialog(
             clipBehavior: Clip.hardEdge,
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 minWidth: width * 0.8,
-                minHeight: height * 0.8,
+                minHeight: height * minHeightFactor,
                 maxHeight: height,
                 maxWidth: width,
               ),

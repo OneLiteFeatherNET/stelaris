@@ -67,6 +67,7 @@ _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
           json['soundEvents'] as Map<String, dynamic>,
           (value) => SoundEventModel.fromJson(value as Map<String, dynamic>),
         ),
+  isLoadingRelease: json['isLoadingRelease'] as bool? ?? false,
   openNavigation: json['openNavigation'] as bool? ?? true,
   themeSettings: json['themeSettings'] == null
       ? const ThemeSettings(
@@ -98,6 +99,13 @@ _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
       : SoundEventModel.fromJson(
           json['selectedSoundEvent'] as Map<String, dynamic>,
         ),
+  releaseModel: json['releaseModel'] == null
+      ? null
+      : ReleaseModel.fromJson(json['releaseModel'] as Map<String, dynamic>),
+  isLoadingBranches: json['isLoadingBranches'] as bool? ?? false,
+  branches: (json['branches'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
 );
 
 Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
@@ -106,6 +114,10 @@ Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
   'fonts': instance.fonts.toJson((value) => value),
   'attributes': instance.attributes.toJson((value) => value),
   'soundEvents': instance.soundEvents.toJson((value) => value),
+  'isLoadingRelease': instance.isLoadingRelease,
   'openNavigation': instance.openNavigation,
   'themeSettings': instance.themeSettings,
+  'releaseModel': instance.releaseModel,
+  'isLoadingBranches': instance.isLoadingBranches,
+  'branches': instance.branches,
 };

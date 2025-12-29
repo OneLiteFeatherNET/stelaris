@@ -14,41 +14,21 @@ class BuildBranchSelection extends StatefulWidget {
 }
 
 class _BuildBranchSelectionState extends State<BuildBranchSelection> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    _controller = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('Branch: '),
-            SegmentedButton<BranchOption>(
-              segments: _getOptions(),
-              selected: <BranchOption>{widget.branchOption.value},
-              onSelectionChanged: (selected) {
-                if (widget.branchOption.value == selected.first) return;
-                setState(() {
-                  widget.branchOption.value = selected.first;
-                });
-              },
-            ),
-          ],
-        ),
-      ],
+    return SizedBox(
+      width: double.infinity,
+      child: SegmentedButton<BranchOption>(
+        segments: _getOptions(),
+        selected: <BranchOption>{widget.branchOption.value},
+        onSelectionChanged: (selected) {
+          if (widget.branchOption.value == selected.first) return;
+          setState(() {
+            widget.branchOption.value = selected.first;
+          });
+        },
+      ),
     );
   }
 
