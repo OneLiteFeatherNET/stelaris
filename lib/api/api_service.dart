@@ -47,7 +47,7 @@ class ApiService {
   );
 
   /// Creates an instance of [ApiClient] with the backend URL.
-  ApiClient _createApiClient() => ApiClient(Environment.backendURl);
+  ApiClient _createApiClient() => ApiClient(Environment.backendUrl);
 
   /// Creates an instance of [ApiClient] with the generator URL.
   ApiClient _createGeneratorClient() => ApiClient(Environment.generatorUrl);

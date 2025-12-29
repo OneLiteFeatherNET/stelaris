@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris/env/environment.dart';
 import 'package:stelaris/feature/settings/settings_base_row.dart';
 import 'package:stelaris/feature/settings/settings_item.dart';
 import 'package:stelaris/util/constants.dart';
@@ -18,7 +19,7 @@ class MiscSettingsRow extends StatelessWidget {
             title: context.l10n.settings_misc_bug_header,
             subtitle: context.l10n.settings_misc_bug_body,
             trailing: OutlinedButton(
-              onPressed: () => UriLauncher.launchURL(gitUrl),
+              onPressed: () => UriLauncher.launchURL(Environment.gitBugUrl),
               child: Text(context.l10n.settings_misc_bug_button),
             ),
           ),
@@ -27,7 +28,7 @@ class MiscSettingsRow extends StatelessWidget {
             title: context.l10n.settings_misc_suggestion_header,
             subtitle: context.l10n.settings_misc_suggestion_body,
             trailing: OutlinedButton(
-              onPressed: () => UriLauncher.launchURL(gitUrl),
+              onPressed: () => UriLauncher.launchURL(Environment.gitSuggestionUrl),
               child: Text(context.l10n.settings_misc_suggestion_button),
             ),
           ),

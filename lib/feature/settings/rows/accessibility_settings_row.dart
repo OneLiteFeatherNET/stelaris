@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stelaris/env/environment.dart';
 import 'package:stelaris/feature/settings/settings_base_row.dart';
 import 'package:stelaris/feature/settings/settings_item.dart';
 import 'package:stelaris/util/constants.dart';
@@ -16,7 +17,7 @@ class AccessibilitySettingsRow extends StatelessWidget {
         title: context.l10n.settings_accessibility_body,
         subtitle: context.l10n.settings_accessibility_header,
         trailing: OutlinedButton(
-          onPressed: () => UriLauncher.launchURL(conceptURL),
+          onPressed: () => UriLauncher.launchURL(Environment.conceptUrl),
           child: Text(context.l10n.settings_accessibility_button),
         ),
       ),
