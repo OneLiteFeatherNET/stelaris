@@ -1,3 +1,5 @@
+import 'package:stelaris/env/environment_validator.dart';
+
 /// Centralized environment configuration for build-time variables.
 ///
 /// This class provides access to configuration values that are injected
@@ -28,32 +30,27 @@ class Environment {
 
   static const String _gitBugUrl = String.fromEnvironment('GIT_BUG_URL');
 
-  static const String _gitSuggestionUrl = String.fromEnvironment('GITHUB_SUGGESTION_URL');
+  static const String _gitSuggestionUrl = String.fromEnvironment(
+    'GITHUB_SUGGESTION_URL',
+  );
 
   /// Base URL of the backend API
-  static String get backendUrl => _require(_backendUrl, 'BACKEND_URL');
+  static String get backendUrl =>
+      EnvironmentValidator.require(_backendUrl, 'BACKEND_URL');
 
   /// URL of the generator / worker service
-  static String get generatorUrl => _require(_generatorUrl, 'GENERATOR_URL');
+  static String get generatorUrl =>
+      EnvironmentValidator.require(_generatorUrl, 'GENERATOR_URL');
 
   /// Documentation / concept page URL
-  static String get conceptUrl => _require(_conceptUrl, 'CONCEPT_URL');
+  static String get conceptUrl =>
+      EnvironmentValidator.require(_conceptUrl, 'CONCEPT_URL');
 
   /// Issue tracker or repository URL
-  static String get gitBugUrl => _require(_gitBugUrl, 'GIT_BUG_URL');
+  static String get gitBugUrl =>
+      EnvironmentValidator.require(_gitBugUrl, 'GIT_BUG_URL');
 
   /// Suggestion URL
-  static String get gitSuggestionUrl => _require(_gitSuggestionUrl, 'GITHUB_SUGGESTION_URL');
-
-  /// Ensures that a required build-time variable is present.
-  ///
-  /// [value] The resolved environment value.
-  /// [name]  The name of the dart-define variable (for error reporting).
-  ///
-  /// An assertion error is raised if the value is empty, causing the
-  /// application to fail early and visibly.
-  static String _require(String value, String name) {
-    assert(value.isNotEmpty, 'Missing required dart-define: $name');
-    return value;
-  }
+  static String get gitSuggestionUrl =>
+      EnvironmentValidator.require(_gitSuggestionUrl, 'GITHUB_SUGGESTION_URL');
 }
