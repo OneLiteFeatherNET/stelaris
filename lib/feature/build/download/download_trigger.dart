@@ -195,12 +195,14 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
                   final text = context.l10n.error_generation_submit;
                   ScaffoldMessenger.of(context)
                       .showSnackBar(InfoBarFactory().create(text));
-                  final data = await ApiService().generateApi.download(value);
+
+                  final (data, filename) = await ApiService().generateApi.download(value);
+
                   final content = base64Encode(data);
+
                   web.HTMLAnchorElement()
-                    ..setAttribute(
-                        'href', 'data:application/octet-stream;base64,$content')
-                    ..setAttribute('download', 'generated.zip')
+                    ..setAttribute('href', 'data:application/octet-stream;base64,$content')
+                    ..setAttribute('download', filename)
                     ..click();
                 },
                 label: Text(context.l10n.button_download),
