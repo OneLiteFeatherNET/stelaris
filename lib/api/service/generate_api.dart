@@ -27,14 +27,30 @@ class GenerateApi {
     return (data as List<dynamic>).map((e) => e as String).toList();
   }
 
-  Future<List<int>> download(String branch) async {
+  Future<(List<int>, String)> download(String branch) async {
     final queryParams = <String, dynamic>{
       'branch': branch
     };
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/download');
-    final data = await _apiClient.dio.getUri(uri, options: Options(responseType: ResponseType.bytes)).then((value) => value.data! as List<int>);
-    return data;
+
+    final response = await _apiClient.dio.getUri(
+        uri,
+        options: Options(responseType: ResponseType.bytes)
+    );
+
+    final contentDisposition = response.headers.value('content-disposition');
+    String filename = 'vulpes-$branch.zip';
+
+    if (contentDisposition != null) {
+      final regex = RegExp(r'filename="?([^";\s]+)"?');
+      final match = regex.firstMatch(contentDisposition);
+      if (match != null) {
+        filename = match.group(1)!;
+      }
+    }
+
+    return (response.data! as List<int>, filename);
   }
 
   Future<ReleaseModel> buildInformation() async {
