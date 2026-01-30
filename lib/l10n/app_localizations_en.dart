@@ -360,6 +360,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_misc_suggestion_button => 'Suggest';
 
   @override
+  String get settings_misc_license_header => 'Third-party software licenses';
+
+  @override
+  String get settings_misc_license_body =>
+      'This application uses the following open-source libraries.';
+
+  @override
+  String get settings_misc_license_button => 'View';
+
+  @override
   String get settings_end_tile_made_with => 'Made with';
 
   @override

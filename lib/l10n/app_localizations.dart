@@ -766,6 +766,24 @@ abstract class AppLocalizations {
   /// **'Suggest'**
   String get settings_misc_suggestion_button;
 
+  /// No description provided for @settings_misc_license_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Third-party software licenses'**
+  String get settings_misc_license_header;
+
+  /// No description provided for @settings_misc_license_body.
+  ///
+  /// In en, this message translates to:
+  /// **'This application uses the following open-source libraries.'**
+  String get settings_misc_license_body;
+
+  /// No description provided for @settings_misc_license_button.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get settings_misc_license_button;
+
   /// No description provided for @settings_end_tile_made_with.
   ///
   /// In en, this message translates to:

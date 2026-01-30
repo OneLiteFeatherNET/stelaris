@@ -129,6 +129,9 @@
   "settings_misc_suggestion_header": "Any Suggestion?",
   "settings_misc_suggestion_body": "Want to suggest a feature, create a ticket!",
   "settings_misc_suggestion_button": "Suggest",
+  "settings_misc_license_header": "Third-party software licenses",
+  "settings_misc_license_body": "This application uses the following open-source libraries.",
+  "settings_misc_license_button": "View",
 
   "settings_end_tile_made_with": "Made with",
   "settings_end_tile_team": "by the team"
