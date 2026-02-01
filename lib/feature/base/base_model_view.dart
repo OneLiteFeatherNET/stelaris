@@ -43,7 +43,7 @@ class BaseModelView<E extends DataModel> extends StatelessWidget {
           models: models,
           compareFunction: compareFunction,
         ),
-        if (child != null) child!,
+        ?child,
       ],
     );
   }
