@@ -31,6 +31,21 @@ class MiscSettingsRow extends StatelessWidget {
               child: Text(context.l10n.settings_misc_suggestion_button),
             ),
           ),
+          verticalSpacing25,
+          SettingsItem(
+            title: context.l10n.settings_misc_license_header,
+            subtitle: context.l10n.settings_misc_license_body,
+            trailing: OutlinedButton(
+              onPressed: () {
+                showLicensePage(
+                  context: context,
+                  applicationName: appName,
+                  applicationVersion: '0.1.0',
+                );
+              },
+              child: Text(context.l10n.settings_misc_license_button),
+            ),
+          ),
         ],
       ),
     );
