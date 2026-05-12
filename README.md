@@ -12,7 +12,7 @@ may be divided into multiple parts. In the build page the user can generate the 
 
 To run the application on your local computer, follow these steps:
 
-- **Install Flutter** – Ensure you have Flutter installed with the latest required version (**3.29.0**).
+- **Install Flutter** – Ensure you have Flutter installed with the latest required version (**3.41.9**).
 - **Modify the Environment Class** – Adjust the backend URL in the environment class to match your server setup.
 - **Start the Backend Server** - Start the backend server
 - **Run the App** – Start the application by pressing the **Start** button in your IDE or running:
