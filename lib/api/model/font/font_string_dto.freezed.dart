@@ -218,11 +218,11 @@ return $default(_that.line,_that.id,_that.orderIndex);case _:
 @JsonSerializable()
 
 class _FontStringDto extends FontStringDTO {
-  const _FontStringDto({required this.line, this.id = null, this.orderIndex = 0}): super._();
+  const _FontStringDto({required this.line, this.id, this.orderIndex = 0}): super._();
   factory _FontStringDto.fromJson(Map<String, dynamic> json) => _$FontStringDtoFromJson(json);
 
 @override final  String line;
-@override@JsonKey() final  String? id;
+@override final  String? id;
 @override@JsonKey() final  int? orderIndex;
 
 /// Create a copy of FontStringDTO

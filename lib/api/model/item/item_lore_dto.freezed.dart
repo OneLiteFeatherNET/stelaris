@@ -211,11 +211,11 @@ return $default(_that.text,_that.id,_that.orderIndex);case _:
 @JsonSerializable()
 
 class _ItemLoreDto extends ItemLoreDto {
-  const _ItemLoreDto({required this.text, this.id = null, this.orderIndex = 0}): super._();
+  const _ItemLoreDto({required this.text, this.id, this.orderIndex = 0}): super._();
   factory _ItemLoreDto.fromJson(Map<String, dynamic> json) => _$ItemLoreDtoFromJson(json);
 
 @override final  String text;
-@override@JsonKey() final  String? id;
+@override final  String? id;
 @override@JsonKey() final  int orderIndex;
 
 /// Create a copy of ItemLoreDto

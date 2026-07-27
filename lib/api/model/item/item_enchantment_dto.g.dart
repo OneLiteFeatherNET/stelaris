@@ -11,7 +11,7 @@ _ItemEnchantmentDto _$ItemEnchantmentDtoFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       level: (json['level'] as num).toInt(),
       unsafe: json['unsafe'] as bool? ?? false,
-      id: json['id'] as String? ?? null,
+      id: json['id'] as String?,
     );
 
 Map<String, dynamic> _$ItemEnchantmentDtoToJson(_ItemEnchantmentDto instance) =>

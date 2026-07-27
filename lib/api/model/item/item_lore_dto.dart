@@ -11,7 +11,7 @@ abstract class ItemLoreDto with _$ItemLoreDto {
 
   const factory ItemLoreDto({
     required String text,
-    @Default(null) String? id,
+    String? id,
     @Default(0) int orderIndex,
   }) = _ItemLoreDto;
 

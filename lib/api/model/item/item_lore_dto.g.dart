@@ -8,7 +8,7 @@ part of 'item_lore_dto.dart';
 
 _ItemLoreDto _$ItemLoreDtoFromJson(Map<String, dynamic> json) => _ItemLoreDto(
   text: json['text'] as String,
-  id: json['id'] as String? ?? null,
+  id: json['id'] as String?,
   orderIndex: (json['orderIndex'] as num?)?.toInt() ?? 0,
 );
 

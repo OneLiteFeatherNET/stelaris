@@ -12,7 +12,7 @@ abstract class ItemEnchantmentDto with _$ItemEnchantmentDto {
     required String name,
     required int level,
     @Default(false) bool unsafe,
-    @Default(null) String? id,
+    String? id,
   }) = _ItemEnchantmentDto;
 
   factory ItemEnchantmentDto.fromJson(Map<String, dynamic> json) =>

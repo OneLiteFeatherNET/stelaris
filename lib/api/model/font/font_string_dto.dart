@@ -10,7 +10,7 @@ abstract class FontStringDTO with _$FontStringDTO {
 
   const factory FontStringDTO({
     required String line,
-    @Default(null) String? id,
+    String? id,
     @Default(0) int? orderIndex,
   }) = _FontStringDto;
 

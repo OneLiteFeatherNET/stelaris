@@ -9,7 +9,7 @@ part of 'font_string_dto.dart';
 _FontStringDto _$FontStringDtoFromJson(Map<String, dynamic> json) =>
     _FontStringDto(
       line: json['line'] as String,
-      id: json['id'] as String? ?? null,
+      id: json['id'] as String?,
       orderIndex: (json['orderIndex'] as num?)?.toInt() ?? 0,
     );
 

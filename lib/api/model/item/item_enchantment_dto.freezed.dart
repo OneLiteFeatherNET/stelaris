@@ -212,13 +212,13 @@ return $default(_that.name,_that.level,_that.unsafe,_that.id);case _:
 @JsonSerializable()
 
 class _ItemEnchantmentDto extends ItemEnchantmentDto {
-  const _ItemEnchantmentDto({required this.name, required this.level, this.unsafe = false, this.id = null}): super._();
+  const _ItemEnchantmentDto({required this.name, required this.level, this.unsafe = false, this.id}): super._();
   factory _ItemEnchantmentDto.fromJson(Map<String, dynamic> json) => _$ItemEnchantmentDtoFromJson(json);
 
 @override final  String name;
 @override final  int level;
 @override@JsonKey() final  bool unsafe;
-@override@JsonKey() final  String? id;
+@override final  String? id;
 
 /// Create a copy of ItemEnchantmentDto
 /// with the given fields replaced by the non-null parameter values.
