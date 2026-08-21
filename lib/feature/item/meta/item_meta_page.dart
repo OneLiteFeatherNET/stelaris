@@ -17,7 +17,6 @@ class ItemMetaPage extends StatefulWidget {
 }
 
 class _ItemMetaPageState extends State<ItemMetaPage> {
-
   final _formKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
 
@@ -59,74 +58,83 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
                                   display: context.l10n.card_material,
                                   hintText: defaultMaterial,
                                   currentValue:
-                                  vm.selected.material ?? emptyString,
+                                      vm.selected.material ?? emptyString,
                                   valueUpdate: (value) {
                                     if (value == vm.selected.material) return;
                                     final oldModel = vm.selected;
-                                    final newEntry =
-                                    oldModel.copyWith(material: value);
-                                    context
-                                        .dispatch(UpdateItemAction(newEntry));
+                                    final newEntry = oldModel.copyWith(
+                                      material: value,
+                                    );
+                                    context.dispatch(
+                                      UpdateItemAction(newEntry),
+                                    );
                                   },
                                   formValidator: (value) {
                                     if (value == null) return null;
                                     if (!minecraftPattern.hasMatch(value)) {
                                       return context
-                                          .l10n.input_validation_material;
+                                          .l10n
+                                          .input_validation_material;
                                     }
                                     return null;
                                   },
                                   maxLength: 30,
-                                  focusOrder: const NumericFocusOrder(1)
+                                  focusOrder: const NumericFocusOrder(1),
                                 ),
                                 TextInputCard<String>(
                                   tooltipMessage:
-                                  context.l10n.tooltip_displayname,
+                                      context.l10n.tooltip_displayname,
                                   display: context.l10n.card_display_name,
                                   currentValue:
-                                  vm.selected.displayName ?? emptyString,
+                                      vm.selected.displayName ?? emptyString,
                                   valueUpdate: (value) {
                                     if (value == vm.selected.displayName) {
                                       return;
                                     }
                                     final oldModel = vm.selected;
-                                    final newEntry =
-                                    oldModel.copyWith(displayName: value);
-                                    context
-                                        .dispatch(UpdateItemAction(newEntry));
+                                    final newEntry = oldModel.copyWith(
+                                      displayName: value,
+                                    );
+                                    context.dispatch(
+                                      UpdateItemAction(newEntry),
+                                    );
                                   },
                                   maxLength: 30,
                                 ),
                                 TextInputCard<int>(
                                   tooltipMessage:
-                                  context.l10n.tooltip_model_data,
+                                      context.l10n.tooltip_model_data,
                                   display: context.l10n.card_model_data,
                                   currentValue:
-                                  vm.selected.customModelData?.toString() ??
+                                      vm.selected.customModelData?.toString() ??
                                       zeroString,
                                   valueUpdate: (value) {
                                     final newValue = int.tryParse(value) ?? 0;
-                                    if (newValue == vm.selected.customModelData) {
+                                    if (newValue ==
+                                        vm.selected.customModelData) {
                                       return;
                                     }
                                     final oldModel = vm.selected;
                                     final newEntry = oldModel.copyWith(
-                                        customModelData: newValue);
-                                    context
-                                        .dispatch(UpdateItemAction(newEntry));
+                                      customModelData: newValue,
+                                    );
+                                    context.dispatch(
+                                      UpdateItemAction(newEntry),
+                                    );
                                   },
                                   maxLength: 30,
                                   inputType: numberInput,
                                   formatter: [
                                     FilteringTextInputFormatter.allow(
-                                        numberPattern)
+                                      numberPattern,
+                                    ),
                                   ],
-                                    focusOrder: const NumericFocusOrder(2)
+                                  focusOrder: const NumericFocusOrder(2),
                                 ),
                                 TextInputCard<int>(
                                   display: context.l10n.card_amount,
                                   currentValue:
-                                  vm.selected.amount?.toString() ??
+                                      vm.selected.amount?.toString() ??
                                       zeroString,
                                   valueUpdate: (value) {
                                     final updatedValue =
@@ -135,15 +143,18 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
                                       return;
                                     }
                                     final oldModel = vm.selected;
-                                    final newEntry =
-                                    oldModel.copyWith(amount: updatedValue);
-                                    context
-                                        .dispatch(UpdateItemAction(newEntry));
+                                    final newEntry = oldModel.copyWith(
+                                      amount: updatedValue,
+                                    );
+                                    context.dispatch(
+                                      UpdateItemAction(newEntry),
+                                    );
                                   },
                                   inputType: numberInput,
                                   formatter: [
                                     FilteringTextInputFormatter.allow(
-                                        numberPattern)
+                                      numberPattern,
+                                    ),
                                   ],
                                   formValidator: (value) {
                                     if (value == null) return null;
@@ -158,7 +169,7 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
                                     return null;
                                   },
                                   maxLength: 30,
-                                    focusOrder: const NumericFocusOrder(3)
+                                  focusOrder: const NumericFocusOrder(3),
                                 ),
                               ],
                             ),
@@ -175,11 +186,11 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
                     context.dispatch(ItemDatabaseUpdate());
                   }
                 },
-              )
+              ),
             ],
           ),
         );
-      }
+      },
     );
   }
 }

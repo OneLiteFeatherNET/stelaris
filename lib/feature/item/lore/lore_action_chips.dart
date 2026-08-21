@@ -8,7 +8,6 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// In this special case the confirm widget is a [FilledButton.icon].
 /// For more details visit the [LorePage] class.
 class LoreActionChips extends StatelessWidget {
-
   const LoreActionChips({
     required this.dialogFunction,
     required this.currentIndex,
@@ -32,9 +31,7 @@ class LoreActionChips extends StatelessWidget {
               label: Text(context.l10n.button_add),
               onPressed: () => dialogFunction.call(),
             ),
-            LoreCountChip(
-              currentIndex: currentIndex,
-            ),
+            LoreCountChip(currentIndex: currentIndex),
           ],
         ),
       ),

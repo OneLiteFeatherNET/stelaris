@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/data_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/button/add_button.dart';
 import 'package:stelaris/feature/base/model_card.dart';
 import 'package:stelaris/util/constants.dart';
@@ -42,7 +42,7 @@ class ModelList<E extends DataModel> extends StatefulWidget {
 class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
   final ScrollController _scrollController = ScrollController();
   late RoundedRectangleBorder _defaultCardShape;
-  
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -66,14 +66,12 @@ class _ModelListState<E extends DataModel> extends State<ModelList<E>> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Expanded(
-            child: _buildListView(),
-          ),
+          Expanded(child: _buildListView()),
           verticalSpacing10,
           Padding(
             padding: const EdgeInsets.only(bottom: ModelList._bottomPadding),
             child: AddButton(openFunction: widget.openFunction),
-          )
+          ),
         ],
       ),
     );

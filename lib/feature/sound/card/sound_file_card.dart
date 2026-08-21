@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/sound/sound_file_source.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/sound/card/folder_icon.dart';
 import 'package:stelaris/feature/sound/card/small_file_card.dart';
 import 'package:stelaris/feature/sound/card/sound_card_button.dart';
 
 class SoundFileCard extends StatelessWidget {
-
   static const double _fullCardMinWidth = 230;
 
-  const SoundFileCard({required this.source, this.onDeleteRequested, super.key});
+  const SoundFileCard({
+    required this.source,
+    this.onDeleteRequested,
+    super.key,
+  });
 
   final SoundFileSource source;
   final VoidCallback? onDeleteRequested;

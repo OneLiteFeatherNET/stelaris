@@ -1,7 +1,7 @@
 import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/item/item_lore_dto.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/item/item_lore_actions.dart';
 import 'package:stelaris/api/state/factory/item/item_lore_view_state.dart';
 import 'package:stelaris/feature/base/action/entry_actions.dart';
@@ -91,9 +91,7 @@ class _LorePageViewState extends State<LorePageView>
             context.l10n.dialog_item_lore_delete_header,
             textAlign: TextAlign.center,
           ),
-          header: [
-            TextSpan(text: context.l10n.dialog_item_lore_delete_header),
-          ],
+          header: [TextSpan(text: context.l10n.dialog_item_lore_delete_header)],
           value: dto,
           successfully: (value) {
             context.dispatch(ItemLoreDeleteAction(value));

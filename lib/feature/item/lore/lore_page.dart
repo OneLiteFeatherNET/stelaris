@@ -1,6 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/item/item_lore_dto.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/item/item_lore_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/item_lore_view_state.dart';
@@ -19,7 +19,7 @@ class LorePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, ItemLoreView>(
       vm: () => ItemLoreViewFactory(),
-      onInit: (store)  => store.dispatchAndWait(ItemLoreFetchAction()),
+      onInit: (store) => store.dispatchAndWait(ItemLoreFetchAction()),
       builder: (context, vm) {
         return Padding(
           padding: const EdgeInsets.only(left: 25, right: 25),

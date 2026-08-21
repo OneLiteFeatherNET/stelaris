@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
-import 'package:stelaris/api/model/data_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/button/add_button.dart';
 import 'package:stelaris/feature/base/model_card.dart';
 import 'package:stelaris/util/constants.dart';
@@ -49,7 +49,8 @@ class PaginatedModelList<E extends DataModel> extends StatefulWidget {
 }
 
 class _PaginatedModelListState<E extends DataModel>
-    extends State<PaginatedModelList<E>> with InfiniteScrollMixin<PaginatedModelList<E>> {
+    extends State<PaginatedModelList<E>>
+    with InfiniteScrollMixin<PaginatedModelList<E>> {
   late RoundedRectangleBorder _defaultCardShape;
 
   @override
@@ -85,15 +86,14 @@ class _PaginatedModelListState<E extends DataModel>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              child: _buildListView(),
-            ),
+            Expanded(child: _buildListView()),
             verticalSpacing10,
             Padding(
               padding: const EdgeInsets.only(
-                  bottom: PaginatedModelList._bottomPadding),
+                bottom: PaginatedModelList._bottomPadding,
+              ),
               child: AddButton(openFunction: widget.openFunction),
-            )
+            ),
           ],
         ),
       ),
@@ -141,10 +141,10 @@ class _PaginatedModelListState<E extends DataModel>
       child: Center(
         child: widget.isLoadingMore
             ? const SizedBox(
-          width: 20,
-          height: 20,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        )
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
             : const SizedBox.shrink(),
       ),
     );

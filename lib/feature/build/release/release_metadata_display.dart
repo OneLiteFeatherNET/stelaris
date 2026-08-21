@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:stelaris/api/model/release/release_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/status_card.dart';
 import 'package:stelaris/util/constants.dart';
 

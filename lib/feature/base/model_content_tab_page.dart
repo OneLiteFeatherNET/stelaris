@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/data_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
@@ -34,14 +34,9 @@ class ModelContentTabPage<E extends DataModel> extends StatelessWidget {
         child: Scaffold(
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: AppBar(
-              toolbarHeight: 0,
-              bottom: TabBar(tabs: tabs),
-            ),
+            child: AppBar(toolbarHeight: 0, bottom: TabBar(tabs: tabs)),
           ),
-          body: TabBarView(
-            children: _buildTabPages(),
-          ),
+          body: TabBarView(children: _buildTabPages()),
         ),
       ),
     );

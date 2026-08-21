@@ -29,9 +29,8 @@ class ThemeSettingsRow extends StatelessWidget {
                 subtitle: context.l10n.settings_theme_item_subtitle,
                 trailing: Switch(
                   value: themeSettings.useSystemTheme,
-                  onChanged: (_) => context.dispatch(
-                    ToggleSystemThemeAction(systemDarkMode),
-                  ),
+                  onChanged: (_) =>
+                      context.dispatch(ToggleSystemThemeAction(systemDarkMode)),
                 ),
               ),
               verticalSpacing25,
@@ -42,9 +41,7 @@ class ThemeSettingsRow extends StatelessWidget {
                   value: themeSettings.isDarkMode,
                   onChanged: themeSettings.useSystemTheme
                       ? null
-                      : (_) => context.dispatch(
-                            ToggleDarkModeAction(),
-                          ),
+                      : (_) => context.dispatch(ToggleDarkModeAction()),
                 ),
               ),
               verticalSpacing25,
@@ -67,9 +64,8 @@ class ThemeSettingsRow extends StatelessWidget {
                       max: 1.4,
                       divisions: 6,
                       label: '${(themeSettings.fontScale * 100).round()}%',
-                      onChanged: (value) => context.dispatch(
-                        UpdateFontScaleAction(value),
-                      ),
+                      onChanged: (value) =>
+                          context.dispatch(UpdateFontScaleAction(value)),
                     ),
                   ),
                 ],

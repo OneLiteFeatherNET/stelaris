@@ -49,10 +49,7 @@ class _EntryUpdateDialogState extends State<EntryUpdateDialog> {
   Widget build(BuildContext context) {
     return SimpleDialog(
       contentPadding: dialogPadding,
-      title: Text(
-        widget.title,
-        textAlign: TextAlign.center,
-      ),
+      title: Text(widget.title, textAlign: TextAlign.center),
       children: [
         Form(
           key: widget.formKey,
@@ -81,7 +78,7 @@ class _EntryUpdateDialogState extends State<EntryUpdateDialog> {
               child: Text(context.l10n.button_add),
             ),
           ],
-        )
+        ),
       ],
     );
   }

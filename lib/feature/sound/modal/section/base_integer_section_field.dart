@@ -43,9 +43,7 @@ class _BaseIntegerFieldState extends State<BaseIntegerField> {
         labelText: widget.label,
         border: const OutlineInputBorder(),
       ),
-      inputFormatters: [
-        MinValueFormatter(widget.minValue),
-      ],
+      inputFormatters: [MinValueFormatter(widget.minValue)],
       validator: (v) {
         if (v == null || v.isEmpty) return 'Enter a ${widget.label}';
         final val = int.tryParse(v);

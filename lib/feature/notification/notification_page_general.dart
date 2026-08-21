@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stelaris/api/model/notification_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/notification_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/notification/selected_notification_state.dart';
@@ -37,8 +37,10 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
   static const List<FrameType> types = FrameType.values;
   static final List<DropdownMenuItem<FrameType>> items = List.generate(
     types.length,
-    (index) =>
-        DropdownMenuItem(value: types[index], child: Text(types[index].display)),
+    (index) => DropdownMenuItem(
+      value: types[index],
+      child: Text(types[index].display),
+    ),
   );
 
   @override
@@ -80,17 +82,22 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                 children: [
                                   TextInputCard<String>(
                                     display: context.l10n.card_name,
-                                    currentValue: vm.selected.variableName ?? emptyString,
+                                    currentValue:
+                                        vm.selected.variableName ?? emptyString,
                                     formatter: [
-                                      FilteringTextInputFormatter.allow(stringPattern),
+                                      FilteringTextInputFormatter.allow(
+                                        stringPattern,
+                                      ),
                                     ],
                                     valueUpdate: (value) {
                                       if (value != vm.selected.variableName) {
                                         final oldModel = vm.selected;
-                                        final newEntry =
-                                            oldModel.copyWith(variableName: value);
+                                        final newEntry = oldModel.copyWith(
+                                          variableName: value,
+                                        );
                                         context.dispatch(
-                                            UpdateNotificationAction(newEntry));
+                                          UpdateNotificationAction(newEntry),
+                                        );
                                       }
                                     },
                                     formValidator: (value) {
@@ -109,17 +116,20 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                     valueUpdate: (value) {
                                       if (value != vm.selected.material) {
                                         final oldModel = vm.selected;
-                                        final newEntry =
-                                            oldModel.copyWith(material: value);
+                                        final newEntry = oldModel.copyWith(
+                                          material: value,
+                                        );
                                         context.dispatch(
-                                            UpdateNotificationAction(newEntry));
+                                          UpdateNotificationAction(newEntry),
+                                        );
                                       }
                                     },
                                     formValidator: (value) {
                                       if (value == null) return null;
                                       if (!minecraftPattern.hasMatch(value)) {
                                         return context
-                                            .l10n.input_validation_material;
+                                            .l10n
+                                            .input_validation_material;
                                       }
                                       return null;
                                     },
@@ -133,15 +143,17 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                     valueUpdate: (value) {
                                       if (value != vm.selected.title) {
                                         final oldModel = vm.selected;
-                                        final newEntry =
-                                            oldModel.copyWith(title: value);
+                                        final newEntry = oldModel.copyWith(
+                                          title: value,
+                                        );
                                         context.dispatch(
-                                            UpdateNotificationAction(newEntry));
+                                          UpdateNotificationAction(newEntry),
+                                        );
                                       }
                                     },
                                     formatter: [
                                       FilteringTextInputFormatter.allow(
-                                          stringWithSpacePattern
+                                        stringWithSpacePattern,
                                       ),
                                     ],
                                     focusOrder: const NumericFocusOrder(3),
@@ -152,16 +164,18 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                         vm.selected.comment ?? emptyString,
                                     formatter: [
                                       FilteringTextInputFormatter.allow(
-                                          stringWithSpacePattern
+                                        stringWithSpacePattern,
                                       ),
                                     ],
                                     valueUpdate: (value) {
                                       if (value != vm.selected.comment) {
                                         final oldModel = vm.selected;
                                         final newEntry = oldModel.copyWith(
-                                            comment: value);
+                                          comment: value,
+                                        );
                                         context.dispatch(
-                                            UpdateNotificationAction(newEntry));
+                                          UpdateNotificationAction(newEntry),
+                                        );
                                       }
                                     },
                                     focusOrder: const NumericFocusOrder(4),
@@ -173,10 +187,12 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                     valueUpdate: (value) {
                                       if (value != vm.selected.frameType) {
                                         final oldModel = vm.selected;
-                                        final newEntry =
-                                            oldModel.copyWith(frameType: value);
+                                        final newEntry = oldModel.copyWith(
+                                          frameType: value,
+                                        );
                                         context.dispatch(
-                                            UpdateNotificationAction(newEntry));
+                                          UpdateNotificationAction(newEntry),
+                                        );
                                       }
                                     },
                                     defaultValue: (value) => value.frameType,

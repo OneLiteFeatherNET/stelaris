@@ -4,17 +4,13 @@ import 'package:stelaris/feature/build/branch_option.dart';
 class BuildBranchSelection extends StatefulWidget {
   final ValueNotifier<BranchOption> branchOption;
 
-  const BuildBranchSelection({
-    required this.branchOption,
-    super.key,
-  });
+  const BuildBranchSelection({required this.branchOption, super.key});
 
   @override
   State<BuildBranchSelection> createState() => _BuildBranchSelectionState();
 }
 
 class _BuildBranchSelectionState extends State<BuildBranchSelection> {
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -34,10 +30,7 @@ class _BuildBranchSelectionState extends State<BuildBranchSelection> {
 
   List<ButtonSegment<BranchOption>> _getOptions() {
     return BranchOption.values.map((e) {
-      return ButtonSegment<BranchOption>(
-        value: e,
-        label: Text(e.name),
-      );
+      return ButtonSegment<BranchOption>(value: e, label: Text(e.name));
     }).toList();
   }
 }

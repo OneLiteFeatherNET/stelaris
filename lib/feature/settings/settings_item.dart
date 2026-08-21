@@ -23,15 +23,9 @@ class SettingsItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: theme.textTheme.titleMedium,
-              ),
+              Text(title, style: theme.textTheme.titleMedium),
               heightTen,
-              Text(
-                subtitle,
-                style: theme.textTheme.bodyMedium,
-              ),
+              Text(subtitle, style: theme.textTheme.bodyMedium),
             ],
           ),
         ),

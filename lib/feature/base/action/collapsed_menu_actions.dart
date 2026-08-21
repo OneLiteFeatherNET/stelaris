@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 enum _MenuAction { edit, delete }
 
 class CollapsedMenuActions extends StatelessWidget {
-
   const CollapsedMenuActions({
     required this.onEdit,
     required this.onDelete,
@@ -24,10 +23,7 @@ class CollapsedMenuActions extends StatelessWidget {
       itemBuilder: (context) => const [
         PopupMenuItem(
           value: _MenuAction.edit,
-          child: _MenuItemContent(
-            icon: Icon(Icons.edit),
-            label: 'Edit',
-          ),
+          child: _MenuItemContent(icon: Icon(Icons.edit), label: 'Edit'),
         ),
         PopupMenuItem(
           value: _MenuAction.delete,
@@ -43,22 +39,13 @@ class CollapsedMenuActions extends StatelessWidget {
 
 // Separates const Widget für Menu Items
 class _MenuItemContent extends StatelessWidget {
-  const _MenuItemContent({
-    required this.icon,
-    required this.label,
-  });
+  const _MenuItemContent({required this.icon, required this.label});
 
   final Widget icon;
   final String label;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        icon,
-        const SizedBox(width: 12),
-        Text(label),
-      ],
-    );
+    return Row(children: [icon, const SizedBox(width: 12), Text(label)]);
   }
 }
