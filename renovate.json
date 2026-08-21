@@ -1,11 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
-  ],
-  "rebaseWhen": "conflicted",
-  "labels": [
-    "renovate"
+    "github>OneLiteFeatherNET/renovate:default(OneLiteFeatherNET/stelaris-maintainers)"
   ],
   "packageRules": [
     {
@@ -21,11 +17,5 @@
       ],
       "enabled": false
     }
-  ],
-  "vulnerabilityAlerts": {
-    "labels": [
-      "Component::security"
-    ],
-    "automerge": true
-  }
+  ]
 }
