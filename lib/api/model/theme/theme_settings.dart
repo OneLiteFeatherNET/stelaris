@@ -13,9 +13,15 @@ abstract class ThemeSettings with _$ThemeSettings {
   /// Creates a configuration for the application theme.
   const factory ThemeSettings({
     required bool isDarkMode,
-    @JsonKey(fromJson: ThemeSettings._colorFromJson, toJson: ThemeSettings._colorToJson)
+    @JsonKey(
+      fromJson: ThemeSettings._colorFromJson,
+      toJson: ThemeSettings._colorToJson,
+    )
     required Color primaryColor,
-    @JsonKey(fromJson: ThemeSettings._colorFromJson, toJson: ThemeSettings._colorToJson)
+    @JsonKey(
+      fromJson: ThemeSettings._colorFromJson,
+      toJson: ThemeSettings._colorToJson,
+    )
     required Color accentColor,
     required double fontScale,
     required bool useSystemTheme,
