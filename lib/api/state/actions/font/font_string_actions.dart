@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/font/font_string_dto.dart';
-import 'package:stelaris/api/model/font_model.dart';
-import 'package:stelaris/api/paginated_result.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
 /// Fetches additional characters for the selected font and updates the state.
@@ -125,7 +123,6 @@ class FontStringEditAction extends ReduxAction<AppState> {
   }
 }
 
-
 class FontStringUpdateAction extends ReduxAction<AppState> {
   final FontStringDTO dto;
 
@@ -192,7 +189,6 @@ class FontStringDelete extends ReduxAction<AppState> {
   }
 }
 
-
 /// Internal action to manage the loading state for item pagination.
 ///
 /// This private action controls the `isLoadingMoreItems` flag in the state,
@@ -214,11 +210,11 @@ class _SetLoreCharModelLoad extends ReduxAction<AppState> {
 }
 
 AppState _updateFontInState(
-    AppState state,
-    List<FontModel> newItems,
-    FontModel? selectedItem, {
-      int? totalItems,
-    }) {
+  AppState state,
+  List<FontModel> newItems,
+  FontModel? selectedItem, {
+  int? totalItems,
+}) {
   final updated = state.fonts.copyWith(
     items: newItems,
     totalItems: totalItems ?? state.fonts.totalItems,

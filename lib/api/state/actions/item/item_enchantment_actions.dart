@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/item/item_enchantment_dto.dart';
-import 'package:stelaris/api/model/item_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
 class ItemEnchantmentFetchAction extends ReduxAction<AppState> {
@@ -25,7 +24,6 @@ class ItemEnchantmentFetchAction extends ReduxAction<AppState> {
     return state.copyWith(selectedItem: updated);
   }
 }
-
 
 class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
   @override
@@ -50,8 +48,7 @@ class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
         size: enchantments.pageSize,
       );
 
-      final mergedItems =
-      [...enchantments.items, ...next.items]; // safe clone
+      final mergedItems = [...enchantments.items, ...next.items]; // safe clone
 
       final updatedEnchantments = enchantments.copyWith(
         items: mergedItems,
@@ -61,15 +58,13 @@ class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
       );
 
       return state.copyWith(
-        selectedItem:
-        selectedItem.copyWith(enchantments: updatedEnchantments),
+        selectedItem: selectedItem.copyWith(enchantments: updatedEnchantments),
       );
     } finally {
       dispatch(_SetMoreEnchantmentLoad(false));
     }
   }
 }
-
 
 /// An action that adds a new enchantment to the currently selected item.
 ///
@@ -109,7 +104,6 @@ class ItemEnchantmentAddAction extends ReduxAction<AppState> {
   }
 }
 
-
 /// An action that removes an enchantment from the currently selected item.
 ///
 /// This action requests the backend to delete the provided
@@ -138,9 +132,7 @@ class ItemEnchantmentDeleteAction extends ReduxAction<AppState> {
     final ench = selectedItem.enchantments;
 
     final updatedEnchantments = ench.copyWith(
-      items: ench.items
-          .where((x) => x.id != removed.id)
-          .toList(),
+      items: ench.items.where((x) => x.id != removed.id).toList(),
       totalItems: ench.totalItems - 1,
     );
 
@@ -149,7 +141,6 @@ class ItemEnchantmentDeleteAction extends ReduxAction<AppState> {
     return _updateItemAndList(state, updated);
   }
 }
-
 
 /// An action that updates an existing enchantment of the currently selected item.
 ///
@@ -182,16 +173,13 @@ class ItemEnchantmentUpdateAction extends ReduxAction<AppState> {
         .map((e) => e.id == updatedEnchantment.id ? updatedEnchantment : e)
         .toList();
 
-    final updatedEnchantments = ench.copyWith(
-      items: updatedList,
-    );
+    final updatedEnchantments = ench.copyWith(items: updatedList);
 
     final updated = selectedItem.copyWith(enchantments: updatedEnchantments);
 
     return _updateItemAndList(state, updated);
   }
 }
-
 
 /// Internal action to manage the loading state for enchantment pagination.
 ///

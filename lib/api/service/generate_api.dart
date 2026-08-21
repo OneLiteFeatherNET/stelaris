@@ -1,19 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:stelaris/api/api_client.dart';
-import 'package:stelaris/api/model/release/release_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 class GenerateApi {
-
   final ApiClient _apiClient;
 
   const GenerateApi(this._apiClient);
 
   Future<Response> generate(String branch) async {
-    final queryParams = <String, dynamic>{
-      'branch': branch
-    };
+    final queryParams = <String, dynamic>{'branch': branch};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/generate');
+    final uri = baseUri.replace(
+      queryParameters: queryParams,
+      path: '${baseUri.path}/generate',
+    );
     final data = await _apiClient.dio.getUri(uri).then((value) => value);
     return data;
   }
@@ -28,15 +28,16 @@ class GenerateApi {
   }
 
   Future<(List<int>, String)> download(String branch) async {
-    final queryParams = <String, dynamic>{
-      'branch': branch
-    };
+    final queryParams = <String, dynamic>{'branch': branch};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/download');
+    final uri = baseUri.replace(
+      queryParameters: queryParams,
+      path: '${baseUri.path}/download',
+    );
 
     final response = await _apiClient.dio.getUri(
-        uri,
-        options: Options(responseType: ResponseType.bytes)
+      uri,
+      options: Options(responseType: ResponseType.bytes),
     );
 
     final contentDisposition = response.headers.value('content-disposition');
@@ -56,8 +57,11 @@ class GenerateApi {
   Future<ReleaseModel> buildInformation() async {
     final queryParams = <String, dynamic>{};
     final baseUri = Uri.parse(_apiClient.baseUrl);
-    final uri = baseUri.replace(queryParameters: queryParams, path: '${baseUri.path}/build/data');
-    return await _apiClient.dio.getUri(uri).then((value)  {
+    final uri = baseUri.replace(
+      queryParameters: queryParams,
+      path: '${baseUri.path}/build/data',
+    );
+    return await _apiClient.dio.getUri(uri).then((value) {
       return ReleaseModel.fromJson(value.data! as Map<String, dynamic>);
     });
   }

@@ -1,5 +1,4 @@
-import 'package:stelaris/api/model/data_model.dart';
-import 'package:stelaris/api/paginated_result.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// A generic client API interface for CRUD operations on data models.
 ///

@@ -1,5 +1,4 @@
-import 'package:stelaris/api/model/font/font_model_dto.dart';
-import 'package:stelaris/api/model/font_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 extension FontModelMapping on FontModel {
   FontModelDto toDto() {

@@ -1,5 +1,5 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:stelaris/api/model/attribute_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/attributes/attribute_page.dart';
 
@@ -9,12 +9,12 @@ class AttributeVmFactory
 
   @override
   AttributeViewModel fromStore() => AttributeViewModel(
-        models: state.attributes.items,
-        selected: state.selectedAttribute,
-        totalItems: state.attributes.totalItems,
-        hasNextPage: state.attributes.hasNextPage,
-        isLoadingMore: state.isLoadingAttributesMore,
-      );
+    models: state.attributes.items,
+    selected: state.selectedAttribute,
+    totalItems: state.attributes.totalItems,
+    hasNextPage: state.attributes.hasNextPage,
+    isLoadingMore: state.isLoadingAttributesMore,
+  );
 }
 
 class AttributeViewModel extends Vm {
@@ -30,7 +30,9 @@ class AttributeViewModel extends Vm {
     required this.totalItems,
     required this.hasNextPage,
     required this.isLoadingMore,
-  }) : super(equals: [models, selected, totalItems, hasNextPage, isLoadingMore]);
+  }) : super(
+         equals: [models, selected, totalItems, hasNextPage, isLoadingMore],
+       );
 
   bool isSelectedItem(AttributeModel model) {
     if (selected == null) return false;

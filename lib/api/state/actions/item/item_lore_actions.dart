@@ -1,8 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/item/item_lore_dto.dart';
-import 'package:stelaris/api/model/item_model.dart';
-import 'package:stelaris/api/paginated_result.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
 /// Action for the initial fetch of lore (page 1).
@@ -14,10 +12,12 @@ class ItemLoreFetchAction extends ReduxAction<AppState> {
 
     final PaginatedResult<ItemLoreDto> result = await ApiService().itemApi
         .getLore(
-      selectedItem.id!,
-      page: selectedItem.lore.currentPage,
-      size: selectedItem.lore.pageSize == 0 ? 10 : selectedItem.lore.pageSize,
-    );
+          selectedItem.id!,
+          page: selectedItem.lore.currentPage,
+          size: selectedItem.lore.pageSize == 0
+              ? 10
+              : selectedItem.lore.pageSize,
+        );
 
     final updatedItem = selectedItem.copyWith(lore: result);
 
@@ -166,8 +166,7 @@ class _SetIsLoadingLore extends ReduxAction<AppState> {
     final currentItem = state.selectedItem;
     if (currentItem == null) return state;
 
-    final updatedItem =
-    currentItem.copyWith(isLoadingMoreLoreLines: isLoading);
+    final updatedItem = currentItem.copyWith(isLoadingMoreLoreLines: isLoading);
 
     return state.copyWith(selectedItem: updatedItem);
   }
@@ -188,8 +187,5 @@ AppState _updateItemAndList(AppState state, ItemModel updatedItem) {
 
   final updatedList = state.items.copyWith(items: list);
 
-  return state.copyWith(
-    items: updatedList,
-    selectedItem: updatedItem,
-  );
+  return state.copyWith(items: updatedList, selectedItem: updatedItem);
 }

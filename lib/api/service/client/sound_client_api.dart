@@ -1,7 +1,5 @@
 import 'package:stelaris/api/base_api.dart';
-import 'package:stelaris/api/model/sound/sound_event_model.dart';
-import 'package:stelaris/api/model/sound/sound_file_source.dart';
-import 'package:stelaris/api/paginated_result.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// Client API for interacting with sound event-related endpoints.
 ///

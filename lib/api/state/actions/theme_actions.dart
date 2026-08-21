@@ -23,7 +23,10 @@ class UpdateThemeSettingsAction extends ReduxAction<AppState> {
   Future<AppState> reduce() async {
     final persistor = AppPersistor();
     final newState = state.copyWith(themeSettings: settings);
-    await persistor.persistDifference(lastPersistedState: state, newState: newState);
+    await persistor.persistDifference(
+      lastPersistedState: state,
+      newState: newState,
+    );
     return newState;
   }
 }
@@ -39,7 +42,7 @@ class ToggleSystemThemeAction extends ReduxAction<AppState> {
     final newSettings = currentSettings.copyWith(
       useSystemTheme: !currentSettings.useSystemTheme,
     );
-    
+
     dispatch(UpdateThemeSettingsAction(newSettings));
     return state.copyWith(themeSettings: newSettings);
   }
@@ -53,7 +56,7 @@ class ToggleDarkModeAction extends ReduxAction<AppState> {
       isDarkMode: !currentSettings.isDarkMode,
       useSystemTheme: false, // Disable system theme when manually toggling
     );
-    
+
     dispatch(UpdateThemeSettingsAction(newSettings));
     return state.copyWith(themeSettings: newSettings);
   }
@@ -68,7 +71,7 @@ class UpdatePrimaryColorAction extends ReduxAction<AppState> {
   Future<AppState> reduce() async {
     final currentSettings = state.themeSettings;
     final newSettings = currentSettings.copyWith(primaryColor: color);
-    
+
     dispatch(UpdateThemeSettingsAction(newSettings));
     return state.copyWith(themeSettings: newSettings);
   }
@@ -83,7 +86,7 @@ class UpdateAccentColorAction extends ReduxAction<AppState> {
   Future<AppState> reduce() async {
     final currentSettings = state.themeSettings;
     final newSettings = currentSettings.copyWith(accentColor: color);
-    
+
     dispatch(UpdateThemeSettingsAction(newSettings));
     return state.copyWith(themeSettings: newSettings);
   }
@@ -98,7 +101,7 @@ class UpdateFontScaleAction extends ReduxAction<AppState> {
   Future<AppState> reduce() async {
     final currentSettings = state.themeSettings;
     final newSettings = currentSettings.copyWith(fontScale: scale);
-    
+
     dispatch(UpdateThemeSettingsAction(newSettings));
     return state.copyWith(themeSettings: newSettings);
   }

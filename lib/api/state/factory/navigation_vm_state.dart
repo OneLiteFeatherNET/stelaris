@@ -2,8 +2,8 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/navigation/navigation_side_bar.dart';
 
-class NavigationStateFactory extends VmFactory<AppState, NavigationSideBar, NavigationViewModel> {
-
+class NavigationStateFactory
+    extends VmFactory<AppState, NavigationSideBar, NavigationViewModel> {
   NavigationStateFactory();
 
   @override
@@ -15,8 +15,8 @@ class NavigationStateFactory extends VmFactory<AppState, NavigationSideBar, Navi
 /// The NavigationViewModel is a simple class that holds the state of the navigation bar.
 /// It is used to determine if the navigation bar is open or closed.
 class NavigationViewModel extends Vm {
-
-  NavigationViewModel({required this.openNavigation}) : super(equals: [openNavigation]);
+  NavigationViewModel({required this.openNavigation})
+    : super(equals: [openNavigation]);
 
   final bool openNavigation;
 }

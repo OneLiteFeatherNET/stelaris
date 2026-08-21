@@ -1,8 +1,5 @@
 import 'package:stelaris/api/base_api.dart';
-import 'package:stelaris/api/model/item/item_enchantment_dto.dart';
-import 'package:stelaris/api/model/item/item_lore_dto.dart';
-import 'package:stelaris/api/model/item_model.dart';
-import 'package:stelaris/api/paginated_result.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 class ItemAPI extends BaseApi<ItemModel> {
   ItemAPI({required super.apiClient})
@@ -118,14 +115,9 @@ class ItemAPI extends BaseApi<ItemModel> {
   /// [id] the id of the item
   /// [dto] the [ItemLoreDto]
   /// Returns a [ItemLoreDto] containing the created lore
-  Future<ItemLoreDto> addLore(
-      String id,
-      ItemLoreDto dto,
-      ) async {
+  Future<ItemLoreDto> addLore(String id, ItemLoreDto dto) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(
-      path: '${baseUri.path}/$endpoint/$id/lore',
-    );
+    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/$id/lore');
     final result = await apiClient.dio.putUri(uri, data: dto.toJson());
     return ItemLoreDto.fromJson(result.data!);
   }
@@ -147,7 +139,9 @@ class ItemAPI extends BaseApi<ItemModel> {
   /// Returns a [ItemLoreDto] containing the deleted lore
   Future<ItemLoreDto> deleteLore(String id, ItemLoreDto dto) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/$id/lore/${dto.id}');
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/$endpoint/$id/lore/${dto.id}',
+    );
     final result = await apiClient.dio.deleteUri(uri);
     return ItemLoreDto.fromJson(result.data!);
   }
