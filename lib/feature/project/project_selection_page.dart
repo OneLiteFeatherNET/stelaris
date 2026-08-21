@@ -76,7 +76,7 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
                     ),
                     child: Container(
                       width: 480,
-                      padding: const EdgeInsets.all(28.0),
+                      padding: const EdgeInsets.all(28),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -153,7 +153,7 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
     ThemeData theme,
   ) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24.0),
+      padding: const EdgeInsets.symmetric(vertical: 24),
       child: Column(
         children: [
           Icon(
@@ -215,7 +215,7 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
           borderRadius: BorderRadius.circular(16),
           dropdownColor: colorScheme.surfaceContainerHigh,
           elevation: 3,
-          value: _selected,
+          initialValue: _selected,
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -276,7 +276,7 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
             return DropdownMenuItem<Project>(
               value: project,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6.0),
+                padding: const EdgeInsets.symmetric(vertical: 6),
                 child: Row(
                   children: [
                     Expanded(
