@@ -8,7 +8,7 @@ part 'app_state.g.dart';
 
 part 'app_state.freezed.dart';
 
-@freezed
+@Freezed(makeCollectionsUnmodifiable: false)
 abstract class AppState with _$AppState {
   const factory AppState({
     @GenericPaginatedResultConverter<ItemModel>(
