@@ -706,6 +706,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.1"
+  stelaris_models:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: "608c9a06f6d80833bcce6cd20bf0796d181d67a1"
+      url: "https://github.com/OneLiteFeatherNET/stelaris-model.git"
+    source: git
+    version: "0.0.1"
   stream_channel:
     dependency: transitive
     description:
