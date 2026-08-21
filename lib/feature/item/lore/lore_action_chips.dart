@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/item/lore/lore_count_chip.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 

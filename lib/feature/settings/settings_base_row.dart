@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/constants.dart';
 
 /// The [SettingsBaseRow] is a widget implementation which defines how the structure of a settings row should look like.

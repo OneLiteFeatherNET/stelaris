@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/model_content_tab_page.dart';
 import 'package:stelaris/feature/base/paginated_model_list.dart';

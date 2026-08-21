@@ -1,5 +1,5 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:stelaris/api/state/app_presistor.dart';
 import 'package:stelaris/api/state/app_state.dart';

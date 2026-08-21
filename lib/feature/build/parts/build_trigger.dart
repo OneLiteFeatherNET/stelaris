@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/feature/base/stelaris_loader.dart';
 import 'package:stelaris/feature/build/branch_option.dart';

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/constants.dart';
 
 /// A customizable card widget that displays a title, an optional message, and a child widget.

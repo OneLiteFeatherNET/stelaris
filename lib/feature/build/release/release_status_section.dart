@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/factory/build/build_vm_state.dart';
 import 'package:stelaris/feature/build/release/release_metadata_display.dart';
 import 'package:stelaris/feature/status_card.dart';

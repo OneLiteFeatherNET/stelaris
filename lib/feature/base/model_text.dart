@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The [TextWidget] is a simple widget implementation that displays a [Text]
 /// which is given via a parameter.

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris/api/converter/paginated_result_converter.dart';
 import 'package:stelaris_models/stelaris_models.dart';

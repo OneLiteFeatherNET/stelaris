@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The enum class contains all relevant item for the navigation widget.
 enum NavigationEntry {

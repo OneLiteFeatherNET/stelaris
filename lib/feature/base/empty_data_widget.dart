@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The [EmptyDataWidget] is a widget that displays a message if the model has no data.
 /// It is only used when the selected model has no data

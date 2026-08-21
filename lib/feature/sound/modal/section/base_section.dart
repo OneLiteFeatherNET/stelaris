@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A foundational container widget that provides consistent visual styling
 /// for grouped content sections throughout the application.

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The [FolderIcon] is a widget that displays a folder icon in the center of a container.
 /// It is styled with padding, margin, and a background color that matches the theme's secondary container.

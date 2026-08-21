@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Generalized class which contains the scroll loading in a paginated context
 mixin InfiniteScrollMixin<T extends StatefulWidget> on State<T> {
