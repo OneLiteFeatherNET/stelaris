@@ -6,7 +6,6 @@ import 'package:stelaris/feature/base/button/cancel_button.dart';
 import 'package:stelaris/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
-import 'package:stelaris_models/stelaris_models.dart' as ItemGroup;
 
 class ItemGroupCard extends StatelessWidget {
   const ItemGroupCard({
