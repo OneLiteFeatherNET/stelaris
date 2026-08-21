@@ -28,10 +28,4 @@ jobs:
       - name: Run analyzer
         run: flutter analyze || true
       - name: Run tests (Web)
-        run: flutter test --platform chrome --coverage
-      - name: Dart Coverage Assistant
-        id: coverage-report
-        uses: whynotmake-it/dart-coverage-assistant@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: coverage/lcov.info
+        run: flutter test --platform chrome
