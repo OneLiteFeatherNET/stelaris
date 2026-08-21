@@ -134,5 +134,26 @@
   "settings_misc_license_button": "View",
 
   "settings_end_tile_made_with": "Made with",
-  "settings_end_tile_team": "by the team"
+  "settings_end_tile_team": "by the team",
+
+  "welcome_to_stelaris": "Welcome to Stelaris",
+  "project_selection_title": "Select Project",
+  "project_selection_empty_title": "No projects found",
+  "project_selection_empty_subtitle": "Get started by creating your first project.",
+  "project_selection_dropdown_label": "Project / Namespace",
+  "project_selection_open_button": "Open Project",
+  "dialog_project_create_title": "Create new project",
+  "dialog_project_display_name": "Display Name",
+  "dialog_project_key": "Key / Namespace",
+  "dialog_project_description": "Description",
+  "dialog_project_url": "Project URL",
+  "dialog_project_docu_url": "Documentation URL",
+  "dialog_project_labor": "Labor / Experimental",
+  "dialog_project_create_button": "Create",
+  "settings_project_title": "Project",
+  "settings_project_active_title": "Active Project",
+  "settings_project_active_subtitle": "Select or switch the active project workspace",
+  "settings_misc_switch_project_header": "Switch Project",
+  "settings_misc_switch_project_body": "Change the currently selected project workspace",
+  "settings_misc_switch_project_button": "Switch"
 }

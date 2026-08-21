@@ -795,6 +795,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'by the team'**
   String get settings_end_tile_team;
+
+  /// No description provided for @welcome_to_stelaris.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Stelaris'**
+  String get welcome_to_stelaris;
+
+  /// No description provided for @project_selection_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Project'**
+  String get project_selection_title;
+
+  /// No description provided for @project_selection_empty_title.
+  ///
+  /// In en, this message translates to:
+  /// **'No projects found'**
+  String get project_selection_empty_title;
+
+  /// No description provided for @project_selection_empty_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started by creating your first project.'**
+  String get project_selection_empty_subtitle;
+
+  /// No description provided for @project_selection_dropdown_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Project / Namespace'**
+  String get project_selection_dropdown_label;
+
+  /// No description provided for @project_selection_open_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Project'**
+  String get project_selection_open_button;
+
+  /// No description provided for @dialog_project_create_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new project'**
+  String get dialog_project_create_title;
+
+  /// No description provided for @dialog_project_display_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Display Name'**
+  String get dialog_project_display_name;
+
+  /// No description provided for @dialog_project_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Key / Namespace'**
+  String get dialog_project_key;
+
+  /// No description provided for @dialog_project_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get dialog_project_description;
+
+  /// No description provided for @dialog_project_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Project URL'**
+  String get dialog_project_url;
+
+  /// No description provided for @dialog_project_docu_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Documentation URL'**
+  String get dialog_project_docu_url;
+
+  /// No description provided for @dialog_project_labor.
+  ///
+  /// In en, this message translates to:
+  /// **'Labor / Experimental'**
+  String get dialog_project_labor;
+
+  /// No description provided for @dialog_project_create_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get dialog_project_create_button;
+
+  /// No description provided for @settings_project_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get settings_project_title;
+
+  /// No description provided for @settings_project_active_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Project'**
+  String get settings_project_active_title;
+
+  /// No description provided for @settings_project_active_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select or switch the active project workspace'**
+  String get settings_project_active_subtitle;
+
+  /// No description provided for @settings_misc_switch_project_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch Project'**
+  String get settings_misc_switch_project_header;
+
+  /// No description provided for @settings_misc_switch_project_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the currently selected project workspace'**
+  String get settings_misc_switch_project_body;
+
+  /// No description provided for @settings_misc_switch_project_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch'**
+  String get settings_misc_switch_project_button;
 }
 
 class _AppLocalizationsDelegate

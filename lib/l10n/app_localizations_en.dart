@@ -375,4 +375,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings_end_tile_team => 'by the team';
+
+  @override
+  String get welcome_to_stelaris => 'Welcome to Stelaris';
+
+  @override
+  String get project_selection_title => 'Select Project';
+
+  @override
+  String get project_selection_empty_title => 'No projects found';
+
+  @override
+  String get project_selection_empty_subtitle =>
+      'Get started by creating your first project.';
+
+  @override
+  String get project_selection_dropdown_label => 'Project / Namespace';
+
+  @override
+  String get project_selection_open_button => 'Open Project';
+
+  @override
+  String get dialog_project_create_title => 'Create new project';
+
+  @override
+  String get dialog_project_display_name => 'Display Name';
+
+  @override
+  String get dialog_project_key => 'Key / Namespace';
+
+  @override
+  String get dialog_project_description => 'Description';
+
+  @override
+  String get dialog_project_url => 'Project URL';
+
+  @override
+  String get dialog_project_docu_url => 'Documentation URL';
+
+  @override
+  String get dialog_project_labor => 'Labor / Experimental';
+
+  @override
+  String get dialog_project_create_button => 'Create';
+
+  @override
+  String get settings_project_title => 'Project';
+
+  @override
+  String get settings_project_active_title => 'Active Project';
+
+  @override
+  String get settings_project_active_subtitle =>
+      'Select or switch the active project workspace';
+
+  @override
+  String get settings_misc_switch_project_header => 'Switch Project';
+
+  @override
+  String get settings_misc_switch_project_body =>
+      'Change the currently selected project workspace';
+
+  @override
+  String get settings_misc_switch_project_button => 'Switch';
 }
