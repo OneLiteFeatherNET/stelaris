@@ -7,13 +7,11 @@ import 'app_state.dart';
 
 class AppPersistor extends Persistor<AppState> {
   static const String appState = 'appState';
-  late String storage;
 
   AppPersistor() {
     if (localStorage.getItem(appState) == null) {
       localStorage.setItem(appState, '{}');
     }
-    storage = localStorage.getItem(appState)!;
   }
 
   @override
