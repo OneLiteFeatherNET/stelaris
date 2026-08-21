@@ -1,4 +1,4 @@
-name: Build PullRequest and run tests
+name: Run tests
 on: [ pull_request ]
 jobs:
   build_pr:
