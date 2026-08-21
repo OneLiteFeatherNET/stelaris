@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stelaris/feature/base/action/collapsed_menu_actions.dart';
 
 class EntryActions extends StatelessWidget {
-  const EntryActions({
-    required this.onEdit,
-    required this.onDelete,
-    super.key,
-  });
+  const EntryActions({required this.onEdit, required this.onDelete, super.key});
 
   final VoidCallback onEdit;
   final VoidCallback onDelete;

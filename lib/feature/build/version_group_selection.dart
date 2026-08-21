@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 class VersionGroupSelection extends StatefulWidget {
   final Function(VersionPart) onSelected;
 
-  const VersionGroupSelection({
-    required this.onSelected,
-    super.key,
-  });
+  const VersionGroupSelection({required this.onSelected, super.key});
 
   @override
   State<VersionGroupSelection> createState() => _VersionGroupSelectionState();

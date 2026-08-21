@@ -12,8 +12,8 @@ class LoreCountChip extends StatelessWidget {
     return Tooltip(
       message: context.l10n.tooltip_line_count,
       child: Chip(
-          label: Text('$currentIndex / $maxLoreLines'),
-          avatar: const Icon(Icons.numbers_outlined),
+        label: Text('$currentIndex / $maxLoreLines'),
+        avatar: const Icon(Icons.numbers_outlined),
       ),
     );
   }

@@ -38,11 +38,9 @@ class _DropdownCardState<E, T> extends State<DropdownCard<E, T>> {
     final colorScheme = Theme.of(context).colorScheme;
     final OutlineInputBorder defaultBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(8),
-      borderSide: BorderSide(
-        color: colorScheme.outline,
-      ),
+      borderSide: BorderSide(color: colorScheme.outline),
     );
-    
+
     final dropdown = DropdownButtonFormField<E>(
       items: widget.items,
       initialValue: widget.defaultValue(widget.currentValue),
@@ -55,15 +53,9 @@ class _DropdownCardState<E, T> extends State<DropdownCard<E, T>> {
         enabledBorder: defaultBorder,
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: colorScheme.primary,
-            width: 2,
-          ),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 8,
-        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
       dropdownColor: colorScheme.surfaceContainerHighest,
     );

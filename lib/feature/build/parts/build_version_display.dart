@@ -19,13 +19,15 @@ class VersionUpdateInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     // If we have a highlighted part and the text follows X.Y.Z format
     if (highlightedPart != null && controller.text.split('.').length == 3) {
       final parts = controller.text.split('.');
       final TextStyle baseStyle =
-          theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurface) ??
-              TextStyle(color: theme.colorScheme.onSurface);
+          theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurface,
+          ) ??
+          TextStyle(color: theme.colorScheme.onSurface);
       final TextStyle highlightStyle = baseStyle.copyWith(
         color: theme.colorScheme.primary,
         fontWeight: FontWeight.bold,
@@ -57,17 +59,23 @@ class VersionUpdateInput extends StatelessWidget {
             children: [
               TextSpan(
                 text: parts[0],
-                style: highlightedPart == VersionPart.major ? highlightStyle : null,
+                style: highlightedPart == VersionPart.major
+                    ? highlightStyle
+                    : null,
               ),
               const TextSpan(text: '.'),
               TextSpan(
                 text: parts[1],
-                style: highlightedPart == VersionPart.minor ? highlightStyle : null,
+                style: highlightedPart == VersionPart.minor
+                    ? highlightStyle
+                    : null,
               ),
               const TextSpan(text: '.'),
               TextSpan(
                 text: parts[2],
-                style: highlightedPart == VersionPart.patch ? highlightStyle : null,
+                style: highlightedPart == VersionPart.patch
+                    ? highlightStyle
+                    : null,
               ),
             ],
           ),

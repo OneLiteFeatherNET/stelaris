@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stelaris/api/model/attribute_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/attribute/attribute_vm_state.dart';
@@ -71,7 +71,7 @@ class AttributePage extends StatelessWidget {
       return Expanded(
         child: EmptyDataWidget.standard(
           header: context.l10n.empty_data_header,
-          subHeader: context.l10n.empty_data_subHeader
+          subHeader: context.l10n.empty_data_subHeader,
         ),
       );
     }

@@ -1,9 +1,6 @@
 import 'package:stelaris/api/base_api.dart';
 import 'package:stelaris/api/extensions/font_extension.dart';
-import 'package:stelaris/api/model/font/font_model_dto.dart';
-import 'package:stelaris/api/model/font/font_string_dto.dart';
-import 'package:stelaris/api/model/font_model.dart';
-import 'package:stelaris/api/paginated_result.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// Implementation of the [BaseApi] to handle different request for [FontModel] and [FontStringDTO] data.
 class FontAPI extends BaseApi<FontModel> {

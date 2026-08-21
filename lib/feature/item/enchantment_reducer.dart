@@ -1,5 +1,4 @@
-import 'package:stelaris/api/model/item_model.dart';
-import 'package:stelaris/feature/item/item_group.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:vulpes_data/api/enchantment.dart';
 import 'package:vulpes_data/enchantment/armor_enchantment.dart';
 import 'package:vulpes_data/enchantment/meta_enchantment.dart';

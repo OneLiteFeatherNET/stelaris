@@ -1,6 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/sound/sound_file_source.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/sound/sound_file_actions.dart';
 import 'package:stelaris/feature/sound/modal/sound_file_modal.dart';
 
@@ -25,8 +25,9 @@ void showSoundFileModal({
       initialData: source,
       create: create,
       onSave: (soundFile) {
-        final action =
-            create ? SoundFileLinkAction(soundFile) : SoundFileUpdateAction(soundFile);
+        final action = create
+            ? SoundFileLinkAction(soundFile)
+            : SoundFileUpdateAction(soundFile);
         dialogContext.dispatch(action);
       },
     ),

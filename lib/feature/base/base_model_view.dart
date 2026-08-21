@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/data_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/model_list.dart';
 import 'package:stelaris/util/typedefs.dart';
 

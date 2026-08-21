@@ -1,7 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/item_model.dart';
-import 'package:stelaris/api/paginated_result.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
 class SelectedItemAction extends ReduxAction<AppState> {
@@ -37,7 +36,6 @@ class UpdateItemAction extends ReduxAction<AppState> {
 }
 
 class InitItemAction extends ReduxAction<AppState> {
-
   @override
   Future<AppState?> reduce() async {
     // If we already have items and more pages, treat this as load-more.
@@ -51,13 +49,20 @@ class InitItemAction extends ReduxAction<AppState> {
         final current = state.items;
         final nextPage = current.currentPage + 1;
         final size = 10;
-        final next = await ApiService().itemApi.getPage(page: nextPage, size: size);
+        final next = await ApiService().itemApi.getPage(
+          page: nextPage,
+          size: size,
+        );
 
         final merged = List<ItemModel>.of(current.items)..addAll(next.items);
         final updated = current.copyWith(
           items: merged,
-          totalItems: next.totalItems != 0 ? next.totalItems : current.totalItems,
-          totalPages: next.totalPages != 0 ? next.totalPages : current.totalPages,
+          totalItems: next.totalItems != 0
+              ? next.totalItems
+              : current.totalItems,
+          totalPages: next.totalPages != 0
+              ? next.totalPages
+              : current.totalPages,
           currentPage: next.currentPage != 0 ? next.currentPage : nextPage,
           pageSize: next.pageSize != 0 ? next.pageSize : size,
         );
@@ -67,8 +72,11 @@ class InitItemAction extends ReduxAction<AppState> {
       }
     } else {
       // Initial load (or refresh)
-      final PaginatedResult<ItemModel> result =
-      await ApiService().itemApi.getPage(page: 1, size: state.items.pageSize == 0 ? 10 : state.items.pageSize);
+      final PaginatedResult<ItemModel> result = await ApiService().itemApi
+          .getPage(
+            page: 1,
+            size: state.items.pageSize == 0 ? 10 : state.items.pageSize,
+          );
       return state.copyWith(items: result);
     }
   }

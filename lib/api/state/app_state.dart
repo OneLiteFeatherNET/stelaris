@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris/api/converter/paginated_result_converter.dart';
-import 'package:stelaris/api/model/attribute_model.dart';
-import 'package:stelaris/api/model/release/release_model.dart';
-import 'package:stelaris/api/paginated_result.dart';
-import 'package:stelaris/api/model/font_model.dart';
-import 'package:stelaris/api/model/item_model.dart';
-import 'package:stelaris/api/model/notification_model.dart';
-import 'package:stelaris/api/model/sound/sound_event_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 
 part 'app_state.g.dart';
 
 part 'app_state.freezed.dart';
 
-@freezed
+@Freezed(makeCollectionsUnmodifiable: false)
 abstract class AppState with _$AppState {
   const factory AppState({
     @GenericPaginatedResultConverter<ItemModel>(
@@ -102,8 +96,7 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingMoreSoundEvents,
-    @Default(false)
-    bool isLoadingRelease,
+    @Default(false) bool isLoadingRelease,
     @Default(true) bool openNavigation,
     @Default(
       ThemeSettings(

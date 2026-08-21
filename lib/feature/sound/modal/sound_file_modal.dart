@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/sound/sound_file_source.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/button/cancel_button.dart';
 import 'package:stelaris/feature/sound/modal/section/base_section.dart';
 import 'package:stelaris/feature/sound/modal/type/integer_fields_section.dart';
@@ -9,7 +9,6 @@ import 'package:stelaris/feature/sound/modal/type/volume_section.dart';
 import 'section/string_field_section.dart';
 
 class SoundFileModal extends StatefulWidget {
-
   const SoundFileModal({
     required this.create,
     required this.onSave,
@@ -24,7 +23,6 @@ class SoundFileModal extends StatefulWidget {
   @override
   State<SoundFileModal> createState() => _SoundFileModalState();
 }
-
 
 class _SoundFileModalState extends State<SoundFileModal> {
   late String _name;
@@ -67,9 +65,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          minWidth: 400,
-        ),
+        constraints: const BoxConstraints(minWidth: 400),
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Form(
@@ -117,9 +113,11 @@ class _SoundFileModalState extends State<SoundFileModal> {
                             final horizontal = constraints.maxWidth >= 420;
                             return SwitchesSection(
                               streamValue: _stream,
-                              onStreamChanged: (v) => setState(() => _stream = v),
+                              onStreamChanged: (v) =>
+                                  setState(() => _stream = v),
                               preloadValue: _preload,
-                              onPreloadChanged: (v) => setState(() => _preload = v),
+                              onPreloadChanged: (v) =>
+                                  setState(() => _preload = v),
                               wrapInBaseSection: false,
                               vertical: !horizontal,
                             );
@@ -135,8 +133,14 @@ class _SoundFileModalState extends State<SoundFileModal> {
                             border: OutlineInputBorder(),
                           ),
                           items: const [
-                            DropdownMenuItem(value: 'file', child: Text('File')),
-                            DropdownMenuItem(value: 'event', child: Text('Event')),
+                            DropdownMenuItem(
+                              value: 'file',
+                              child: Text('File'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'event',
+                              child: Text('Event'),
+                            ),
                           ],
                           onChanged: (v) => setState(() => _type = v ?? 'file'),
                         ),

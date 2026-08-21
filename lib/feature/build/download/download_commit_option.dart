@@ -39,9 +39,7 @@ class DevBuildOption extends StatelessWidget {
           ),
         ),
         keyboardType: TextInputType.text,
-        inputFormatters: [
-          FilteringTextInputFormatter.allow(gitCommitPattern),
-        ],
+        inputFormatters: [FilteringTextInputFormatter.allow(gitCommitPattern)],
         validator: (value) {
           if (value != null && value.length < maxCommitLength) {
             return 'The commit must contains 10 chars';

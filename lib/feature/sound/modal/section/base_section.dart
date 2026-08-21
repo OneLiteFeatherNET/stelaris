@@ -41,12 +41,7 @@ class BaseSection extends StatelessWidget {
   ///   child: Text('Hello, World!'),
   /// )
   /// ```
-  const BaseSection({
-    required this.child,
-    this.title,
-    this.padding,
-    super.key,
-  });
+  const BaseSection({required this.child, this.title, this.padding, super.key});
 
   /// The widget to be displayed inside the styled container.
   ///
@@ -64,7 +59,9 @@ class BaseSection extends StatelessWidget {
   Widget build(BuildContext context) {
     // Extract the surface variant color from the current theme
     // This ensures the section adapts to light/dark themes automatically
-    final surfaceVariant = Theme.of(context).colorScheme.surfaceContainerHighest;
+    final surfaceVariant = Theme.of(context)
+        .colorScheme
+        .surfaceContainerHighest;
 
     return Container(
       decoration: BoxDecoration(
@@ -78,10 +75,7 @@ class BaseSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  title!,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+                Text(title!, style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 12),
                 child,
               ],

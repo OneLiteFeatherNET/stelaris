@@ -100,8 +100,10 @@ class _TextInputCardState extends State<TextInputCard> {
                   enabledBorder: outlineBorder,
                   focusedBorder: OutlineInputBorder(
                     borderRadius: _borderRadius,
-                    borderSide:
-                        BorderSide(color: colorScheme.primary, width: 2),
+                    borderSide: BorderSide(
+                      color: colorScheme.primary,
+                      width: 2,
+                    ),
                   ),
                   errorBorder: OutlineInputBorder(
                     borderRadius: _borderRadius,
@@ -129,10 +131,7 @@ class _TextInputCardState extends State<TextInputCard> {
   Widget _wrapWithFocusOrder(Widget child) {
     final focusOrder = widget.focusOrder;
     if (focusOrder == null) return child;
-    return FocusTraversalOrder(
-      order: focusOrder,
-      child: child,
-    );
+    return FocusTraversalOrder(order: focusOrder, child: child);
   }
 
   /// Handles the submission of the given input to the outer update logic.

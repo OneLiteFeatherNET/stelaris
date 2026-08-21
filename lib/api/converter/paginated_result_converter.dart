@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:stelaris/api/model/data_model.dart';
-import 'package:stelaris/api/paginated_result.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// A generic JSON converter for any PaginatedResult`<T>`.
 /// - T must extend DataModel. The converter does not require T to have fromJson or toJson methods; instead, these must be provided via function parameters.

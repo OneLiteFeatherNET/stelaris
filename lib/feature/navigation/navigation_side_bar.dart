@@ -29,8 +29,11 @@ class NavigationSideBar extends StatelessWidget {
         return FocusTraversalGroup(
           child: NavigationRail(
             minExtendedWidth: maxXOffset,
-            extended: MediaQuery.of(context).size.width >= 1000 ? vm.openNavigation : false,
-            onDestinationSelected: (index) => _onDestinationSelected(context, index),
+            extended: MediaQuery.of(context).size.width >= 1000
+                ? vm.openNavigation
+                : false,
+            onDestinationSelected: (index) =>
+                _onDestinationSelected(context, index),
             labelType: NavigationRailLabelType.none,
             destinations: _buildNavigationView(),
             selectedIndex: selectedIndex != -1 ? selectedIndex : 0,
@@ -47,16 +50,13 @@ class NavigationSideBar extends StatelessWidget {
 
   /// Builds the list of navigation destinations for the [NavigationRail].
   List<NavigationRailDestination> _buildNavigationView() {
-    return List.generate(
-      navigationEntries.length,
-          (index) {
-        final navigationValue = navigationEntries[index];
-        return NavigationRailDestination(
-          selectedIcon: Icon(navigationValue.selected),
-          icon: Icon(navigationValue.data),
-          label: Text(navigationValue.display, style: navigationEntryTextStyle),
-        );
-      },
-    );
+    return List.generate(navigationEntries.length, (index) {
+      final navigationValue = navigationEntries[index];
+      return NavigationRailDestination(
+        selectedIcon: Icon(navigationValue.selected),
+        icon: Icon(navigationValue.data),
+        label: Text(navigationValue.display, style: navigationEntryTextStyle),
+      );
+    });
   }
 }

@@ -3,10 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:stelaris/util/constants.dart';
 
 class SettingsHeaderTile extends StatelessWidget {
-  const SettingsHeaderTile({
-    required this.text,
-    super.key,
-  });
+  const SettingsHeaderTile({required this.text, super.key});
 
   final String text;
 

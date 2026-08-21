@@ -13,10 +13,7 @@ import 'package:stelaris/util/constants.dart';
 /// - A main content area
 /// - An end drawer for build-related functionality
 class BasePage extends StatelessWidget {
-  const BasePage({
-    required this.child,
-    super.key,
-  });
+  const BasePage({required this.child, super.key});
 
   final Widget child;
 
@@ -29,10 +26,7 @@ class BasePage extends StatelessWidget {
         elevation: 0,
         title: appTitle,
         centerTitle: true,
-        actions: const [
-          BuildButton(),
-          SettingsButton(),
-        ],
+        actions: const [BuildButton(), SettingsButton()],
       ),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,

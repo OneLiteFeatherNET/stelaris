@@ -1,6 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/font_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/font_vm_state.dart';
@@ -35,7 +35,8 @@ class FontPage extends StatelessWidget {
             return true;
           },
           callFunction: (model) => context.dispatch(SelectFontAction(model)),
-          page: (page, notification) => _mapPageToWidget(context, page, notification),
+          page: (page, notification) =>
+              _mapPageToWidget(context, page, notification),
           models: vm.models,
           tabPages: (pages) => pages,
           compareFunction: (model) => vm.isSelectedItem(model),
@@ -86,9 +87,13 @@ class FontPage extends StatelessWidget {
   /// Maps the given [FontModel] to the right widget.
   /// If the model is null, it returns an [Expanded] widget with an [EmptyDataWidget].
   /// Otherwise, it returns an instance of [FontGeneralPage] or [FontCharPage].
-  Widget _mapPageToWidget(BuildContext context, String value, FontModel? listenable) {
+  Widget _mapPageToWidget(
+    BuildContext context,
+    String value,
+    FontModel? listenable,
+  ) {
     if (value.trim().isEmpty || listenable == null) {
-      return  EmptyDataWidget.standard(
+      return EmptyDataWidget.standard(
         header: context.l10n.empty_data_header,
         subHeader: context.l10n.empty_data_subHeader,
       );

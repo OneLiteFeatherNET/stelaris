@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/sound/sound_file_source.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/sound/card/folder_icon.dart';
 import 'package:stelaris/feature/sound/modal/sound_file_modal_helper.dart';
 

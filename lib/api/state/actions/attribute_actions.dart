@@ -1,8 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/attribute_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/api/paginated_result.dart';
 
 /// Selects a specific attribute model and updates the state.
 ///
@@ -54,13 +53,21 @@ class InitAttributeAction extends ReduxAction<AppState> {
         final current = state.attributes;
         final nextPage = current.currentPage + 1;
         final size = 10;
-        final next = await ApiService().attributeApi.getPage(page: nextPage, size: size);
+        final next = await ApiService().attributeApi.getPage(
+          page: nextPage,
+          size: size,
+        );
 
-        final merged = List<AttributeModel>.of(current.items)..addAll(next.items);
+        final merged = List<AttributeModel>.of(current.items)
+          ..addAll(next.items);
         final updated = current.copyWith(
           items: merged,
-          totalItems: next.totalItems != 0 ? next.totalItems : current.totalItems,
-          totalPages: next.totalPages != 0 ? next.totalPages : current.totalPages,
+          totalItems: next.totalItems != 0
+              ? next.totalItems
+              : current.totalItems,
+          totalPages: next.totalPages != 0
+              ? next.totalPages
+              : current.totalPages,
           currentPage: next.currentPage != 0 ? next.currentPage : nextPage,
           pageSize: next.pageSize != 0 ? next.pageSize : size,
         );
@@ -70,8 +77,14 @@ class InitAttributeAction extends ReduxAction<AppState> {
       }
     } else {
       // Initial load (or refresh)
-      final PaginatedResult<AttributeModel> result =
-      await ApiService().attributeApi.getPage(page: 1, size: state.attributes.pageSize == 0 ? 10 : state.attributes.pageSize);
+      final PaginatedResult<AttributeModel> result = await ApiService()
+          .attributeApi
+          .getPage(
+            page: 1,
+            size: state.attributes.pageSize == 0
+                ? 10
+                : state.attributes.pageSize,
+          );
       return state.copyWith(attributes: result);
     }
   }
@@ -109,7 +122,12 @@ class UpdateAttributeAction extends ReduxAction<AppState> {
 /// Centralizes the logic for updating the attributes list and selected attribute
 /// in the state. This reduces code duplication across multiple actions that
 /// modify the attributes collection.
-AppState _updateAttributesInState(AppState state, List<AttributeModel> newItems, AttributeModel? selectedAttribute, {int? totalItems}) {
+AppState _updateAttributesInState(
+  AppState state,
+  List<AttributeModel> newItems,
+  AttributeModel? selectedAttribute, {
+  int? totalItems,
+}) {
   final updated = state.attributes.copyWith(
     items: newItems,
     totalItems: totalItems ?? state.attributes.totalItems,
@@ -118,8 +136,8 @@ AppState _updateAttributesInState(AppState state, List<AttributeModel> newItems,
     pageSize: state.attributes.pageSize,
   );
   return state.copyWith(
-      attributes: updated,
-      selectedAttribute: selectedAttribute
+    attributes: updated,
+    selectedAttribute: selectedAttribute,
   );
 }
 
@@ -139,9 +157,13 @@ class AttributeAddAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final AttributeModel databaseModel = await ApiService().attributeApi.add(model);
-    final List<AttributeModel> updatedList = List.of(state.attributes.items, growable: true)
-      ..add(databaseModel);
+    final AttributeModel databaseModel = await ApiService().attributeApi.add(
+      model,
+    );
+    final List<AttributeModel> updatedList = List.of(
+      state.attributes.items,
+      growable: true,
+    )..add(databaseModel);
 
     return _updateAttributesInState(state, updatedList, databaseModel);
   }
@@ -164,11 +186,13 @@ class AttributeRemoveAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     await ApiService().attributeApi.remove(model);
-    final List<AttributeModel> updatedList = List.of(state.attributes.items, growable: true)
-      ..remove(model);
+    final List<AttributeModel> updatedList = List.of(
+      state.attributes.items,
+      growable: true,
+    )..remove(model);
 
     final AttributeModel? selectedModel =
-    state.selectedAttribute?.id == model.id
+        state.selectedAttribute?.id == model.id
         ? null
         : state.selectedAttribute;
 
@@ -192,10 +216,17 @@ class AttributeDatabaseUpdate extends ReduxAction<AppState> {
     if (state.selectedAttribute == null) return null;
 
     final AttributeModel selected = state.selectedAttribute!;
-    final AttributeModel dbModel = await ApiService().attributeApi.update(selected);
+    final AttributeModel dbModel = await ApiService().attributeApi.update(
+      selected,
+    );
 
-    final List<AttributeModel> updatedList = List.of(state.attributes.items, growable: true);
-    final int index = updatedList.indexWhere((element) => element.id == selected.id);
+    final List<AttributeModel> updatedList = List.of(
+      state.attributes.items,
+      growable: true,
+    );
+    final int index = updatedList.indexWhere(
+      (element) => element.id == selected.id,
+    );
 
     if (index != -1) {
       updatedList[index] = dbModel;

@@ -16,11 +16,13 @@ class BuildTrigger extends StatefulWidget {
   State<BuildTrigger> createState() => _BuildTriggerState();
 }
 
-class _BuildTriggerState extends State<BuildTrigger> with AutomaticKeepAliveClientMixin {
+class _BuildTriggerState extends State<BuildTrigger>
+    with AutomaticKeepAliveClientMixin {
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _newVersionController = TextEditingController();
-  final ValueNotifier<BranchOption> _branchOption =
-      ValueNotifier(BranchOption.release);
+  final ValueNotifier<BranchOption> _branchOption = ValueNotifier(
+    BranchOption.release,
+  );
   VersionPart _versionPart = VersionPart.major;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
@@ -31,8 +33,10 @@ class _BuildTriggerState extends State<BuildTrigger> with AutomaticKeepAliveClie
   @override
   void initState() {
     _controller.text = widget.version;
-    _newVersionController.text =
-        _updateVersion(widget.version, _versionPart.index);
+    _newVersionController.text = _updateVersion(
+      widget.version,
+      _versionPart.index,
+    );
     super.initState();
   }
 
@@ -76,15 +80,19 @@ class _BuildTriggerState extends State<BuildTrigger> with AutomaticKeepAliveClie
               ],
             ),
             verticalSpacing25,
-            Text('Select the part of the version to update:',
-                style: Theme.of(context).textTheme.titleSmall),
+            Text(
+              'Select the part of the version to update:',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
             heightTen,
             VersionGroupSelection(
               onSelected: (value) {
                 setState(() {
                   _versionPart = value;
-                  _newVersionController.text =
-                      _updateVersion(widget.version, _versionPart.index);
+                  _newVersionController.text = _updateVersion(
+                    widget.version,
+                    _versionPart.index,
+                  );
                 });
               },
             ),
@@ -93,43 +101,51 @@ class _BuildTriggerState extends State<BuildTrigger> with AutomaticKeepAliveClie
             verticalSpacing25,
             Align(
               alignment: Alignment.center,
-              child: _isLoading ? const StelarisLoader() : SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  icon: const Icon(Icons.build),
-                  onPressed: () async {
-                    final state = _formKey.currentState;
-                    if (state == null) return;
-                    if (!state.validate()) return; 
-                    
-                    setState(() {
-                      _isLoading = true;
-                    });
+              child: _isLoading
+                  ? const StelarisLoader()
+                  : SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        icon: const Icon(Icons.build),
+                        onPressed: () async {
+                          final state = _formKey.currentState;
+                          if (state == null) return;
+                          if (!state.validate()) return;
 
-                    try {
-                      final branch = switch (_branchOption.value) {
-                        BranchOption.release => 'master',
-                        _ => 'develop',
-                      };
-                      await ApiService().generateApi.generate(branch);
-                      if (context.mounted) {
-                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Build started successfully')));
-                      }
-                    } catch (e) {
-                       if (context.mounted) {
-                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Build failed: $e')));
-                      }
-                    } finally {
-                      if (context.mounted) {
-                         setState(() {
-                          _isLoading = false;
-                        });
-                      }
-                    }
-                  },
-                  label: const Text('Generate'),
-                ),
-              ),
+                          setState(() {
+                            _isLoading = true;
+                          });
+
+                          try {
+                            final branch = switch (_branchOption.value) {
+                              BranchOption.release => 'master',
+                              _ => 'develop',
+                            };
+                            await ApiService().generateApi.generate(branch);
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Build started successfully'),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Build failed: $e')),
+                              );
+                            }
+                          } finally {
+                            if (context.mounted) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            }
+                          }
+                        },
+                        label: const Text('Generate'),
+                      ),
+                    ),
             ),
           ],
         ),

@@ -16,7 +16,7 @@ class SettingsDialog extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SettingsHeaderTile(text: 'Settings',),
+          SettingsHeaderTile(text: 'Settings'),
           verticalSpacing25,
           Flexible(
             child: SingleChildScrollView(
@@ -33,7 +33,7 @@ class SettingsDialog extends StatelessWidget {
                     MiscSettingsRow(),
                     verticalSpacing25,
                     SettingsEndTile(),
-                    heightTen
+                    heightTen,
                   ],
                 ),
               ),

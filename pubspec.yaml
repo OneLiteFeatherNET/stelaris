@@ -28,6 +28,10 @@ dependencies:
     git:
       url: https://github.com/OneLiteFeatherNET/vulpes-minecraft-dart.git
       ref: master
+  stelaris_models:
+    git:
+      url: https://github.com/OneLiteFeatherNET/stelaris-model.git
+      ref: main
 
 dev_dependencies:
   flutter_test:

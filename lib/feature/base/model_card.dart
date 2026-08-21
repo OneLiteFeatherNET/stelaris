@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/data_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
 import 'package:stelaris/util/typedefs.dart';
 
@@ -30,7 +30,6 @@ class ModelCard<E extends DataModel> extends StatefulWidget {
 class _ModelCardState<E extends DataModel> extends State<ModelCard<E>> {
   bool _isHovered = false;
   Timer? _debounceTimer;
-
 
   @override
   void dispose() {

@@ -10,9 +10,12 @@ class BuildButton extends StatelessWidget {
       builder: (context) {
         return IconButton(
           onPressed: () {
-            showDialog(context: context, builder: (context) {
-              return const BuildDialog();
-            });
+            showDialog(
+              context: context,
+              builder: (context) {
+                return const BuildDialog();
+              },
+            );
           },
           icon: const Icon(Icons.build_outlined),
         );

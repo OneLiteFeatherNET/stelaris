@@ -23,9 +23,7 @@ class DeleteDialog<E> extends StatelessWidget {
     return AlertDialog(
       contentPadding: dialogPadding,
       title: title,
-      content: RichText(
-        text: TextSpan(children: header),
-      ),
+      content: RichText(text: TextSpan(children: header)),
       actions: <Widget>[
         const CancelButton(),
         FilledButton(

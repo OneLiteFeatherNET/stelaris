@@ -1,7 +1,6 @@
 import 'package:stelaris/api/api_client.dart';
 import 'package:stelaris/api/client_api.dart';
-import 'package:stelaris/api/model/data_model.dart';
-import 'package:stelaris/api/paginated_result.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// A generic base class for CRUD API services.
 ///

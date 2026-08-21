@@ -4,7 +4,6 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
 class BranchFetchAction extends ReduxAction<AppState> {
-
   @override
   Future<AppState?> reduce() async {
     dispatchSync(_SetIsLoadingBranches(true));
@@ -31,7 +30,6 @@ class _SetIsLoadingBranches extends ReduxAction<AppState> {
 }
 
 class ReleaseFetchAction extends ReduxAction<AppState> {
-
   @override
   Future<AppState?> reduce() async {
     dispatchSync(_SetIsLoadingRelease(true));

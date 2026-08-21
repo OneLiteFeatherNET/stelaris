@@ -25,7 +25,7 @@ class BaseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       width: width,
       height: height,
@@ -36,10 +36,7 @@ class BaseCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: BorderSide(
-            color: colorScheme.outlineVariant,
-            width: 1,
-          ),
+          side: BorderSide(color: colorScheme.outlineVariant, width: 1),
         ),
         child: Column(
           children: [
@@ -68,10 +65,7 @@ class BaseCard extends StatelessWidget {
                   if (message.isNotEmpty)
                     Tooltip(
                       message: message,
-                      child: const Icon(
-                        Icons.info_outline_rounded,
-                        size: 20,
-                      ),
+                      child: const Icon(Icons.info_outline_rounded, size: 20),
                     ),
                 ],
               ),

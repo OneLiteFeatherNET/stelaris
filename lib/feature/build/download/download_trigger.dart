@@ -75,8 +75,9 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: StatusCard(
             text: 'Fetching branches...',
-            backgroundColor:
-                theme.colorScheme.secondaryContainer.withValues(alpha: 0.5),
+            backgroundColor: theme.colorScheme.secondaryContainer.withValues(
+              alpha: 0.5,
+            ),
             textColor: theme.colorScheme.onSecondaryContainer,
             height: 70,
             icon: const SizedBox(
@@ -95,7 +96,9 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: StatusCard(
             text: 'Service unavailable',
-            backgroundColor: theme.colorScheme.errorContainer.withValues(alpha: 0.8),
+            backgroundColor: theme.colorScheme.errorContainer.withValues(
+              alpha: 0.8,
+            ),
             textColor: theme.colorScheme.onErrorContainer,
             height: 70,
           ),
@@ -108,15 +111,15 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: StatusCard(
-             text: 'No branches found! Please create some in the repository',
-             backgroundColor: theme.colorScheme.errorContainer,
-             glowColor: theme.colorScheme.errorContainer.withValues(alpha: 0.5),
-             height: 70,
-             trailing: IconButton(
-               icon: const Icon(Icons.refresh),
-               onPressed: widget.onRefresh,
-               tooltip: 'Refresh branches',
-             ),
+            text: 'No branches found! Please create some in the repository',
+            backgroundColor: theme.colorScheme.errorContainer,
+            glowColor: theme.colorScheme.errorContainer.withValues(alpha: 0.5),
+            height: 70,
+            trailing: IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: widget.onRefresh,
+              tooltip: 'Refresh branches',
+            ),
           ),
         ),
       );
@@ -162,8 +165,10 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
                   : DropdownButtonFormField<String>(
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                       ),
                       items: branchItems,
                       initialValue: defaultValue,
@@ -196,12 +201,16 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
                   ScaffoldMessenger.of(context)
                       .showSnackBar(InfoBarFactory().create(text));
 
-                  final (data, filename) = await ApiService().generateApi.download(value);
+                  final (data, filename) = await ApiService().generateApi
+                      .download(value);
 
                   final content = base64Encode(data);
 
                   web.HTMLAnchorElement()
-                    ..setAttribute('href', 'data:application/octet-stream;base64,$content')
+                    ..setAttribute(
+                      'href',
+                      'data:application/octet-stream;base64,$content',
+                    )
                     ..setAttribute('download', filename)
                     ..click();
                 },
