@@ -32,6 +32,7 @@ dependencies:
     git:
       url: https://github.com/OneLiteFeatherNET/stelaris-model.git
       ref: main
+  material_ui: ^1.0.1
 
 dev_dependencies:
   flutter_test:
