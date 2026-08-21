@@ -1,0 +1,31 @@
+name: Run tests
+on: [ pull_request ]
+jobs:
+  build_pr:
+    if: github.repository_owner == 'OneLiteFeatherNET'
+    name: Build Pull Request Branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Init Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.1'
+          channel: 'stable'
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+            build
+          key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-pub-
+      - name: Enable Flutter Web
+        run: flutter config --enable-web
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Run analyzer
+        run: flutter analyze || true
+      - name: Run tests (Web)
+        run: flutter test --platform chrome
