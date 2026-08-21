@@ -6,9 +6,9 @@ import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/status_card.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
-import 'package:web/web.dart' as web;
 
 import 'download_commit_option.dart';
+import 'download_helper.dart';
 
 class DownloadTrigger extends StatefulWidget {
   const DownloadTrigger({
@@ -206,13 +206,7 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
 
                   final content = base64Encode(data);
 
-                  web.HTMLAnchorElement()
-                    ..setAttribute(
-                      'href',
-                      'data:application/octet-stream;base64,$content',
-                    )
-                    ..setAttribute('download', filename)
-                    ..click();
+                  triggerBrowserDownload(content, filename);
                 },
                 label: Text(context.l10n.button_download),
               ),
