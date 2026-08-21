@@ -47,7 +47,7 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
                 children: [
                   // App Branding
                   Image.asset(
-                    'assets/logo_stelaris_v1.png',
+                    'assets/logo_stelaris_v1.webp',
                     width: 80,
                     height: 80,
                     errorBuilder: (context, error, stackTrace) => Icon(
