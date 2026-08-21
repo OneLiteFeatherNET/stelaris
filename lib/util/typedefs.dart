@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stelaris/api/model/data_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// Defines all typedef function for the card which displays data from a model
 typedef ValueUpdate<E> = void Function(E value);

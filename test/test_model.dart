@@ -1,4 +1,4 @@
-import 'package:stelaris/api/model/data_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// A simple test model implementing DataModel with an integer internal ID.
 class TestModel with DataModel {
