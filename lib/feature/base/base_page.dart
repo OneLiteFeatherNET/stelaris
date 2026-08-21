@@ -3,6 +3,7 @@ import 'package:stelaris/feature/base/button/build_button.dart';
 import 'package:stelaris/feature/base/button/settings_button.dart';
 import 'package:stelaris/feature/base/button/toggle_navigation_button.dart';
 import 'package:stelaris/feature/navigation/navigation_side_bar.dart';
+import 'package:stelaris/feature/project/badge/project_app_bar_badge.dart';
 import 'package:stelaris/util/constants.dart';
 
 /// A base page layout that provides a consistent structure across the application.
@@ -26,7 +27,12 @@ class BasePage extends StatelessWidget {
         elevation: 0,
         title: appTitle,
         centerTitle: true,
-        actions: const [BuildButton(), SettingsButton()],
+        actions: const [
+          ProjectAppBarBadge(),
+          horizontalSpacing10,
+          BuildButton(),
+          SettingsButton(),
+        ],
       ),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,

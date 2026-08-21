@@ -106,6 +106,13 @@ _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
   branches: (json['branches'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
+  projects: (json['projects'] as List<dynamic>?)
+          ?.map((e) => Project.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+  selectedProject: json['selectedProject'] == null
+      ? null
+      : Project.fromJson(json['selectedProject'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
@@ -120,4 +127,5 @@ Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
   'releaseModel': instance.releaseModel,
   'isLoadingBranches': instance.isLoadingBranches,
   'branches': instance.branches,
+  'projects': instance.projects.map((e) => e.toJson()).toList(),
 };

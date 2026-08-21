@@ -116,6 +116,8 @@ abstract class AppState with _$AppState {
     ReleaseModel? releaseModel,
     @Default(false) bool isLoadingBranches,
     List<String>? branches,
+    @Default([]) List<Project> projects,
+    @JsonKey(includeToJson: false) Project? selectedProject,
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, dynamic> json) =>

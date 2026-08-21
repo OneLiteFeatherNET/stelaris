@@ -6,11 +6,26 @@ import 'package:stelaris/feature/base/base_page.dart';
 import 'package:stelaris/feature/font/font_page.dart';
 import 'package:stelaris/feature/item/item_page.dart';
 import 'package:stelaris/feature/notification/notification_page.dart';
+import 'package:stelaris/feature/project/project_selection_page.dart';
 import 'package:stelaris/feature/sound/sound_page.dart';
 
+const String projectSelectionRoute = '/projects';
+
 final GoRouter router = GoRouter(
-  initialLocation: NavigationEntry.attributes.route,
+  initialLocation: projectSelectionRoute,
   routes: [
+    GoRoute(
+      path: projectSelectionRoute,
+      pageBuilder: (context, state) => CustomTransitionPage(
+        child: const ProjectSelectionPage(),
+        key: state.pageKey,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+      ),
+    ),
     GoRoute(
       path: NavigationEntry.attributes.route,
       pageBuilder: (context, state) => CustomTransitionPage(

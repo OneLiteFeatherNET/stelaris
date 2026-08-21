@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/dialog/animated_dialog.dart';
 import 'package:stelaris/feature/settings/rows/accessibility_settings_row.dart';
 import 'package:stelaris/feature/settings/rows/misc_settings_row.dart';
+import 'package:stelaris/feature/settings/rows/project_settings_row.dart';
 import 'package:stelaris/feature/settings/rows/theme_settings_row.dart';
 import 'package:stelaris/feature/settings/settings_end_tile.dart';
 import 'package:stelaris/feature/settings/settings_header_tile.dart';
@@ -26,6 +27,8 @@ class SettingsDialog extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     heightTen,
+                    ProjectSettingsRow(),
+                    verticalSpacing25,
                     ThemeSettingsRow(),
                     verticalSpacing25,
                     AccessibilitySettingsRow(),
