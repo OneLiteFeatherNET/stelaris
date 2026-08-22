@@ -38,6 +38,7 @@ class _LorePageViewState extends State<LorePageView>
 
   @override
   Widget build(BuildContext context) {
+    final items = widget.view.items;
     return Scrollbar(
       controller: scrollController,
       thumbVisibility: true,
@@ -48,7 +49,7 @@ class _LorePageViewState extends State<LorePageView>
           return GrabbedCard(child: child);
         },
         itemBuilder: (context, index) {
-          final key = widget.view.selected.lore.items[index];
+          final key = items[index];
           return ListTile(
             key: Key(key.id!), // Use a unique key from your data model
             title: Text(key.text, overflow: TextOverflow.ellipsis),
@@ -62,15 +63,12 @@ class _LorePageViewState extends State<LorePageView>
             ),
           );
         },
-        itemCount: widget.view.selected.lore.items.length,
-        onReorder: (oldIndex, newIndex) {
+        itemCount: items.length,
+        onReorderItem: (oldIndex, newIndex) {
           if (oldIndex == newIndex) return;
-          if (newIndex > oldIndex) {
-            newIndex -= 1;
-          }
 
-          if (newIndex > widget.view.selected.lore.items.length - 1) {
-            newIndex = widget.view.selected.lore.items.length - 1;
+          if (newIndex > items.length - 1) {
+            newIndex = items.length - 1;
           }
 
           // final String oldLine = view.selected.lore.items.removeAt(oldIndex);
