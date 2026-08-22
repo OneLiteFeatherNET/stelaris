@@ -20,6 +20,21 @@ To run the application on your local computer, follow these steps:
   flutter run  
   ```  
   
+## Docker
+
+The production image is built `FROM scratch` and contains a single file: a
+static binary with the compiled web bundle embedded in it - no nginx, no shell,
+no package manager.
+
+```sh
+flutter build web --release --wasm
+docker build -t stelaris-ui:local .
+docker run --rm -p 8080:8080 stelaris-ui:local
+```
+
+See [docs/docker-image.md](docs/docker-image.md) for configuration, response
+headers and deployment notes.
+
 ## Wiki
 
 You can find the Wiki under the following [Link](https://gitlab.onelitefeather.dev/dungeon/frontend/stelaris-ui/-/wikis/pages)
