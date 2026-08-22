@@ -44,6 +44,16 @@ jobs:
         with:
           name: build
           path: build
+      # The image build embeds build/web. Without this check a missing or
+      # differently shaped artifact only surfaces as a COPY failure deep inside
+      # the Docker build.
+      - name: Verify the web bundle
+        run: |
+          if [ ! -f build/web/index.html ]; then
+            echo "::error::build/web/index.html is missing - the Flutter web artifact did not land where the image build expects it"
+            find build -maxdepth 2 | head -20
+            exit 1
+          fi
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v6
