@@ -87,6 +87,10 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
+          # Without this the action builds from the Git context, which only
+          # contains committed files - and build/web is a downloaded artifact
+          # that is gitignored, so the image build cannot see it at all.
+          context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
