@@ -25,7 +25,7 @@ void main() {
     test('is a no-op when no sound event is selected', () {
       final store = Store<AppState>(
         initialState: const AppState().copyWith(
-          selectedFont: FontModel(uiName: 'font'),
+          selectedFont: const FontModel(uiName: 'font'),
           selectedSoundEvent: null,
         ),
       );

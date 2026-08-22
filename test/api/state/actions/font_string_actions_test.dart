@@ -10,10 +10,10 @@ void main() {
       'does not fetch more chars while the font is already loading them, '
       'even if an unrelated global loading flag is set',
       () async {
-        final loadingFont = FontModel(
+        const loadingFont = FontModel(
           uiName: 'font',
           isLoadingChars: true,
-          chars: const PaginatedResult(
+          chars: PaginatedResult(
             items: [FontStringDTO(line: 'a')],
             totalItems: 20,
             totalPages: 2,
