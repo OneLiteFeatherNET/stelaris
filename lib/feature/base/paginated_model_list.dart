@@ -6,10 +6,8 @@ import 'package:stelaris/feature/base/model_card.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
-/// A non-breaking, paginated alternative to [ModelList] that supports lazy-loading.
-///
-/// Use this to progressively migrate screens that need infinite scroll/pagination
-/// while keeping existing [ModelList] usages untouched.
+/// A generic list widget that displays a collection of data models,
+/// with optional infinite-scroll pagination via [onLoadMore]/[hasMore]/[isLoadingMore].
 class PaginatedModelList<E extends DataModel> extends StatefulWidget {
   static const double _listWidth = 250;
   static const double _bottomPadding = 25;
@@ -121,6 +119,7 @@ class _PaginatedModelListState<E extends DataModel>
   Widget _buildListItem(BuildContext context, int index) {
     final E model = widget.models[index];
     return RepaintBoundary(
+      key: model.id != null ? ValueKey(model.id) : ObjectKey(model),
       child: GestureDetector(
         onTap: () => widget.callFunction(model),
         child: ModelCard<E>(
