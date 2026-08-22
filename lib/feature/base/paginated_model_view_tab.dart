@@ -5,7 +5,7 @@ import 'package:stelaris/feature/base/paginated_model_list.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
-/// A paginated, non-breaking alternative to [BaseModelViewTabs] that supports lazy-loading.
+/// A widget that combines a paginated model list with tabbed content view.
 ///
 /// This widget combines the [PaginatedModelList] with the tabbed content view from
 /// [ModelContentTabPage], providing a consistent layout for screens that require
