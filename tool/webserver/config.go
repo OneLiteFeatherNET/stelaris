@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -37,6 +38,13 @@ type Config struct {
 
 	// AccessLog toggles the one-line-per-request JSON log on stdout.
 	AccessLog bool
+
+	// BackendURL and GeneratorURL are handed to the app at runtime via
+	// /config.json. They are deliberately not baked into the bundle: the same
+	// image has to run against dev, staging and production, and an image that
+	// only works in one environment cannot be promoted between them.
+	BackendURL   string
+	GeneratorURL string
 }
 
 // defaultCSP is deliberately not the strictest policy that a browser accepts,
@@ -75,6 +83,8 @@ func LoadConfig(lookup func(string) (string, bool)) Config {
 		COEP:                 envString(lookup, "STELARIS_COEP", "credentialless"),
 		AssetCacheControl:    envString(lookup, "STELARIS_ASSET_CACHE_CONTROL", "no-cache"),
 		AccessLog:            envBool(lookup, "STELARIS_ACCESS_LOG", true),
+		BackendURL:           envString(lookup, "STELARIS_BACKEND_URL", ""),
+		GeneratorURL:         envString(lookup, "STELARIS_GENERATOR_URL", ""),
 	}
 
 	// An explicitly set STELARIS_CSP always wins, including an empty value,
@@ -82,7 +92,7 @@ func LoadConfig(lookup func(string) (string, bool)) Config {
 	if csp, ok := lookup("STELARIS_CSP"); ok {
 		cfg.CSP = strings.TrimSpace(csp)
 	} else {
-		connectSrc := envString(lookup, "STELARIS_CONNECT_SRC", "'self' https:")
+		connectSrc := envString(lookup, "STELARIS_CONNECT_SRC", connectSrcFor(cfg.BackendURL, cfg.GeneratorURL))
 		cfg.CSP = strings.Replace(defaultCSP, "%s", connectSrc, 1)
 	}
 
@@ -91,6 +101,48 @@ func LoadConfig(lookup func(string) (string, bool)) Config {
 	}
 
 	return cfg
+}
+
+// connectSrcFor derives the CSP connect-src from the backend URLs the app is
+// configured with, so the policy and the configuration cannot drift apart -
+// pointing the app at a backend it is not allowed to call is otherwise a very
+// quiet failure. Falls back to "'self' https:" when no backend is configured,
+// which keeps a bare `docker run` usable.
+func connectSrcFor(urls ...string) string {
+	origins := make([]string, 0, len(urls)+1)
+	seen := map[string]bool{}
+	for _, raw := range urls {
+		origin := originOf(raw)
+		if origin == "" || seen[origin] {
+			continue
+		}
+		seen[origin] = true
+		origins = append(origins, origin)
+	}
+	if len(origins) == 0 {
+		return "'self' https:"
+	}
+	return "'self' " + strings.Join(origins, " ")
+}
+
+// originOf reduces a URL to the scheme://host[:port] form CSP matches on,
+// dropping any path. Anything unparseable yields "" and is left out rather than
+// injected into the header verbatim.
+func originOf(raw string) string {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return ""
+	}
+	u, err := url.Parse(raw)
+	if err != nil || u.Host == "" {
+		return ""
+	}
+	switch u.Scheme {
+	case "http", "https":
+	default:
+		return ""
+	}
+	return u.Scheme + "://" + u.Host
 }
 
 func envString(lookup func(string) (string, bool), key, fallback string) string {

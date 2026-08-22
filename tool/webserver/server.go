@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/fs"
@@ -22,6 +23,15 @@ const indexFile = "index.html"
 // healthPath is answered by the server itself so the container needs no shell
 // and no curl for its health check.
 const healthPath = "/healthz"
+
+// configPath carries the settings the app cannot know at build time. Baking the
+// backend URL into the bundle would make the image environment-specific, so it
+// could not be promoted from staging to production - the app fetches this
+// instead, before it talks to any API.
+//
+// It is served by the server, not read from the bundle: a file of the same name
+// inside the bundle is shadowed by this endpoint.
+const configPath = "/config.json"
 
 // entryPoints are never cached beyond a revalidation, whatever
 // STELARIS_ASSET_CACHE_CONTROL says. A stale shell or service worker pins a
@@ -88,6 +98,14 @@ type Server struct {
 	assets  map[string]*asset
 	index   *asset
 	headers [][2]string // security headers, materialised once
+	config  []byte      // rendered /config.json body
+}
+
+// appConfig is the wire format of /config.json. The field names are the app's
+// contract - changing one means changing lib/env/runtime_config.dart too.
+type appConfig struct {
+	BackendURL   string `json:"backendUrl"`
+	GeneratorURL string `json:"generatorUrl"`
 }
 
 // NewServer indexes the bundle and precomputes every response header that does
@@ -106,6 +124,15 @@ func NewServer(fsys fs.FS, cfg Config, log *slog.Logger) (*Server, error) {
 	if s.index == nil {
 		return nil, fmt.Errorf("bundle contains no %s - was the Flutter web build copied into the image?", indexFile)
 	}
+	body, err := json.Marshal(appConfig{
+		BackendURL:   cfg.BackendURL,
+		GeneratorURL: cfg.GeneratorURL,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("render %s: %w", configPath, err)
+	}
+	s.config = body
+
 	s.headers = buildSecurityHeaders(cfg)
 	return s, nil
 }
@@ -253,6 +280,21 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		w.Header().Set("Allow", "GET, HEAD")
 		httpError(w, r, http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Answered before the bundle lookup so a stray config.json in the build
+	// output can never shadow the values this deployment was started with.
+	if r.URL.Path == configPath {
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		// Never cached anywhere: a cached config outlives the deployment that
+		// produced it and silently points the app at the wrong backend.
+		w.Header().Set("Cache-Control", "no-store")
+		w.Header().Set("Content-Length", strconv.Itoa(len(s.config)))
+		w.WriteHeader(http.StatusOK)
+		if r.Method == http.MethodGet {
+			w.Write(s.config)
+		}
 		return
 	}
 

@@ -64,16 +64,36 @@ setup is deliberately the part that is easy to delete.
 ## Building
 
 The image expects a finished Flutter web build at `build/web` in the build
-context. CI builds it in a separate job and downloads it as an artifact; locally:
+context:
 
 ```sh
 flutter build web --release --wasm
 docker build -t stelaris-ui:local .
-docker run --rm -p 8080:8080 stelaris-ui:local
+docker run --rm -p 8080:8080 \
+  -e STELARIS_BACKEND_URL=http://localhost:8081 \
+  stelaris-ui:local
 ```
 
 The build fails loudly if `build/web` is missing rather than shipping an image
 that serves a placeholder page.
+
+### In CI
+
+The `flutter` job builds the bundle, assembles `Dockerfile` + `tool/webserver` +
+`build/web` into a `docker-context` artifact, and hands it to the org-wide
+[`docker-publish.yml`](https://github.com/OneLiteFeatherNET/workflows), which
+builds the image and pushes it with **chunked blob uploads** via `regctl`.
+
+That is not a preference: Harbor sits behind a proxy that caps request bodies at
+100 MB, and a plain `docker push` sends each layer as one request. The image's
+bundle layer is comfortably over that, so `docker push` fails - which is exactly
+what it did here, as a `401` on the blob `HEAD` request. `regctl` splits any
+blob above 50 MiB into several `PATCH` requests instead.
+
+Image tags: a `v*.*.*` tag publishes that version; every other push publishes
+`<manifest-version>-<branch-slug>` plus an immutable `sha-<short>` tag. Branch
+builds are prerelease versions, so they never take over the `1`/`1.0` aliases of
+a released image.
 
 ## Configuration
 
@@ -82,12 +102,49 @@ Everything is an environment variable - the container reads no files at runtime.
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `STELARIS_ADDR` | `:8080` | Listen address. Unprivileged port, so no capabilities are needed. |
+| `STELARIS_BACKEND_URL` | *(empty)* | Backend base URL handed to the app via `/config.json`. See "Runtime configuration". |
+| `STELARIS_GENERATOR_URL` | *(empty)* | Generator service base URL, same mechanism. |
 | `STELARIS_CSP` | see below | Full `Content-Security-Policy` value. Set it to an empty string to drop the header entirely. |
-| `STELARIS_CONNECT_SRC` | `'self' https:` | `connect-src` of the default policy. This is the one directive that depends on the deployment, because it has to allow the Stelaris backend. Ignored when `STELARIS_CSP` is set. |
+| `STELARIS_CONNECT_SRC` | derived from the two URLs above | `connect-src` of the default policy. Set it only when the app must reach an origin that is neither of those. Ignored when `STELARIS_CSP` is set. |
 | `STELARIS_CROSS_ORIGIN_ISOLATION` | `false` | Sends COOP/COEP. See below. |
 | `STELARIS_COEP` | `credentialless` | `credentialless` or `require-corp`, used only when isolation is on. |
 | `STELARIS_ASSET_CACHE_CONTROL` | `no-cache` | `Cache-Control` for non-entry-point files. Entry points always revalidate. |
 | `STELARIS_ACCESS_LOG` | `true` | One JSON line per request on stdout. Query strings are never logged. |
+
+### Runtime configuration
+
+The app needs a backend URL, and that URL differs per environment. Compiling it
+into the bundle would make the image environment-specific - it could not be
+built once and promoted from staging to production - so the server hands it over
+at runtime instead:
+
+```
+GET /config.json
+Cache-Control: no-store
+
+{"backendUrl":"https://api.stelaris.example/v1","generatorUrl":"https://gen.stelaris.example"}
+```
+
+`lib/env/runtime_config.dart` fetches this before the first API call
+(`RuntimeConfig.load()` in `main()`), and `ApiService` reads
+`RuntimeConfig.current`. The rules:
+
+- The endpoint always wins over a `config.json` that happens to be in the
+  bundle, so a stale file in a build cannot override a live deployment.
+- `no-store`, always. A cached configuration outlives the deployment that
+  produced it and then points the app at the wrong backend.
+- Any field the server leaves empty falls back to the value compiled into
+  `lib/env/environment.dart`, which is what a local `flutter run` uses. A
+  missing, unreachable or malformed `/config.json` is not fatal for the same
+  reason - the app starts on the compiled-in defaults and the failure shows up
+  in the console and in the first API call.
+- `connect-src` in the default CSP is derived from these same URLs, so the
+  policy cannot drift away from the configuration and quietly block the backend.
+
+The app requests `config.json` relative to the document base href. The image
+assumes a build with the default base href `/`; serving it under a sub path
+needs a build with a matching `--base-href` and an ingress that does not strip
+the prefix.
 
 ### Response headers
 

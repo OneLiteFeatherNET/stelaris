@@ -45,6 +45,51 @@ func TestConnectSrcOverride(t *testing.T) {
 	}
 }
 
+// The policy is derived from the configured backends so the two cannot drift
+// apart - a backend the app may not call is a very quiet failure.
+func TestConnectSrcFollowsConfiguredBackends(t *testing.T) {
+	cfg := LoadConfig(lookupFrom(map[string]string{
+		"STELARIS_BACKEND_URL":   "https://api.stelaris.example/v1",
+		"STELARIS_GENERATOR_URL": "https://generator.stelaris.example",
+	}))
+
+	// The path is dropped: CSP matches origins.
+	want := "connect-src 'self' https://api.stelaris.example https://generator.stelaris.example"
+	if !strings.Contains(cfg.CSP, want) {
+		t.Errorf("CSP = %s, want it to contain %q", cfg.CSP, want)
+	}
+}
+
+func TestConnectSrcDeduplicatesAndIgnoresJunk(t *testing.T) {
+	cfg := LoadConfig(lookupFrom(map[string]string{
+		"STELARIS_BACKEND_URL":   "https://api.stelaris.example/a",
+		"STELARIS_GENERATOR_URL": "https://api.stelaris.example/b",
+	}))
+	if strings.Count(cfg.CSP, "https://api.stelaris.example") != 1 {
+		t.Errorf("origin repeated: %s", cfg.CSP)
+	}
+
+	// A value that is not an http(s) URL must not be injected into the header.
+	cfg = LoadConfig(lookupFrom(map[string]string{"STELARIS_BACKEND_URL": "javascript:alert(1)"}))
+	if strings.Contains(cfg.CSP, "javascript:") {
+		t.Errorf("junk leaked into the policy: %s", cfg.CSP)
+	}
+	if !strings.Contains(cfg.CSP, "connect-src 'self' https:") {
+		t.Errorf("expected the fallback connect-src, got: %s", cfg.CSP)
+	}
+}
+
+func TestExplicitConnectSrcOverridesDerivedOne(t *testing.T) {
+	cfg := LoadConfig(lookupFrom(map[string]string{
+		"STELARIS_BACKEND_URL": "https://api.stelaris.example",
+		"STELARIS_CONNECT_SRC": "'self' https://proxy.example",
+	}))
+
+	if !strings.Contains(cfg.CSP, "connect-src 'self' https://proxy.example") {
+		t.Errorf("explicit connect-src ignored: %s", cfg.CSP)
+	}
+}
+
 func TestExplicitCSPWins(t *testing.T) {
 	cfg := LoadConfig(lookupFrom(map[string]string{
 		"STELARIS_CSP":         "default-src 'none'",

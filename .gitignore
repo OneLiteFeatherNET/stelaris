@@ -46,3 +46,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Compiled output of the container web server (tool/webserver)
+tool/webserver/webserver

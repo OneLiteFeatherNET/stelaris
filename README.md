@@ -29,8 +29,15 @@ no package manager.
 ```sh
 flutter build web --release --wasm
 docker build -t stelaris-ui:local .
-docker run --rm -p 8080:8080 stelaris-ui:local
+docker run --rm -p 8080:8080 \
+  -e STELARIS_BACKEND_URL=http://localhost:8081 \
+  stelaris-ui:local
 ```
+
+The backend URLs are **not** compiled into the image - the server serves them as
+`/config.json` and the app reads them at startup, so one image runs against every
+environment. `lib/env/environment.dart` still provides the values for a local
+`flutter run`.
 
 See [docs/docker-image.md](docs/docker-image.md) for configuration, response
 headers and deployment notes.

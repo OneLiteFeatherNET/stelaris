@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"compress/gzip"
+	"encoding/json"
 	"io"
 	"io/fs"
 	"log/slog"
@@ -343,6 +344,91 @@ func TestHealthEndpoint(t *testing.T) {
 	}
 	if !strings.HasPrefix(rec.Body.String(), "ok") {
 		t.Errorf("body = %q", rec.Body.String())
+	}
+}
+
+func TestConfigEndpoint(t *testing.T) {
+	cfg := testConfig()
+	cfg.BackendURL = "https://api.stelaris.example"
+	cfg.GeneratorURL = "https://generator.stelaris.example"
+	srv := newTestServer(t, cfg)
+
+	rec := do(t, srv, http.MethodGet, configPath, nil)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want 200", rec.Code)
+	}
+	if got := rec.Header().Get("Content-Type"); got != "application/json; charset=utf-8" {
+		t.Errorf("Content-Type = %q", got)
+	}
+	// A cached config outlives the deployment that produced it.
+	if got := rec.Header().Get("Cache-Control"); got != "no-store" {
+		t.Errorf("Cache-Control = %q, want no-store", got)
+	}
+
+	var body map[string]string
+	if err := json.Unmarshal(rec.Body.Bytes(), &body); err != nil {
+		t.Fatalf("body is not JSON: %v (%s)", err, rec.Body.String())
+	}
+	// These keys are the contract with lib/env/runtime_config.dart.
+	if body["backendUrl"] != cfg.BackendURL {
+		t.Errorf("backendUrl = %q, want %q", body["backendUrl"], cfg.BackendURL)
+	}
+	if body["generatorUrl"] != cfg.GeneratorURL {
+		t.Errorf("generatorUrl = %q, want %q", body["generatorUrl"], cfg.GeneratorURL)
+	}
+}
+
+// The endpoint must win over the bundle, or a stale config.json shipped in a
+// build would silently override what the deployment was started with.
+func TestConfigEndpointShadowsBundleFile(t *testing.T) {
+	bundle := fstest.MapFS{
+		"index.html":  {Data: []byte(indexBody)},
+		"config.json": {Data: []byte(`{"backendUrl":"https://stale.example"}`)},
+	}
+	cfg := testConfig()
+	cfg.BackendURL = "https://live.example"
+	srv, err := NewServer(bundle, cfg, slog.New(slog.DiscardHandler))
+	if err != nil {
+		t.Fatalf("NewServer: %v", err)
+	}
+
+	rec := do(t, srv, http.MethodGet, configPath, nil)
+
+	if strings.Contains(rec.Body.String(), "stale.example") {
+		t.Errorf("bundle config.json shadowed the live one: %s", rec.Body.String())
+	}
+	if !strings.Contains(rec.Body.String(), "live.example") {
+		t.Errorf("body = %s", rec.Body.String())
+	}
+}
+
+func TestConfigEndpointHeadHasNoBody(t *testing.T) {
+	srv := newTestServer(t, testConfig())
+
+	rec := do(t, srv, http.MethodHead, configPath, nil)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want 200", rec.Code)
+	}
+	if rec.Body.Len() != 0 {
+		t.Errorf("HEAD returned %d body bytes", rec.Body.Len())
+	}
+}
+
+func TestConfigEndpointWithoutConfiguration(t *testing.T) {
+	srv := newTestServer(t, testConfig())
+
+	rec := do(t, srv, http.MethodGet, configPath, nil)
+
+	// Still valid JSON with empty values: the app then keeps its compiled-in
+	// defaults instead of choking on a malformed response.
+	var body map[string]string
+	if err := json.Unmarshal(rec.Body.Bytes(), &body); err != nil {
+		t.Fatalf("body is not JSON: %v", err)
+	}
+	if body["backendUrl"] != "" {
+		t.Errorf("backendUrl = %q, want empty", body["backendUrl"])
 	}
 }
 
