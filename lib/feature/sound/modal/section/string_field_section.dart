@@ -27,6 +27,12 @@ class _StringInputSectionState extends State<StringInputSection> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final outlineBorder = OutlineInputBorder(
