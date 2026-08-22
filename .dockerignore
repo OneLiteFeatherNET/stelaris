@@ -1,0 +1,9 @@
+# The image needs exactly two things: the server sources and the compiled web
+# bundle. Everything else - Dart sources, tests, git history, CI config - would
+# only slow the build down and end up in the build cache for no reason.
+*
+!tool/webserver
+!build/web
+
+# Nothing below webroot/ from the repository is used; the bundle replaces it.
+tool/webserver/webroot
