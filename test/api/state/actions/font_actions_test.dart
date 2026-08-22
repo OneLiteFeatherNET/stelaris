@@ -42,4 +42,29 @@ void main() {
       },
     );
   });
+
+  group('FontRemoveAction', () {
+    test('decrements totalItems by one', () async {
+      const existing = FontModel(uiName: 'to-remove', id: 'rm-id');
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          fonts: const PaginatedResult<FontModel>(
+            items: [existing],
+            totalItems: 20,
+            totalPages: 10,
+            currentPage: 1,
+            pageSize: 2,
+          ),
+        ),
+      );
+
+      ApiService().fontApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json(existing.toJson());
+
+      await store.dispatchAndWait(FontRemoveAction(existing));
+
+      expect(store.state.fonts.totalItems, 19);
+      expect(store.state.fonts.items, isEmpty);
+    });
+  });
 }

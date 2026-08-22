@@ -43,4 +43,29 @@ void main() {
       },
     );
   });
+
+  group('ItemRemoveAction', () {
+    test('decrements totalItems by one', () async {
+      const existing = ItemModel(uiName: 'to-remove', id: 'rm-id');
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          items: const PaginatedResult<ItemModel>(
+            items: [existing],
+            totalItems: 20,
+            totalPages: 10,
+            currentPage: 1,
+            pageSize: 2,
+          ),
+        ),
+      );
+
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json(existing.toJson());
+
+      await store.dispatchAndWait(ItemRemoveAction(existing));
+
+      expect(store.state.items.totalItems, 19);
+      expect(store.state.items.items, isEmpty);
+    });
+  });
 }

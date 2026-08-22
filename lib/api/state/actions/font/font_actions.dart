@@ -79,7 +79,12 @@ class FontRemoveAction extends ReduxAction<AppState> {
     final FontModel removedEntry = await ApiService().fontApi.remove(model);
     final List<FontModel> items = List.of(state.fonts.items, growable: true)
       ..removeWhere((element) => element.id == removedEntry.id);
-    return _updateFontInState(state, items, null);
+    return _updateFontInState(
+      state,
+      items,
+      null,
+      totalItems: state.fonts.totalItems - 1,
+    );
   }
 }
 

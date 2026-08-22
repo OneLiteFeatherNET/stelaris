@@ -123,7 +123,12 @@ class ItemRemoveAction extends ReduxAction<AppState> {
     final ItemModel removedEntry = await ApiService().itemApi.remove(model);
     final List<ItemModel> items = List.of(state.items.items, growable: true)
       ..removeWhere((element) => element.id == removedEntry.id);
-    return _updateItemInState(state, items, null);
+    return _updateItemInState(
+      state,
+      items,
+      null,
+      totalItems: state.items.totalItems - 1,
+    );
   }
 }
 

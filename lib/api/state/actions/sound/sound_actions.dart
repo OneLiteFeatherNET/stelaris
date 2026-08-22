@@ -91,7 +91,12 @@ class SoundRemoveAction extends ReduxAction<AppState> {
         ? null
         : state.selectedSoundEvent;
 
-    return _updateSoundEventsInState(state, updatedList, selectedModel);
+    return _updateSoundEventsInState(
+      state,
+      updatedList,
+      selectedModel,
+      totalItems: state.soundEvents.totalItems - 1,
+    );
   }
 }
 
@@ -110,7 +115,12 @@ class SoundAddAction extends ReduxAction<AppState> {
       growable: true,
     )..add(databaseModel);
 
-    return _updateSoundEventsInState(state, updatedList, databaseModel);
+    return _updateSoundEventsInState(
+      state,
+      updatedList,
+      databaseModel,
+      totalItems: state.soundEvents.totalItems + 1,
+    );
   }
 }
 

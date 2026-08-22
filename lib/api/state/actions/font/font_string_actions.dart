@@ -123,38 +123,6 @@ class FontStringEditAction extends ReduxAction<AppState> {
   }
 }
 
-class FontStringUpdateAction extends ReduxAction<AppState> {
-  final FontStringDTO dto;
-
-  FontStringUpdateAction(this.dto);
-
-  @override
-  Future<AppState?> reduce() async {
-    if (state.selectedFont == null) return null;
-    final selected = state.selectedFont!;
-
-    final savedModel = await ApiService().fontApi.updateFontEntry(
-      selected.id!,
-      dto,
-    );
-
-    // clone list BEFORE mapping
-    final updatedChars = List<FontStringDTO>.from(selected.chars.items)
-        .map((c) => c.id == savedModel.id ? savedModel : c)
-        .toList();
-
-    final newModel = selected.copyWith(
-      chars: selected.chars.copyWith(items: updatedChars),
-    );
-
-    final updatedList = List<FontModel>.from(state.fonts.items); // clone
-    final index = updatedList.indexWhere((font) => font.id == newModel.id);
-    if (index != -1) updatedList[index] = newModel;
-
-    return _updateFontInState(state, updatedList, newModel);
-  }
-}
-
 class FontStringDelete extends ReduxAction<AppState> {
   final String id;
   final FontStringDTO dto;
