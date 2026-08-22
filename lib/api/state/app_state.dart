@@ -11,6 +11,8 @@ part 'app_state.freezed.dart';
 @Freezed(makeCollectionsUnmodifiable: false)
 abstract class AppState with _$AppState {
   const factory AppState({
+    // ── API-Caches: werden beim Navigieren frisch vom Backend geladen ──
+    @JsonKey(includeToJson: false, includeFromJson: false)
     @GenericPaginatedResultConverter<ItemModel>(
       fromJsonT: itemModelFromJson,
       toJsonT: itemModelToJson,
@@ -25,6 +27,7 @@ abstract class AppState with _$AppState {
       ),
     )
     PaginatedResult<ItemModel> items,
+    @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(
       PaginatedResult<NotificationModel>(
         items: [],
@@ -39,6 +42,7 @@ abstract class AppState with _$AppState {
       toJsonT: notificationModelToJson,
     )
     PaginatedResult<NotificationModel> notifications,
+    @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(
       PaginatedResult<FontModel>(
         items: [],
@@ -53,6 +57,7 @@ abstract class AppState with _$AppState {
       toJsonT: fontToJson,
     )
     PaginatedResult<FontModel> fonts,
+    @JsonKey(includeToJson: false, includeFromJson: false)
     @GenericPaginatedResultConverter<AttributeModel>(
       fromJsonT: attributeFromJson,
       toJsonT: attributeToJson,
@@ -67,6 +72,7 @@ abstract class AppState with _$AppState {
       ),
     )
     PaginatedResult<AttributeModel> attributes,
+    @JsonKey(includeToJson: false, includeFromJson: false)
     @GenericPaginatedResultConverter<SoundEventModel>(
       fromJsonT: soundEventFromJson,
       toJsonT: soundEventToJson,
@@ -81,6 +87,8 @@ abstract class AppState with _$AppState {
       ),
     )
     PaginatedResult<SoundEventModel> soundEvents,
+
+    // ── Transiente Loading-Flags ──
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingAttributesMore,
@@ -96,7 +104,14 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingMoreSoundEvents,
-    @Default(false) bool isLoadingRelease,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool isLoadingRelease,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool isLoadingBranches,
+
+    // ── Persistierte Einstellungen ──
     @Default(true) bool openNavigation,
     @Default(
       ThemeSettings(
@@ -108,16 +123,24 @@ abstract class AppState with _$AppState {
       ),
     )
     ThemeSettings themeSettings,
-    @JsonKey(includeToJson: false) ItemModel? selectedItem,
-    @JsonKey(includeToJson: false) NotificationModel? selectedNotification,
-    @JsonKey(includeToJson: false) FontModel? selectedFont,
-    @JsonKey(includeToJson: false) AttributeModel? selectedAttribute,
-    @JsonKey(includeToJson: false) SoundEventModel? selectedSoundEvent,
-    ReleaseModel? releaseModel,
-    @Default(false) bool isLoadingBranches,
-    List<String>? branches,
     @Default([]) List<Project> projects,
-    @JsonKey(includeToJson: false) Project? selectedProject,
+
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    ItemModel? selectedItem,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    NotificationModel? selectedNotification,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    FontModel? selectedFont,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    AttributeModel? selectedAttribute,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    SoundEventModel? selectedSoundEvent,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    ReleaseModel? releaseModel,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    List<String>? branches,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    Project? selectedProject,
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, dynamic> json) =>

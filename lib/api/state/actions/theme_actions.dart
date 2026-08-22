@@ -3,32 +3,13 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 
-import '../app_presistor.dart';
-
-class LoadThemeSettingsAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState> reduce() async {
-    final persistor = AppPersistor();
-    final newState = await persistor.readState();
-    return newState;
-  }
-}
-
 class UpdateThemeSettingsAction extends ReduxAction<AppState> {
   UpdateThemeSettingsAction(this.settings);
 
   final ThemeSettings settings;
 
   @override
-  Future<AppState> reduce() async {
-    final persistor = AppPersistor();
-    final newState = state.copyWith(themeSettings: settings);
-    await persistor.persistDifference(
-      lastPersistedState: state,
-      newState: newState,
-    );
-    return newState;
-  }
+  AppState reduce() => state.copyWith(themeSettings: settings);
 }
 
 class ToggleSystemThemeAction extends ReduxAction<AppState> {
@@ -37,27 +18,26 @@ class ToggleSystemThemeAction extends ReduxAction<AppState> {
   final bool systemIsDark;
 
   @override
-  Future<AppState> reduce() async {
+  AppState reduce() {
     final currentSettings = state.themeSettings;
     final newSettings = currentSettings.copyWith(
       useSystemTheme: !currentSettings.useSystemTheme,
+      // Seed isDarkMode with the live system brightness so that switching
+      // "follow system" off doesn't snap back to a stale manual value.
+      isDarkMode: systemIsDark,
     );
-
-    dispatch(UpdateThemeSettingsAction(newSettings));
     return state.copyWith(themeSettings: newSettings);
   }
 }
 
 class ToggleDarkModeAction extends ReduxAction<AppState> {
   @override
-  Future<AppState> reduce() async {
+  AppState reduce() {
     final currentSettings = state.themeSettings;
     final newSettings = currentSettings.copyWith(
       isDarkMode: !currentSettings.isDarkMode,
       useSystemTheme: false, // Disable system theme when manually toggling
     );
-
-    dispatch(UpdateThemeSettingsAction(newSettings));
     return state.copyWith(themeSettings: newSettings);
   }
 }
@@ -68,11 +48,8 @@ class UpdatePrimaryColorAction extends ReduxAction<AppState> {
   final Color color;
 
   @override
-  Future<AppState> reduce() async {
-    final currentSettings = state.themeSettings;
-    final newSettings = currentSettings.copyWith(primaryColor: color);
-
-    dispatch(UpdateThemeSettingsAction(newSettings));
+  AppState reduce() {
+    final newSettings = state.themeSettings.copyWith(primaryColor: color);
     return state.copyWith(themeSettings: newSettings);
   }
 }
@@ -83,11 +60,8 @@ class UpdateAccentColorAction extends ReduxAction<AppState> {
   final Color color;
 
   @override
-  Future<AppState> reduce() async {
-    final currentSettings = state.themeSettings;
-    final newSettings = currentSettings.copyWith(accentColor: color);
-
-    dispatch(UpdateThemeSettingsAction(newSettings));
+  AppState reduce() {
+    final newSettings = state.themeSettings.copyWith(accentColor: color);
     return state.copyWith(themeSettings: newSettings);
   }
 }
@@ -98,11 +72,8 @@ class UpdateFontScaleAction extends ReduxAction<AppState> {
   final double scale;
 
   @override
-  Future<AppState> reduce() async {
-    final currentSettings = state.themeSettings;
-    final newSettings = currentSettings.copyWith(fontScale: scale);
-
-    dispatch(UpdateThemeSettingsAction(newSettings));
+  AppState reduce() {
+    final newSettings = state.themeSettings.copyWith(fontScale: scale);
     return state.copyWith(themeSettings: newSettings);
   }
 }

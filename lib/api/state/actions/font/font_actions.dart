@@ -93,7 +93,12 @@ class FontAddAction extends ReduxAction<AppState> {
     final FontModel added = await ApiService().fontApi.add(_model);
     final List<FontModel> items = List.of(state.fonts.items, growable: true)
       ..add(added);
-    return _updateFontInState(state, items, added, totalItems: items.length);
+    return _updateFontInState(
+      state,
+      items,
+      added,
+      totalItems: state.fonts.totalItems + 1,
+    );
   }
 }
 
