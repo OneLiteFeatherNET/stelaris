@@ -165,7 +165,12 @@ class AttributeAddAction extends ReduxAction<AppState> {
       growable: true,
     )..add(databaseModel);
 
-    return _updateAttributesInState(state, updatedList, databaseModel);
+    return _updateAttributesInState(
+      state,
+      updatedList,
+      databaseModel,
+      totalItems: state.attributes.totalItems + 1,
+    );
   }
 }
 
@@ -196,7 +201,12 @@ class AttributeRemoveAction extends ReduxAction<AppState> {
         ? null
         : state.selectedAttribute;
 
-    return _updateAttributesInState(state, updatedList, selectedModel);
+    return _updateAttributesInState(
+      state,
+      updatedList,
+      selectedModel,
+      totalItems: state.attributes.totalItems - 1,
+    );
   }
 }
 

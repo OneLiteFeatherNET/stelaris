@@ -111,7 +111,12 @@ class NotificationAddAction extends ReduxAction<AppState> {
       growable: true,
     )..add(databaseModel);
 
-    return _updateNotificationInState(state, updatedList, databaseModel);
+    return _updateNotificationInState(
+      state,
+      updatedList,
+      databaseModel,
+      totalItems: state.notifications.totalItems + 1,
+    );
   }
 }
 
@@ -133,7 +138,12 @@ class NotificationRemoveAction extends ReduxAction<AppState> {
         ? null
         : state.selectedNotification;
 
-    return _updateNotificationInState(state, updatedList, selectedModel);
+    return _updateNotificationInState(
+      state,
+      updatedList,
+      selectedModel,
+      totalItems: state.notifications.totalItems - 1,
+    );
   }
 }
 
