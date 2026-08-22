@@ -56,7 +56,7 @@ LABEL maintainer="OneLiteFeatherNET <contact@onelitefeather.net>"
 LABEL org.opencontainers.image.title="Stelaris UI"
 LABEL org.opencontainers.image.description="Stelaris UI web application served from a scratch image by a static Go binary"
 LABEL org.opencontainers.image.vendor="OneLiteFeatherNET"
-LABEL org.opencontainers.image.source="https://github.com/OneLiteFeatherNET/stelaris-ui"
+LABEL org.opencontainers.image.source="https://github.com/OneLiteFeatherNET/stelaris"
 LABEL org.opencontainers.image.base.name="scratch"
 LABEL stage="production"
 
