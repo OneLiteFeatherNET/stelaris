@@ -179,7 +179,7 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
     );
   }
 
-  void _handleCreate() {
+  void _handleCreate() async {
     if (!_formKey.currentState!.validate()) return;
 
     final key = _keyController.text.trim();
@@ -198,7 +198,9 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
       labor: _labor,
     );
 
-    context.dispatch(AddProjectAction(newProject, select: true));
-    Navigator.of(context).pop(newProject);
+    await context.dispatchAndWait(AddProjectAction(newProject, select: true));
+    if (mounted) {
+      Navigator.of(context).pop(newProject);
+    }
   }
 }
