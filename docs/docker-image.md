@@ -26,7 +26,7 @@ Measured against the image this replaces (`nginx:1.31.4-alpine`):
 | OS packages | 71 | 0 |
 | Files in the image | 2130 | 1 |
 | Executables in `bin`/`sbin` | 340 | 1 |
-| Image size (without the bundle) | 26.3 MB | 3.3 MB (bundle included) |
+| Image size, same 45 MB bundle | 42.0 MB | 19.9 MB (precompressed copies included) |
 | Shell available to an attacker | `/bin/sh` (busybox) | none |
 | Runs as | root, drops to `nginx` for workers | uid 65532, never root |
 | Listens on | port 80 (privileged) | port 8080 (unprivileged) |
