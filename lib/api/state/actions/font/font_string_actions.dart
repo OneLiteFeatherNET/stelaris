@@ -18,7 +18,7 @@ class FontCharFetchAction extends ReduxAction<AppState> {
     final canLoadMore = selected.chars.hasNextPage;
 
     if (hasExisting && canLoadMore) {
-      if (state.isLoadingMoreItems) return null;
+      if (selected.isLoadingChars) return null;
       dispatchSync(_SetLoreCharModelLoad(true));
       try {
         final current = selected.chars;

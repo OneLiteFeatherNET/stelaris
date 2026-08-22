@@ -15,7 +15,7 @@ class SelectSoundAction extends ReduxAction<AppState> {
 class RemoveSelectedSoundEvent extends ReduxAction<AppState> {
   @override
   AppState? reduce() {
-    if (state.selectedFont == null) return null;
+    if (state.selectedSoundEvent == null) return null;
     return state.copyWith(selectedSoundEvent: null);
   }
 }
