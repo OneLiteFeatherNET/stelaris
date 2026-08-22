@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/font/font_string_actions.dart';
@@ -30,7 +31,7 @@ class _CharListViewState extends State<CharListView>
       child: ListView.builder(
         controller: scrollController,
         itemCount: widget.fontModel.chars.length,
-        cacheExtent: 100,
+        scrollCacheExtent: const ScrollCacheExtent.pixels(100),
         itemBuilder: (context, index) {
           final key = widget.fontModel.chars[index];
           return CharListItem(
