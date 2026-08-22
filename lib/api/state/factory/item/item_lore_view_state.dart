@@ -18,4 +18,6 @@ class ItemLoreView extends Vm {
   bool get isLoadingMore => selected.isLoadingMoreLoreLines;
 
   PaginatedResult<ItemLoreDto> get loreLines => selected.lore;
+
+  List<ItemLoreDto> get items => selected.lore.items;
 }
