@@ -18,6 +18,28 @@ jobs:
     uses: OneLiteFeatherNET/workflows/.github/workflows/release-please.yml@v2.8.1
     secrets: inherit
 
+  # Chained here rather than triggered by the tag, for the reason above - and
+  # because the release is the only place that already knows the version, so
+  # nothing has to derive one.
+  #
+  # Harbor sits behind a proxy that caps request bodies at 100 MB, and a plain
+  # `docker push` sends each layer as a single request. The shared workflow
+  # builds to an OCI archive and pushes it with regctl, splitting blobs above
+  # 50 MiB across several PATCH requests, then keyless-signs the result.
+  docker:
+    name: Publish the image
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    permissions:
+      contents: read
+      id-token: write # keyless cosign signing
+    uses: OneLiteFeatherNET/workflows/.github/workflows/docker-publish.yml@v2.8.1
+    with:
+      image-name: "onelitefeather/stelaris"
+      version: ${{ needs.release-please.outputs.version }}
+      context: "."
+    secrets: inherit
+
   sbom:
     name: Attach SBOM to release
     needs: release-please

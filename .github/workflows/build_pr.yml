@@ -29,3 +29,28 @@ jobs:
         run: flutter analyze || true
       - name: Run tests (Web)
         run: flutter test --platform chrome
+
+  # The production Dockerfile was broken on develop for months - it copied an
+  # nginx.conf that had been deleted from the tree - because nothing ever built
+  # it outside a publish run. Building it here is what keeps that from
+  # happening again; `nginx -t` runs inside the build, so a broken server
+  # configuration fails here too.
+  image:
+    if: github.repository_owner == 'OneLiteFeatherNET'
+    name: Build the container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # Not pushed anywhere: this job proves the image builds, it does not
+      # publish. Releases do that, from the release workflow.
+      - name: Build image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

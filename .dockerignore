@@ -1,0 +1,35 @@
+# A plain exclude list with no `!` re-includes: BuildKit and the legacy builder
+# disagree about what `*` plus an exception means, and getting that wrong drops
+# files from the context and fails the build with a bare "not found".
+
+# Build outputs. The image builds the bundle itself; a local build/web would
+# otherwise be copied in and then overwritten, for no reason but a slower
+# upload.
+build
+.dart_tool
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache
+
+# Not part of the image and expensive to send: .git alone is most of the
+# context. `flutter pub get` clones the git dependencies over the network, so
+# it does not need the local repository.
+.git
+.github
+.gitignore
+.idea
+.vscode
+.claude
+.serena
+
+# Documentation, tests and tooling config the build never reads.
+docs
+test
+analysis_options.yaml
+commitlint.config.mjs
+renovate.json
+release-please-config.json
+.release-please-manifest.json
+CONTRIBUTING.md
+LICENSE
