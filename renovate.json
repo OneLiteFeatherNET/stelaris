@@ -16,6 +16,30 @@
         "intl"
       ],
       "enabled": false
+    },
+    {
+      "description": "One PR for the Flutter SDK, so the Dockerfile and the workflows can never end up on different versions",
+      "matchDatasources": [
+        "flutter-version"
+      ],
+      "groupName": "flutter sdk"
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "The Flutter SDK version pinned in the Dockerfile and in the CI workflows",
+      "managerFilePatterns": [
+        "/^Dockerfile$/",
+        "/^\\.github/workflows/[^/]+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "ARG FLUTTER_VERSION=(?<currentValue>\\S+)",
+        "flutter-version:\\s*'(?<currentValue>[^']+)'"
+      ],
+      "datasourceTemplate": "flutter-version",
+      "depNameTemplate": "flutter",
+      "versioningTemplate": "semver"
     }
   ]
 }
