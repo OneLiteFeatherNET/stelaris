@@ -29,3 +29,90 @@ jobs:
         run: flutter analyze || true
       - name: Run tests (Web)
         run: flutter test --platform chrome
+
+  # The production Dockerfile was broken on develop for months - it copied an
+  # nginx.conf that had been deleted from the tree - because nothing ever built
+  # it outside a publish run. This job builds the real image on every pull
+  # request and then checks the parts a `docker build` alone would not catch.
+  image:
+    if: github.repository_owner == 'OneLiteFeatherNET'
+    name: Build and check the container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # Loaded into the local daemon rather than pushed: this job proves the
+      # image builds and behaves, it does not publish anything.
+      - name: Build image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          load: true
+          tags: stelaris-ui:pr
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Check the image is hardened and serves the app
+        run: |
+          set -euo pipefail
+
+          # The same restrictions the Kubernetes deployment applies. If the
+          # container needs a capability or a writable path, it fails here
+          # rather than in a cluster.
+          docker run -d --name stelaris-ui-check \
+            --read-only --tmpfs /tmp \
+            --cap-drop=ALL --security-opt no-new-privileges \
+            --user 101:101 \
+            -p 18080:8080 stelaris-ui:pr
+
+          for _ in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:18080/healthz >/dev/null 2>&1 && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:18080/healthz
+
+          echo "== index and deep link =="
+          curl -fsS -o /dev/null -w '%{http_code} %{content_type}\n' http://127.0.0.1:18080/
+          # go_router owns any path that is not a file, so this must be the shell.
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18080/items/deep/link)" = "200"
+          # A request that looks like a file must not be answered with HTML.
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18080/gone.js)" = "404"
+
+          echo "== wasm content type =="
+          # WebAssembly.instantiateStreaming rejects anything but application/wasm.
+          curl -sI http://127.0.0.1:18080/main.dart.wasm | grep -i '^content-type: application/wasm'
+
+          echo "== runtime config =="
+          curl -sI http://127.0.0.1:18080/config.json | grep -i '^cache-control: no-store'
+
+          echo "== security headers =="
+          headers="$(curl -sI http://127.0.0.1:18080/)"
+          for h in x-content-type-options x-frame-options referrer-policy \
+                   content-security-policy permissions-policy \
+                   cross-origin-resource-policy cross-origin-opener-policy; do
+            printf '%s\n' "$headers" | grep -qi "^$h:" || { echo "missing header: $h"; exit 1; }
+          done
+          # server_tokens off - no version number to scan against.
+          printf '%s\n' "$headers" | grep -qi '^server: nginx$'
+
+          echo "== methods =="
+          test "$(curl -s -o /dev/null -w '%{http_code}' -X POST http://127.0.0.1:18080/)" = "405"
+
+          echo "== precompressed assets =="
+          curl -sI -H 'Accept-Encoding: gzip' http://127.0.0.1:18080/main.dart.js \
+            | grep -i '^content-encoding: gzip'
+
+          echo "== not running as root =="
+          test "$(docker exec stelaris-ui-check id -u)" = "101"
+
+      - name: Container logs
+        if: always()
+        run: docker logs stelaris-ui-check || true
+
+      - name: Clean up
+        if: always()
+        run: docker rm -f stelaris-ui-check || true
