@@ -39,6 +39,7 @@ class InitSoundAction extends ReduxAction<AppState> {
         final next = await ApiService().soundApi.getPage(
           page: nextPage,
           size: size,
+          projectId: state.selectedProject?.id,
         );
 
         final merged = List<SoundEventModel>.of(current.items)
@@ -67,6 +68,7 @@ class InitSoundAction extends ReduxAction<AppState> {
             size: state.soundEvents.pageSize == 0
                 ? 10
                 : state.soundEvents.pageSize,
+            projectId: state.selectedProject?.id,
           );
       return state.copyWith(soundEvents: result);
     }
@@ -107,8 +109,11 @@ class SoundAddAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
+    final toAdd = _model.projectId == null && state.selectedProject != null
+        ? _model.copyWith(projectId: state.selectedProject!.id)
+        : _model;
     final SoundEventModel databaseModel = await ApiService().soundApi.add(
-      _model,
+      toAdd,
     );
     final List<SoundEventModel> updatedList = List.of(
       state.soundEvents.items,

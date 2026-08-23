@@ -52,6 +52,7 @@ class InitItemAction extends ReduxAction<AppState> {
         final next = await ApiService().itemApi.getPage(
           page: nextPage,
           size: size,
+          projectId: state.selectedProject?.id,
         );
 
         final merged = List<ItemModel>.of(current.items)..addAll(next.items);
@@ -76,6 +77,7 @@ class InitItemAction extends ReduxAction<AppState> {
           .getPage(
             page: 1,
             size: state.items.pageSize == 0 ? 10 : state.items.pageSize,
+            projectId: state.selectedProject?.id,
           );
       return state.copyWith(items: result);
     }
@@ -101,7 +103,10 @@ class ItemAddAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final ItemModel added = await ApiService().itemApi.add(_model);
+    final toAdd = _model.projectId == null && state.selectedProject != null
+        ? _model.copyWith(projectId: state.selectedProject!.id)
+        : _model;
+    final ItemModel added = await ApiService().itemApi.add(toAdd);
     final List<ItemModel> items = List.of(state.items.items, growable: true)
       ..add(added);
     return _updateItemInState(

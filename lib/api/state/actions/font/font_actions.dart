@@ -39,6 +39,7 @@ class InitFontAction extends ReduxAction<AppState> {
         final next = await ApiService().fontApi.getPage(
           page: nextPage,
           size: size,
+          projectId: state.selectedProject?.id,
         );
 
         final merged = List<FontModel>.of(current.items)..addAll(next.items);
@@ -63,6 +64,7 @@ class InitFontAction extends ReduxAction<AppState> {
           .getPage(
             page: 1,
             size: state.fonts.pageSize == 0 ? 10 : state.fonts.pageSize,
+            projectId: state.selectedProject?.id,
           );
       return state.copyWith(fonts: result);
     }
@@ -95,7 +97,10 @@ class FontAddAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final FontModel added = await ApiService().fontApi.add(_model);
+    final toAdd = _model.projectId == null && state.selectedProject != null
+        ? _model.copyWith(projectId: state.selectedProject!.id)
+        : _model;
+    final FontModel added = await ApiService().fontApi.add(toAdd);
     final List<FontModel> items = List.of(state.fonts.items, growable: true)
       ..add(added);
     return _updateFontInState(
