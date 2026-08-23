@@ -1,0 +1,205 @@
+# Default values for stelaris-ui.
+#
+# The defaults are meant to be deployable as they stand, apart from the two
+# backend URLs under `config` - the app starts without them but has nothing to
+# talk to.
+
+replicaCount: 2
+
+image:
+  # Registry host. Empty means the Harbor host the image is published to; set
+  # this to deploy from a mirror or a local registry.
+  registry: registry.onelitefeather.dev
+  repository: stelaris/stelaris-ui
+  # Empty means the chart's appVersion, so the chart and the image it describes
+  # are released together. Override to run a branch build.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Runtime configuration the app fetches as /config.json. It reaches the
+# container as a Secret mounted over the server's runtime directory - nginx
+# reads the file per request, so changing the Secret takes effect without a
+# rollout.
+config:
+  # Base URL of the Stelaris backend, e.g. https://api.stelaris.example/v1.
+  backendUrl: ""
+  # Base URL of the code generator service.
+  generatorUrl: ""
+
+  # Use a Secret managed outside this chart instead of the one it creates.
+  # It has to hold the whole document under `secretKey`.
+  existingSecret: ""
+  secretKey: config.json
+
+# Overrides for the nginx configuration baked into the image. Each one that is
+# set is rendered into a ConfigMap and mounted over the corresponding file; a
+# change to either rolls the Deployment, because nginx reads its configuration
+# only at startup.
+nginx:
+  # The Content-Security-Policy header, without the directive name.
+  #
+  # The image ships `connect-src 'self' https:`, because an image that is built
+  # once and promoted cannot know its backends. Set this to name them, which is
+  # what turns the policy from "any HTTPS host" into "these hosts":
+  #
+  #   contentSecurityPolicy: >-
+  #     default-src 'self'; base-uri 'self'; object-src 'none';
+  #     frame-ancestors 'none'; form-action 'none';
+  #     script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval';
+  #     style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:;
+  #     font-src 'self' data:; media-src 'self' data: blob:;
+  #     worker-src 'self' blob:; child-src 'self' blob:; manifest-src 'self';
+  #     connect-src 'self' https://api.stelaris.example
+  #
+  # `unsafe-inline` and `unsafe-eval` are not optional - Flutter's loader
+  # bootstraps from an inline script and compiles Wasm at runtime. See
+  # docs/docker-image.md.
+  contentSecurityPolicy: ""
+
+  # The whole server block, replacing /etc/nginx/conf.d/default.conf. Only
+  # needed for something the image cannot decide for itself - a dual-stack
+  # cluster adding `listen [::]:8080;`, for one. Copy
+  # docker/nginx/conf.d/default.conf and edit it; a mistake here takes the pods
+  # down, so the readiness probe is what catches it.
+  serverConfig: ""
+
+service:
+  type: ClusterIP
+  port: 80
+  # The container listens unprivileged; only the Service port is the familiar 80.
+  targetPort: 8080
+  annotations: {}
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  #   TLS terminates here, so this is where HSTS belongs - the image
+  #   deliberately does not send it, because only the ingress knows whether the
+  #   deployment is reachable over HTTPS.
+  hosts: []
+  #  - host: stelaris.example
+  #    paths:
+  #      - path: /
+  #        pathType: Prefix
+  tls: []
+  #  - secretName: stelaris-ui-tls
+  #    hosts:
+  #      - stelaris.example
+
+# Serving static files out of the page cache. The memory limit equals the
+# request on purpose: nginx's working set is flat and predictable, so a
+# Guaranteed pod is the right QoS class. No CPU limit - throttling a request
+# path that is mostly sendfile() only adds latency.
+resources:
+  requests:
+    cpu: 20m
+    memory: 64Mi
+  limits:
+    memory: 64Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: ""
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+  maxUnavailable: ""
+
+# Deny-by-default egress is deliberately not part of this: the browser talks to
+# the backend, not the pod, so this workload has no egress worth allowing.
+# Ingress is restricted to whatever fronts it.
+networkPolicy:
+  enabled: false
+  # Selects the pods allowed to reach this one - the ingress controller.
+  # An empty list allows any pod in any namespace, which is the same as not
+  # enabling the policy at all.
+  ingressFrom: []
+  #  - namespaceSelector:
+  #      matchLabels:
+  #        kubernetes.io/metadata.name: ingress-nginx
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+# The image runs as uid 101 with a read-only root filesystem and needs no
+# capabilities. Changing any of this makes the pod fail to start rather than
+# quietly running with more privilege than it needs.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 101
+  runAsGroup: 101
+  fsGroup: 101
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  privileged: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+# /tmp is the container's only writable path: nginx's pid file and all of its
+# temp paths live there. In memory, because none of it should ever reach a disk
+# and the volume is measured in kilobytes.
+tmpVolume:
+  sizeLimit: 16Mi
+
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  periodSeconds: 5
+  timeoutSeconds: 2
+  failureThreshold: 2
+
+startupProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  periodSeconds: 2
+  timeoutSeconds: 2
+  # nginx binds in well under a second; this only has to cover a slow node.
+  failureThreshold: 15
+
+# Spread replicas over nodes, but schedule anyway when that is not possible -
+# a single-node cluster should still get a running deployment.
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: ScheduleAnyway
+    labelSelector:
+      matchLabels: {} # filled in by the template
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+podAnnotations: {}
+podLabels: {}
+
+# The app never talks to the Kubernetes API, so it has no use for a token.
+automountServiceAccountToken: false
+
+# Static files, so a slow client draining is the only reason to wait.
+terminationGracePeriodSeconds: 30

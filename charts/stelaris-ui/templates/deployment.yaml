@@ -1,0 +1,137 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "stelaris-ui.fullname" . }}
+  labels:
+    {{- include "stelaris-ui.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "stelaris-ui.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # Bring the new pod up before taking an old one down: the workload is
+      # stateless and cheap, so there is no reason for a rollout to reduce
+      # capacity.
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        {{- include "stelaris-ui.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- if include "stelaris-ui.hasNginxOverrides" . }}
+        # nginx reads its configuration once, at startup, so a change to it has
+        # to roll the pods. config.json deliberately has no checksum here: nginx
+        # serves that file from disk per request, so the kubelet updating it in
+        # place is enough and a rollout would be pure churn.
+        checksum/nginx-config: {{ include (print $.Template.BasePath "/configmap-nginx.yaml") . | sha256sum }}
+        {{- end }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "stelaris-ui.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ include "stelaris-ui.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          {{- with .Values.startupProbe }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            # The container's only writable path. nginx puts its pid file and
+            # every temp path here, which is what lets the root filesystem stay
+            # read-only.
+            - name: tmp
+              mountPath: /tmp
+            # Mounted as a directory, not with subPath, so the kubelet keeps the
+            # file current after a Secret update without restarting the pod.
+            - name: runtime-config
+              mountPath: /etc/nginx/runtime
+              readOnly: true
+            {{- if .Values.nginx.contentSecurityPolicy }}
+            - name: nginx-config
+              mountPath: /etc/nginx/snippets/content-security-policy.conf
+              subPath: content-security-policy.conf
+              readOnly: true
+            {{- end }}
+            {{- if .Values.nginx.serverConfig }}
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+              readOnly: true
+            {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: {{ .Values.tmpVolume.sizeLimit }}
+        - name: runtime-config
+          secret:
+            secretName: {{ include "stelaris-ui.configSecretName" . }}
+            items:
+              # Projected under the name nginx serves it as, whatever the key is
+              # called in the Secret.
+              - key: {{ .Values.config.secretKey }}
+                path: config.json
+        {{- if include "stelaris-ui.hasNginxOverrides" . }}
+        - name: nginx-config
+          configMap:
+            name: {{ include "stelaris-ui.fullname" . }}-nginx
+        {{- end }}
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- range . }}
+        - maxSkew: {{ .maxSkew }}
+          topologyKey: {{ .topologyKey }}
+          whenUnsatisfiable: {{ .whenUnsatisfiable }}
+          labelSelector:
+            matchLabels:
+              {{- include "stelaris-ui.selectorLabels" $ | nindent 14 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

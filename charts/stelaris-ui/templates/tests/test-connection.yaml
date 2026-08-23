@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "stelaris-ui.fullname" . }}-test"
+  labels:
+    {{- include "stelaris-ui.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  restartPolicy: Never
+  automountServiceAccountToken: false
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: check
+      image: curlimages/curl:8.20.1
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+      args:
+        - /bin/sh
+        - -ec
+        - |
+          host="{{ include "stelaris-ui.fullname" . }}:{{ .Values.service.port }}"
+
+          # The probe endpoint, which is what tells us the pod is up at all.
+          curl -fsS "http://$host/healthz"
+
+          # The app shell, which is what tells us the bundle actually shipped.
+          curl -fsS -o /dev/null "http://$host/"
+
+          # The runtime configuration - the one piece that comes from this
+          # release rather than from the image, so it is the one worth
+          # asserting on.
+          curl -fsS "http://$host/config.json" | grep -q '{'
+
+          # A deep link has to reach the app shell, not a 404, or every
+          # bookmarked route in the app is broken.
+          test "$(curl -s -o /dev/null -w '%{http_code}' "http://$host/items/deep/link")" = "200"
+
+          echo "ok"

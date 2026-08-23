@@ -1,0 +1,47 @@
+{{ .Chart.Name }} {{ .Chart.Version }} is installed as {{ .Release.Name }} in {{ .Release.Namespace }}.
+
+Image: {{ include "stelaris-ui.image" . }}
+
+{{- if .Values.ingress.enabled }}
+
+Reachable at:
+{{- range .Values.ingress.hosts }}
+{{- $scheme := "http" }}
+{{- range $.Values.ingress.tls }}{{ if has (index $.Values.ingress.hosts 0).host .hosts }}{{ $scheme = "https" }}{{ end }}{{ end }}
+{{- range .paths }}
+  {{ $scheme }}://{{ (index $.Values.ingress.hosts 0).host }}{{ .path }}
+{{- end }}
+{{- end }}
+{{- else }}
+
+No Ingress is enabled. To look at it locally:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "stelaris-ui.fullname" . }} 8080:{{ .Values.service.port }}
+
+then open http://127.0.0.1:8080
+{{- end }}
+
+{{- if and (not .Values.config.existingSecret) (not .Values.config.backendUrl) }}
+
+WARNING: config.backendUrl is not set.
+
+The app will start, but it has nothing to talk to: it falls back to the URLs
+compiled into the bundle, which are empty. Set it and upgrade:
+
+  helm upgrade {{ .Release.Name }} … --set config.backendUrl=https://api.example/v1
+
+nginx serves that file from disk per request, so this takes effect without a
+rollout - a browser reload is enough.
+{{- end }}
+
+{{- if not .Values.nginx.contentSecurityPolicy }}
+
+Note: the Content-Security-Policy allows `connect-src 'self' https:`, which is
+the image default - it is built once and promoted, so it cannot know its
+backends. Narrow it to the actual origins with `nginx.contentSecurityPolicy`;
+see the chart README.
+{{- end }}
+
+Check the release:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
