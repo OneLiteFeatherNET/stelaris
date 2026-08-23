@@ -40,7 +40,7 @@ class MiscSettingsRow extends StatelessWidget {
                 showLicensePage(
                   context: context,
                   applicationName: appName,
-                  applicationVersion: '0.1.0',
+                  applicationVersion: appVersion,
                 );
               },
               child: Text(context.l10n.settings_misc_license_button),

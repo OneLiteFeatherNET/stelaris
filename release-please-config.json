@@ -8,6 +8,8 @@
       "package-name": "stelaris",
       "changelog-path": "CHANGELOG.md",
       "extra-files": [
+        "pubspec.yaml",
+        "lib/util/constants.dart",
         "charts/stelaris-ui/Chart.yaml"
       ]
     }

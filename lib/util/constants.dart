@@ -2,6 +2,13 @@ import 'package:material_ui/material_ui.dart';
 
 /// Strings
 const String appName = 'Stelaris';
+
+/// The released version of the app, shown on the license page.
+///
+/// Release Please rewrites this line, so it always matches the version in
+/// pubspec.yaml and the tag the build came from. Do not edit it by hand.
+const String appVersion = '1.0.0'; // x-release-please-version
+
 const String unknownEntry = 'Unknown';
 
 /// EdgeInsets
