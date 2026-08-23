@@ -6,8 +6,23 @@ import 'package:stelaris/feature/project/project_selection_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
+import 'package:stelaris/api/api_service.dart';
+import '../../support/fake_http_client_adapter.dart';
+
 void main() {
   group('ProjectSelectionPage Widget Tests', () {
+    setUp(() {
+      ApiService().projectApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json(
+        const PaginatedResult<Project>(
+          items: [],
+          totalItems: 0,
+          totalPages: 0,
+          currentPage: 1,
+          pageSize: 50,
+        ).toJson((p) => p.toJson()),
+      );
+    });
     testWidgets('renders empty state when no projects exist', (tester) async {
       final store = Store<AppState>(initialState: const AppState());
 
@@ -36,6 +51,17 @@ void main() {
         displayName: 'Test Project',
         key: 'test_key',
         description: 'A test project description',
+      );
+
+      ApiService().projectApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json(
+        const PaginatedResult<Project>(
+          items: [project],
+          totalItems: 1,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: 50,
+        ).toJson((p) => p.toJson()),
       );
 
       final store = Store<AppState>(
