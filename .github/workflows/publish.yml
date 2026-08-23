@@ -58,7 +58,7 @@ jobs:
       id-token: write # keyless cosign signing
     uses: OneLiteFeatherNET/workflows/.github/workflows/docker-publish.yml@v2.8.1
     with:
-      image-name: "stelaris/stelaris-ui"
+      image-name: "onelitefeather/stelaris"
       version: ${{ needs.version.outputs.version }}
       context: "."
     secrets: inherit
