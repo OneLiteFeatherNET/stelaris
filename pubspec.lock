@@ -734,8 +734,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: main
-      resolved-ref: cb36388a875c985605e5864964b0a9af875f2894
+      ref: "feature/projectId"
+      resolved-ref: "212b73c3991dd6a9c5d263fd8ee08fcfbb9e59d2"
       url: "https://github.com/OneLiteFeatherNET/stelaris-model.git"
     source: git
     version: "0.0.1"
