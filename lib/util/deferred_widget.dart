@@ -38,10 +38,8 @@ class _DeferredWidgetState extends State<DeferredWidget> {
           return widget.builder();
         }
         return widget.placeholder ??
-            const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
+            const Center(
+              child: CircularProgressIndicator(),
             );
       },
     );
