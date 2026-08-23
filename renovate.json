@@ -40,6 +40,17 @@
       "datasourceTemplate": "flutter-version",
       "depNameTemplate": "flutter",
       "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Container images referenced from the Helm chart's templates",
+      "managerFilePatterns": [
+        "/^charts/[^/]+/templates/.+\\.yaml$/"
+      ],
+      "matchStrings": [
+        "image: (?<depName>[a-z0-9./-]+):(?<currentValue>[^\\s@\"']+)"
+      ],
+      "datasourceTemplate": "docker"
     }
   ]
 }

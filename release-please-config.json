@@ -6,7 +6,10 @@
   "packages": {
     ".": {
       "package-name": "stelaris",
-      "changelog-path": "CHANGELOG.md"
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": [
+        "charts/stelaris-ui/Chart.yaml"
+      ]
     }
   },
   "bootstrap-sha": "15d48d2a3949104cedaf00b3d7179e4c05754fd9"
