@@ -189,7 +189,6 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
     final docuUrl = _docuUrlController.text.trim();
 
     final newProject = Project(
-      id: key,
       displayName: displayName,
       key: key,
       description: desc.isEmpty ? null : desc,
