@@ -90,7 +90,13 @@ COPY --chown=builder:builder . .
 # so the generator runs here the same way it runs in CI.
 RUN dart run build_runner build --delete-conflicting-outputs
 
-RUN flutter build web --release --wasm
+# --no-web-resources-cdn, because `--web-resources-cdn` defaults to on: the
+# build writes the CanvasKit and Skwasm files into the bundle either way, but
+# the loader then fetches them from www.gstatic.com at runtime and the copies in
+# the image are never touched. That puts a third-party host on the critical path
+# of an image whose whole point is not having one, and it needs a CSP wide
+# enough to let a compromised dependency talk to that host too.
+RUN flutter build web --release --wasm --no-web-resources-cdn
 
 # Precompress once, here, instead of spending CPU on it for every request.
 # `gzip_static` picks the .gz sibling up and falls back to the plain file for
