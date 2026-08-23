@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.1.0...v1.1.1) (2026-08-23)
+
+
+### Bug Fixes
+
+* **docker:** make the deployed image actually boot ([#128](https://github.com/OneLiteFeatherNET/stelaris/issues/128)) ([54f63b6](https://github.com/OneLiteFeatherNET/stelaris/commit/54f63b69ee2fe42c2f5e46ab5b36a40d5f8d4012))
+
 ## [1.1.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.0.0...v1.1.0) (2026-08-23)
 
 
