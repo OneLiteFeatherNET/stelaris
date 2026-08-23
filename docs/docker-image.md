@@ -155,7 +155,8 @@ broken build stays visible instead of answering a missing script with a page of
 HTML and a console message about an unexpected MIME type.
 
 **`application/wasm`.** `WebAssembly.instantiateStreaming` rejects anything
-else. It is in the base image's `mime.types`, and the PR job asserts it.
+else. It comes from the base image's `mime.types`, so it holds as long as the
+bundle is served by nginx at all.
 
 **Caching.** Flutter does not content-hash its output names — `main.dart.wasm`
 keeps that name across builds — so a long `max-age` would pin clients to a
@@ -247,34 +248,31 @@ hash next to a version bump does.
 
 ## Publishing
 
-`.github/workflows/publish.yml` resolves the image version and hands the build
-to the org-wide
+The image is published on a release, from `.github/workflows/release-please.yml`.
+That job is chained into the release run rather than triggered by the tag,
+because release-please tags with `GITHUB_TOKEN` and such a tag starts no
+`on: push: tags` workflow - and because the release is the only place that
+already knows the version, so nothing has to derive one.
+
+It delegates to the org-wide
 [`docker-publish.yml`](https://github.com/OneLiteFeatherNET/workflows). Harbor
 sits behind a proxy that caps request bodies at 100 MB and a plain `docker
 push` sends each layer as one request, so that workflow pushes with `regctl`,
 splitting blobs above 50 MiB across several `PATCH` requests. The image is
-keyless-signed via GitHub OIDC.
+keyless-signed via GitHub OIDC and lands at
+`harbor.onelitefeather.dev/onelitefeather/stelaris`, next to `otis` and
+`sturnus`.
 
-Tags: a `v*.*.*` tag publishes that version; every other push publishes
-`<manifest-version>-<branch-slug>` plus an immutable `sha-<short>`. Branch
-builds are prereleases, so they never take over the `1`/`1.0` aliases of a
-release.
+There are no per-branch images. Deploying something that is not a release means
+pointing a deployment at a released tag; cutting a release is the way to get a
+new image.
 
-## What the PR job checks
+## What the pull-request job checks
 
-`.github/workflows/build_pr.yml` builds the real image on every pull request
-and then runs it under the same restrictions the cluster applies
-(`--read-only --tmpfs /tmp --cap-drop=ALL --security-opt no-new-privileges
---user 101:101`), asserting that:
+`.github/workflows/build_pr.yml` builds the image on every pull request. It does
+not push it and does not exercise it: the point is that the image builds at all,
+which is what was missing when the `Dockerfile` on `develop` spent months
+copying a file that had been deleted from the tree.
 
-- `/healthz` answers, and the process runs as uid 101
-- `/` and a deep link return the shell; a missing `.js` returns 404
-- `main.dart.wasm` is `application/wasm`
-- `/config.json` is `no-store`
-- every security header is present, and `Server:` carries no version
-- `POST` returns 405
-- `main.dart.js` is served precompressed
-
-This exists because the Dockerfile on `develop` was broken for months — it
-copied an `nginx.conf` that had been deleted from the tree — and nothing ever
-built it outside a publish run.
+`nginx -t` runs inside the build, so a server configuration that does not parse
+fails there rather than in a cluster.
