@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:async_redux/async_redux.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/base_api.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -42,6 +46,41 @@ void main() {
         expect(store.state.selectedItem?.id, 'new-id');
       },
     );
+
+    test('automatically assigns selectedProject.id to added item if projectId is null', () async {
+      const selectedProject = Project(
+        id: 'proj-xyz',
+        displayName: 'Test Proj',
+        key: 'PROJ_XYZ',
+      );
+
+      final store = Store<AppState>(
+        initialState: const AppState(selectedProject: selectedProject),
+      );
+
+      Map<String, dynamic>? sentBody;
+      (ApiService().itemApi as BaseApi<ItemModel>).apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+        sentBody = options.data as Map<String, dynamic>?;
+        return ResponseBody.fromString(
+          jsonEncode({
+            'id': 'created-1',
+            'uiName': 'My Sword',
+            'projectId': 'proj-xyz',
+          }),
+          200,
+          headers: {
+            Headers.contentTypeHeader: [Headers.jsonContentType],
+          },
+        );
+      });
+
+      const newItem = ItemModel(uiName: 'My Sword');
+      await store.dispatchAndWait(ItemAddAction(newItem));
+
+      expect(sentBody?['projectId'], 'proj-xyz');
+      expect(store.state.items.items.last.projectId, 'proj-xyz');
+    });
   });
 
   group('ItemRemoveAction', () {

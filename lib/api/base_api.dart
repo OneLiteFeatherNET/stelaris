@@ -31,6 +31,24 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
     required this.toJson,
   });
 
+  String _buildPath({String? projectId, String? suffix}) {
+    final base = projectId != null && projectId.isNotEmpty
+        ? 'project/$projectId/$endpoint'
+        : endpoint;
+    return suffix != null ? '$base/$suffix' : base;
+  }
+
+  String? _extractProjectId(T model) {
+    try {
+      final dynamic m = model;
+      final dynamic pid = m.projectId;
+      if (pid is String && pid.isNotEmpty) {
+        return pid;
+      }
+    } catch (_) {}
+    return null;
+  }
+
   @override
   Future<T> get() async {
     final baseUri = Uri.parse(apiClient.baseUrl);
@@ -42,7 +60,9 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
   @override
   Future<T> add(T model) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint');
+    final projectId = _extractProjectId(model);
+    final path = _buildPath(projectId: projectId);
+    final uri = baseUri.replace(path: '${baseUri.path}/$path');
     final result = await apiClient.dio.postUri(uri, data: toJson(model));
     return fromJson(result.data!);
   }
@@ -50,7 +70,9 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
   @override
   Future<T> update(T model) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/update');
+    final projectId = _extractProjectId(model);
+    final path = _buildPath(projectId: projectId, suffix: 'update');
+    final uri = baseUri.replace(path: '${baseUri.path}/$path');
     final result = await apiClient.dio.postUri(uri, data: toJson(model));
     return fromJson(result.data!);
   }
@@ -58,19 +80,25 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
   @override
   Future<T> remove(T model) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
+    final projectId = _extractProjectId(model);
+    final path = _buildPath(projectId: projectId, suffix: 'delete/${model.id}');
     final uri = baseUri.replace(
-      path: '${baseUri.path}/$endpoint/delete/${model.id}',
+      path: '${baseUri.path}/$path',
     );
     final result = await apiClient.dio.deleteUri(uri);
     return fromJson(result.data!);
   }
 
   @override
-  Future<PaginatedResult<T>> getPage({int page = 1, int size = 10}) async {
+  Future<PaginatedResult<T>> getPage({
+    int page = 1,
+    int size = 10,
+    String? projectId,
+  }) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
-    // Reuse the /all endpoint with query params if that's the convention.
+    final path = _buildPath(projectId: projectId);
     final uri = baseUri.replace(
-      path: '${baseUri.path}/$endpoint',
+      path: '${baseUri.path}/$path',
       queryParameters: {
         'page': (page - 1).toString(), // many backends use 0-based
         'size': size.toString(),

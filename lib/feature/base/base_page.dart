@@ -1,4 +1,6 @@
+import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/button/build_button.dart';
 import 'package:stelaris/feature/base/button/settings_button.dart';
 import 'package:stelaris/feature/base/button/toggle_navigation_button.dart';
@@ -20,27 +22,37 @@ class BasePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        leading: const ToggleNavigationBar(),
-        elevation: 0,
-        title: appTitle,
-        centerTitle: true,
-        actions: const [
-          ProjectAppBarBadge(),
-          horizontalSpacing10,
-          BuildButton(),
-          SettingsButton(),
-        ],
-      ),
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const NavigationSideBar(),
-          Expanded(child: child),
-        ],
-      ),
+    return StoreConnector<AppState, String?>(
+      converter: (store) => store.state.selectedProject?.id,
+      builder: (context, selectedProjectId) {
+        return Scaffold(
+          appBar: AppBar(
+            scrolledUnderElevation: 0,
+            leading: const ToggleNavigationBar(),
+            elevation: 0,
+            title: appTitle,
+            centerTitle: true,
+            actions: const [
+              ProjectAppBarBadge(),
+              horizontalSpacing10,
+              BuildButton(),
+              SettingsButton(),
+            ],
+          ),
+          body: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const NavigationSideBar(),
+              Expanded(
+                child: KeyedSubtree(
+                  key: ValueKey(selectedProjectId),
+                  child: child,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

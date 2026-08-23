@@ -11,7 +11,49 @@ class SelectProjectAction extends ReduxAction<AppState> {
 
   @override
   AppState reduce() {
-    return state.copyWith(selectedProject: project);
+    return state.copyWith(
+      selectedProject: project,
+      items: const PaginatedResult(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+      fonts: const PaginatedResult(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+      notifications: const PaginatedResult(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+      attributes: const PaginatedResult(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+      soundEvents: const PaginatedResult(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+      selectedItem: null,
+      selectedFont: null,
+      selectedNotification: null,
+      selectedAttribute: null,
+      selectedSoundEvent: null,
+    );
   }
 }
 

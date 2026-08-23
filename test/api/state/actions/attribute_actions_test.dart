@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:async_redux/async_redux.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/base_api.dart';
@@ -38,6 +41,41 @@ void main() {
 
       expect(store.state.attributes.totalItems, 21);
       expect(store.state.attributes.items.last.id, 'new-id');
+    });
+
+    test('automatically assigns selectedProject.id to added attribute if projectId is null', () async {
+      const selectedProject = Project(
+        id: 'proj-xyz',
+        displayName: 'Test Proj',
+        key: 'PROJ_XYZ',
+      );
+
+      final store = Store<AppState>(
+        initialState: const AppState(selectedProject: selectedProject),
+      );
+
+      Map<String, dynamic>? sentBody;
+      (ApiService().attributeApi as BaseApi<AttributeModel>).apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+        sentBody = options.data as Map<String, dynamic>?;
+        return ResponseBody.fromString(
+          jsonEncode({
+            'id': 'created-1',
+            'uiName': 'Test Attribute',
+            'projectId': 'proj-xyz',
+          }),
+          200,
+          headers: {
+            Headers.contentTypeHeader: [Headers.jsonContentType],
+          },
+        );
+      });
+
+      const newAttr = AttributeModel(uiName: 'Test Attribute');
+      await store.dispatchAndWait(AttributeAddAction(newAttr));
+
+      expect(sentBody?['projectId'], 'proj-xyz');
+      expect(store.state.attributes.items.last.projectId, 'proj-xyz');
     });
   });
 

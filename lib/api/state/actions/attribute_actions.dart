@@ -56,6 +56,7 @@ class InitAttributeAction extends ReduxAction<AppState> {
         final next = await ApiService().attributeApi.getPage(
           page: nextPage,
           size: size,
+          projectId: state.selectedProject?.id,
         );
 
         final merged = List<AttributeModel>.of(current.items)
@@ -84,6 +85,7 @@ class InitAttributeAction extends ReduxAction<AppState> {
             size: state.attributes.pageSize == 0
                 ? 10
                 : state.attributes.pageSize,
+            projectId: state.selectedProject?.id,
           );
       return state.copyWith(attributes: result);
     }
@@ -157,8 +159,11 @@ class AttributeAddAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
+    final toAdd = model.projectId == null && state.selectedProject != null
+        ? model.copyWith(projectId: state.selectedProject!.id)
+        : model;
     final AttributeModel databaseModel = await ApiService().attributeApi.add(
-      model,
+      toAdd,
     );
     final List<AttributeModel> updatedList = List.of(
       state.attributes.items,

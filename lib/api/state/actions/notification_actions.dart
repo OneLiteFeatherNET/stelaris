@@ -37,6 +37,7 @@ class InitNotificationAction extends ReduxAction<AppState> {
         final next = await ApiService().notificationApi.getPage(
           page: nextPage,
           size: size,
+          projectId: state.selectedProject?.id,
         );
 
         final merged = List<NotificationModel>.of(current.items)
@@ -65,6 +66,7 @@ class InitNotificationAction extends ReduxAction<AppState> {
             size: state.notifications.pageSize == 0
                 ? 10
                 : state.notifications.pageSize,
+            projectId: state.selectedProject?.id,
           );
       return state.copyWith(notifications: result);
     }
@@ -104,8 +106,11 @@ class NotificationAddAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
+    final toAdd = model.projectId == null && state.selectedProject != null
+        ? model.copyWith(projectId: state.selectedProject!.id)
+        : model;
     final NotificationModel databaseModel = await ApiService().notificationApi
-        .add(model);
+        .add(toAdd);
     final List<NotificationModel> updatedList = List.of(
       state.notifications.items,
       growable: true,
