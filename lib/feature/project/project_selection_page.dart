@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/project/project_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
@@ -27,6 +28,7 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
 
     return Scaffold(
       body: StoreConnector<AppState, ProjectViewModel>(
+        onInit: (store) => store.dispatchAndWait(InitProjectAction()),
         vm: () => ProjectVmFactory(),
         builder: (context, vm) {
           // Sync local selection with state if null or removed
