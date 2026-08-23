@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "stelaris-ui.fullname" . }}
+  labels:
+    {{- include "stelaris-ui.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      # By name, not number: the container's port is unprivileged and the
+      # Service's is the familiar one, and the two should be free to differ.
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "stelaris-ui.selectorLabels" . | nindent 4 }}

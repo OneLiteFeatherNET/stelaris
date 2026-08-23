@@ -1,0 +1,12 @@
+# chart-testing. `ct lint` picks up every charts/*/ci/*-values.yaml and lints
+# the chart once per file, which is what replaced rendering those shapes by
+# hand in the workflow.
+chart-dirs:
+  - charts
+target-branch: develop
+# The chart carries no maintainers list beyond the org itself, and requiring
+# every entry to resolve to a GitHub user would fail on a team address.
+validate-maintainers: false
+# Release Please owns version and appVersion through extra-files, so a chart
+# change is not supposed to bump them by hand - and ct would insist on it.
+check-version-increment: false

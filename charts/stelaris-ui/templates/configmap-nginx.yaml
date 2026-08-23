@@ -1,0 +1,19 @@
+{{- if include "stelaris-ui.hasNginxOverrides" . }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "stelaris-ui.fullname" . }}-nginx
+  labels:
+    {{- include "stelaris-ui.labels" . | nindent 4 }}
+data:
+  {{- if .Values.nginx.contentSecurityPolicy }}
+  # Replaces the file the image ships. Everything else in
+  # security-headers.conf, which includes this one, stays as built.
+  content-security-policy.conf: |
+    add_header Content-Security-Policy {{ .Values.nginx.contentSecurityPolicy | trim | quote }} always;
+  {{- end }}
+  {{- if .Values.nginx.serverConfig }}
+  default.conf: |
+    {{- .Values.nginx.serverConfig | nindent 4 }}
+  {{- end }}
+{{- end }}

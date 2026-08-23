@@ -40,6 +40,29 @@
       "datasourceTemplate": "flutter-version",
       "depNameTemplate": "flutter",
       "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Container images referenced from the Helm chart's templates",
+      "managerFilePatterns": [
+        "/^charts/[^/]+/templates/.+\\.yaml$/"
+      ],
+      "matchStrings": [
+        "image: (?<depName>[a-z0-9./-]+):(?<currentValue>[^\\s@\"']+)"
+      ],
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "The helm-unittest plugin version pinned in the workflows",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/[^/]+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "UNITTEST_VERSION: (?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "helm-unittest/helm-unittest"
     }
   ]
 }

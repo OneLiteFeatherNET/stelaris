@@ -1,0 +1,56 @@
+# Everything optional turned on at once, so the templates that only exist under
+# a condition are rendered by the linter too.
+config:
+  backendUrl: https://api.stelaris.example/v1
+  generatorUrl: https://gen.stelaris.example
+
+nginx:
+  contentSecurityPolicy: >-
+    default-src 'self'; base-uri 'self'; object-src 'none';
+    frame-ancestors 'none'; form-action 'none';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval';
+    style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:;
+    font-src 'self' data:; media-src 'self' data: blob:;
+    worker-src 'self' blob:; child-src 'self' blob:; manifest-src 'self';
+    connect-src 'self' https://api.stelaris.example https://gen.stelaris.example
+  serverConfig: |
+    server {
+        listen      8080;
+        listen      [::]:8080;
+        server_name _;
+        root  /usr/share/nginx/html;
+        index index.html;
+        location = /healthz {
+            access_log off;
+            default_type text/plain;
+            return 200 "ok\n";
+        }
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+    }
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+  hosts:
+    - host: stelaris.example
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: stelaris-ui-tls
+      hosts:
+        - stelaris.example
+
+autoscaling:
+  enabled: true
+
+networkPolicy:
+  enabled: true
+  ingressFrom:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-nginx

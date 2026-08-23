@@ -68,3 +68,55 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ needs.release-please.outputs.tag_name }}
         run: gh release upload "$TAG" bom.json --clobber
+
+  # Chained into this run rather than triggered by the tag, for the reason at
+  # the top of this file: release-please tags with GITHUB_TOKEN, and such a tag
+  # starts no `on: push: tags` workflow.
+  #
+  # Charts are published on a release only. A branch build is deployed by
+  # pointing an existing release of the chart at the branch's image tag, which
+  # needs no chart of its own.
+  helm:
+    name: Publish the Helm chart
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v5.0.1
+
+      # Both versions come from the release rather than from Chart.yaml.
+      # Release Please keeps that file current anyway, but stating them here
+      # makes a mismatch impossible instead of something to check for: the
+      # chart cannot be packaged pointing at an image tag nobody built.
+      - name: Package
+        run: helm package charts/stelaris-ui --destination dist --version "${{ needs.release-please.outputs.version }}" --app-version "${{ needs.release-please.outputs.version }}"
+
+      - name: Log in to OneLiteFeather Harbor
+        env:
+          REGISTRY: ${{ secrets.HARBOR_REGISTRY }}
+          USERNAME: ${{ secrets.HARBOR_USERNAME }}
+          PASSWORD: ${{ secrets.HARBOR_PASSWORD }}
+        run: printf '%s' "$PASSWORD" | helm registry login "$REGISTRY" --username "$USERNAME" --password-stdin
+
+      # Into the same Harbor project as the image, under charts/ - the layout
+      # Apus already uses, so a Flux OCIRepository pointing here looks like
+      # every other one in the cluster repository.
+      - name: Push
+        env:
+          REGISTRY: ${{ secrets.HARBOR_REGISTRY }}
+          VERSION: ${{ needs.release-please.outputs.version }}
+        run: helm push "dist/stelaris-ui-${VERSION}.tgz" "oci://${REGISTRY}/onelitefeather/charts"
+
+      - name: Log out
+        if: always()
+        env:
+          REGISTRY: ${{ secrets.HARBOR_REGISTRY }}
+        run: helm registry logout "$REGISTRY" || true

@@ -1,0 +1,129 @@
+suite: deployment
+# configmap-nginx.yaml is listed because the Deployment's checksum annotation
+# includes it; without it in scope the template cannot render at all.
+templates:
+  - deployment.yaml
+  - configmap-nginx.yaml
+tests:
+  - it: runs unprivileged, read-only and without capabilities
+    template: deployment.yaml
+    # The image was built to run this way. If a value ever loosens one of
+    # these, the pod would start with more privilege than it needs and nothing
+    # else would notice.
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.securityContext.runAsUser
+          value: 101
+      - equal:
+          path: spec.template.spec.securityContext.seccompProfile.type
+          value: RuntimeDefault
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: false
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop
+          value: [ALL]
+
+  - it: gives the container /tmp in memory and nothing else to write to
+    template: deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: tmp
+            emptyDir:
+              medium: Memory
+              sizeLimit: 16Mi
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: tmp
+            mountPath: /tmp
+
+  - it: mounts the runtime config as a directory, not with subPath
+    template: deployment.yaml
+    # subPath would freeze the file at the version it had when the pod started,
+    # which is what makes a Secret update need a rollout. As a directory the
+    # kubelet keeps it current, and nginx reads it per request.
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: runtime-config
+            mountPath: /etc/nginx/runtime
+            readOnly: true
+      - notExists:
+          path: spec.template.spec.containers[0].volumeMounts[1].subPath
+
+  - it: does not roll the pods when only the runtime config changes
+    template: deployment.yaml
+    # No checksum annotation for the Secret, deliberately - see above.
+    set:
+      config.backendUrl: https://api.example/v1
+    asserts:
+      - notExists:
+          path: spec.template.metadata.annotations["checksum/nginx-config"]
+
+  - it: rolls the pods when the nginx configuration changes
+    template: deployment.yaml
+    # The opposite case: nginx reads its own configuration only at startup.
+    set:
+      nginx.contentSecurityPolicy: "default-src 'self'"
+    asserts:
+      - exists:
+          path: spec.template.metadata.annotations["checksum/nginx-config"]
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: nginx-config
+            mountPath: /etc/nginx/snippets/content-security-policy.conf
+            subPath: content-security-policy.conf
+            readOnly: true
+
+  - it: never mounts a service account token
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.automountServiceAccountToken
+          value: false
+
+  - it: serves on the unprivileged port the image listens on
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 8080
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /healthz
+
+  - it: keeps capacity during a rollout
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.strategy.rollingUpdate.maxUnavailable
+          value: 0
+
+  - it: defaults the image tag to the chart's appVersion
+    template: deployment.yaml
+    chart:
+      appVersion: 9.9.9
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: harbor.onelitefeather.dev/onelitefeather/stelaris:9.9.9
+
+  - it: lets a branch build override the tag
+    template: deployment.yaml
+    set:
+      image.tag: 1.0.0-something
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: harbor.onelitefeather.dev/onelitefeather/stelaris:1.0.0-something

@@ -1,0 +1,94 @@
+suite: runtime configuration
+templates:
+  - secret.yaml
+  - configmap-nginx.yaml
+  - deployment.yaml
+tests:
+  - it: renders an empty document when nothing is configured
+    # The app falls back to its compiled-in defaults per field, so an empty
+    # object is the honest thing to serve. A key with an empty string would
+    # look configured and behave the same.
+    template: secret.yaml
+    asserts:
+      - equal:
+          path: stringData["config.json"]
+          value: "{}"
+
+  - it: leaves out a field that was not set
+    template: secret.yaml
+    set:
+      config.backendUrl: https://api.example/v1
+    asserts:
+      - matchRegex:
+          path: stringData["config.json"]
+          pattern: '"backendUrl": "https://api\.example/v1"'
+      - notMatchRegex:
+          path: stringData["config.json"]
+          pattern: 'generatorUrl'
+
+  - it: renders both URLs when both are set
+    template: secret.yaml
+    set:
+      config.backendUrl: https://api.example/v1
+      config.generatorUrl: https://gen.example
+    asserts:
+      - matchRegex:
+          path: stringData["config.json"]
+          pattern: '"generatorUrl": "https://gen\.example"'
+
+  - it: creates no Secret when an existing one is named
+    template: secret.yaml
+    set:
+      config.existingSecret: managed-elsewhere
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: mounts the existing Secret instead
+    template: deployment.yaml
+    set:
+      config.existingSecret: managed-elsewhere
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: runtime-config
+            secret:
+              secretName: managed-elsewhere
+              items:
+                - key: config.json
+                  path: config.json
+
+  - it: projects a differently named key as config.json
+    # nginx serves whatever is at that path, so the key in the Secret is free
+    # to be named for whatever manages it.
+    template: deployment.yaml
+    set:
+      config.existingSecret: managed-elsewhere
+      config.secretKey: stelaris-ui.json
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: runtime-config
+            secret:
+              secretName: managed-elsewhere
+              items:
+                - key: stelaris-ui.json
+                  path: config.json
+
+  - it: creates no nginx ConfigMap unless something overrides the image
+    template: configmap-nginx.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: wraps a policy in the add_header directive nginx expects
+    template: configmap-nginx.yaml
+    set:
+      nginx.contentSecurityPolicy: "default-src 'self'; connect-src 'self' https://api.example"
+    asserts:
+      - equal:
+          path: data["content-security-policy.conf"]
+          value: |
+            add_header Content-Security-Policy "default-src 'self'; connect-src 'self' https://api.example" always;

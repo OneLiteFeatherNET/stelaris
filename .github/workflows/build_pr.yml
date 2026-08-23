@@ -54,3 +54,39 @@ jobs:
           context: .
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  # helm unittest asserts on the rendered templates directly - that the pod
+  # really is unprivileged and read-only, that the runtime config is not
+  # mounted with subPath - which rendering and grepping never did reliably.
+  # ct lints the chart once per file in charts/stelaris-ui/ci/.
+  chart:
+    if: github.repository_owner == 'OneLiteFeatherNET'
+    name: Check the Helm chart
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          # ct lints what changed against the target branch, so it needs the
+          # history to compare with.
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v5.0.1
+
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.8.0
+
+      - name: Lint
+        run: ct lint --config ct.yaml
+
+      # Pinned rather than tracking HEAD: a plugin that changes under CI turns
+      # an unrelated pull request red. Renovate keeps the pin current.
+      # renovate: datasource=github-tags depName=helm-unittest/helm-unittest
+      - name: Install the unittest plugin
+        env:
+          UNITTEST_VERSION: v1.1.2
+        run: helm plugin install https://github.com/helm-unittest/helm-unittest --version "$UNITTEST_VERSION" --verify=false
+
+      - name: Unit tests
+        run: helm unittest charts/stelaris-ui

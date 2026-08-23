@@ -1,0 +1,4 @@
+# What a minimal real deployment sets: the two URLs the app needs, nothing else.
+config:
+  backendUrl: https://api.stelaris.example/v1
+  generatorUrl: https://gen.stelaris.example
