@@ -130,6 +130,28 @@ ingress:
 `networkPolicy.ingressFrom` and denies all egress — the browser talks to the
 backend, not this pod, so it has no egress worth allowing.
 
+## Checking a change to the chart
+
+Template assertions live next to the chart and run without a cluster:
+
+```sh
+helm plugin install https://github.com/helm-unittest/helm-unittest --verify=false
+helm unittest charts/stelaris-ui
+```
+
+They assert on the rendered manifests directly - that the pod really is
+unprivileged and read-only, that the runtime config is mounted as a directory
+and not with `subPath`, that a Secret change carries no checksum annotation
+while an nginx change does. Those are the properties this chart exists to get
+right, and rendering and grepping never checked them reliably.
+
+`ct lint` covers the rest, linting the chart once per file in
+[`ci/`](ci) - a minimal deployment and one with everything enabled:
+
+```sh
+ct lint --config ct.yaml
+```
+
 ## Verifying a release
 
 ```sh
@@ -138,7 +160,8 @@ helm test stelaris-ui --namespace stelaris
 
 The test pod asserts that `/healthz` answers, the app shell is served, a deep
 link reaches the shell rather than a 404, and `/config.json` returns the
-document this release put there.
+document this release put there. It is the only place the running container's
+behaviour is checked, so it is worth running after an install.
 
 ## Values
 
