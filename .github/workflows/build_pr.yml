@@ -84,13 +84,16 @@ jobs:
 
           echo "== wasm content type =="
           # WebAssembly.instantiateStreaming rejects anything but application/wasm.
-          curl -sI http://127.0.0.1:18080/main.dart.wasm | grep -i '^content-type: application/wasm'
+          curl -sI http://127.0.0.1:18080/main.dart.wasm | tr -d '\r' | grep -i '^content-type: application/wasm'
 
           echo "== runtime config =="
-          curl -sI http://127.0.0.1:18080/config.json | grep -i '^cache-control: no-store'
+          curl -sI http://127.0.0.1:18080/config.json | tr -d '\r' | grep -i '^cache-control: no-store'
 
           echo "== security headers =="
-          headers="$(curl -sI http://127.0.0.1:18080/)"
+          # Normalised, so the header assertions do not depend on how a given
+          # curl build renders the CRLF it received - the anchored match on
+          # `Server:` fails against a trailing carriage return.
+          headers="$(curl -sI http://127.0.0.1:18080/ | tr -d '\r')"
           for h in x-content-type-options x-frame-options referrer-policy \
                    content-security-policy permissions-policy \
                    cross-origin-resource-policy cross-origin-opener-policy; do
@@ -104,7 +107,7 @@ jobs:
 
           echo "== precompressed assets =="
           curl -sI -H 'Accept-Encoding: gzip' http://127.0.0.1:18080/main.dart.js \
-            | grep -i '^content-encoding: gzip'
+            | tr -d '\r' | grep -i '^content-encoding: gzip'
 
           echo "== not running as root =="
           test "$(docker exec stelaris-ui-check id -u)" = "101"
