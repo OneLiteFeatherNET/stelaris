@@ -117,13 +117,14 @@ jobs:
           PASSWORD: ${{ secrets.HARBOR_PASSWORD }}
         run: printf '%s' "$PASSWORD" | helm registry login "$REGISTRY" --username "$USERNAME" --password-stdin
 
-      # Into the same project as the image, so `helm show chart` and
-      # `docker pull` name the same place.
+      # Into the same Harbor project as the image, under charts/ - the layout
+      # Apus already uses, so a Flux OCIRepository pointing here looks like
+      # every other one in the cluster repository.
       - name: Push
         env:
           REGISTRY: ${{ secrets.HARBOR_REGISTRY }}
           VERSION: ${{ needs.release-please.outputs.version }}
-        run: helm push "dist/stelaris-ui-${VERSION}.tgz" "oci://${REGISTRY}/stelaris"
+        run: helm push "dist/stelaris-ui-${VERSION}.tgz" "oci://${REGISTRY}/onelitefeather/charts"
 
       - name: Log out
         if: always()

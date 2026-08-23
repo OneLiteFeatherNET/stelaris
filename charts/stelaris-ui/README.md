@@ -2,11 +2,12 @@
 
 The Stelaris UI web application, served by a hardened, unprivileged nginx.
 
-The chart is published as an OCI artifact to the OneLiteFeather Harbor, next to
-the image it deploys:
+The chart is published as an OCI artifact into the OneLiteFeather Harbor, under
+`onelitefeather/charts/`, next to the `onelitefeather/stelaris` image it
+deploys:
 
 ```sh
-helm install stelaris-ui oci://registry.onelitefeather.dev/stelaris/stelaris-ui \
+helm install stelaris-ui oci://harbor.onelitefeather.dev/onelitefeather/charts/stelaris-ui \
   --version 1.0.0 \
   --namespace stelaris --create-namespace \
   --set config.backendUrl=https://api.stelaris.example/v1 \

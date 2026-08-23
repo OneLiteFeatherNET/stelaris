@@ -54,11 +54,11 @@ health checks and how the image is published to Harbor — is in
 ## Deploying it to Kubernetes
 
 The Helm chart in [charts/stelaris-ui](charts/stelaris-ui) is published as an
-OCI artifact to the same Harbor project as the image, and its version always
-matches the image it deploys:
+OCI artifact into the same Harbor project as the image, under `charts/`, and
+its version always matches the image it deploys:
 
 ```sh
-helm install stelaris-ui oci://registry.onelitefeather.dev/stelaris/stelaris-ui \
+helm install stelaris-ui oci://harbor.onelitefeather.dev/onelitefeather/charts/stelaris-ui \
   --version 1.0.0 \
   --namespace stelaris --create-namespace \
   --set config.backendUrl=https://api.stelaris.example/v1 \

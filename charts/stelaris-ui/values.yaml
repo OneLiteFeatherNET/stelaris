@@ -9,8 +9,8 @@ replicaCount: 2
 image:
   # Registry host. Empty means the Harbor host the image is published to; set
   # this to deploy from a mirror or a local registry.
-  registry: registry.onelitefeather.dev
-  repository: stelaris/stelaris-ui
+  registry: harbor.onelitefeather.dev
+  repository: onelitefeather/stelaris
   # Empty means the chart's appVersion, so the chart and the image it describes
   # are released together. Override to run a branch build.
   tag: ""
