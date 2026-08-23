@@ -10,73 +10,55 @@ on:
       - "v*.*.*"
 
 jobs:
-  flutter:
+  # The image build is self-contained - the Dockerfile compiles the Flutter
+  # bundle itself - so all this job has to work out is what to tag the result
+  # with.
+  version:
+    name: Resolve image version
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v7
         name: Checkout
-      - name: Set Up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.47.1'
-          channel: 'stable'
-      - name: Install Dependencies
-        run: flutter pub get
-      - name: Run pub run build_runner build
-        run: flutter pub run build_runner build --delete-conflicting-outputs
-      - name: Build Web
-        run: flutter build web --release --wasm
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: build
-          path: build
 
+      # A tag publishes its own version. Every other push publishes a
+      # prerelease version derived from the release-please manifest, so branch
+      # builds get unique image tags and can never take over the 1/1.0 aliases
+      # of a released image (docker/metadata-action does not emit those for a
+      # prerelease).
+      - name: Resolve image version
+        id: version
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }}
+        run: |
+          if [ "$REF_TYPE" = "tag" ]; then
+            VERSION="${REF_NAME#v}"
+          else
+            BASE="$(jq -r '.["."]' .release-please-manifest.json)"
+            SLUG="$(printf '%s' "$REF_NAME" | tr -c '0-9A-Za-z-' '-' | sed 's/-\+/-/g; s/^-//; s/-$//')"
+            # No commit sha in here: the branch tag is meant to move with the
+            # branch, and the workflow adds an immutable sha-<short> tag anyway.
+            VERSION="${BASE}-${SLUG}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Publishing image version $VERSION"
+
+  # Harbor sits behind a proxy that caps request bodies at 100 MB, and a plain
+  # `docker push` sends each layer as a single request - which is why pushing
+  # the bundle layer used to fail. The shared workflow builds to an OCI archive
+  # and pushes it with regctl, splitting blobs above 50 MiB across several
+  # PATCH requests, then keyless-signs the result via OIDC.
   docker:
-    runs-on: ubuntu-latest
-    needs:
-      - flutter
-    steps:
-      - uses: actions/checkout@v7
-        name: Checkout
-      - name: Download build artifacts
-        uses: actions/download-artifact@v8
-        with:
-          name: build
-          path: build
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v6
-        with:
-          # list of Docker images to use as base name for tags
-          images: |
-            ${{ secrets.HARBOR_REGISTRY }}/stelaris/stelaris-ui
-          # generate Docker tags based on the following events/attributes
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
-      - name: Log in to OneLiteFeather Harbor
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v4
-        with:
-          username: ${{ secrets.HARBOR_USERNAME }}
-          password: ${{ secrets.HARBOR_PASSWORD }}
-          registry: ${{ secrets.HARBOR_REGISTRY }}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
-
-      - name: Build and push
-        uses: docker/build-push-action@v7
-        with:
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+    name: Publish image
+    needs: version
+    permissions:
+      contents: read
+      id-token: write # keyless cosign signing
+    uses: OneLiteFeatherNET/workflows/.github/workflows/docker-publish.yml@v2.8.1
+    with:
+      image-name: "stelaris/stelaris-ui"
+      version: ${{ needs.version.outputs.version }}
+      context: "."
+    secrets: inherit
