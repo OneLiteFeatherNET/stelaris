@@ -157,6 +157,19 @@ Behaviour worth knowing:
 broken build stays visible instead of answering a missing script with a page of
 HTML and a console message about an unexpected MIME type.
 
+**Everything is served from the image.** `flutter build web` defaults to
+`--web-resources-cdn`, which writes CanvasKit and Skwasm into the bundle *and*
+makes the loader fetch them from `www.gstatic.com` at runtime, so the copies in
+the image are never touched. The build passes `--no-web-resources-cdn` to turn
+that off. Without it the renderer comes from a third-party host on every page
+load — an odd thing for an image whose point is not having one — and the CSP has
+to be wide enough to permit it, which also permits a compromised dependency to
+talk to that host.
+
+The symptom, if this ever regresses, is the app failing to boot with
+`Connecting to 'https://www.gstatic.com/flutter-canvaskit/…/skwasm.wasm'
+violates the following Content Security Policy directive` in the console.
+
 **`application/wasm`.** `WebAssembly.instantiateStreaming` rejects anything
 else. It comes from the base image's `mime.types`, so it holds as long as the
 bundle is served by nginx at all.
