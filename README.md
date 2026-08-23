@@ -51,6 +51,26 @@ The full picture — what the nginx config turns off and why, the CSP, caching,
 health checks and how the image is published to Harbor — is in
 [docs/docker-image.md](docs/docker-image.md).
 
+## Deploying it to Kubernetes
+
+The Helm chart in [charts/stelaris-ui](charts/stelaris-ui) is published as an
+OCI artifact to the same Harbor project as the image, and its version always
+matches the image it deploys:
+
+```sh
+helm install stelaris-ui oci://registry.onelitefeather.dev/stelaris/stelaris-ui \
+  --version 1.0.0 \
+  --namespace stelaris --create-namespace \
+  --set config.backendUrl=https://api.stelaris.example/v1 \
+  --set config.generatorUrl=https://gen.stelaris.example
+```
+
+The two `--set` values become the Secret the app reads at startup. nginx serves
+that file from disk per request, so changing it later takes effect without a
+rollout. The chart's [README](charts/stelaris-ui/README.md) covers the ingress,
+narrowing the CSP to real backend origins, and what the pod is and is not
+allowed to do.
+
 ## Wiki
 
 You can find the Wiki under the following [Link](https://gitlab.onelitefeather.dev/dungeon/frontend/stelaris-ui/-/wikis/pages)

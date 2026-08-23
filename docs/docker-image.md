@@ -129,7 +129,10 @@ containers:
         mountPath: /tmp
 ```
 
-(The Helm chart that packages this is a separate change.)
+That, and everything else the deployment needs, is packaged in
+[`charts/stelaris-ui`](../charts/stelaris-ui) — the snippet above is what the
+chart renders, shown here so the image's side of the contract is readable on its
+own.
 
 Behaviour worth knowing:
 
