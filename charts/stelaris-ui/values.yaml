@@ -189,7 +189,7 @@ topologySpreadConstraints:
     topologyKey: kubernetes.io/hostname
     whenUnsatisfiable: ScheduleAnyway
     labelSelector:
-      matchLabels: {} # filled in by the template
+      matchLabels: {}  # filled in by the template
 
 nodeSelector: {}
 tolerations: []
