@@ -66,7 +66,11 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
   }
 
   @override
-  Future<PaginatedResult<T>> getPage({int page = 1, int size = 10}) async {
+  Future<PaginatedResult<T>> getPage({
+    int page = 1,
+    int size = 10,
+    String? projectId,
+  }) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
     // Reuse the /all endpoint with query params if that's the convention.
     final uri = baseUri.replace(
@@ -74,6 +78,7 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
       queryParameters: {
         'page': (page - 1).toString(), // many backends use 0-based
         'size': size.toString(),
+        'projectId': ?projectId,
       },
     );
     final result = await apiClient.dio.getUri(uri);

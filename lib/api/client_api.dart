@@ -45,7 +45,11 @@ abstract class ClientAPI<T extends DataModel> {
   /// Retrieves a paginated page of models with metadata.
   ///
   /// Returns a [PaginatedResult] which includes items and pagination info.
-  Future<PaginatedResult<T>> getPage({int page = 1, int size = 20});
+  Future<PaginatedResult<T>> getPage({
+    int page = 1,
+    int size = 20,
+    String? projectId,
+  });
 
   /// Updates an existing model in the data store.
   ///
