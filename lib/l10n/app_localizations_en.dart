@@ -438,4 +438,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings_misc_switch_project_button => 'Switch';
+
+  @override
+  String get dialog_project_switch_title => 'Switch project?';
+
+  @override
+  String get dialog_project_switch_hint =>
+      'Loaded items, fonts, notifications, attributes and sound events will be reset.';
+
+  @override
+  String get dialog_project_switch_confirm => 'Switch project';
 }

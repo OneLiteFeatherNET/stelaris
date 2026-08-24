@@ -915,6 +915,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Switch'**
   String get settings_misc_switch_project_button;
+
+  /// No description provided for @dialog_project_switch_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch project?'**
+  String get dialog_project_switch_title;
+
+  /// No description provided for @dialog_project_switch_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Loaded items, fonts, notifications, attributes and sound events will be reset.'**
+  String get dialog_project_switch_hint;
+
+  /// No description provided for @dialog_project_switch_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch project'**
+  String get dialog_project_switch_confirm;
 }
 
 class _AppLocalizationsDelegate
