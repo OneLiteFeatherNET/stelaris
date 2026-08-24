@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.2.0...v1.3.0) (2026-08-24)
+
+
+### Features
+
+* **project:** add switch dialog ([a3b357e](https://github.com/OneLiteFeatherNET/stelaris/commit/a3b357ed7db710eac0698dfa0b197fb08b901c80))
+
 ## [1.2.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.1.1...v1.2.0) (2026-08-24)
 
 
