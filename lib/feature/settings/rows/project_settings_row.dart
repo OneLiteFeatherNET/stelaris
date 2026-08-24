@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/project/dialog/switch_project_dialog.dart';
 import 'package:stelaris/feature/settings/settings_base_row.dart';
 import 'package:stelaris/feature/settings/settings_item.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -45,8 +46,20 @@ class ProjectSettingsRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   dropdownColor: colorScheme.surfaceContainerHigh,
                   elevation: 3,
-                  onChanged: (p) {
-                    if (p != null) context.dispatch(SelectProjectAction(p));
+                  onChanged: (p) async {
+                    if (p == null || p.id == currentSelected.id) return;
+
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => SwitchProjectDialog(
+                        currentProject: currentSelected,
+                        targetProject: p,
+                      ),
+                    );
+
+                    if (confirmed == true && context.mounted) {
+                      context.dispatch(SelectProjectAction(p));
+                    }
                   },
                   items: projects.map((project) {
                     return DropdownMenuItem<Project>(
