@@ -7,7 +7,7 @@ const String appName = 'Stelaris';
 ///
 /// Release Please rewrites this line, so it always matches the version in
 /// pubspec.yaml and the tag the build came from. Do not edit it by hand.
-const String appVersion = '1.1.1'; // x-release-please-version
+const String appVersion = '1.2.0'; // x-release-please-version
 
 const String unknownEntry = 'Unknown';
 

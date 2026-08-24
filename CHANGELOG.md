@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.1.1...v1.2.0) (2026-08-24)
+
+
+### Features
+
+* wire project id into models ([#129](https://github.com/OneLiteFeatherNET/stelaris/issues/129)) ([de79215](https://github.com/OneLiteFeatherNET/stelaris/commit/de792153025a83a5abb7bb1117f5d457a42c44e4))
+
 ## [1.1.1](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.1.0...v1.1.1) (2026-08-23)
 
 
