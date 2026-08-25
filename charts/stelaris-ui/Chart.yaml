@@ -7,8 +7,8 @@ type: application
 # and the app version move together: the chart only ever describes the image
 # built from the same commit, so a separate chart version would be a second
 # number to reason about with nothing extra to say.
-version: 1.3.0  # x-release-please-version
-appVersion: "1.3.0"  # x-release-please-version
+version: 1.3.1  # x-release-please-version
+appVersion: "1.3.1"  # x-release-please-version
 
 home: https://github.com/OneLiteFeatherNET/stelaris
 sources:
