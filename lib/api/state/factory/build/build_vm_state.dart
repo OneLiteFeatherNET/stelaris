@@ -16,6 +16,7 @@ class BuildStateFactory
     branches: state.branches,
     isLoadingRelease: state.isLoadingRelease,
     isLoadingBranches: state.isLoadingBranches,
+    projectId: state.selectedProject?.id,
     onRefreshBranches: () => dispatch(BranchFetchAction()),
   );
 }
@@ -26,15 +27,23 @@ class BuildViewModel extends Vm {
     required this.branches,
     required this.isLoadingRelease,
     required this.isLoadingBranches,
+    required this.projectId,
     required this.onRefreshBranches,
   }) : super(
-         equals: [releaseModel, branches, isLoadingRelease, isLoadingBranches],
+         equals: [
+           releaseModel,
+           branches,
+           isLoadingRelease,
+           isLoadingBranches,
+           projectId,
+         ],
        );
 
   final ReleaseModel? releaseModel;
   final List<String>? branches;
   final bool isLoadingRelease;
   final bool isLoadingBranches;
+  final String? projectId;
   final VoidCallback onRefreshBranches;
 
   String get version => releaseModel == null ? '0.0.1' : releaseModel!.version;
