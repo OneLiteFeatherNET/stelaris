@@ -78,7 +78,11 @@ jobs:
   # needs no chart of its own.
   helm:
     name: Publish the Helm chart
-    needs: release-please
+    # Also on `docker`, not just on the release: the chart is packaged with the
+    # release version as its appVersion, so pushing it before the image exists
+    # publishes a chart that points at a tag nobody can pull yet - and leaves
+    # one published for good if the image build fails.
+    needs: [release-please, docker]
     if: needs.release-please.outputs.release_created == 'true'
     runs-on: ubuntu-latest
     permissions:
