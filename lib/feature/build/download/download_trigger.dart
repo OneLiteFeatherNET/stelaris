@@ -13,12 +13,17 @@ import 'download_helper.dart';
 class DownloadTrigger extends StatefulWidget {
   const DownloadTrigger({
     required this.branches,
+    required this.projectId,
     this.isLoading = false,
     this.onRefresh,
     super.key,
   });
 
   final List<String>? branches;
+
+  /// Id of the currently selected project. The generator requires it to know
+  /// which project's data to render into the downloaded code base.
+  final String? projectId;
   final bool isLoading;
   final VoidCallback? onRefresh;
 
@@ -85,6 +90,21 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
               height: 16,
               child: CircularProgressIndicator(strokeWidth: 2),
             ),
+          ),
+        ),
+      );
+    }
+
+    final projectId = widget.projectId;
+    if (projectId == null || projectId.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: StatusCard(
+            text: 'No project selected! Please select a project first',
+            backgroundColor: theme.colorScheme.errorContainer,
+            glowColor: theme.colorScheme.errorContainer.withValues(alpha: 0.5),
+            height: 70,
           ),
         ),
       );
@@ -202,7 +222,7 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
                       .showSnackBar(InfoBarFactory().create(text));
 
                   final (data, filename) = await ApiService().generateApi
-                      .download(value);
+                      .download(value, projectId);
 
                   final content = base64Encode(data);
 

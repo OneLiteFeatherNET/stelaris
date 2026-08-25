@@ -50,6 +50,7 @@ class BuildDialog extends StatelessWidget {
                       DownloadTrigger(
                         branches: vm.branches,
                         isLoading: vm.isLoadingBranches,
+                        projectId: vm.projectId,
                         onRefresh: vm.onRefreshBranches,
                       ),
                       BuildTrigger(version: vm.version),

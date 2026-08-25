@@ -27,8 +27,11 @@ class GenerateApi {
     return (data as List<dynamic>).map((e) => e as String).toList();
   }
 
-  Future<(List<int>, String)> download(String branch) async {
-    final queryParams = <String, dynamic>{'branch': branch};
+  Future<(List<int>, String)> download(String branch, String projectId) async {
+    final queryParams = <String, dynamic>{
+      'branch': branch,
+      'projectId': projectId,
+    };
     final baseUri = Uri.parse(_apiClient.baseUrl);
     final uri = baseUri.replace(
       queryParameters: queryParams,
