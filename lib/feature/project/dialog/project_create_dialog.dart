@@ -2,7 +2,9 @@ import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/validators.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 class CreateProjectDialog extends StatefulWidget {
@@ -20,8 +22,6 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
   final _projectUrlController = TextEditingController();
   final _docuUrlController = TextEditingController();
   bool _labor = false;
-
-  final _keyRegex = RegExp(r'^[a-zA-Z0-9_-]+$');
 
   @override
   void dispose() {
@@ -73,37 +73,27 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
                       children: [
                         TextFormField(
                           controller: _displayNameController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             labelText: '${context.l10n.dialog_project_display_name} *',
                             hintText: 'e.g. My Awesome Project',
                             border: const OutlineInputBorder(),
                             prefixIcon: const Icon(Icons.title),
                           ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Display name is required';
-                            }
-                            return null;
-                          },
+                          validator: Validators.required('Display name is required'),
                         ),
                         verticalSpacing10,
                         TextFormField(
                           controller: _keyController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          inputFormatters: const [lowerCaseFormatter],
                           decoration: InputDecoration(
                             labelText: '${context.l10n.dialog_project_key} *',
                             hintText: 'e.g. my_project',
                             border: const OutlineInputBorder(),
                             prefixIcon: const Icon(Icons.vpn_key_outlined),
                           ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Key / Namespace is required';
-                            }
-                            if (!_keyRegex.hasMatch(value.trim())) {
-                              return 'Only alphanumeric characters, underscores, and dashes allowed';
-                            }
-                            return null;
-                          },
+                          validator: Validators.adventureNamespace(),
                         ),
                         verticalSpacing10,
                         TextFormField(
