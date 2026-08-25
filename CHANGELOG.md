@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.3.0...v1.3.1) (2026-08-25)
+
+
+### Bug Fixes
+
+* **build:** send projectId when downloading a generated code base ([#134](https://github.com/OneLiteFeatherNET/stelaris/issues/134)) ([6e36c5d](https://github.com/OneLiteFeatherNET/stelaris/commit/6e36c5d4a3a8f85af46d37e59294c929ae76efe7))
+
 ## [1.3.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.2.0...v1.3.0) (2026-08-24)
 
 
