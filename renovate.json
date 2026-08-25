@@ -3,25 +3,37 @@
   "extends": [
     "github>OneLiteFeatherNET/renovate:default(OneLiteFeatherNET/stelaris-maintainers)"
   ],
+  "dependencyDashboard": true,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 5am on monday"]
+  },
   "packageRules": [
     {
-      "matchUpdateTypes": [
-        "patch"
-      ],
+      "description": "pubspec uses caret ranges, replace would never fire for in-range updates",
+      "matchManagers": ["pub"],
+      "rangeStrategy": "bump"
+    },
+    {
+      "matchUpdateTypes": ["patch"],
       "automerge": true
     },
     {
+      "description": "Dart/Flutter minor updates, grouped and automerged after the cooldown",
+      "matchManagers": ["pub"],
+      "matchUpdateTypes": ["minor"],
+      "groupName": "dart dependencies",
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
       "description": "Dependencies whose updates shouldn't be done automatically",
-      "matchPackageNames": [
-        "intl"
-      ],
+      "matchPackageNames": ["intl"],
       "enabled": false
     },
     {
       "description": "One PR for the Flutter SDK, so the Dockerfile and the workflows can never end up on different versions",
-      "matchDatasources": [
-        "flutter-version"
-      ],
+      "matchDatasources": ["flutter-version"],
       "groupName": "flutter sdk"
     }
   ],
@@ -43,14 +55,13 @@
     },
     {
       "customType": "regex",
-      "description": "Container images referenced from the Helm chart's templates",
+      "description": "Third-party images pinned in the Helm chart's templates, marked with a renovate comment. The chart's own image carries no version here - it is templated from appVersion.",
       "managerFilePatterns": [
-        "/^charts/[^/]+/templates/.+\\.yaml$/"
+        "/^charts/[^/]+/templates/.+\\.ya?ml$/"
       ],
       "matchStrings": [
-        "image: (?<depName>[a-z0-9./-]+):(?<currentValue>[^\\s@\"']+)"
-      ],
-      "datasourceTemplate": "docker"
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+image: \\S+:(?<currentValue>[^\\s@\"']+)"
+      ]
     },
     {
       "customType": "regex",
