@@ -71,6 +71,9 @@ class Validators {
       if (':'.allMatches(text).length > 1) {
         return 'Only one colon (:) is allowed for namespace:key';
       }
+      if (text.contains('..')) {
+        return 'Double dots (..) are not allowed';
+      }
       if (text.contains(':')) {
         final parts = text.split(':');
         if (parts[0].contains('/')) {
@@ -78,6 +81,52 @@ class Validators {
         }
       }
       if (!adventureKeyPattern.hasMatch(text)) {
+        return invalidMessage;
+      }
+
+      return null;
+    };
+  }
+
+  /// Validates only the namespace part of an Adventure key (the left part before the colon).
+  /// Slashes (/), colons (:), double dots (..), uppercase letters, and spaces are not allowed.
+  ///
+  /// Examples of valid namespaces: `my_project`, `project-name`, `custom.addon_1`
+  static FormValidator<String> adventureNamespace({
+    String requiredMessage = 'Key / Namespace is required',
+    String invalidMessage = 'Invalid namespace (only lowercase letters, numbers, [._-] allowed, e.g. "my_project")',
+    bool detailed = true,
+  }) {
+    if (!detailed) {
+      return compose([
+        required(requiredMessage),
+        pattern(adventureNamespacePattern, invalidMessage),
+      ]);
+    }
+
+    return (value) {
+      if (value == null || value.trim().isEmpty) {
+        return requiredMessage;
+      }
+
+      final text = value.trim();
+
+      if (text.contains('..')) {
+        return 'Double dots (..) are not allowed';
+      }
+      if (text.contains(':')) {
+        return 'Colons (:) are not allowed (only the namespace part, e.g. "my_project")';
+      }
+      if (text.contains('/')) {
+        return 'Slashes (/) are not allowed in a namespace';
+      }
+      if (text.contains(RegExp(r'[A-Z]'))) {
+        return 'Uppercase letters are not allowed';
+      }
+      if (text.contains(' ')) {
+        return 'Spaces are not allowed';
+      }
+      if (!adventureNamespacePattern.hasMatch(text)) {
         return invalidMessage;
       }
 

@@ -28,7 +28,8 @@ RegExp dotPattern = RegExp('\\.');
 RegExp minecraftPattern = RegExp('minecraft:');
 RegExp gitCommitPattern = RegExp('[0-9a-fA-F]{10}');
 RegExp versionPattern = RegExp(r'^[0-9.]*$');
-RegExp adventureKeyPattern = RegExp(r'^(?:[a-z0-9_.-]+:)?[a-z0-9/._-]+$');
+RegExp adventureNamespacePattern = RegExp(r'^(?!.*\.\.)[a-z0-9_.-]+$');
+RegExp adventureKeyPattern = RegExp(r'^(?!.*\.\.)(?:[a-z0-9_.-]+:)?[a-z0-9/._-]+$');
 
 /// Formatter
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);

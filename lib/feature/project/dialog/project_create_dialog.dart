@@ -89,11 +89,11 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
                           inputFormatters: const [lowerCaseFormatter],
                           decoration: InputDecoration(
                             labelText: '${context.l10n.dialog_project_key} *',
-                            hintText: 'e.g. my_project or custom:my_project',
+                            hintText: 'e.g. my_project',
                             border: const OutlineInputBorder(),
                             prefixIcon: const Icon(Icons.vpn_key_outlined),
                           ),
-                          validator: Validators.adventureKey(),
+                          validator: Validators.adventureNamespace(),
                         ),
                         verticalSpacing10,
                         TextFormField(
