@@ -142,5 +142,23 @@ void main() {
       expect(adapter.lastRequest!.uri.path, '/api/item/item-1/lore/l2');
       expect(result, dto);
     });
+
+    test('reorderLore PATCHes to the lore reorder sub-resource', () async {
+      final adapter = RecordingHttpClientAdapter(null, statusCode: 204);
+      apiClient.dio.httpClientAdapter = adapter;
+
+      await itemApi.reorderLore('item-1', entryId: 'l1', newIndex: 2);
+
+      expect(adapter.lastRequest!.method, 'PATCH');
+      expect(
+        adapter.lastRequest!.uri.path,
+        '/api/item/item-1/lore/reorder',
+      );
+      expect(adapter.lastRequest!.data, {
+        'entryId': 'l1',
+        'newIndex': 2,
+      });
+    });
   });
 }
+

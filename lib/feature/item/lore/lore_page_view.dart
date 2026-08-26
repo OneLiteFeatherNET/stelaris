@@ -71,10 +71,12 @@ class _LorePageViewState extends State<LorePageView>
             newIndex = items.length - 1;
           }
 
-          // final String oldLine = view.selected.lore.items.removeAt(oldIndex);
-          // view.loreLines.insert(newIndex, oldLine);
-          // final newEntry = view.selected.copyWith(lore: view.loreLines);
-          //context.dispatch(UpdateItemAction(newEntry));
+          context.dispatch(
+            ItemLoreReorderAction(
+              oldIndex: oldIndex,
+              newIndex: newIndex,
+            ),
+          );
         },
       ),
     );

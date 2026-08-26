@@ -156,6 +156,58 @@ class ItemLoreUpdateAction extends ReduxAction<AppState> {
   }
 }
 
+class ItemLoreReorderAction extends ReduxAction<AppState> {
+  ItemLoreReorderAction({
+    required this.oldIndex,
+    required this.newIndex,
+  });
+
+  final int oldIndex;
+  final int newIndex;
+
+  @override
+  Future<AppState?> reduce() async {
+    if (state.selectedItem == null || state.selectedItem!.id == null) {
+      return null;
+    }
+
+    final itemModel = state.selectedItem!;
+    final loreLines = itemModel.lore;
+
+    if (oldIndex < 0 ||
+        oldIndex >= loreLines.items.length ||
+        newIndex < 0 ||
+        newIndex >= loreLines.items.length ||
+        oldIndex == newIndex) {
+      return null;
+    }
+
+    final entry = loreLines.items[oldIndex];
+    if (entry.id == null) return null;
+
+    final updatedItems = List<ItemLoreDto>.from(loreLines.items);
+    final movedItem = updatedItems.removeAt(oldIndex);
+    updatedItems.insert(newIndex, movedItem);
+
+    final reindexedItems = [
+      for (var i = 0; i < updatedItems.length; i++)
+        updatedItems[i].copyWith(orderIndex: i),
+    ];
+
+    await ApiService().itemApi.reorderLore(
+      itemModel.id!,
+      entryId: entry.id!,
+      newIndex: newIndex,
+    );
+
+    final updatedLore = loreLines.copyWith(items: reindexedItems);
+    final updatedModel = itemModel.copyWith(lore: updatedLore);
+
+    return _updateItemAndList(state, updatedModel);
+  }
+}
+
+
 class _SetIsLoadingLore extends ReduxAction<AppState> {
   final bool isLoading;
 

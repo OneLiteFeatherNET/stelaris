@@ -145,4 +145,27 @@ class ItemAPI extends BaseApi<ItemModel> {
     final result = await apiClient.dio.deleteUri(uri);
     return ItemLoreDto.fromJson(result.data!);
   }
+
+  /// Reorder a lore entry for an item
+  /// [id] the id of the item
+  /// [entryId] the id of the lore entry to move
+  /// [newIndex] the target 0-based index of the lore entry
+  Future<void> reorderLore(
+    String id, {
+    required String entryId,
+    required int newIndex,
+  }) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/$endpoint/$id/lore/reorder',
+    );
+    await apiClient.dio.patchUri(
+      uri,
+      data: {
+        'entryId': entryId,
+        'newIndex': newIndex,
+      },
+    );
+  }
 }
+
