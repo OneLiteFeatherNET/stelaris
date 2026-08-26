@@ -371,6 +371,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_misc_license_button => 'View';
 
   @override
+  String get settings_misc_version_header => 'App Version';
+
+  @override
+  String get settings_misc_version_body =>
+      'Currently installed version of Stelaris';
+
+  @override
   String get settings_end_tile_made_with => 'Made with';
 
   @override
