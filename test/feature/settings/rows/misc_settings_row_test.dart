@@ -23,7 +23,7 @@ void main() {
         find.text('Currently installed version of Stelaris'),
         findsOneWidget,
       );
-      expect(find.text('v$appVersion'), findsOneWidget);
+      expect(find.text(appVersion), findsOneWidget);
     });
   });
 }
