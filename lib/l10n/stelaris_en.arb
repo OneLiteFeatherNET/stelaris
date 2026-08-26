@@ -132,6 +132,8 @@
   "settings_misc_license_header": "Third-party software licenses",
   "settings_misc_license_body": "This application uses the following open-source libraries.",
   "settings_misc_license_button": "View",
+  "settings_misc_version_header": "App Version",
+  "settings_misc_version_body": "Currently installed version of Stelaris",
 
   "settings_end_tile_made_with": "Made with",
   "settings_end_tile_team": "by the team",

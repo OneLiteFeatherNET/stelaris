@@ -784,6 +784,18 @@ abstract class AppLocalizations {
   /// **'View'**
   String get settings_misc_license_button;
 
+  /// No description provided for @settings_misc_version_header.
+  ///
+  /// In en, this message translates to:
+  /// **'App Version'**
+  String get settings_misc_version_header;
+
+  /// No description provided for @settings_misc_version_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Currently installed version of Stelaris'**
+  String get settings_misc_version_body;
+
   /// No description provided for @settings_end_tile_made_with.
   ///
   /// In en, this message translates to:
