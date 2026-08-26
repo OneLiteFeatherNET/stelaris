@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.2](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.3.1...v1.3.2) (2026-08-26)
+
+
+### Bug Fixes
+
+* **ci:** publish the Helm chart only after the image ([#136](https://github.com/OneLiteFeatherNET/stelaris/issues/136)) ([a942da4](https://github.com/OneLiteFeatherNET/stelaris/commit/a942da42c4b2c648e674317b00fed2c83fc707dc))
+* **item:** implement missing lore reorder ([#146](https://github.com/OneLiteFeatherNET/stelaris/issues/146)) ([54a8393](https://github.com/OneLiteFeatherNET/stelaris/commit/54a839344cef5d74999184e751d021508b62f70e))
+* **project:** improve regex handling for project key input ([#143](https://github.com/OneLiteFeatherNET/stelaris/issues/143)) ([c062e22](https://github.com/OneLiteFeatherNET/stelaris/commit/c062e222ce53e544fce838424bdff63b089acace))
+
 ## [1.3.1](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.3.0...v1.3.1) (2026-08-25)
 
 
