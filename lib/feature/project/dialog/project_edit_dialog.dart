@@ -12,8 +12,8 @@ class EditProjectDialog extends StatefulWidget {
   final Project project;
 
   const EditProjectDialog({
-    super.key,
     required this.project,
+    super.key,
   });
 
   @override

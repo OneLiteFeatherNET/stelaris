@@ -16,13 +16,13 @@ class ProjectSelectionCard extends StatelessWidget {
   final VoidCallback onProceed;
 
   const ProjectSelectionCard({
-    super.key,
     required this.projects,
     required this.selected,
     required this.onSelectProject,
     required this.onEditProject,
     required this.onCreateProject,
     required this.onProceed,
+    super.key,
   });
 
   @override

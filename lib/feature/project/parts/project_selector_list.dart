@@ -12,11 +12,11 @@ class ProjectSelectorList extends StatefulWidget {
   final ValueChanged<Project> onEdit;
 
   const ProjectSelectorList({
-    super.key,
     required this.projects,
     required this.selected,
     required this.onSelect,
     required this.onEdit,
+    super.key
   });
 
   @override

@@ -6,8 +6,8 @@ class EmptyProjectView extends StatelessWidget {
   final VoidCallback onCreateProject;
 
   const EmptyProjectView({
-    super.key,
     required this.onCreateProject,
+    super.key
   });
 
   @override

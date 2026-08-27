@@ -10,12 +10,12 @@ class ProjectFormDialog extends StatelessWidget {
   final VoidCallback onSubmit;
 
   const ProjectFormDialog({
-    super.key,
     required this.title,
     required this.content,
     required this.actionIcon,
     required this.actionLabel,
     required this.onSubmit,
+    super.key,
   });
 
   @override

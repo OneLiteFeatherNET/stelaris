@@ -10,11 +10,11 @@ class ProjectListTile extends StatelessWidget {
   final VoidCallback onEdit;
 
   const ProjectListTile({
-    super.key,
     required this.project,
     required this.isSelected,
     required this.onSelect,
     required this.onEdit,
+    super.key,
   });
 
   @override

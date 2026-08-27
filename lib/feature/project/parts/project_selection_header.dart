@@ -7,9 +7,9 @@ class ProjectSelectionHeader extends StatelessWidget {
   final VoidCallback onCreateProject;
 
   const ProjectSelectionHeader({
-    super.key,
     required this.showAddButton,
     required this.onCreateProject,
+    super.key,
   });
 
   @override
