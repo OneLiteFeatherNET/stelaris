@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.3.2...v1.3.3) (2026-08-27)
+
+
+### Bug Fixes
+
+* **font:** add projectId to font deletion ([#147](https://github.com/OneLiteFeatherNET/stelaris/issues/147)) ([bbe35f6](https://github.com/OneLiteFeatherNET/stelaris/commit/bbe35f60f028dcdf8a7035862150159e5826c3d3))
+
 ## [1.3.2](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.3.1...v1.3.2) (2026-08-26)
 
 
