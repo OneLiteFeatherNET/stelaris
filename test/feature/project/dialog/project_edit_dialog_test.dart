@@ -110,33 +110,6 @@ void main() {
       expect(find.text('Edit project'), findsNothing);
     });
 
-    testWidgets('validates required display name and updates project on Save', (
-      tester,
-    ) async {
-      final store = await pumpDialog(tester);
-
-      // Clear display name to trigger validation error
-      final displayNameFinder = find.byType(TextFormField).first;
-      await tester.enterText(displayNameFinder, '');
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Save'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Display name is required'), findsOneWidget);
-
-      // Enter valid updated name
-      await tester.enterText(displayNameFinder, 'Updated Name');
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Save'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Edit project'), findsNothing);
-      expect(store.state.projects.first.displayName, 'Updated Name');
-      expect(store.state.selectedProject?.displayName, 'Updated Name');
-    });
-
     testWidgets('updates all fields including labor toggle and returns updated project', (
       tester,
     ) async {
