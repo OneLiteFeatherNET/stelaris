@@ -23,6 +23,7 @@ void main() {
         ).toJson((p) => p.toJson()),
       );
     });
+
     testWidgets('renders empty state when no projects exist', (tester) async {
       final store = Store<AppState>(initialState: const AppState());
 
@@ -45,7 +46,62 @@ void main() {
       expect(find.byIcon(Icons.add), findsOneWidget);
     });
 
-    testWidgets('renders dropdown with projects when available', (tester) async {
+    testWidgets('renders list with projects when available', (tester) async {
+      const projectA = Project(
+        id: 'test_id_a',
+        displayName: 'Test Project A',
+        key: 'test_key_a',
+        description: 'First project description',
+      );
+      const projectB = Project(
+        id: 'test_id_b',
+        displayName: 'Test Project B',
+        key: 'test_key_b',
+        description: 'Second project description',
+        labor: true,
+      );
+
+      ApiService().projectApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json(
+        const PaginatedResult<Project>(
+          items: [projectA, projectB],
+          totalItems: 2,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: 50,
+        ).toJson((p) => p.toJson()),
+      );
+
+      final store = Store<AppState>(
+        initialState: const AppState(projects: [projectA, projectB]),
+      );
+
+      await tester.pumpWidget(
+        StoreProvider<AppState>(
+          store: store,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: ProjectSelectionPage(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Welcome to Stelaris'), findsOneWidget);
+      expect(find.text('Select Project'), findsOneWidget);
+      expect(find.text('Test Project A'), findsOneWidget);
+      expect(find.text('Test Project B'), findsOneWidget);
+      expect(find.text('First project description'), findsOneWidget);
+      expect(find.text('Second project description'), findsOneWidget);
+      expect(find.text('Labor'), findsOneWidget);
+      expect(find.text('Open Project'), findsOneWidget);
+      expect(find.byIcon(Icons.add), findsOneWidget);
+      expect(find.byIcon(Icons.edit_outlined), findsNWidgets(2));
+    });
+
+    testWidgets('tapping edit icon opens EditProjectDialog', (tester) async {
       const project = Project(
         id: 'test_id',
         displayName: 'Test Project',
@@ -81,11 +137,11 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('Welcome to Stelaris'), findsOneWidget);
-      expect(find.text('Select Project'), findsOneWidget);
-      expect(find.textContaining('Test Project'), findsWidgets);
-      expect(find.text('Open Project'), findsOneWidget);
-      expect(find.byIcon(Icons.add), findsOneWidget);
+      await tester.tap(find.byIcon(Icons.edit_outlined));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Edit project'), findsOneWidget);
+      expect(find.text('test_key'), findsOneWidget);
     });
   });
 }
