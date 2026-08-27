@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/project/badge/project_labor_badge.dart';
 import 'package:stelaris/feature/project/dialog/switch_project_dialog.dart';
 import 'package:stelaris/feature/settings/settings_base_row.dart';
 import 'package:stelaris/feature/settings/settings_item.dart';
@@ -84,24 +85,7 @@ class ProjectSettingsRow extends StatelessWidget {
                           ),
                           if (project.labor) ...[
                             const SizedBox(width: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 5,
-                                vertical: 1,
-                              ),
-                              decoration: BoxDecoration(
-                                color: colorScheme.tertiaryContainer,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                'LABOR',
-                                style: TextStyle(
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.bold,
-                                  color: colorScheme.onTertiaryContainer,
-                                ),
-                              ),
-                            ),
+                            const ProjectLaborBadge(fontSize: 8),
                           ],
                         ],
                       ),
