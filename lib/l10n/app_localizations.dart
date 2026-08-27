@@ -945,6 +945,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Switch project'**
   String get dialog_project_switch_confirm;
+
+  /// No description provided for @dialog_project_edit_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit project'**
+  String get dialog_project_edit_title;
+
+  /// No description provided for @dialog_project_edit_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get dialog_project_edit_button;
+
+  /// No description provided for @dialog_project_key_readonly_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Project key cannot be changed after creation'**
+  String get dialog_project_key_readonly_hint;
+
+  /// No description provided for @project_selection_edit_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit project'**
+  String get project_selection_edit_tooltip;
 }
 
 class _AppLocalizationsDelegate
