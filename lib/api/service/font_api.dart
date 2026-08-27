@@ -1,5 +1,4 @@
 import 'package:stelaris/api/base_api.dart';
-import 'package:stelaris/api/extensions/font_extension.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// Implementation of the [BaseApi] to handle different request for [FontModel] and [FontStringDTO] data.
@@ -7,8 +6,8 @@ class FontAPI extends BaseApi<FontModel> {
   FontAPI({required super.apiClient})
     : super(
         endpoint: 'font',
-        fromJson: (p0) => FontModelDto.fromJson(p0).toModel(),
-        toJson: (model) => model.toDto().toJson(),
+        fromJson: FontModel.fromJson,
+        toJson: (model) => model.toJson(),
       );
 
   /// Fetches the character set for a specific font by its ID.
