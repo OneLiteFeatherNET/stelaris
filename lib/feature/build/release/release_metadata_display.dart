@@ -75,7 +75,7 @@ class ReleaseMetadataDisplay extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Center(child: _buildContent(context, model)),
           ),
         ),
@@ -93,6 +93,7 @@ class ReleaseMetadataDisplay extends StatelessWidget {
     final theme = Theme.of(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           'Build: ${model.version}',
@@ -100,7 +101,7 @@ class ReleaseMetadataDisplay extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 2),
         Text(
           'Release: ${_format(model.publishedAt)}',
           style: theme.textTheme.bodySmall,

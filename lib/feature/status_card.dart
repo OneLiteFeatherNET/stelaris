@@ -51,11 +51,15 @@ class StatusCard extends StatelessWidget {
                 icon!,
                 const SizedBox(width: 12),
               ],
-              Text(
-                text,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: textColor,
-                    ),
+              Flexible(
+                child: Text(
+                  text,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: textColor,
+                      ),
+                ),
               ),
               if (trailing != null) ...[
                 const SizedBox(width: 12),
