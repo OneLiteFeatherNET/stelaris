@@ -66,5 +66,73 @@ void main() {
       expect(store.state.fonts.totalItems, 19);
       expect(store.state.fonts.items, isEmpty);
     });
+
+    test('falls back to selectedProject id when model has no projectId', () async {
+      const existing = FontModel(uiName: 'to-remove', id: 'rm-id');
+      const project = Project(displayName: 'P', id: 'proj-99', key: 'p');
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedProject: project,
+          fonts: const PaginatedResult<FontModel>(
+            items: [existing],
+            totalItems: 1,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      const returned = FontModel(
+        uiName: 'to-remove',
+        id: 'rm-id',
+        projectId: 'proj-99',
+      );
+      ApiService().fontApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json(returned.toJson());
+
+      await store.dispatchAndWait(FontRemoveAction(existing));
+
+      expect(store.state.fonts.totalItems, 0);
+      expect(store.state.fonts.items, isEmpty);
+    });
+  });
+
+  group('FontDatabaseUpdate', () {
+    test('updates font in state list and preserves selected font', () async {
+      const existing = FontModel(
+        uiName: 'old-name',
+        id: 'f1',
+        projectId: 'proj-1',
+      );
+      const project = Project(displayName: 'P', id: 'proj-1', key: 'p');
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedProject: project,
+          selectedFont: existing.copyWith(uiName: 'new-name'),
+          fonts: const PaginatedResult<FontModel>(
+            items: [existing],
+            totalItems: 1,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      const dbUpdated = FontModel(
+        uiName: 'new-name',
+        id: 'f1',
+        projectId: 'proj-1',
+      );
+      ApiService().fontApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json(dbUpdated.toJson());
+
+      await store.dispatchAndWait(FontDatabaseUpdate());
+
+      expect(store.state.fonts.items.single.uiName, 'new-name');
+      expect(store.state.fonts.items.single.projectId, 'proj-1');
+      expect(store.state.selectedFont?.uiName, 'new-name');
+    });
   });
 }
