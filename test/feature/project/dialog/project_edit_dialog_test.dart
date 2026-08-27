@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:async_redux/async_redux.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
@@ -21,20 +24,39 @@ void main() {
       labor: false,
     );
 
+    setUp(() {
+      ApiService().projectApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+        final body = options.data;
+        if (body is Map<String, dynamic>) {
+          return ResponseBody.fromString(
+            jsonEncode(body),
+            200,
+            headers: {
+              Headers.contentTypeHeader: [Headers.jsonContentType],
+            },
+          );
+        }
+        return ResponseBody.fromString(
+          jsonEncode(originalProject.copyWith(displayName: 'Updated Name').toJson()),
+          200,
+          headers: {
+            Headers.contentTypeHeader: [Headers.jsonContentType],
+          },
+        );
+      });
+    });
+
     Future<Store<AppState>> pumpDialog(
       WidgetTester tester, {
       Project project = originalProject,
+      void Function(dynamic result)? onResult,
     }) async {
       final store = Store<AppState>(
         initialState: AppState(
           projects: [project],
           selectedProject: project,
         ),
-      );
-
-      ApiService().projectApi.apiClient.dio.httpClientAdapter =
-          FakeHttpClientAdapter.json(
-        project.copyWith(displayName: 'Updated Name').toJson(),
       );
 
       await tester.pumpWidget(
@@ -46,10 +68,13 @@ void main() {
             home: Scaffold(
               body: Builder(
                 builder: (context) => ElevatedButton(
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (_) => EditProjectDialog(project: project),
-                  ),
+                  onPressed: () async {
+                    final res = await showDialog(
+                      context: context,
+                      builder: (_) => EditProjectDialog(project: project),
+                    );
+                    onResult?.call(res);
+                  },
                   child: const Text('Open'),
                 ),
               ),
@@ -110,6 +135,72 @@ void main() {
       expect(find.text('Edit project'), findsNothing);
       expect(store.state.projects.first.displayName, 'Updated Name');
       expect(store.state.selectedProject?.displayName, 'Updated Name');
+    });
+
+    testWidgets('updates all fields including labor toggle and returns updated project', (
+      tester,
+    ) async {
+      Project? dialogResult;
+      final store = await pumpDialog(
+        tester,
+        onResult: (res) => dialogResult = res as Project?,
+      );
+
+      final textFields = find.byType(TextFormField);
+      // Index 0: displayName, Index 1: key (read-only), Index 2: description, Index 3: projectUrl, Index 4: docuUrl
+      await tester.enterText(textFields.at(0), 'New Name');
+      await tester.enterText(textFields.at(2), 'New Description');
+      await tester.enterText(textFields.at(3), 'https://github.com/new/repo');
+      await tester.enterText(textFields.at(4), 'https://docs.new.com');
+      final switchFinder = find.byType(SwitchListTile);
+      await tester.ensureVisible(switchFinder);
+      await tester.pumpAndSettle();
+      await tester.tap(switchFinder);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Edit project'), findsNothing);
+      expect(dialogResult?.displayName, 'New Name');
+      expect(dialogResult?.description, 'New Description');
+      expect(dialogResult?.projectUrl, 'https://github.com/new/repo');
+      expect(dialogResult?.docuUrl, 'https://docs.new.com');
+      expect(dialogResult?.labor, isTrue);
+
+      final updatedInStore = store.state.projects.first;
+      expect(updatedInStore.displayName, 'New Name');
+      expect(updatedInStore.description, 'New Description');
+      expect(updatedInStore.projectUrl, 'https://github.com/new/repo');
+      expect(updatedInStore.docuUrl, 'https://docs.new.com');
+      expect(updatedInStore.labor, isTrue);
+    });
+
+    testWidgets('sets optional fields to null when cleared', (tester) async {
+      Project? dialogResult;
+      final store = await pumpDialog(
+        tester,
+        onResult: (res) => dialogResult = res as Project?,
+      );
+
+      final textFields = find.byType(TextFormField);
+      await tester.enterText(textFields.at(2), ''); // description
+      await tester.enterText(textFields.at(3), ''); // projectUrl
+      await tester.enterText(textFields.at(4), ''); // docuUrl
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Edit project'), findsNothing);
+      expect(dialogResult?.description, isNull);
+      expect(dialogResult?.projectUrl, isNull);
+      expect(dialogResult?.docuUrl, isNull);
+
+      final updatedInStore = store.state.projects.first;
+      expect(updatedInStore.description, isNull);
+      expect(updatedInStore.projectUrl, isNull);
+      expect(updatedInStore.docuUrl, isNull);
     });
   });
 }
