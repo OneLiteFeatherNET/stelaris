@@ -7,29 +7,42 @@ import 'package:stelaris_models/stelaris_models.dart';
 
 class ProjectVmFactory
     extends VmFactory<AppState, ProjectSelectionPage, ProjectViewModel> {
-  ProjectVmFactory();
+  final Project? localSelection;
+
+  ProjectVmFactory({this.localSelection});
 
   @override
   ProjectViewModel fromStore() => ProjectViewModel(
     projects: state.projects,
-    selectedProject: state.selectedProject,
+    selected: _resolveSelected(
+      state.projects,
+      localSelection ?? state.selectedProject,
+    ),
     onSelectProject: (project) => dispatch(SelectProjectAction(project)),
   );
+
+  // A project's id is only assigned once persisted, so a project picked
+  // locally before the store reconciles it must also be matched by key.
+  Project? _resolveSelected(List<Project> projects, Project? candidate) {
+    if (projects.isEmpty) return null;
+    if (candidate != null) {
+      final match = projects
+          .where((p) => p.id == candidate.id || p.key == candidate.key)
+          .firstOrNull;
+      if (match != null) return match;
+    }
+    return projects.first;
+  }
 }
 
 class ProjectViewModel extends Vm {
   final List<Project> projects;
-  final Project? selectedProject;
+  final Project? selected;
   final ValueChanged<Project?> onSelectProject;
 
   ProjectViewModel({
     required this.projects,
-    required this.selectedProject,
+    required this.selected,
     required this.onSelectProject,
-  }) : super(equals: [projects, selectedProject]);
-
-  bool isSelected(Project project) {
-    if (selectedProject == null) return false;
-    return selectedProject!.id == project.id;
-  }
+  }) : super(equals: [projects, selected]);
 }
