@@ -78,7 +78,10 @@ class FontRemoveAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    final FontModel removedEntry = await ApiService().fontApi.remove(model);
+    final toRemove = model.projectId == null && state.selectedProject != null
+        ? model.copyWith(projectId: state.selectedProject!.id)
+        : model;
+    final FontModel removedEntry = await ApiService().fontApi.remove(toRemove);
     final List<FontModel> items = List.of(state.fonts.items, growable: true)
       ..removeWhere((element) => element.id == removedEntry.id);
     return _updateFontInState(
@@ -127,7 +130,10 @@ class FontDatabaseUpdate extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     if (state.selectedFont == null) return null;
-    final FontModel selected = state.selectedFont!;
+    final FontModel selected =
+        state.selectedFont!.projectId == null && state.selectedProject != null
+            ? state.selectedFont!.copyWith(projectId: state.selectedProject!.id)
+            : state.selectedFont!;
     final FontModel dbModel = await ApiService().fontApi.update(selected);
 
     final List<FontModel> updatedList = List.of(
