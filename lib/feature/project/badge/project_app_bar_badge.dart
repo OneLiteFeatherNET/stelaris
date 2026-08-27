@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/project/badge/project_labor_badge.dart';
 import 'package:stelaris/feature/settings/settings_dialog.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -56,24 +57,7 @@ class ProjectAppBarBadge extends StatelessWidget {
                     ),
                     if (project.labor) ...[
                       const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: colorScheme.tertiaryContainer,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          'LABOR',
-                          style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.onTertiaryContainer,
-                          ),
-                        ),
-                      ),
+                      const ProjectLaborBadge(),
                     ],
                   ],
                 ),

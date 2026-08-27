@@ -55,7 +55,7 @@ void main() {
       );
 
       expect(find.text('My Project'), findsOneWidget);
-      expect(find.text('LABOR'), findsOneWidget);
+      expect(find.text('Labor'), findsOneWidget);
       expect(find.byIcon(Icons.folder_outlined), findsOneWidget);
     });
   });

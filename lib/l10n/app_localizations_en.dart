@@ -455,4 +455,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialog_project_switch_confirm => 'Switch project';
+
+  @override
+  String get dialog_project_edit_title => 'Edit project';
+
+  @override
+  String get dialog_project_edit_button => 'Save';
+
+  @override
+  String get dialog_project_key_readonly_hint =>
+      'Project key cannot be changed after creation';
+
+  @override
+  String get project_selection_edit_tooltip => 'Edit project';
 }
