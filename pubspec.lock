@@ -880,7 +880,7 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: "66cc6a5f77854bfa988483a74322eede6b72f1eb"
+      resolved-ref: "7664d25841676a9bd0547dab19512cb960daa294"
       url: "https://github.com/OneLiteFeatherNET/vulpes-minecraft-dart.git"
     source: git
     version: "1.0.0"
@@ -950,4 +950,4 @@ packages:
     version: "3.1.4"
 sdks:
   dart: ">=3.13.1 <4.0.0"
-  flutter: ">=3.47.1 <4.0.0"
+  flutter: ">=3.47.2 <4.0.0"
