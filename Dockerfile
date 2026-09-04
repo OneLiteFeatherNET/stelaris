@@ -117,7 +117,7 @@ RUN find build/web -type f \
 # as uid 101 and listens on 8080, so the container never starts as root and
 # never needs CAP_NET_BIND_SERVICE. Pinned to a full patch version because
 # Renovate keeping this tag current is what keeps the image free of known CVEs.
-FROM nginxinc/nginx-unprivileged:1.31.4-alpine
+FROM nginxinc/nginx-unprivileged:1.31.5-alpine
 
 LABEL maintainer="OneLiteFeatherNET <contact@onelitefeather.net>"
 LABEL org.opencontainers.image.title="Stelaris UI"
