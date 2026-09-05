@@ -28,7 +28,7 @@ void main() {
       ApiService().projectApi.apiClient.dio.httpClientAdapter =
           FakeHttpClientAdapter((options) {
         final body = options.data;
-        if (body is Map<String, dynamic>) {
+        if (body is Map) {
           return ResponseBody.fromString(
             jsonEncode(body),
             200,
@@ -36,9 +36,19 @@ void main() {
               Headers.contentTypeHeader: [Headers.jsonContentType],
             },
           );
+        } else if (body is String) {
+          return ResponseBody.fromString(
+            body,
+            200,
+            headers: {
+              Headers.contentTypeHeader: [Headers.jsonContentType],
+            },
+          );
         }
         return ResponseBody.fromString(
-          jsonEncode(originalProject.copyWith(displayName: 'Updated Name').toJson()),
+          jsonEncode(
+            originalProject.copyWith(displayName: 'Updated Name').toJson(),
+          ),
           200,
           headers: {
             Headers.contentTypeHeader: [Headers.jsonContentType],

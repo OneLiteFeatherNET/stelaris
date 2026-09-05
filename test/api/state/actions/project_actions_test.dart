@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:async_redux/async_redux.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/actions/project/project_actions.dart';
@@ -208,7 +205,7 @@ void main() {
       const p2 = Project(id: 'p2', displayName: 'P2', key: 'k2');
       const prevP1 = Project(id: 'p1', displayName: 'P1 Old', key: 'k1');
 
-      final paginated = PaginatedResult<Project>(
+      final paginated = const PaginatedResult<Project>(
         items: [p1, p2],
         totalItems: 2,
         totalPages: 1,
