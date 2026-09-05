@@ -1,12 +1,15 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/button/build_button.dart';
 import 'package:stelaris/feature/base/button/settings_button.dart';
 import 'package:stelaris/feature/base/button/toggle_navigation_button.dart';
+import 'package:stelaris/feature/base/stelaris_loader.dart';
 import 'package:stelaris/feature/navigation/navigation_side_bar.dart';
 import 'package:stelaris/feature/project/badge/project_app_bar_badge.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/routes.dart';
 
 /// A base page layout that provides a consistent structure across the application.
 ///
@@ -25,6 +28,17 @@ class BasePage extends StatelessWidget {
     return StoreConnector<AppState, String?>(
       converter: (store) => store.state.selectedProject?.id,
       builder: (context, selectedProjectId) {
+        if (selectedProjectId == null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (context.mounted) {
+              context.go(projectSelectionRoute);
+            }
+          });
+          return const Scaffold(
+            body: Center(child: StelarisLoader()),
+          );
+        }
+
         return Scaffold(
           appBar: AppBar(
             scrolledUnderElevation: 0,
