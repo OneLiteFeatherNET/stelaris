@@ -1,5 +1,7 @@
+import 'package:async_redux/async_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/base_page.dart';
 import 'package:stelaris/feature/project/project_selection_page.dart';
@@ -17,6 +19,18 @@ const String projectSelectionRoute = '/projects';
 
 final GoRouter router = GoRouter(
   initialLocation: projectSelectionRoute,
+  redirect: (context, state) {
+    try {
+      final appState = StoreProvider.state<AppState>(context);
+      final hasProject = appState.selectedProject != null;
+      final isAtProjects = state.matchedLocation == projectSelectionRoute;
+
+      if (!hasProject && !isAtProjects) {
+        return projectSelectionRoute;
+      }
+    } catch (_) {}
+    return null;
+  },
   routes: [
     GoRoute(
       path: projectSelectionRoute,

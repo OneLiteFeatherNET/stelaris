@@ -16,6 +16,15 @@ void main() {
       var redirected = false;
       final testRouter = GoRouter(
         initialLocation: '/test',
+        redirect: (context, state) {
+          final appState = StoreProvider.state<AppState>(context);
+          if (appState.selectedProject == null &&
+              state.matchedLocation != '/projects') {
+            redirected = true;
+            return '/projects';
+          }
+          return null;
+        },
         routes: [
           GoRoute(
             path: '/test',
@@ -24,10 +33,8 @@ void main() {
           ),
           GoRoute(
             path: '/projects',
-            builder: (context, state) {
-              redirected = true;
-              return const Scaffold(body: Text('Project Selection Page'));
-            },
+            builder: (context, state) =>
+                const Scaffold(body: Text('Project Selection Page')),
           ),
         ],
       );
