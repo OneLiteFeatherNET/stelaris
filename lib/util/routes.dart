@@ -1,5 +1,7 @@
+import 'package:async_redux/async_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/base_page.dart';
 import 'package:stelaris/feature/project/project_selection_page.dart';
@@ -15,8 +17,26 @@ import 'package:stelaris/feature/sound/sound_page.dart' deferred as sound_page;
 
 const String projectSelectionRoute = '/projects';
 
+/// Redirects to [projectSelectionRoute] whenever no project is selected.
+///
+/// Extracted as a standalone function so it can be exercised against an
+/// isolated [GoRouter] in tests instead of the app's singleton [router].
+String? projectSelectionRedirect(BuildContext context, GoRouterState state) {
+  try {
+    final appState = StoreProvider.state<AppState>(context);
+    final hasProject = appState.selectedProject != null;
+    final isAtProjects = state.matchedLocation == projectSelectionRoute;
+
+    if (!hasProject && !isAtProjects) {
+      return projectSelectionRoute;
+    }
+  } on StoreException catch (_) {}
+  return null;
+}
+
 final GoRouter router = GoRouter(
   initialLocation: projectSelectionRoute,
+  redirect: projectSelectionRedirect,
   routes: [
     GoRoute(
       path: projectSelectionRoute,
