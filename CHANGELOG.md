@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.4.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.3.3...v1.4.0) (2026-09-05)
+
+
+### Features
+
+* **project:** allow the edit of projects ([#149](https://github.com/OneLiteFeatherNET/stelaris/issues/149)) ([13bc128](https://github.com/OneLiteFeatherNET/stelaris/commit/13bc128a0d4816a28072ed9e925101bdc105fa7f))
+
+
+### Bug Fixes
+
+* **deps:** update dependency dio to ^5.11.1 ([#155](https://github.com/OneLiteFeatherNET/stelaris/issues/155)) ([8d98de3](https://github.com/OneLiteFeatherNET/stelaris/commit/8d98de39be232c694bd00b623711c8bae5fbaf3a))
+* **deps:** update patch updates ([6e42dce](https://github.com/OneLiteFeatherNET/stelaris/commit/6e42dce3aefaa104f9b58f6f119fe9db462f08dc))
+* **deps:** update patch updates (patch) ([#154](https://github.com/OneLiteFeatherNET/stelaris/issues/154)) ([6e42dce](https://github.com/OneLiteFeatherNET/stelaris/commit/6e42dce3aefaa104f9b58f6f119fe9db462f08dc))
+* **project:** redirect to project selection if no project is selected ([#156](https://github.com/OneLiteFeatherNET/stelaris/issues/156)) ([64c4c98](https://github.com/OneLiteFeatherNET/stelaris/commit/64c4c98d874e16618bb872222d411858f23b6d83))
+
 ## [1.3.3](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.3.2...v1.3.3) (2026-08-27)
 
 
