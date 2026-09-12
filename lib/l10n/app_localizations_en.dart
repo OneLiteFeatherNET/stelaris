@@ -103,6 +103,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to delete this enchantment?';
 
   @override
+  String get dialog_item_lore_add_title => 'Add lore';
+
+  @override
   String get dialog_item_lore_edit_title => 'Edit lore';
 
   @override
@@ -111,6 +114,27 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dialog_item_lore_delete_header =>
       'Are you sure you want to delete this lore?';
+
+  @override
+  String get lore_tab_normal => 'Normal';
+
+  @override
+  String get lore_tab_minimessage => 'MiniMessage';
+
+  @override
+  String get lore_color_palette_title => 'Color';
+
+  @override
+  String get lore_color_none => 'None';
+
+  @override
+  String get lore_color_default => 'Default (No color)';
+
+  @override
+  String get lore_preview_title => 'Preview';
+
+  @override
+  String get lore_syntax_guide_title => 'MiniMessage Syntax Guide';
 
   @override
   String get dialog_font_create_title => 'Create new font';

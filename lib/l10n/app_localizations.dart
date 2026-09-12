@@ -274,6 +274,12 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete this enchantment?'**
   String get dialog_item_enchantment_delete_header;
 
+  /// No description provided for @dialog_item_lore_add_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Add lore'**
+  String get dialog_item_lore_add_title;
+
   /// No description provided for @dialog_item_lore_edit_title.
   ///
   /// In en, this message translates to:
@@ -291,6 +297,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to delete this lore?'**
   String get dialog_item_lore_delete_header;
+
+  /// No description provided for @lore_tab_normal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get lore_tab_normal;
+
+  /// No description provided for @lore_tab_minimessage.
+  ///
+  /// In en, this message translates to:
+  /// **'MiniMessage'**
+  String get lore_tab_minimessage;
+
+  /// No description provided for @lore_color_palette_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get lore_color_palette_title;
+
+  /// No description provided for @lore_color_none.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get lore_color_none;
+
+  /// No description provided for @lore_color_default.
+  ///
+  /// In en, this message translates to:
+  /// **'Default (No color)'**
+  String get lore_color_default;
+
+  /// No description provided for @lore_preview_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get lore_preview_title;
+
+  /// No description provided for @lore_syntax_guide_title.
+  ///
+  /// In en, this message translates to:
+  /// **'MiniMessage Syntax Guide'**
+  String get lore_syntax_guide_title;
 
   /// No description provided for @dialog_font_create_title.
   ///
