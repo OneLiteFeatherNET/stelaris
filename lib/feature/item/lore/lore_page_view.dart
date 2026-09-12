@@ -6,9 +6,8 @@ import 'package:stelaris/api/state/actions/item/item_lore_actions.dart';
 import 'package:stelaris/api/state/factory/item/item_lore_view_state.dart';
 import 'package:stelaris/feature/base/action/entry_actions.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
-import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris/feature/item/lore/dialog/item_lore_dialog.dart';
 import 'package:stelaris/feature/item/lore/grabbed_card.dart';
-import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class LorePageView extends StatefulWidget {
@@ -106,19 +105,14 @@ class _LorePageViewState extends State<LorePageView>
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return EntryUpdateDialog(
+        return ItemLoreDialog(
           title: context.l10n.dialog_item_lore_edit_title,
-          formKey: GlobalKey<FormState>(),
+          data: dto.text,
           valueUpdate: (value) {
             final updatedDto = dto.copyWith(text: value);
             context.dispatch(ItemLoreUpdateAction(updatedDto));
             Navigator.pop(context, false);
           },
-          formFieldValidator: (value) {
-            final String input = value as String;
-            return checkIfEmptyAndReturnErrorString(input, context);
-          },
-          data: dto.text,
         );
       },
     );

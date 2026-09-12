@@ -5,12 +5,11 @@ import 'package:stelaris/api/state/actions/item/item_lore_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/item_lore_view_state.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
-import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris/feature/item/lore/dialog/item_lore_dialog.dart';
 import 'package:stelaris/feature/item/lore/lore_action_chips.dart';
 import 'package:stelaris/feature/item/lore/lore_page_view.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
-import 'package:stelaris/util/functions.dart';
 
 class LorePage extends StatelessWidget {
   const LorePage({super.key});
@@ -51,18 +50,13 @@ class LorePage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return EntryUpdateDialog(
+        return ItemLoreDialog(
+          title: context.l10n.dialog_item_lore_add_title,
           valueUpdate: (value) {
             final ItemLoreDto dto = ItemLoreDto(text: value);
             context.dispatch(ItemLoreAddAction(dto));
             Navigator.pop(context);
           },
-          formFieldValidator: (value) {
-            final String input = value as String;
-            return checkIfEmptyAndReturnErrorString(input, context);
-          },
-          title: context.l10n.button_add_new_line,
-          formKey: GlobalKey<FormState>(),
         );
       },
     );
