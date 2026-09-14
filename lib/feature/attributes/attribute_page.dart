@@ -85,7 +85,6 @@ class AttributePage extends StatelessWidget {
   void _openDialog(BuildContext context) {
     showDialog(
       context: context,
-      useRootNavigator: false,
       builder: (BuildContext context) {
         return EntryUpdateDialog(
           title: context.l10n.dialog_attribute_create,
