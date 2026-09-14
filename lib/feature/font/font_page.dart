@@ -7,11 +7,10 @@ import 'package:stelaris/api/state/factory/font/font_vm_state.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/model_text.dart';
 import 'package:stelaris/feature/base/paginated_model_view_tab.dart';
-import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/feature/font/chars/font_char_page.dart';
 import 'package:stelaris/feature/font/face/font_face_page.dart';
 import 'package:stelaris/feature/font/font_general_page.dart';
-import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -27,7 +26,7 @@ class FontPage extends StatelessWidget {
       builder: (context, vm) {
         return PaginatedBaseModelViewTabs<FontModel>(
           mapToDataModelItem: (value) => TextWidget(displayName: value.uiName),
-          openFunction: () => _openDialog(context),
+          openFunction: () => _openDialog(context, vm.projectKey),
           selectedItem: vm.selected,
           mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
@@ -51,26 +50,19 @@ class FontPage extends StatelessWidget {
     );
   }
 
-  void _openDialog(BuildContext context) {
+  void _openDialog(BuildContext context, String projectKey) {
     showDialog(
       context: context,
-      useRootNavigator: false,
       builder: (BuildContext context) {
-        return EntryUpdateDialog(
+        return ModelCreateDialog(
           title: context.l10n.dialog_font_create_title,
-          valueUpdate: (value) {
-            final FontModel model = FontModel(uiName: value);
+          projectNamespace: projectKey,
+          onSubmit: (name, key) {
+            // TODO: pass key once stelaris_models has key support
+            final FontModel model = FontModel(uiName: name);
             context.dispatch(FontAddAction(model));
             Navigator.pop(context, true);
           },
-          formKey: GlobalKey<FormState>(),
-          hintText: 'Example name',
-          formatters: [withSpacesFormatter],
-          formFieldValidator: (value) {
-            final String input = value as String;
-            return checkIfEmptyAndReturnErrorString(input, context);
-          },
-          clearFunction: (text) => text.trim().isNotEmpty,
         );
       },
     );

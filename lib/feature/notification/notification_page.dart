@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/notification_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -8,9 +7,8 @@ import 'package:stelaris/api/state/factory/notification/notification_vm_state.da
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/model_text.dart';
 import 'package:stelaris/feature/base/paginated_model_list.dart';
-import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/feature/notification/notification_page_general.dart';
-import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -30,7 +28,7 @@ class NotificationPage extends StatelessWidget {
             PaginatedModelList<NotificationModel>(
               mapToDataModelItem: (value) =>
                   TextWidget(displayName: value.uiName),
-              openFunction: () => _openCreationDialog(context),
+              openFunction: () => _openCreationDialog(context, vm.projectKey),
               selectedItem: vm.selected,
               mapToDeleteDialog: (value) =>
                   createDeleteText(value.uiName, context),
@@ -55,28 +53,19 @@ class NotificationPage extends StatelessWidget {
     );
   }
 
-  void _openCreationDialog(BuildContext context) {
+  void _openCreationDialog(BuildContext context, String projectKey) {
     showDialog(
       context: context,
-      useRootNavigator: false,
       builder: (BuildContext context) {
-        return EntryUpdateDialog(
+        return ModelCreateDialog(
           title: context.l10n.dialog_notification_create,
-          valueUpdate: (value) {
-            final NotificationModel model = NotificationModel(uiName: value);
+          projectNamespace: projectKey,
+          onSubmit: (name, key) {
+            // TODO: pass key once stelaris_models has key support
+            final NotificationModel model = NotificationModel(uiName: name);
             context.dispatchAndWait(NotificationAddAction(model));
             Navigator.pop(context, true);
           },
-          formKey: GlobalKey<FormState>(),
-          hintText: 'Example name',
-          formatters: [
-            FilteringTextInputFormatter.allow(stringWithSpacePattern),
-          ],
-          formFieldValidator: (value) {
-            final input = value as String;
-            return checkIfEmptyAndReturnErrorString(input, context);
-          },
-          clearFunction: (text) => text.trim().isNotEmpty,
         );
       },
     );
