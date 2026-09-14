@@ -67,8 +67,7 @@ class PaginatedBaseModelViewTabs<E extends DataModel> extends StatelessWidget {
           hasMore: hasMore,
           isLoadingMore: isLoadingMore,
         ),
-
-        verticalSpacing10,
+        horizontalSpacing10,
         Expanded(
           child: ModelContentTabPage<E>(
             selectedItem: selectedItem,
