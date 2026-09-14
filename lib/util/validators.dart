@@ -133,4 +133,48 @@ class Validators {
       return null;
     };
   }
+
+  /// Validates only the key/value part of an Adventure key (the right part after the colon).
+  /// Slashes (/), underscores (_), hyphens (-), and dots (.) are allowed.
+  /// Colons (:), double dots (..), uppercase letters, and spaces are not allowed.
+  ///
+  /// Examples of valid keys: `ruby_sword`, `item/weapon/sword`, `magic.wand`
+  static FormValidator<String> adventureKeyPart({
+    String requiredMessage = 'Key is required',
+    String invalidMessage = 'Invalid key (only lowercase letters, numbers, [._/-] allowed, e.g. "magic_wand")',
+    bool detailed = true,
+  }) {
+    if (!detailed) {
+      return compose([
+        required(requiredMessage),
+        pattern(adventureKeyPartPattern, invalidMessage),
+      ]);
+    }
+
+    return (value) {
+      if (value == null || value.trim().isEmpty) {
+        return requiredMessage;
+      }
+
+      final text = value.trim();
+
+      if (text.contains('..')) {
+        return 'Double dots (..) are not allowed';
+      }
+      if (text.contains(':')) {
+        return 'Colons (:) are not allowed in the key part';
+      }
+      if (text.contains(RegExp(r'[A-Z]'))) {
+        return 'Uppercase letters are not allowed';
+      }
+      if (text.contains(' ')) {
+        return 'Spaces are not allowed';
+      }
+      if (!adventureKeyPartPattern.hasMatch(text)) {
+        return invalidMessage;
+      }
+
+      return null;
+    };
+  }
 }
