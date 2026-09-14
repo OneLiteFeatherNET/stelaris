@@ -7,30 +7,33 @@ class ApiClient {
   final String baseUrl;
   late Dio dio;
 
-  ApiClient(this.baseUrl) {
-    dio = Dio()
-      ..options.baseUrl = baseUrl
-      ..interceptors.add(
+  ApiClient(
+    this.baseUrl, {
+    Duration connectTimeout = const Duration(seconds: 10),
+    Duration receiveTimeout = const Duration(seconds: 15),
+    Duration sendTimeout = const Duration(seconds: 10),
+  }) {
+    dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: connectTimeout,
+        receiveTimeout: receiveTimeout,
+        sendTimeout: sendTimeout,
+      ),
+    )..interceptors.add(
         QueuedInterceptorsWrapper(
           onRequest: (options, handler) async {
             return handler.next(options);
-            /*final token = tokenProvider();
-              if (token != null) {
-                options.headers['Authorization'] = 'Bearer $token';
-                return handler.next(options);
-              } else {
-                return handler.reject(DioError(requestOptions: options));
-              }*/
           },
           onError: (err, handler) {
             if (err.error is SocketException) {
-              handler.reject(err);
+              return handler.reject(err);
             }
             if (err.response?.statusCode != null &&
                 err.response!.statusCode == 401) {
-              handler.reject(err);
+              return handler.reject(err);
             }
-            handler.reject(err);
+            return handler.next(err);
           },
         ),
       );
