@@ -122,9 +122,10 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                 ),
               ),
               PositionedSaveButton.standard(
-                callback: () {
+                successMessage: context.l10n.feedback_save_success,
+                callback: () async {
                   if (_formKey.currentState?.validate() ?? false) {
-                    context.dispatch(SoundDatabaseUpdate());
+                    await context.dispatchAndWait(SoundDatabaseUpdate());
                   }
                 },
               ),

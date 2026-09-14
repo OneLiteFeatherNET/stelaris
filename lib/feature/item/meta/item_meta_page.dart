@@ -185,9 +185,10 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
                 ),
               ),
               PositionedSaveButton.standard(
-                callback: () {
+                successMessage: context.l10n.feedback_save_success,
+                callback: () async {
                   if (_formKey.currentState?.validate() ?? false) {
-                    context.dispatch(ItemDatabaseUpdate());
+                    await context.dispatchAndWait(ItemDatabaseUpdate());
                   }
                 },
               ),

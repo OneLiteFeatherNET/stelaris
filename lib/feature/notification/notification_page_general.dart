@@ -212,9 +212,10 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                   ),
                 ),
                 PositionedSaveButton.standard(
-                  callback: () {
+                  successMessage: context.l10n.feedback_save_success,
+                  callback: () async {
                     if (_key.currentState?.validate() ?? false) {
-                      context.dispatch(NotificationDatabaseUpdate());
+                      await context.dispatchAndWait(NotificationDatabaseUpdate());
                     }
                   },
                 ),

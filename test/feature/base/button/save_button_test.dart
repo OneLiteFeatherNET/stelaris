@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/feature/base/button/save_button.dart';
@@ -64,4 +67,103 @@ void main() {
         // Verify callback triggered
         expect(pressed, isTrue);
       });
+
+  testWidgets('SaveButton shows loading indicator while async callback is running',
+      (WidgetTester tester) async {
+    final completer = Completer<void>();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SaveButton(
+            callback: () => completer.future,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.byWidget(saveIcon), findsOneWidget);
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pump();
+
+    // While completer is unresolved, progress indicator should be shown
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byWidget(saveIcon), findsNothing);
+
+    completer.complete();
+    await tester.pump();
+
+    // After completion, icon returns
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.byWidget(saveIcon), findsOneWidget);
+  });
+
+  testWidgets('SaveButton displays success snackbar on completion when successMessage is set',
+      (WidgetTester tester) async {
+    final completer = Completer<void>();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SaveButton(
+            successMessage: 'Saved successfully',
+            callback: () => completer.future,
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pump();
+
+    completer.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Saved successfully'), findsOneWidget);
+    expect(find.byType(SnackBar), findsOneWidget);
+    final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
+    expect(snackBar.backgroundColor, Colors.green.shade700);
+  });
+
+  testWidgets('SaveButton catches error and displays error snackbar with ProblemDetail',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SaveButton(
+            callback: () async {
+              throw DioException(
+                requestOptions: RequestOptions(path: '/test'),
+                response: Response(
+                  requestOptions: RequestOptions(path: '/test'),
+                  statusCode: 400,
+                  data: {
+                    'title': 'Validation Failed',
+                    'status': 400,
+                    'detail': 'Item name cannot be empty',
+                    'code': 'VALIDATION_FAILED',
+                  },
+                ),
+                type: DioExceptionType.badResponse,
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.textContaining('Item name cannot be empty'), findsOneWidget);
+    final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
+    expect(snackBar.backgroundColor, Colors.amber.shade900);
+    // Button should not be stuck in loading
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.byWidget(saveIcon), findsOneWidget);
+  });
 }
+
