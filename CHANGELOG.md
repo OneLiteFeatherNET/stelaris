@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.1](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.4.0...v1.4.1) (2026-09-14)
+
+
+### Bug Fixes
+
+* **model:** use hoverEffect from Material 3 ([#168](https://github.com/OneLiteFeatherNET/stelaris/issues/168)) ([e40be73](https://github.com/OneLiteFeatherNET/stelaris/commit/e40be73548e71713453b69a3f45bc011e3cda0c8))
+* **route:** add usage of ShellRoute ([#167](https://github.com/OneLiteFeatherNET/stelaris/issues/167)) ([2bde2db](https://github.com/OneLiteFeatherNET/stelaris/commit/2bde2db9185b1857b055dd2012c964ee31c60509))
+* **tab:** improve focus traversal ([#165](https://github.com/OneLiteFeatherNET/stelaris/issues/165)) ([69f12b2](https://github.com/OneLiteFeatherNET/stelaris/commit/69f12b29d3d05b22a0df5674bee2efeadc22a595))
+* **view:** use horizontal spacing instead of vertical ([6d68b31](https://github.com/OneLiteFeatherNET/stelaris/commit/6d68b313c898bf091e0cbdd43da3b638249952bd))
+
 ## [1.4.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.3.3...v1.4.0) (2026-09-05)
 
 
