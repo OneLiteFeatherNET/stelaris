@@ -59,8 +59,7 @@ class ItemPage extends StatelessWidget {
           title: context.l10n.dialog_item_create,
           projectNamespace: projectKey,
           onSubmit: (name, key) {
-            // TODO: pass key once stelaris_models has key support
-            final model = ItemModel(uiName: name);
+            final model = ItemModel(uiName: name, key: key);
             context.dispatch(ItemAddAction(model));
             Navigator.pop(context, true);
           },

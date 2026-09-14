@@ -58,8 +58,7 @@ class FontPage extends StatelessWidget {
           title: context.l10n.dialog_font_create_title,
           projectNamespace: projectKey,
           onSubmit: (name, key) {
-            // TODO: pass key once stelaris_models has key support
-            final FontModel model = FontModel(uiName: name);
+            final FontModel model = FontModel(uiName: name, key: key);
             context.dispatch(FontAddAction(model));
             Navigator.pop(context, true);
           },

@@ -61,8 +61,10 @@ class NotificationPage extends StatelessWidget {
           title: context.l10n.dialog_notification_create,
           projectNamespace: projectKey,
           onSubmit: (name, key) {
-            // TODO: pass key once stelaris_models has key support
-            final NotificationModel model = NotificationModel(uiName: name);
+            final NotificationModel model = NotificationModel(
+              uiName: name,
+              key: key,
+            );
             context.dispatchAndWait(NotificationAddAction(model));
             Navigator.pop(context, true);
           },

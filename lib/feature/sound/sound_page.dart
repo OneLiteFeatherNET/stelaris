@@ -57,8 +57,7 @@ class SoundPage extends StatelessWidget {
           title: context.l10n.dialog_sound_create,
           projectNamespace: projectKey,
           onSubmit: (name, key) {
-            // TODO: pass key once stelaris_models has key support
-            final model = SoundEventModel(uiName: name);
+            final model = SoundEventModel(uiName: name, key: key);
             context.dispatch(SoundAddAction(model));
             Navigator.pop(context, true);
           },

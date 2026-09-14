@@ -88,8 +88,10 @@ class AttributePage extends StatelessWidget {
           title: context.l10n.dialog_attribute_create,
           projectNamespace: projectKey,
           onSubmit: (name, key) {
-            // TODO: pass key once stelaris_models has key support
-            final AttributeModel attributeModel = AttributeModel(uiName: name);
+            final AttributeModel attributeModel = AttributeModel(
+              uiName: name,
+              key: key,
+            );
             context.dispatchAndWait(AttributeAddAction(attributeModel));
             Navigator.pop(context, true);
           },
