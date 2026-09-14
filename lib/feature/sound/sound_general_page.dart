@@ -8,7 +8,6 @@ import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
-import 'package:stelaris/util/l10n_ext.dart';
 
 /// A widget that represents the general sound event management page.
 ///
@@ -66,22 +65,6 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                             runSpacing: 16,
                             children: [
                               _buildTextField(
-                                label: context.l10n.card_name,
-                                currentValue: selected.variableName,
-                                validator: (value) =>
-                                    checkIfEmptyAndReturnErrorString(
-                                      value,
-                                      context,
-                                    ),
-                                onChanged: (value) {
-                                  final newEntry = selected.copyWith(
-                                    variableName: value,
-                                  );
-                                  context.dispatch(UpdateSoundAction(newEntry));
-                                },
-                                focusOrder: 1,
-                              ),
-                              _buildTextField(
                                 label: 'Key',
                                 currentValue: selected.keyName,
                                 validator: (value) =>
@@ -95,7 +78,7 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                                   );
                                   context.dispatch(UpdateSoundAction(newEntry));
                                 },
-                                focusOrder: 2,
+                                focusOrder: 1,
                               ),
                               _buildTextField(
                                 label: 'Subtitle',
@@ -111,7 +94,7 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                                   );
                                   context.dispatch(UpdateSoundAction(newEntry));
                                 },
-                                focusOrder: 3,
+                                focusOrder: 2,
                               ),
                             ],
                           ),

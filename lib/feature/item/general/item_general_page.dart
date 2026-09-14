@@ -9,7 +9,6 @@ import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/feature/item/general/item_group_card.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
-import 'package:stelaris/util/functions.dart';
 
 class ItemGeneralPage extends StatefulWidget {
   const ItemGeneralPage({super.key});
@@ -61,38 +60,6 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                               runSpacing: 16,
                               children: [
                                 TextInputCard<String>(
-                                  display: context.l10n.card_name,
-                                  tooltipMessage: context.l10n.tooltip_name,
-                                  currentValue:
-                                      vm.selected.variableName ?? emptyString,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      stringPattern,
-                                    ),
-                                  ],
-                                  valueUpdate: (value) {
-                                    if (value == vm.selected.variableName) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      variableName: value,
-                                    );
-                                    context.dispatch(
-                                      UpdateItemAction(newEntry),
-                                    );
-                                  },
-                                  formValidator: (value) {
-                                    final String input = value as String;
-                                    return checkIfEmptyAndReturnErrorString(
-                                      input,
-                                      context,
-                                    );
-                                  },
-                                  maxLength: 30,
-                                  focusOrder: const NumericFocusOrder(1),
-                                ),
-                                TextInputCard<String>(
                                   display: context.l10n.card_description,
                                   currentValue:
                                       vm.selected.comment ?? emptyString,
@@ -114,12 +81,12 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                                     );
                                   },
                                   maxLength: 30,
-                                  focusOrder: const NumericFocusOrder(2),
+                                  focusOrder: const NumericFocusOrder(1),
                                 ),
                                 ItemGroupCard(
                                   model: vm.selected,
                                   groupKey: _groupKey,
-                                  focusOrder: const NumericFocusOrder(3),
+                                  focusOrder: const NumericFocusOrder(2),
                                 ),
                               ],
                             ),
