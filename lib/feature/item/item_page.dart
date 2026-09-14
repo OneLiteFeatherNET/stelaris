@@ -56,7 +56,6 @@ class ItemPage extends StatelessWidget {
   void _openCreationDialog(BuildContext context) {
     showDialog(
       context: context,
-      useRootNavigator: false,
       builder: (BuildContext context) {
         return EntryUpdateDialog(
           title: context.l10n.dialog_item_create,

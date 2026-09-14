@@ -53,7 +53,6 @@ class SoundPage extends StatelessWidget {
   void _openCreationDialog(BuildContext context) {
     showDialog(
       context: context,
-      useRootNavigator: false,
       builder: (BuildContext context) {
         return EntryUpdateDialog(
           title: 'Create sound',

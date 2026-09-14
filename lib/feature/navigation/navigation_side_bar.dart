@@ -18,7 +18,7 @@ class NavigationSideBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routerUri = GoRouterState.of(context).uri.toString();
+    final routerUri = GoRouterState.of(context).matchedLocation;
     final selectedIndex = navigationEntries.indexWhere((element) {
       return element.route == routerUri;
     });
