@@ -12,6 +12,7 @@ class FontVmFactory extends VmFactory<AppState, FontPage, FontViewModel> {
     selected: state.selectedFont,
     hasNextPage: state.fonts.hasNextPage,
     isLoadingMore: state.isLoadingMoreFonts,
+    projectKey: state.selectedProject?.key ?? '',
   );
 }
 
@@ -20,13 +21,23 @@ class FontViewModel extends Vm {
   final FontModel? selected;
   final bool hasNextPage;
   final bool isLoadingMore;
+  final String projectKey;
 
   FontViewModel({
     required this.models,
     required this.selected,
     required this.hasNextPage,
     required this.isLoadingMore,
-  }) : super(equals: [models, selected, hasNextPage, isLoadingMore]);
+    required this.projectKey,
+  }) : super(
+         equals: [
+           models,
+           selected,
+           hasNextPage,
+           isLoadingMore,
+           projectKey,
+         ],
+       );
 
   bool isSelectedItem(FontModel model) {
     if (selected == null) return false;
