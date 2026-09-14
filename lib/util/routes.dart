@@ -50,90 +50,90 @@ final GoRouter router = GoRouter(
         ),
       ),
     ),
-    GoRoute(
-      path: NavigationEntry.attributes.route,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        child: BasePage(
-          child: DeferredWidget(
-            loader: attribute_page.loadLibrary,
-            builder: () => attribute_page.AttributePage(),
+    ShellRoute(
+      builder: (context, state, child) => BasePage(child: child),
+      routes: [
+        GoRoute(
+          path: NavigationEntry.attributes.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: attribute_page.loadLibrary,
+              builder: () => attribute_page.AttributePage(),
+            ),
+            key: state.pageKey,
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) =>
+                    FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
           ),
         ),
-        key: state.pageKey,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            FadeTransition(
-          opacity: animation,
-          child: child,
-        ),
-      ),
-    ),
-    GoRoute(
-      path: NavigationEntry.items.route,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        child: BasePage(
-          child: DeferredWidget(
-            loader: item_page.loadLibrary,
-            builder: () => item_page.ItemPage(),
+        GoRoute(
+          path: NavigationEntry.items.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: item_page.loadLibrary,
+              builder: () => item_page.ItemPage(),
+            ),
+            key: state.pageKey,
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) =>
+                    FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
           ),
         ),
-        key: state.pageKey,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            FadeTransition(
-          opacity: animation,
-          child: child,
-        ),
-      ),
-    ),
-    GoRoute(
-      path: NavigationEntry.notifications.route,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        child: BasePage(
-          child: DeferredWidget(
-            loader: notification_page.loadLibrary,
-            builder: () => notification_page.NotificationPage(),
+        GoRoute(
+          path: NavigationEntry.notifications.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: notification_page.loadLibrary,
+              builder: () => notification_page.NotificationPage(),
+            ),
+            key: state.pageKey,
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) =>
+                    FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
           ),
         ),
-        key: state.pageKey,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            FadeTransition(
-          opacity: animation,
-          child: child,
-        ),
-      ),
-    ),
-    GoRoute(
-      path: NavigationEntry.font.route,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        child: BasePage(
-          child: DeferredWidget(
-            loader: font_page.loadLibrary,
-            builder: () => font_page.FontPage(),
+        GoRoute(
+          path: NavigationEntry.font.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: font_page.loadLibrary,
+              builder: () => font_page.FontPage(),
+            ),
+            key: state.pageKey,
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) =>
+                    FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
           ),
         ),
-        key: state.pageKey,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            FadeTransition(
-          opacity: animation,
-          child: child,
-        ),
-      ),
-    ),
-    GoRoute(
-      path: NavigationEntry.sound.route,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        child: BasePage(
-          child: DeferredWidget(
-            loader: sound_page.loadLibrary,
-            builder: () => sound_page.SoundPage(),
+        GoRoute(
+          path: NavigationEntry.sound.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: sound_page.loadLibrary,
+              builder: () => sound_page.SoundPage(),
+            ),
+            key: state.pageKey,
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) =>
+                    FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
           ),
         ),
-        key: state.pageKey,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            FadeTransition(
-          opacity: animation,
-          child: child,
-        ),
-      ),
+      ],
     ),
   ],
 );
