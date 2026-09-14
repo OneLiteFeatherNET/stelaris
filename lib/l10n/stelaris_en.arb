@@ -2,6 +2,8 @@
   "button_add": "Add",
   "button_add_new_line": "Add new line",
   "button_save": "Save",
+  "feedback_save_success": "Changes saved successfully",
+  "feedback_save_error": "Failed to save changes",
   "button_download": "Download",
   "button_generate": "Generate",
   "button_trigger_go": "Go!",

@@ -112,6 +112,18 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get button_save;
 
+  /// No description provided for @feedback_save_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes saved successfully'**
+  String get feedback_save_success;
+
+  /// No description provided for @feedback_save_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save changes'**
+  String get feedback_save_error;
+
   /// No description provided for @button_download.
   ///
   /// In en, this message translates to:
