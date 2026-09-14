@@ -33,15 +33,18 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
     return StoreConnector<AppState, SelectedFontView>(
       vm: () => SelectedFontFactory(),
       builder: (context, vm) {
-        return Form(
-          key: _key,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 300),
-                  opacity: 1,
+        return FocusScope(
+          child: FocusTraversalGroup(
+            policy: OrderedTraversalPolicy(),
+            child: Form(
+              key: _key,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 300),
+                      opacity: 1,
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       return Scrollbar(
@@ -123,9 +126,11 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
               ),
             ],
           ),
-        );
-      },
+        ),
+      ),
     );
+  },
+);
   }
 
   void _updateFont(

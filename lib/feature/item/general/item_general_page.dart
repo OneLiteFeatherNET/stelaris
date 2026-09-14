@@ -34,15 +34,18 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
     return StoreConnector<AppState, SelectedItemView>(
       vm: () => SelectedItemFactory<ItemGeneralPage>(),
       builder: (context, vm) {
-        return Form(
-          key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 300),
-                  opacity: 1,
+        return FocusScope(
+          child: FocusTraversalGroup(
+            policy: OrderedTraversalPolicy(),
+            child: Form(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 300),
+                      opacity: 1,
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       return Scrollbar(
@@ -136,8 +139,10 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
               ),
             ],
           ),
-        );
-      },
+        ),
+      ),
     );
+  },
+);
   }
 }

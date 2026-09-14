@@ -31,15 +31,18 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
     return StoreConnector<AppState, SelectedItemView>(
       vm: () => SelectedItemFactory<ItemMetaPage>(),
       builder: (context, vm) {
-        return Form(
-          key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 300),
-                  opacity: 1,
+        return FocusScope(
+          child: FocusTraversalGroup(
+            policy: OrderedTraversalPolicy(),
+            child: Form(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 300),
+                      opacity: 1,
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       return Scrollbar(
@@ -100,6 +103,7 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
                                     );
                                   },
                                   maxLength: 30,
+                                  focusOrder: const NumericFocusOrder(2),
                                 ),
                                 TextInputCard<int>(
                                   tooltipMessage:
@@ -129,7 +133,7 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
                                       numberPattern,
                                     ),
                                   ],
-                                  focusOrder: const NumericFocusOrder(2),
+                                  focusOrder: const NumericFocusOrder(3),
                                 ),
                                 TextInputCard<int>(
                                   display: context.l10n.card_amount,
@@ -169,7 +173,7 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
                                     return null;
                                   },
                                   maxLength: 30,
-                                  focusOrder: const NumericFocusOrder(3),
+                                  focusOrder: const NumericFocusOrder(4),
                                 ),
                               ],
                             ),
@@ -189,8 +193,10 @@ class _ItemMetaPageState extends State<ItemMetaPage> {
               ),
             ],
           ),
-        );
-      },
+        ),
+      ),
     );
+  },
+);
   }
 }
