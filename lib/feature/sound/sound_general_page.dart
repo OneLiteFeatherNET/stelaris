@@ -8,6 +8,7 @@ import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 /// A widget that represents the general sound event management page.
 ///
