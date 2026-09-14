@@ -14,7 +14,7 @@ class AttributeVmFactory
     totalItems: state.attributes.totalItems,
     hasNextPage: state.attributes.hasNextPage,
     isLoadingMore: state.isLoadingAttributesMore,
-    projectKey: state.selectedProject?.key ?? '',
+    projectKey: state.selectedProject!.key,
   );
 }
 

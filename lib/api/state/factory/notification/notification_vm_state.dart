@@ -14,7 +14,7 @@ class NotificationVmFactory
     hasNextPage: state.notifications.hasNextPage,
     isLoadingMore: state.isLoadingMoreNotifications,
     currentItems: state.notifications.totalItems,
-    projectKey: state.selectedProject?.key ?? '',
+    projectKey: state.selectedProject!.key,
   );
 }
 

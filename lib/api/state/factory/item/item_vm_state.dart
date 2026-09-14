@@ -12,7 +12,7 @@ class ItemVmFactory extends VmFactory<AppState, ItemPage, ItemViewModel> {
     selected: state.selectedItem,
     hasNextPage: state.items.hasNextPage,
     isLoadingMore: state.isLoadingMoreItems,
-    projectKey: state.selectedProject?.key ?? '',
+    projectKey: state.selectedProject!.key,
   );
 }
 

@@ -12,7 +12,7 @@ class FontVmFactory extends VmFactory<AppState, FontPage, FontViewModel> {
     selected: state.selectedFont,
     hasNextPage: state.fonts.hasNextPage,
     isLoadingMore: state.isLoadingMoreFonts,
-    projectKey: state.selectedProject?.key ?? '',
+    projectKey: state.selectedProject!.key,
   );
 }
 

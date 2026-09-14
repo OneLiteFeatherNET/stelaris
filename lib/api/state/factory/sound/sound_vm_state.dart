@@ -12,7 +12,7 @@ class SoundVmFactory extends VmFactory<AppState, SoundPage, SoundViewModel> {
     selected: state.selectedSoundEvent,
     hasNextPage: state.soundEvents.hasNextPage,
     isLoadingMore: state.isLoadingMoreSoundEvents,
-    projectKey: state.selectedProject?.key ?? '',
+    projectKey: state.selectedProject!.key,
   );
 }
 
