@@ -120,16 +120,14 @@ class _PaginatedModelListState<E extends DataModel>
     final E model = widget.models[index];
     return RepaintBoundary(
       key: model.id != null ? ValueKey(model.id) : ObjectKey(model),
-      child: GestureDetector(
+      child: ModelCard<E>(
+        selected: widget.compareFunction(model),
+        selectedCardShape: _defaultCardShape,
+        mapToDeleteDialog: widget.mapToDeleteDialog,
+        mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
+        mapToDataModelItem: widget.mapToDataModelItem,
+        rawModel: model,
         onTap: () => widget.callFunction(model),
-        child: ModelCard<E>(
-          selected: widget.compareFunction(model),
-          selectedCardShape: _defaultCardShape,
-          mapToDeleteDialog: widget.mapToDeleteDialog,
-          mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
-          mapToDataModelItem: widget.mapToDataModelItem,
-          rawModel: model,
-        ),
       ),
     );
   }
