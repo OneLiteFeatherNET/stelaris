@@ -150,9 +150,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'The model contains enchantments which are not in the new selected group.\nAll enchantments which are not in the group will be deleted.\n\nAre you sure you want to change the group?';
 
   @override
-  String get card_name => 'Variable Name';
-
-  @override
   String get card_description => 'Description';
 
   @override
@@ -220,9 +217,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tooltip_delete => 'Delete';
-
-  @override
-  String get tooltip_name => 'Change the name for the variable';
 
   @override
   String get tooltip_description => 'Change description';

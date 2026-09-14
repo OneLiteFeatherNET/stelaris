@@ -84,34 +84,6 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                 runSpacing: 16,
                                 children: [
                                   TextInputCard<String>(
-                                    display: context.l10n.card_name,
-                                    currentValue:
-                                        vm.selected.variableName ?? emptyString,
-                                    formatter: [
-                                      FilteringTextInputFormatter.allow(
-                                        stringPattern,
-                                      ),
-                                    ],
-                                    valueUpdate: (value) {
-                                      if (value != vm.selected.variableName) {
-                                        final oldModel = vm.selected;
-                                        final newEntry = oldModel.copyWith(
-                                          variableName: value,
-                                        );
-                                        context.dispatch(
-                                          UpdateNotificationAction(newEntry),
-                                        );
-                                      }
-                                    },
-                                    formValidator: (value) {
-                                      if (value.trim().isEmpty) {
-                                        return context.l10n.error_card_empty;
-                                      }
-                                      return null;
-                                    },
-                                    focusOrder: const NumericFocusOrder(1),
-                                  ),
-                                  TextInputCard<String>(
                                     display: context.l10n.card_material,
                                     currentValue:
                                         vm.selected.material ?? emptyString,
@@ -137,7 +109,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                       return null;
                                     },
                                     maxLength: 30,
-                                    focusOrder: const NumericFocusOrder(2),
+                                    focusOrder: const NumericFocusOrder(1),
                                   ),
                                   TextInputCard<String>(
                                     display: context.l10n.card_title,
@@ -159,7 +131,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                         stringWithSpacePattern,
                                       ),
                                     ],
-                                    focusOrder: const NumericFocusOrder(3),
+                                    focusOrder: const NumericFocusOrder(2),
                                   ),
                                   TextInputCard<String>(
                                     display: context.l10n.card_description,
@@ -181,7 +153,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                         );
                                       }
                                     },
-                                    focusOrder: const NumericFocusOrder(4),
+                                    focusOrder: const NumericFocusOrder(3),
                                   ),
                                   DropdownCard<FrameType, NotificationModel>(
                                     display: context.l10n.card_frame_type,
@@ -200,7 +172,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                     },
                                     defaultValue: (value) => value.frameType,
                                     matchTextInputHeight: true,
-                                    focusOrder: const NumericFocusOrder(5),
+                                    focusOrder: const NumericFocusOrder(4),
                                   ),
                                 ],
                               ),

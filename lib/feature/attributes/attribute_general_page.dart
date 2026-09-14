@@ -1,7 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/attribute/selected_attribute_state.dart';
@@ -9,7 +8,6 @@ import 'package:stelaris/feature/base/button/save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
-import 'package:stelaris/util/functions.dart';
 
 /// A widget that represents the general attributes management page.
 ///
@@ -39,28 +37,6 @@ class AttributeGeneralPage extends StatelessWidget {
                     key: _key,
                     child: Wrap(
                       children: [
-                        TextInputCard<String>(
-                          display: context.l10n.card_name,
-                          tooltipMessage: context.l10n.tooltip_name,
-                          currentValue: vm.selected.variableName ?? emptyString,
-                          formatter: [
-                            FilteringTextInputFormatter.allow(stringPattern),
-                          ],
-                          valueUpdate: (value) {
-                            if (value == vm.selected.variableName) return;
-                            final AttributeModel oldModel = vm.selected;
-                            final AttributeModel newEntry = oldModel.copyWith(
-                              variableName: value,
-                            );
-                            context.dispatch(UpdateAttributeAction(newEntry));
-                          },
-                          formValidator: (value) {
-                            final String input = value as String;
-                            return checkIfEmptyAndReturnErrorString(input, context);
-                          },
-                          maxLength: 30,
-                          focusOrder: const NumericFocusOrder(1),
-                        ),
                         TextInputCard<double>(
                           display: context.l10n.card_attribute_default_value,
                           currentValue:
@@ -78,7 +54,7 @@ class AttributeGeneralPage extends StatelessWidget {
                             context.dispatch(UpdateAttributeAction(newEntry));
                           },
                           maxLength: 100,
-                          focusOrder: const NumericFocusOrder(2),
+                          focusOrder: const NumericFocusOrder(1),
                         ),
                         TextInputCard<double>(
                           display: context.l10n.card_attribute_maximum_value,
@@ -97,7 +73,7 @@ class AttributeGeneralPage extends StatelessWidget {
                           formatter: [
                             FilteringTextInputFormatter.allow(numberPattern),
                           ],
-                          focusOrder: const NumericFocusOrder(3),
+                          focusOrder: const NumericFocusOrder(2),
                         ),
                       ],
                     ),

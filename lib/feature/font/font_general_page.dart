@@ -7,7 +7,6 @@ import 'package:stelaris/feature/base/button/positioned_save_button.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/formatter/formatters.dart';
-import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class FontGeneralPage extends StatefulWidget {
@@ -60,26 +59,6 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                               runSpacing: 16,
                               children: [
                                 TextInputCard<String>(
-                                  display: context.l10n.card_name,
-                                  currentValue:
-                                      vm.selected.variableName ?? emptyString,
-                                  formatter: [stringPatternFormatter],
-                                  valueUpdate: (value) => _updateFont(
-                                    context,
-                                    value,
-                                    vm.selected.variableName,
-                                    (newValue) => vm.selected.copyWith(
-                                      variableName: newValue,
-                                    ),
-                                  ),
-                                  formValidator: (value) =>
-                                      checkIfEmptyAndReturnErrorString(
-                                        value as String,
-                                        context,
-                                      ),
-                                  focusOrder: const NumericFocusOrder(1),
-                                ),
-                                TextInputCard<String>(
                                   display: context.l10n.card_font_provider,
                                   currentValue:
                                       vm.selected.provider ?? emptyString,
@@ -92,7 +71,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                       provider: newValue,
                                     ),
                                   ),
-                                  focusOrder: const NumericFocusOrder(2),
+                                  focusOrder: const NumericFocusOrder(1),
                                 ),
                                 TextInputCard<String>(
                                   display: context.l10n.card_comment,
@@ -106,7 +85,7 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                     (newValue) =>
                                         vm.selected.copyWith(comment: newValue),
                                   ),
-                                  focusOrder: const NumericFocusOrder(3),
+                                  focusOrder: const NumericFocusOrder(2),
                                 ),
                               ],
                             ),

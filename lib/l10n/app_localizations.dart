@@ -364,12 +364,6 @@ abstract class AppLocalizations {
   /// **'The model contains enchantments which are not in the new selected group.\nAll enchantments which are not in the group will be deleted.\n\nAre you sure you want to change the group?'**
   String get dialog_group_change_text;
 
-  /// No description provided for @card_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Variable Name'**
-  String get card_name;
-
   /// No description provided for @card_description.
   ///
   /// In en, this message translates to:
@@ -507,12 +501,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get tooltip_delete;
-
-  /// No description provided for @tooltip_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Change the name for the variable'**
-  String get tooltip_name;
 
   /// No description provided for @tooltip_description.
   ///

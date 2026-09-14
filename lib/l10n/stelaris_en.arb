@@ -54,7 +54,6 @@
   "dialog_group_change": "Change group?",
   "dialog_group_change_text": "The model contains enchantments which are not in the new selected group.\nAll enchantments which are not in the group will be deleted.\n\nAre you sure you want to change the group?",
 
-  "card_name": "Variable Name",
   "card_description": "Description",
   "card_comment": "Comment",
   "card_material": "Material",
@@ -80,7 +79,6 @@
   "item_level": "Level: ",
 
   "tooltip_delete": "Delete",
-  "tooltip_name": "Change the name for the variable",
   "tooltip_description": "Change description",
   "tooltip_material": "Change the material",
   "tooltip_model_data": "Change the model data",
