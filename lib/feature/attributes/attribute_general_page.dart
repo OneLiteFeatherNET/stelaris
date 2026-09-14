@@ -54,7 +54,7 @@ class AttributeGeneralPage extends StatelessWidget {
                             context.dispatch(UpdateAttributeAction(newEntry));
                           },
                           maxLength: 100,
-                          focusOrder: const NumericFocusOrder(2),
+                          focusOrder: const NumericFocusOrder(1),
                         ),
                         TextInputCard<double>(
                           display: context.l10n.card_attribute_maximum_value,
@@ -73,7 +73,7 @@ class AttributeGeneralPage extends StatelessWidget {
                           formatter: [
                             FilteringTextInputFormatter.allow(numberPattern),
                           ],
-                          focusOrder: const NumericFocusOrder(3),
+                          focusOrder: const NumericFocusOrder(2),
                         ),
                       ],
                     ),
