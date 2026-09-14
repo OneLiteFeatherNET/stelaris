@@ -33,16 +33,29 @@ class ModelCard<E extends DataModel> extends StatelessWidget {
       widthFactor: 0.90,
       child: Card(
         shape: selected ? selectedCardShape : null,
-        clipBehavior: Clip.antiAlias,
-        child: ListTile(
-          shape: RoundedRectangleBorder(borderRadius: borderRadius),
+        child: InkWell(
+          key: const Key('model_card_inkwell'),
+          borderRadius: borderRadius is BorderRadius ? borderRadius : null,
+          customBorder: borderRadius is! BorderRadius
+              ? RoundedRectangleBorder(borderRadius: borderRadius)
+              : null,
           hoverColor: colorScheme.secondary.withValues(alpha: 0.1),
+          splashFactory: NoSplash.splashFactory,
           onTap: onTap,
-          title: mapToDataModelItem(rawModel),
-          trailing: DeleteModelButton<E>(
-            value: rawModel,
-            mapToDeleteDialog: mapToDeleteDialog,
-            mapToDeleteSuccessfully: mapToDeleteSuccessfully,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 8, top: 4, bottom: 4),
+            child: Row(
+              children: [
+                Expanded(
+                  child: mapToDataModelItem(rawModel),
+                ),
+                DeleteModelButton<E>(
+                  value: rawModel,
+                  mapToDeleteDialog: mapToDeleteDialog,
+                  mapToDeleteSuccessfully: mapToDeleteSuccessfully,
+                ),
+              ],
+            ),
           ),
         ),
       ),

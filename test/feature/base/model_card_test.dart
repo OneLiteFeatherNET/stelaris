@@ -46,20 +46,22 @@ void main() {
       );
     }
 
+    final cardInkWell = find.byKey(const Key('model_card_inkwell'));
+
     testWidgets('renders title item and delete button', (tester) async {
       await tester.pumpWidget(createWidget());
 
       expect(find.text('Test Item'), findsOneWidget);
       expect(find.byType(DeleteModelButton<ItemModel>), findsOneWidget);
       expect(find.byType(Card), findsOneWidget);
-      expect(find.byType(ListTile), findsOneWidget);
+      expect(cardInkWell, findsOneWidget);
     });
 
     testWidgets('triggers onTap callback when card is clicked', (tester) async {
       var tapped = false;
       await tester.pumpWidget(createWidget(onTap: () => tapped = true));
 
-      await tester.tap(find.byType(ListTile));
+      await tester.tap(cardInkWell);
       await tester.pump();
 
       expect(tapped, isTrue);
@@ -82,26 +84,23 @@ void main() {
       expect(card.shape, isNull);
     });
 
-    testWidgets('ListTile has hoverColor and matching border shape',
+    testWidgets('InkWell has hoverColor and matching borderRadius',
         (tester) async {
       await tester.pumpWidget(createWidget(onTap: () {}));
 
-      final listTile = tester.widget<ListTile>(find.byType(ListTile));
+      final inkWell = tester.widget<InkWell>(cardInkWell);
       expect(
-        listTile.hoverColor,
+        inkWell.hoverColor,
         equals(Colors.amber.withValues(alpha: 0.1)),
       );
       expect(
-        listTile.shape,
-        equals(
-          const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-          ),
-        ),
+        inkWell.borderRadius,
+        equals(const BorderRadius.all(Radius.circular(12))),
       );
+      expect(inkWell.splashFactory, equals(NoSplash.splashFactory));
     });
 
-    testWidgets('mouse hover triggers ListTile hover effect', (tester) async {
+    testWidgets('mouse hover triggers InkWell hover effect', (tester) async {
       await tester.pumpWidget(createWidget(onTap: () {}));
 
       final gesture = await tester.createGesture(
@@ -110,7 +109,7 @@ void main() {
       await gesture.addPointer(location: Offset.zero);
       addTearDown(gesture.removePointer);
 
-      await gesture.moveTo(tester.getCenter(find.byType(ListTile)));
+      await gesture.moveTo(tester.getCenter(cardInkWell));
       await tester.pump();
 
       // Verify widget remains mounted and renders without errors during hover
