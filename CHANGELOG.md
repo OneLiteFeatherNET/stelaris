@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.4.1...v1.5.0) (2026-09-14)
+
+
+### Features
+
+* **error:** add problem detail handling ([#169](https://github.com/OneLiteFeatherNET/stelaris/issues/169)) ([d77de65](https://github.com/OneLiteFeatherNET/stelaris/commit/d77de65396b6e128ac01a460c38a909cbb8261a4))
+* **model:** add key field ([#162](https://github.com/OneLiteFeatherNET/stelaris/issues/162)) ([53883f5](https://github.com/OneLiteFeatherNET/stelaris/commit/53883f540590592bdc74e8dd110467530146661b))
+
 ## [1.4.1](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.4.0...v1.4.1) (2026-09-14)
 
 
