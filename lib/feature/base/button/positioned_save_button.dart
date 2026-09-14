@@ -11,6 +11,7 @@ class PositionedSaveButton extends StatelessWidget {
     required this.bottom,
     this.text = emptyString,
     this.successMessage,
+    this.formKey,
     this.heroTag = 'save_button',
     super.key,
   });
@@ -21,15 +22,17 @@ class PositionedSaveButton extends StatelessWidget {
     this.right = 15,
     this.text = emptyString,
     this.successMessage,
+    this.formKey,
     this.heroTag = 'save_button',
     super.key,
   });
 
-  final FutureOr<void> Function()? callback;
+  final FutureOr<dynamic> Function()? callback;
   final double right;
   final double bottom;
   final String text;
   final String? successMessage;
+  final GlobalKey<FormState>? formKey;
   final Object heroTag;
 
   @override
@@ -41,6 +44,7 @@ class PositionedSaveButton extends StatelessWidget {
         callback: callback,
         text: text,
         successMessage: successMessage,
+        formKey: formKey,
         heroTag: heroTag,
       ),
     );

@@ -165,5 +165,104 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.byWidget(saveIcon), findsOneWidget);
   });
+
+  testWidgets(
+      'SaveButton does not trigger callback or show snackbar if formKey validation fails',
+      (WidgetTester tester) async {
+    final formKey = GlobalKey<FormState>();
+    var callbackCalled = false;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Form(
+            key: formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  validator: (value) =>
+                      (value == null || value.isEmpty) ? 'Required' : null,
+                ),
+                SaveButton(
+                  formKey: formKey,
+                  successMessage: 'Saved successfully',
+                  callback: () {
+                    callbackCalled = true;
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    expect(callbackCalled, isFalse);
+    expect(find.byType(SnackBar), findsNothing);
+    expect(find.text('Required'), findsOneWidget);
+  });
+
+  testWidgets(
+      'SaveButton executes callback and shows success snackbar if formKey validation succeeds',
+      (WidgetTester tester) async {
+    final formKey = GlobalKey<FormState>();
+    var callbackCalled = false;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Form(
+            key: formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  initialValue: 'Valid input',
+                  validator: (value) =>
+                      (value == null || value.isEmpty) ? 'Required' : null,
+                ),
+                SaveButton(
+                  formKey: formKey,
+                  successMessage: 'Saved successfully',
+                  callback: () {
+                    callbackCalled = true;
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    expect(callbackCalled, isTrue);
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.text('Saved successfully'), findsOneWidget);
+  });
+
+  testWidgets(
+      'SaveButton does not display success snackbar when callback returns false',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SaveButton(
+            successMessage: 'Saved successfully',
+            callback: () async => false,
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SnackBar), findsNothing);
+  });
 }
 

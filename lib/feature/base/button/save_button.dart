@@ -11,18 +11,22 @@ class SaveButton extends StatefulWidget {
     required this.callback,
     this.text = emptyString,
     this.successMessage,
+    this.formKey,
     this.heroTag = 'save_button',
     super.key,
   });
 
   /// The callback to invoke when pressed. Can be asynchronous ([Future]).
-  final FutureOr<void> Function()? callback;
+  final FutureOr<dynamic> Function()? callback;
 
   /// Optional text label for extended FAB.
   final String text;
 
   /// Optional message to display via an info [SnackBar] upon successful completion.
   final String? successMessage;
+
+  /// Optional [GlobalKey] to validate a [Form] before invoking [callback].
+  final GlobalKey<FormState>? formKey;
 
   /// Optional heroTag for the FAB.
   final Object heroTag;
@@ -37,13 +41,19 @@ class _SaveButtonState extends State<SaveButton> {
   Future<void> _handlePressed() async {
     if (_isLoading || widget.callback == null) return;
 
+    if (widget.formKey != null &&
+        !(widget.formKey!.currentState?.validate() ?? false)) {
+      return;
+    }
+
     final callback = widget.callback!;
     final dynamic result = callback();
 
     if (result is Future) {
       setState(() => _isLoading = true);
       try {
-        await result;
+        final outcome = await result;
+        if (outcome == false) return;
         if (mounted && widget.successMessage != null) {
           context.showSuccessSnackBar(widget.successMessage!);
         }
@@ -57,6 +67,7 @@ class _SaveButtonState extends State<SaveButton> {
         }
       }
     } else {
+      if (result == false) return;
       if (widget.successMessage != null) {
         context.showSuccessSnackBar(widget.successMessage!);
       }
