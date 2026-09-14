@@ -105,11 +105,9 @@ class AttributeGeneralPage extends StatelessWidget {
                 ),
               ),
               SaveButton(
+                formKey: _key,
                 successMessage: context.l10n.feedback_save_success,
-                callback: () async {
-                  if (!_key.currentState!.validate()) return;
-                  await context.dispatchAndWait(AttributeDatabaseUpdate());
-                },
+                callback: () => context.dispatchAndWait(AttributeDatabaseUpdate()),
               ),
             ],
           ),

@@ -139,12 +139,9 @@ class _FontFacePageState extends State<FontFacePage> {
                 ),
               ),
               PositionedSaveButton.standard(
+                formKey: _key,
                 successMessage: context.l10n.feedback_save_success,
-                callback: () async {
-                  if (_key.currentState?.validate() ?? false) {
-                    await context.dispatchAndWait(FontDatabaseUpdate());
-                  }
-                },
+                callback: () => context.dispatchAndWait(FontDatabaseUpdate()),
               ),
             ],
           ),

@@ -131,12 +131,9 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                 ),
               ),
               PositionedSaveButton.standard(
+                formKey: _formKey,
                 successMessage: context.l10n.feedback_save_success,
-                callback: () async {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    await context.dispatchAndWait(ItemDatabaseUpdate());
-                  }
-                },
+                callback: () => context.dispatchAndWait(ItemDatabaseUpdate()),
               ),
             ],
           ),
