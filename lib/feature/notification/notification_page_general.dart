@@ -57,12 +57,15 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
           store.dispatch(RemoveSelectNotificationAction(), notify: false),
       builder: (context, vm) {
         return Expanded(
-          child: Form(
-            key: _key,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: Stack(
-              children: [
-                Positioned.fill(
+          child: FocusScope(
+            child: FocusTraversalGroup(
+              policy: OrderedTraversalPolicy(),
+              child: Form(
+                key: _key,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
                   child: AnimatedOpacity(
                     duration: const Duration(milliseconds: 300),
                     opacity: 1,
@@ -218,8 +221,10 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
               ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
+  },
+);
   }
 }

@@ -31,72 +31,77 @@ class AttributeGeneralPage extends StatelessWidget {
         return Expanded(
           child: Stack(
             children: [
-              Form(
-                autovalidateMode: AutovalidateMode.always,
-                key: _key,
-                child: Wrap(
-                  children: [
-                    TextInputCard<String>(
-                      display: context.l10n.card_name,
-                      tooltipMessage: context.l10n.tooltip_name,
-                      currentValue: vm.selected.variableName ?? emptyString,
-                      formatter: [
-                        FilteringTextInputFormatter.allow(stringPattern),
+              FocusScope(
+                child: FocusTraversalGroup(
+                  policy: OrderedTraversalPolicy(),
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.always,
+                    key: _key,
+                    child: Wrap(
+                      children: [
+                        TextInputCard<String>(
+                          display: context.l10n.card_name,
+                          tooltipMessage: context.l10n.tooltip_name,
+                          currentValue: vm.selected.variableName ?? emptyString,
+                          formatter: [
+                            FilteringTextInputFormatter.allow(stringPattern),
+                          ],
+                          valueUpdate: (value) {
+                            if (value == vm.selected.variableName) return;
+                            final AttributeModel oldModel = vm.selected;
+                            final AttributeModel newEntry = oldModel.copyWith(
+                              variableName: value,
+                            );
+                            context.dispatch(UpdateAttributeAction(newEntry));
+                          },
+                          formValidator: (value) {
+                            final String input = value as String;
+                            return checkIfEmptyAndReturnErrorString(input, context);
+                          },
+                          maxLength: 30,
+                          focusOrder: const NumericFocusOrder(1),
+                        ),
+                        TextInputCard<double>(
+                          display: context.l10n.card_attribute_default_value,
+                          currentValue:
+                              vm.selected.defaultValue?.toString() ?? zeroString,
+                          formatter: [
+                            FilteringTextInputFormatter.allow(numberPattern),
+                          ],
+                          valueUpdate: (value) {
+                            final parsedValue = double.tryParse(value) ?? 0;
+                            if (parsedValue == vm.selected.defaultValue) return;
+                            final oldModel = vm.selected;
+                            final newEntry = oldModel.copyWith(
+                              defaultValue: parsedValue,
+                            );
+                            context.dispatch(UpdateAttributeAction(newEntry));
+                          },
+                          maxLength: 100,
+                          focusOrder: const NumericFocusOrder(2),
+                        ),
+                        TextInputCard<double>(
+                          display: context.l10n.card_attribute_maximum_value,
+                          currentValue:
+                              vm.selected.maximumValue?.toString() ?? zeroString,
+                          valueUpdate: (value) {
+                            final parsedValue = double.tryParse(value) ?? 0;
+                            if (parsedValue == vm.selected.maximumValue) return;
+                            final oldModel = vm.selected;
+                            final newEntry = oldModel.copyWith(
+                              maximumValue: parsedValue,
+                            );
+                            context.dispatch(UpdateAttributeAction(newEntry));
+                          },
+                          maxLength: 100,
+                          formatter: [
+                            FilteringTextInputFormatter.allow(numberPattern),
+                          ],
+                          focusOrder: const NumericFocusOrder(3),
+                        ),
                       ],
-                      valueUpdate: (value) {
-                        if (value == vm.selected.variableName) return;
-                        final AttributeModel oldModel = vm.selected;
-                        final AttributeModel newEntry = oldModel.copyWith(
-                          variableName: value,
-                        );
-                        context.dispatch(UpdateAttributeAction(newEntry));
-                      },
-                      formValidator: (value) {
-                        final String input = value as String;
-                        return checkIfEmptyAndReturnErrorString(input, context);
-                      },
-                      maxLength: 30,
-                      focusOrder: const NumericFocusOrder(1),
                     ),
-                    TextInputCard<double>(
-                      display: context.l10n.card_attribute_default_value,
-                      currentValue:
-                          vm.selected.defaultValue?.toString() ?? zeroString,
-                      formatter: [
-                        FilteringTextInputFormatter.allow(numberPattern),
-                      ],
-                      valueUpdate: (value) {
-                        final parsedValue = double.tryParse(value) ?? 0;
-                        if (parsedValue == vm.selected.defaultValue) return;
-                        final oldModel = vm.selected;
-                        final newEntry = oldModel.copyWith(
-                          defaultValue: parsedValue,
-                        );
-                        context.dispatch(UpdateAttributeAction(newEntry));
-                      },
-                      maxLength: 100,
-                      focusOrder: const NumericFocusOrder(2),
-                    ),
-                    TextInputCard<double>(
-                      display: context.l10n.card_attribute_maximum_value,
-                      currentValue:
-                          vm.selected.maximumValue?.toString() ?? zeroString,
-                      valueUpdate: (value) {
-                        final parsedValue = double.tryParse(value) ?? 0;
-                        if (parsedValue == vm.selected.maximumValue) return;
-                        final oldModel = vm.selected;
-                        final newEntry = oldModel.copyWith(
-                          maximumValue: parsedValue,
-                        );
-                        context.dispatch(UpdateAttributeAction(newEntry));
-                      },
-                      maxLength: 100,
-                      formatter: [
-                        FilteringTextInputFormatter.allow(numberPattern),
-                      ],
-                      focusOrder: const NumericFocusOrder(3),
-                    ),
-                  ],
+                  ),
                 ),
               ),
               SaveButton(

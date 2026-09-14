@@ -40,15 +40,18 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
           store.dispatch(RemoveSelectedSoundEvent(), notify: false),
       builder: (context, vm) {
         final selected = vm.selected;
-        return Form(
-          key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 300),
-                  opacity: 1,
+        return FocusScope(
+          child: FocusTraversalGroup(
+            policy: OrderedTraversalPolicy(),
+            child: Form(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 300),
+                      opacity: 1,
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       return Scrollbar(
@@ -127,9 +130,11 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
               ),
             ],
           ),
-        );
-      },
+        ),
+      ),
     );
+  },
+);
   }
 
   /// The method builds a reusable text input card for updating string values.

@@ -45,6 +45,13 @@ class _TextInputCardState extends State<TextInputCard> {
   void initState() {
     super.initState();
     _editController.text = widget.currentValue;
+    _focusNode.addListener(_handleFocusChange);
+  }
+
+  void _handleFocusChange() {
+    if (!_focusNode.hasFocus) {
+      _handleFieldSubmitted(_editController.text);
+    }
   }
 
   @override
@@ -57,6 +64,7 @@ class _TextInputCardState extends State<TextInputCard> {
 
   @override
   void dispose() {
+    _focusNode.removeListener(_handleFocusChange);
     _editController.dispose();
     _focusNode.dispose();
     super.dispose();
@@ -76,50 +84,45 @@ class _TextInputCardState extends State<TextInputCard> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 300),
           child: _wrapWithFocusOrder(
-            Focus(
+            TextFormField(
               focusNode: _focusNode,
-              onFocusChange: (focus) {
-                if (focus) return;
-                _handleFieldSubmitted(_editController.text);
-              },
-              child: TextFormField(
-                maxLength: widget.maxLength,
-                autovalidateMode: widget.formValidator != null
-                    ? AutovalidateMode.onUserInteraction
-                    : AutovalidateMode.disabled,
-                autocorrect: false,
-                controller: _editController,
-                keyboardType: widget.inputType,
-                inputFormatters: widget.formatter,
-                validator: widget.formValidator,
-                style: TextStyle(color: colorScheme.onSurface, fontSize: 16),
-                decoration: InputDecoration(
-                  hintText: widget.hintText,
-                  hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
-                  border: outlineBorder,
-                  enabledBorder: outlineBorder,
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: _borderRadius,
-                    borderSide: BorderSide(
-                      color: colorScheme.primary,
-                      width: 2,
-                    ),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderRadius: _borderRadius,
-                    borderSide: BorderSide(color: colorScheme.error),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: _borderRadius,
-                    borderSide: BorderSide(color: colorScheme.error, width: 2),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
+              onFieldSubmitted: _handleFieldSubmitted,
+              maxLength: widget.maxLength,
+              autovalidateMode: widget.formValidator != null
+                  ? AutovalidateMode.onUserInteraction
+                  : AutovalidateMode.disabled,
+              autocorrect: false,
+              controller: _editController,
+              keyboardType: widget.inputType,
+              inputFormatters: widget.formatter,
+              validator: widget.formValidator,
+              style: TextStyle(color: colorScheme.onSurface, fontSize: 16),
+              decoration: InputDecoration(
+                hintText: widget.hintText,
+                hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+                border: outlineBorder,
+                enabledBorder: outlineBorder,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: _borderRadius,
+                  borderSide: BorderSide(
+                    color: colorScheme.primary,
+                    width: 2,
                   ),
                 ),
-                textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
+                errorBorder: OutlineInputBorder(
+                  borderRadius: _borderRadius,
+                  borderSide: BorderSide(color: colorScheme.error),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: _borderRadius,
+                  borderSide: BorderSide(color: colorScheme.error, width: 2),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
               ),
+              textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
             ),
           ),
         ),
