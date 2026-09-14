@@ -969,6 +969,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit project'**
   String get project_selection_edit_tooltip;
+
+  /// No description provided for @dialog_sound_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new sound event'**
+  String get dialog_sound_create;
+
+  /// No description provided for @dialog_model_key_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Key'**
+  String get dialog_model_key_label;
+
+  /// No description provided for @dialog_model_key_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. my_entry'**
+  String get dialog_model_key_hint;
+
+  /// No description provided for @dialog_model_name_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get dialog_model_name_label;
+
+  /// No description provided for @dialog_model_name_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. My Entry'**
+  String get dialog_model_name_hint;
+
+  /// No description provided for @dialog_model_preview_label.
+  ///
+  /// In en, this message translates to:
+  /// **'NamespacedKey Preview'**
+  String get dialog_model_preview_label;
+
+  /// No description provided for @dialog_model_create_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get dialog_model_create_button;
 }
 
 class _AppLocalizationsDelegate

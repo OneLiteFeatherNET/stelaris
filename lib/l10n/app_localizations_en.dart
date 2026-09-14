@@ -468,4 +468,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get project_selection_edit_tooltip => 'Edit project';
+
+  @override
+  String get dialog_sound_create => 'Create new sound event';
+
+  @override
+  String get dialog_model_key_label => 'Key';
+
+  @override
+  String get dialog_model_key_hint => 'e.g. my_entry';
+
+  @override
+  String get dialog_model_name_label => 'Name';
+
+  @override
+  String get dialog_model_name_hint => 'e.g. My Entry';
+
+  @override
+  String get dialog_model_preview_label => 'NamespacedKey Preview';
+
+  @override
+  String get dialog_model_create_button => 'Create';
 }
