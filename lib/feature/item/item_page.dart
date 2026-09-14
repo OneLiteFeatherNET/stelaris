@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -8,12 +7,11 @@ import 'package:stelaris/api/state/factory/item/item_vm_state.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/model_text.dart';
 import 'package:stelaris/feature/base/paginated_model_view_tab.dart';
-import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/general/item_general_page.dart';
 import 'package:stelaris/feature/item/lore/lore_page.dart';
 import 'package:stelaris/feature/item/meta/item_meta_page.dart';
-import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -30,7 +28,7 @@ class ItemPage extends StatelessWidget {
       builder: (context, vm) {
         return PaginatedBaseModelViewTabs<ItemModel>(
           mapToDataModelItem: (value) => TextWidget(displayName: value.uiName),
-          openFunction: () => _openCreationDialog(context),
+          openFunction: () => _openCreationDialog(context, vm.projectKey),
           selectedItem: vm.selected,
           mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
@@ -53,27 +51,19 @@ class ItemPage extends StatelessWidget {
     );
   }
 
-  void _openCreationDialog(BuildContext context) {
+  void _openCreationDialog(BuildContext context, String projectKey) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return EntryUpdateDialog(
+        return ModelCreateDialog(
           title: context.l10n.dialog_item_create,
-          valueUpdate: (value) {
-            final model = ItemModel(uiName: value);
+          projectNamespace: projectKey,
+          onSubmit: (name, key) {
+            // TODO: pass key once stelaris_models has key support
+            final model = ItemModel(uiName: name);
             context.dispatch(ItemAddAction(model));
             Navigator.pop(context, true);
           },
-          formKey: GlobalKey<FormState>(),
-          hintText: 'Example name',
-          formatters: [
-            FilteringTextInputFormatter.allow(stringWithSpacePattern),
-          ],
-          formFieldValidator: (value) {
-            final input = value as String;
-            return checkIfEmptyAndReturnErrorString(input, context);
-          },
-          clearFunction: (text) => text.trim().isNotEmpty,
         );
       },
     );

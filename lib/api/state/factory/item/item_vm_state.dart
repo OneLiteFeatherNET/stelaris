@@ -12,6 +12,7 @@ class ItemVmFactory extends VmFactory<AppState, ItemPage, ItemViewModel> {
     selected: state.selectedItem,
     hasNextPage: state.items.hasNextPage,
     isLoadingMore: state.isLoadingMoreItems,
+    projectKey: state.selectedProject!.key,
   );
 }
 
@@ -20,13 +21,23 @@ class ItemViewModel extends Vm {
   final ItemModel? selected;
   final bool hasNextPage;
   final bool isLoadingMore;
+  final String projectKey;
 
   ItemViewModel({
     required this.itemModels,
     required this.selected,
     required this.hasNextPage,
     required this.isLoadingMore,
-  }) : super(equals: [itemModels, selected, hasNextPage, isLoadingMore]);
+    required this.projectKey,
+  }) : super(
+         equals: [
+           itemModels,
+           selected,
+           hasNextPage,
+           isLoadingMore,
+           projectKey,
+         ],
+       );
 
   bool isSelectedItem(ItemModel model) {
     if (selected == null) return false;

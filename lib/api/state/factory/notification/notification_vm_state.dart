@@ -14,6 +14,7 @@ class NotificationVmFactory
     hasNextPage: state.notifications.hasNextPage,
     isLoadingMore: state.isLoadingMoreNotifications,
     currentItems: state.notifications.totalItems,
+    projectKey: state.selectedProject!.key,
   );
 }
 
@@ -23,6 +24,7 @@ class NotificationViewModel extends Vm {
   final int currentItems;
   final bool hasNextPage;
   final bool isLoadingMore;
+  final String projectKey;
 
   NotificationViewModel({
     required this.models,
@@ -30,8 +32,16 @@ class NotificationViewModel extends Vm {
     required this.hasNextPage,
     required this.isLoadingMore,
     required this.currentItems,
+    required this.projectKey,
   }) : super(
-         equals: [models, selected, currentItems, hasNextPage, isLoadingMore],
+         equals: [
+           models,
+           selected,
+           currentItems,
+           hasNextPage,
+           isLoadingMore,
+           projectKey,
+         ],
        );
 
   bool isSelectedItem(NotificationModel model) {

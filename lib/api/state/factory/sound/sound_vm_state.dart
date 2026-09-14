@@ -12,6 +12,7 @@ class SoundVmFactory extends VmFactory<AppState, SoundPage, SoundViewModel> {
     selected: state.selectedSoundEvent,
     hasNextPage: state.soundEvents.hasNextPage,
     isLoadingMore: state.isLoadingMoreSoundEvents,
+    projectKey: state.selectedProject!.key,
   );
 }
 
@@ -21,12 +22,22 @@ class SoundViewModel extends Vm {
     required this.selected,
     required this.hasNextPage,
     required this.isLoadingMore,
-  }) : super(equals: [selected, models, hasNextPage, isLoadingMore]);
+    required this.projectKey,
+  }) : super(
+         equals: [
+           selected,
+           models,
+           hasNextPage,
+           isLoadingMore,
+           projectKey,
+         ],
+       );
 
   final SoundEventModel? selected;
   final List<SoundEventModel> models;
   final bool hasNextPage;
   final bool isLoadingMore;
+  final String projectKey;
 
   bool isSelectedItem(SoundEventModel model) {
     if (selected == null) return false;
