@@ -141,8 +141,10 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
       labor: _labor,
     );
 
-    await context.dispatchAndWait(AddProjectAction(newProject, select: true));
-    if (mounted) {
+    final status = await context.dispatchAndWait(
+      AddProjectAction(newProject, select: true),
+    );
+    if (status.isCompletedOk && mounted) {
       Navigator.of(context).pop(newProject);
     }
   }

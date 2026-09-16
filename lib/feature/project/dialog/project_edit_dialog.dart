@@ -153,8 +153,10 @@ class _EditProjectDialogState extends State<EditProjectDialog> {
       labor: _labor,
     );
 
-    await context.dispatchAndWait(UpdateProjectAction(updatedProject));
-    if (mounted) {
+    final status = await context.dispatchAndWait(
+      UpdateProjectAction(updatedProject),
+    );
+    if (status.isCompletedOk && mounted) {
       Navigator.of(context).pop(updatedProject);
     }
   }

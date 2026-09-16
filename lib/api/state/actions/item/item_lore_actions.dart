@@ -71,7 +71,7 @@ class ItemLoreLoadNextPageAction extends ReduxAction<AppState> {
   }
 }
 
-class ItemLoreAddAction extends ReduxAction<AppState> {
+class ItemLoreAddAction extends ReduxAction<AppState> with NonReentrant {
   ItemLoreAddAction(this.itemLoreDto);
 
   final ItemLoreDto itemLoreDto;
@@ -100,7 +100,7 @@ class ItemLoreAddAction extends ReduxAction<AppState> {
   }
 }
 
-class ItemLoreDeleteAction extends ReduxAction<AppState> {
+class ItemLoreDeleteAction extends ReduxAction<AppState> with NonReentrant {
   ItemLoreDeleteAction(this.itemLoreDto);
 
   final ItemLoreDto itemLoreDto;
@@ -126,7 +126,7 @@ class ItemLoreDeleteAction extends ReduxAction<AppState> {
   }
 }
 
-class ItemLoreUpdateAction extends ReduxAction<AppState> {
+class ItemLoreUpdateAction extends ReduxAction<AppState> with NonReentrant {
   ItemLoreUpdateAction(this.dto);
 
   final ItemLoreDto dto;
@@ -156,7 +156,7 @@ class ItemLoreUpdateAction extends ReduxAction<AppState> {
   }
 }
 
-class ItemLoreReorderAction extends ReduxAction<AppState> {
+class ItemLoreReorderAction extends ReduxAction<AppState> with Sequential {
   ItemLoreReorderAction({
     required this.oldIndex,
     required this.newIndex,

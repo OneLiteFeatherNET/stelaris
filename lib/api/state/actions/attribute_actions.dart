@@ -152,7 +152,7 @@ AppState _updateAttributesInState(
 ///
 /// The action ensures the local state reflects the actual database state by using
 /// the model returned from the API rather than the input model.
-class AttributeAddAction extends ReduxAction<AppState> {
+class AttributeAddAction extends ReduxAction<AppState> with NonReentrant {
   final AttributeModel model;
 
   AttributeAddAction(this.model);
@@ -225,7 +225,7 @@ class AttributeRemoveAction extends ReduxAction<AppState> {
 ///
 /// If no attribute is currently selected, the action returns null and performs no operations.
 /// The action ensures data consistency by using the model returned from the API.
-class AttributeDatabaseUpdate extends ReduxAction<AppState> {
+class AttributeDatabaseUpdate extends ReduxAction<AppState> with Throttle {
   @override
   Future<AppState?> reduce() async {
     if (state.selectedAttribute == null) return null;

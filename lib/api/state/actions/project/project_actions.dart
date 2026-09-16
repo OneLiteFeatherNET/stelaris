@@ -91,7 +91,7 @@ class InitProjectAction extends ReduxAction<AppState> {
 
 /// Action to add a new project via the backend API and update state.
 /// Optionally selects the newly created project immediately.
-class AddProjectAction extends ReduxAction<AppState> {
+class AddProjectAction extends ReduxAction<AppState> with NonReentrant {
   final Project project;
   final bool select;
 
@@ -109,7 +109,7 @@ class AddProjectAction extends ReduxAction<AppState> {
 }
 
 /// Action to update an existing project via the backend API and update state.
-class UpdateProjectAction extends ReduxAction<AppState> {
+class UpdateProjectAction extends ReduxAction<AppState> with NonReentrant {
   final Project project;
 
   UpdateProjectAction(this.project);
@@ -151,7 +151,7 @@ class SetProjectsAction extends ReduxAction<AppState> {
 }
 
 /// Action to remove a project from the backend API and state.
-class RemoveProjectAction extends ReduxAction<AppState> {
+class RemoveProjectAction extends ReduxAction<AppState> with NonReentrant {
   final Project project;
 
   RemoveProjectAction(this.project);

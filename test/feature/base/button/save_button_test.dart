@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:async_redux/async_redux.dart';
 import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/button/save_button.dart';
 import 'package:stelaris/util/constants.dart';
 
@@ -264,5 +266,110 @@ void main() {
 
     expect(find.byType(SnackBar), findsNothing);
   });
+
+  testWidgets(
+      'SaveButton displays success snackbar when dispatchAndWait returns ActionStatus.isCompletedOk',
+      (WidgetTester tester) async {
+    final store = Store<AppState>(initialState: const AppState());
+
+    await tester.pumpWidget(
+      StoreProvider<AppState>(
+        store: store,
+        child: MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => SaveButton(
+                successMessage: 'Saved successfully',
+                callback: () => context.dispatchAndWait(_SuccessfulTestAction()),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Saved successfully'), findsOneWidget);
+    expect(find.byType(SnackBar), findsOneWidget);
+  });
+
+  testWidgets(
+      'SaveButton displays error snackbar and does not show success when ActionStatus fails',
+      (WidgetTester tester) async {
+    final store = Store<AppState>(initialState: const AppState());
+
+    await tester.pumpWidget(
+      StoreProvider<AppState>(
+        store: store,
+        child: MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => SaveButton(
+                successMessage: 'Saved successfully',
+                callback: () => context.dispatchAndWait(_FailingTestAction()),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    // Must NOT show success message
+    expect(find.text('Saved successfully'), findsNothing);
+    // Must show error snackbar
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.textContaining('Save failed in test'), findsOneWidget);
+  });
+
+  testWidgets(
+      'SaveButton does not display success snackbar when dispatch is aborted',
+      (WidgetTester tester) async {
+    final store = Store<AppState>(initialState: const AppState());
+
+    await tester.pumpWidget(
+      StoreProvider<AppState>(
+        store: store,
+        child: MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => SaveButton(
+                successMessage: 'Saved successfully',
+                callback: () => context.dispatchAndWait(_AbortedTestAction()),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SnackBar), findsNothing);
+  });
 }
+
+class _SuccessfulTestAction extends ReduxAction<AppState> {
+  @override
+  AppState reduce() => state;
+}
+
+class _FailingTestAction extends ReduxAction<AppState> {
+  @override
+  AppState reduce() => throw const UserException('Save failed in test');
+}
+
+class _AbortedTestAction extends ReduxAction<AppState> {
+  @override
+  bool abortDispatch() => true;
+
+  @override
+  AppState reduce() => state;
+}
+
 
