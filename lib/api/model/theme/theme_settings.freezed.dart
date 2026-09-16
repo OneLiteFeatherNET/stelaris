@@ -29,16 +29,21 @@ $ThemeSettingsCopyWith<ThemeSettings> get copyWith => _$ThemeSettingsCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ThemeSettings&&(identical(other.isDarkMode, isDarkMode) || other.isDarkMode == isDarkMode)&&(identical(other.primaryColor, primaryColor) || other.primaryColor == primaryColor)&&(identical(other.accentColor, accentColor) || other.accentColor == accentColor)&&(identical(other.fontScale, fontScale) || other.fontScale == fontScale)&&(identical(other.useSystemTheme, useSystemTheme) || other.useSystemTheme == useSystemTheme));
+  final _this = this as ThemeSettings;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ThemeSettings&&(identical(other.isDarkMode, _this.isDarkMode) || other.isDarkMode == _this.isDarkMode)&&(identical(other.primaryColor, _this.primaryColor) || other.primaryColor == _this.primaryColor)&&(identical(other.accentColor, _this.accentColor) || other.accentColor == _this.accentColor)&&(identical(other.fontScale, _this.fontScale) || other.fontScale == _this.fontScale)&&(identical(other.useSystemTheme, _this.useSystemTheme) || other.useSystemTheme == _this.useSystemTheme));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isDarkMode,primaryColor,accentColor,fontScale,useSystemTheme);
+int get hashCode {
+  final _this = this as ThemeSettings;
+  return Object.hash(runtimeType,_this.isDarkMode,_this.primaryColor,_this.accentColor,_this.fontScale,_this.useSystemTheme);
+}
 
 @override
 String toString() {
-  return 'ThemeSettings(isDarkMode: $isDarkMode, primaryColor: $primaryColor, accentColor: $accentColor, fontScale: $fontScale, useSystemTheme: $useSystemTheme)';
+  final _this = this as ThemeSettings;
+  return 'ThemeSettings(isDarkMode: ${_this.isDarkMode}, primaryColor: ${_this.primaryColor}, accentColor: ${_this.accentColor}, fontScale: ${_this.fontScale}, useSystemTheme: ${_this.useSystemTheme})';
 }
 
 
@@ -236,16 +241,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ThemeSettings&&(identical(other.isDarkMode, isDarkMode) || other.isDarkMode == isDarkMode)&&(identical(other.primaryColor, primaryColor) || other.primaryColor == primaryColor)&&(identical(other.accentColor, accentColor) || other.accentColor == accentColor)&&(identical(other.fontScale, fontScale) || other.fontScale == fontScale)&&(identical(other.useSystemTheme, useSystemTheme) || other.useSystemTheme == useSystemTheme));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ThemeSettings&&(identical(other.isDarkMode, isDarkMode) || other.isDarkMode == isDarkMode)&&(identical(other.primaryColor, primaryColor) || other.primaryColor == primaryColor)&&(identical(other.accentColor, accentColor) || other.accentColor == accentColor)&&(identical(other.fontScale, fontScale) || other.fontScale == fontScale)&&(identical(other.useSystemTheme, useSystemTheme) || other.useSystemTheme == useSystemTheme));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isDarkMode,primaryColor,accentColor,fontScale,useSystemTheme);
+int get hashCode {
+    return Object.hash(runtimeType,isDarkMode,primaryColor,accentColor,fontScale,useSystemTheme);
+}
 
 @override
 String toString() {
-  return 'ThemeSettings(isDarkMode: $isDarkMode, primaryColor: $primaryColor, accentColor: $accentColor, fontScale: $fontScale, useSystemTheme: $useSystemTheme)';
+    return 'ThemeSettings(isDarkMode: $isDarkMode, primaryColor: $primaryColor, accentColor: $accentColor, fontScale: $fontScale, useSystemTheme: $useSystemTheme)';
 }
 
 

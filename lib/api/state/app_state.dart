@@ -1,6 +1,5 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:stelaris/api/converter/paginated_result_converter.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 
@@ -13,10 +12,6 @@ abstract class AppState with _$AppState {
   const factory AppState({
     // ── API-Caches: werden beim Navigieren frisch vom Backend geladen ──
     @JsonKey(includeToJson: false, includeFromJson: false)
-    @GenericPaginatedResultConverter<ItemModel>(
-      fromJsonT: itemModelFromJson,
-      toJsonT: itemModelToJson,
-    )
     @Default(
       PaginatedResult<ItemModel>(
         items: [],
@@ -37,10 +32,6 @@ abstract class AppState with _$AppState {
         pageSize: 0,
       ),
     )
-    @GenericPaginatedResultConverter<NotificationModel>(
-      fromJsonT: notificationFromJson,
-      toJsonT: notificationModelToJson,
-    )
     PaginatedResult<NotificationModel> notifications,
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(
@@ -52,16 +43,8 @@ abstract class AppState with _$AppState {
         pageSize: 0,
       ),
     )
-    @GenericPaginatedResultConverter(
-      fromJsonT: fontFromJson,
-      toJsonT: fontToJson,
-    )
     PaginatedResult<FontModel> fonts,
     @JsonKey(includeToJson: false, includeFromJson: false)
-    @GenericPaginatedResultConverter<AttributeModel>(
-      fromJsonT: attributeFromJson,
-      toJsonT: attributeToJson,
-    )
     @Default(
       PaginatedResult<AttributeModel>(
         items: [],
@@ -73,10 +56,6 @@ abstract class AppState with _$AppState {
     )
     PaginatedResult<AttributeModel> attributes,
     @JsonKey(includeToJson: false, includeFromJson: false)
-    @GenericPaginatedResultConverter<SoundEventModel>(
-      fromJsonT: soundEventFromJson,
-      toJsonT: soundEventToJson,
-    )
     @Default(
       PaginatedResult<SoundEventModel>(
         items: [],
