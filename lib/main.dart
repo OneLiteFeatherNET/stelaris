@@ -4,7 +4,7 @@ import 'package:localstorage/localstorage.dart';
 import 'package:stelaris/api/state/app_presistor.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/env/runtime_config.dart';
-import 'package:stelaris/feature/home/home.dart';
+import 'package:stelaris/app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
