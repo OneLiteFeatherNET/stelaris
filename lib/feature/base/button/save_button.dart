@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/util/constants.dart';
@@ -38,6 +39,29 @@ class SaveButton extends StatefulWidget {
 class _SaveButtonState extends State<SaveButton> {
   bool _isLoading = false;
 
+  void _handleOutcome(dynamic outcome) {
+    if (!mounted) return;
+
+    if (outcome is ActionStatus) {
+      if (outcome.isDispatchAborted) {
+        return;
+      }
+      if (outcome.isCompletedFailed) {
+        final error = outcome.originalError;
+        if (error != null) {
+          context.showErrorSnackBar(error);
+        }
+        return;
+      }
+    } else if (outcome == false) {
+      return;
+    }
+
+    if (widget.successMessage != null) {
+      context.showSuccessSnackBar(widget.successMessage!);
+    }
+  }
+
   Future<void> _handlePressed() async {
     if (_isLoading || widget.callback == null) return;
 
@@ -46,30 +70,22 @@ class _SaveButtonState extends State<SaveButton> {
       return;
     }
 
-    final callback = widget.callback!;
-    final dynamic result = callback();
-
-    if (result is Future) {
-      setState(() => _isLoading = true);
-      try {
+    try {
+      final dynamic result = widget.callback!();
+      if (result is Future) {
+        setState(() => _isLoading = true);
         final outcome = await result;
-        if (outcome == false) return;
-        if (mounted && widget.successMessage != null) {
-          context.showSuccessSnackBar(widget.successMessage!);
-        }
-      } catch (error) {
-        if (mounted) {
-          context.showErrorSnackBar(error);
-        }
-      } finally {
-        if (mounted) {
-          setState(() => _isLoading = false);
-        }
+        _handleOutcome(outcome);
+      } else {
+        _handleOutcome(result);
       }
-    } else {
-      if (result == false) return;
-      if (widget.successMessage != null) {
-        context.showSuccessSnackBar(widget.successMessage!);
+    } catch (error) {
+      if (mounted) {
+        context.showErrorSnackBar(error);
+      }
+    } finally {
+      if (mounted && _isLoading) {
+        setState(() => _isLoading = false);
       }
     }
   }
