@@ -20,21 +20,25 @@ class ProjectSelectionHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Icon(
-              Icons.folder_shared_outlined,
-              color: colorScheme.primary,
-              size: 26,
-            ),
-            horizontalSpacing10,
-            Text(
-              context.l10n.project_selection_title,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
+        Expanded(
+          child: Row(
+            children: [
+              Icon(
+                Icons.folder_shared_outlined,
+                color: colorScheme.primary,
+                size: 26,
               ),
-            ),
-          ],
+              horizontalSpacing10,
+              Flexible(
+                child: Text(
+                  context.l10n.project_selection_title,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         if (showAddButton)
           IconButton.filledTonal(
