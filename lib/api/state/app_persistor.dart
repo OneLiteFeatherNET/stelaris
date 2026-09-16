@@ -23,19 +23,29 @@ class AppPersistor extends Persistor<AppState> {
     required AppState newState,
   }) async {
     if (lastPersistedState != newState) {
-      final Map<String, dynamic> json = newState.toJson();
-      final String data = jsonEncode(json);
-      localStorage.setItem(appState, data);
+      try {
+        final Map<String, dynamic> json = newState.toJson();
+        final String data = jsonEncode(json);
+        localStorage.setItem(appState, data);
+      } catch (_) {}
     }
   }
 
   @override
   Future<AppState> readState() async {
-    if (localStorage.getItem(appState) != null) {
-      final String data = localStorage.getItem(appState) as String;
-      final Map<String, dynamic> json =
-          jsonDecode(data) as Map<String, dynamic>;
-      return AppState.fromJson(json);
+    try {
+      final raw = localStorage.getItem(appState);
+      if (raw != null && raw.isNotEmpty) {
+        final decoded = jsonDecode(raw);
+        if (decoded is Map<String, dynamic>) {
+          return AppState.fromJson(decoded);
+        }
+      }
+    } catch (_) {
+      // If persisted state is malformed or incompatible, reset and fallback to default.
+      try {
+        localStorage.setItem(appState, '{}');
+      } catch (_) {}
     }
     return const AppState();
   }
