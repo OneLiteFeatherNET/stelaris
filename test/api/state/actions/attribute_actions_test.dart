@@ -106,4 +106,40 @@ void main() {
       expect(store.state.attributes.items, isEmpty);
     });
   });
+
+  group('AttributeDatabaseUpdate', () {
+    test('uses Throttle mixin and throttles rapid dispatches', () async {
+      const selected = AttributeModel(uiName: 'attr', id: 'a1');
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedAttribute: selected,
+          attributes: const PaginatedResult<AttributeModel>(
+            items: [selected],
+            totalItems: 1,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      (ApiService().attributeApi as BaseApi<AttributeModel>)
+          .apiClient
+          .dio
+          .httpClientAdapter =
+          FakeHttpClientAdapter.json(selected.toJson());
+
+      final action1 = AttributeDatabaseUpdate();
+      expect(action1, isA<Throttle>());
+      expect((action1 as Throttle).throttle, 1000);
+
+      final status1 = await store.dispatchAndWait(action1);
+      expect(status1.isCompletedOk, isTrue);
+
+      // Immediate second dispatch should be aborted by Throttle
+      final action2 = AttributeDatabaseUpdate();
+      final status2 = await store.dispatchAndWait(action2);
+      expect(status2.isDispatchAborted, isTrue);
+    });
+  });
 }

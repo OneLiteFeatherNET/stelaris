@@ -93,7 +93,7 @@ class FontRemoveAction extends ReduxAction<AppState> {
   }
 }
 
-class FontAddAction extends ReduxAction<AppState> {
+class FontAddAction extends ReduxAction<AppState> with NonReentrant {
   final FontModel _model;
 
   FontAddAction(this._model);
@@ -124,7 +124,7 @@ class UpdateFontAction extends ReduxAction<AppState> {
   Future<AppState?> reduce() async => state.copyWith(selectedFont: newEntry);
 }
 
-class FontDatabaseUpdate extends ReduxAction<AppState> {
+class FontDatabaseUpdate extends ReduxAction<AppState> with Throttle {
   FontDatabaseUpdate();
 
   @override

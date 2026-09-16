@@ -99,7 +99,7 @@ class UpdateNotificationAction extends ReduxAction<AppState> {
       state.copyWith(selectedNotification: newEntry);
 }
 
-class NotificationAddAction extends ReduxAction<AppState> {
+class NotificationAddAction extends ReduxAction<AppState> with NonReentrant {
   final NotificationModel model;
 
   NotificationAddAction(this.model);
@@ -152,7 +152,7 @@ class NotificationRemoveAction extends ReduxAction<AppState> {
   }
 }
 
-class NotificationDatabaseUpdate extends ReduxAction<AppState> {
+class NotificationDatabaseUpdate extends ReduxAction<AppState> with Throttle {
   NotificationDatabaseUpdate();
 
   @override

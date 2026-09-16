@@ -96,7 +96,7 @@ class _SetLoadMoreItemModels extends ReduxAction<AppState> {
   AppState reduce() => state.copyWith(isLoadingMoreItems: value);
 }
 
-class ItemAddAction extends ReduxAction<AppState> {
+class ItemAddAction extends ReduxAction<AppState> with NonReentrant {
   final ItemModel _model;
 
   ItemAddAction(this._model);
@@ -137,7 +137,7 @@ class ItemRemoveAction extends ReduxAction<AppState> {
   }
 }
 
-class ItemDatabaseUpdate extends ReduxAction<AppState> {
+class ItemDatabaseUpdate extends ReduxAction<AppState> with Throttle {
   ItemDatabaseUpdate();
 
   @override

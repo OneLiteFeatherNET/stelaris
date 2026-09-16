@@ -102,7 +102,7 @@ class SoundRemoveAction extends ReduxAction<AppState> {
   }
 }
 
-class SoundAddAction extends ReduxAction<AppState> {
+class SoundAddAction extends ReduxAction<AppState> with NonReentrant {
   final SoundEventModel _model;
 
   SoundAddAction(this._model);
@@ -139,7 +139,7 @@ class UpdateSoundAction extends ReduxAction<AppState> {
       state.copyWith(selectedSoundEvent: newEntry);
 }
 
-class SoundDatabaseUpdate extends ReduxAction<AppState> {
+class SoundDatabaseUpdate extends ReduxAction<AppState> with Throttle {
   SoundDatabaseUpdate();
 
   @override
