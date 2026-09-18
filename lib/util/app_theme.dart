@@ -5,12 +5,12 @@ import 'package:stelaris/api/model/theme/theme_settings.dart';
 abstract final class AppTheme {
   static final Typography _typography = Typography.material2021();
 
-  static final TextTheme _baseLightText = _typography.black.merge(
-    _typography.englishLike,
+  static final TextTheme _baseLightText = _typography.englishLike.merge(
+    _typography.black,
   );
 
-  static final TextTheme _baseDarkText = _typography.white.merge(
-    _typography.englishLike,
+  static final TextTheme _baseDarkText = _typography.englishLike.merge(
+    _typography.white,
   );
 
   /// Builds the Material 3 light [ThemeData] configured according to [settings].

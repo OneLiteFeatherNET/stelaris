@@ -14,6 +14,10 @@ void main() {
       expect(theme.colorScheme.primary.toARGB32(), isNotNull);
       expect(theme.textTheme.titleLarge?.fontSize, isNotNull);
       expect(theme.textTheme.bodyMedium?.fontSize, isNotNull);
+
+      // Light theme text must be dark-colored to stay readable on a light surface.
+      expect(theme.textTheme.bodyMedium?.color, isNotNull);
+      expect(theme.textTheme.bodyMedium!.color!.computeLuminance(), lessThan(0.5));
     });
 
     test('buildDark creates a valid Material 3 dark ThemeData', () {
@@ -27,6 +31,10 @@ void main() {
       expect(theme.colorScheme.brightness, Brightness.dark);
       expect(theme.textTheme.titleLarge?.fontSize, isNotNull);
       expect(theme.textTheme.bodyMedium?.fontSize, isNotNull);
+
+      // Dark theme text must be light-colored to stay readable on a dark surface.
+      expect(theme.textTheme.bodyMedium?.color, isNotNull);
+      expect(theme.textTheme.bodyMedium!.color!.computeLuminance(), greaterThan(0.5));
     });
 
     test('scaleTextTheme scales all font sizes proportionally', () {
