@@ -23,6 +23,12 @@ class ProjectScopedTestModel with DataModel {
   @override
   String? get id => internalId.toString();
 
+  @override
+  DateTime? get creationDate => null;
+
+  @override
+  DateTime? get modificationDate => null;
+
   factory ProjectScopedTestModel.fromJson(dynamic json) {
     if (json is! Map<String, dynamic>) {
       throw ArgumentError('json must be a Map<String, dynamic>');

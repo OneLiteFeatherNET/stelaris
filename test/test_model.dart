@@ -5,11 +5,22 @@ class TestModel with DataModel {
   final int internalId;
   final String name;
 
-  TestModel({required this.internalId, required this.name});
+  TestModel({
+    required this.internalId,
+    required this.name,
+    this.creationDate,
+    this.modificationDate,
+  });
 
   // This is the required implementation for the DataModel mixin.
   @override
   String? get id => internalId.toString();
+
+  @override
+  final DateTime? creationDate;
+
+  @override
+  final DateTime? modificationDate;
 
   // Factory to create from JSON. The JSON from an API likely has an integer ID.
   factory TestModel.fromJson(dynamic json) {

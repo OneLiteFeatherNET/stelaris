@@ -52,11 +52,32 @@ void main() {
 
       // The search field is always visible (M3 SearchBar), no toggle needed.
       await tester.enterText(find.byType(TextField), 'Model 2');
+      // ModelPage debounces search input by 300ms before applying it.
+      await tester.pump(const Duration(milliseconds: 350));
       await tester.pumpAndSettle();
 
       // 'Model 2' now matches both the typed query in the TextField and the
       // remaining list item.
       expect(find.text('Model 2'), findsNWidgets(2));
+      expect(find.text('Model 0'), findsNothing);
+      expect(find.text('Model 4'), findsNothing);
+    });
+
+    testWidgets('debounces search input instead of filtering per keystroke', (
+      tester,
+    ) async {
+      await tester.pumpWidget(createWidget(matchesFilter: (_, _) => true));
+
+      await tester.enterText(find.byType(TextField), 'Model 2');
+
+      // Right up to (but not past) the debounce window, the list must be
+      // unchanged — a shorter debounce than 300ms would break this.
+      await tester.pump(const Duration(milliseconds: 250));
+      expect(find.text('Model 0'), findsOneWidget);
+      expect(find.text('Model 4'), findsOneWidget);
+
+      // Past the debounce window, the filter is finally applied.
+      await tester.pump(const Duration(milliseconds: 100));
       expect(find.text('Model 0'), findsNothing);
       expect(find.text('Model 4'), findsNothing);
     });
@@ -132,6 +153,8 @@ void main() {
       );
 
       await tester.enterText(find.byType(TextField), 'nope');
+      // ModelPage debounces search input by 300ms before applying it.
+      await tester.pump(const Duration(milliseconds: 350));
       await tester.pumpAndSettle();
 
       expect(find.text(emptyHeader), findsOneWidget);
@@ -231,5 +254,52 @@ void main() {
 
       expect(visibleNameOrder(tester), ['Bravo', 'Alpha', 'Charlie']);
     });
+
+    testWidgets(
+      'keeps undated models last in both creation-date directions',
+      (tester) async {
+        final withUndated = [
+          TestModel(internalId: 1, name: 'Alpha', creationDate: DateTime(2024, 2, 1)),
+          TestModel(internalId: 2, name: 'Bravo'), // no creationDate
+          TestModel(internalId: 3, name: 'Charlie', creationDate: DateTime(2024, 1, 1)),
+        ];
+
+        Widget createWithUndated() {
+          return MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: ModelPage<TestModel>(
+                models: withUndated,
+                mapToDataModelItem: (m) => Text(m.name),
+                mapToDeleteDialog: (m) => [TextSpan(text: m.name)],
+                mapToDeleteSuccessfully: (_) => true,
+                matchesSearch: (m, q) =>
+                    m.name.toLowerCase().contains(q.toLowerCase()),
+                matchesFilter: (_, _) => true,
+                nameSelector: (m) => m.name,
+                onAdd: () {},
+                onModelTap: (_) {},
+              ),
+            ),
+          );
+        }
+
+        // Oldest first: Bravo (no date) must stay last, not first.
+        await tester.pumpWidget(createWithUndated());
+        await tester.tap(find.byIcon(Icons.filter_list));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Created (oldest first)'));
+        await tester.pumpAndSettle();
+        expect(visibleNameOrder(tester), ['Charlie', 'Alpha', 'Bravo']);
+
+        // Newest first: Bravo (no date) must still stay last.
+        await tester.tap(find.byIcon(Icons.filter_list));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Created (newest first)'));
+        await tester.pumpAndSettle();
+        expect(visibleNameOrder(tester), ['Alpha', 'Charlie', 'Bravo']);
+      },
+    );
   });
 }
