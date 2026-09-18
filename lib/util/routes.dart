@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/attributes/attribute_detail_page.dart';
 import 'package:stelaris/feature/base/base_page.dart';
 import 'package:stelaris/feature/project/project_selection_page.dart';
 import 'package:stelaris/util/deferred_widget.dart';
@@ -29,6 +30,23 @@ String? projectSelectionRedirect(BuildContext context, GoRouterState state) {
 
     if (!hasProject && !isAtProjects) {
       return projectSelectionRoute;
+    }
+  } on StoreException catch (_) {}
+  return null;
+}
+
+/// Redirects `/attributes/detail` back to `/attributes` when nothing is
+/// selected — reachable by a direct URL visit or a page reload, since the
+/// detail route relies entirely on the already-dispatched Redux selection
+/// rather than a route parameter.
+String? attributeDetailRedirect(BuildContext context, GoRouterState state) {
+  try {
+    final appState = StoreProvider.state<AppState>(context);
+    final isAtAttributeDetail =
+        state.matchedLocation == '${NavigationEntry.attributes.route}/detail';
+
+    if (isAtAttributeDetail && appState.selectedAttribute == null) {
+      return NavigationEntry.attributes.route;
     }
   } on StoreException catch (_) {}
   return null;
@@ -68,6 +86,22 @@ final GoRouter router = GoRouter(
               child: child,
             ),
           ),
+          routes: [
+            GoRoute(
+              path: 'detail',
+              redirect: attributeDetailRedirect,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                child: const AttributeDetailPage(),
+                key: state.pageKey,
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) =>
+                        FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+              ),
+            ),
+          ],
         ),
         GoRoute(
           path: NavigationEntry.items.route,
