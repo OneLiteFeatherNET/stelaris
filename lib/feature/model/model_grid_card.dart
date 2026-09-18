@@ -67,14 +67,17 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
                   Expanded(child: mapToDataModelItem(rawModel)),
                   // DeleteModelButton wraps a plain IconButton, whose default
                   // 8px padding + 48px min tap target would otherwise push
-                  // the icon well below the header text's top edge.
+                  // the icon well below the header text's top edge. 40x40
+                  // keeps a reasonable tap target (accessibility minimum)
+                  // while still sitting much closer to that edge than the
+                  // default 48x48 would.
                   IconButtonTheme(
                     data: IconButtonThemeData(
                       style: IconButton.styleFrom(
                         foregroundColor: colorScheme.onSurfaceVariant,
                         iconSize: 20,
                         padding: EdgeInsets.zero,
-                        minimumSize: const Size(24, 24),
+                        minimumSize: const Size(40, 40),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                     ),

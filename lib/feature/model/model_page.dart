@@ -1,8 +1,10 @@
-import 'package:flutter/foundation.dart' show listEquals;
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
+import 'package:stelaris/feature/model/command_bar.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_grid_card.dart';
 import 'package:stelaris/feature/model/model_sort_option.dart';
@@ -24,6 +26,39 @@ typedef ModelFilterMatcher<E extends DataModel> = bool Function(
 
 /// Returns [model]'s display name, used for [SortField.name] sorting.
 typedef ModelNameSelector<E extends DataModel> = String Function(E model);
+
+/// The search/filter/sort choices applied to a [ModelPage]'s list. Held in
+/// a [ValueNotifier] rather than [State] fields so that changing it doesn't
+/// require rebuilding the whole page — see [_ModelPageState].
+class _ModelListState {
+  const _ModelListState({
+    this.searchQuery = '',
+    this.activeFilters = const {},
+    // Matches CommandBar's own initial default, so the first render is
+    // already sorted the same way the sort menu shows as selected.
+    this.sortField = SortField.name,
+    this.sortDirection = SortDirection.ascending,
+  });
+
+  final String searchQuery;
+  final Set<FilterOption> activeFilters;
+  final SortField sortField;
+  final SortDirection sortDirection;
+
+  _ModelListState copyWith({
+    String? searchQuery,
+    Set<FilterOption>? activeFilters,
+    SortField? sortField,
+    SortDirection? sortDirection,
+  }) {
+    return _ModelListState(
+      searchQuery: searchQuery ?? this.searchQuery,
+      activeFilters: activeFilters ?? this.activeFilters,
+      sortField: sortField ?? this.sortField,
+      sortDirection: sortDirection ?? this.sortDirection,
+    );
+  }
+}
 
 /// A page-level widget combining a [CommandBar] with a responsive,
 /// scrollable grid of data models, with optional infinite-scroll pagination
@@ -72,53 +107,40 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
 
 class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
     with InfiniteScrollMixin<ModelPage<E>> {
-  String _searchQuery = '';
-  Set<FilterOption> _activeFilters = {};
+  // Search/filter/sort live here, not in State fields updated via
+  // setState(). That keeps changing them from re-running this State's
+  // build() at all — only the ValueListenableBuilder around the grid
+  // (below) does — so CommandBar, constructed directly in build(), is
+  // never reconstructed just because the user typed or picked a filter.
+  final ValueNotifier<_ModelListState> _listState = ValueNotifier(
+    const _ModelListState(),
+  );
 
-  // Matches CommandBar's own initial default, so the first render is
-  // already sorted the same way the sort menu shows as selected.
-  SortField _sortField = SortField.name;
-  SortDirection _sortDirection = SortDirection.ascending;
-
-  // CommandBar owns its own search/filter/sort UI state internally and
-  // doesn't take any of the fields above as input, so it never actually
-  // needs to change in response to them — building it once and reusing the
-  // same instance lets Flutter skip rebuilding it on every keystroke
-  // instead of reconstructing (and re-rendering) it on every setState here.
-  late Widget _commandBar = _buildCommandBar();
+  Timer? _searchDebounce;
 
   @override
-  void didUpdateWidget(covariant ModelPage<E> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.onAdd != widget.onAdd ||
-        !listEquals(oldWidget.filterOptions, widget.filterOptions)) {
-      _commandBar = _buildCommandBar();
-    }
-  }
-
-  Widget _buildCommandBar() {
-    return CommandBar(
-      onAdd: widget.onAdd,
-      onSearchChanged: _handleSearchChanged,
-      filterOptions: widget.filterOptions,
-      onFiltersChanged: _handleFiltersChanged,
-      onSortChanged: _handleSortChanged,
-    );
+  void dispose() {
+    _searchDebounce?.cancel();
+    _listState.dispose();
+    super.dispose();
   }
 
   void _handleSearchChanged(String query) {
-    setState(() => _searchQuery = query);
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 300), () {
+      _listState.value = _listState.value.copyWith(searchQuery: query);
+    });
   }
 
   void _handleFiltersChanged(Set<FilterOption> filters) {
-    setState(() => _activeFilters = filters);
+    _listState.value = _listState.value.copyWith(activeFilters: filters);
   }
 
   void _handleSortChanged(SortField field, SortDirection direction) {
-    setState(() {
-      _sortField = field;
-      _sortDirection = direction;
-    });
+    _listState.value = _listState.value.copyWith(
+      sortField: field,
+      sortDirection: direction,
+    );
   }
 
   @override
@@ -130,45 +152,48 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
   @override
   void onLoadMore() => widget.onLoadMore?.call();
 
-  List<E> get _filteredModels {
-    final filtered = _searchQuery.isEmpty && _activeFilters.isEmpty
+  List<E> _filteredModels(_ModelListState listState) {
+    final filtered =
+        listState.searchQuery.isEmpty && listState.activeFilters.isEmpty
         ? widget.models.toList()
         : widget.models.where((model) {
-            final matchesQuery = _searchQuery.isEmpty ||
-                widget.matchesSearch(model, _searchQuery);
-            final matchesFilters = _activeFilters.isEmpty ||
-                _activeFilters
+            final matchesQuery = listState.searchQuery.isEmpty ||
+                widget.matchesSearch(model, listState.searchQuery);
+            final matchesFilters = listState.activeFilters.isEmpty ||
+                listState.activeFilters
                     .every((filter) => widget.matchesFilter(model, filter));
             return matchesQuery && matchesFilters;
           }).toList();
 
-    filtered.sort(_compareModels);
+    filtered.sort((a, b) => _compareModels(a, b, listState));
     return filtered;
   }
 
-  int _compareModels(E a, E b) {
-    final int comparison;
-    switch (_sortField) {
+  int _compareModels(E a, E b, _ModelListState listState) {
+    final directionMultiplier =
+        listState.sortDirection == SortDirection.descending ? -1 : 1;
+
+    switch (listState.sortField) {
       case SortField.name:
-        comparison = widget
+        final comparison = widget
             .nameSelector(a)
             .toLowerCase()
             .compareTo(widget.nameSelector(b).toLowerCase());
+        return comparison * directionMultiplier;
       case SortField.createdAt:
         final aDate = a.creationDate;
         final bDate = b.creationDate;
-        // Undated models sort after dated ones (subject to the direction
-        // flip below, same as any other comparison here).
-        comparison = switch ((aDate, bDate)) {
+        // Undated models always sort last, regardless of direction —
+        // negating the comparison for "descending" must not also flip
+        // which end of the list they land on.
+        return switch ((aDate, bDate)) {
           (null, null) => 0,
           (null, _) => 1,
           (_, null) => -1,
-          (final aDate?, final bDate?) => aDate.compareTo(bDate),
+          (final aDate?, final bDate?) =>
+            aDate.compareTo(bDate) * directionMultiplier,
         };
     }
-    return _sortDirection == SortDirection.descending
-        ? -comparison
-        : comparison;
   }
 
   static const double _commandBarMaxWidth = 640;
@@ -181,11 +206,22 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
         Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: _commandBarMaxWidth),
-            child: _commandBar,
+            child: CommandBar(
+              onAdd: widget.onAdd,
+              onSearchChanged: _handleSearchChanged,
+              filterOptions: widget.filterOptions,
+              onFiltersChanged: _handleFiltersChanged,
+              onSortChanged: _handleSortChanged,
+            ),
           ),
         ),
         verticalSpacing10,
-        Expanded(child: _buildGridView()),
+        Expanded(
+          child: ValueListenableBuilder<_ModelListState>(
+            valueListenable: _listState,
+            builder: (context, listState, _) => _buildGridView(listState),
+          ),
+        ),
       ],
     );
   }
@@ -194,8 +230,8 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
   static const double _gridCardHeight = 132;
   static const double _gridSpacing = 12;
 
-  Widget _buildGridView() {
-    final models = _filteredModels;
+  Widget _buildGridView(_ModelListState listState) {
+    final models = _filteredModels(listState);
 
     if (models.isEmpty) {
       // Reuse the same empty-state copy the other (unmigrated) pages
