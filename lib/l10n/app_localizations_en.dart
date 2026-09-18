@@ -504,4 +504,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialog_model_create_button => 'Create';
+
+  @override
+  String get command_bar_search_hint => 'Search...';
+
+  @override
+  String get command_bar_filter_sort_tooltip => 'Filter & Sort';
+
+  @override
+  String get sort_name_ascending => 'Name (A–Z)';
+
+  @override
+  String get sort_name_descending => 'Name (Z–A)';
+
+  @override
+  String get sort_created_newest_first => 'Created (newest first)';
+
+  @override
+  String get sort_created_oldest_first => 'Created (oldest first)';
+
+  @override
+  String get filter_attribute_has_default_value => 'Has default value';
+
+  @override
+  String get filter_attribute_has_maximum_value => 'Has maximum value';
+
+  @override
+  String get model_card_created_prefix => 'Created';
+
+  @override
+  String get model_card_edited_prefix => 'Edited';
+
+  @override
+  String get relative_time_just_now => 'Just now';
+
+  @override
+  String relative_time_minutes_ago(int count) {
+    return '$count min ago';
+  }
+
+  @override
+  String relative_time_hours_ago(int count) {
+    return '$count h ago';
+  }
+
+  @override
+  String relative_time_days_ago(int count) {
+    return '$count d ago';
+  }
 }

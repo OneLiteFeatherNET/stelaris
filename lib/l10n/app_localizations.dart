@@ -1035,6 +1035,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create'**
   String get dialog_model_create_button;
+
+  /// No description provided for @command_bar_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search...'**
+  String get command_bar_search_hint;
+
+  /// No description provided for @command_bar_filter_sort_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter & Sort'**
+  String get command_bar_filter_sort_tooltip;
+
+  /// No description provided for @sort_name_ascending.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (A–Z)'**
+  String get sort_name_ascending;
+
+  /// No description provided for @sort_name_descending.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (Z–A)'**
+  String get sort_name_descending;
+
+  /// No description provided for @sort_created_newest_first.
+  ///
+  /// In en, this message translates to:
+  /// **'Created (newest first)'**
+  String get sort_created_newest_first;
+
+  /// No description provided for @sort_created_oldest_first.
+  ///
+  /// In en, this message translates to:
+  /// **'Created (oldest first)'**
+  String get sort_created_oldest_first;
+
+  /// No description provided for @filter_attribute_has_default_value.
+  ///
+  /// In en, this message translates to:
+  /// **'Has default value'**
+  String get filter_attribute_has_default_value;
+
+  /// No description provided for @filter_attribute_has_maximum_value.
+  ///
+  /// In en, this message translates to:
+  /// **'Has maximum value'**
+  String get filter_attribute_has_maximum_value;
+
+  /// No description provided for @model_card_created_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get model_card_created_prefix;
+
+  /// No description provided for @model_card_edited_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited'**
+  String get model_card_edited_prefix;
+
+  /// No description provided for @relative_time_just_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get relative_time_just_now;
+
+  /// No description provided for @relative_time_minutes_ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min ago'**
+  String relative_time_minutes_ago(int count);
+
+  /// No description provided for @relative_time_hours_ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} h ago'**
+  String relative_time_hours_ago(int count);
+
+  /// No description provided for @relative_time_days_ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} d ago'**
+  String relative_time_days_ago(int count);
 }
 
 class _AppLocalizationsDelegate
