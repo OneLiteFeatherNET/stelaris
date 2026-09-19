@@ -108,10 +108,7 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
       context: context,
       builder: (BuildContext context) {
         return DeleteDialog<ItemEnchantmentDto>(
-          title: Text(
-            context.l10n.dialog_item_enchantment_delete_title,
-            textAlign: TextAlign.center,
-          ),
+          title: context.l10n.dialog_item_enchantment_delete_title,
           header: [
             TextSpan(
               text: context.l10n.dialog_item_enchantment_delete_header,

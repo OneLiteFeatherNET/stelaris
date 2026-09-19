@@ -28,7 +28,11 @@ class FontPage extends StatelessWidget {
           mapToDataModelItem: (value) => TextWidget(displayName: value.uiName),
           openFunction: () => _openDialog(context, vm.projectKey),
           selectedItem: vm.selected,
-          mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
+          mapToDeleteDialog: (value) => createDeleteText(
+            value.uiName,
+            context,
+            relatedDataText: context.l10n.delete_dialog_related_font,
+          ),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(FontRemoveAction(value));
             return true;
