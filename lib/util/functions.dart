@@ -10,7 +10,11 @@ String? checkIfEmptyAndReturnErrorString(String value, BuildContext context) {
   return null;
 }
 
-List<TextSpan> createDeleteText(String? name, BuildContext context) {
+List<TextSpan> createDeleteText(
+  String? name,
+  BuildContext context, {
+  String? relatedDataText,
+}) {
   final textStyle = Theme.of(context).textTheme.bodyMedium;
   return [
     TextSpan(text: context.l10n.delete_dialog_first_line, style: textStyle),
@@ -19,5 +23,6 @@ List<TextSpan> createDeleteText(String? name, BuildContext context) {
       style: redStyle,
     ),
     TextSpan(text: context.l10n.delete_dialog_entry, style: textStyle),
+    if (relatedDataText != null) TextSpan(text: ' $relatedDataText', style: textStyle),
   ];
 }
