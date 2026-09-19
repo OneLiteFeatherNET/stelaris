@@ -36,8 +36,6 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, SelectedSoundView>(
       vm: () => SelectedSoundState(),
-      onDispose: (store) =>
-          store.dispatch(RemoveSelectedSoundEvent(), notify: false),
       builder: (context, vm) {
         final selected = vm.selected;
         return FocusScope(

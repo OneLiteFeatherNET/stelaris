@@ -20,6 +20,24 @@ class RemoveSelectedSoundEvent extends ReduxAction<AppState> {
   }
 }
 
+/// Always refetches page 1 and replaces the current list, regardless of
+/// how many pages were already loaded — used by the grid's manual refresh
+/// button, as opposed to [InitSoundAction] which only ever loads the next
+/// page or the very first page.
+class RefreshSoundAction extends ReduxAction<AppState> {
+  @override
+  Future<AppState?> reduce() async {
+    final PaginatedResult<SoundEventModel> result = await ApiService()
+        .soundApi
+        .getPage(
+          page: 1,
+          size: state.soundEvents.pageSize == 0 ? 10 : state.soundEvents.pageSize,
+          projectId: state.selectedProject?.id,
+        );
+    return state.copyWith(soundEvents: result);
+  }
+}
+
 class InitSoundAction extends ReduxAction<AppState> {
   InitSoundAction();
 
@@ -28,6 +46,8 @@ class InitSoundAction extends ReduxAction<AppState> {
     // If we already have items and more pages, treat this as load-more.
     final hasExisting = state.soundEvents.items.isNotEmpty;
     final canLoadMore = state.soundEvents.hasNextPage;
+
+    if (hasExisting && !canLoadMore) return null;
 
     if (hasExisting && canLoadMore) {
       if (state.isLoadingMoreSoundEvents) return null;

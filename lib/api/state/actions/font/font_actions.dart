@@ -20,6 +20,23 @@ class RemoveSelectedFont extends ReduxAction<AppState> {
   }
 }
 
+/// Always refetches page 1 and replaces the current list, regardless of
+/// how many pages were already loaded — used by the grid's manual refresh
+/// button, as opposed to [InitFontAction] which only ever loads the next
+/// page or the very first page.
+class RefreshFontAction extends ReduxAction<AppState> {
+  @override
+  Future<AppState?> reduce() async {
+    final PaginatedResult<FontModel> result = await ApiService().fontApi
+        .getPage(
+          page: 1,
+          size: state.fonts.pageSize == 0 ? 10 : state.fonts.pageSize,
+          projectId: state.selectedProject?.id,
+        );
+    return state.copyWith(fonts: result);
+  }
+}
+
 class InitFontAction extends ReduxAction<AppState> {
   InitFontAction();
 
@@ -28,6 +45,8 @@ class InitFontAction extends ReduxAction<AppState> {
     // If we already have items and more pages, treat this as load-more.
     final hasExisting = state.fonts.items.isNotEmpty;
     final canLoadMore = state.fonts.hasNextPage;
+
+    if (hasExisting && !canLoadMore) return null;
 
     if (hasExisting && canLoadMore) {
       if (state.isLoadingMoreFonts) return null;
