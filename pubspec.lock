@@ -734,8 +734,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "feat/extend-data-model"
-      resolved-ref: def2e9402b3cd52cb223c3dd6ec2d5d4525681f8
+      ref: main
+      resolved-ref: "731d09bbe3613a9e31f0492b031f4928fb35ac43"
       url: "https://github.com/OneLiteFeatherNET/stelaris-model.git"
     source: git
     version: "0.0.1"
