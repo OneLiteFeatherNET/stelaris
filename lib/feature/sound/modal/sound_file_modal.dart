@@ -5,6 +5,7 @@ import 'package:stelaris/feature/sound/modal/section/base_section.dart';
 import 'package:stelaris/feature/sound/modal/type/integer_fields_section.dart';
 import 'package:stelaris/feature/sound/modal/type/sound_switch_section.dart';
 import 'package:stelaris/feature/sound/modal/type/volume_section.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 import 'section/string_field_section.dart';
 
@@ -39,11 +40,6 @@ class _SoundFileModalState extends State<SoundFileModal> {
   @override
   void initState() {
     super.initState();
-    debugPrint('Read data from');
-    if (widget.initialData != null) {
-      debugPrint('Exsts');
-      debugPrint(widget.initialData!.toString());
-    }
     final data = widget.initialData;
     _name = data?.name ?? '';
     _volume = data?.volume ?? 1;
@@ -64,7 +60,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
     return FormDialog(
       title: widget.create ? 'Create Sound' : 'Edit Sound',
       actionIcon: widget.create ? Icons.add : Icons.save_outlined,
-      actionLabel: 'Save',
+      actionLabel: context.l10n.button_save,
       minWidth: 400,
       onSubmit: _handleSave,
       content: Form(

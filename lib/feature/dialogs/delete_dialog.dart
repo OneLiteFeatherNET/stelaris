@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/feature/base/dialog/notice_box.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/typedefs.dart';
@@ -39,35 +40,12 @@ class DeleteDialog<E> extends StatelessWidget {
         children: [
           RichText(text: TextSpan(children: header)),
           verticalSpacing10,
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.errorContainer.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: theme.colorScheme.error.withValues(alpha: 0.4),
-              ),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  Icons.warning_amber_rounded,
-                  size: 18,
-                  color: theme.colorScheme.error,
-                ),
-                horizontalSpacing10,
-                Expanded(
-                  child: Text(
-                    context.l10n.delete_dialog_irreversible,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onErrorContainer,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
+          NoticeBox(
+            icon: Icons.warning_amber_rounded,
+            color: theme.colorScheme.error,
+            content: Text(
+              context.l10n.delete_dialog_irreversible,
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
         ],

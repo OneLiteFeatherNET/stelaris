@@ -1,12 +1,12 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/validators.dart';
 import 'package:vulpes_data/api/enchantment.dart';
 
 class ItemEnchantmentUpdateDialog extends StatefulWidget {
@@ -47,7 +47,6 @@ class _ItemEnchantmentUpdateDialogState
       title: context.l10n.dialog_item_enchantment_level_edit,
       actionIcon: Icons.save_outlined,
       actionLabel: context.l10n.button_save,
-      onCancel: () => context.pop(false),
       onSubmit: _handleSave,
       content: Form(
         key: _key,
@@ -62,8 +61,8 @@ class _ItemEnchantmentUpdateDialogState
             labelText: context.l10n.label_level,
             border: const OutlineInputBorder(),
           ),
-          validator: (value) => _validateInput(
-            value: value!,
+          validator: (value) => Validators.enchantmentLevel(
+            value: value,
             maxLevel: widget.enchantment.maxLevel,
           ),
         ),
@@ -78,7 +77,7 @@ class _ItemEnchantmentUpdateDialogState
     }
 
     if (content == widget.dto.level.toString()) {
-      context.pop(false);
+      Navigator.pop(context, false);
       return;
     }
 
@@ -86,22 +85,6 @@ class _ItemEnchantmentUpdateDialogState
       level: int.parse(content),
     );
     context.dispatch(ItemEnchantmentUpdateAction(updatedDto));
-    context.pop(true);
-  }
-
-  String? _validateInput({required String value, required int maxLevel}) {
-    if (value.trim().isEmpty) {
-      return 'Please enter a level';
-    }
-    final level = int.tryParse(value);
-    if (level == null) {
-      return 'Please enter a valid number';
-    }
-
-    if (level > maxLevel) {
-      return 'The maximum is $maxLevel';
-    }
-
-    return null;
+    Navigator.pop(context, true);
   }
 }

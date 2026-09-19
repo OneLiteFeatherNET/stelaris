@@ -8,6 +8,7 @@ import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/item/enchantment_reducer.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/validators.dart';
 import 'package:vulpes_data/api/enchantment.dart';
 
 class ItemEnchantmentAddDialog extends StatefulWidget {
@@ -26,13 +27,20 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
   final ValueNotifier<bool> _unsafe = ValueNotifier(false);
   final _key = GlobalKey<FormState>();
 
-  late final ValueNotifier<Enchantment> _selected;
-  late List<DropdownMenuItem<Enchantment>> _enchantments;
+  late final List<DropdownMenuItem<Enchantment>> _enchantments = widget
+      .view
+      .selectableEnchantments
+      .map(
+        (e) => DropdownMenuItem<Enchantment>(value: e, child: Text(e.displayName)),
+      )
+      .toList();
+  late final ValueNotifier<Enchantment> _selected = ValueNotifier(
+    _enchantments.first.value!,
+  );
 
   @override
   void initState() {
     super.initState();
-    _updateEnchantments();
     _resetController();
   }
 
@@ -107,7 +115,7 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
               ),
               validator: (value) {
                 if (value == null) return null;
-                return _validateInput(
+                return Validators.enchantmentLevel(
                   value: value,
                   maxLevel: _selected.value.maxLevel,
                   unsafe: _unsafe.value,
@@ -132,20 +140,6 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
     }
   }
 
-  void _updateEnchantments() {
-    _enchantments = widget.view.selectableEnchantments
-        .map(
-          (e) => DropdownMenuItem<Enchantment>(
-            value: e,
-            child: Text(e.displayName),
-          ),
-        )
-        .toList();
-    if (_enchantments.isNotEmpty) {
-      _selected = ValueNotifier(_enchantments.first.value!);
-    }
-  }
-
   /// Handles the add logic of an selected [Enchantment] with the given data
   /// It calls the [ItemEnchantmentAddAction] to save it in the database etc.
   /// [enchantment] which should be added to the [ItemModel]
@@ -159,26 +153,5 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
     );
     context.dispatch(ItemEnchantmentAddAction(dto));
     Navigator.of(context).pop();
-  }
-
-  ///
-  String? _validateInput({
-    required String value,
-    required int maxLevel,
-    required bool unsafe,
-  }) {
-    if (value.trim().isEmpty) {
-      return 'Please enter a level';
-    }
-    final level = int.tryParse(value);
-    if (level == null) {
-      return 'Please enter a valid number';
-    }
-
-    if (!unsafe && level > maxLevel) {
-      return 'The maximum is $maxLevel';
-    }
-
-    return null;
   }
 }

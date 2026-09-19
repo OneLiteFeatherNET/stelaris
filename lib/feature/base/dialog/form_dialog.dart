@@ -16,7 +16,6 @@ class FormDialog extends StatelessWidget {
     required this.onSubmit,
     this.actionIcon,
     this.actionColor,
-    this.onCancel,
     this.minWidth = 0,
     this.maxWidth = 520,
     this.maxHeight = 650,
@@ -32,23 +31,21 @@ class FormDialog extends StatelessWidget {
   /// actions like a delete confirmation.
   final Color? actionColor;
   final VoidCallback onSubmit;
-  final VoidCallback? onCancel;
   final double minWidth;
   final double maxWidth;
   final double maxHeight;
 
   void _handleCancel(BuildContext context) {
     FocusScope.of(context).unfocus();
-    if (onCancel != null) {
-      onCancel!.call();
-    } else {
-      Navigator.of(context).pop(false);
-    }
+    Navigator.of(context).pop(false);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final actionStyle = actionColor == null
+        ? null
+        : FilledButton.styleFrom(backgroundColor: actionColor);
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -96,16 +93,12 @@ class FormDialog extends StatelessWidget {
                   horizontalSpacing10,
                   actionIcon == null
                       ? FilledButton(
-                          style: actionColor == null
-                              ? null
-                              : FilledButton.styleFrom(backgroundColor: actionColor),
+                          style: actionStyle,
                           onPressed: onSubmit,
                           child: Text(actionLabel),
                         )
                       : FilledButton.icon(
-                          style: actionColor == null
-                              ? null
-                              : FilledButton.styleFrom(backgroundColor: actionColor),
+                          style: actionStyle,
                           onPressed: onSubmit,
                           icon: Icon(actionIcon),
                           label: Text(actionLabel),

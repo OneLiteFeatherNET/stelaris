@@ -1,5 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/feature/base/dialog/notice_box.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -37,7 +39,6 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _keyController = TextEditingController();
-  bool _hasAttemptedSubmit = false;
 
   @override
   void dispose() {
@@ -46,15 +47,7 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
     super.dispose();
   }
 
-  void _handleCancel() {
-    FocusScope.of(context).unfocus();
-    Navigator.of(context).pop(false);
-  }
-
   void _handleSubmit() {
-    setState(() {
-      _hasAttemptedSubmit = true;
-    });
     if (!_formKey.currentState!.validate()) return;
     final name = _nameController.text.trim();
     final key = _keyController.text.trim();
@@ -64,154 +57,85 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final autovalidateMode = _hasAttemptedSubmit
-        ? AutovalidateMode.onUserInteraction
-        : AutovalidateMode.disabled;
 
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: widget.maxWidth, maxHeight: 650),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return FormDialog(
+      title: widget.title,
+      actionIcon: Icons.add,
+      actionLabel: context.l10n.dialog_model_create_button,
+      maxWidth: widget.maxWidth,
+      onSubmit: _handleSubmit,
+      content: Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextFormField(
+              controller: _nameController,
+              autofocus: true,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(stringWithSpacePattern),
+              ],
+              decoration: InputDecoration(
+                labelText: '${context.l10n.dialog_model_name_label} *',
+                hintText: widget.nameHint ?? context.l10n.dialog_model_name_hint,
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.title),
+              ),
+              validator: Validators.required('Name is required'),
+              onFieldSubmitted: (_) => _handleSubmit(),
+            ),
+            verticalSpacing10,
+            TextFormField(
+              controller: _keyController,
+              inputFormatters: const [lowerCaseFormatter],
+              decoration: InputDecoration(
+                labelText: '${context.l10n.dialog_model_key_label} *',
+                hintText: widget.keyHint ?? context.l10n.dialog_model_key_hint,
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.vpn_key_outlined),
+              ),
+              validator: Validators.adventureKeyPart(),
+              onFieldSubmitted: (_) => _handleSubmit(),
+            ),
+            verticalSpacing10,
+            NoticeBox(
+              icon: Icons.preview_outlined,
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.title,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                    context.l10n.dialog_model_preview_label,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  IconButton(
-                    onPressed: _handleCancel,
-                    icon: const Icon(Icons.close),
-                    splashRadius: 20,
+                  const SizedBox(height: 6),
+                  ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: _keyController,
+                    builder: (context, value, _) {
+                      final text = value.text.trim();
+                      return Text(
+                        '${widget.projectNamespace}:${text.isEmpty ? '<key>' : text}',
+                        style: TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: text.isEmpty
+                              ? theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5)
+                              : theme.colorScheme.primary,
+                          fontStyle: text.isEmpty
+                              ? FontStyle.italic
+                              : FontStyle.normal,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
-              const Divider(height: 24),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: _formKey,
-                    autovalidateMode: autovalidateMode,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextFormField(
-                          controller: _nameController,
-                          autofocus: true,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(stringWithSpacePattern),
-                          ],
-                          decoration: InputDecoration(
-                            labelText: '${context.l10n.dialog_model_name_label} *',
-                            hintText: widget.nameHint ?? context.l10n.dialog_model_name_hint,
-                            border: const OutlineInputBorder(),
-                            prefixIcon: const Icon(Icons.title),
-                          ),
-                          validator: Validators.required('Name is required'),
-                          onFieldSubmitted: (_) => _handleSubmit(),
-                        ),
-                        verticalSpacing10,
-                        TextFormField(
-                          controller: _keyController,
-                          inputFormatters: const [lowerCaseFormatter],
-                          decoration: InputDecoration(
-                            labelText: '${context.l10n.dialog_model_key_label} *',
-                            hintText: widget.keyHint ?? context.l10n.dialog_model_key_hint,
-                            border: const OutlineInputBorder(),
-                            prefixIcon: const Icon(Icons.vpn_key_outlined),
-                          ),
-                          validator: Validators.adventureKeyPart(),
-                          onFieldSubmitted: (_) => _handleSubmit(),
-                        ),
-                        verticalSpacing10,
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: theme.colorScheme.outlineVariant.withValues(alpha: 0.6),
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.preview_outlined,
-                                    size: 16,
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                  horizontalSpacing10,
-                                  Text(
-                                    context.l10n.dialog_model_preview_label,
-                                    style: theme.textTheme.labelMedium?.copyWith(
-                                      color: theme.colorScheme.onSurfaceVariant,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 6),
-                              ValueListenableBuilder<TextEditingValue>(
-                                valueListenable: _keyController,
-                                builder: (context, value, _) {
-                                  final text = value.text.trim();
-                                  return Text(
-                                    '${widget.projectNamespace}:${text.isEmpty ? '<key>' : text}',
-                                    style: TextStyle(
-                                      fontFamily: 'monospace',
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: text.isEmpty
-                                          ? theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5)
-                                          : theme.colorScheme.primary,
-                                      fontStyle: text.isEmpty
-                                          ? FontStyle.italic
-                                          : FontStyle.normal,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const Divider(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: _handleCancel,
-                    child: Text(context.l10n.button_cancel),
-                  ),
-                  horizontalSpacing10,
-                  FilledButton.icon(
-                    onPressed: _handleSubmit,
-                    icon: const Icon(Icons.add),
-                    label: Text(context.l10n.dialog_model_create_button),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
