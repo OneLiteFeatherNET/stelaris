@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.5.0...v1.6.0) (2026-09-19)
+
+
+### Features
+
+* **state:** improve async redux flow and stability ([#173](https://github.com/OneLiteFeatherNET/stelaris/issues/173)) ([ddf8c30](https://github.com/OneLiteFeatherNET/stelaris/commit/ddf8c3044de81c22a7f8d6c3adfbd4d495411875))
+
+
+### Bug Fixes
+
+* **problem:** migrate to freezed model to avoid equality and other issues ([c7a52f2](https://github.com/OneLiteFeatherNET/stelaris/commit/c7a52f2c631a1b4ebe027b187234dbc53568410e))
+* **state:** avoid naming typo and add error resilience ([08c567a](https://github.com/OneLiteFeatherNET/stelaris/commit/08c567aee0bf4524a602443bcdc415f55bbfdc0e))
+* **theme:** improve text theme copy to avoid black text ([7b52e7c](https://github.com/OneLiteFeatherNET/stelaris/commit/7b52e7c68906a46622a7c0487f59b57baac4a228))
+
 ## [1.5.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.4.1...v1.5.0) (2026-09-14)
 
 
