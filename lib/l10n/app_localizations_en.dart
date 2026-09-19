@@ -68,10 +68,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'When you need help, click on the copy button the get the wiki link';
 
   @override
-  String get delete_dialog_first_line => 'Do you really want to delete ';
+  String get delete_dialog_first_line => 'Are you sure you want to delete ';
 
   @override
-  String get delete_dialog_entry => ' entry';
+  String get delete_dialog_entry => '?';
+
+  @override
+  String get delete_dialog_irreversible => 'This action cannot be undone.';
+
+  @override
+  String get delete_dialog_related_font =>
+      'All characters that belong to this font will also be deleted.';
+
+  @override
+  String get delete_dialog_related_item =>
+      'All lore entries and enchantments that belong to this item will also be deleted.';
+
+  @override
+  String get delete_dialog_related_sound =>
+      'All sound files that belong to this event will also be deleted.';
 
   @override
   String get dialog_delete_confirm => 'Confirm deletion';
