@@ -1,11 +1,10 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/attribute/attribute_vm_state.dart';
-import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/attributes/attribute_edit_dialog.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_page.dart';
@@ -17,7 +16,9 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// The [AttributePage] allows users to view, search, filter, and manage
 /// attributes through a [ModelPage]. It provides a dialog for creating new
 /// attributes and handles the state management through Redux. Tapping an
-/// attribute navigates to its dedicated detail route.
+/// attribute opens a dialog to edit its default/maximum value — an
+/// attribute only has those two editable fields, so a dedicated detail
+/// route/page would be overkill.
 class AttributePage extends StatelessWidget {
   /// Creates an instance of [AttributePage].
   const AttributePage({super.key});
@@ -59,10 +60,10 @@ class AttributePage extends StatelessWidget {
             _ => true,
           },
           onAdd: () => _openDialog(context, vm.projectKey),
-          onModelTap: (model) {
-            context.dispatch(SelectAttributeAction(model));
-            context.go('${NavigationEntry.attributes.route}/detail');
-          },
+          onModelTap: (model) => showDialog(
+            context: context,
+            builder: (_) => AttributeEditDialog(model: model),
+          ),
           hasMore: vm.hasNextPage,
           isLoadingMore: vm.isLoadingMore,
           onLoadMore: vm.hasNextPage && !vm.isLoadingMore
