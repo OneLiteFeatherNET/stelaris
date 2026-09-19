@@ -64,9 +64,9 @@ class _ModelListState {
 /// scrollable grid of data models, with optional infinite-scroll pagination
 /// via [onLoadMore]/[hasMore]/[isLoadingMore].
 ///
-/// Unlike [PaginatedModelList], tapping a model does not swap an in-place
-/// detail panel: the caller decides what happens via [onModelTap] (e.g.
-/// navigating to a dedicated detail route).
+/// Tapping a model does not swap an in-place detail panel: the caller
+/// decides what happens via [onModelTap] (e.g. navigating to a dedicated
+/// detail route).
 class ModelPage<E extends DataModel> extends StatefulWidget {
   final List<E> models;
   final MapToDataModelItem<E> mapToDataModelItem;

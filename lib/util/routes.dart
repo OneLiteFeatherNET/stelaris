@@ -4,7 +4,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/base_page.dart';
+import 'package:stelaris/feature/font/font_detail_page.dart';
+import 'package:stelaris/feature/item/item_detail_page.dart';
+import 'package:stelaris/feature/notification/notification_detail_page.dart';
 import 'package:stelaris/feature/project/project_selection_page.dart';
+import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/util/deferred_widget.dart';
 
 import 'package:stelaris/feature/attributes/attribute_page.dart'
@@ -32,6 +36,102 @@ String? projectSelectionRedirect(BuildContext context, GoRouterState state) {
     }
   } on StoreException catch (_) {}
   return null;
+}
+
+/// Redirects `/notifications/detail` back to `/notifications` when nothing
+/// is selected — reachable by a direct URL visit or a page reload, since the
+/// detail route relies entirely on the already-dispatched Redux selection
+/// rather than a route parameter.
+String? notificationDetailRedirect(BuildContext context, GoRouterState state) {
+  try {
+    final appState = StoreProvider.state<AppState>(context);
+    final isAtNotificationDetail = state.matchedLocation ==
+        '${NavigationEntry.notifications.route}/detail';
+
+    if (isAtNotificationDetail && appState.selectedNotification == null) {
+      return NavigationEntry.notifications.route;
+    }
+  } on StoreException catch (_) {}
+  return null;
+}
+
+/// Redirects `/fonts/detail` back to `/fonts` when nothing is selected —
+/// reachable by a direct URL visit or a page reload, since the detail route
+/// relies entirely on the already-dispatched Redux selection rather than a
+/// route parameter.
+String? fontDetailRedirect(BuildContext context, GoRouterState state) {
+  try {
+    final appState = StoreProvider.state<AppState>(context);
+    final isAtFontDetail =
+        state.matchedLocation == '${NavigationEntry.font.route}/detail';
+
+    if (isAtFontDetail && appState.selectedFont == null) {
+      return NavigationEntry.font.route;
+    }
+  } on StoreException catch (_) {}
+  return null;
+}
+
+/// Redirects `/sound/detail` back to `/sound` when nothing is selected —
+/// reachable by a direct URL visit or a page reload, since the detail route
+/// relies entirely on the already-dispatched Redux selection rather than a
+/// route parameter.
+String? soundDetailRedirect(BuildContext context, GoRouterState state) {
+  try {
+    final appState = StoreProvider.state<AppState>(context);
+    final isAtSoundDetail =
+        state.matchedLocation == '${NavigationEntry.sound.route}/detail';
+
+    if (isAtSoundDetail && appState.selectedSoundEvent == null) {
+      return NavigationEntry.sound.route;
+    }
+  } on StoreException catch (_) {}
+  return null;
+}
+
+/// Redirects `/items/detail` back to `/items` when nothing is selected —
+/// reachable by a direct URL visit or a page reload, since the detail route
+/// relies entirely on the already-dispatched Redux selection rather than a
+/// route parameter.
+String? itemDetailRedirect(BuildContext context, GoRouterState state) {
+  try {
+    final appState = StoreProvider.state<AppState>(context);
+    final isAtItemDetail =
+        state.matchedLocation == '${NavigationEntry.items.route}/detail';
+
+    if (isAtItemDetail && appState.selectedItem == null) {
+      return NavigationEntry.items.route;
+    }
+  } on StoreException catch (_) {}
+  return null;
+}
+
+/// The transition used when navigating from a model grid page to its
+/// detail route and back: the detail page slides in from the right (and
+/// back out on pop) with a matching fade, while the grid underneath stays
+/// put — a drill-down feel distinct from the plain cross-fade used between
+/// top-level nav tabs.
+Widget buildDetailSlideTransition(
+  BuildContext context,
+  Animation<double> animation,
+  Animation<double> secondaryAnimation,
+  Widget child,
+) {
+  final slideCurve = CurvedAnimation(parent: animation, curve: Curves.easeInOutCubic);
+  // Delayed relative to the slide: full opacity is reached only at the very
+  // end, in sync with the slide settling, instead of the content looking
+  // fully "arrived" while it's still visibly moving.
+  final fadeCurve = CurvedAnimation(
+    parent: animation,
+    curve: const Interval(0.3, 1, curve: Curves.easeOut),
+  );
+  return SlideTransition(
+    position: Tween<Offset>(
+      begin: const Offset(1, 0),
+      end: Offset.zero,
+    ).animate(slideCurve),
+    child: FadeTransition(opacity: fadeCurve, child: child),
+  );
 }
 
 final GoRouter router = GoRouter(
@@ -84,6 +184,17 @@ final GoRouter router = GoRouter(
               child: child,
             ),
           ),
+          routes: [
+            GoRoute(
+              path: 'detail',
+              redirect: itemDetailRedirect,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                child: const ItemDetailPage(),
+                key: state.pageKey,
+                transitionsBuilder: buildDetailSlideTransition,
+              ),
+            ),
+          ],
         ),
         GoRoute(
           path: NavigationEntry.notifications.route,
@@ -100,6 +211,17 @@ final GoRouter router = GoRouter(
               child: child,
             ),
           ),
+          routes: [
+            GoRoute(
+              path: 'detail',
+              redirect: notificationDetailRedirect,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                child: const NotificationDetailPage(),
+                key: state.pageKey,
+                transitionsBuilder: buildDetailSlideTransition,
+              ),
+            ),
+          ],
         ),
         GoRoute(
           path: NavigationEntry.font.route,
@@ -116,6 +238,17 @@ final GoRouter router = GoRouter(
               child: child,
             ),
           ),
+          routes: [
+            GoRoute(
+              path: 'detail',
+              redirect: fontDetailRedirect,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                child: const FontDetailPage(),
+                key: state.pageKey,
+                transitionsBuilder: buildDetailSlideTransition,
+              ),
+            ),
+          ],
         ),
         GoRoute(
           path: NavigationEntry.sound.route,
@@ -132,6 +265,17 @@ final GoRouter router = GoRouter(
               child: child,
             ),
           ),
+          routes: [
+            GoRoute(
+              path: 'detail',
+              redirect: soundDetailRedirect,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                child: const SoundDetailPage(),
+                key: state.pageKey,
+                transitionsBuilder: buildDetailSlideTransition,
+              ),
+            ),
+          ],
         ),
       ],
     ),

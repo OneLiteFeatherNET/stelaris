@@ -1,18 +1,23 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/sound/sound_vm_state.dart';
-import 'package:stelaris/feature/base/empty_data_widget.dart';
-import 'package:stelaris/feature/base/model_text.dart';
-import 'package:stelaris/feature/base/paginated_model_view_tab.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
-import 'package:stelaris/feature/sound/sound_file_entries.dart';
-import 'package:stelaris/feature/sound/sound_general_page.dart';
+import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
+/// A widget that represents the sound event management page.
+///
+/// The [SoundPage] allows users to view, search, and manage sound events
+/// through a [ModelPage]. It provides a dialog for creating new sound
+/// events and handles the state management through Redux. Tapping a sound
+/// event navigates to its dedicated detail route, since its General/Entries
+/// tabs need more room than a dialog can comfortably offer.
 class SoundPage extends StatelessWidget {
   const SoundPage({super.key});
 
@@ -21,30 +26,27 @@ class SoundPage extends StatelessWidget {
     return StoreConnector<AppState, SoundViewModel>(
       vm: () => SoundVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitSoundAction()),
-      onDispose: (store) =>
-          store.dispatch(RemoveSelectedSoundEvent(), notify: false),
       builder: (context, vm) {
-        return PaginatedBaseModelViewTabs<SoundEventModel>(
-          mapToDataModelItem: (value) => TextWidget(displayName: value.uiName),
-          openFunction: () => _openCreationDialog(context, vm.projectKey),
-          selectedItem: vm.selected,
-          mapToDeleteDialog: (value) => createDeleteText(
-            value.uiName,
-            context,
-            relatedDataText: context.l10n.delete_dialog_related_sound,
-          ),
+        return ModelPage<SoundEventModel>(
+          mapToDataModelItem: (value) => _buildCardContent(context, value),
+          mapToDeleteDialog: (value) =>
+              createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(SoundRemoveAction(value));
             return true;
           },
-          callFunction: (model) => context.dispatch(SelectSoundAction(model)),
           models: vm.models,
-          page: (page, model) => _mapPageToWidget(page, model),
-          compareFunction: (model) => vm.isSelectedItem(model),
-          tabs: _getTabs(),
-          tabPages: (pages) => pages,
-          isLoadingMore: vm.isLoadingMore,
+          matchesSearch: (model, query) =>
+              model.uiName.toLowerCase().contains(query.toLowerCase()),
+          nameSelector: (model) => model.uiName,
+          matchesFilter: (model, filter) => true,
+          onAdd: () => _openCreationDialog(context, vm.projectKey),
+          onModelTap: (model) {
+            context.dispatch(SelectSoundAction(model));
+            context.go('${NavigationEntry.sound.route}/detail');
+          },
           hasMore: vm.hasNextPage,
+          isLoadingMore: vm.isLoadingMore,
           onLoadMore: vm.hasNextPage && !vm.isLoadingMore
               ? () => context.dispatch(InitSoundAction())
               : null,
@@ -53,6 +55,66 @@ class SoundPage extends StatelessWidget {
     );
   }
 
+  /// Builds the primary card content for a [SoundEventModel]: its display
+  /// name plus its configured sound key, if any.
+  Widget _buildCardContent(BuildContext context, SoundEventModel value) {
+    final keyName = value.keyName;
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          value.uiName,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        if (keyName != null && keyName.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(
+                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.6),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.volume_up_outlined,
+                  size: 12,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 5),
+                Flexible(
+                  child: Text(
+                    keyName,
+                    style: TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 11,
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// Opens a dialog for creating a new sound event.
   void _openCreationDialog(BuildContext context, String projectKey) {
     showDialog(
       context: context,
@@ -60,7 +122,6 @@ class SoundPage extends StatelessWidget {
         return ModelCreateDialog(
           title: context.l10n.dialog_sound_create,
           projectNamespace: projectKey,
-          maxWidth: 440,
           onSubmit: (name, key) {
             final model = SoundEventModel(uiName: name, key: key);
             context.dispatch(SoundAddAction(model));
@@ -69,29 +130,5 @@ class SoundPage extends StatelessWidget {
         );
       },
     );
-  }
-
-  List<Tab> _getTabs() {
-    return [
-      const Tab(child: Text('General')),
-      const Tab(child: Text('Entries')),
-    ];
-  }
-
-  /// Maps the given [SoundEventModel] to the right widget.
-  /// If the model is null, it returns an [Expanded] widget with an [EmptyDataWidget].
-  /// Otherwise, it returns an instance of [SoundGeneralPage] or [SoundFileEntryPage].
-  Widget _mapPageToWidget(String value, SoundEventModel? listenable) {
-    if (value.trim().isEmpty || listenable == null) {
-      return const EmptyDataWidget.standard(
-        header: 'No data selected',
-        subHeader: 'Please create or selected a model',
-      );
-    }
-    return switch (value) {
-      'General' => SoundGeneralPage(key: ValueKey('sound${listenable.id}')),
-      'Entries' => const SoundFileEntryPage(),
-      _ => const Placeholder(), // optional default case
-    };
   }
 }

@@ -1,19 +1,23 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/font_vm_state.dart';
-import 'package:stelaris/feature/base/empty_data_widget.dart';
-import 'package:stelaris/feature/base/model_text.dart';
-import 'package:stelaris/feature/base/paginated_model_view_tab.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
-import 'package:stelaris/feature/font/chars/font_char_page.dart';
-import 'package:stelaris/feature/font/face/font_face_page.dart';
-import 'package:stelaris/feature/font/font_general_page.dart';
+import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
+/// A widget that represents the font management page.
+///
+/// The [FontPage] allows users to view, search, and manage fonts through a
+/// [ModelPage]. It provides a dialog for creating new fonts and handles the
+/// state management through Redux. Tapping a font navigates to its
+/// dedicated detail route, since a font's General/FontFace/Chars tabs need
+/// more room than a dialog can comfortably offer.
 class FontPage extends StatelessWidget {
   const FontPage({super.key});
 
@@ -22,30 +26,27 @@ class FontPage extends StatelessWidget {
     return StoreConnector<AppState, FontViewModel>(
       vm: () => FontVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitFontAction()),
-      onDispose: (store) => store.dispatch(RemoveSelectedFont(), notify: false),
       builder: (context, vm) {
-        return PaginatedBaseModelViewTabs<FontModel>(
-          mapToDataModelItem: (value) => TextWidget(displayName: value.uiName),
-          openFunction: () => _openDialog(context, vm.projectKey),
-          selectedItem: vm.selected,
-          mapToDeleteDialog: (value) => createDeleteText(
-            value.uiName,
-            context,
-            relatedDataText: context.l10n.delete_dialog_related_font,
-          ),
+        return ModelPage<FontModel>(
+          mapToDataModelItem: (value) => _buildCardContent(context, value),
+          mapToDeleteDialog: (value) =>
+              createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(FontRemoveAction(value));
             return true;
           },
-          callFunction: (model) => context.dispatch(SelectFontAction(model)),
-          page: (page, notification) =>
-              _mapPageToWidget(context, page, notification),
           models: vm.models,
-          tabPages: (pages) => pages,
-          compareFunction: (model) => vm.isSelectedItem(model),
-          tabs: _getTabs(),
-          isLoadingMore: vm.isLoadingMore,
+          matchesSearch: (model, query) =>
+              model.uiName.toLowerCase().contains(query.toLowerCase()),
+          nameSelector: (model) => model.uiName,
+          matchesFilter: (model, filter) => true,
+          onAdd: () => _openDialog(context, vm.projectKey),
+          onModelTap: (model) {
+            context.dispatch(SelectFontAction(model));
+            context.go('${NavigationEntry.font.route}/detail');
+          },
           hasMore: vm.hasNextPage,
+          isLoadingMore: vm.isLoadingMore,
           onLoadMore: vm.hasNextPage && !vm.isLoadingMore
               ? () => context.dispatch(InitFontAction())
               : null,
@@ -54,6 +55,66 @@ class FontPage extends StatelessWidget {
     );
   }
 
+  /// Builds the primary card content for a [FontModel]: its display name
+  /// plus its configured provider, if any.
+  Widget _buildCardContent(BuildContext context, FontModel value) {
+    final provider = value.provider;
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          value.uiName,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        if (provider != null && provider.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(
+                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.6),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.text_fields_outlined,
+                  size: 12,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 5),
+                Flexible(
+                  child: Text(
+                    provider,
+                    style: TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 11,
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// Opens a dialog for creating a new font.
   void _openDialog(BuildContext context, String projectKey) {
     showDialog(
       context: context,
@@ -69,35 +130,5 @@ class FontPage extends StatelessWidget {
         );
       },
     );
-  }
-
-  List<Tab> _getTabs() {
-    return [
-      const Tab(child: Text('General')),
-      const Tab(child: Text('FontFace')),
-      const Tab(child: Text('Chars')),
-    ];
-  }
-
-  /// Maps the given [FontModel] to the right widget.
-  /// If the model is null, it returns an [Expanded] widget with an [EmptyDataWidget].
-  /// Otherwise, it returns an instance of [FontGeneralPage] or [FontCharPage].
-  Widget _mapPageToWidget(
-    BuildContext context,
-    String value,
-    FontModel? listenable,
-  ) {
-    if (value.trim().isEmpty || listenable == null) {
-      return EmptyDataWidget.standard(
-        header: context.l10n.empty_data_header,
-        subHeader: context.l10n.empty_data_subHeader,
-      );
-    }
-    return switch (value) {
-      'General' => const FontGeneralPage(),
-      'FontFace' => const FontFacePage(),
-      'Chars' => const FontCharPage(),
-      _ => const Placeholder(), // optional default case
-    };
   }
 }
