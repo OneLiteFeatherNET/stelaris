@@ -515,6 +515,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command_bar_filter_sort_tooltip => 'Filter & Sort';
 
   @override
+  String get command_bar_refresh_tooltip => 'Refresh';
+
+  @override
   String get sort_name_ascending => 'Name (A–Z)';
 
   @override

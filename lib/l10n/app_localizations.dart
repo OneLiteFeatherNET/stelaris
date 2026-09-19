@@ -1054,6 +1054,12 @@ abstract class AppLocalizations {
   /// **'Filter & Sort'**
   String get command_bar_filter_sort_tooltip;
 
+  /// No description provided for @command_bar_refresh_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get command_bar_refresh_tooltip;
+
   /// No description provided for @sort_name_ascending.
   ///
   /// In en, this message translates to:

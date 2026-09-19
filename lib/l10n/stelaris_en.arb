@@ -180,6 +180,7 @@
 
   "command_bar_search_hint": "Search...",
   "command_bar_filter_sort_tooltip": "Filter & Sort",
+  "command_bar_refresh_tooltip": "Refresh",
   "sort_name_ascending": "Name (A–Z)",
   "sort_name_descending": "Name (Z–A)",
   "sort_created_newest_first": "Created (newest first)",
