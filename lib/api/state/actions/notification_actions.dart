@@ -27,6 +27,8 @@ class InitNotificationAction extends ReduxAction<AppState> {
     final hasExisting = state.notifications.items.isNotEmpty;
     final canLoadMore = state.notifications.hasNextPage;
 
+    if (hasExisting && !canLoadMore) return null;
+
     if (hasExisting && canLoadMore) {
       if (state.isLoadingMoreNotifications) return null;
       dispatchSync(_SetNotificationsLoadMore(true));

@@ -29,6 +29,8 @@ class InitSoundAction extends ReduxAction<AppState> {
     final hasExisting = state.soundEvents.items.isNotEmpty;
     final canLoadMore = state.soundEvents.hasNextPage;
 
+    if (hasExisting && !canLoadMore) return null;
+
     if (hasExisting && canLoadMore) {
       if (state.isLoadingMoreSoundEvents) return null;
       dispatchSync(_SetLoadMoreSoundEventModels(true));

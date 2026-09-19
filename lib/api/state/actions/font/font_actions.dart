@@ -29,6 +29,8 @@ class InitFontAction extends ReduxAction<AppState> {
     final hasExisting = state.fonts.items.isNotEmpty;
     final canLoadMore = state.fonts.hasNextPage;
 
+    if (hasExisting && !canLoadMore) return null;
+
     if (hasExisting && canLoadMore) {
       if (state.isLoadingMoreFonts) return null;
       dispatchSync(_SetLoadMoreFontModels(true));

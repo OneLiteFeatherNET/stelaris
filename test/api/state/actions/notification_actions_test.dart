@@ -9,6 +9,36 @@ import 'package:stelaris_models/stelaris_models.dart';
 import '../../../support/fake_http_client_adapter.dart';
 
 void main() {
+  group('InitNotificationAction', () {
+    test(
+      'does nothing when all pages are already loaded, instead of '
+      'resetting the list back to page 1 (regression)',
+      () async {
+        final loadedItems = List.generate(
+          4,
+          (i) => NotificationModel(uiName: 'existing-$i', id: '$i'),
+        );
+        final store = Store<AppState>(
+          initialState: const AppState().copyWith(
+            notifications: PaginatedResult<NotificationModel>(
+              items: loadedItems,
+              totalItems: 4,
+              totalPages: 2,
+              currentPage: 2,
+              pageSize: 2,
+            ),
+          ),
+        );
+        final before = store.state;
+
+        await store.dispatchAndWait(InitNotificationAction());
+
+        expect(identical(store.state, before), isTrue);
+        expect(store.state.notifications.items, loadedItems);
+      },
+    );
+  });
+
   group('NotificationAddAction', () {
     test('increments totalItems by one', () async {
       final loadedPage = List.generate(

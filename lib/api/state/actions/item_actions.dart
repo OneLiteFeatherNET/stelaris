@@ -42,6 +42,8 @@ class InitItemAction extends ReduxAction<AppState> {
     final hasExisting = state.items.items.isNotEmpty;
     final canLoadMore = state.items.hasNextPage;
 
+    if (hasExisting && !canLoadMore) return null;
+
     if (hasExisting && canLoadMore) {
       if (state.isLoadingMoreItems) return null;
       dispatchSync(_SetLoadMoreItemModels(true));

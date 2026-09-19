@@ -12,6 +12,36 @@ import 'package:stelaris_models/stelaris_models.dart';
 import '../../../support/fake_http_client_adapter.dart';
 
 void main() {
+  group('InitItemAction', () {
+    test(
+      'does nothing when all pages are already loaded, instead of '
+      'resetting the list back to page 1 (regression)',
+      () async {
+        final loadedItems = List.generate(
+          4,
+          (i) => ItemModel(uiName: 'existing-$i', id: '$i'),
+        );
+        final store = Store<AppState>(
+          initialState: const AppState().copyWith(
+            items: PaginatedResult<ItemModel>(
+              items: loadedItems,
+              totalItems: 4,
+              totalPages: 2,
+              currentPage: 2,
+              pageSize: 2,
+            ),
+          ),
+        );
+        final before = store.state;
+
+        await store.dispatchAndWait(InitItemAction());
+
+        expect(identical(store.state, before), isTrue);
+        expect(store.state.items.items, loadedItems);
+      },
+    );
+  });
+
   group('ItemAddAction', () {
     test(
       'increments totalItems by one instead of falling back to the '

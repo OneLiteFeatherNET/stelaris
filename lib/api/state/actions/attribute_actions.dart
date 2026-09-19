@@ -46,6 +46,8 @@ class InitAttributeAction extends ReduxAction<AppState> {
     final hasExisting = state.attributes.items.isNotEmpty;
     final canLoadMore = state.attributes.hasNextPage;
 
+    if (hasExisting && !canLoadMore) return null;
+
     if (hasExisting && canLoadMore) {
       if (state.isLoadingAttributesMore) return null;
       dispatchSync(_SetAttributesLoadMore(true));
