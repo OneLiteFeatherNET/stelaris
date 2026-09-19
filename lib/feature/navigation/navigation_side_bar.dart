@@ -20,7 +20,10 @@ class NavigationSideBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final routerUri = GoRouterState.of(context).matchedLocation;
     final selectedIndex = navigationEntries.indexWhere((element) {
-      return element.route == routerUri;
+      // Nested routes (e.g. a model's `/detail` route) share the parent
+      // entry's highlight rather than falling back to the first entry.
+      return routerUri == element.route ||
+          routerUri.startsWith('${element.route}/');
     });
 
     return StoreConnector<AppState, NavigationViewModel>(
