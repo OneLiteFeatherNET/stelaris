@@ -49,24 +49,26 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('shows the back arrow and the three tabs on one line', (tester) async {
-      await pumpPage(tester);
+    testWidgets(
+      'shows the back arrow with the font name above the tabs',
+      (tester) async {
+        await pumpPage(tester);
 
-      expect(find.byType(ModelDetailBackBar), findsOneWidget);
-      expect(find.byType(TabBar), findsOneWidget);
+        expect(find.byType(ModelDetailBackBar), findsOneWidget);
+        expect(find.text('Roboto Mono'), findsOneWidget);
+        expect(find.byType(TabBar), findsOneWidget);
 
-      final row = tester.widget<Row>(
-        find.ancestor(
-          of: find.byType(TabBar),
-          matching: find.byType(Row),
-        ).first,
-      );
-      expect(row.children.any((w) => w is ModelDetailBackBar), isTrue);
+        final backBarPosition = tester.getTopLeft(
+          find.byType(ModelDetailBackBar),
+        );
+        final tabBarPosition = tester.getTopLeft(find.byType(TabBar));
+        expect(backBarPosition.dy, lessThan(tabBarPosition.dy));
 
-      expect(find.text('General'), findsOneWidget);
-      expect(find.text('FontFace'), findsOneWidget);
-      expect(find.text('Chars'), findsOneWidget);
-    });
+        expect(find.text('General'), findsOneWidget);
+        expect(find.text('FontFace'), findsOneWidget);
+        expect(find.text('Chars'), findsOneWidget);
+      },
+    );
 
     testWidgets('wires the tab views to General, FontFace and Chars pages', (tester) async {
       await pumpPage(tester);

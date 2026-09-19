@@ -35,6 +35,7 @@ void main() {
             filterOptions: filterOptions,
             onAdd: () {},
             onModelTap: (_) {},
+            onRefresh: () {},
           ),
         ),
       );
@@ -130,6 +131,7 @@ void main() {
             nameSelector: (m) => m.name,
             onAdd: () {},
             onModelTap: (_) {},
+            onRefresh: () {},
           ),
         ),
       );
@@ -199,6 +201,7 @@ void main() {
             nameSelector: (m) => m.name,
             onAdd: () {},
             onModelTap: (_) {},
+            onRefresh: () {},
           ),
         ),
       );
@@ -280,6 +283,7 @@ void main() {
                 nameSelector: (m) => m.name,
                 onAdd: () {},
                 onModelTap: (_) {},
+                onRefresh: () {},
               ),
             ),
           );
@@ -301,5 +305,51 @@ void main() {
         expect(visibleNameOrder(tester), ['Alpha', 'Charlie', 'Bravo']);
       },
     );
+  });
+
+  group('ModelPage refresh', () {
+    final models = [TestModel(internalId: 1, name: 'Model 1')];
+
+    Widget createWidget({VoidCallback? onRefresh, bool isRefreshing = false}) {
+      return MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: ModelPage<TestModel>(
+            models: models,
+            mapToDataModelItem: (m) => Text(m.name),
+            mapToDeleteDialog: (m) => [TextSpan(text: m.name)],
+            mapToDeleteSuccessfully: (_) => true,
+            matchesSearch: (m, q) =>
+                m.name.toLowerCase().contains(q.toLowerCase()),
+            matchesFilter: (_, _) => true,
+            nameSelector: (m) => m.name,
+            onAdd: () {},
+            onModelTap: (_) {},
+            onRefresh: onRefresh ?? () {},
+            isRefreshing: isRefreshing,
+          ),
+        ),
+      );
+    }
+
+    testWidgets('forwards a tap on the refresh button to onRefresh', (
+      tester,
+    ) async {
+      var tapped = false;
+      await tester.pumpWidget(createWidget(onRefresh: () => tapped = true));
+
+      await tester.tap(find.byIcon(Icons.refresh));
+      await tester.pump();
+
+      expect(tapped, isTrue);
+    });
+
+    testWidgets('forwards isRefreshing to the CommandBar', (tester) async {
+      await tester.pumpWidget(createWidget(isRefreshing: true));
+
+      expect(find.byIcon(Icons.refresh), findsNothing);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    });
   });
 }

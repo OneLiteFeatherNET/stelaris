@@ -48,18 +48,24 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('shows the back arrow and the two tabs on one line', (tester) async {
-      await pumpPage(tester);
+    testWidgets(
+      'shows the back arrow with the sound event name above the tabs',
+      (tester) async {
+        await pumpPage(tester);
 
-      expect(find.byType(ModelDetailBackBar), findsOneWidget);
-      final row = tester.widget<Row>(
-        find.ancestor(of: find.byType(TabBar), matching: find.byType(Row)).first,
-      );
-      expect(row.children.any((w) => w is ModelDetailBackBar), isTrue);
+        expect(find.byType(ModelDetailBackBar), findsOneWidget);
+        expect(find.text('Ding'), findsOneWidget);
 
-      expect(find.text('General'), findsOneWidget);
-      expect(find.text('Entries'), findsOneWidget);
-    });
+        final backBarPosition = tester.getTopLeft(
+          find.byType(ModelDetailBackBar),
+        );
+        final tabBarPosition = tester.getTopLeft(find.byType(TabBar));
+        expect(backBarPosition.dy, lessThan(tabBarPosition.dy));
+
+        expect(find.text('General'), findsOneWidget);
+        expect(find.text('Entries'), findsOneWidget);
+      },
+    );
 
     testWidgets('wires the tab views to General and Entries pages', (tester) async {
       await pumpPage(tester);

@@ -42,6 +42,47 @@ void main() {
     );
   });
 
+  group('RefreshAttributeAction', () {
+    test(
+      'always refetches page 1 and replaces the list, even when more '
+      'pages were already loaded',
+      () async {
+        final staleItems = List.generate(
+          4,
+          (i) => AttributeModel(uiName: 'stale-$i', id: 'stale-$i'),
+        );
+        final store = Store<AppState>(
+          initialState: const AppState().copyWith(
+            attributes: PaginatedResult<AttributeModel>(
+              items: staleItems,
+              totalItems: 4,
+              totalPages: 2,
+              currentPage: 2,
+              pageSize: 2,
+            ),
+          ),
+        );
+
+        const fresh = AttributeModel(uiName: 'fresh-0', id: 'fresh-0');
+        (ApiService().attributeApi as BaseApi<AttributeModel>)
+            .apiClient
+            .dio
+            .httpClientAdapter = FakeHttpClientAdapter.json({
+          'items': [fresh.toJson()],
+          'totalItems': 1,
+          'totalPages': 1,
+          'currentPage': 1,
+          'pageSize': 2,
+        });
+
+        await store.dispatchAndWait(RefreshAttributeAction());
+
+        expect(store.state.attributes.items.map((e) => e.id), ['fresh-0']);
+        expect(store.state.attributes.currentPage, 1);
+      },
+    );
+  });
+
   group('AttributeAddAction', () {
     test('increments totalItems by one', () async {
       final loadedPage = List.generate(

@@ -16,6 +16,8 @@ void main() {
       List<FilterOption> filterOptions = const [filterA, filterB],
       ValueChanged<Set<FilterOption>>? onFiltersChanged,
       SortChanged? onSortChanged,
+      VoidCallback? onRefresh,
+      bool isRefreshing = false,
     }) {
       return MaterialApp(
         // Regression guard: CommandBar must resolve TextField/Material from
@@ -32,6 +34,8 @@ void main() {
             filterOptions: filterOptions,
             onFiltersChanged: onFiltersChanged ?? (_) {},
             onSortChanged: onSortChanged ?? (_, _) {},
+            onRefresh: onRefresh ?? () {},
+            isRefreshing: isRefreshing,
           ),
         ),
       );
@@ -46,6 +50,41 @@ void main() {
 
       expect(tapped, isTrue);
     });
+
+    testWidgets('tapping refresh triggers onRefresh callback', (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(createWidget(onRefresh: () => tapped = true));
+
+      await tester.tap(find.byIcon(Icons.refresh));
+      await tester.pump();
+
+      expect(tapped, isTrue);
+    });
+
+    testWidgets(
+      'shows a progress indicator instead of the refresh icon while refreshing',
+      (tester) async {
+        await tester.pumpWidget(createWidget(isRefreshing: true));
+
+        expect(find.byIcon(Icons.refresh), findsNothing);
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'places the refresh button outside the search field, not among its '
+      'trailing icons',
+      (tester) async {
+        await tester.pumpWidget(createWidget());
+
+        final refreshButton = find.byIcon(Icons.refresh);
+        expect(refreshButton, findsOneWidget);
+        expect(
+          find.descendant(of: find.byType(SearchBar), matching: refreshButton),
+          findsNothing,
+        );
+      },
+    );
 
     testWidgets(
       'entering text into the persistent search field reports the query',

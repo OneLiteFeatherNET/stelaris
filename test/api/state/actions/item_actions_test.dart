@@ -42,6 +42,47 @@ void main() {
     );
   });
 
+  group('RefreshItemAction', () {
+    test(
+      'always refetches page 1 and replaces the list, even when more '
+      'pages were already loaded',
+      () async {
+        final staleItems = List.generate(
+          4,
+          (i) => ItemModel(uiName: 'stale-$i', id: 'stale-$i'),
+        );
+        final store = Store<AppState>(
+          initialState: const AppState().copyWith(
+            items: PaginatedResult<ItemModel>(
+              items: staleItems,
+              totalItems: 4,
+              totalPages: 2,
+              currentPage: 2,
+              pageSize: 2,
+            ),
+          ),
+        );
+
+        const fresh = ItemModel(uiName: 'fresh-0', id: 'fresh-0');
+        (ApiService().itemApi as BaseApi<ItemModel>)
+            .apiClient
+            .dio
+            .httpClientAdapter = FakeHttpClientAdapter.json({
+          'items': [fresh.toJson()],
+          'totalItems': 1,
+          'totalPages': 1,
+          'currentPage': 1,
+          'pageSize': 2,
+        });
+
+        await store.dispatchAndWait(RefreshItemAction());
+
+        expect(store.state.items.items.map((e) => e.id), ['fresh-0']);
+        expect(store.state.items.currentPage, 1);
+      },
+    );
+  });
+
   group('ItemAddAction', () {
     test(
       'increments totalItems by one instead of falling back to the '

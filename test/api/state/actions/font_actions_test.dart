@@ -38,6 +38,45 @@ void main() {
     );
   });
 
+  group('RefreshFontAction', () {
+    test(
+      'always refetches page 1 and replaces the list, even when more '
+      'pages were already loaded',
+      () async {
+        final staleItems = List.generate(
+          4,
+          (i) => FontModel(uiName: 'stale-$i', id: 'stale-$i'),
+        );
+        final store = Store<AppState>(
+          initialState: const AppState().copyWith(
+            fonts: PaginatedResult<FontModel>(
+              items: staleItems,
+              totalItems: 4,
+              totalPages: 2,
+              currentPage: 2,
+              pageSize: 2,
+            ),
+          ),
+        );
+
+        const fresh = FontModel(uiName: 'fresh-0', id: 'fresh-0');
+        ApiService().fontApi.apiClient.dio.httpClientAdapter =
+            FakeHttpClientAdapter.json({
+          'items': [fresh.toJson()],
+          'totalItems': 1,
+          'totalPages': 1,
+          'currentPage': 1,
+          'pageSize': 2,
+        });
+
+        await store.dispatchAndWait(RefreshFontAction());
+
+        expect(store.state.fonts.items.map((e) => e.id), ['fresh-0']);
+        expect(store.state.fonts.currentPage, 1);
+      },
+    );
+  });
+
   group('FontAddAction', () {
     test(
       'increments totalItems by one instead of falling back to the '
