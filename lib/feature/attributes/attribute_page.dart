@@ -64,6 +64,7 @@ class AttributePage extends StatelessWidget {
             context: context,
             builder: (_) => AttributeEditDialog(model: model),
           ),
+          onRefresh: () => context.dispatch(RefreshAttributeAction()),
           hasMore: vm.hasNextPage,
           isLoadingMore: vm.isLoadingMore,
           onLoadMore: vm.hasNextPage && !vm.isLoadingMore

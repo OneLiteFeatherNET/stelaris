@@ -3,15 +3,17 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
-import 'package:stelaris/feature/model/model_detail_back_bar.dart';
+import 'package:stelaris/feature/model/model_detail_shell.dart';
 import 'package:stelaris/feature/sound/sound_file_entries.dart';
 import 'package:stelaris/feature/sound/sound_general_page.dart';
 
 /// The detail view reached by tapping a sound event card in [SoundPage].
 ///
-/// The back arrow and the tab bar (General/Entries) share a single row,
-/// followed by the unchanged [SoundGeneralPage]/[SoundFileEntryPage] tab
-/// content, which read the selected sound event from Redux themselves.
+/// Shows the shared [ModelDetailShell] back row, with a `TabBar`/
+/// `TabBarView` (General/Entries) below it as the body. Each tab renders
+/// one of the existing, unchanged [SoundGeneralPage]/[SoundFileEntryPage]
+/// widgets, which already read the selected sound event from Redux
+/// themselves.
 class SoundDetailPage extends StatelessWidget {
   const SoundDetailPage({super.key});
 
@@ -22,45 +24,44 @@ class SoundDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, _SoundDetailCleanupView>(
-      vm: () => _SoundDetailCleanupFactory(),
+    return StoreConnector<AppState, _SoundDetailView>(
+      vm: () => _SoundDetailFactory(),
       onDispose: (store) =>
           store.dispatch(RemoveSelectedSoundEvent(), notify: false),
-      builder: (context, vm) => DefaultTabController(
-        length: _tabs.length,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 16, 0),
-              child: Row(
-                children: [
-                  ModelDetailBackBar(parentRoute: NavigationEntry.sound.route),
-                  const Expanded(child: TabBar(tabs: _tabs)),
-                ],
+      builder: (context, vm) => ModelDetailShell(
+        parentRoute: NavigationEntry.sound.route,
+        title: vm.title,
+        body: DefaultTabController(
+          length: _tabs.length,
+          child: const Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TabBar(tabs: _tabs),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    SoundGeneralPage(),
+                    SoundFileEntryPage(),
+                  ],
+                ),
               ),
-            ),
-            const Expanded(
-              child: TabBarView(
-                children: [
-                  SoundGeneralPage(),
-                  SoundFileEntryPage(),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _SoundDetailCleanupView extends Vm {
-  _SoundDetailCleanupView() : super(equals: const []);
+class _SoundDetailView extends Vm {
+  _SoundDetailView({required this.title}) : super(equals: [title]);
+
+  final String? title;
 }
 
-class _SoundDetailCleanupFactory
-    extends VmFactory<AppState, SoundDetailPage, _SoundDetailCleanupView> {
+class _SoundDetailFactory
+    extends VmFactory<AppState, SoundDetailPage, _SoundDetailView> {
   @override
-  _SoundDetailCleanupView fromStore() => _SoundDetailCleanupView();
+  _SoundDetailView fromStore() =>
+      _SoundDetailView(title: state.selectedSoundEvent?.uiName);
 }

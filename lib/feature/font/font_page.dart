@@ -45,6 +45,7 @@ class FontPage extends StatelessWidget {
             context.dispatch(SelectFontAction(model));
             context.go('${NavigationEntry.font.route}/detail');
           },
+          onRefresh: () => context.dispatch(RefreshFontAction()),
           hasMore: vm.hasNextPage,
           isLoadingMore: vm.isLoadingMore,
           onLoadMore: vm.hasNextPage && !vm.isLoadingMore

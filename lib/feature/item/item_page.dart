@@ -45,6 +45,7 @@ class ItemPage extends StatelessWidget {
             context.dispatch(SelectedItemAction(model));
             context.go('${NavigationEntry.items.route}/detail');
           },
+          onRefresh: () => context.dispatch(RefreshItemAction()),
           hasMore: vm.hasNextPage,
           isLoadingMore: vm.isLoadingMore,
           onLoadMore: vm.hasNextPage && !vm.isLoadingMore

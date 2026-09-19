@@ -7,14 +7,15 @@ import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/general/item_general_page.dart';
 import 'package:stelaris/feature/item/lore/lore_page.dart';
 import 'package:stelaris/feature/item/meta/item_meta_page.dart';
-import 'package:stelaris/feature/model/model_detail_back_bar.dart';
+import 'package:stelaris/feature/model/model_detail_shell.dart';
 
 /// The detail view reached by tapping an item card in [ItemPage].
 ///
-/// The back arrow and the tab bar (General/Meta/Enchantments/Lore) share a
-/// single row, followed by the unchanged [ItemGeneralPage]/[ItemMetaPage]/
-/// [ItemEnchantmentPage]/[LorePage] tab content, which read the selected
-/// item from Redux themselves.
+/// Shows the shared [ModelDetailShell] back row, with a `TabBar`/
+/// `TabBarView` (General/Meta/Enchantments/Lore) below it as the body. Each
+/// tab renders one of the existing, unchanged [ItemGeneralPage]/
+/// [ItemMetaPage]/[ItemEnchantmentPage]/[LorePage] widgets, which already
+/// read the selected item from Redux themselves.
 class ItemDetailPage extends StatelessWidget {
   const ItemDetailPage({super.key});
 
@@ -27,47 +28,44 @@ class ItemDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, _ItemDetailCleanupView>(
-      vm: () => _ItemDetailCleanupFactory(),
+    return StoreConnector<AppState, _ItemDetailView>(
+      vm: () => _ItemDetailFactory(),
       onDispose: (store) =>
           store.dispatch(RemoveSelectItemAction(), notify: false),
-      builder: (context, vm) => DefaultTabController(
-        length: _tabs.length,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 16, 0),
-              child: Row(
-                children: [
-                  ModelDetailBackBar(parentRoute: NavigationEntry.items.route),
-                  const Expanded(child: TabBar(tabs: _tabs)),
-                ],
+      builder: (context, vm) => ModelDetailShell(
+        parentRoute: NavigationEntry.items.route,
+        title: vm.title,
+        body: DefaultTabController(
+          length: _tabs.length,
+          child: const Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TabBar(tabs: _tabs),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    ItemGeneralPage(),
+                    ItemMetaPage(),
+                    ItemEnchantmentPage(),
+                    LorePage(),
+                  ],
+                ),
               ),
-            ),
-            const Expanded(
-              child: TabBarView(
-                children: [
-                  ItemGeneralPage(),
-                  ItemMetaPage(),
-                  ItemEnchantmentPage(),
-                  LorePage(),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _ItemDetailCleanupView extends Vm {
-  _ItemDetailCleanupView() : super(equals: const []);
+class _ItemDetailView extends Vm {
+  _ItemDetailView({required this.title}) : super(equals: [title]);
+
+  final String? title;
 }
 
-class _ItemDetailCleanupFactory
-    extends VmFactory<AppState, ItemDetailPage, _ItemDetailCleanupView> {
+class _ItemDetailFactory extends VmFactory<AppState, ItemDetailPage, _ItemDetailView> {
   @override
-  _ItemDetailCleanupView fromStore() => _ItemDetailCleanupView();
+  _ItemDetailView fromStore() => _ItemDetailView(title: state.selectedItem?.uiName);
 }

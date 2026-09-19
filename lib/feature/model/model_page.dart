@@ -79,6 +79,13 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
   final List<FilterOption> filterOptions;
   final ModelNameSelector<E> nameSelector;
 
+  /// Manually re-fetches page 1 from the server and replaces the list,
+  /// regardless of how many pages were already loaded via [onLoadMore] —
+  /// the grid has no pull-to-refresh gesture of its own, so this is
+  /// surfaced as a button in the [CommandBar] instead.
+  final VoidCallback onRefresh;
+  final bool isRefreshing;
+
   /// Pagination hooks
   final VoidCallback? onLoadMore;
   final bool hasMore;
@@ -94,6 +101,8 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
     required this.matchesSearch,
     required this.matchesFilter,
     required this.nameSelector,
+    required this.onRefresh,
+    this.isRefreshing = false,
     this.filterOptions = const [],
     this.onLoadMore,
     this.hasMore = false,
@@ -212,6 +221,8 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
               filterOptions: widget.filterOptions,
               onFiltersChanged: _handleFiltersChanged,
               onSortChanged: _handleSortChanged,
+              onRefresh: widget.onRefresh,
+              isRefreshing: widget.isRefreshing,
             ),
           ),
         ),

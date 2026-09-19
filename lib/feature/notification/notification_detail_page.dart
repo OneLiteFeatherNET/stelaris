@@ -2,13 +2,13 @@ import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
-import 'package:stelaris/feature/model/model_detail_back_bar.dart';
+import 'package:stelaris/feature/model/model_detail_shell.dart';
 import 'package:stelaris/feature/notification/notification_page_general.dart';
 
 /// The detail view reached by tapping a notification card in [NotificationPage].
 ///
-/// Shows a [ModelDetailBackBar] to return to the notification grid, and the
-/// existing [NotificationGeneralPage] form below it unchanged.
+/// Shows the shared [ModelDetailShell] back row, with the existing
+/// [NotificationGeneralPage] form below it unchanged.
 class NotificationDetailPage extends StatelessWidget {
   const NotificationDetailPage({super.key});
 
@@ -16,18 +16,10 @@ class NotificationDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _NotificationTitleView>(
       vm: () => _NotificationTitleFactory(),
-      builder: (context, vm) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-            child: ModelDetailBackBar(
-              parentRoute: NavigationEntry.notifications.route,
-              title: vm.title,
-            ),
-          ),
-          const NotificationGeneralPage(),
-        ],
+      builder: (context, vm) => ModelDetailShell(
+        parentRoute: NavigationEntry.notifications.route,
+        title: vm.title,
+        body: const NotificationGeneralPage(),
       ),
     );
   }

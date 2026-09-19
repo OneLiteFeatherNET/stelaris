@@ -37,6 +37,8 @@ class CommandBar extends StatefulWidget {
   final List<FilterOption> filterOptions;
   final ValueChanged<Set<FilterOption>> onFiltersChanged;
   final SortChanged onSortChanged;
+  final VoidCallback onRefresh;
+  final bool isRefreshing;
 
   const CommandBar({
     required this.onAdd,
@@ -44,6 +46,8 @@ class CommandBar extends StatefulWidget {
     required this.filterOptions,
     required this.onFiltersChanged,
     required this.onSortChanged,
+    required this.onRefresh,
+    this.isRefreshing = false,
     super.key,
   });
 
@@ -89,6 +93,21 @@ class _CommandBarState extends State<CommandBar> {
 
     return Row(
       children: [
+        SizedBox(
+          width: _barHeight,
+          height: _barHeight,
+          child: widget.isRefreshing
+              ? const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : IconButton(
+                  icon: const Icon(Icons.refresh),
+                  tooltip: l10n.command_bar_refresh_tooltip,
+                  onPressed: widget.onRefresh,
+                ),
+        ),
+        const SizedBox(width: 8),
         Expanded(
           child: SearchBar(
             constraints: const BoxConstraints(

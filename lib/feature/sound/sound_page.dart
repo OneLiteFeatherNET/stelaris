@@ -45,6 +45,7 @@ class SoundPage extends StatelessWidget {
             context.dispatch(SelectSoundAction(model));
             context.go('${NavigationEntry.sound.route}/detail');
           },
+          onRefresh: () => context.dispatch(RefreshSoundAction()),
           hasMore: vm.hasNextPage,
           isLoadingMore: vm.isLoadingMore,
           onLoadMore: vm.hasNextPage && !vm.isLoadingMore

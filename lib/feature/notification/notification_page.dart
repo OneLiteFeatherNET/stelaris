@@ -46,6 +46,7 @@ class NotificationPage extends StatelessWidget {
             context.dispatch(SelectedNotificationAction(model));
             context.go('${NavigationEntry.notifications.route}/detail');
           },
+          onRefresh: () => context.dispatch(RefreshNotificationAction()),
           hasMore: vm.hasNextPage,
           isLoadingMore: vm.isLoadingMore,
           onLoadMore: vm.hasNextPage && !vm.isLoadingMore
