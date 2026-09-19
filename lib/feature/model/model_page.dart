@@ -281,15 +281,16 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
   }
 
   Widget _buildGridItem(BuildContext context, E model) {
-    return RepaintBoundary(
+    // No explicit RepaintBoundary here — SliverChildBuilderDelegate already
+    // wraps each built child in one (addRepaintBoundaries defaults to true),
+    // so adding another would just double the compositing layer per card.
+    return ModelGridCard<E>(
       key: model.id != null ? ValueKey(model.id) : ObjectKey(model),
-      child: ModelGridCard<E>(
-        mapToDeleteDialog: widget.mapToDeleteDialog,
-        mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
-        mapToDataModelItem: widget.mapToDataModelItem,
-        rawModel: model,
-        onTap: () => widget.onModelTap(model),
-      ),
+      mapToDeleteDialog: widget.mapToDeleteDialog,
+      mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
+      mapToDataModelItem: widget.mapToDataModelItem,
+      rawModel: model,
+      onTap: () => widget.onModelTap(model),
     );
   }
 
