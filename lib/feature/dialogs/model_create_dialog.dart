@@ -17,6 +17,7 @@ class ModelCreateDialog extends StatefulWidget {
   final void Function(String name, String key) onSubmit;
   final String? nameHint;
   final String? keyHint;
+  final double maxWidth;
 
   const ModelCreateDialog({
     required this.title,
@@ -24,6 +25,7 @@ class ModelCreateDialog extends StatefulWidget {
     required this.onSubmit,
     this.nameHint,
     this.keyHint,
+    this.maxWidth = 520,
     super.key,
   });
 
@@ -69,7 +71,7 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 520, maxHeight: 650),
+        constraints: BoxConstraints(maxWidth: widget.maxWidth, maxHeight: 650),
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(

@@ -1,13 +1,12 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/project/project_actions.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
 import 'package:stelaris_models/stelaris_models.dart';
-
-import 'project_form_dialog.dart';
 
 class CreateProjectDialog extends StatefulWidget {
   const CreateProjectDialog({super.key});
@@ -37,11 +36,13 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return ProjectFormDialog(
+    return FormDialog(
       title: context.l10n.dialog_project_create_title,
       actionIcon: Icons.add,
       actionLabel: context.l10n.dialog_project_create_button,
       onSubmit: _handleCreate,
+      maxWidth: 550,
+      maxHeight: 700,
       content: Form(
         key: _formKey,
         child: Column(

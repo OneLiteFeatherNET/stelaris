@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
-import 'package:stelaris/feature/base/button/cancel_button.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/api/enchantment.dart';
@@ -43,58 +43,50 @@ class _ItemEnchantmentUpdateDialogState
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      title: Text(
-        context.l10n.dialog_item_enchantment_level_edit,
-        textAlign: TextAlign.center,
-      ),
-      contentPadding: dialogPadding,
-      children: [
-        verticalSpacing25,
-        Text(context.l10n.label_level),
-        Form(
-          key: _key,
-          autovalidateMode: AutovalidateMode.always,
-          child: TextFormField(
-            controller: _controller,
-            autocorrect: false,
-            keyboardType: numberInput,
-            inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
-            validator: (value) => _validateInput(
-              value: value!,
-              maxLevel: widget.enchantment.maxLevel,
-            ),
+    return FormDialog(
+      title: context.l10n.dialog_item_enchantment_level_edit,
+      actionIcon: Icons.save_outlined,
+      actionLabel: context.l10n.button_save,
+      onCancel: () => context.pop(false),
+      onSubmit: _handleSave,
+      content: Form(
+        key: _key,
+        autovalidateMode: AutovalidateMode.always,
+        child: TextFormField(
+          autofocus: true,
+          controller: _controller,
+          autocorrect: false,
+          keyboardType: numberInput,
+          inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
+          decoration: InputDecoration(
+            labelText: context.l10n.label_level,
+            border: const OutlineInputBorder(),
+          ),
+          validator: (value) => _validateInput(
+            value: value!,
+            maxLevel: widget.enchantment.maxLevel,
           ),
         ),
-        verticalSpacing25,
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            CancelButton(callback: () => context.pop(false)),
-            TextButton(
-              onPressed: () {
-                final String content = _controller.text;
-                if (content.trim().isEmpty) {
-                  return;
-                }
-
-                if (content == widget.dto.level.toString()) {
-                  context.pop(false);
-                  return;
-                }
-
-                final ItemEnchantmentDto updatedDto = widget.dto.copyWith(
-                  level: int.parse(content),
-                );
-                context.dispatch(ItemEnchantmentUpdateAction(updatedDto));
-                context.pop(true);
-              },
-              child: Text(context.l10n.button_save),
-            ),
-          ],
-        ),
-      ],
+      ),
     );
+  }
+
+  void _handleSave() {
+    final String content = _controller.text;
+    if (content.trim().isEmpty) {
+      return;
+    }
+
+    if (content == widget.dto.level.toString()) {
+      context.pop(false);
+      return;
+    }
+
+    final ItemEnchantmentDto updatedDto = widget.dto.copyWith(
+      level: int.parse(content),
+    );
+    context.dispatch(ItemEnchantmentUpdateAction(updatedDto));
+    context.pop(true);
   }
 
   String? _validateInput({required String value, required int maxLevel}) {

@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/feature/base/button/cancel_button.dart';
-import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class DeleteDialog<E> extends StatelessWidget {
@@ -13,29 +13,65 @@ class DeleteDialog<E> extends StatelessWidget {
     super.key,
   });
 
-  final Text title;
+  final String title;
   final List<TextSpan> header;
   final E value;
   final MapToDeleteSuccessfully<E> successfully;
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      contentPadding: dialogPadding,
+    final theme = Theme.of(context);
+
+    return FormDialog(
       title: title,
-      content: RichText(text: TextSpan(children: header)),
-      actions: <Widget>[
-        const CancelButton(),
-        FilledButton(
-          autofocus: true,
-          child: Text(context.l10n.button_yes),
-          onPressed: () {
-            if (successfully(value)) {
-              Navigator.of(context).pop(true);
-            }
-          },
-        ),
-      ],
+      actionIcon: Icons.delete_outline,
+      actionLabel: context.l10n.tooltip_delete,
+      actionColor: theme.colorScheme.error,
+      maxWidth: 420,
+      onSubmit: () {
+        if (successfully(value)) {
+          Navigator.of(context).pop(true);
+        }
+      },
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RichText(text: TextSpan(children: header)),
+          verticalSpacing10,
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.errorContainer.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: theme.colorScheme.error.withValues(alpha: 0.4),
+              ),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.warning_amber_rounded,
+                  size: 18,
+                  color: theme.colorScheme.error,
+                ),
+                horizontalSpacing10,
+                Expanded(
+                  child: Text(
+                    context.l10n.delete_dialog_irreversible,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onErrorContainer,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
@@ -47,39 +48,26 @@ class _EntryUpdateDialogState extends State<EntryUpdateDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      contentPadding: dialogPadding,
-      title: Text(widget.title, textAlign: TextAlign.center),
-      children: [
-        Form(
-          key: widget.formKey,
-          child: TextFormField(
-            autofocus: true,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            controller: _controller,
-            inputFormatters: widget.formatters,
-            validator: widget.formFieldValidator,
-            decoration: InputDecoration(
-              hintText: widget.hintText,
-              suffixIcon: _getSuffixWidget(),
-            ),
+    return FormDialog(
+      title: widget.title,
+      actionIcon: Icons.check,
+      actionLabel: context.l10n.button_add,
+      onSubmit: _handleCreateClick,
+      content: Form(
+        key: widget.formKey,
+        child: TextFormField(
+          autofocus: true,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          controller: _controller,
+          inputFormatters: widget.formatters,
+          validator: widget.formFieldValidator,
+          decoration: InputDecoration(
+            hintText: widget.hintText,
+            border: const OutlineInputBorder(),
+            suffixIcon: _getSuffixWidget(),
           ),
         ),
-        verticalSpacing25,
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(context.l10n.button_cancel),
-            ),
-            FilledButton(
-              onPressed: () => _handleCreateClick(),
-              child: Text(context.l10n.button_add),
-            ),
-          ],
-        ),
-      ],
+      ),
     );
   }
 
