@@ -20,12 +20,34 @@ class RemoveSelectNotificationAction extends ReduxAction<AppState> {
   }
 }
 
+/// Always refetches page 1 and replaces the current list, regardless of
+/// how many pages were already loaded — used by the grid's manual refresh
+/// button, as opposed to [InitNotificationAction] which only ever loads the
+/// next page or the very first page.
+class RefreshNotificationAction extends ReduxAction<AppState> {
+  @override
+  Future<AppState?> reduce() async {
+    final PaginatedResult<NotificationModel> result = await ApiService()
+        .notificationApi
+        .getPage(
+          page: 1,
+          size: state.notifications.pageSize == 0
+              ? 10
+              : state.notifications.pageSize,
+          projectId: state.selectedProject?.id,
+        );
+    return state.copyWith(notifications: result);
+  }
+}
+
 class InitNotificationAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     // If we already have items and more pages, treat this as load-more.
     final hasExisting = state.notifications.items.isNotEmpty;
     final canLoadMore = state.notifications.hasNextPage;
+
+    if (hasExisting && !canLoadMore) return null;
 
     if (hasExisting && canLoadMore) {
       if (state.isLoadingMoreNotifications) return null;

@@ -30,6 +30,24 @@ class RemoveSelectAttributeAction extends ReduxAction<AppState> {
   }
 }
 
+/// Always refetches page 1 and replaces the current list, regardless of
+/// how many pages were already loaded — used by the grid's manual refresh
+/// button, as opposed to [InitAttributeAction] which only ever loads the
+/// next page or the very first page.
+class RefreshAttributeAction extends ReduxAction<AppState> {
+  @override
+  Future<AppState?> reduce() async {
+    final PaginatedResult<AttributeModel> result = await ApiService()
+        .attributeApi
+        .getPage(
+          page: 1,
+          size: state.attributes.pageSize == 0 ? 10 : state.attributes.pageSize,
+          projectId: state.selectedProject?.id,
+        );
+    return state.copyWith(attributes: result);
+  }
+}
+
 /// Initializes or loads more attributes from the API.
 ///
 /// This action handles both initial loading and pagination of attributes:
@@ -45,6 +63,8 @@ class InitAttributeAction extends ReduxAction<AppState> {
     // If we already have items and more pages, treat this as load-more.
     final hasExisting = state.attributes.items.isNotEmpty;
     final canLoadMore = state.attributes.hasNextPage;
+
+    if (hasExisting && !canLoadMore) return null;
 
     if (hasExisting && canLoadMore) {
       if (state.isLoadingAttributesMore) return null;

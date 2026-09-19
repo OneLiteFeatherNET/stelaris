@@ -9,6 +9,77 @@ import 'package:stelaris_models/stelaris_models.dart';
 import '../../../support/fake_http_client_adapter.dart';
 
 void main() {
+  group('InitNotificationAction', () {
+    test(
+      'does nothing when all pages are already loaded, instead of '
+      'resetting the list back to page 1 (regression)',
+      () async {
+        final loadedItems = List.generate(
+          4,
+          (i) => NotificationModel(uiName: 'existing-$i', id: '$i'),
+        );
+        final store = Store<AppState>(
+          initialState: const AppState().copyWith(
+            notifications: PaginatedResult<NotificationModel>(
+              items: loadedItems,
+              totalItems: 4,
+              totalPages: 2,
+              currentPage: 2,
+              pageSize: 2,
+            ),
+          ),
+        );
+        final before = store.state;
+
+        await store.dispatchAndWait(InitNotificationAction());
+
+        expect(identical(store.state, before), isTrue);
+        expect(store.state.notifications.items, loadedItems);
+      },
+    );
+  });
+
+  group('RefreshNotificationAction', () {
+    test(
+      'always refetches page 1 and replaces the list, even when more '
+      'pages were already loaded',
+      () async {
+        final staleItems = List.generate(
+          4,
+          (i) => NotificationModel(uiName: 'stale-$i', id: 'stale-$i'),
+        );
+        final store = Store<AppState>(
+          initialState: const AppState().copyWith(
+            notifications: PaginatedResult<NotificationModel>(
+              items: staleItems,
+              totalItems: 4,
+              totalPages: 2,
+              currentPage: 2,
+              pageSize: 2,
+            ),
+          ),
+        );
+
+        const fresh = NotificationModel(uiName: 'fresh-0', id: 'fresh-0');
+        (ApiService().notificationApi as BaseApi<NotificationModel>)
+            .apiClient
+            .dio
+            .httpClientAdapter = FakeHttpClientAdapter.json({
+          'items': [fresh.toJson()],
+          'totalItems': 1,
+          'totalPages': 1,
+          'currentPage': 1,
+          'pageSize': 2,
+        });
+
+        await store.dispatchAndWait(RefreshNotificationAction());
+
+        expect(store.state.notifications.items.map((e) => e.id), ['fresh-0']);
+        expect(store.state.notifications.currentPage, 1);
+      },
+    );
+  });
+
   group('NotificationAddAction', () {
     test('increments totalItems by one', () async {
       final loadedPage = List.generate(

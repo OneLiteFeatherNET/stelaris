@@ -11,7 +11,3 @@ typedef MapToDeleteSuccessfully<E> = bool Function(E value);
 /// ModeList functions
 typedef MapToDataModelItem<E extends DataModel> = Widget Function(E value);
 typedef MapToDeleteDialog<E extends DataModel> = List<TextSpan> Function(E value);
-typedef MapToTabPages = List<Tab> Function(List<Tab> pages);
-
-/// ModelContainerList functions
-typedef TabMapFunction<E extends DataModel> = Widget Function(String page, E? dataModel);

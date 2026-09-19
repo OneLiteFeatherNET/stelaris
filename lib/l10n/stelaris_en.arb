@@ -29,6 +29,7 @@
   "dialog_delete_confirm": "Confirm deletion",
 
   "dialog_attribute_create": "Create attribute",
+  "dialog_attribute_edit_title": "Edit attribute",
 
   "dialog_item_create": "Create new item",
   "dialog_item_group_change_title": "Group change",
@@ -175,5 +176,43 @@
   "dialog_model_name_label": "Name",
   "dialog_model_name_hint": "e.g. My Entry",
   "dialog_model_preview_label": "NamespacedKey Preview",
-  "dialog_model_create_button": "Create"
+  "dialog_model_create_button": "Create",
+
+  "command_bar_search_hint": "Search...",
+  "command_bar_filter_sort_tooltip": "Filter & Sort",
+  "command_bar_refresh_tooltip": "Refresh",
+  "sort_name_ascending": "Name (A–Z)",
+  "sort_name_descending": "Name (Z–A)",
+  "sort_created_newest_first": "Created (newest first)",
+  "sort_created_oldest_first": "Created (oldest first)",
+  "filter_attribute_has_default_value": "Has default value",
+  "filter_attribute_has_maximum_value": "Has maximum value",
+
+  "model_card_created_prefix": "Created",
+  "model_card_edited_prefix": "Edited",
+  "relative_time_just_now": "Just now",
+  "relative_time_minutes_ago": "{count} min ago",
+  "@relative_time_minutes_ago": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "relative_time_hours_ago": "{count} h ago",
+  "@relative_time_hours_ago": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "relative_time_days_ago": "{count} d ago",
+  "@relative_time_days_ago": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

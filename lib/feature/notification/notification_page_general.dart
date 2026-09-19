@@ -56,145 +56,144 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
       onDispose: (store) =>
           store.dispatch(RemoveSelectNotificationAction(), notify: false),
       builder: (context, vm) {
-        return Expanded(
-          child: FocusScope(
-            child: FocusTraversalGroup(
-              policy: OrderedTraversalPolicy(),
-              child: Form(
-                key: _key,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 300),
-                    opacity: 1,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        return Scrollbar(
-                          controller: _scrollController,
-                          thumbVisibility: true,
-                          trackVisibility: true,
-                          child: SingleChildScrollView(
+        return FocusScope(
+          child: FocusTraversalGroup(
+            policy: OrderedTraversalPolicy(),
+            child: Form(
+              key: _key,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 300),
+                      opacity: 1,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return Scrollbar(
                             controller: _scrollController,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Wrap(
-                                spacing: 16,
-                                runSpacing: 16,
-                                children: [
-                                  TextInputCard<String>(
-                                    display: context.l10n.card_material,
-                                    currentValue:
-                                        vm.selected.material ?? emptyString,
-                                    hintText: defaultMaterial,
-                                    valueUpdate: (value) {
-                                      if (value != vm.selected.material) {
-                                        final oldModel = vm.selected;
-                                        final newEntry = oldModel.copyWith(
-                                          material: value,
-                                        );
-                                        context.dispatch(
-                                          UpdateNotificationAction(newEntry),
-                                        );
-                                      }
-                                    },
-                                    formValidator: (value) {
-                                      if (value == null) return null;
-                                      if (!minecraftPattern.hasMatch(value)) {
-                                        return context
-                                            .l10n
-                                            .input_validation_material;
-                                      }
-                                      return null;
-                                    },
-                                    maxLength: 30,
-                                    focusOrder: const NumericFocusOrder(1),
-                                  ),
-                                  TextInputCard<String>(
-                                    display: context.l10n.card_title,
-                                    currentValue:
-                                        vm.selected.title ?? emptyString,
-                                    valueUpdate: (value) {
-                                      if (value != vm.selected.title) {
-                                        final oldModel = vm.selected;
-                                        final newEntry = oldModel.copyWith(
-                                          title: value,
-                                        );
-                                        context.dispatch(
-                                          UpdateNotificationAction(newEntry),
-                                        );
-                                      }
-                                    },
-                                    formatter: [
-                                      FilteringTextInputFormatter.allow(
-                                        stringWithSpacePattern,
-                                      ),
-                                    ],
-                                    focusOrder: const NumericFocusOrder(2),
-                                  ),
-                                  TextInputCard<String>(
-                                    display: context.l10n.card_description,
-                                    currentValue:
-                                        vm.selected.comment ?? emptyString,
-                                    formatter: [
-                                      FilteringTextInputFormatter.allow(
-                                        stringWithSpacePattern,
-                                      ),
-                                    ],
-                                    valueUpdate: (value) {
-                                      if (value != vm.selected.comment) {
-                                        final oldModel = vm.selected;
-                                        final newEntry = oldModel.copyWith(
-                                          comment: value,
-                                        );
-                                        context.dispatch(
-                                          UpdateNotificationAction(newEntry),
-                                        );
-                                      }
-                                    },
-                                    focusOrder: const NumericFocusOrder(3),
-                                  ),
-                                  DropdownCard<FrameType, NotificationModel>(
-                                    display: context.l10n.card_frame_type,
-                                    currentValue: vm.selected,
-                                    items: items,
-                                    valueUpdate: (value) {
-                                      if (value != vm.selected.frameType) {
-                                        final oldModel = vm.selected;
-                                        final newEntry = oldModel.copyWith(
-                                          frameType: value,
-                                        );
-                                        context.dispatch(
-                                          UpdateNotificationAction(newEntry),
-                                        );
-                                      }
-                                    },
-                                    defaultValue: (value) => value.frameType,
-                                    matchTextInputHeight: true,
-                                    focusOrder: const NumericFocusOrder(4),
-                                  ),
-                                ],
+                            thumbVisibility: true,
+                            trackVisibility: true,
+                            child: SingleChildScrollView(
+                              controller: _scrollController,
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Wrap(
+                                  spacing: 16,
+                                  runSpacing: 16,
+                                  children: [
+                                    TextInputCard<String>(
+                                      display: context.l10n.card_material,
+                                      currentValue:
+                                          vm.selected.material ?? emptyString,
+                                      hintText: defaultMaterial,
+                                      valueUpdate: (value) {
+                                        if (value != vm.selected.material) {
+                                          final oldModel = vm.selected;
+                                          final newEntry = oldModel.copyWith(
+                                            material: value,
+                                          );
+                                          context.dispatch(
+                                            UpdateNotificationAction(newEntry),
+                                          );
+                                        }
+                                      },
+                                      formValidator: (value) {
+                                        if (value == null) return null;
+                                        if (!minecraftPattern.hasMatch(value)) {
+                                          return context
+                                              .l10n
+                                              .input_validation_material;
+                                        }
+                                        return null;
+                                      },
+                                      maxLength: 30,
+                                      focusOrder: const NumericFocusOrder(1),
+                                    ),
+                                    TextInputCard<String>(
+                                      display: context.l10n.card_title,
+                                      currentValue:
+                                          vm.selected.title ?? emptyString,
+                                      valueUpdate: (value) {
+                                        if (value != vm.selected.title) {
+                                          final oldModel = vm.selected;
+                                          final newEntry = oldModel.copyWith(
+                                            title: value,
+                                          );
+                                          context.dispatch(
+                                            UpdateNotificationAction(newEntry),
+                                          );
+                                        }
+                                      },
+                                      formatter: [
+                                        FilteringTextInputFormatter.allow(
+                                          stringWithSpacePattern,
+                                        ),
+                                      ],
+                                      focusOrder: const NumericFocusOrder(2),
+                                    ),
+                                    TextInputCard<String>(
+                                      display: context.l10n.card_description,
+                                      currentValue:
+                                          vm.selected.comment ?? emptyString,
+                                      formatter: [
+                                        FilteringTextInputFormatter.allow(
+                                          stringWithSpacePattern,
+                                        ),
+                                      ],
+                                      valueUpdate: (value) {
+                                        if (value != vm.selected.comment) {
+                                          final oldModel = vm.selected;
+                                          final newEntry = oldModel.copyWith(
+                                            comment: value,
+                                          );
+                                          context.dispatch(
+                                            UpdateNotificationAction(newEntry),
+                                          );
+                                        }
+                                      },
+                                      focusOrder: const NumericFocusOrder(3),
+                                    ),
+                                    DropdownCard<FrameType, NotificationModel>(
+                                      display: context.l10n.card_frame_type,
+                                      currentValue: vm.selected,
+                                      items: items,
+                                      valueUpdate: (value) {
+                                        if (value != vm.selected.frameType) {
+                                          final oldModel = vm.selected;
+                                          final newEntry = oldModel.copyWith(
+                                            frameType: value,
+                                          );
+                                          context.dispatch(
+                                            UpdateNotificationAction(newEntry),
+                                          );
+                                        }
+                                      },
+                                      defaultValue: (value) => value.frameType,
+                                      matchTextInputHeight: true,
+                                      focusOrder: const NumericFocusOrder(4),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-                PositionedSaveButton.standard(
-                  formKey: _key,
-                  successMessage: context.l10n.feedback_save_success,
-                  callback: () => context.dispatchAndWait(NotificationDatabaseUpdate()),
-                ),
-              ],
+                  PositionedSaveButton.standard(
+                    formKey: _key,
+                    successMessage: context.l10n.feedback_save_success,
+                    callback: () =>
+                        context.dispatchAndWait(NotificationDatabaseUpdate()),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
-  },
-);
   }
 }

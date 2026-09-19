@@ -31,7 +31,7 @@ dependencies:
   stelaris_models:
     git:
       url: https://github.com/OneLiteFeatherNET/stelaris-model.git
-      ref: main
+      ref: feat/extend-data-model # TODO: point back to main once merged
   material_ui: ^1.3.0
 
 dev_dependencies:

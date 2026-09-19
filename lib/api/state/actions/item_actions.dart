@@ -35,12 +35,31 @@ class UpdateItemAction extends ReduxAction<AppState> {
   }
 }
 
+/// Always refetches page 1 and replaces the current list, regardless of
+/// how many pages were already loaded — used by the grid's manual refresh
+/// button, as opposed to [InitItemAction] which only ever loads the next
+/// page or the very first page.
+class RefreshItemAction extends ReduxAction<AppState> {
+  @override
+  Future<AppState?> reduce() async {
+    final PaginatedResult<ItemModel> result = await ApiService().itemApi
+        .getPage(
+          page: 1,
+          size: state.items.pageSize == 0 ? 10 : state.items.pageSize,
+          projectId: state.selectedProject?.id,
+        );
+    return state.copyWith(items: result);
+  }
+}
+
 class InitItemAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     // If we already have items and more pages, treat this as load-more.
     final hasExisting = state.items.items.isNotEmpty;
     final canLoadMore = state.items.hasNextPage;
+
+    if (hasExisting && !canLoadMore) return null;
 
     if (hasExisting && canLoadMore) {
       if (state.isLoadingMoreItems) return null;
