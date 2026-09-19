@@ -7,7 +7,7 @@ version: 1.5.0 # x-release-please-version
 
 environment:
   sdk: ">=3.13.3 <4.0.0"
-  flutter: "^3.47.4"
+  flutter: "^3.47.5"
 
 dependencies:
   flutter:
@@ -39,7 +39,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
   build_runner: ^2.16.1
-  freezed: ^4.0.1
+  freezed: ^4.0.2
   json_serializable: ^6.14.1
 
 flutter:
