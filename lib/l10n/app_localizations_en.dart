@@ -95,6 +95,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_attribute_create => 'Create attribute';
 
   @override
+  String get dialog_attribute_edit_title => 'Edit attribute';
+
+  @override
   String get dialog_item_create => 'Create new item';
 
   @override

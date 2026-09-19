@@ -29,6 +29,7 @@
   "dialog_delete_confirm": "Confirm deletion",
 
   "dialog_attribute_create": "Create attribute",
+  "dialog_attribute_edit_title": "Edit attribute",
 
   "dialog_item_create": "Create new item",
   "dialog_item_group_change_title": "Group change",

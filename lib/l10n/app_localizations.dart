@@ -256,6 +256,12 @@ abstract class AppLocalizations {
   /// **'Create attribute'**
   String get dialog_attribute_create;
 
+  /// No description provided for @dialog_attribute_edit_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit attribute'**
+  String get dialog_attribute_edit_title;
+
   /// No description provided for @dialog_item_create.
   ///
   /// In en, this message translates to:
