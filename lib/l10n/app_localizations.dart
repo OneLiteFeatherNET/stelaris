@@ -211,14 +211,38 @@ abstract class AppLocalizations {
   /// No description provided for @delete_dialog_first_line.
   ///
   /// In en, this message translates to:
-  /// **'Do you really want to delete '**
+  /// **'Are you sure you want to delete '**
   String get delete_dialog_first_line;
 
   /// No description provided for @delete_dialog_entry.
   ///
   /// In en, this message translates to:
-  /// **' entry'**
+  /// **'?'**
   String get delete_dialog_entry;
+
+  /// No description provided for @delete_dialog_irreversible.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get delete_dialog_irreversible;
+
+  /// No description provided for @delete_dialog_related_font.
+  ///
+  /// In en, this message translates to:
+  /// **'All characters that belong to this font will also be deleted.'**
+  String get delete_dialog_related_font;
+
+  /// No description provided for @delete_dialog_related_item.
+  ///
+  /// In en, this message translates to:
+  /// **'All lore entries and enchantments that belong to this item will also be deleted.'**
+  String get delete_dialog_related_item;
+
+  /// No description provided for @delete_dialog_related_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'All sound files that belong to this event will also be deleted.'**
+  String get delete_dialog_related_sound;
 
   /// No description provided for @dialog_delete_confirm.
   ///

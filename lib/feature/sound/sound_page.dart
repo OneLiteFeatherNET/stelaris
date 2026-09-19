@@ -28,7 +28,11 @@ class SoundPage extends StatelessWidget {
           mapToDataModelItem: (value) => TextWidget(displayName: value.uiName),
           openFunction: () => _openCreationDialog(context, vm.projectKey),
           selectedItem: vm.selected,
-          mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
+          mapToDeleteDialog: (value) => createDeleteText(
+            value.uiName,
+            context,
+            relatedDataText: context.l10n.delete_dialog_related_sound,
+          ),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(SoundRemoveAction(value));
             return true;
@@ -56,6 +60,7 @@ class SoundPage extends StatelessWidget {
         return ModelCreateDialog(
           title: context.l10n.dialog_sound_create,
           projectNamespace: projectKey,
+          maxWidth: 440,
           onSubmit: (name, key) {
             final model = SoundEventModel(uiName: name, key: key);
             context.dispatch(SoundAddAction(model));

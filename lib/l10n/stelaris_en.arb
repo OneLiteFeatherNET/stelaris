@@ -20,8 +20,12 @@
   "text_version_type": "Version type",
   "text_wiki": "When you need help, click on the copy button the get the wiki link",
 
-  "delete_dialog_first_line": "Do you really want to delete ",
-  "delete_dialog_entry": " entry",
+  "delete_dialog_first_line": "Are you sure you want to delete ",
+  "delete_dialog_entry": "?",
+  "delete_dialog_irreversible": "This action cannot be undone.",
+  "delete_dialog_related_font": "All characters that belong to this font will also be deleted.",
+  "delete_dialog_related_item": "All lore entries and enchantments that belong to this item will also be deleted.",
+  "delete_dialog_related_sound": "All sound files that belong to this event will also be deleted.",
   "dialog_delete_confirm": "Confirm deletion",
 
   "dialog_attribute_create": "Create attribute",

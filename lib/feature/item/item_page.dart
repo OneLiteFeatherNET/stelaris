@@ -30,7 +30,11 @@ class ItemPage extends StatelessWidget {
           mapToDataModelItem: (value) => TextWidget(displayName: value.uiName),
           openFunction: () => _openCreationDialog(context, vm.projectKey),
           selectedItem: vm.selected,
-          mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
+          mapToDeleteDialog: (value) => createDeleteText(
+            value.uiName,
+            context,
+            relatedDataText: context.l10n.delete_dialog_related_item,
+          ),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(ItemRemoveAction(value));
             return true;

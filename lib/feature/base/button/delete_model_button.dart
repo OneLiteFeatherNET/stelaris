@@ -26,10 +26,7 @@ class DeleteModelButton<E extends DataModel> extends StatelessWidget {
           context: context,
           builder: (context) {
             return DeleteDialog<E>(
-              title: Text(
-                context.l10n.dialog_delete_confirm,
-                textAlign: TextAlign.center,
-              ),
+              title: context.l10n.dialog_delete_confirm,
               header: mapToDeleteDialog(value),
               value: value,
               successfully: mapToDeleteSuccessfully,

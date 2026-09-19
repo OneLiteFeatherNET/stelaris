@@ -4,9 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/api/state/factory/item/enchantment_view_state.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/item/enchantment_reducer.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/validators.dart';
 import 'package:vulpes_data/api/enchantment.dart';
 
 class ItemEnchantmentAddDialog extends StatefulWidget {
@@ -25,13 +27,20 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
   final ValueNotifier<bool> _unsafe = ValueNotifier(false);
   final _key = GlobalKey<FormState>();
 
-  late final ValueNotifier<Enchantment> _selected;
-  late List<DropdownMenuItem<Enchantment>> _enchantments;
+  late final List<DropdownMenuItem<Enchantment>> _enchantments = widget
+      .view
+      .selectableEnchantments
+      .map(
+        (e) => DropdownMenuItem<Enchantment>(value: e, child: Text(e.displayName)),
+      )
+      .toList();
+  late final ValueNotifier<Enchantment> _selected = ValueNotifier(
+    _enchantments.first.value!,
+  );
 
   @override
   void initState() {
     super.initState();
-    _updateEnchantments();
     _resetController();
   }
 
@@ -45,99 +54,89 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      title: Text(
-        context.l10n.dialog_item_enchantment_title,
-        textAlign: TextAlign.center,
-      ),
-      contentPadding: dialogPadding,
-      children: [
-        Text(context.l10n.dialog_item_enchantment),
-        horizontalSpacing10,
-        ValueListenableBuilder<Enchantment>(
-          valueListenable: _selected,
-          builder: (context, selectedEnchantment, child) {
-            return DropdownButtonFormField<Enchantment>(
-              autofocus: true,
-              initialValue: selectedEnchantment,
-              items: _enchantments,
-              onChanged: (value) {
-                _selected.value = value!;
-                _resetController();
-              },
-            );
-          },
-        ),
-        verticalSpacing25,
-        ValueListenableBuilder<bool>(
-          valueListenable: _unsafe,
-          builder: (context, unsafe, child) {
-            return Transform.translate(
-              offset: const Offset(-12, 0),
-              child: CheckboxListTile(
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                title: const Text('Unsafe'),
-                value: unsafe,
+    return FormDialog(
+      title: context.l10n.dialog_item_enchantment_title,
+      actionIcon: Icons.add,
+      actionLabel: context.l10n.button_add,
+      onSubmit: _handleAdd,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ValueListenableBuilder<Enchantment>(
+            valueListenable: _selected,
+            builder: (context, selectedEnchantment, child) {
+              return DropdownButtonFormField<Enchantment>(
+                autofocus: true,
+                initialValue: selectedEnchantment,
+                items: _enchantments,
+                decoration: InputDecoration(
+                  labelText: context.l10n.dialog_item_enchantment,
+                  border: const OutlineInputBorder(),
+                ),
                 onChanged: (value) {
-                  _unsafe.value = value ?? false;
-                  _key.currentState?.validate();
+                  _selected.value = value!;
+                  _resetController();
                 },
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.zero,
-              ),
-            );
-          },
-        ),
-        verticalSpacing25,
-        Text(context.l10n.label_level),
-        Form(
-          key: _key,
-          autovalidateMode: AutovalidateMode.always,
-          child: TextFormField(
-            controller: _controller,
-            autocorrect: false,
-            keyboardType: numberInput,
-            inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
-            validator: (value) {
-              if (value == null) return null;
-              return _validateInput(
-                value: value,
-                maxLevel: _selected.value.maxLevel,
-                unsafe: _unsafe.value,
               );
             },
           ),
-        ),
-        verticalSpacing25,
-        TextButton(
-          onPressed: () {
-            if (!_key.currentState!.validate()) return;
-            final int level = int.parse(_controller.value.text);
-            _handleAddCallback(_selected.value, level, _unsafe.value);
-          },
-          child: Text(context.l10n.button_add),
-        ),
-      ],
+          verticalSpacing10,
+          ValueListenableBuilder<bool>(
+            valueListenable: _unsafe,
+            builder: (context, unsafe, child) {
+              return Transform.translate(
+                offset: const Offset(-12, 0),
+                child: CheckboxListTile(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  title: const Text('Unsafe'),
+                  value: unsafe,
+                  onChanged: (value) {
+                    _unsafe.value = value ?? false;
+                    _key.currentState?.validate();
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
+                  contentPadding: EdgeInsets.zero,
+                ),
+              );
+            },
+          ),
+          verticalSpacing10,
+          Form(
+            key: _key,
+            autovalidateMode: AutovalidateMode.always,
+            child: TextFormField(
+              controller: _controller,
+              autocorrect: false,
+              keyboardType: numberInput,
+              inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
+              decoration: InputDecoration(
+                labelText: context.l10n.label_level,
+                border: const OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null) return null;
+                return Validators.enchantmentLevel(
+                  value: value,
+                  maxLevel: _selected.value.maxLevel,
+                  unsafe: _unsafe.value,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  void _handleAdd() {
+    if (!_key.currentState!.validate()) return;
+    final int level = int.parse(_controller.value.text);
+    _handleAddCallback(_selected.value, level, _unsafe.value);
   }
 
   void _resetController() {
     if (_controller.text != '1') {
       _controller.text = '1';
-    }
-  }
-
-  void _updateEnchantments() {
-    _enchantments = widget.view.selectableEnchantments
-        .map(
-          (e) => DropdownMenuItem<Enchantment>(
-            value: e,
-            child: Text(e.displayName),
-          ),
-        )
-        .toList();
-    if (_enchantments.isNotEmpty) {
-      _selected = ValueNotifier(_enchantments.first.value!);
     }
   }
 
@@ -154,26 +153,5 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
     );
     context.dispatch(ItemEnchantmentAddAction(dto));
     Navigator.of(context).pop();
-  }
-
-  ///
-  String? _validateInput({
-    required String value,
-    required int maxLevel,
-    required bool unsafe,
-  }) {
-    if (value.trim().isEmpty) {
-      return 'Please enter a level';
-    }
-    final level = int.tryParse(value);
-    if (level == null) {
-      return 'Please enter a valid number';
-    }
-
-    if (!unsafe && level > maxLevel) {
-      return 'The maximum is $maxLevel';
-    }
-
-    return null;
   }
 }

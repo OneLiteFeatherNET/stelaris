@@ -1,7 +1,8 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/feature/base/button/cancel_button.dart';
-import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/feature/base/dialog/notice_box.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class DeleteDialog<E> extends StatelessWidget {
@@ -13,29 +14,42 @@ class DeleteDialog<E> extends StatelessWidget {
     super.key,
   });
 
-  final Text title;
+  final String title;
   final List<TextSpan> header;
   final E value;
   final MapToDeleteSuccessfully<E> successfully;
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      contentPadding: dialogPadding,
+    final theme = Theme.of(context);
+
+    return FormDialog(
       title: title,
-      content: RichText(text: TextSpan(children: header)),
-      actions: <Widget>[
-        const CancelButton(),
-        FilledButton(
-          autofocus: true,
-          child: Text(context.l10n.button_yes),
-          onPressed: () {
-            if (successfully(value)) {
-              Navigator.of(context).pop(true);
-            }
-          },
-        ),
-      ],
+      actionIcon: Icons.delete_outline,
+      actionLabel: context.l10n.tooltip_delete,
+      actionColor: theme.colorScheme.error,
+      maxWidth: 420,
+      onSubmit: () {
+        if (successfully(value)) {
+          Navigator.of(context).pop(true);
+        }
+      },
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RichText(text: TextSpan(children: header)),
+          verticalSpacing10,
+          NoticeBox(
+            icon: Icons.warning_amber_rounded,
+            color: theme.colorScheme.error,
+            content: Text(
+              context.l10n.delete_dialog_irreversible,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

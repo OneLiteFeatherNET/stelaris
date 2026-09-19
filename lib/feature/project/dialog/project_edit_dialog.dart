@@ -1,12 +1,11 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/project/project_actions.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
 import 'package:stelaris_models/stelaris_models.dart';
-
-import 'project_form_dialog.dart';
 
 class EditProjectDialog extends StatefulWidget {
   final Project project;
@@ -52,11 +51,13 @@ class _EditProjectDialogState extends State<EditProjectDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return ProjectFormDialog(
+    return FormDialog(
       title: context.l10n.dialog_project_edit_title,
       actionIcon: Icons.save_outlined,
       actionLabel: context.l10n.dialog_project_edit_button,
       onSubmit: _handleSave,
+      maxWidth: 550,
+      maxHeight: 700,
       content: Form(
         key: _formKey,
         child: Column(

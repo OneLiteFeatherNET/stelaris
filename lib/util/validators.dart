@@ -177,4 +177,24 @@ class Validators {
       return null;
     };
   }
+
+  /// Validates an enchantment level input against [maxLevel].
+  /// When [unsafe] is true, the max-level constraint is skipped.
+  static String? enchantmentLevel({
+    required String? value,
+    required int maxLevel,
+    bool unsafe = false,
+  }) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter a level';
+    }
+    final level = int.tryParse(value);
+    if (level == null) {
+      return 'Please enter a valid number';
+    }
+    if (!unsafe && level > maxLevel) {
+      return 'The maximum is $maxLevel';
+    }
+    return null;
+  }
 }

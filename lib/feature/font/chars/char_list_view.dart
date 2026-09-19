@@ -50,7 +50,7 @@ class _CharListViewState extends State<CharListView>
       context: context,
       builder: (context) {
         return DeleteDialog<FontStringDTO>(
-          title: Text(context.l10n.dialog_font_char_delete),
+          title: context.l10n.dialog_font_char_delete,
           header: createDeleteText(key.line, context),
           value: key,
           successfully: (value) {

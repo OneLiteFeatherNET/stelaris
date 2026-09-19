@@ -87,10 +87,7 @@ class _LorePageViewState extends State<LorePageView>
       context: context,
       builder: (BuildContext context) {
         return DeleteDialog<ItemLoreDto>(
-          title: Text(
-            context.l10n.dialog_item_lore_delete_header,
-            textAlign: TextAlign.center,
-          ),
+          title: context.l10n.dialog_item_lore_delete_title,
           header: [TextSpan(text: context.l10n.dialog_item_lore_delete_header)],
           value: dto,
           successfully: (value) {
