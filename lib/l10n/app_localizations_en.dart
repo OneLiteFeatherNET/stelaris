@@ -52,6 +52,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get button_cancel => 'Cancel';
 
   @override
+  String get auth_sign_in => 'Sign in';
+
+  @override
+  String get auth_sign_out => 'Sign out';
+
+  @override
+  String get auth_retry => 'Try again';
+
+  @override
+  String get auth_account => 'Account';
+
+  @override
+  String get auth_signed_in => 'Signed in';
+
+  @override
+  String get auth_no_roles => 'No roles granted';
+
+  @override
+  String auth_roles_more(int count) {
+    return 'and $count more';
+  }
+
+  @override
+  String get auth_sign_in_required => 'Sign in to continue.';
+
+  @override
+  String get auth_session_expired =>
+      'Your session expired. Sign in again to continue.';
+
+  @override
+  String get auth_provider_unavailable =>
+      'The identity provider could not be reached. Check the deployment configuration, then try again.';
+
+  @override
   String get text_branch => 'Please select a branch';
 
   @override

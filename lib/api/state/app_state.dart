@@ -4,6 +4,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/api/state/model_search_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/auth/auth_state.dart';
 
 part 'app_state.g.dart';
 
@@ -133,6 +134,17 @@ abstract class AppState with _$AppState {
     /// API and written into the selection as well.
     @JsonKey(includeToJson: false, includeFromJson: false)
     NavigationEntry? unsavedChanges,
+
+    // ── Sitzung ──
+    // Transient on purpose, and excluded from JSON like the caches above. Two
+    // reasons, either of which would be enough: this state is derived from the
+    // session store, so a persisted copy could claim someone is signed in after
+    // their session is gone; and everything persisted here lands in
+    // localStorage, which is the last place credentials or anything derived
+    // from them belong. See [AuthState].
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(AuthState.disabled())
+    AuthState auth,
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, dynamic> json) =>
