@@ -3,6 +3,22 @@
 config:
   backendUrl: https://api.stelaris.example/v1
   generatorUrl: https://gen.stelaris.example
+  auth:
+    issuer: https://idp.stelaris.example/realms/stelaris
+    clientId: stelaris-ui
+    scopes:
+      - openid
+      - profile
+      - offline_access
+      - stelaris-api
+    audience: stelaris-backend
+    roleClaims:
+      - https://stelaris.example/roles
+    roleClaimsSource:
+      - accessToken
+      - idToken
+    roleAliases:
+      6dbd7a4d-d61c-47f5-8f7d-db368e3f9dae: stelaris.admin
 
 nginx:
   contentSecurityPolicy: >-
@@ -13,6 +29,7 @@ nginx:
     font-src 'self' data:; media-src 'self' data: blob:;
     worker-src 'self' blob:; child-src 'self' blob:; manifest-src 'self';
     connect-src 'self' https://api.stelaris.example https://gen.stelaris.example
+    https://idp.stelaris.example
   serverConfig: |
     server {
         listen      8080;
