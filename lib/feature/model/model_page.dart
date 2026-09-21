@@ -120,7 +120,6 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
 
 class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
     with InfiniteScrollMixin<ModelPage<E>> {
-
   static const double _commandBarMaxWidth = 640;
   static const double _gridMaxCardExtent = 320;
   static const double _gridCardHeight = 148;
@@ -195,17 +194,24 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: _commandBarMaxWidth),
-            child: CommandBar(
-              onAdd: widget.onAdd,
-              onSearchChanged: _handleSearchChanged,
-              filterOptions: widget.filterOptions,
-              onFiltersChanged: _handleFiltersChanged,
-              onSortChanged: _handleSortChanged,
-              onRefresh: widget.onRefresh,
-              isRefreshing: widget.isRefreshing,
+        Padding(
+          // Same 16px horizontal inset as the grid's own SliverPadding
+          // below, so the command bar lines up with the cards instead of
+          // running edge-to-edge; the top inset gives it breathing room
+          // under the AppBar instead of butting straight up against it.
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: _commandBarMaxWidth),
+              child: CommandBar(
+                onAdd: widget.onAdd,
+                onSearchChanged: _handleSearchChanged,
+                filterOptions: widget.filterOptions,
+                onFiltersChanged: _handleFiltersChanged,
+                onSortChanged: _handleSortChanged,
+                onRefresh: widget.onRefresh,
+                isRefreshing: widget.isRefreshing,
+              ),
             ),
           ),
         ),
