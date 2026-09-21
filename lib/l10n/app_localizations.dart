@@ -1048,6 +1048,12 @@ abstract class AppLocalizations {
   /// **'Search...'**
   String get command_bar_search_hint;
 
+  /// No description provided for @command_bar_search_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus search'**
+  String get command_bar_search_tooltip;
+
   /// No description provided for @command_bar_filter_sort_tooltip.
   ///
   /// In en, this message translates to:
