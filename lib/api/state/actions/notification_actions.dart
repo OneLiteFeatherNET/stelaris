@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/util/copy_model_result.dart';
 
 class SelectedNotificationAction extends ReduxAction<AppState> {
   final NotificationModel model;
@@ -119,6 +120,37 @@ class UpdateNotificationAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async =>
       state.copyWith(selectedNotification: newEntry);
+}
+
+class NotificationCopyAction extends ReduxAction<AppState> with NonReentrant {
+  final NotificationModel source;
+  final CopyModelResult result;
+
+  NotificationCopyAction(this.source, this.result);
+
+  @override
+  Future<AppState?> reduce() async {
+    final NotificationModel copied = await ApiService().notificationApi.copy(
+      source,
+      targetProjectId: result.targetProjectId,
+      name: result.name,
+      key: result.key,
+      includeRelationships: result.includeRelationships,
+    );
+    if (copied.projectId != state.selectedProject?.id) return null;
+
+    final List<NotificationModel> updatedList = List.of(
+      state.notifications.items,
+      growable: true,
+    )..add(copied);
+
+    return _updateNotificationInState(
+      state,
+      updatedList,
+      copied,
+      totalItems: state.notifications.totalItems + 1,
+    );
+  }
 }
 
 class NotificationAddAction extends ReduxAction<AppState> with NonReentrant {

@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/util/copy_model_result.dart';
 
 class SelectSoundAction extends ReduxAction<AppState> {
   final SoundEventModel model;
@@ -27,11 +28,12 @@ class RemoveSelectedSoundEvent extends ReduxAction<AppState> {
 class RefreshSoundAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
-    final PaginatedResult<SoundEventModel> result = await ApiService()
-        .soundApi
+    final PaginatedResult<SoundEventModel> result = await ApiService().soundApi
         .getPage(
           page: 1,
-          size: state.soundEvents.pageSize == 0 ? 10 : state.soundEvents.pageSize,
+          size: state.soundEvents.pageSize == 0
+              ? 10
+              : state.soundEvents.pageSize,
           projectId: state.selectedProject?.id,
         );
     return state.copyWith(soundEvents: result);
@@ -92,6 +94,37 @@ class InitSoundAction extends ReduxAction<AppState> {
           );
       return state.copyWith(soundEvents: result);
     }
+  }
+}
+
+class SoundCopyAction extends ReduxAction<AppState> with NonReentrant {
+  final SoundEventModel source;
+  final CopyModelResult result;
+
+  SoundCopyAction(this.source, this.result);
+
+  @override
+  Future<AppState?> reduce() async {
+    final SoundEventModel copied = await ApiService().soundApi.copy(
+      source,
+      targetProjectId: result.targetProjectId,
+      name: result.name,
+      key: result.key,
+      includeRelationships: result.includeRelationships,
+    );
+    if (copied.projectId != state.selectedProject?.id) return null;
+
+    final List<SoundEventModel> updatedList = List.of(
+      state.soundEvents.items,
+      growable: true,
+    )..add(copied);
+
+    return _updateSoundEventsInState(
+      state,
+      updatedList,
+      copied,
+      totalItems: state.soundEvents.totalItems + 1,
+    );
   }
 }
 

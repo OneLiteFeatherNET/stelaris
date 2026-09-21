@@ -13,6 +13,8 @@ class FontVmFactory extends VmFactory<AppState, FontPage, FontViewModel> {
     hasNextPage: state.fonts.hasNextPage,
     isLoadingMore: state.isLoadingMoreFonts,
     projectKey: state.selectedProject!.key,
+    projects: state.projects,
+    currentProject: state.selectedProject!,
   );
 }
 
@@ -22,6 +24,8 @@ class FontViewModel extends Vm {
   final bool hasNextPage;
   final bool isLoadingMore;
   final String projectKey;
+  final List<Project> projects;
+  final Project currentProject;
 
   FontViewModel({
     required this.models,
@@ -29,6 +33,8 @@ class FontViewModel extends Vm {
     required this.hasNextPage,
     required this.isLoadingMore,
     required this.projectKey,
+    required this.projects,
+    required this.currentProject,
   }) : super(
          equals: [
            models,
@@ -36,6 +42,8 @@ class FontViewModel extends Vm {
            hasNextPage,
            isLoadingMore,
            projectKey,
+           projects,
+           currentProject,
          ],
        );
 

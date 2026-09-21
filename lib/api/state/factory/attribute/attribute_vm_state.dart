@@ -15,6 +15,8 @@ class AttributeVmFactory
     hasNextPage: state.attributes.hasNextPage,
     isLoadingMore: state.isLoadingAttributesMore,
     projectKey: state.selectedProject!.key,
+    projects: state.projects,
+    currentProject: state.selectedProject!,
   );
 }
 
@@ -25,6 +27,8 @@ class AttributeViewModel extends Vm {
   final bool hasNextPage;
   final bool isLoadingMore;
   final String projectKey;
+  final List<Project> projects;
+  final Project currentProject;
 
   AttributeViewModel({
     required this.models,
@@ -33,6 +37,8 @@ class AttributeViewModel extends Vm {
     required this.hasNextPage,
     required this.isLoadingMore,
     required this.projectKey,
+    required this.projects,
+    required this.currentProject,
   }) : super(
          equals: [
            models,
@@ -41,6 +47,8 @@ class AttributeViewModel extends Vm {
            hasNextPage,
            isLoadingMore,
            projectKey,
+           projects,
+           currentProject,
          ],
        );
 

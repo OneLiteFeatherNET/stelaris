@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/util/copy_model_result.dart';
 
 class SelectedItemAction extends ReduxAction<AppState> {
   final ItemModel model;
@@ -132,6 +133,37 @@ class ItemAddAction extends ReduxAction<AppState> with NonReentrant {
       state,
       items,
       added,
+      totalItems: state.items.totalItems + 1,
+    );
+  }
+}
+
+class ItemCopyAction extends ReduxAction<AppState> with NonReentrant {
+  final ItemModel source;
+  final CopyModelResult result;
+
+  ItemCopyAction(this.source, this.result);
+
+  @override
+  Future<AppState?> reduce() async {
+    final ItemModel copied = await ApiService().itemApi.copy(
+      source,
+      targetProjectId: result.targetProjectId,
+      name: result.name,
+      key: result.key,
+      includeRelationships: result.includeRelationships,
+    );
+    // Only surface the copy in the currently visible list when it landed
+    // in the project that's actually open — a cross-project copy simply
+    // isn't shown here.
+    if (copied.projectId != state.selectedProject?.id) return null;
+
+    final List<ItemModel> items = List.of(state.items.items, growable: true)
+      ..add(copied);
+    return _updateItemInState(
+      state,
+      items,
+      copied,
       totalItems: state.items.totalItems + 1,
     );
   }

@@ -13,6 +13,8 @@ class ItemVmFactory extends VmFactory<AppState, ItemPage, ItemViewModel> {
     hasNextPage: state.items.hasNextPage,
     isLoadingMore: state.isLoadingMoreItems,
     projectKey: state.selectedProject!.key,
+    projects: state.projects,
+    currentProject: state.selectedProject!,
   );
 }
 
@@ -22,6 +24,8 @@ class ItemViewModel extends Vm {
   final bool hasNextPage;
   final bool isLoadingMore;
   final String projectKey;
+  final List<Project> projects;
+  final Project currentProject;
 
   ItemViewModel({
     required this.itemModels,
@@ -29,6 +33,8 @@ class ItemViewModel extends Vm {
     required this.hasNextPage,
     required this.isLoadingMore,
     required this.projectKey,
+    required this.projects,
+    required this.currentProject,
   }) : super(
          equals: [
            itemModels,
@@ -36,6 +42,8 @@ class ItemViewModel extends Vm {
            hasNextPage,
            isLoadingMore,
            projectKey,
+           projects,
+           currentProject,
          ],
        );
 

@@ -82,10 +82,35 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final projectId = _extractProjectId(model);
     final path = _buildPath(projectId: projectId, suffix: 'delete/${model.id}');
-    final uri = baseUri.replace(
-      path: '${baseUri.path}/$path',
-    );
+    final uri = baseUri.replace(path: '${baseUri.path}/$path');
     final result = await apiClient.dio.deleteUri(uri);
+    return fromJson(result.data!);
+  }
+
+  @override
+  Future<T> copy(
+    T model, {
+    required String targetProjectId,
+    required String name,
+    required String key,
+    bool includeRelationships = false,
+  }) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final sourceProjectId = _extractProjectId(model);
+    final path = _buildPath(
+      projectId: sourceProjectId,
+      suffix: '${model.id}/copy',
+    );
+    final uri = baseUri.replace(path: '${baseUri.path}/$path');
+    final result = await apiClient.dio.postUri(
+      uri,
+      data: {
+        'targetProjectId': targetProjectId,
+        'name': name,
+        'key': key,
+        'includeRelationships': includeRelationships,
+      },
+    );
     return fromJson(result.data!);
   }
 

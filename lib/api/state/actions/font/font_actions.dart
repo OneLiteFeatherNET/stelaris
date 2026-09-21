@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/util/copy_model_result.dart';
 
 class SelectFontAction extends ReduxAction<AppState> {
   final FontModel model;
@@ -90,6 +91,34 @@ class InitFontAction extends ReduxAction<AppState> {
   }
 }
 
+class FontCopyAction extends ReduxAction<AppState> with NonReentrant {
+  final FontModel source;
+  final CopyModelResult result;
+
+  FontCopyAction(this.source, this.result);
+
+  @override
+  Future<AppState?> reduce() async {
+    final FontModel copied = await ApiService().fontApi.copy(
+      source,
+      targetProjectId: result.targetProjectId,
+      name: result.name,
+      key: result.key,
+      includeRelationships: result.includeRelationships,
+    );
+    if (copied.projectId != state.selectedProject?.id) return null;
+
+    final List<FontModel> items = List.of(state.fonts.items, growable: true)
+      ..add(copied);
+    return _updateFontInState(
+      state,
+      items,
+      copied,
+      totalItems: state.fonts.totalItems + 1,
+    );
+  }
+}
+
 class FontRemoveAction extends ReduxAction<AppState> {
   final FontModel model;
 
@@ -151,8 +180,8 @@ class FontDatabaseUpdate extends ReduxAction<AppState> with Throttle {
     if (state.selectedFont == null) return null;
     final FontModel selected =
         state.selectedFont!.projectId == null && state.selectedProject != null
-            ? state.selectedFont!.copyWith(projectId: state.selectedProject!.id)
-            : state.selectedFont!;
+        ? state.selectedFont!.copyWith(projectId: state.selectedProject!.id)
+        : state.selectedFont!;
     final FontModel dbModel = await ApiService().fontApi.update(selected);
 
     final List<FontModel> updatedList = List.of(

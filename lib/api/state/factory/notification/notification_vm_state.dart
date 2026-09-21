@@ -15,6 +15,8 @@ class NotificationVmFactory
     isLoadingMore: state.isLoadingMoreNotifications,
     currentItems: state.notifications.totalItems,
     projectKey: state.selectedProject!.key,
+    projects: state.projects,
+    currentProject: state.selectedProject!,
   );
 }
 
@@ -25,6 +27,8 @@ class NotificationViewModel extends Vm {
   final bool hasNextPage;
   final bool isLoadingMore;
   final String projectKey;
+  final List<Project> projects;
+  final Project currentProject;
 
   NotificationViewModel({
     required this.models,
@@ -33,6 +37,8 @@ class NotificationViewModel extends Vm {
     required this.isLoadingMore,
     required this.currentItems,
     required this.projectKey,
+    required this.projects,
+    required this.currentProject,
   }) : super(
          equals: [
            models,
@@ -41,6 +47,8 @@ class NotificationViewModel extends Vm {
            hasNextPage,
            isLoadingMore,
            projectKey,
+           projects,
+           currentProject,
          ],
        );
 

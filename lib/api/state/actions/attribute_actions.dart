@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/util/copy_model_result.dart';
 
 /// Selects a specific attribute model and updates the state.
 ///
@@ -208,6 +209,41 @@ class AttributeAddAction extends ReduxAction<AppState> with NonReentrant {
 ///
 /// The action maintains referential integrity by checking if the deleted attribute
 /// was the currently selected one and clearing the selection if necessary.
+/// Duplicates an attribute, optionally into a different project.
+///
+/// Mirrors [AttributeAddAction], but sourcing the new model from the
+/// backend's `copy` endpoint instead of a client-constructed one.
+class AttributeCopyAction extends ReduxAction<AppState> with NonReentrant {
+  final AttributeModel source;
+  final CopyModelResult result;
+
+  AttributeCopyAction(this.source, this.result);
+
+  @override
+  Future<AppState?> reduce() async {
+    final AttributeModel copied = await ApiService().attributeApi.copy(
+      source,
+      targetProjectId: result.targetProjectId,
+      name: result.name,
+      key: result.key,
+      includeRelationships: result.includeRelationships,
+    );
+    if (copied.projectId != state.selectedProject?.id) return null;
+
+    final List<AttributeModel> updatedList = List.of(
+      state.attributes.items,
+      growable: true,
+    )..add(copied);
+
+    return _updateAttributesInState(
+      state,
+      updatedList,
+      copied,
+      totalItems: state.attributes.totalItems + 1,
+    );
+  }
+}
+
 class AttributeRemoveAction extends ReduxAction<AppState> {
   final AttributeModel model;
 

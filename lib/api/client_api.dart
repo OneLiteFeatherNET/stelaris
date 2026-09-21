@@ -21,7 +21,6 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// }
 /// ```
 abstract class ClientAPI<T extends DataModel> {
-
   /// Retrieves a single model instance.
   ///
   /// This method typically fetches a specific model instance based on an identifier
@@ -72,4 +71,22 @@ abstract class ClientAPI<T extends DataModel> {
   ///
   /// Throws an exception if the removal fails or if the model doesn't exist.
   Future<T> remove(T model);
+
+  /// Duplicates [model], optionally into a different project.
+  ///
+  /// [targetProjectId] is the project the copy is created in (the same
+  /// project as [model] for an in-place duplicate). [name] and [key] are
+  /// the new model's display name and namespaced-key part, since both must
+  /// stay unique within the target project. [includeRelationships]
+  /// controls whether the model's related/embedded data is copied along
+  /// with it.
+  ///
+  /// Returns a [Future] that completes with the newly created model.
+  Future<T> copy(
+    T model, {
+    required String targetProjectId,
+    required String name,
+    required String key,
+    bool includeRelationships = false,
+  });
 }
