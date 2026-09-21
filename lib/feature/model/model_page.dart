@@ -6,13 +6,17 @@ import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
 import 'package:stelaris/feature/model/command_bar.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
+import 'package:stelaris/feature/model/model_filter.dart';
 import 'package:stelaris/feature/model/model_grid_card.dart';
 import 'package:stelaris/feature/model/model_sort_option.dart';
+import 'package:stelaris/feature/model/model_sorter.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/typedefs.dart';
 
-/// Decides whether [model] matches the free-text [query] from the [CommandBar].
+/// Decides whether [model] matches the free-text [query] from the
+/// [CommandBar]. [query] is already lowercased by [ModelPage], so
+/// implementations only need to lowercase the field(s) they compare it to.
 typedef ModelSearchMatcher<E extends DataModel> = bool Function(
   E model,
   String query,
@@ -116,6 +120,13 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
 
 class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
     with InfiniteScrollMixin<ModelPage<E>> {
+
+  static const double _commandBarMaxWidth = 640;
+  static const double _gridMaxCardExtent = 320;
+  static const double _gridCardHeight = 148;
+  static const double _gridSpacing = 12;
+  static const int _gridMaxColumns = 4;
+
   // Search/filter/sort live here, not in State fields updated via
   // setState(). That keeps changing them from re-running this State's
   // build() at all — only the ValueListenableBuilder around the grid
@@ -162,50 +173,22 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
   void onLoadMore() => widget.onLoadMore?.call();
 
   List<E> _filteredModels(_ModelListState listState) {
-    final filtered =
-        listState.searchQuery.isEmpty && listState.activeFilters.isEmpty
-        ? widget.models.toList()
-        : widget.models.where((model) {
-            final matchesQuery = listState.searchQuery.isEmpty ||
-                widget.matchesSearch(model, listState.searchQuery);
-            final matchesFilters = listState.activeFilters.isEmpty ||
-                listState.activeFilters
-                    .every((filter) => widget.matchesFilter(model, filter));
-            return matchesQuery && matchesFilters;
-          }).toList();
+    final filtered = filterModels(
+      models: widget.models,
+      // Lowercased once here rather than inside matchesSearch per model.
+      query: listState.searchQuery.toLowerCase(),
+      activeFilters: listState.activeFilters,
+      matchesSearch: widget.matchesSearch,
+      matchesFilter: widget.matchesFilter,
+    );
 
-    filtered.sort((a, b) => _compareModels(a, b, listState));
-    return filtered;
+    return sortModels(
+      models: filtered,
+      sortField: listState.sortField,
+      sortDirection: listState.sortDirection,
+      nameSelector: widget.nameSelector,
+    );
   }
-
-  int _compareModels(E a, E b, _ModelListState listState) {
-    final directionMultiplier =
-        listState.sortDirection == SortDirection.descending ? -1 : 1;
-
-    switch (listState.sortField) {
-      case SortField.name:
-        final comparison = widget
-            .nameSelector(a)
-            .toLowerCase()
-            .compareTo(widget.nameSelector(b).toLowerCase());
-        return comparison * directionMultiplier;
-      case SortField.createdAt:
-        final aDate = a.creationDate;
-        final bDate = b.creationDate;
-        // Undated models always sort last, regardless of direction —
-        // negating the comparison for "descending" must not also flip
-        // which end of the list they land on.
-        return switch ((aDate, bDate)) {
-          (null, null) => 0,
-          (null, _) => 1,
-          (_, null) => -1,
-          (final aDate?, final bDate?) =>
-            aDate.compareTo(bDate) * directionMultiplier,
-        };
-    }
-  }
-
-  static const double _commandBarMaxWidth = 640;
 
   @override
   Widget build(BuildContext context) {
@@ -237,10 +220,6 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
     );
   }
 
-  static const double _gridMaxCardExtent = 320;
-  static const double _gridCardHeight = 132;
-  static const double _gridSpacing = 12;
-
   Widget _buildGridView(_ModelListState listState) {
     final models = _filteredModels(listState);
 
@@ -257,26 +236,38 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
     final hasFooter =
         widget.onLoadMore != null && (widget.isLoadingMore || widget.hasMore);
 
-    return CustomScrollView(
-      controller: scrollController,
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.all(4),
-          sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: _gridMaxCardExtent,
-              mainAxisExtent: _gridCardHeight,
-              crossAxisSpacing: _gridSpacing,
-              mainAxisSpacing: _gridSpacing,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Same column-width target as before (_gridMaxCardExtent), but
+        // capped at _gridMaxColumns so wide screens don't stretch the grid
+        // to 5+ columns.
+        final rawColumns =
+            (constraints.maxWidth + _gridSpacing) /
+            (_gridMaxCardExtent + _gridSpacing);
+        final columns = rawColumns.floor().clamp(1, _gridMaxColumns);
+
+        return CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: columns,
+                  mainAxisExtent: _gridCardHeight,
+                  crossAxisSpacing: _gridSpacing,
+                  mainAxisSpacing: _gridSpacing,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => _buildGridItem(context, models[index]),
+                  childCount: models.length,
+                ),
+              ),
             ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => _buildGridItem(context, models[index]),
-              childCount: models.length,
-            ),
-          ),
-        ),
-        if (hasFooter) SliverToBoxAdapter(child: _buildFooter()),
-      ],
+            if (hasFooter) SliverToBoxAdapter(child: _buildFooter()),
+          ],
+        );
+      },
     );
   }
 
