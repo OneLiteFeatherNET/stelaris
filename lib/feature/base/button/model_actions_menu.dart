@@ -4,7 +4,6 @@ import 'package:stelaris/feature/dialogs/model_info_dialog.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
-import 'package:stelaris/util/typedefs.dart';
 
 /// The 3-dot action menu on a model card. Only "Info" today; further
 /// actions (e.g. a future "Copy…") can be added as more [PopupMenuItem]s
@@ -15,7 +14,6 @@ class ModelActionsMenu<E extends DataModel> extends StatelessWidget {
     required this.nameSelector,
     required this.keySelector,
     required this.projectKey,
-    this.hasRelationshipData,
     super.key,
   });
 
@@ -27,7 +25,6 @@ class ModelActionsMenu<E extends DataModel> extends StatelessWidget {
   /// the info dialog (just the key — the dialog has no use for the rest of
   /// the [Project], e.g. its display name or labor flag).
   final String projectKey;
-  final HasRelationshipData<E>? hasRelationshipData;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +52,6 @@ class ModelActionsMenu<E extends DataModel> extends StatelessWidget {
   void _openInfoDialog(BuildContext context) {
     final name = nameSelector(value);
     final key = keySelector(value);
-    final hasRelationships = hasRelationshipData?.call(value);
 
     // PopupMenuItem.onTap fires before its route is popped, so the dialog
     // must wait a beat or it would be shown (and immediately dismissed by)
@@ -71,7 +67,6 @@ class ModelActionsMenu<E extends DataModel> extends StatelessWidget {
             id: value.id,
             creationDate: value.creationDate,
             modificationDate: value.modificationDate,
-            hasRelationshipData: hasRelationships,
           );
         },
       );

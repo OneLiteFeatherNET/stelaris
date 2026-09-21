@@ -22,7 +22,6 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
     required this.nameSelector,
     required this.keySelector,
     required this.projectKey,
-    this.hasRelationshipData,
     this.onTap,
     super.key,
   });
@@ -34,7 +33,6 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
   final ModelNameSelector<E> nameSelector;
   final ModelKeySelector<E> keySelector;
   final String projectKey;
-  final HasRelationshipData<E>? hasRelationshipData;
   final VoidCallback? onTap;
 
   @override
@@ -72,7 +70,6 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
                         nameSelector: nameSelector,
                         keySelector: keySelector,
                         projectKey: projectKey,
-                        hasRelationshipData: hasRelationshipData,
                       ),
                       DeleteModelButton<E>(
                         value: rawModel,

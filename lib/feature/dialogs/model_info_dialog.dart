@@ -17,7 +17,6 @@ class ModelInfoDialog extends StatelessWidget {
     required this.id,
     required this.creationDate,
     required this.modificationDate,
-    this.hasRelationshipData,
     super.key,
   });
 
@@ -26,10 +25,6 @@ class ModelInfoDialog extends StatelessWidget {
   final String? id;
   final DateTime? creationDate;
   final DateTime? modificationDate;
-
-  /// Null when this model type never carries relationship data — the row
-  /// is omitted entirely rather than shown as "No".
-  final bool? hasRelationshipData;
 
   @override
   Widget build(BuildContext context) {
@@ -93,13 +88,6 @@ class ModelInfoDialog extends StatelessWidget {
                   label: context.l10n.dialog_model_info_modified_label,
                   value: relativeTime(context, modificationDate!),
                   copyValue: modificationDate!.toIso8601String(),
-                ),
-              if (hasRelationshipData != null)
-                _InfoRow(
-                  label: context.l10n.dialog_model_info_relationships_label,
-                  value: hasRelationshipData!
-                      ? context.l10n.dialog_model_info_relationships_yes
-                      : context.l10n.dialog_model_info_relationships_no,
                 ),
               const Divider(height: 24),
               Row(

@@ -92,11 +92,6 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
   /// the info dialog opened from a model card's action menu.
   final String projectKey;
 
-  /// Whether a given model instance has related/embedded data worth
-  /// offering an "include relationships" choice for. Omitted by pages
-  /// whose model type never has any (e.g. attributes, notifications).
-  final HasRelationshipData<E>? hasRelationshipData;
-
   /// Manually re-fetches page 1 from the server and replaces the list,
   /// regardless of how many pages were already loaded via [onLoadMore] —
   /// the grid has no pull-to-refresh gesture of its own, so this is
@@ -122,7 +117,6 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
     required this.keySelector,
     required this.projectKey,
     required this.onRefresh,
-    this.hasRelationshipData,
     this.isRefreshing = false,
     this.filterOptions = const [],
     this.onLoadMore,
@@ -315,7 +309,6 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
       nameSelector: widget.nameSelector,
       keySelector: widget.keySelector,
       projectKey: widget.projectKey,
-      hasRelationshipData: widget.hasRelationshipData,
       onTap: () => widget.onModelTap(model),
     );
   }

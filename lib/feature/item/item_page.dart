@@ -41,10 +41,6 @@ class ItemPage extends StatelessWidget {
           nameSelector: (model) => model.uiName,
           keySelector: (model) => model.key ?? '',
           projectKey: vm.projectKey,
-          hasRelationshipData: (model) =>
-              model.enchantments.items.isNotEmpty ||
-              model.lore.items.isNotEmpty ||
-              model.flags.items.isNotEmpty,
           matchesFilter: (model, filter) => true,
           onAdd: () => _openCreationDialog(context, vm.projectKey),
           onModelTap: (model) {

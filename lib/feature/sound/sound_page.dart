@@ -41,7 +41,6 @@ class SoundPage extends StatelessWidget {
           nameSelector: (model) => model.uiName,
           keySelector: (model) => model.key ?? '',
           projectKey: vm.projectKey,
-          hasRelationshipData: (model) => model.files.items.isNotEmpty,
           matchesFilter: (model, filter) => true,
           onAdd: () => _openCreationDialog(context, vm.projectKey),
           onModelTap: (model) {
