@@ -103,6 +103,21 @@ void main() {
       },
     );
 
+    testWidgets('tapping the leading search icon focuses the search field', (
+      tester,
+    ) async {
+      await tester.pumpWidget(createWidget());
+
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).focusNode?.hasFocus,
+        isTrue,
+      );
+    });
+
     testWidgets('selecting a filter option reports active filters', (
       tester,
     ) async {
@@ -132,6 +147,23 @@ void main() {
 
         expect(find.text('Name (A–Z)'), findsOneWidget);
         expect(find.byType(Divider), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'shrinks the add button to icon-only once the bar gets too narrow '
+      'for the search field to keep its own icons without overflowing',
+      (tester) async {
+        tester.view.physicalSize = const Size(300, 600);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.reset);
+
+        await tester.pumpWidget(createWidget());
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        expect(find.widgetWithText(FilledButton, 'Add'), findsNothing);
+        expect(find.byTooltip('Add'), findsOneWidget);
       },
     );
 
