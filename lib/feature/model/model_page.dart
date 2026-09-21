@@ -121,6 +121,10 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
 class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
     with InfiniteScrollMixin<ModelPage<E>> {
   static const double _commandBarMaxWidth = 640;
+  // Single source of truth for the page's horizontal margin — applied once
+  // below instead of separately on the command bar and the grid, so the
+  // two can't drift out of alignment with each other.
+  static const double _horizontalPagePadding = 16;
   static const double _gridMaxCardExtent = 320;
   static const double _gridCardHeight = 148;
   static const double _gridSpacing = 12;
@@ -191,16 +195,18 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          // Same 16px horizontal inset as the grid's own SliverPadding
-          // below, so the command bar lines up with the cards instead of
-          // running edge-to-edge; the top inset gives it breathing room
-          // under the AppBar instead of butting straight up against it.
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: Center(
+    return Padding(
+      // The page's only horizontal inset — the grid below relies on this
+      // same padding rather than adding its own, so it can't line up
+      // differently than the command bar above it.
+      padding: const EdgeInsets.symmetric(horizontal: _horizontalPagePadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Breathing room under the AppBar instead of butting straight up
+          // against it.
+          const SizedBox(height: _horizontalPagePadding),
+          Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: _commandBarMaxWidth),
               child: CommandBar(
@@ -214,15 +220,15 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
               ),
             ),
           ),
-        ),
-        verticalSpacing10,
-        Expanded(
-          child: ValueListenableBuilder<_ModelListState>(
-            valueListenable: _listState,
-            builder: (context, listState, _) => _buildGridView(listState),
+          verticalSpacing10,
+          Expanded(
+            child: ValueListenableBuilder<_ModelListState>(
+              valueListenable: _listState,
+              builder: (context, listState, _) => _buildGridView(listState),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -256,7 +262,9 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
           controller: scrollController,
           slivers: [
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              // Horizontal inset already comes from the page-level Padding
+              // in build() — only vertical spacing is this sliver's own.
+              padding: const EdgeInsets.symmetric(vertical: 4),
               sliver: SliverGrid(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: columns,
