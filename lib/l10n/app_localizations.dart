@@ -1042,6 +1042,72 @@ abstract class AppLocalizations {
   /// **'Create'**
   String get dialog_model_create_button;
 
+  /// No description provided for @tooltip_more_actions.
+  ///
+  /// In en, this message translates to:
+  /// **'More actions'**
+  String get tooltip_more_actions;
+
+  /// No description provided for @menu_item_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get menu_item_info;
+
+  /// No description provided for @dialog_model_info_id_label.
+  ///
+  /// In en, this message translates to:
+  /// **'ID'**
+  String get dialog_model_info_id_label;
+
+  /// No description provided for @dialog_model_info_created_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get dialog_model_info_created_label;
+
+  /// No description provided for @dialog_model_info_modified_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified'**
+  String get dialog_model_info_modified_label;
+
+  /// No description provided for @dialog_model_info_relationships_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Relationships'**
+  String get dialog_model_info_relationships_label;
+
+  /// No description provided for @dialog_model_info_relationships_yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get dialog_model_info_relationships_yes;
+
+  /// No description provided for @dialog_model_info_relationships_no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get dialog_model_info_relationships_no;
+
+  /// No description provided for @button_close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get button_close;
+
+  /// No description provided for @tooltip_copy_to_clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy to clipboard'**
+  String get tooltip_copy_to_clipboard;
+
+  /// No description provided for @snackbar_copied_to_clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get snackbar_copied_to_clipboard;
+
   /// No description provided for @command_bar_search_hint.
   ///
   /// In en, this message translates to:
