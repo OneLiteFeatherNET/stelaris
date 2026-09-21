@@ -31,6 +31,10 @@ typedef ModelFilterMatcher<E extends DataModel> = bool Function(
 /// Returns [model]'s display name, used for [SortField.name] sorting.
 typedef ModelNameSelector<E extends DataModel> = String Function(E model);
 
+/// Returns [model]'s namespaced-key part, used to build the namespaced key
+/// shown in the info dialog opened from a model card's action menu.
+typedef ModelKeySelector<E extends DataModel> = String Function(E model);
+
 /// The search/filter/sort choices applied to a [ModelPage]'s list. Held in
 /// a [ValueNotifier] rather than [State] fields so that changing it doesn't
 /// require rebuilding the whole page — see [_ModelPageState].
@@ -82,6 +86,11 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
   final ModelFilterMatcher<E> matchesFilter;
   final List<FilterOption> filterOptions;
   final ModelNameSelector<E> nameSelector;
+  final ModelKeySelector<E> keySelector;
+
+  /// The current project's key — used to build the namespaced key shown in
+  /// the info dialog opened from a model card's action menu.
+  final String projectKey;
 
   /// Manually re-fetches page 1 from the server and replaces the list,
   /// regardless of how many pages were already loaded via [onLoadMore] —
@@ -105,6 +114,8 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
     required this.matchesSearch,
     required this.matchesFilter,
     required this.nameSelector,
+    required this.keySelector,
+    required this.projectKey,
     required this.onRefresh,
     this.isRefreshing = false,
     this.filterOptions = const [],
@@ -295,6 +306,9 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
       mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
       mapToDataModelItem: widget.mapToDataModelItem,
       rawModel: model,
+      nameSelector: widget.nameSelector,
+      keySelector: widget.keySelector,
+      projectKey: widget.projectKey,
       onTap: () => widget.onModelTap(model),
     );
   }

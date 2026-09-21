@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
+import 'package:stelaris/feature/base/button/model_actions_menu.dart';
 import 'package:stelaris/feature/model/model_grid_card.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 
@@ -29,22 +30,27 @@ void main() {
             mapToDataModelItem: (m) => Text(m.name),
             mapToDeleteDialog: (m) => [TextSpan(text: m.name)],
             mapToDeleteSuccessfully: (_) => true,
+            nameSelector: (m) => m.name,
+            keySelector: (m) => m.internalId.toString(),
+            projectKey: 'proj',
             onTap: onTap,
           ),
         ),
       );
     }
 
-    testWidgets('renders content, delete button, and relative time', (
-      tester,
-    ) async {
-      await tester.pumpWidget(createWidget());
+    testWidgets(
+      'renders content, info button, delete button, and relative time',
+      (tester) async {
+        await tester.pumpWidget(createWidget());
 
-      expect(find.text('Test Attribute'), findsOneWidget);
-      expect(find.byType(DeleteModelButton<TestModel>), findsOneWidget);
-      expect(find.byType(Card), findsOneWidget);
-      expect(find.textContaining('Edited'), findsOneWidget);
-    });
+        expect(find.text('Test Attribute'), findsOneWidget);
+        expect(find.byType(ModelActionsMenu<TestModel>), findsOneWidget);
+        expect(find.byType(DeleteModelButton<TestModel>), findsOneWidget);
+        expect(find.byType(Card), findsOneWidget);
+        expect(find.textContaining('Edited'), findsOneWidget);
+      },
+    );
 
     testWidgets('triggers onTap callback', (tester) async {
       var tapped = false;

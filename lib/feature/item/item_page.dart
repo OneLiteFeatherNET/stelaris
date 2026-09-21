@@ -39,6 +39,8 @@ class ItemPage extends StatelessWidget {
           matchesSearch: (model, query) =>
               model.uiName.toLowerCase().contains(query.toLowerCase()),
           nameSelector: (model) => model.uiName,
+          keySelector: (model) => model.key ?? '',
+          projectKey: vm.projectKey,
           matchesFilter: (model, filter) => true,
           onAdd: () => _openCreationDialog(context, vm.projectKey),
           onModelTap: (model) {

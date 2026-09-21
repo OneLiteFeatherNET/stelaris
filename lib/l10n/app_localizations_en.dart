@@ -509,6 +509,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_model_create_button => 'Create';
 
   @override
+  String get tooltip_more_actions => 'More actions';
+
+  @override
+  String get menu_item_info => 'Info';
+
+  @override
+  String get dialog_model_info_id_label => 'ID';
+
+  @override
+  String get dialog_model_info_created_label => 'Created';
+
+  @override
+  String get dialog_model_info_modified_label => 'Modified';
+
+  @override
+  String get dialog_model_info_relationships_label => 'Relationships';
+
+  @override
+  String get dialog_model_info_relationships_yes => 'Yes';
+
+  @override
+  String get dialog_model_info_relationships_no => 'No';
+
+  @override
+  String get button_close => 'Close';
+
+  @override
+  String get tooltip_copy_to_clipboard => 'Copy to clipboard';
+
+  @override
+  String get snackbar_copied_to_clipboard => 'Copied to clipboard';
+
+  @override
   String get command_bar_search_hint => 'Search...';
 
   @override

@@ -3,6 +3,7 @@ import 'dart:ui' show PointerDeviceKind;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
+import 'package:stelaris/feature/base/button/model_actions_menu.dart';
 import 'package:stelaris/feature/base/model_card.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -40,6 +41,9 @@ void main() {
             mapToDeleteSuccessfully: (_) => true,
             mapToDataModelItem: (model) => Text(model.uiName),
             rawModel: model,
+            nameSelector: (model) => model.uiName,
+            keySelector: (model) => model.key ?? '',
+            projectKey: 'proj',
             onTap: onTap,
           ),
         ),
@@ -52,6 +56,7 @@ void main() {
       await tester.pumpWidget(createWidget());
 
       expect(find.text('Test Item'), findsOneWidget);
+      expect(find.byType(ModelActionsMenu<ItemModel>), findsOneWidget);
       expect(find.byType(DeleteModelButton<ItemModel>), findsOneWidget);
       expect(find.byType(Card), findsOneWidget);
       expect(cardInkWell, findsOneWidget);
@@ -67,8 +72,9 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('applies selectedCardShape when selected is true',
-        (tester) async {
+    testWidgets('applies selectedCardShape when selected is true', (
+      tester,
+    ) async {
       await tester.pumpWidget(createWidget(selected: true));
 
       final card = tester.widget<Card>(find.byType(Card));
@@ -84,15 +90,13 @@ void main() {
       expect(card.shape, isNull);
     });
 
-    testWidgets('InkWell has hoverColor and matching borderRadius',
-        (tester) async {
+    testWidgets('InkWell has hoverColor and matching borderRadius', (
+      tester,
+    ) async {
       await tester.pumpWidget(createWidget(onTap: () {}));
 
       final inkWell = tester.widget<InkWell>(cardInkWell);
-      expect(
-        inkWell.hoverColor,
-        equals(Colors.amber.withValues(alpha: 0.1)),
-      );
+      expect(inkWell.hoverColor, equals(Colors.amber.withValues(alpha: 0.1)));
       expect(
         inkWell.borderRadius,
         equals(const BorderRadius.all(Radius.circular(12))),
@@ -103,9 +107,7 @@ void main() {
     testWidgets('mouse hover triggers InkWell hover effect', (tester) async {
       await tester.pumpWidget(createWidget(onTap: () {}));
 
-      final gesture = await tester.createGesture(
-        kind: PointerDeviceKind.mouse,
-      );
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer(location: Offset.zero);
       addTearDown(gesture.removePointer);
 
