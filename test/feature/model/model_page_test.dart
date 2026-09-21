@@ -3,8 +3,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../test_model.dart';
+
+const _testProject = Project(id: 'proj-1', displayName: 'Project', key: 'proj');
 
 void main() {
   group('ModelPage filtering', () {
@@ -32,6 +35,11 @@ void main() {
                 m.name.toLowerCase().contains(q.toLowerCase()),
             matchesFilter: matchesFilter,
             nameSelector: (m) => m.name,
+            keySelector: (m) => m.internalId.toString(),
+            copyDialogTitle: 'Copy',
+            mapToCopySuccessfully: (_, _) => true,
+            projects: const [_testProject],
+            currentProject: _testProject,
             filterOptions: filterOptions,
             onAdd: () {},
             onModelTap: (_) {},
@@ -44,9 +52,7 @@ void main() {
     testWidgets('typing a search query narrows the visible list', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        createWidget(matchesFilter: (_, _) => true),
-      );
+      await tester.pumpWidget(createWidget(matchesFilter: (_, _) => true));
 
       expect(find.text('Model 0'), findsOneWidget);
       expect(find.text('Model 4'), findsOneWidget);
@@ -129,6 +135,11 @@ void main() {
                 m.name.toLowerCase().contains(q.toLowerCase()),
             matchesFilter: (_, _) => true,
             nameSelector: (m) => m.name,
+            keySelector: (m) => m.internalId.toString(),
+            copyDialogTitle: 'Copy',
+            mapToCopySuccessfully: (_, _) => true,
+            projects: const [_testProject],
+            currentProject: _testProject,
             onAdd: () {},
             onModelTap: (_) {},
             onRefresh: () {},
@@ -137,21 +148,20 @@ void main() {
       );
     }
 
-    testWidgets('shows the shared empty-data hint when there are no models at all', (
-      tester,
-    ) async {
-      await tester.pumpWidget(createWidget(models: const []));
+    testWidgets(
+      'shows the shared empty-data hint when there are no models at all',
+      (tester) async {
+        await tester.pumpWidget(createWidget(models: const []));
 
-      expect(find.text(emptyHeader), findsOneWidget);
-    });
+        expect(find.text(emptyHeader), findsOneWidget);
+      },
+    );
 
     testWidgets('shows the same hint when a search yields no results', (
       tester,
     ) async {
       await tester.pumpWidget(
-        createWidget(
-          models: [TestModel(internalId: 1, name: 'Model 1')],
-        ),
+        createWidget(models: [TestModel(internalId: 1, name: 'Model 1')]),
       );
 
       await tester.enterText(find.byType(TextField), 'nope');
@@ -199,6 +209,11 @@ void main() {
                 m.name.toLowerCase().contains(q.toLowerCase()),
             matchesFilter: (_, _) => true,
             nameSelector: (m) => m.name,
+            keySelector: (m) => m.internalId.toString(),
+            copyDialogTitle: 'Copy',
+            mapToCopySuccessfully: (_, _) => true,
+            projects: const [_testProject],
+            currentProject: _testProject,
             onAdd: () {},
             onModelTap: (_) {},
             onRefresh: () {},
@@ -223,9 +238,7 @@ void main() {
       expect(visibleNameOrder(tester), ['Alpha', 'Bravo', 'Charlie']);
     });
 
-    testWidgets('name descending reverses the default order', (
-      tester,
-    ) async {
+    testWidgets('name descending reverses the default order', (tester) async {
       await tester.pumpWidget(createWidget());
 
       await tester.tap(find.byIcon(Icons.filter_list));
@@ -258,53 +271,65 @@ void main() {
       expect(visibleNameOrder(tester), ['Bravo', 'Alpha', 'Charlie']);
     });
 
-    testWidgets(
-      'keeps undated models last in both creation-date directions',
-      (tester) async {
-        final withUndated = [
-          TestModel(internalId: 1, name: 'Alpha', creationDate: DateTime(2024, 2, 1)),
-          TestModel(internalId: 2, name: 'Bravo'), // no creationDate
-          TestModel(internalId: 3, name: 'Charlie', creationDate: DateTime(2024, 1, 1)),
-        ];
+    testWidgets('keeps undated models last in both creation-date directions', (
+      tester,
+    ) async {
+      final withUndated = [
+        TestModel(
+          internalId: 1,
+          name: 'Alpha',
+          creationDate: DateTime(2024, 2, 1),
+        ),
+        TestModel(internalId: 2, name: 'Bravo'), // no creationDate
+        TestModel(
+          internalId: 3,
+          name: 'Charlie',
+          creationDate: DateTime(2024, 1, 1),
+        ),
+      ];
 
-        Widget createWithUndated() {
-          return MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: Scaffold(
-              body: ModelPage<TestModel>(
-                models: withUndated,
-                mapToDataModelItem: (m) => Text(m.name),
-                mapToDeleteDialog: (m) => [TextSpan(text: m.name)],
-                mapToDeleteSuccessfully: (_) => true,
-                matchesSearch: (m, q) =>
-                    m.name.toLowerCase().contains(q.toLowerCase()),
-                matchesFilter: (_, _) => true,
-                nameSelector: (m) => m.name,
-                onAdd: () {},
-                onModelTap: (_) {},
-                onRefresh: () {},
-              ),
+      Widget createWithUndated() {
+        return MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: ModelPage<TestModel>(
+              models: withUndated,
+              mapToDataModelItem: (m) => Text(m.name),
+              mapToDeleteDialog: (m) => [TextSpan(text: m.name)],
+              mapToDeleteSuccessfully: (_) => true,
+              matchesSearch: (m, q) =>
+                  m.name.toLowerCase().contains(q.toLowerCase()),
+              matchesFilter: (_, _) => true,
+              nameSelector: (m) => m.name,
+              keySelector: (m) => m.internalId.toString(),
+              copyDialogTitle: 'Copy',
+              mapToCopySuccessfully: (_, _) => true,
+              projects: const [_testProject],
+              currentProject: _testProject,
+              onAdd: () {},
+              onModelTap: (_) {},
+              onRefresh: () {},
             ),
-          );
-        }
+          ),
+        );
+      }
 
-        // Oldest first: Bravo (no date) must stay last, not first.
-        await tester.pumpWidget(createWithUndated());
-        await tester.tap(find.byIcon(Icons.filter_list));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Created (oldest first)'));
-        await tester.pumpAndSettle();
-        expect(visibleNameOrder(tester), ['Charlie', 'Alpha', 'Bravo']);
+      // Oldest first: Bravo (no date) must stay last, not first.
+      await tester.pumpWidget(createWithUndated());
+      await tester.tap(find.byIcon(Icons.filter_list));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Created (oldest first)'));
+      await tester.pumpAndSettle();
+      expect(visibleNameOrder(tester), ['Charlie', 'Alpha', 'Bravo']);
 
-        // Newest first: Bravo (no date) must still stay last.
-        await tester.tap(find.byIcon(Icons.filter_list));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Created (newest first)'));
-        await tester.pumpAndSettle();
-        expect(visibleNameOrder(tester), ['Alpha', 'Charlie', 'Bravo']);
-      },
-    );
+      // Newest first: Bravo (no date) must still stay last.
+      await tester.tap(find.byIcon(Icons.filter_list));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Created (newest first)'));
+      await tester.pumpAndSettle();
+      expect(visibleNameOrder(tester), ['Alpha', 'Charlie', 'Bravo']);
+    });
   });
 
   group('ModelPage refresh', () {
@@ -324,6 +349,11 @@ void main() {
                 m.name.toLowerCase().contains(q.toLowerCase()),
             matchesFilter: (_, _) => true,
             nameSelector: (m) => m.name,
+            keySelector: (m) => m.internalId.toString(),
+            copyDialogTitle: 'Copy',
+            mapToCopySuccessfully: (_, _) => true,
+            projects: const [_testProject],
+            currentProject: _testProject,
             onAdd: () {},
             onModelTap: (_) {},
             onRefresh: onRefresh ?? () {},

@@ -15,6 +15,11 @@ void main() {
     );
 
     const testModel = ItemModel(id: 'item-1', uiName: 'Test Item');
+    const testProject = Project(
+      id: 'proj-1',
+      displayName: 'Project',
+      key: 'proj',
+    );
 
     Widget createWidget({
       bool selected = false,
@@ -40,6 +45,12 @@ void main() {
             mapToDeleteSuccessfully: (_) => true,
             mapToDataModelItem: (model) => Text(model.uiName),
             rawModel: model,
+            nameSelector: (model) => model.uiName,
+            keySelector: (model) => model.key ?? '',
+            copyDialogTitle: 'Copy item',
+            mapToCopySuccessfully: (_, _) => true,
+            projects: const [testProject],
+            currentProject: testProject,
             onTap: onTap,
           ),
         ),
@@ -67,8 +78,9 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('applies selectedCardShape when selected is true',
-        (tester) async {
+    testWidgets('applies selectedCardShape when selected is true', (
+      tester,
+    ) async {
       await tester.pumpWidget(createWidget(selected: true));
 
       final card = tester.widget<Card>(find.byType(Card));
@@ -84,15 +96,13 @@ void main() {
       expect(card.shape, isNull);
     });
 
-    testWidgets('InkWell has hoverColor and matching borderRadius',
-        (tester) async {
+    testWidgets('InkWell has hoverColor and matching borderRadius', (
+      tester,
+    ) async {
       await tester.pumpWidget(createWidget(onTap: () {}));
 
       final inkWell = tester.widget<InkWell>(cardInkWell);
-      expect(
-        inkWell.hoverColor,
-        equals(Colors.amber.withValues(alpha: 0.1)),
-      );
+      expect(inkWell.hoverColor, equals(Colors.amber.withValues(alpha: 0.1)));
       expect(
         inkWell.borderRadius,
         equals(const BorderRadius.all(Radius.circular(12))),
@@ -103,9 +113,7 @@ void main() {
     testWidgets('mouse hover triggers InkWell hover effect', (tester) async {
       await tester.pumpWidget(createWidget(onTap: () {}));
 
-      final gesture = await tester.createGesture(
-        kind: PointerDeviceKind.mouse,
-      );
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer(location: Offset.zero);
       addTearDown(gesture.removePointer);
 
