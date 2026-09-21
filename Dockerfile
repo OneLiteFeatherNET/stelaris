@@ -19,7 +19,7 @@ FROM debian:13-slim AS build
 # Kept in lockstep with the flutter-version in .github/workflows/*.yml and the
 # `flutter:` constraint in pubspec.yaml. Renovate updates all of them together.
 # renovate: datasource=flutter-version depName=flutter versioning=semver
-ARG FLUTTER_VERSION=3.47.4
+ARG FLUTTER_VERSION=3.47.5
 
 ENV DEBIAN_FRONTEND=noninteractive
 
