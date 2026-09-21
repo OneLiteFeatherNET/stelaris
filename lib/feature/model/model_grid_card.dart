@@ -5,6 +5,8 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/relative_time.dart';
 import 'package:stelaris/util/typedefs.dart';
 
+import 'model_card_actions.dart';
+
 /// A grid-friendly card for [ModelPage]: primary content in a header row,
 /// a divider, and a "last edited" footer row (from
 /// [DataModel.modificationDate]) below it. The delete action sits in the
@@ -29,20 +31,7 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-
-    final creationDate = rawModel.creationDate;
-    final modificationDate = rawModel.modificationDate;
-    // Only one timestamp is shown: if it was ever edited after creation,
-    // that edit is the more relevant one; otherwise fall back to creation.
-    final wasEdited = modificationDate != null &&
-        (creationDate == null || modificationDate.isAfter(creationDate));
-    final timestampDate = wasEdited ? modificationDate : creationDate;
-    final timestampIcon = wasEdited
-        ? Icons.edit_outlined
-        : Icons.add_circle_outline;
-    final timestampLabel = wasEdited
-        ? context.l10n.model_card_edited_prefix
-        : context.l10n.model_card_created_prefix;
+    final timestamp = _TimestampInfo.of(context, rawModel);
 
     return Card.outlined(
       clipBehavior: Clip.antiAlias,
@@ -65,45 +54,33 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(child: mapToDataModelItem(rawModel)),
-                  // DeleteModelButton wraps a plain IconButton, whose default
-                  // 8px padding + 48px min tap target would otherwise push
-                  // the icon well below the header text's top edge. 40x40
-                  // keeps a reasonable tap target (accessibility minimum)
-                  // while still sitting much closer to that edge than the
-                  // default 48x48 would.
-                  IconButtonTheme(
-                    data: IconButtonThemeData(
-                      style: IconButton.styleFrom(
-                        foregroundColor: colorScheme.onSurfaceVariant,
-                        iconSize: 20,
-                        padding: EdgeInsets.zero,
-                        minimumSize: const Size(40, 40),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ModelCardActions(
+                    color: colorScheme.onSurfaceVariant,
+                    children: [
+                      DeleteModelButton<E>(
+                        value: rawModel,
+                        mapToDeleteDialog: mapToDeleteDialog,
+                        mapToDeleteSuccessfully: mapToDeleteSuccessfully,
                       ),
-                    ),
-                    child: DeleteModelButton<E>(
-                      value: rawModel,
-                      mapToDeleteDialog: mapToDeleteDialog,
-                      mapToDeleteSuccessfully: mapToDeleteSuccessfully,
-                    ),
+                    ],
                   ),
                 ],
               ),
-              if (timestampDate != null) ...[
+              if (timestamp != null) ...[
                 const SizedBox(height: 8),
                 Divider(height: 1, color: colorScheme.outlineVariant),
                 const SizedBox(height: 8),
                 Row(
                   children: [
                     Icon(
-                      timestampIcon,
+                      timestamp.icon,
                       size: 14,
                       color: colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 4),
                     Flexible(
                       child: Text(
-                        '$timestampLabel ${relativeTime(context, timestampDate)}',
+                        '${timestamp.label} ${relativeTime(context, timestamp.date)}',
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
@@ -118,6 +95,43 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The icon, label, and date for a [ModelGridCard]'s "last edited"/"created"
+/// footer, derived from a [DataModel]'s [DataModel.creationDate] and
+/// [DataModel.modificationDate].
+class _TimestampInfo {
+  const _TimestampInfo({
+    required this.icon,
+    required this.label,
+    required this.date,
+  });
+
+  final IconData icon;
+  final String label;
+  final DateTime date;
+
+  /// Returns `null` if [model] has neither a creation nor a modification
+  /// date. Only one timestamp is ever shown: if [model] was edited after
+  /// creation, that edit is the more relevant one; otherwise it falls back
+  /// to the creation date.
+  static _TimestampInfo? of(BuildContext context, DataModel model) {
+    final creationDate = model.creationDate;
+    final modificationDate = model.modificationDate;
+    final wasEdited =
+        modificationDate != null &&
+        (creationDate == null || modificationDate.isAfter(creationDate));
+    final date = wasEdited ? modificationDate : creationDate;
+    if (date == null) return null;
+
+    return _TimestampInfo(
+      icon: wasEdited ? Icons.edit_outlined : Icons.add_circle_outline,
+      label: wasEdited
+          ? context.l10n.model_card_edited_prefix
+          : context.l10n.model_card_created_prefix,
+      date: date,
     );
   }
 }
