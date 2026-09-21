@@ -1,6 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
+import 'package:stelaris/feature/base/button/model_actions_menu.dart';
+import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class ModelCard<E extends DataModel> extends StatelessWidget {
@@ -11,6 +13,10 @@ class ModelCard<E extends DataModel> extends StatelessWidget {
     required this.mapToDeleteSuccessfully,
     required this.mapToDataModelItem,
     required this.rawModel,
+    required this.nameSelector,
+    required this.keySelector,
+    required this.projectKey,
+    this.hasRelationshipData,
     this.onTap,
     super.key,
   });
@@ -21,6 +27,10 @@ class ModelCard<E extends DataModel> extends StatelessWidget {
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
   final MapToDataModelItem<E> mapToDataModelItem;
   final E rawModel;
+  final ModelNameSelector<E> nameSelector;
+  final ModelKeySelector<E> keySelector;
+  final String projectKey;
+  final HasRelationshipData<E>? hasRelationshipData;
   final VoidCallback? onTap;
 
   @override
@@ -48,6 +58,13 @@ class ModelCard<E extends DataModel> extends StatelessWidget {
               children: [
                 Expanded(
                   child: mapToDataModelItem(rawModel),
+                ),
+                ModelActionsMenu<E>(
+                  value: rawModel,
+                  nameSelector: nameSelector,
+                  keySelector: keySelector,
+                  projectKey: projectKey,
+                  hasRelationshipData: hasRelationshipData,
                 ),
                 DeleteModelButton<E>(
                   value: rawModel,

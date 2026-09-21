@@ -1,22 +1,28 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
+import 'package:stelaris/feature/base/button/model_actions_menu.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/relative_time.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 import 'model_card_actions.dart';
+import 'model_page.dart';
 
 /// A grid-friendly card for [ModelPage]: primary content in a header row,
 /// a divider, and a "last edited" footer row (from
-/// [DataModel.modificationDate]) below it. The delete action sits in the
-/// header's corner.
+/// [DataModel.modificationDate]) below it. The info/delete actions sit in
+/// the header's corner.
 class ModelGridCard<E extends DataModel> extends StatelessWidget {
   const ModelGridCard({
     required this.rawModel,
     required this.mapToDataModelItem,
     required this.mapToDeleteDialog,
     required this.mapToDeleteSuccessfully,
+    required this.nameSelector,
+    required this.keySelector,
+    required this.projectKey,
+    this.hasRelationshipData,
     this.onTap,
     super.key,
   });
@@ -25,6 +31,10 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
   final MapToDataModelItem<E> mapToDataModelItem;
   final MapToDeleteDialog<E> mapToDeleteDialog;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
+  final ModelNameSelector<E> nameSelector;
+  final ModelKeySelector<E> keySelector;
+  final String projectKey;
+  final HasRelationshipData<E>? hasRelationshipData;
   final VoidCallback? onTap;
 
   @override
@@ -57,6 +67,13 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
                   ModelCardActions(
                     color: colorScheme.onSurfaceVariant,
                     children: [
+                      ModelActionsMenu<E>(
+                        value: rawModel,
+                        nameSelector: nameSelector,
+                        keySelector: keySelector,
+                        projectKey: projectKey,
+                        hasRelationshipData: hasRelationshipData,
+                      ),
                       DeleteModelButton<E>(
                         value: rawModel,
                         mapToDeleteDialog: mapToDeleteDialog,

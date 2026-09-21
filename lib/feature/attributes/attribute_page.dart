@@ -51,6 +51,8 @@ class AttributePage extends StatelessWidget {
           matchesSearch: (model, query) =>
               model.uiName.toLowerCase().contains(query.toLowerCase()),
           nameSelector: (model) => model.uiName,
+          keySelector: (model) => model.key ?? '',
+          projectKey: vm.projectKey,
           filterOptions: [hasDefaultValueFilter, hasMaximumValueFilter],
           matchesFilter: (model, filter) => switch (filter.id) {
             'has_default_value' =>
