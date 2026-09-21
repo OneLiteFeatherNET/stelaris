@@ -31,6 +31,7 @@ RegExp versionPattern = RegExp(r'^[0-9.]*$');
 RegExp adventureNamespacePattern = RegExp(r'^(?!.*\.\.)[a-z0-9_.-]+$');
 RegExp adventureKeyPattern = RegExp(r'^(?!.*\.\.)(?:[a-z0-9_.-]+:)?[a-z0-9/._-]+$');
 RegExp adventureKeyPartPattern = RegExp(r'^(?!.*\.\.)[a-z0-9/._-]+$');
+RegExp uppercaseLetterPattern = RegExp('[A-Z]');
 
 /// Formatter
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);

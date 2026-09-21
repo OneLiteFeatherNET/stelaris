@@ -62,7 +62,7 @@ class Validators {
 
       final text = value.trim();
 
-      if (text.contains(RegExp(r'[A-Z]'))) {
+      if (text.contains(uppercaseLetterPattern)) {
         return 'Uppercase letters are not allowed in Adventure keys';
       }
       if (text.contains(' ')) {
@@ -120,7 +120,7 @@ class Validators {
       if (text.contains('/')) {
         return 'Slashes (/) are not allowed in a namespace';
       }
-      if (text.contains(RegExp(r'[A-Z]'))) {
+      if (text.contains(uppercaseLetterPattern)) {
         return 'Uppercase letters are not allowed';
       }
       if (text.contains(' ')) {
@@ -164,7 +164,7 @@ class Validators {
       if (text.contains(':')) {
         return 'Colons (:) are not allowed in the key part';
       }
-      if (text.contains(RegExp(r'[A-Z]'))) {
+      if (text.contains(uppercaseLetterPattern)) {
         return 'Uppercase letters are not allowed';
       }
       if (text.contains(' ')) {
