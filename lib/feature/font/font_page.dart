@@ -29,16 +29,24 @@ class FontPage extends StatelessWidget {
       builder: (context, vm) {
         return ModelPage<FontModel>(
           mapToDataModelItem: (value) => _buildCardContent(context, value),
-          mapToDeleteDialog: (value) =>
-              createDeleteText(value.uiName, context),
+          mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(FontRemoveAction(value));
             return true;
           },
           models: vm.models,
           matchesSearch: (model, query) =>
-              model.uiName.toLowerCase().contains(query.toLowerCase()),
+              model.uiName.toLowerCase().contains(query),
           nameSelector: (model) => model.uiName,
+          keySelector: (model) => model.key ?? '',
+          copyDialogTitle: context.l10n.dialog_font_copy,
+          mapToCopySuccessfully: (value, result) {
+            context.dispatch(FontCopyAction(value, result));
+            return true;
+          },
+          hasRelationshipData: (model) => model.chars.items.isNotEmpty,
+          projects: vm.projects,
+          currentProject: vm.currentProject,
           matchesFilter: (model, filter) => true,
           onAdd: () => _openDialog(context, vm.projectKey),
           onModelTap: (model) {
@@ -79,7 +87,9 @@ class FontPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              color: theme.colorScheme.surfaceContainerHighest.withValues(
+                alpha: 0.5,
+              ),
               borderRadius: BorderRadius.circular(6),
               border: Border.all(
                 color: theme.colorScheme.outlineVariant.withValues(alpha: 0.6),

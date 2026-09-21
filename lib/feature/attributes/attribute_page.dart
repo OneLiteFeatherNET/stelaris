@@ -41,16 +41,23 @@ class AttributePage extends StatelessWidget {
         return ModelPage<AttributeModel>(
           mapToDataModelItem: (value) =>
               _buildCardContent(context, vm.projectKey, value),
-          mapToDeleteDialog: (value) =>
-              createDeleteText(value.uiName, context),
+          mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(AttributeRemoveAction(value));
             return true;
           },
           models: vm.models,
           matchesSearch: (model, query) =>
-              model.uiName.toLowerCase().contains(query.toLowerCase()),
+              model.uiName.toLowerCase().contains(query),
           nameSelector: (model) => model.uiName,
+          keySelector: (model) => model.key ?? '',
+          copyDialogTitle: context.l10n.dialog_attribute_copy,
+          mapToCopySuccessfully: (value, result) {
+            context.dispatch(AttributeCopyAction(value, result));
+            return true;
+          },
+          projects: vm.projects,
+          currentProject: vm.currentProject,
           filterOptions: [hasDefaultValueFilter, hasMaximumValueFilter],
           matchesFilter: (model, filter) => switch (filter.id) {
             'has_default_value' =>
@@ -106,7 +113,9 @@ class AttributePage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              color: theme.colorScheme.surfaceContainerHighest.withValues(
+                alpha: 0.5,
+              ),
               borderRadius: BorderRadius.circular(6),
               border: Border.all(
                 color: theme.colorScheme.outlineVariant.withValues(alpha: 0.6),

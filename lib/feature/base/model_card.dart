@@ -1,6 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/feature/base/button/copy_model_button.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
+import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class ModelCard<E extends DataModel> extends StatelessWidget {
@@ -11,6 +13,13 @@ class ModelCard<E extends DataModel> extends StatelessWidget {
     required this.mapToDeleteSuccessfully,
     required this.mapToDataModelItem,
     required this.rawModel,
+    required this.nameSelector,
+    required this.keySelector,
+    required this.copyDialogTitle,
+    required this.mapToCopySuccessfully,
+    required this.projects,
+    required this.currentProject,
+    this.hasRelationshipData,
     this.onTap,
     super.key,
   });
@@ -21,6 +30,13 @@ class ModelCard<E extends DataModel> extends StatelessWidget {
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
   final MapToDataModelItem<E> mapToDataModelItem;
   final E rawModel;
+  final ModelNameSelector<E> nameSelector;
+  final ModelKeySelector<E> keySelector;
+  final String copyDialogTitle;
+  final MapToCopySuccessfully<E> mapToCopySuccessfully;
+  final HasRelationshipData<E>? hasRelationshipData;
+  final List<Project> projects;
+  final Project currentProject;
   final VoidCallback? onTap;
 
   @override
@@ -43,11 +59,24 @@ class ModelCard<E extends DataModel> extends StatelessWidget {
           splashFactory: NoSplash.splashFactory,
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 8, top: 4, bottom: 4),
+            padding: const EdgeInsets.only(
+              left: 16,
+              right: 8,
+              top: 4,
+              bottom: 4,
+            ),
             child: Row(
               children: [
-                Expanded(
-                  child: mapToDataModelItem(rawModel),
+                Expanded(child: mapToDataModelItem(rawModel)),
+                CopyModelButton<E>(
+                  value: rawModel,
+                  copyDialogTitle: copyDialogTitle,
+                  nameSelector: nameSelector,
+                  keySelector: keySelector,
+                  projects: projects,
+                  currentProject: currentProject,
+                  mapToCopySuccessfully: mapToCopySuccessfully,
+                  hasRelationshipData: hasRelationshipData,
                 ),
                 DeleteModelButton<E>(
                   value: rawModel,

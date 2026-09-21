@@ -29,16 +29,27 @@ class ItemPage extends StatelessWidget {
       builder: (context, vm) {
         return ModelPage<ItemModel>(
           mapToDataModelItem: (value) => _buildCardContent(context, value),
-          mapToDeleteDialog: (value) =>
-              createDeleteText(value.uiName, context),
+          mapToDeleteDialog: (value) => createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
             context.dispatch(ItemRemoveAction(value));
             return true;
           },
           models: vm.itemModels,
           matchesSearch: (model, query) =>
-              model.uiName.toLowerCase().contains(query.toLowerCase()),
+              model.uiName.toLowerCase().contains(query),
           nameSelector: (model) => model.uiName,
+          keySelector: (model) => model.key ?? '',
+          copyDialogTitle: context.l10n.dialog_item_copy,
+          mapToCopySuccessfully: (value, result) {
+            context.dispatch(ItemCopyAction(value, result));
+            return true;
+          },
+          hasRelationshipData: (model) =>
+              model.enchantments.items.isNotEmpty ||
+              model.lore.items.isNotEmpty ||
+              model.flags.items.isNotEmpty,
+          projects: vm.projects,
+          currentProject: vm.currentProject,
           matchesFilter: (model, filter) => true,
           onAdd: () => _openCreationDialog(context, vm.projectKey),
           onModelTap: (model) {
@@ -79,7 +90,9 @@ class ItemPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              color: theme.colorScheme.surfaceContainerHighest.withValues(
+                alpha: 0.5,
+              ),
               borderRadius: BorderRadius.circular(6),
               border: Border.all(
                 color: theme.colorScheme.outlineVariant.withValues(alpha: 0.6),
