@@ -1,6 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/feature/base/button/copy_model_button.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
+import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/relative_time.dart';
 import 'package:stelaris/util/typedefs.dart';
@@ -15,6 +17,13 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
     required this.mapToDataModelItem,
     required this.mapToDeleteDialog,
     required this.mapToDeleteSuccessfully,
+    required this.nameSelector,
+    required this.keySelector,
+    required this.copyDialogTitle,
+    required this.mapToCopySuccessfully,
+    required this.projects,
+    required this.currentProject,
+    this.hasRelationshipData,
     this.onTap,
     super.key,
   });
@@ -23,6 +32,13 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
   final MapToDataModelItem<E> mapToDataModelItem;
   final MapToDeleteDialog<E> mapToDeleteDialog;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
+  final ModelNameSelector<E> nameSelector;
+  final ModelKeySelector<E> keySelector;
+  final String copyDialogTitle;
+  final MapToCopySuccessfully<E> mapToCopySuccessfully;
+  final HasRelationshipData<E>? hasRelationshipData;
+  final List<Project> projects;
+  final Project currentProject;
   final VoidCallback? onTap;
 
   @override
@@ -34,7 +50,8 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
     final modificationDate = rawModel.modificationDate;
     // Only one timestamp is shown: if it was ever edited after creation,
     // that edit is the more relevant one; otherwise fall back to creation.
-    final wasEdited = modificationDate != null &&
+    final wasEdited =
+        modificationDate != null &&
         (creationDate == null || modificationDate.isAfter(creationDate));
     final timestampDate = wasEdited ? modificationDate : creationDate;
     final timestampIcon = wasEdited
@@ -65,26 +82,47 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(child: mapToDataModelItem(rawModel)),
-                  // DeleteModelButton wraps a plain IconButton, whose default
-                  // 8px padding + 48px min tap target would otherwise push
-                  // the icon well below the header text's top edge. 40x40
-                  // keeps a reasonable tap target (accessibility minimum)
-                  // while still sitting much closer to that edge than the
-                  // default 48x48 would.
-                  IconButtonTheme(
-                    data: IconButtonThemeData(
-                      style: IconButton.styleFrom(
-                        foregroundColor: colorScheme.onSurfaceVariant,
-                        iconSize: 20,
-                        padding: EdgeInsets.zero,
-                        minimumSize: const Size(40, 40),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  // DeleteModelButton/CopyModelButton wrap a plain
+                  // IconButton. Content below the title (e.g. a key badge)
+                  // means the header can be taller than one line, so the
+                  // icons are top-aligned against it rather than centered
+                  // against the whole block. 28x28 keeps their box close to
+                  // titleMedium's line-box height (~24px), but Text's font
+                  // leading and IconButton's own centering don't share the
+                  // same top inset, so a small manual offset closes the
+                  // remaining gap between the title's glyphs and the icons.
+                  Transform.translate(
+                    offset: const Offset(0, -6),
+                    child: IconButtonTheme(
+                      data: IconButtonThemeData(
+                        style: IconButton.styleFrom(
+                          foregroundColor: colorScheme.onSurfaceVariant,
+                          iconSize: 18,
+                          padding: EdgeInsets.zero,
+                          minimumSize: const Size(28, 28),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
                       ),
-                    ),
-                    child: DeleteModelButton<E>(
-                      value: rawModel,
-                      mapToDeleteDialog: mapToDeleteDialog,
-                      mapToDeleteSuccessfully: mapToDeleteSuccessfully,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CopyModelButton<E>(
+                            value: rawModel,
+                            copyDialogTitle: copyDialogTitle,
+                            nameSelector: nameSelector,
+                            keySelector: keySelector,
+                            projects: projects,
+                            currentProject: currentProject,
+                            mapToCopySuccessfully: mapToCopySuccessfully,
+                            hasRelationshipData: hasRelationshipData,
+                          ),
+                          DeleteModelButton<E>(
+                            value: rawModel,
+                            mapToDeleteDialog: mapToDeleteDialog,
+                            mapToDeleteSuccessfully: mapToDeleteSuccessfully,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

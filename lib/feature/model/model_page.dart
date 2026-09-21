@@ -12,7 +12,9 @@ import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/typedefs.dart';
 
-/// Decides whether [model] matches the free-text [query] from the [CommandBar].
+/// Decides whether [model] matches the free-text [query] from the
+/// [CommandBar]. [query] is already lowercased by [ModelPage], so
+/// implementations only need to lowercase the field(s) they compare it to.
 typedef ModelSearchMatcher<E extends DataModel> = bool Function(
   E model,
   String query,
@@ -26,6 +28,10 @@ typedef ModelFilterMatcher<E extends DataModel> = bool Function(
 
 /// Returns [model]'s display name, used for [SortField.name] sorting.
 typedef ModelNameSelector<E extends DataModel> = String Function(E model);
+
+/// Returns [model]'s namespaced-key part, used to prefill the key field of
+/// the copy dialog opened from a model card's action menu.
+typedef ModelKeySelector<E extends DataModel> = String Function(E model);
 
 /// The search/filter/sort choices applied to a [ModelPage]'s list. Held in
 /// a [ValueNotifier] rather than [State] fields so that changing it doesn't
@@ -78,6 +84,21 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
   final ModelFilterMatcher<E> matchesFilter;
   final List<FilterOption> filterOptions;
   final ModelNameSelector<E> nameSelector;
+  final ModelKeySelector<E> keySelector;
+
+  /// Title of the dialog opened from a card's "Copy…" action.
+  final String copyDialogTitle;
+  final MapToCopySuccessfully<E> mapToCopySuccessfully;
+
+  /// Whether a given model instance has related/embedded data worth
+  /// offering an "include relationships" choice for. Omitted by pages
+  /// whose model type never has any (e.g. attributes, notifications).
+  final HasRelationshipData<E>? hasRelationshipData;
+
+  /// Projects available as a copy target, and the one currently selected
+  /// (the default target, for an in-place duplicate).
+  final List<Project> projects;
+  final Project currentProject;
 
   /// Manually re-fetches page 1 from the server and replaces the list,
   /// regardless of how many pages were already loaded via [onLoadMore] —
@@ -101,7 +122,13 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
     required this.matchesSearch,
     required this.matchesFilter,
     required this.nameSelector,
+    required this.keySelector,
+    required this.copyDialogTitle,
+    required this.mapToCopySuccessfully,
+    required this.projects,
+    required this.currentProject,
     required this.onRefresh,
+    this.hasRelationshipData,
     this.isRefreshing = false,
     this.filterOptions = const [],
     this.onLoadMore,
@@ -162,46 +189,57 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
   void onLoadMore() => widget.onLoadMore?.call();
 
   List<E> _filteredModels(_ModelListState listState) {
-    final filtered =
-        listState.searchQuery.isEmpty && listState.activeFilters.isEmpty
+    // Lowercased once here rather than inside matchesSearch per model, and
+    // reused as-is since it doesn't affect emptiness.
+    final normalizedQuery = listState.searchQuery.toLowerCase();
+    final filtered = normalizedQuery.isEmpty && listState.activeFilters.isEmpty
         ? widget.models.toList()
         : widget.models.where((model) {
-            final matchesQuery = listState.searchQuery.isEmpty ||
-                widget.matchesSearch(model, listState.searchQuery);
-            final matchesFilters = listState.activeFilters.isEmpty ||
-                listState.activeFilters
-                    .every((filter) => widget.matchesFilter(model, filter));
+            final matchesQuery =
+                normalizedQuery.isEmpty ||
+                widget.matchesSearch(model, normalizedQuery);
+            final matchesFilters =
+                listState.activeFilters.isEmpty ||
+                listState.activeFilters.every(
+                  (filter) => widget.matchesFilter(model, filter),
+                );
             return matchesQuery && matchesFilters;
           }).toList();
 
-    filtered.sort((a, b) => _compareModels(a, b, listState));
-    return filtered;
+    return _sortModels(filtered, listState);
   }
 
-  int _compareModels(E a, E b, _ModelListState listState) {
+  List<E> _sortModels(List<E> models, _ModelListState listState) {
     final directionMultiplier =
         listState.sortDirection == SortDirection.descending ? -1 : 1;
 
     switch (listState.sortField) {
       case SortField.name:
-        final comparison = widget
-            .nameSelector(a)
-            .toLowerCase()
-            .compareTo(widget.nameSelector(b).toLowerCase());
-        return comparison * directionMultiplier;
+        // Decorate-sort-undecorate: compute each model's lowercase sort key
+        // once instead of re-lowercasing both sides on every comparison
+        // the sort makes.
+        final decorated = [
+          for (final model in models)
+            (key: widget.nameSelector(model).toLowerCase(), model: model),
+        ];
+        decorated.sort((a, b) => a.key.compareTo(b.key) * directionMultiplier);
+        return [for (final entry in decorated) entry.model];
       case SortField.createdAt:
-        final aDate = a.creationDate;
-        final bDate = b.creationDate;
-        // Undated models always sort last, regardless of direction —
-        // negating the comparison for "descending" must not also flip
-        // which end of the list they land on.
-        return switch ((aDate, bDate)) {
-          (null, null) => 0,
-          (null, _) => 1,
-          (_, null) => -1,
-          (final aDate?, final bDate?) =>
-            aDate.compareTo(bDate) * directionMultiplier,
-        };
+        models.sort((a, b) {
+          final aDate = a.creationDate;
+          final bDate = b.creationDate;
+          // Undated models always sort last, regardless of direction —
+          // negating the comparison for "descending" must not also flip
+          // which end of the list they land on.
+          return switch ((aDate, bDate)) {
+            (null, null) => 0,
+            (null, _) => 1,
+            (_, null) => -1,
+            (final aDate?, final bDate?) =>
+              aDate.compareTo(bDate) * directionMultiplier,
+          };
+        });
+        return models;
     }
   }
 
@@ -238,8 +276,9 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
   }
 
   static const double _gridMaxCardExtent = 320;
-  static const double _gridCardHeight = 132;
+  static const double _gridCardHeight = 148;
   static const double _gridSpacing = 12;
+  static const int _gridMaxColumns = 4;
 
   Widget _buildGridView(_ModelListState listState) {
     final models = _filteredModels(listState);
@@ -257,26 +296,38 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
     final hasFooter =
         widget.onLoadMore != null && (widget.isLoadingMore || widget.hasMore);
 
-    return CustomScrollView(
-      controller: scrollController,
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.all(4),
-          sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: _gridMaxCardExtent,
-              mainAxisExtent: _gridCardHeight,
-              crossAxisSpacing: _gridSpacing,
-              mainAxisSpacing: _gridSpacing,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Same column-width target as before (_gridMaxCardExtent), but
+        // capped at _gridMaxColumns so wide screens don't stretch the grid
+        // to 5+ columns.
+        final rawColumns =
+            (constraints.maxWidth + _gridSpacing) /
+            (_gridMaxCardExtent + _gridSpacing);
+        final columns = rawColumns.floor().clamp(1, _gridMaxColumns);
+
+        return CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: columns,
+                  mainAxisExtent: _gridCardHeight,
+                  crossAxisSpacing: _gridSpacing,
+                  mainAxisSpacing: _gridSpacing,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => _buildGridItem(context, models[index]),
+                  childCount: models.length,
+                ),
+              ),
             ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => _buildGridItem(context, models[index]),
-              childCount: models.length,
-            ),
-          ),
-        ),
-        if (hasFooter) SliverToBoxAdapter(child: _buildFooter()),
-      ],
+            if (hasFooter) SliverToBoxAdapter(child: _buildFooter()),
+          ],
+        );
+      },
     );
   }
 
@@ -289,6 +340,13 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
       mapToDeleteDialog: widget.mapToDeleteDialog,
       mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
       mapToDataModelItem: widget.mapToDataModelItem,
+      nameSelector: widget.nameSelector,
+      keySelector: widget.keySelector,
+      copyDialogTitle: widget.copyDialogTitle,
+      mapToCopySuccessfully: widget.mapToCopySuccessfully,
+      hasRelationshipData: widget.hasRelationshipData,
+      projects: widget.projects,
+      currentProject: widget.currentProject,
       rawModel: model,
       onTap: () => widget.onModelTap(model),
     );
