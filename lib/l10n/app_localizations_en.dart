@@ -512,6 +512,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command_bar_search_hint => 'Search...';
 
   @override
+  String get command_bar_search_tooltip => 'Focus search';
+
+  @override
   String get command_bar_filter_sort_tooltip => 'Filter & Sort';
 
   @override

@@ -179,6 +179,7 @@
   "dialog_model_create_button": "Create",
 
   "command_bar_search_hint": "Search...",
+  "command_bar_search_tooltip": "Focus search",
   "command_bar_filter_sort_tooltip": "Filter & Sort",
   "command_bar_refresh_tooltip": "Refresh",
   "sort_name_ascending": "Name (A–Z)",
