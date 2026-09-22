@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
+import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -12,8 +13,13 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// here.
 class AttributeEditDialog extends StatefulWidget {
   final AttributeModel model;
+  final String projectKey;
 
-  const AttributeEditDialog({required this.model, super.key});
+  const AttributeEditDialog({
+    required this.model,
+    required this.projectKey,
+    super.key,
+  });
 
   @override
   State<AttributeEditDialog> createState() => _AttributeEditDialogState();
@@ -61,6 +67,10 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final numberFormatter = [FilteringTextInputFormatter.allow(numberPattern)];
+    final key = widget.model.key;
+    final namespacedKey = key != null && key.isNotEmpty
+        ? '${widget.projectKey}:$key'
+        : null;
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -90,6 +100,7 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
                   ),
                 ],
               ),
+              const Divider(height: 24),
               Text(
                 widget.model.uiName,
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -98,6 +109,16 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
+              if (namespacedKey != null) ...[
+                const SizedBox(height: 6),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: InfoChip(
+                    icon: Icons.vpn_key_outlined,
+                    text: namespacedKey,
+                  ),
+                ),
+              ],
               const Divider(height: 24),
               Form(
                 key: _formKey,

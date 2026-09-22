@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/attribute/attribute_vm_state.dart';
 import 'package:stelaris/feature/attributes/attribute_edit_dialog.dart';
+import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_page.dart';
@@ -64,7 +65,10 @@ class AttributePage extends StatelessWidget {
           onAdd: () => _openDialog(context, vm.projectKey),
           onModelTap: (model) => showDialog(
             context: context,
-            builder: (_) => AttributeEditDialog(model: model),
+            builder: (_) => AttributeEditDialog(
+              model: model,
+              projectKey: vm.projectKey,
+            ),
           ),
           onRefresh: () => context.dispatch(RefreshAttributeAction()),
           hasMore: vm.hasNextPage,
@@ -105,40 +109,7 @@ class AttributePage extends StatelessWidget {
         ),
         if (namespacedKey != null) ...[
           const SizedBox(height: 6),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(
-                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.6),
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.vpn_key_outlined,
-                  size: 12,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: 5),
-                Flexible(
-                  child: Text(
-                    namespacedKey,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 11,
-                      color: theme.colorScheme.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          InfoChip(icon: Icons.vpn_key_outlined, text: namespacedKey),
         ],
       ],
     );
