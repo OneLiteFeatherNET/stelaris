@@ -61,7 +61,10 @@ void main() {
                 builder: (context) => ElevatedButton(
                   onPressed: () => showDialog(
                     context: context,
-                    builder: (_) => const AttributeEditDialog(model: original),
+                    builder: (_) => const AttributeEditDialog(
+                      model: original,
+                      projectKey: 'test',
+                    ),
                   ),
                   child: const Text('Open'),
                 ),
