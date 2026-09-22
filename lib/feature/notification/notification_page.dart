@@ -6,6 +6,7 @@ import 'package:stelaris/api/state/actions/notification_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/notification/notification_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/functions.dart';
@@ -29,7 +30,8 @@ class NotificationPage extends StatelessWidget {
       onInit: (store) => store.dispatchAndWait(InitNotificationAction()),
       builder: (context, vm) {
         return ModelPage<NotificationModel>(
-          mapToDataModelItem: (value) => _buildCardContent(context, value),
+          mapToDataModelItem: (value) =>
+              _buildCardContent(context, vm.projectKey, value),
           mapToDeleteDialog: (value) =>
               createDeleteText(value.uiName, context),
           mapToDeleteSuccessfully: (value) {
@@ -60,9 +62,18 @@ class NotificationPage extends StatelessWidget {
   }
 
   /// Builds the primary card content for a [NotificationModel]: its display
-  /// name plus its configured material, if any.
-  Widget _buildCardContent(BuildContext context, NotificationModel value) {
-    final material = value.material;
+  /// name plus its namespaced key (e.g. `manis:test`), derived client-side
+  /// from the current project's key and the model's local
+  /// [NotificationModel.key].
+  Widget _buildCardContent(
+    BuildContext context,
+    String projectKey,
+    NotificationModel value,
+  ) {
+    final key = value.key;
+    final namespacedKey = key != null && key.isNotEmpty
+        ? '$projectKey:$key'
+        : null;
     final theme = Theme.of(context);
 
     return Column(
@@ -77,42 +88,9 @@ class NotificationPage extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        if (material != null && material.isNotEmpty) ...[
+        if (namespacedKey != null) ...[
           const SizedBox(height: 6),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(
-                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.6),
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.category_outlined,
-                  size: 12,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: 5),
-                Flexible(
-                  child: Text(
-                    material,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 11,
-                      color: theme.colorScheme.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          InfoChip(icon: Icons.vpn_key_outlined, text: namespacedKey),
         ],
       ],
     );
