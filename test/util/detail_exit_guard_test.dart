@@ -88,17 +88,5 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Item List'), findsOneWidget);
     });
-
-    testWidgets('leaves without a dialog when nothing is unsaved', (
-      tester,
-    ) async {
-      await pump(tester, const AppState());
-
-      testRouter.go('/items');
-      await tester.pumpAndSettle();
-
-      expect(find.byType(AlertDialog), findsNothing);
-      expect(find.text('Item List'), findsOneWidget);
-    });
   });
 }

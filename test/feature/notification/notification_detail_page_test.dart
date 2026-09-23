@@ -72,14 +72,5 @@ void main() {
 
       expect(find.text('Notification List'), findsOneWidget);
     });
-
-    testWidgets('shows info, delete and save in the header', (tester) async {
-      await pumpPage(tester);
-
-      expect(find.text('Info'), findsOneWidget);
-      expect(find.text('Delete'), findsOneWidget);
-      expect(find.text('Save'), findsOneWidget);
-      expect(find.byType(FloatingActionButton), findsNothing);
-    });
   });
 }

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/search_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/model_search_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_page.dart';
@@ -305,6 +306,31 @@ void main() {
 
       expect(find.byIcon(Icons.refresh), findsNothing);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    });
+  });
+
+  group('ModelPage search section', () {
+    final models = [
+      TestModel(internalId: 1, name: 'Ruby'),
+      TestModel(internalId: 2, name: 'Emerald'),
+    ];
+
+    testWidgets('a search typed in another section is dropped', (tester) async {
+      store = Store<AppState>(
+        initialState: const AppState(
+          modelSearch: ModelSearchState(
+            section: NavigationEntry.font,
+            query: 'ruby',
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(createModelPage(store: store, models: models));
+      await tester.pumpAndSettle();
+
+      expect(store.state.modelSearch.query, '');
+      expect(store.state.modelSearch.section, NavigationEntry.items);
+      expect(find.text('Emerald'), findsOneWidget);
     });
   });
 }

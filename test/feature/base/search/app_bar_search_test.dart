@@ -77,7 +77,7 @@ void main() {
     expect(store.state.modelSearch.query, 'ruby');
   });
 
-  testWidgets('clears the field when the store query is reset', (
+  testWidgets('clears the field when the store query is cleared', (
     tester,
   ) async {
     await pump(
@@ -86,7 +86,7 @@ void main() {
     );
     expect(find.text('ruby'), findsOneWidget);
 
-    store.dispatch(ResetSearchAction());
+    store.dispatch(UpdateSearchQueryAction(''));
     await tester.pumpAndSettle();
 
     expect(find.text('ruby'), findsNothing);

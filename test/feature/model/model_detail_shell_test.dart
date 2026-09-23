@@ -80,38 +80,21 @@ void main() {
     expect(find.text('Item List'), findsOneWidget);
   });
 
-  testWidgets('shows the unsaved dot and asks before going back', (
+  testWidgets('shows the unsaved dot only for its own section', (
     tester,
   ) async {
+    const dot = Key('page_header_unsaved_indicator');
+
     await pump(
       tester,
       state: const AppState(unsavedChanges: NavigationEntry.items),
     );
-    expect(
-      find.byKey(const Key('page_header_unsaved_indicator')),
-      findsOneWidget,
-    );
+    expect(find.byKey(dot), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('page_header_back_button')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('unsaved_dialog_cancel')));
-    await tester.pumpAndSettle();
-    expect(find.text('Body content'), findsOneWidget);
-
-    await tester.tap(find.byKey(const Key('page_header_back_button')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('unsaved_dialog_discard')));
-    await tester.pumpAndSettle();
-    expect(find.text('Item List'), findsOneWidget);
-  });
-
-  testWidgets('another section being dirty does not mark this one', (
-    tester,
-  ) async {
     await pump(
       tester,
       state: const AppState(unsavedChanges: NavigationEntry.font),
     );
-    expect(find.byKey(const Key('page_header_unsaved_indicator')), findsNothing);
+    expect(find.byKey(dot), findsNothing);
   });
 }

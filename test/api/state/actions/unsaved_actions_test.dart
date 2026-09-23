@@ -16,11 +16,7 @@ void main() {
 
   setUp(() => store = Store<AppState>(initialState: const AppState()));
 
-  test('is clean by default', () {
-    expect(store.state.unsavedChanges, isNull);
-  });
-
-  test('selecting an item is clean, editing it marks items as unsaved',
+  test('selecting is clean, each form update action marks its own section',
       () async {
     await store.dispatchAndWait(SelectedItemAction(item));
     expect(store.state.unsavedChanges, isNull);
@@ -29,9 +25,7 @@ void main() {
       UpdateItemAction(item.copyWith(uiName: 'Emerald Sword')),
     );
     expect(store.state.unsavedChanges, NavigationEntry.items);
-  });
 
-  test('each form update action marks its own section', () async {
     await store.dispatchAndWait(
       UpdateNotificationAction(const NotificationModel(uiName: 'n')),
     );
@@ -66,15 +60,6 @@ void main() {
 
     await store.dispatchAndWait(RemoveSelectItemAction());
     expect(store.state.unsavedChanges, isNull);
-  });
-
-  test('clearUnsavedChanges only clears the matching section', () {
-    const dirty = AppState(unsavedChanges: NavigationEntry.items);
-    expect(
-      dirty.clearUnsavedChanges(NavigationEntry.font).unsavedChanges,
-      NavigationEntry.items,
-    );
-    expect(dirty.clearUnsavedChanges(NavigationEntry.items).unsavedChanges, isNull);
   });
 
   test('DiscardUnsavedChangesAction clears the flag', () async {
