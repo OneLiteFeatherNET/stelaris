@@ -28,7 +28,7 @@ void main() {
           body: ModelGridCard<TestModel>(
             rawModel: model,
             mapToDataModelItem: (m) => Text(m.name),
-            mapToDeleteDialog: (m) => [TextSpan(text: m.name)],
+            deleteTitle: 'Delete test model',
             mapToDeleteSuccessfully: (_) => true,
             nameSelector: (m) => m.name,
             keySelector: (m) => m.internalId.toString(),
@@ -60,6 +60,27 @@ void main() {
       await tester.pump();
 
       expect(tapped, isTrue);
+    });
+
+    testWidgets('delete dialog asks for the model name', (tester) async {
+      await tester.pumpWidget(createWidget());
+
+      await tester.tap(find.byType(DeleteModelButton<TestModel>));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Delete test model'), findsOneWidget);
+      expect(find.text('proj:1'), findsOneWidget);
+      expect(find.text('Delete'), findsOneWidget);
+      expect(find.byType(TextField), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is SelectableText &&
+              w.textSpan!.toPlainText() ==
+                  'To confirm, type "Test Attribute" in the box below',
+        ),
+        findsOneWidget,
+      );
     });
   });
 }

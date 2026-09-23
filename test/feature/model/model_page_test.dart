@@ -26,7 +26,7 @@ void main() {
           body: ModelPage<TestModel>(
             models: models,
             mapToDataModelItem: (m) => Text(m.name),
-            mapToDeleteDialog: (m) => [TextSpan(text: m.name)],
+            deleteTitle: 'Delete test model',
             mapToDeleteSuccessfully: (_) => true,
             matchesSearch: (m, q) =>
                 m.name.toLowerCase().contains(q.toLowerCase()),
@@ -125,7 +125,7 @@ void main() {
           body: ModelPage<TestModel>(
             models: models,
             mapToDataModelItem: (m) => Text(m.name),
-            mapToDeleteDialog: (m) => [TextSpan(text: m.name)],
+            deleteTitle: 'Delete test model',
             mapToDeleteSuccessfully: (_) => true,
             matchesSearch: (m, q) =>
                 m.name.toLowerCase().contains(q.toLowerCase()),
@@ -197,7 +197,7 @@ void main() {
           body: ModelPage<TestModel>(
             models: models,
             mapToDataModelItem: (m) => Text(m.name),
-            mapToDeleteDialog: (m) => [TextSpan(text: m.name)],
+            deleteTitle: 'Delete test model',
             mapToDeleteSuccessfully: (_) => true,
             matchesSearch: (m, q) =>
                 m.name.toLowerCase().contains(q.toLowerCase()),
@@ -264,55 +264,62 @@ void main() {
       expect(visibleNameOrder(tester), ['Bravo', 'Alpha', 'Charlie']);
     });
 
-    testWidgets(
-      'keeps undated models last in both creation-date directions',
-      (tester) async {
-        final withUndated = [
-          TestModel(internalId: 1, name: 'Alpha', creationDate: DateTime(2024, 2, 1)),
-          TestModel(internalId: 2, name: 'Bravo'), // no creationDate
-          TestModel(internalId: 3, name: 'Charlie', creationDate: DateTime(2024, 1, 1)),
-        ];
+    testWidgets('keeps undated models last in both creation-date directions', (
+      tester,
+    ) async {
+      final withUndated = [
+        TestModel(
+          internalId: 1,
+          name: 'Alpha',
+          creationDate: DateTime(2024, 2, 1),
+        ),
+        TestModel(internalId: 2, name: 'Bravo'), // no creationDate
+        TestModel(
+          internalId: 3,
+          name: 'Charlie',
+          creationDate: DateTime(2024, 1, 1),
+        ),
+      ];
 
-        Widget createWithUndated() {
-          return MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: Scaffold(
-              body: ModelPage<TestModel>(
-                models: withUndated,
-                mapToDataModelItem: (m) => Text(m.name),
-                mapToDeleteDialog: (m) => [TextSpan(text: m.name)],
-                mapToDeleteSuccessfully: (_) => true,
-                matchesSearch: (m, q) =>
-                    m.name.toLowerCase().contains(q.toLowerCase()),
-                matchesFilter: (_, _) => true,
-                nameSelector: (m) => m.name,
-                keySelector: (m) => m.internalId.toString(),
-                projectKey: 'proj',
-                onAdd: () {},
-                onModelTap: (_) {},
-                onRefresh: () {},
-              ),
+      Widget createWithUndated() {
+        return MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: ModelPage<TestModel>(
+              models: withUndated,
+              mapToDataModelItem: (m) => Text(m.name),
+              deleteTitle: 'Delete test model',
+              mapToDeleteSuccessfully: (_) => true,
+              matchesSearch: (m, q) =>
+                  m.name.toLowerCase().contains(q.toLowerCase()),
+              matchesFilter: (_, _) => true,
+              nameSelector: (m) => m.name,
+              keySelector: (m) => m.internalId.toString(),
+              projectKey: 'proj',
+              onAdd: () {},
+              onModelTap: (_) {},
+              onRefresh: () {},
             ),
-          );
-        }
+          ),
+        );
+      }
 
-        // Oldest first: Bravo (no date) must stay last, not first.
-        await tester.pumpWidget(createWithUndated());
-        await tester.tap(find.byIcon(Icons.filter_list));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Created (oldest first)'));
-        await tester.pumpAndSettle();
-        expect(visibleNameOrder(tester), ['Charlie', 'Alpha', 'Bravo']);
+      // Oldest first: Bravo (no date) must stay last, not first.
+      await tester.pumpWidget(createWithUndated());
+      await tester.tap(find.byIcon(Icons.filter_list));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Created (oldest first)'));
+      await tester.pumpAndSettle();
+      expect(visibleNameOrder(tester), ['Charlie', 'Alpha', 'Bravo']);
 
-        // Newest first: Bravo (no date) must still stay last.
-        await tester.tap(find.byIcon(Icons.filter_list));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Created (newest first)'));
-        await tester.pumpAndSettle();
-        expect(visibleNameOrder(tester), ['Alpha', 'Charlie', 'Bravo']);
-      },
-    );
+      // Newest first: Bravo (no date) must still stay last.
+      await tester.tap(find.byIcon(Icons.filter_list));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Created (newest first)'));
+      await tester.pumpAndSettle();
+      expect(visibleNameOrder(tester), ['Alpha', 'Charlie', 'Bravo']);
+    });
   });
 
   group('ModelPage refresh', () {
@@ -326,7 +333,7 @@ void main() {
           body: ModelPage<TestModel>(
             models: models,
             mapToDataModelItem: (m) => Text(m.name),
-            mapToDeleteDialog: (m) => [TextSpan(text: m.name)],
+            deleteTitle: 'Delete test model',
             mapToDeleteSuccessfully: (_) => true,
             matchesSearch: (m, q) =>
                 m.name.toLowerCase().contains(q.toLowerCase()),
