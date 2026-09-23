@@ -633,4 +633,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get app_bar_search_close_tooltip => 'Close search';
+
+  @override
+  String get search_clear_tooltip => 'Clear search';
+
+  @override
+  String get search_no_results => 'No matches';
+
+  @override
+  String get search_no_results_hint =>
+      'Try another search or reset the filters.';
+
+  @override
+  String get search_reset => 'Reset search';
 }

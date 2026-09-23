@@ -246,5 +246,9 @@
       }
     }
   },
-  "app_bar_search_close_tooltip": "Close search"
+  "app_bar_search_close_tooltip": "Close search",
+  "search_clear_tooltip": "Clear search",
+  "search_no_results": "No matches",
+  "search_no_results_hint": "Try another search or reset the filters.",
+  "search_reset": "Reset search"
 }

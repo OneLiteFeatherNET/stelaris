@@ -1275,6 +1275,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close search'**
   String get app_bar_search_close_tooltip;
+
+  /// No description provided for @search_clear_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get search_clear_tooltip;
+
+  /// No description provided for @search_no_results.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches'**
+  String get search_no_results;
+
+  /// No description provided for @search_no_results_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another search or reset the filters.'**
+  String get search_no_results_hint;
+
+  /// No description provided for @search_reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset search'**
+  String get search_reset;
 }
 
 class _AppLocalizationsDelegate
