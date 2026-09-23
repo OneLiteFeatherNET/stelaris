@@ -57,7 +57,6 @@ Icon saveIcon = const Icon(Icons.save);
 Icon editIcon = const Icon(Icons.edit);
 
 /// Styles
-TextStyle redStyle = const TextStyle(color: Colors.red);
 
 // Boxes
 const SizedBox heightTen = SizedBox(height: 10);
