@@ -65,8 +65,8 @@ void main() {
       expect(loreItems[2].id, 'l1');
       expect(loreItems[2].orderIndex, 2);
 
-      // Verify state.items is also synced
-      expect(store.state.items.items.single.lore.items[2].id, 'l1');
+      // Lore only lives in the selection; the list entry stays as fetched.
+      expect(store.state.items.items.single, item);
     });
 
     test('is a no-op when oldIndex == newIndex or out of bounds', () async {
@@ -137,6 +137,55 @@ void main() {
       final results = await Future.wait([f1, f2]);
       expect(results[0].isCompletedOk, isTrue);
       expect(results[1].isCompletedOk, isTrue);
+    });
+  });
+
+  group('unsaved form edits', () {
+    test('a lore change leaves the list entry untouched',
+        () async {
+      const line1 = ItemLoreDto(id: 'l1', text: 'First line', orderIndex: 0);
+      const line2 = ItemLoreDto(id: 'l2', text: 'Second line', orderIndex: 1);
+      const saved = ItemModel(
+        id: 'item-1',
+        uiName: 'Sword',
+        lore: PaginatedResult<ItemLoreDto>(
+          items: [line1, line2],
+          totalItems: 2,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: 10,
+        ),
+      );
+
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          // The form renamed the item, but it hasn't been saved yet.
+          selectedItem: saved.copyWith(uiName: 'Sword2'),
+          items: const PaginatedResult<ItemModel>(
+            items: [saved],
+            totalItems: 1,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          RecordingHttpClientAdapter(null, statusCode: 204);
+
+      await store.dispatchAndWait(
+        ItemLoreReorderAction(oldIndex: 0, newIndex: 1),
+      );
+
+      // Neither the unsaved rename nor the lore (which only lives in the
+      // selection) reaches the list.
+      expect(store.state.items.items.single, saved);
+      expect(store.state.selectedItem!.uiName, 'Sword2');
+      expect(
+        store.state.selectedItem!.lore.items.map((l) => l.id),
+        ['l2', 'l1'],
+      );
     });
   });
 }

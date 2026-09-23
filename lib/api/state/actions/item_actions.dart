@@ -163,8 +163,22 @@ class ItemDatabaseUpdate extends ReduxAction<AppState> with Throttle {
   Future<AppState?> reduce() async {
     if (state.selectedItem == null) return null;
     final ItemModel selected = state.selectedItem!;
-    final ItemModel dbModel = await ApiService().itemApi.update(selected);
-    return updateSingleItemInState(state, dbModel);
+    final ItemModel response = await ApiService().itemApi.update(selected);
+    // The update response only carries the form fields — the backend never
+    // returns relationships, they have their own endpoints. The list gets
+    // the response as is (like a fresh list fetch); the selection keeps the
+    // loaded relationships, read after the await so changes made meanwhile
+    // aren't lost.
+    final current = state.selectedItem ?? selected;
+    final dbModel = response.copyWith(
+      lore: current.lore,
+      enchantments: current.enchantments,
+      flags: current.flags,
+    );
+    return updateSingleItemInState(
+      state,
+      response,
+    ).copyWith(selectedItem: dbModel);
   }
 }
 

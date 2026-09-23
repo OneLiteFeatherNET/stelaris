@@ -178,4 +178,76 @@ void main() {
       expect(store.state.items.items, isEmpty);
     });
   });
+
+  // The backend's update response never carries relationships (they have
+  // their own endpoints) — saving the form must not wipe them locally.
+  group('ItemDatabaseUpdate relationships', () {
+    test('keeps the loaded lore, enchantments and flags in the selection, '
+        'the list gets the saved state only',
+        () async {
+      const lore = PaginatedResult<ItemLoreDto>(
+        items: [ItemLoreDto(id: 'l1', text: 'Line', orderIndex: 0)],
+        totalItems: 1,
+        totalPages: 1,
+        currentPage: 1,
+        pageSize: 10,
+      );
+      const enchantments = PaginatedResult<ItemEnchantmentDto>(
+        items: [ItemEnchantmentDto(id: 'e1', name: 'sharpness', level: 2)],
+        totalItems: 1,
+        totalPages: 1,
+        currentPage: 1,
+        pageSize: 10,
+      );
+      const flags = PaginatedResult<ItemFlagDto>(
+        items: [ItemFlagDto(id: 'f1', flag: 'HIDE_ENCHANTS')],
+        totalItems: 1,
+        totalPages: 1,
+        currentPage: 1,
+        pageSize: 10,
+      );
+      const saved = ItemModel(
+        id: 'item-1',
+        uiName: 'Sword',
+        lore: lore,
+        enchantments: enchantments,
+        flags: flags,
+      );
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedItem: saved.copyWith(comment: 'Sharp'),
+          items: const PaginatedResult<ItemModel>(
+            items: [saved],
+            totalItems: 1,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json({
+            'id': 'item-1',
+            'uiName': 'Sword',
+            'comment': 'Sharp',
+          });
+
+      await store.dispatchAndWait(ItemDatabaseUpdate());
+
+      final selected = store.state.selectedItem!;
+      expect(selected.comment, 'Sharp');
+      expect(selected.lore, lore);
+      expect(selected.enchantments, enchantments);
+      expect(selected.flags, flags);
+
+      // Relationships only live in the selection; the list holds what the
+      // server returns, like a fresh list fetch would.
+      final listed = store.state.items.items.single;
+      expect(listed.comment, 'Sharp');
+      expect(listed.lore.items, isEmpty);
+      expect(listed.enchantments.items, isEmpty);
+      expect(listed.flags.items, isEmpty);
+    });
+  });
 }
