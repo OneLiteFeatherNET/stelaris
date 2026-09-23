@@ -100,7 +100,7 @@ class ItemEnchantmentAddAction extends ReduxAction<AppState> {
 
     final updated = selectedItem.copyWith(enchantments: updatedEnchantments);
 
-    return _updateItemAndList(state, updated);
+    return state.copyWith(selectedItem: updated);
   }
 }
 
@@ -138,7 +138,7 @@ class ItemEnchantmentDeleteAction extends ReduxAction<AppState> {
 
     final updated = selectedItem.copyWith(enchantments: updatedEnchantments);
 
-    return _updateItemAndList(state, updated);
+    return state.copyWith(selectedItem: updated);
   }
 }
 
@@ -177,7 +177,7 @@ class ItemEnchantmentUpdateAction extends ReduxAction<AppState> {
 
     final updated = selectedItem.copyWith(enchantments: updatedEnchantments);
 
-    return _updateItemAndList(state, updated);
+    return state.copyWith(selectedItem: updated);
   }
 }
 
@@ -202,27 +202,4 @@ class _SetMoreEnchantmentLoad extends ReduxAction<AppState> {
 
     return state.copyWith(selectedItem: updatedItem);
   }
-}
-
-/// Updates a single item in the list and returns a new, updated list.
-///
-/// This method is meant to be used when an item has changed and both the
-/// updated item and the surrounding list need to stay in sync. It replaces
-/// the old item in the list with the new one, keeping all other elements
-/// unchanged.
-///
-/// - [oldItem] is the item currently stored in the list.
-/// - [newItem] is the updated version that should replace it.
-/// - [items] is the original list containing the item.
-///
-/// The method returns a new list instance with the updated item in the
-/// correct position, leaving the original list untouched.
-AppState _updateItemAndList(AppState state, ItemModel updatedItem) {
-  final list = List<ItemModel>.from(state.items.items);
-  final idx = list.indexWhere((i) => i.id == updatedItem.id);
-  if (idx != -1) list[idx] = updatedItem;
-
-  final updated = state.items.copyWith(items: list);
-
-  return state.copyWith(items: updated, selectedItem: updatedItem);
 }

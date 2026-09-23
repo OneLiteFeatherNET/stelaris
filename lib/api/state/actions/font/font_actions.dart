@@ -153,7 +153,15 @@ class FontDatabaseUpdate extends ReduxAction<AppState> with Throttle {
         state.selectedFont!.projectId == null && state.selectedProject != null
             ? state.selectedFont!.copyWith(projectId: state.selectedProject!.id)
             : state.selectedFont!;
-    final FontModel dbModel = await ApiService().fontApi.update(selected);
+    final FontModel response = await ApiService().fontApi.update(selected);
+    // The update response only carries the form fields — the backend never
+    // returns relationships, they have their own endpoints. The list gets
+    // the response as is (like a fresh list fetch); the selection keeps the
+    // loaded relationships, read after the await so changes made meanwhile
+    // aren't lost.
+    final dbModel = response.copyWith(
+      chars: (state.selectedFont ?? selected).chars,
+    );
 
     final List<FontModel> updatedList = List.of(
       state.fonts.items,
@@ -164,7 +172,7 @@ class FontDatabaseUpdate extends ReduxAction<AppState> with Throttle {
     );
 
     if (index != -1) {
-      updatedList[index] = dbModel;
+      updatedList[index] = response;
     }
 
     return _updateFontInState(state, updatedList, dbModel);

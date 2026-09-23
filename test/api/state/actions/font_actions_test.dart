@@ -204,4 +204,55 @@ void main() {
       expect(store.state.selectedFont?.uiName, 'new-name');
     });
   });
+
+  // The backend's update response never carries the chars (they have their
+  // own endpoints) — saving the form must not wipe them locally.
+  group('FontDatabaseUpdate relationships', () {
+    test('keeps the loaded chars in the selection, the list gets the saved '
+        'state only', () async {
+      const chars = PaginatedResult<FontStringDTO>(
+        items: [FontStringDTO(id: 'c1', line: 'a')],
+        totalItems: 1,
+        totalPages: 1,
+        currentPage: 1,
+        pageSize: 10,
+      );
+      const saved = FontModel(
+        id: 'f1',
+        uiName: 'Default',
+        projectId: 'proj-1',
+        chars: chars,
+      );
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedFont: saved.copyWith(uiName: 'Renamed'),
+          fonts: const PaginatedResult<FontModel>(
+            items: [saved],
+            totalItems: 1,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      ApiService().fontApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json({
+            'id': 'f1',
+            'uiName': 'Renamed',
+            'projectId': 'proj-1',
+          });
+
+      await store.dispatchAndWait(FontDatabaseUpdate());
+
+      expect(store.state.selectedFont!.uiName, 'Renamed');
+      expect(store.state.selectedFont!.chars, chars);
+
+      // Relationships only live in the selection; the list holds what the
+      // server returns, like a fresh list fetch would.
+      final listed = store.state.fonts.items.single;
+      expect(listed.uiName, 'Renamed');
+      expect(listed.chars.items, isEmpty);
+    });
+  });
 }

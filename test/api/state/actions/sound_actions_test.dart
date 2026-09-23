@@ -166,4 +166,57 @@ void main() {
       expect(store.state.soundEvents.items, isEmpty);
     });
   });
+
+  // The backend's update response never carries the files (they have their
+  // own endpoints) — saving the form must not wipe them locally.
+  group('SoundDatabaseUpdate relationships', () {
+    test('keeps the loaded files in the selection, the list gets the saved '
+        'state only', () async {
+      const files = PaginatedResult<SoundFileSource>(
+        items: [
+          SoundFileSource(
+            id: 's1',
+            name: 'step',
+            volume: 1,
+            pitch: 1,
+            attenuationDistance: 16,
+            preload: false,
+            type: 'file',
+            weight: 1,
+          ),
+        ],
+        totalItems: 1,
+        totalPages: 1,
+        currentPage: 1,
+        pageSize: 10,
+      );
+      final saved = SoundEventModel(id: 'e1', uiName: 'Steps', files: files);
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedSoundEvent: saved.copyWith(uiName: 'Footsteps'),
+          soundEvents: PaginatedResult<SoundEventModel>(
+            items: [saved],
+            totalItems: 1,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      (ApiService().soundApi as SoundClientApi).apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json({'id': 'e1', 'uiName': 'Footsteps'});
+
+      await store.dispatchAndWait(SoundDatabaseUpdate());
+
+      expect(store.state.selectedSoundEvent!.uiName, 'Footsteps');
+      expect(store.state.selectedSoundEvent!.files, files);
+
+      // Relationships only live in the selection; the list holds what the
+      // server returns, like a fresh list fetch would.
+      final listed = store.state.soundEvents.items.single;
+      expect(listed.uiName, 'Footsteps');
+      expect(listed.files.items, isEmpty);
+    });
+  });
 }

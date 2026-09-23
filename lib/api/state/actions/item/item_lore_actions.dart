@@ -21,8 +21,7 @@ class ItemLoreFetchAction extends ReduxAction<AppState> {
 
     final updatedItem = selectedItem.copyWith(lore: result);
 
-    // Updated: Keep list and selectedItem in sync
-    return _updateItemAndList(state, updatedItem);
+    return state.copyWith(selectedItem: updatedItem);
   }
 }
 
@@ -63,8 +62,7 @@ class ItemLoreLoadNextPageAction extends ReduxAction<AppState> {
 
       final updatedItem = selectedItem.copyWith(lore: updatedLore);
 
-      // Updated: Keep list and selectedItem in sync
-      return _updateItemAndList(state, updatedItem);
+      return state.copyWith(selectedItem: updatedItem);
     } finally {
       dispatch(_SetIsLoadingLore(false));
     }
@@ -96,7 +94,7 @@ class ItemLoreAddAction extends ReduxAction<AppState> with NonReentrant {
 
     final updatedModel = itemModel.copyWith(lore: updatedLines);
 
-    return _updateItemAndList(state, updatedModel);
+    return state.copyWith(selectedItem: updatedModel);
   }
 }
 
@@ -122,7 +120,7 @@ class ItemLoreDeleteAction extends ReduxAction<AppState> with NonReentrant {
 
     final updatedModel = itemModel.copyWith(lore: updatedLines);
 
-    return _updateItemAndList(state, updatedModel);
+    return state.copyWith(selectedItem: updatedModel);
   }
 }
 
@@ -152,7 +150,7 @@ class ItemLoreUpdateAction extends ReduxAction<AppState> with NonReentrant {
 
     final updatedModel = itemModel.copyWith(lore: updatedLines);
 
-    return _updateItemAndList(state, updatedModel);
+    return state.copyWith(selectedItem: updatedModel);
   }
 }
 
@@ -203,7 +201,7 @@ class ItemLoreReorderAction extends ReduxAction<AppState> with Sequential {
     final updatedLore = loreLines.copyWith(items: reindexedItems);
     final updatedModel = itemModel.copyWith(lore: updatedLore);
 
-    return _updateItemAndList(state, updatedModel);
+    return state.copyWith(selectedItem: updatedModel);
   }
 }
 
@@ -222,22 +220,4 @@ class _SetIsLoadingLore extends ReduxAction<AppState> {
 
     return state.copyWith(selectedItem: updatedItem);
   }
-}
-
-/// Updates the selected item and synchronizes it with the global item list.
-///
-/// This helper ensures that when an item is modified, both the currently
-/// selected item and the shared list remain consistent. It replaces the item
-/// in the list with its updated version and updates the `selectedItem` field.
-///
-/// Returns a new state with the updated list and selected item.
-AppState _updateItemAndList(AppState state, ItemModel updatedItem) {
-  final list = List<ItemModel>.from(state.items.items);
-  final idx = list.indexWhere((i) => i.id == updatedItem.id);
-
-  if (idx != -1) list[idx] = updatedItem;
-
-  final updatedList = state.items.copyWith(items: list);
-
-  return state.copyWith(items: updatedList, selectedItem: updatedItem);
 }

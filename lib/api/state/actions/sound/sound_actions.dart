@@ -166,8 +166,16 @@ class SoundDatabaseUpdate extends ReduxAction<AppState> with Throttle {
   Future<AppState?> reduce() async {
     if (state.selectedSoundEvent == null) return null;
     final SoundEventModel selected = state.selectedSoundEvent!;
-    final SoundEventModel dbModel = await ApiService().soundApi.update(
+    final SoundEventModel response = await ApiService().soundApi.update(
       selected,
+    );
+    // The update response only carries the form fields — the backend never
+    // returns relationships, they have their own endpoints. The list gets
+    // the response as is (like a fresh list fetch); the selection keeps the
+    // loaded relationships, read after the await so changes made meanwhile
+    // aren't lost.
+    final dbModel = response.copyWith(
+      files: (state.selectedSoundEvent ?? selected).files,
     );
     final List<SoundEventModel> updatedList = List.of(
       state.soundEvents.items,
@@ -178,7 +186,7 @@ class SoundDatabaseUpdate extends ReduxAction<AppState> with Throttle {
     );
 
     if (index != -1) {
-      updatedList[index] = dbModel;
+      updatedList[index] = response;
     }
 
     return _updateSoundEventsInState(state, updatedList, dbModel);

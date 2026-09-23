@@ -84,11 +84,7 @@ class FontStringAddAction extends ReduxAction<AppState> {
 
     final updated = selected.copyWith(chars: updatedChars);
 
-    final updatedList = List<FontModel>.from(state.fonts.items); // clone
-    final index = updatedList.indexWhere((font) => font.id == updated.id);
-    if (index != -1) updatedList[index] = updated;
-
-    return _updateFontInState(state, updatedList, updated);
+    return state.copyWith(selectedFont: updated);
   }
 }
 
@@ -115,11 +111,7 @@ class FontStringEditAction extends ReduxAction<AppState> {
       chars: selected.chars.copyWith(items: updatedItems),
     );
 
-    final allFonts = state.fonts.items.map((font) {
-      return font.id == newSelectedFont.id ? newSelectedFont : font;
-    }).toList();
-
-    return _updateFontInState(state, allFonts, newSelectedFont);
+    return state.copyWith(selectedFont: newSelectedFont);
   }
 }
 
@@ -149,11 +141,7 @@ class FontStringDelete extends ReduxAction<AppState> {
       ),
     );
 
-    final updatedList = List<FontModel>.from(state.fonts.items);
-    final index = updatedList.indexWhere((font) => font.id == updated.id);
-    if (index != -1) updatedList[index] = updated;
-
-    return _updateFontInState(state, updatedList, updated);
+    return state.copyWith(selectedFont: updated);
   }
 }
 
@@ -175,20 +163,4 @@ class _SetLoreCharModelLoad extends ReduxAction<AppState> {
     final updatedStateFont = font.copyWith(isLoadingChars: value);
     return state.copyWith(selectedFont: updatedStateFont);
   }
-}
-
-AppState _updateFontInState(
-  AppState state,
-  List<FontModel> newItems,
-  FontModel? selectedItem, {
-  int? totalItems,
-}) {
-  final updated = state.fonts.copyWith(
-    items: newItems,
-    totalItems: totalItems ?? state.fonts.totalItems,
-    totalPages: state.fonts.totalPages,
-    currentPage: state.fonts.currentPage,
-    pageSize: state.fonts.pageSize,
-  );
-  return state.copyWith(fonts: updated, selectedFont: selectedItem);
 }
