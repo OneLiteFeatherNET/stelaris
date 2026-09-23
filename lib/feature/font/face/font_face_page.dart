@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/selected_font_state.dart';
-import 'package:stelaris/feature/base/button/positioned_save_button.dart';
+import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/api/state/actions/unsaved_actions.dart';
+import 'package:stelaris/api/util/navigation.dart';
 
 class FontFacePage extends StatefulWidget {
   const FontFacePage({super.key});
@@ -37,6 +39,9 @@ class _FontFacePageState extends State<FontFacePage> {
             policy: OrderedTraversalPolicy(),
             child: Form(
               key: _key,
+              onChanged: () => context.dispatch(
+                MarkUnsavedChangesAction(NavigationEntry.font),
+              ),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Stack(
                 children: [
@@ -138,11 +143,7 @@ class _FontFacePageState extends State<FontFacePage> {
                   ),
                 ),
               ),
-              PositionedSaveButton.standard(
-                formKey: _key,
-                successMessage: context.l10n.feedback_save_success,
-                callback: () => context.dispatchAndWait(FontDatabaseUpdate()),
-              ),
+              RegisterDetailForm(formKey: _key),
             ],
           ),
         ),

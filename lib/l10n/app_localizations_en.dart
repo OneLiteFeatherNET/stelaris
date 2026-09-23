@@ -560,9 +560,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbar_copied_to_clipboard => 'Copied to clipboard';
 
   @override
-  String get command_bar_search_hint => 'Search...';
-
-  @override
   String get command_bar_search_tooltip => 'Focus search';
 
   @override
@@ -612,4 +609,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String relative_time_days_ago(int count) {
     return '$count d ago';
   }
+
+  @override
+  String get button_delete => 'Delete';
+
+  @override
+  String get button_discard => 'Discard';
+
+  @override
+  String get unsaved_dialog_title => 'Unsaved changes';
+
+  @override
+  String get unsaved_dialog_message =>
+      'You have unsaved changes. Do you want to save them before leaving?';
+
+  @override
+  String get unsaved_indicator_tooltip => 'Unsaved changes';
+
+  @override
+  String app_bar_search_hint(String section) {
+    return 'Search $section...';
+  }
+
+  @override
+  String get app_bar_search_close_tooltip => 'Close search';
+
+  @override
+  String get search_clear_tooltip => 'Clear search';
+
+  @override
+  String get search_no_results => 'No matches';
+
+  @override
+  String get search_no_results_hint =>
+      'Try another search or reset the filters.';
+
+  @override
+  String get search_reset => 'Reset search';
 }

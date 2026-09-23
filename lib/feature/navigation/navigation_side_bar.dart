@@ -20,12 +20,12 @@ class NavigationSideBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routerUri = GoRouterState.of(context).matchedLocation;
-    final selectedIndex = navigationEntries.indexWhere((element) {
-      // Nested routes (e.g. a model's `/detail` route) share the parent
-      // entry's highlight rather than falling back to the first entry.
-      return routerUri == element.route ||
-          routerUri.startsWith('${element.route}/');
-    });
+    // Nested routes (e.g. a model's `/detail` route) share the parent
+    // entry's highlight rather than falling back to the first entry.
+    final currentEntry = entryForLocation(routerUri);
+    final selectedIndex = currentEntry == null
+        ? -1
+        : navigationEntries.indexOf(currentEntry);
 
     return StoreConnector<AppState, NavigationViewModel>(
       vm: () => NavigationStateFactory(),
@@ -49,10 +49,10 @@ class NavigationSideBar extends StatelessWidget {
     );
   }
 
-  /// Handles the selection of a navigation destination.
-  void _onDestinationSelected(BuildContext context, int index) {
-    context.go(navigationEntries[index].route);
-  }
+  /// Handles the selection of a navigation destination. Leaving a detail
+  /// page with unsaved edits is guarded by the detail route's `onExit`.
+  void _onDestinationSelected(BuildContext context, int index) =>
+      context.go(navigationEntries[index].route);
 
   /// Builds the list of navigation destinations for the [NavigationRail].
   List<NavigationRailDestination> _buildNavigationView() {

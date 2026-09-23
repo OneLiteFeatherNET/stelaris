@@ -1,9 +1,12 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/button/build_button.dart';
 import 'package:stelaris/feature/base/button/settings_button.dart';
 import 'package:stelaris/feature/base/button/toggle_navigation_button.dart';
+import 'package:stelaris/feature/base/search/app_bar_search.dart';
 import 'package:stelaris/feature/navigation/navigation_side_bar.dart';
 import 'package:stelaris/feature/project/badge/project_app_bar_badge.dart';
 import 'package:stelaris/util/constants.dart';
@@ -37,15 +40,18 @@ class BasePage extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: colorScheme.appChrome,
             scrolledUnderElevation: 0,
-            // Slimmer than the 56px default — the bar only holds a title and
-            // a few icon buttons, so the extra height was just empty space.
-            toolbarHeight: 48,
             // Matches NavigationRail's default width, so the toggle button
             // sits on the same vertical axis as the rail's icons below it.
             leadingWidth: 80,
             leading: const ToggleNavigationBar(),
             elevation: 0,
-            title: appTitle,
+            // Keyed by section: switching sections starts with a fresh field
+            // and drops a query still waiting in the debounce.
+            title: AppBarSearch(
+              key: ValueKey(
+                entryForLocation(GoRouterState.of(context).matchedLocation),
+              ),
+            ),
             centerTitle: true,
             actions: const [
               ProjectAppBarBadge(),

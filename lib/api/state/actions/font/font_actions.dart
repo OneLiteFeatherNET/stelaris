@@ -2,6 +2,8 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/actions/unsaved_actions.dart';
+import 'package:stelaris/api/util/navigation.dart';
 
 class SelectFontAction extends ReduxAction<AppState> {
   final FontModel model;
@@ -9,14 +11,18 @@ class SelectFontAction extends ReduxAction<AppState> {
   SelectFontAction(this.model);
 
   @override
-  AppState reduce() => state.copyWith(selectedFont: model);
+  AppState reduce() => state
+      .copyWith(selectedFont: model)
+      .clearUnsavedChanges(NavigationEntry.font);
 }
 
 class RemoveSelectedFont extends ReduxAction<AppState> {
   @override
   AppState? reduce() {
     if (state.selectedFont == null) return null;
-    return state.copyWith(selectedFont: null);
+    return state
+        .copyWith(selectedFont: null)
+        .clearUnsavedChanges(NavigationEntry.font);
   }
 }
 
@@ -103,10 +109,13 @@ class FontRemoveAction extends ReduxAction<AppState> {
     final FontModel removedEntry = await ApiService().fontApi.remove(toRemove);
     final List<FontModel> items = List.of(state.fonts.items, growable: true)
       ..removeWhere((element) => element.id == removedEntry.id);
+    // The selection stays: when deleting from the detail page, that page is
+    // still mounted during its exit transition and reads it. The page's
+    // onDispose clears it.
     return _updateFontInState(
       state,
       items,
-      null,
+      state.selectedFont,
       totalItems: state.fonts.totalItems - 1,
     );
   }
@@ -140,7 +149,10 @@ class UpdateFontAction extends ReduxAction<AppState> {
   UpdateFontAction(this.newEntry);
 
   @override
-  Future<AppState?> reduce() async => state.copyWith(selectedFont: newEntry);
+  Future<AppState?> reduce() async => state.copyWith(
+    selectedFont: newEntry,
+    unsavedChanges: NavigationEntry.font,
+  );
 }
 
 class FontDatabaseUpdate extends ReduxAction<AppState> with Throttle {
@@ -175,7 +187,11 @@ class FontDatabaseUpdate extends ReduxAction<AppState> with Throttle {
       updatedList[index] = response;
     }
 
-    return _updateFontInState(state, updatedList, dbModel);
+    return _updateFontInState(
+      state,
+      updatedList,
+      dbModel,
+    ).clearUnsavedChanges(NavigationEntry.font);
   }
 }
 

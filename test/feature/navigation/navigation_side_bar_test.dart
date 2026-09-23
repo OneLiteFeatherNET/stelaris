@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/navigation/navigation_side_bar.dart';
+import 'package:stelaris/l10n/app_localizations.dart';
 
 GoRouter createTestRouter() {
   return GoRouter(
@@ -31,7 +32,11 @@ GoRouter createTestRouter() {
 Widget buildTestWidget(GoRouter router, Store<AppState> store) {
   return StoreProvider<AppState>(
     store: store,
-    child: MaterialApp.router(routerConfig: router),
+    child: MaterialApp.router(
+      routerConfig: router,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+    ),
   );
 }
 

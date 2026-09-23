@@ -8,6 +8,7 @@ import 'package:stelaris/feature/settings/settings_base_row.dart';
 import 'package:stelaris/feature/settings/settings_item.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 
 class ProjectSettingsRow extends StatelessWidget {
   const ProjectSettingsRow({super.key});
@@ -58,9 +59,14 @@ class ProjectSettingsRow extends StatelessWidget {
                       ),
                     );
 
-                    if (confirmed == true && context.mounted) {
-                      context.dispatch(SelectProjectAction(p));
+                    if (confirmed != true || !context.mounted) return;
+                    // Switching drops the current selection, including any
+                    // unsaved edits on an open detail page.
+                    if (!await confirmLeaveIfDirty(context) ||
+                        !context.mounted) {
+                      return;
                     }
+                    context.dispatch(SelectProjectAction(p));
                   },
                   items: projects.map((project) {
                     return DropdownMenuItem<Project>(

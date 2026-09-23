@@ -1,10 +1,13 @@
-import 'dart:async';
-
+import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/api/state/actions/search_actions.dart';
+import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/model_search_state.dart';
+import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
-import 'package:stelaris/feature/model/command_bar.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_filter.dart';
 import 'package:stelaris/feature/model/model_grid_card.dart';
@@ -15,7 +18,7 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 /// Decides whether [model] matches the free-text [query] from the
-/// [CommandBar]. [query] is already lowercased by [ModelPage], so
+/// AppBar search. [query] is already lowercased by [ModelPage], so
 /// implementations only need to lowercase the field(s) they compare it to.
 typedef ModelSearchMatcher<E extends DataModel> = bool Function(
   E model,
@@ -35,40 +38,7 @@ typedef ModelNameSelector<E extends DataModel> = String Function(E model);
 /// shown in the info dialog opened from a model card's action menu.
 typedef ModelKeySelector<E extends DataModel> = String Function(E model);
 
-/// The search/filter/sort choices applied to a [ModelPage]'s list. Held in
-/// a [ValueNotifier] rather than [State] fields so that changing it doesn't
-/// require rebuilding the whole page — see [_ModelPageState].
-class _ModelListState {
-  const _ModelListState({
-    this.searchQuery = '',
-    this.activeFilters = const {},
-    // Matches CommandBar's own initial default, so the first render is
-    // already sorted the same way the sort menu shows as selected.
-    this.sortField = SortField.name,
-    this.sortDirection = SortDirection.ascending,
-  });
-
-  final String searchQuery;
-  final Set<FilterOption> activeFilters;
-  final SortField sortField;
-  final SortDirection sortDirection;
-
-  _ModelListState copyWith({
-    String? searchQuery,
-    Set<FilterOption>? activeFilters,
-    SortField? sortField,
-    SortDirection? sortDirection,
-  }) {
-    return _ModelListState(
-      searchQuery: searchQuery ?? this.searchQuery,
-      activeFilters: activeFilters ?? this.activeFilters,
-      sortField: sortField ?? this.sortField,
-      sortDirection: sortDirection ?? this.sortDirection,
-    );
-  }
-}
-
-/// A page-level widget combining a [CommandBar] with a responsive,
+/// A page-level widget combining a [PageHeader] with a responsive,
 /// scrollable grid of data models, with optional infinite-scroll pagination
 /// via [onLoadMore]/[hasMore]/[isLoadingMore].
 ///
@@ -76,6 +46,8 @@ class _ModelListState {
 /// decides what happens via [onModelTap] (e.g. navigating to a dedicated
 /// detail route).
 class ModelPage<E extends DataModel> extends StatefulWidget {
+  /// The section this list belongs to — titles the header.
+  final NavigationEntry entry;
   final List<E> models;
   final MapToDataModelItem<E> mapToDataModelItem;
 
@@ -85,7 +57,6 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
   final VoidCallback onAdd;
   final ValueChanged<E> onModelTap;
-  final ModelSearchMatcher<E> matchesSearch;
   final ModelFilterMatcher<E> matchesFilter;
   final List<FilterOption> filterOptions;
   final ModelNameSelector<E> nameSelector;
@@ -98,7 +69,7 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
   /// Manually re-fetches page 1 from the server and replaces the list,
   /// regardless of how many pages were already loaded via [onLoadMore] —
   /// the grid has no pull-to-refresh gesture of its own, so this is
-  /// surfaced as a button in the [CommandBar] instead.
+  /// surfaced as an action in the [PageHeader] instead.
   final VoidCallback onRefresh;
   final bool isRefreshing;
 
@@ -108,13 +79,13 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
   final bool isLoadingMore;
 
   const ModelPage({
+    required this.entry,
     required this.models,
     required this.mapToDataModelItem,
     required this.deleteTitle,
     required this.mapToDeleteSuccessfully,
     required this.onAdd,
     required this.onModelTap,
-    required this.matchesSearch,
     required this.matchesFilter,
     required this.nameSelector,
     required this.keySelector,
@@ -135,9 +106,8 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
 
 class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
     with InfiniteScrollMixin<ModelPage<E>> {
-  static const double _commandBarMaxWidth = 640;
   // Single source of truth for the page's horizontal margin — applied once
-  // below instead of separately on the command bar and the grid, so the
+  // below instead of separately on the header and the grid, so the
   // two can't drift out of alignment with each other.
   static const double _horizontalPagePadding = 16;
   static const double _gridMaxCardExtent = 320;
@@ -145,40 +115,19 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
   static const double _gridSpacing = 12;
   static const int _gridMaxColumns = 4;
 
-  // Search/filter/sort live here, not in State fields updated via
-  // setState(). That keeps changing them from re-running this State's
-  // build() at all — only the ValueListenableBuilder around the grid
-  // (below) does — so CommandBar, constructed directly in build(), is
-  // never reconstructed just because the user typed or picked a filter.
-  final ValueNotifier<_ModelListState> _listState = ValueNotifier(
-    const _ModelListState(),
-  );
-
-  Timer? _searchDebounce;
-
   @override
-  void dispose() {
-    _searchDebounce?.cancel();
-    _listState.dispose();
-    super.dispose();
-  }
-
-  void _handleSearchChanged(String query) {
-    _searchDebounce?.cancel();
-    _searchDebounce = Timer(const Duration(milliseconds: 300), () {
-      _listState.value = _listState.value.copyWith(searchQuery: query);
+  void initState() {
+    super.initState();
+    // After the first frame: dispatching during initState would notify the
+    // AppBar search mid-build.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      // Also tells the search which section it belongs to: a search typed
+      // in another section is dropped here.
+      context.dispatch(
+        RegisterSearchFiltersAction(widget.entry, widget.filterOptions),
+      );
     });
-  }
-
-  void _handleFiltersChanged(Set<FilterOption> filters) {
-    _listState.value = _listState.value.copyWith(activeFilters: filters);
-  }
-
-  void _handleSortChanged(SortField field, SortDirection direction) {
-    _listState.value = _listState.value.copyWith(
-      sortField: field,
-      sortDirection: direction,
-    );
   }
 
   @override
@@ -190,56 +139,61 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
   @override
   void onLoadMore() => widget.onLoadMore?.call();
 
-  List<E> _filteredModels(_ModelListState listState) {
+  List<E> _filteredModels(ModelSearchState search) {
     final filtered = filterModels(
       models: widget.models,
-      // Lowercased once here rather than inside matchesSearch per model.
-      query: listState.searchQuery.toLowerCase(),
-      activeFilters: listState.activeFilters,
-      matchesSearch: widget.matchesSearch,
+      query: search.query.toLowerCase(),
+      activeFilters: search.activeFilters,
+      matchesSearch: (model, query) =>
+          widget.nameSelector(model).toLowerCase().contains(query) ||
+          widget.keySelector(model).toLowerCase().contains(query),
       matchesFilter: widget.matchesFilter,
     );
 
     return sortModels(
       models: filtered,
-      sortField: listState.sortField,
-      sortDirection: listState.sortDirection,
+      sortField: search.sortField,
+      sortDirection: search.sortDirection,
       nameSelector: widget.nameSelector,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Padding(
       // The page's only horizontal inset — the grid below relies on this
       // same padding rather than adding its own, so it can't line up
-      // differently than the command bar above it.
+      // differently than the header above it.
       padding: const EdgeInsets.symmetric(horizontal: _horizontalPagePadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Breathing room under the AppBar instead of butting straight up
-          // against it.
-          const SizedBox(height: _horizontalPagePadding),
-          Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: _commandBarMaxWidth),
-              child: CommandBar(
-                onAdd: widget.onAdd,
-                onSearchChanged: _handleSearchChanged,
-                filterOptions: widget.filterOptions,
-                onFiltersChanged: _handleFiltersChanged,
-                onSortChanged: _handleSortChanged,
-                onRefresh: widget.onRefresh,
-                isRefreshing: widget.isRefreshing,
+          const SizedBox(height: 12),
+          PageHeader(
+            title: '${widget.entry.display} (${widget.models.length})',
+            actions: [
+              PageHeaderAction(
+                icon: const Icon(Icons.refresh),
+                label: l10n.command_bar_refresh_tooltip,
+                loading: widget.isRefreshing,
+                onPressed: widget.onRefresh,
               ),
-            ),
+              PageHeaderAction(
+                icon: addModelIcon,
+                label: l10n.button_add,
+                primary: true,
+                onPressed: widget.onAdd,
+              ),
+            ],
           ),
           verticalSpacing10,
           Expanded(
-            child: ValueListenableBuilder<_ModelListState>(
-              valueListenable: _listState,
-              builder: (context, listState, _) => _buildGridView(listState),
+            // Only the grid listens to the search — typing in the AppBar
+            // doesn't rebuild the header above.
+            child: StoreConnector<AppState, ModelSearchState>(
+              converter: (store) => store.state.modelSearch,
+              builder: (context, search) => _buildGridView(search),
             ),
           ),
         ],
@@ -247,8 +201,21 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
     );
   }
 
-  Widget _buildGridView(_ModelListState listState) {
-    final models = _filteredModels(listState);
+  Widget _buildGridView(ModelSearchState search) {
+    final models = _filteredModels(search);
+
+    if (models.isEmpty && widget.models.isNotEmpty) {
+      final l10n = context.l10n;
+      return EmptyDataWidget.full(
+        header: l10n.search_no_results,
+        subHeader: l10n.search_no_results_hint,
+        icon: Icons.search_off,
+        action: TextButton(
+          onPressed: () => context.dispatch(ClearSearchAction()),
+          child: Text(l10n.search_reset),
+        ),
+      );
+    }
 
     if (models.isEmpty) {
       // Reuse the same empty-state copy the other (unmigrated) pages

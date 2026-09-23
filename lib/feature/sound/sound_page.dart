@@ -28,6 +28,7 @@ class SoundPage extends StatelessWidget {
       onInit: (store) => store.dispatchAndWait(InitSoundAction()),
       builder: (context, vm) {
         return ModelPage<SoundEventModel>(
+          entry: NavigationEntry.sound,
           mapToDataModelItem: (value) =>
               _buildCardContent(context, vm.projectKey, value),
           deleteTitle: context.l10n.dialog_sound_delete_title,
@@ -37,8 +38,6 @@ class SoundPage extends StatelessWidget {
             return true;
           },
           models: vm.models,
-          matchesSearch: (model, query) =>
-              model.uiName.toLowerCase().contains(query.toLowerCase()),
           nameSelector: (model) => model.uiName,
           keySelector: (model) => model.key ?? '',
           projectKey: vm.projectKey,

@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/factory/attribute/attribute_vm_state.dart';
 import 'package:stelaris/feature/attributes/attribute_edit_dialog.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
@@ -39,6 +40,7 @@ class AttributePage extends StatelessWidget {
         );
 
         return ModelPage<AttributeModel>(
+          entry: NavigationEntry.attributes,
           mapToDataModelItem: (value) =>
               _buildCardContent(context, vm.projectKey, value),
           deleteTitle: context.l10n.dialog_attribute_delete_title,
@@ -47,8 +49,6 @@ class AttributePage extends StatelessWidget {
             return true;
           },
           models: vm.models,
-          matchesSearch: (model, query) =>
-              model.uiName.toLowerCase().contains(query.toLowerCase()),
           nameSelector: (model) => model.uiName,
           keySelector: (model) => model.key ?? '',
           projectKey: vm.projectKey,

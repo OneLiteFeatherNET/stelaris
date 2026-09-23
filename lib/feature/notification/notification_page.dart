@@ -29,6 +29,7 @@ class NotificationPage extends StatelessWidget {
       onInit: (store) => store.dispatchAndWait(InitNotificationAction()),
       builder: (context, vm) {
         return ModelPage<NotificationModel>(
+          entry: NavigationEntry.notifications,
           mapToDataModelItem: (value) =>
               _buildCardContent(context, vm.projectKey, value),
           deleteTitle: context.l10n.dialog_notification_delete_title,
@@ -37,8 +38,6 @@ class NotificationPage extends StatelessWidget {
             return true;
           },
           models: vm.models,
-          matchesSearch: (model, query) =>
-              model.uiName.toLowerCase().contains(query.toLowerCase()),
           nameSelector: (model) => model.uiName,
           keySelector: (model) => model.key ?? '',
           projectKey: vm.projectKey,

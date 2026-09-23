@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/model/model_detail_back_bar.dart';
+import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/notification/notification_detail_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -54,7 +54,7 @@ void main() {
     testWidgets('shows a back bar with the selected notification name', (tester) async {
       await pumpPage(tester);
 
-      expect(find.byType(ModelDetailBackBar), findsOneWidget);
+      expect(find.byType(PageHeader), findsOneWidget);
       expect(find.text('Level Up'), findsOneWidget);
     });
 
@@ -67,7 +67,7 @@ void main() {
     testWidgets('tapping back navigates to the notification list', (tester) async {
       await pumpPage(tester);
 
-      await tester.tap(find.byKey(const Key('model_detail_back_button')));
+      await tester.tap(find.byKey(const Key('page_header_back_button')));
       await tester.pumpAndSettle();
 
       expect(find.text('Notification List'), findsOneWidget);

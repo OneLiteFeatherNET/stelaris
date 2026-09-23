@@ -28,6 +28,7 @@ class FontPage extends StatelessWidget {
       onInit: (store) => store.dispatchAndWait(InitFontAction()),
       builder: (context, vm) {
         return ModelPage<FontModel>(
+          entry: NavigationEntry.font,
           mapToDataModelItem: (value) =>
               _buildCardContent(context, vm.projectKey, value),
           deleteTitle: context.l10n.dialog_font_delete_title,
@@ -37,8 +38,6 @@ class FontPage extends StatelessWidget {
             return true;
           },
           models: vm.models,
-          matchesSearch: (model, query) =>
-              model.uiName.toLowerCase().contains(query.toLowerCase()),
           nameSelector: (model) => model.uiName,
           keySelector: (model) => model.key ?? '',
           projectKey: vm.projectKey,

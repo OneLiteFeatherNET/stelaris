@@ -8,7 +8,7 @@ class EmptyDataWidget extends StatelessWidget {
     this.subHeader = 'Use the add button to add new data!',
     this.icon = Icons.auto_awesome,
     super.key,
-  });
+  }) : action = null;
 
   /// Constructor with a required header and default sub header
   ///
@@ -18,7 +18,7 @@ class EmptyDataWidget extends StatelessWidget {
     this.subHeader = 'Use the add button to add new data!',
     this.icon = Icons.auto_awesome,
     super.key,
-  });
+  }) : action = null;
 
   /// Constructor with fully customizable header and sub header
   ///
@@ -27,12 +27,16 @@ class EmptyDataWidget extends StatelessWidget {
     required this.header,
     required this.subHeader,
     this.icon = Icons.auto_awesome,
+    this.action,
     super.key,
   });
 
   final String header;
   final String subHeader;
   final IconData icon;
+
+  /// Optional button below the texts, e.g. to reset a search.
+  final Widget? action;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +66,7 @@ class EmptyDataWidget extends StatelessWidget {
               color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
             ),
           ),
+          if (action != null) ...[const SizedBox(height: 12), action!],
         ],
       ),
     );
