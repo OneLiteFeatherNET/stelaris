@@ -97,8 +97,20 @@ void main() {
       expect(find.text('Second project description'), findsOneWidget);
       expect(find.text('Labor'), findsOneWidget);
       expect(find.text('Open Project'), findsOneWidget);
+      expect(find.text('Create new project'), findsOneWidget);
       expect(find.byIcon(Icons.add), findsOneWidget);
       expect(find.byIcon(Icons.edit_outlined), findsNWidgets(2));
+
+      await tester.tap(find.text('Create new project'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Create new project'), findsNWidgets(2));
+
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Create new project'), findsOneWidget);
     });
 
     testWidgets('tapping edit icon opens EditProjectDialog', (tester) async {
