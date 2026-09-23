@@ -2,6 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
+import 'package:stelaris/api/state/model_search_state.dart';
+import 'package:stelaris/api/util/navigation.dart';
 
 part 'app_state.g.dart';
 
@@ -120,6 +122,17 @@ abstract class AppState with _$AppState {
     List<String>? branches,
     @JsonKey(includeToJson: false, includeFromJson: false)
     Project? selectedProject,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(ModelSearchState())
+    ModelSearchState modelSearch,
+
+    /// The section whose selected model has form edits that haven't been
+    /// saved yet. Set only by the form update actions (UpdateItemAction etc.)
+    /// — not derived by comparing the selection to a snapshot, since lore,
+    /// enchantments, font chars and sound files are saved straight to the
+    /// API and written into the selection as well.
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    NavigationEntry? unsavedChanges,
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, dynamic> json) =>
