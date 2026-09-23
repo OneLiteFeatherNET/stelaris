@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/base_page.dart';
+import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
 import 'package:stelaris/feature/notification/notification_detail_page.dart';
@@ -188,6 +189,7 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: 'detail',
               redirect: itemDetailRedirect,
+              onExit: detailExitGuard,
               pageBuilder: (context, state) => CustomTransitionPage(
                 child: const ItemDetailPage(),
                 key: state.pageKey,
@@ -215,6 +217,7 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: 'detail',
               redirect: notificationDetailRedirect,
+              onExit: detailExitGuard,
               pageBuilder: (context, state) => CustomTransitionPage(
                 child: const NotificationDetailPage(),
                 key: state.pageKey,
@@ -242,6 +245,7 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: 'detail',
               redirect: fontDetailRedirect,
+              onExit: detailExitGuard,
               pageBuilder: (context, state) => CustomTransitionPage(
                 child: const FontDetailPage(),
                 key: state.pageKey,
@@ -269,6 +273,7 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: 'detail',
               redirect: soundDetailRedirect,
+              onExit: detailExitGuard,
               pageBuilder: (context, state) => CustomTransitionPage(
                 child: const SoundDetailPage(),
                 key: state.pageKey,
