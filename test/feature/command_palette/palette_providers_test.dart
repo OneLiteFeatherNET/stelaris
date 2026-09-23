@@ -310,7 +310,14 @@ void main() {
   });
 
   group('entity children', () {
-    List<String> childrenOf(String title, AppState state) {
+    final AppState everyKind = loaded.copyWith(
+      fonts: page(const [FontModel(uiName: 'Rune Script', id: 'f1')]),
+      notifications: page(const [
+        NotificationModel(uiName: 'Quest Done', id: 'n1'),
+      ]),
+    );
+
+    List<String>? childrenOf(String title, AppState state) {
       final entry = search
           .resolve(
             parseQuery('#'),
@@ -319,54 +326,134 @@ void main() {
           )
           .entries
           .firstWhere((entry) => entry.title(l10n) == title);
-      return entry.children?.call().map((c) => c.title(l10n)).toList() ??
-          const [];
+      return entry.children?.call().map((c) => c.title(l10n)).toList();
     }
 
-    test('an item steps into its four tabs', () {
-      expect(childrenOf('Diamond Sword', loaded), [
+    test('tabs come first, then Delete, for items, fonts and sounds', () {
+      expect(childrenOf('Diamond Sword', everyKind), [
         'General',
         'Meta',
         'Enchantments',
         'Lore',
+        'Delete\u2026',
       ]);
-    });
-
-    test('a sound steps into General and Entries', () {
-      expect(childrenOf('Stone Break', loaded), ['General', 'Entries']);
-    });
-
-    test('a font steps into its three tabs', () {
-      final withFont = loaded.copyWith(
-        fonts: page(const [FontModel(uiName: 'Rune Script', id: 'f1')]),
-      );
-      expect(childrenOf('Rune Script', withFont), [
+      expect(childrenOf('Rune Script', everyKind), [
         'General',
         'FontFace',
         'Chars',
+        'Delete\u2026',
+      ]);
+      expect(childrenOf('Stone Break', everyKind), [
+        'General',
+        'Entries',
+        'Delete\u2026',
       ]);
     });
 
-    test('attributes and notifications have no children', () {
-      final withNotification = loaded.copyWith(
-        notifications: page(const [
-          NotificationModel(uiName: 'Quest Done', id: 'n1'),
+    test('attributes and notifications step into Delete alone', () {
+      expect(childrenOf('Max Mana', everyKind), ['Delete\u2026']);
+      expect(childrenOf('Quest Done', everyKind), ['Delete\u2026']);
+    });
+  });
+
+  group('create and delete commands', () {
+    List<String> availableIds(String location, {AppState? state}) =>
+        CommandRegistry(pocCommands())
+            .available(
+              CommandContext(state: state ?? loaded, location: location),
+            )
+            .map((command) => command.id)
+            .toList();
+
+    test('create commands are offered from anywhere', () {
+      const creates = [
+        'create.items',
+        'create.font',
+        'create.sound',
+        'create.notifications',
+        'create.attributes',
+      ];
+      expect(availableIds('/fonts'), containsAll(creates));
+    });
+
+    test('Delete this item needs its detail page and a selection', () {
+      final selected = loaded.copyWith(
+        selectedItem: const ItemModel(uiName: 'Diamond Sword', id: 'i1'),
+      );
+      expect(
+        availableIds('/items/detail', state: selected),
+        contains('delete.items.current'),
+      );
+      expect(
+        availableIds('/items', state: selected),
+        isNot(contains('delete.items.current')),
+      );
+      expect(
+        availableIds('/items/detail'),
+        isNot(contains('delete.items.current')),
+      );
+    });
+
+    test('the create section follows navigation', () {
+      final groups = CommandRegistry(pocCommands()).all
+          .map((command) => command.group)
+          .toSet()
+          .toList();
+      expect(groups.indexOf(CommandGroup.create), 1);
+    });
+  });
+
+  group('entity cap', () {
+    AppState withItems(int count) => loaded.copyWith(
+      items: page([
+        for (int i = 0; i < count; i++)
+          ItemModel(uiName: 'Sword $i', id: 'item-$i'),
+      ]),
+    );
+
+    List<StelarisCommand> entitiesOf(PaletteResults results) => results.entries
+        .where((entry) => entry.id.startsWith('entity.'))
+        .toList();
+
+    test('200 matching items list 15 and say so', () {
+      final results = resolve('#item sword', state: withItems(200));
+      expect(entitiesOf(results), hasLength(15));
+      expect(results.notice, contains('15 of 200 shown'));
+    });
+
+    test('few matches list all without a count', () {
+      final results = resolve('#item sword', state: withItems(3));
+      expect(entitiesOf(results), hasLength(3));
+      expect(results.notice, isNot(contains('shown')));
+    });
+
+    test('an empty query lists at most 15 too', () {
+      expect(entitiesOf(resolve('#', state: withItems(40))), hasLength(15));
+    });
+
+    test('Go-to entries for unloaded kinds do not count', () {
+      final results = resolve('#', state: withItems(40));
+      expect(entitiesOf(results), hasLength(15));
+      expect(
+        results.entries.where((entry) => entry.id.startsWith('nav.')),
+        isNotEmpty,
+      );
+    });
+
+    test('the best match makes the cut among many weaker ones', () {
+      final state = loaded.copyWith(
+        items: page([
+          // 30 scattered matches for "bla", loaded before the strong one.
+          for (int i = 0; i < 30; i++)
+            ItemModel(uiName: 'Big long armor $i', id: 'item-$i'),
+        ]),
+        attributes: page(const [
+          AttributeModel(uiName: 'Blade', id: 'a-blade'),
         ]),
       );
-      final entries = search
-          .resolve(
-            parseQuery('#'),
-            CommandContext(state: withNotification, location: '/attributes'),
-            l10n,
-          )
-          .entries;
-      for (final title in ['Max Mana', 'Quest Done']) {
-        expect(
-          entries.firstWhere((e) => e.title(l10n) == title).children,
-          isNull,
-          reason: title,
-        );
-      }
+      final results = resolve('#bla', state: state);
+      expect(entitiesOf(results), hasLength(15));
+      expect(entitiesOf(results).first.title(l10n), 'Blade');
     });
   });
 }

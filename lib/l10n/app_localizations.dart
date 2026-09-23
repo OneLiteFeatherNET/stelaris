@@ -1438,6 +1438,24 @@ abstract class AppLocalizations {
   /// **'Only entries that are already loaded are searched'**
   String get command_palette_loaded_only;
 
+  /// No description provided for @command_palette_searching.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching…'**
+  String get command_palette_searching;
+
+  /// No description provided for @command_palette_search_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The search service is unavailable; showing loaded entries'**
+  String get command_palette_search_failed;
+
+  /// No description provided for @command_palette_capped.
+  ///
+  /// In en, this message translates to:
+  /// **'{shown} of {matched} shown'**
+  String command_palette_capped(int shown, int matched);
+
   /// No description provided for @command_palette_fallback_entities.
   ///
   /// In en, this message translates to:
@@ -1579,7 +1597,7 @@ abstract class AppLocalizations {
   /// No description provided for @command_palette_footer_step_in.
   ///
   /// In en, this message translates to:
-  /// **'Tabs'**
+  /// **'More'**
   String get command_palette_footer_step_in;
 
   /// No description provided for @command_palette_footer_step_out.
@@ -1593,6 +1611,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Current page'**
   String get command_palette_current_page;
+
+  /// No description provided for @command_palette_group_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get command_palette_group_create;
+
+  /// No description provided for @command_palette_hint_section.
+  ///
+  /// In en, this message translates to:
+  /// **'Search {section}, or ? for more'**
+  String command_palette_hint_section(String section);
+
+  /// No description provided for @command_palette_filter_list.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter {section} by “{text}”'**
+  String command_palette_filter_list(String section, String text);
+
+  /// No description provided for @command_palette_show_matching.
+  ///
+  /// In en, this message translates to:
+  /// **'Show {section} matching “{text}”'**
+  String command_palette_show_matching(String section, String text);
+
+  /// No description provided for @command_create_item.
+  ///
+  /// In en, this message translates to:
+  /// **'New item'**
+  String get command_create_item;
+
+  /// No description provided for @command_create_font.
+  ///
+  /// In en, this message translates to:
+  /// **'New font'**
+  String get command_create_font;
+
+  /// No description provided for @command_create_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'New sound'**
+  String get command_create_sound;
+
+  /// No description provided for @command_create_notification.
+  ///
+  /// In en, this message translates to:
+  /// **'New notification'**
+  String get command_create_notification;
+
+  /// No description provided for @command_create_attribute.
+  ///
+  /// In en, this message translates to:
+  /// **'New attribute'**
+  String get command_create_attribute;
+
+  /// No description provided for @command_create_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'create add new'**
+  String get command_create_keywords;
+
+  /// No description provided for @command_delete_entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete…'**
+  String get command_delete_entry;
+
+  /// No description provided for @command_delete_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'delete remove'**
+  String get command_delete_keywords;
+
+  /// No description provided for @command_delete_this_item.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this item…'**
+  String get command_delete_this_item;
+
+  /// No description provided for @command_delete_this_font.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this font…'**
+  String get command_delete_this_font;
+
+  /// No description provided for @command_delete_this_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this sound…'**
+  String get command_delete_this_sound;
+
+  /// No description provided for @command_delete_this_notification.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this notification…'**
+  String get command_delete_this_notification;
 
   /// No description provided for @command_palette_key_step_in.
   ///
@@ -1609,7 +1723,7 @@ abstract class AppLocalizations {
   /// No description provided for @command_palette_hint_drill.
   ///
   /// In en, this message translates to:
-  /// **'Pick a tab of {name}'**
+  /// **'{name}: pick a tab or an action'**
   String command_palette_hint_drill(String name);
 
   /// No description provided for @sort_name_ascending.

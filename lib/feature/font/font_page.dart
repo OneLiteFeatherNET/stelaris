@@ -7,7 +7,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/font_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
-import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
+import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -42,7 +42,11 @@ class FontPage extends StatelessWidget {
           keySelector: (model) => model.key ?? '',
           projectKey: vm.projectKey,
           matchesFilter: (model, filter) => true,
-          onAdd: () => _openDialog(context, vm.projectKey),
+          onAdd: () => openModelCreateDialog(
+            context,
+            NavigationEntry.font,
+            vm.projectKey,
+          ),
           onModelTap: (model) {
             context.dispatch(SelectFontAction(model));
             context.go('${NavigationEntry.font.route}/detail');
@@ -93,20 +97,4 @@ class FontPage extends StatelessWidget {
   }
 
   /// Opens a dialog for creating a new font.
-  void _openDialog(BuildContext context, String projectKey) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ModelCreateDialog(
-          title: context.l10n.dialog_font_create_title,
-          projectNamespace: projectKey,
-          onSubmit: (name, key) {
-            final FontModel model = FontModel(uiName: name, key: key);
-            context.dispatch(FontAddAction(model));
-            Navigator.pop(context, true);
-          },
-        );
-      },
-    );
-  }
 }

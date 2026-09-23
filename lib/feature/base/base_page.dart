@@ -30,12 +30,14 @@ class BasePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, String?>(
-      converter: (store) => store.state.selectedProject?.id,
-      builder: (context, selectedProjectId) {
-        final colorScheme = Theme.of(context).colorScheme;
-        return CommandPaletteShortcuts(
-          child: Scaffold(
+    // Outside the StoreConnector: a project switch rebuilds the page, not the
+    // shortcut around it.
+    return CommandPaletteShortcuts(
+      child: StoreConnector<AppState, String?>(
+        converter: (store) => store.state.selectedProject?.id,
+        builder: (context, selectedProjectId) {
+          final colorScheme = Theme.of(context).colorScheme;
+          return Scaffold(
             // The app chrome (AppBar + NavigationSideBar) sits one tone off the
             // content area, so the rounded content corner below reads as an
             // inset panel rather than just a bending line.
@@ -86,9 +88,9 @@ class BasePage extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

@@ -13,11 +13,15 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/build/build_dialog.dart';
 import 'package:stelaris/feature/command_palette/backend_command.dart';
 import 'package:stelaris/feature/command_palette/command.dart';
+import 'package:stelaris/feature/command_palette/delete_specs.dart';
 import 'package:stelaris/feature/command_palette/palette_mode.dart';
+import 'package:stelaris/feature/model/detail_tabs.dart';
+import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/feature/settings/settings_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/routes.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The commands the palette offers.
 ///
@@ -26,6 +30,7 @@ import 'package:stelaris/util/routes.dart';
 List<StelarisCommand> pocCommands() => [
   for (final NavigationEntry entry in NavigationEntry.values) _goTo(entry),
   _goToProjects,
+  for (final NavigationEntry entry in NavigationEntry.values) _create(entry),
   _toggleDarkMode,
   _toggleSystemTheme,
   _openSettings,
@@ -33,6 +38,13 @@ List<StelarisCommand> pocCommands() => [
   _reloadList,
   _reloadBranches,
   _reloadRelease,
+  _deleteThis(itemDelete, (l10n) => l10n.command_delete_this_item),
+  _deleteThis(fontDelete, (l10n) => l10n.command_delete_this_font),
+  _deleteThis(soundDelete, (l10n) => l10n.command_delete_this_sound),
+  _deleteThis(
+    notificationDelete,
+    (l10n) => l10n.command_delete_this_notification,
+  ),
 ];
 
 List<String> _split(String keywords) => keywords.split(' ');
@@ -72,6 +84,70 @@ StelarisCommand _goTo(NavigationEntry entry) {
         context.location.startsWith('${entry.route}/'),
     currentIcon: entry.selected,
     run: (context) async => context.go(entry.route),
+  );
+}
+
+/// "New item" and so on: the list's own create dialog, from anywhere. After
+/// a create the list it went into is shown, so the new model is in view.
+StelarisCommand _create(NavigationEntry entry) {
+  return StelarisCommand(
+    id: 'create.${entry.name}',
+    title: (l10n) => switch (entry) {
+      NavigationEntry.items => l10n.command_create_item,
+      NavigationEntry.font => l10n.command_create_font,
+      NavigationEntry.sound => l10n.command_create_sound,
+      NavigationEntry.notifications => l10n.command_create_notification,
+      NavigationEntry.attributes => l10n.command_create_attribute,
+    },
+    keywords: (l10n) => _split(l10n.command_create_keywords),
+    group: CommandGroup.create,
+    icon: Icons.add,
+    run: (context) async {
+      final String projectKey =
+          StoreProvider.backdoorInheritedWidget<AppState>(context)
+              .state
+              .selectedProject
+              ?.key ??
+          '';
+      final bool created = await openModelCreateDialog(
+        context,
+        entry,
+        projectKey,
+      );
+      if (!created || !context.mounted) {
+        return;
+      }
+      if (GoRouter.of(context).state.matchedLocation != entry.route) {
+        context.go(entry.route);
+      }
+    },
+  );
+}
+
+/// "Delete this item…" on an item's detail page: the page's own delete, with
+/// the same confirmation and the way back to the list.
+StelarisCommand _deleteThis<E extends DataModel>(
+  DeleteSpec<E> spec,
+  String Function(AppLocalizations l10n) title,
+) {
+  return StelarisCommand(
+    id: 'delete.${spec.entry.name}.current',
+    title: title,
+    keywords: (l10n) => _split(l10n.command_delete_keywords),
+    group: CommandGroup.interface,
+    icon: Icons.delete_outline,
+    isAvailable: (context) =>
+        context.location == detailLocation(spec.entry.route) &&
+        spec.selected(context.state) != null,
+    run: (context) async {
+      final E? model = spec.selected(
+        StoreProvider.backdoorInheritedWidget<AppState>(context).state,
+      );
+      if (model == null) {
+        return;
+      }
+      await spec.delete(context, model);
+    },
   );
 }
 

@@ -7,8 +7,8 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/factory/attribute/attribute_vm_state.dart';
 import 'package:stelaris/feature/attributes/attribute_edit_dialog.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
-import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
+import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -60,7 +60,11 @@ class AttributePage extends StatelessWidget {
               model.maximumValue != null && model.maximumValue != 0,
             _ => true,
           },
-          onAdd: () => _openDialog(context, vm.projectKey),
+          onAdd: () => openModelCreateDialog(
+            context,
+            NavigationEntry.attributes,
+            vm.projectKey,
+          ),
           onModelTap: (model) => showDialog(
             context: context,
             builder: (_) =>
@@ -115,23 +119,4 @@ class AttributePage extends StatelessWidget {
   ///
   /// The dialog includes a text field for the attribute name and handles
   /// validation and state management for adding the new attribute.
-  void _openDialog(BuildContext context, String projectKey) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ModelCreateDialog(
-          title: context.l10n.dialog_attribute_create,
-          projectNamespace: projectKey,
-          onSubmit: (name, key) {
-            final AttributeModel attributeModel = AttributeModel(
-              uiName: name,
-              key: key,
-            );
-            context.dispatchAndWait(AttributeAddAction(attributeModel));
-            Navigator.pop(context, true);
-          },
-        );
-      },
-    );
-  }
 }

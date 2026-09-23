@@ -11,6 +11,8 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/attributes/attribute_edit_dialog.dart';
 import 'package:stelaris/feature/command_palette/command.dart';
 import 'package:stelaris/feature/command_palette/command_registry.dart';
+import 'package:stelaris/feature/command_palette/delete_specs.dart';
+import 'package:stelaris/feature/command_palette/entity_search_source.dart';
 import 'package:stelaris/feature/command_palette/command_search.dart';
 import 'package:stelaris/feature/command_palette/palette_mode.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
@@ -52,11 +54,15 @@ class PaletteSearch {
   final ProjectProvider _projects;
   final HelpProvider _help;
 
+  /// [hits] and [status] are the entity search source's side of entity
+  /// mode: what it found for this query, and where its answer stands.
   PaletteResults resolve(
     ParsedQuery query,
     CommandContext context,
-    AppLocalizations l10n,
-  ) {
+    AppLocalizations l10n, {
+    List<EntityHit> hits = const [],
+    EntitySearchStatus status = EntitySearchStatus.none,
+  }) {
     final PaletteResults results = switch (query.mode) {
       null => _defaultMode(query, context, l10n),
       PaletteMode.commands => PaletteResults(
@@ -73,9 +79,12 @@ class PaletteSearch {
       PaletteMode.settings => PaletteResults(
         registry.search(query.text, context, l10n, mode: PaletteMode.settings),
       ),
-      PaletteMode.entities => PaletteResults(
-        _entities.resolve(query, context, l10n),
-        notice: l10n.command_palette_loaded_only,
+      PaletteMode.entities => _entityResults(
+        query,
+        context,
+        l10n,
+        hits,
+        status,
       ),
       PaletteMode.projects => PaletteResults(
         _projects.resolve(query, context, l10n),
@@ -86,6 +95,34 @@ class PaletteSearch {
       return PaletteResults(const [], notice: l10n.command_palette_no_results);
     }
     return results;
+  }
+
+  PaletteResults _entityResults(
+    ParsedQuery query,
+    CommandContext context,
+    AppLocalizations l10n,
+    List<EntityHit> hits,
+    EntitySearchStatus status,
+  ) {
+    final EntityResults found = _entities.resolveEntities(
+      query,
+      context,
+      hits: hits,
+    );
+    final String? coverage = switch (status) {
+      EntitySearchStatus.none => l10n.command_palette_loaded_only,
+      EntitySearchStatus.pending => l10n.command_palette_searching,
+      EntitySearchStatus.failed => l10n.command_palette_search_failed,
+      EntitySearchStatus.done => null,
+    };
+    final String? capped = found.capped
+        ? l10n.command_palette_capped(found.shown, found.matched)
+        : null;
+    final String notice = [?coverage, ?capped].join(' \u00b7 ');
+    return PaletteResults(
+      found.entries,
+      notice: notice.isEmpty ? null : notice,
+    );
   }
 
   /// Commands, exactly as before the syntax existed - plus, when nothing
@@ -166,6 +203,42 @@ NavigationEntry entryFor(EntityKind kind) {
 
 /// Loaded items, fonts, sounds, notifications and attributes of the current
 /// project, each one an entry that opens it the way clicking its card does.
+/// Entity mode's answer: the entries, and how many entities matched before
+/// the cap cut the list to [maxEntityResults].
+@immutable
+class EntityResults {
+  const EntityResults(
+    this.entries, {
+    required this.matched,
+    required this.shown,
+  });
+
+  final List<StelarisCommand> entries;
+  final int matched;
+  final int shown;
+
+  bool get capped => matched > shown;
+}
+
+/// One entity before it becomes a command: cheap to rank, so commands are
+/// only built for the ones that make the list.
+class _Candidate {
+  _Candidate(this.kind, this.model, this.name, this.score, this.order);
+
+  final EntityKind kind;
+  final DataModel model;
+  final String name;
+
+  /// Null for a search-service hit the palette's own matching doesn't see.
+  final int? score;
+  final int order;
+
+  String get key => '${kind.name}:${model.id ?? name}';
+}
+
+/// Loaded items, fonts, sounds, notifications and attributes of the current
+/// project - and whatever an [EntitySearchSource] found - each one an entry
+/// that opens it the way clicking its card does. At most [maxEntityResults].
 class EntityProvider implements PaletteProvider {
   EntityProvider(this.registry);
 
@@ -176,27 +249,63 @@ class EntityProvider implements PaletteProvider {
     ParsedQuery query,
     CommandContext context,
     AppLocalizations l10n,
-  ) {
+  ) => resolveEntities(query, context).entries;
+
+  EntityResults resolveEntities(
+    ParsedQuery query,
+    CommandContext context, {
+    List<EntityHit> hits = const [],
+  }) {
     final List<EntityKind> kinds = query.kind == null
         ? EntityKind.values
         : [query.kind!];
+    final String text = query.text;
+    final bool filtering = text.trim().isNotEmpty;
 
-    final List<StelarisCommand> found = [];
+    final List<_Candidate> candidates = [];
+    final Set<String> seen = {};
     final List<EntityKind> empty = [];
+    int order = 0;
     for (final EntityKind kind in kinds) {
-      final List<StelarisCommand> ofKind = _entriesOf(kind, context.state);
-      if (ofKind.isEmpty) {
+      final List<(DataModel, String)> loaded = _loaded(kind, context.state);
+      if (loaded.isEmpty) {
         empty.add(kind);
       }
-      found.addAll(ofKind);
+      for (final (DataModel model, String name) in loaded) {
+        final int? score = filtering ? scoreMatch(text, name) : 0;
+        if (score == null) continue;
+        final candidate = _Candidate(kind, model, name, score, order++);
+        if (seen.add(candidate.key)) candidates.add(candidate);
+      }
+    }
+    // A source's hits join the same ranking; ones the palette's matching
+    // doesn't see follow the ones it does, in the source's own order.
+    for (final EntityHit hit in hits) {
+      if (!kinds.contains(hit.kind)) continue;
+      final String? name = _nameOf(hit.kind, hit.model);
+      if (name == null) continue;
+      final candidate = _Candidate(
+        hit.kind,
+        hit.model,
+        name,
+        filtering ? scoreMatch(text, name) : 0,
+        order++,
+      );
+      if (seen.add(candidate.key)) candidates.add(candidate);
     }
 
-    // Ranked across kinds, so the best match wins whatever its kind.
-    final List<StelarisCommand> ranked = _rank(
-      found,
-      query.text,
-      (command) => command.title(l10n),
-    );
+    if (filtering) {
+      // Dart's sort is not stable, hence the order as the tie-breaker.
+      candidates.sort((a, b) {
+        final int byScore = (b.score ?? -1).compareTo(a.score ?? -1);
+        return byScore != 0 ? byScore : a.order.compareTo(b.order);
+      });
+    }
+    final List<_Candidate> shown = candidates.take(maxEntityResults).toList();
+    final List<StelarisCommand> entries = [
+      for (final _Candidate candidate in shown)
+        ?_commandFor(candidate, context.state),
+    ];
 
     // Nothing loaded for a kind: offer its list, which loads it.
     final List<StelarisCommand> available = registry.available(context);
@@ -209,77 +318,143 @@ class EntityProvider implements PaletteProvider {
               !(command.isCurrent?.call(context) ?? false),
         ),
     ];
-    return [...ranked, ...goTo];
+    return EntityResults(
+      [...entries, ...goTo],
+      matched: candidates.length,
+      shown: entries.length,
+    );
   }
 
-  List<StelarisCommand> _entriesOf(EntityKind kind, AppState state) {
+  static List<(DataModel, String)> _loaded(EntityKind kind, AppState state) {
     return switch (kind) {
       EntityKind.item => [
-        for (final ItemModel model in state.items.items)
-          _withTabs(
-            kind,
-            model.id,
-            model.uiName,
-            ItemDetailPage.tabs,
-            (context) => context.dispatch(SelectedItemAction(model)),
-          ),
+        for (final ItemModel m in state.items.items) (m, m.uiName),
       ],
       EntityKind.font => [
-        for (final FontModel model in state.fonts.items)
-          _withTabs(
-            kind,
-            model.id,
-            model.uiName,
-            FontDetailPage.tabs,
-            (context) => context.dispatch(SelectFontAction(model)),
-          ),
+        for (final FontModel m in state.fonts.items) (m, m.uiName),
       ],
       EntityKind.sound => [
-        for (final SoundEventModel model in state.soundEvents.items)
-          _withTabs(
-            kind,
-            model.id,
-            model.uiName,
-            SoundDetailPage.tabs,
-            (context) => context.dispatch(SelectSoundAction(model)),
-          ),
+        for (final SoundEventModel m in state.soundEvents.items) (m, m.uiName),
       ],
       EntityKind.notification => [
-        for (final NotificationModel model in state.notifications.items)
-          _entity(kind, model.id, model.uiName, (context) async {
-            context.dispatch(SelectedNotificationAction(model));
-            context.go(detailLocation(NavigationEntry.notifications.route));
-          }),
+        for (final NotificationModel m in state.notifications.items)
+          (m, m.uiName),
       ],
-      // Attributes have no detail page; their card opens this dialog.
       EntityKind.attribute => [
-        for (final AttributeModel model in state.attributes.items)
-          _entity(
-            kind,
-            model.id,
-            model.uiName,
-            (context) => showDialog<void>(
-              context: context,
-              builder: (_) => AttributeEditDialog(
-                model: model,
-                // As the attribute page passes it; inside a project the
-                // selection is always set.
-                projectKey: state.selectedProject?.key ?? '',
-              ),
-            ),
-          ),
+        for (final AttributeModel m in state.attributes.items) (m, m.uiName),
       ],
     };
   }
 
+  /// The name of [model] if its type fits [kind], else null - a hit whose
+  /// model is of the wrong type is dropped.
+  static String? _nameOf(EntityKind kind, DataModel model) {
+    return switch ((kind, model)) {
+      (EntityKind.item, final ItemModel m) => m.uiName,
+      (EntityKind.font, final FontModel m) => m.uiName,
+      (EntityKind.sound, final SoundEventModel m) => m.uiName,
+      (EntityKind.notification, final NotificationModel m) => m.uiName,
+      (EntityKind.attribute, final AttributeModel m) => m.uiName,
+      _ => null,
+    };
+  }
+
+  StelarisCommand? _commandFor(_Candidate candidate, AppState state) {
+    final EntityKind kind = candidate.kind;
+    List<StelarisCommand> actionsFor<E extends DataModel>(
+      E model,
+      DeleteSpec<E> spec,
+    ) => [_deleteChild(kind, model, candidate.name, spec)];
+
+    return switch (candidate.model) {
+      final ItemModel model when kind == EntityKind.item => _withTabs(
+        kind,
+        model.id,
+        model.uiName,
+        ItemDetailPage.tabs,
+        (context) => context.dispatch(SelectedItemAction(model)),
+        actionsFor(model, itemDelete),
+      ),
+      final FontModel model when kind == EntityKind.font => _withTabs(
+        kind,
+        model.id,
+        model.uiName,
+        FontDetailPage.tabs,
+        (context) => context.dispatch(SelectFontAction(model)),
+        actionsFor(model, fontDelete),
+      ),
+      final SoundEventModel model when kind == EntityKind.sound => _withTabs(
+        kind,
+        model.id,
+        model.uiName,
+        SoundDetailPage.tabs,
+        (context) => context.dispatch(SelectSoundAction(model)),
+        actionsFor(model, soundDelete),
+      ),
+      final NotificationModel model when kind == EntityKind.notification =>
+        _entity(kind, model.id, model.uiName, (context) async {
+          context.dispatch(SelectedNotificationAction(model));
+          context.go(detailLocation(NavigationEntry.notifications.route));
+        }, children: _childrenOf(actionsFor(model, notificationDelete))),
+      // Attributes have no detail page; their card opens this dialog.
+      final AttributeModel model when kind == EntityKind.attribute => _entity(
+        kind,
+        model.id,
+        model.uiName,
+        (context) => showDialog<void>(
+          context: context,
+          builder: (_) => AttributeEditDialog(
+            model: model,
+            // As the attribute page passes it; inside a project the
+            // selection is always set.
+            projectKey: state.selectedProject?.key ?? '',
+          ),
+        ),
+        children: _childrenOf(actionsFor(model, attributeDelete)),
+      ),
+      _ => null,
+    };
+  }
+
+  /// Children for an entity without tabs: its actions, or none at all, so
+  /// an entity with nothing to step into doesn't show the `›`.
+  static List<StelarisCommand> Function()? _childrenOf(
+    List<StelarisCommand> actions,
+  ) => actions.isEmpty ? null : () => actions;
+
+  /// "Delete…": the shared delete flow, with its typed-name confirmation.
+  /// Always the last child, never the first, so stepping in and pressing
+  /// Enter opens a tab rather than a deletion.
+  StelarisCommand _deleteChild<E extends DataModel>(
+    EntityKind kind,
+    E model,
+    String name,
+    DeleteSpec<E> spec,
+  ) {
+    return StelarisCommand(
+      id: 'entity.${kind.name}.${model.id ?? name}.delete',
+      title: (l10n) => l10n.command_delete_entry,
+      keywords: (l10n) => l10n.command_delete_keywords.split(' '),
+      section: (_) => name,
+      group: CommandGroup.entities,
+      icon: Icons.delete_outline,
+      modes: const {PaletteMode.entities},
+      run: (context) async {
+        await spec.delete(context, model);
+      },
+    );
+  }
+
   /// An entity whose detail page has [tabs]: choosing it opens the first
-  /// tab, as clicking its card does; Arrow Right lists the tabs to open it on.
+  /// tab, as clicking its card does; Arrow Right lists the tabs to open it
+  /// on, followed by [actions].
   StelarisCommand _withTabs(
     EntityKind kind,
     String? id,
     String name,
     List<String> tabs,
     void Function(BuildContext context) select,
+    List<StelarisCommand> actions,
   ) {
     final String route = entryFor(kind).route;
     return _entity(
@@ -304,6 +479,7 @@ class EntityProvider implements PaletteProvider {
               context.go(detailLocation(route, tab));
             },
           ),
+        ...actions,
       ],
     );
   }

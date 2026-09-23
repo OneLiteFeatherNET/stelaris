@@ -7,6 +7,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/command_palette/command.dart';
 import 'package:stelaris/feature/command_palette/command_palette.dart';
+import 'package:stelaris/feature/command_palette/command_panel.dart';
+import 'package:stelaris/feature/base/search/app_bar_search.dart';
 import 'package:stelaris/feature/command_palette/command_registry.dart';
 import 'package:stelaris/feature/command_palette/commands.dart';
 import 'package:stelaris/feature/settings/settings_dialog.dart';
@@ -26,6 +28,9 @@ StelarisCommand _command(String title, {CommandGroup? group}) {
 
 /// A page with the palette shortcut installed and a text field to focus.
 Future<void> _pump(WidgetTester tester, CommandRegistry registry) async {
+  tester.view.physicalSize = const Size(1600, 900);
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.reset);
   final router = GoRouter(
     initialLocation: '/items',
     routes: [
@@ -33,7 +38,10 @@ Future<void> _pump(WidgetTester tester, CommandRegistry registry) async {
         path: '/items',
         builder: (context, state) => CommandPaletteShortcuts(
           registry: registry,
-          child: const Scaffold(body: TextField(key: Key('page-field'))),
+          child: Scaffold(
+            appBar: AppBar(title: const AppBarSearch()),
+            body: const TextField(key: Key('page-field')),
+          ),
         ),
       ),
     ],
@@ -63,10 +71,12 @@ Future<void> _press(WidgetTester tester, LogicalKeyboardKey key) async {
   await tester.pumpAndSettle();
 }
 
-Finder get _palette => find.byType(CommandPalette);
+Finder get _palette => find.byType(CommandPanel);
 
-Finder get _paletteField =>
-    find.descendant(of: _palette, matching: find.byType(TextField));
+Finder get _paletteField => find.descendant(
+  of: find.byType(AppBarSearch),
+  matching: find.byType(TextField),
+);
 
 bool _highlighted(WidgetTester tester, String title) {
   final tile = tester.widget<ListTile>(
@@ -109,6 +119,10 @@ void main() {
       expect(find.text('Toggle dark mode'), findsOneWidget);
       expect(find.text('Alpha'), findsNothing);
       expect(find.text('Charlie'), findsNothing);
+
+      // Let the list filter's debounce run out: async_redux's Debounce waits
+      // on a Future.delayed that nothing can cancel.
+      await tester.pump(const Duration(milliseconds: 350));
     });
 
     testWidgets('an unmatched query shows the empty-result text', (
@@ -121,10 +135,20 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('No matching commands'), findsOneWidget);
-      // Since the query syntax: no command is listed, only the fallbacks
+      // No command is listed: the filter entry first, then the fallbacks
       // that search the same text as an entity or a project.
       expect(find.text('Alpha'), findsNothing);
-      expect(find.byType(ListTile), findsNWidgets(2));
+      expect(
+        find.descendant(
+          of: find.byType(CommandPanel),
+          matching: find.byType(ListTile),
+        ),
+        findsNWidgets(3),
+      );
+
+      // Let the list filter's debounce run out: async_redux's Debounce waits
+      // on a Future.delayed that nothing can cancel.
+      await tester.pump(const Duration(milliseconds: 350));
     });
   });
 
@@ -260,7 +284,8 @@ void main() {
       await _pump(tester, CommandRegistry(pocCommands()));
       await _pressCtrlK(tester);
 
-      await tester.enterText(_paletteField, 'open settings');
+      // The prefix keeps the filter entry away, so Enter runs the command.
+      await tester.enterText(_paletteField, '>open settings');
       await tester.pumpAndSettle();
       await _press(tester, LogicalKeyboardKey.enter);
 
@@ -312,6 +337,10 @@ void main() {
           findsOneWidget,
         );
       }
+
+      // Let the list filter's debounce run out: async_redux's Debounce waits
+      // on a Future.delayed that nothing can cancel.
+      await tester.pump(const Duration(milliseconds: 350));
     });
 
     testWidgets('the last entry of a long list ends above the key hints', (
@@ -339,8 +368,8 @@ void main() {
     });
   });
 
-  testWidgets('the search icon and the text line up with each other and '
-      'with the entries below', (tester) async {
+  testWidgets('the search icon lines up with the text beside it and with '
+      'the entries below', (tester) async {
     await _pump(tester, registry);
     await _pressCtrlK(tester);
 
@@ -350,16 +379,162 @@ void main() {
     final Rect text = tester.getRect(
       find.descendant(of: _paletteField, matching: find.byType(EditableText)),
     );
-    final Finder firstTile = find.byType(ListTile).first;
+    final Finder firstTile = find
+        .descendant(
+          of: find.byType(CommandPanel),
+          matching: find.byType(ListTile),
+        )
+        .first;
     final Rect tileIcon = tester.getRect(
       find.descendant(of: firstTile, matching: find.byType(Icon)).first,
     );
-    final Rect tileTitle = tester.getRect(
-      find.descendant(of: firstTile, matching: find.text('Alpha')),
-    );
 
     expect(icon.center.dy, moreOrLessEquals(text.center.dy, epsilon: 1));
-    expect(icon.left, moreOrLessEquals(tileIcon.left, epsilon: 1));
-    expect(text.left, moreOrLessEquals(tileTitle.left, epsilon: 1));
+    // Centres, not edges: the search icon sits in a 32px button, the rows'
+    // icons are bare 24px icons.
+    expect(icon.center.dx, moreOrLessEquals(tileIcon.center.dx, epsilon: 1));
+  });
+
+  testWidgets('the mode chip starts on the column of the dropdown icons', (
+    tester,
+  ) async {
+    await _pump(tester, registry);
+    await _pressCtrlK(tester);
+
+    await tester.enterText(_paletteField, '>');
+    await tester.pumpAndSettle();
+
+    final Rect chip = tester.getRect(
+      find.byKey(const Key('command-palette-mode-chip')),
+    );
+    final Rect tileIcon = tester.getRect(
+      find
+          .descendant(
+            of: find
+                .descendant(
+                  of: find.byType(CommandPanel),
+                  matching: find.byType(ListTile),
+                )
+                .first,
+            matching: find.byType(Icon),
+          )
+          .first,
+    );
+    expect(chip.left, moreOrLessEquals(tileIcon.left, epsilon: 1));
+  });
+
+  testWidgets('the mode chip is a pill like the field', (tester) async {
+    await _pump(tester, registry);
+    await _pressCtrlK(tester);
+
+    await tester.enterText(_paletteField, '>');
+    await tester.pumpAndSettle();
+
+    final InputChip chip = tester.widget<InputChip>(
+      find.byKey(const Key('command-palette-mode-chip')),
+    );
+    expect(chip.shape, isA<StadiumBorder>());
+  });
+
+  group('rebuilds', () {
+    Element rowOf(WidgetTester tester, String title) => tester.element(
+      find.ancestor(of: find.text(title), matching: find.byType(ListTile)),
+    );
+
+    testWidgets('typing keeps the rows that still match', (tester) async {
+      await _pump(tester, registry);
+      await _pressCtrlK(tester);
+      final Element before = rowOf(tester, 'Charlie');
+
+      await tester.enterText(_paletteField, 'c');
+      await tester.pumpAndSettle();
+
+      expect(identical(rowOf(tester, 'Charlie'), before), isTrue);
+
+      // Let the list filter's debounce run out: async_redux's Debounce waits
+      // on a Future.delayed that nothing can cancel.
+      await tester.pump(const Duration(milliseconds: 350));
+    });
+
+    testWidgets('moving the highlight leaves the search field alone', (
+      tester,
+    ) async {
+      await _pump(tester, registry);
+      await _pressCtrlK(tester);
+      final Widget field = tester.widget(_paletteField);
+
+      await _press(tester, LogicalKeyboardKey.arrowDown);
+
+      expect(_highlighted(tester, 'Bravo'), isTrue);
+      expect(identical(tester.widget(_paletteField), field), isTrue);
+    });
+
+    testWidgets('moving the highlight leaves uninvolved rows alone', (
+      tester,
+    ) async {
+      await _pump(tester, registry);
+      await _pressCtrlK(tester);
+      ListTile tile(String title) => tester.widget<ListTile>(
+        find.ancestor(of: find.text(title), matching: find.byType(ListTile)),
+      );
+      final ListTile charlie = tile('Charlie');
+      final ListTile alpha = tile('Alpha');
+
+      await _press(tester, LogicalKeyboardKey.arrowDown);
+
+      // Alpha lost the highlight, Bravo gained it; Charlie was not rebuilt.
+      expect(identical(tile('Charlie'), charlie), isTrue);
+      expect(identical(tile('Alpha'), alpha), isFalse);
+    });
+
+    testWidgets('hovering leaves the search field alone', (tester) async {
+      await _pump(tester, registry);
+      await _pressCtrlK(tester);
+      final Widget field = tester.widget(_paletteField);
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      addTearDown(mouse.removePointer);
+
+      await mouse.moveTo(tester.getCenter(find.text('Charlie')));
+      await tester.pumpAndSettle();
+
+      expect(_highlighted(tester, 'Charlie'), isTrue);
+      expect(identical(tester.widget(_paletteField), field), isTrue);
+    });
+
+    testWidgets('a resize keeps the highlight', (tester) async {
+      await _pump(tester, registry);
+      await _pressCtrlK(tester);
+      await _press(tester, LogicalKeyboardKey.arrowDown);
+
+      tester.view.physicalSize = const Size(1400, 1000);
+      addTearDown(tester.view.reset);
+      await tester.pumpAndSettle();
+
+      expect(_highlighted(tester, 'Bravo'), isTrue);
+    });
+  });
+
+  testWidgets('rows paint their highlight on the clipped list, not on the '
+      'dropdown, so it cannot bleed over the key hints', (tester) async {
+    await _pump(tester, registry);
+    await _pressCtrlK(tester);
+
+    final Material inkSurface = tester.widget<Material>(
+      find
+          .ancestor(
+            of: find
+                .descendant(
+                  of: find.byType(CommandPanel),
+                  matching: find.byType(ListTile),
+                )
+                .first,
+            matching: find.byType(Material),
+          )
+          .first,
+    );
+
+    expect(inkSurface.key, const Key('command-palette-list-surface'));
+    expect(inkSurface.clipBehavior, isNot(Clip.none));
   });
 }

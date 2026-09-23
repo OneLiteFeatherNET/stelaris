@@ -43,6 +43,12 @@ void main() {
       expect(consecutive, greaterThan(spread));
     });
 
+    test('a contiguous prefix beats the same letters as word starts', () {
+      final int prefix = scoreMatch('bla', 'Blade')!;
+      final int initials = scoreMatch('bla', 'Big long armor')!;
+      expect(prefix, greaterThan(initials));
+    });
+
     test('prefers the best placement over the first one', () {
       // The first 's' in "lessons" is followed by another 's', not by 'o';
       // the adjacent "so" further on is the placement that should count.

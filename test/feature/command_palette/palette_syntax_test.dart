@@ -7,6 +7,8 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/attributes/attribute_edit_dialog.dart';
 import 'package:stelaris/feature/base/button/cancel_button.dart';
 import 'package:stelaris/feature/command_palette/command_palette.dart';
+import 'package:stelaris/feature/command_palette/command_panel.dart';
+import 'package:stelaris/feature/base/search/app_bar_search.dart';
 import 'package:stelaris/feature/project/dialog/switch_project_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -29,6 +31,9 @@ const Project _demo = Project(id: 'p3', key: 'demo', displayName: 'Demo');
 /// The palette shortcut around a small shell with a list, a detail page and
 /// the attributes page, over a store with a few loaded entities.
 Future<(Store<AppState>, GoRouter)> _pump(WidgetTester tester) async {
+  tester.view.physicalSize = const Size(1600, 900);
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.reset);
   final store = Store<AppState>(
     initialState: const AppState().copyWith(
       selectedProject: _eldoria,
@@ -44,8 +49,12 @@ Future<(Store<AppState>, GoRouter)> _pump(WidgetTester tester) async {
     initialLocation: '/fonts',
     routes: [
       ShellRoute(
-        builder: (context, state, child) =>
-            CommandPaletteShortcuts(child: Scaffold(body: child)),
+        builder: (context, state, child) => CommandPaletteShortcuts(
+          child: Scaffold(
+            appBar: AppBar(title: const AppBarSearch()),
+            body: child,
+          ),
+        ),
         routes: [
           GoRoute(path: '/fonts', builder: (_, _) => const Text('fonts page')),
           GoRoute(
@@ -89,7 +98,7 @@ Future<void> _open(WidgetTester tester) async {
 }
 
 Finder get _field => find.descendant(
-  of: find.byType(CommandPalette),
+  of: find.byType(AppBarSearch),
   matching: find.byType(TextField),
 );
 
@@ -119,7 +128,7 @@ Future<void> _scrollTo(
     scrollable: find
         .descendant(
           of: find.descendant(
-            of: find.byType(CommandPalette),
+            of: find.byType(CommandPanel),
             matching: find.byType(ListView),
           ),
           matching: find.byType(Scrollable),
@@ -135,7 +144,7 @@ String _fieldText(WidgetTester tester) =>
 List<String> _titles(WidgetTester tester) => tester
     .widgetList<ListTile>(
       find.descendant(
-        of: find.byType(CommandPalette),
+        of: find.byType(CommandPanel),
         matching: find.byType(ListTile),
       ),
     )
@@ -153,7 +162,7 @@ void main() {
       await _type(tester, '#sword');
       await _press(tester, LogicalKeyboardKey.enter);
 
-      expect(find.byType(CommandPalette), findsNothing);
+      expect(find.byType(CommandPanel), findsNothing);
       expect(router.state.matchedLocation, '/items/detail');
       expect(store.state.selectedItem?.uiName, 'Diamond Sword');
       expect(find.text('item detail'), findsOneWidget);
@@ -167,7 +176,7 @@ void main() {
       await _type(tester, 'mana');
       await _press(tester, LogicalKeyboardKey.enter);
 
-      expect(find.byType(CommandPalette), findsNothing);
+      expect(find.byType(CommandPanel), findsNothing);
       expect(find.byType(AttributeEditDialog), findsOneWidget);
     });
   });
@@ -237,6 +246,8 @@ void main() {
       await _open(tester);
       await _type(tester, '#item sword');
       final List<String> viaSigil = _titles(tester);
+      // The field keeps its chip between openings; two Esc clear it.
+      await _press(tester, LogicalKeyboardKey.escape);
       await _press(tester, LogicalKeyboardKey.escape);
 
       await _open(tester);
@@ -303,7 +314,7 @@ void main() {
       ]);
       for (final heading in ['Syntax', 'Navigation', 'Keyboard']) {
         final Finder found = find.descendant(
-          of: find.byType(CommandPalette),
+          of: find.byType(CommandPanel),
           matching: find.text(heading),
         );
         await _scrollTo(tester, found);
@@ -315,7 +326,7 @@ void main() {
       await tester.tap(find.text('#  Entities'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(CommandPalette), findsOneWidget);
+      expect(find.byType(CommandPanel), findsOneWidget);
       expect(
         find.descendant(of: _chip, matching: find.text('Entities')),
         findsOneWidget,
@@ -394,7 +405,7 @@ void main() {
       await tester.tap(find.text('Go to Items'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(CommandPalette), findsNothing);
+      expect(find.byType(CommandPanel), findsNothing);
       expect(router.state.matchedLocation, '/items');
     });
 
@@ -407,7 +418,7 @@ void main() {
 
       await _press(tester, LogicalKeyboardKey.enter);
 
-      expect(find.byType(CommandPalette), findsOneWidget);
+      expect(find.byType(CommandPanel), findsOneWidget);
       expect(
         find.descendant(of: _chip, matching: find.text('Help')),
         findsOneWidget,

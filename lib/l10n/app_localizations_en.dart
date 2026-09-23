@@ -717,6 +717,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Only entries that are already loaded are searched';
 
   @override
+  String get command_palette_searching => 'Searching…';
+
+  @override
+  String get command_palette_search_failed =>
+      'The search service is unavailable; showing loaded entries';
+
+  @override
+  String command_palette_capped(int shown, int matched) {
+    return '$shown of $matched shown';
+  }
+
+  @override
   String command_palette_fallback_entities(String text) {
     return 'Search entities for “$text”';
   }
@@ -795,13 +807,67 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command_palette_footer_help => 'Help';
 
   @override
-  String get command_palette_footer_step_in => 'Tabs';
+  String get command_palette_footer_step_in => 'More';
 
   @override
   String get command_palette_footer_step_out => 'Back';
 
   @override
   String get command_palette_current_page => 'Current page';
+
+  @override
+  String get command_palette_group_create => 'Create';
+
+  @override
+  String command_palette_hint_section(String section) {
+    return 'Search $section, or ? for more';
+  }
+
+  @override
+  String command_palette_filter_list(String section, String text) {
+    return 'Filter $section by “$text”';
+  }
+
+  @override
+  String command_palette_show_matching(String section, String text) {
+    return 'Show $section matching “$text”';
+  }
+
+  @override
+  String get command_create_item => 'New item';
+
+  @override
+  String get command_create_font => 'New font';
+
+  @override
+  String get command_create_sound => 'New sound';
+
+  @override
+  String get command_create_notification => 'New notification';
+
+  @override
+  String get command_create_attribute => 'New attribute';
+
+  @override
+  String get command_create_keywords => 'create add new';
+
+  @override
+  String get command_delete_entry => 'Delete…';
+
+  @override
+  String get command_delete_keywords => 'delete remove';
+
+  @override
+  String get command_delete_this_item => 'Delete this item…';
+
+  @override
+  String get command_delete_this_font => 'Delete this font…';
+
+  @override
+  String get command_delete_this_sound => 'Delete this sound…';
+
+  @override
+  String get command_delete_this_notification => 'Delete this notification…';
 
   @override
   String get command_palette_key_step_in =>
@@ -813,7 +879,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String command_palette_hint_drill(String name) {
-    return 'Pick a tab of $name';
+    return '$name: pick a tab or an action';
   }
 
   @override

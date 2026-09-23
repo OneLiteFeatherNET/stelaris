@@ -4,6 +4,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/api/state/model_search_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/command_palette/entity_search_state.dart';
 
 part 'app_state.g.dart';
 
@@ -133,6 +134,12 @@ abstract class AppState with _$AppState {
     /// API and written into the selection as well.
     @JsonKey(includeToJson: false, includeFromJson: false)
     NavigationEntry? unsavedChanges,
+
+    /// The command palette's entity search: the question, the source's hits
+    /// and where its answer stands. Transient, like the caches above.
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(EntitySearchState())
+    EntitySearchState entitySearch,
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, dynamic> json) =>

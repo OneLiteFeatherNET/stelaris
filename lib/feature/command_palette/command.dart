@@ -4,7 +4,15 @@ import 'package:stelaris/feature/command_palette/palette_mode.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 
 /// The headings the palette sorts its commands under, in display order.
-enum CommandGroup { navigation, interface, backend, entities, projects, help }
+enum CommandGroup {
+  navigation,
+  create,
+  interface,
+  backend,
+  entities,
+  projects,
+  help,
+}
 
 /// Where an entry takes the palette instead of running: a mode, optionally a
 /// kind, and the text to start with.

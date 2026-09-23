@@ -7,7 +7,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/item_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
-import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
+import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -42,7 +42,11 @@ class ItemPage extends StatelessWidget {
           keySelector: (model) => model.key ?? '',
           projectKey: vm.projectKey,
           matchesFilter: (model, filter) => true,
-          onAdd: () => _openCreationDialog(context, vm.projectKey),
+          onAdd: () => openModelCreateDialog(
+            context,
+            NavigationEntry.items,
+            vm.projectKey,
+          ),
           onModelTap: (model) {
             context.dispatch(SelectedItemAction(model));
             context.go('${NavigationEntry.items.route}/detail');
@@ -92,20 +96,4 @@ class ItemPage extends StatelessWidget {
     );
   }
 
-  void _openCreationDialog(BuildContext context, String projectKey) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ModelCreateDialog(
-          title: context.l10n.dialog_item_create,
-          projectNamespace: projectKey,
-          onSubmit: (name, key) {
-            final model = ItemModel(uiName: name, key: key);
-            context.dispatch(ItemAddAction(model));
-            Navigator.pop(context, true);
-          },
-        );
-      },
-    );
-  }
 }

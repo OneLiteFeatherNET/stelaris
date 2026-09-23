@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/command_palette/command_palette.dart';
+import 'package:stelaris/feature/command_palette/command_panel.dart';
+import 'package:stelaris/feature/base/search/app_bar_search.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -17,6 +19,9 @@ PaginatedResult<T> _page<T>(List<T> items) => PaginatedResult<T>(
 );
 
 Future<(Store<AppState>, GoRouter)> _pump(WidgetTester tester) async {
+  tester.view.physicalSize = const Size(1600, 900);
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.reset);
   final store = Store<AppState>(
     initialState: const AppState().copyWith(
       items: _page(const [
@@ -30,8 +35,12 @@ Future<(Store<AppState>, GoRouter)> _pump(WidgetTester tester) async {
     initialLocation: '/fonts',
     routes: [
       ShellRoute(
-        builder: (context, state, child) =>
-            CommandPaletteShortcuts(child: Scaffold(body: child)),
+        builder: (context, state, child) => CommandPaletteShortcuts(
+          child: Scaffold(
+            appBar: AppBar(title: const AppBarSearch()),
+            body: child,
+          ),
+        ),
         routes: [
           GoRoute(path: '/fonts', builder: (_, _) => const Text('fonts page')),
           GoRoute(
@@ -74,7 +83,7 @@ Future<void> _open(WidgetTester tester) async {
 }
 
 Finder get _field => find.descendant(
-  of: find.byType(CommandPalette),
+  of: find.byType(AppBarSearch),
   matching: find.byType(TextField),
 );
 
@@ -98,7 +107,7 @@ TextEditingController _controller(WidgetTester tester) =>
 List<String> _titles(WidgetTester tester) => tester
     .widgetList<ListTile>(
       find.descendant(
-        of: find.byType(CommandPalette),
+        of: find.byType(CommandPanel),
         matching: find.byType(ListTile),
       ),
     )
@@ -123,7 +132,13 @@ void main() {
 
       await _press(tester, LogicalKeyboardKey.arrowRight);
 
-      expect(_titles(tester), ['General', 'Meta', 'Enchantments', 'Lore']);
+      expect(_titles(tester), [
+        'General',
+        'Meta',
+        'Enchantments',
+        'Lore',
+        'Delete\u2026',
+      ]);
       expect(_chipSays('Diamond Sword'), isTrue);
       expect(_controller(tester).text, isEmpty);
     });
@@ -153,16 +168,18 @@ void main() {
       expect(_chipSays('Diamond Sword'), isFalse);
     });
 
-    testWidgets('Arrow Right on an attribute does nothing', (tester) async {
+    testWidgets('Arrow Right on an entry without sub-entries does nothing', (
+      tester,
+    ) async {
       await _pump(tester);
       await _open(tester);
-      await _type(tester, '#mana');
+      await _type(tester, ':items');
       final before = _titles(tester);
 
       await _press(tester, LogicalKeyboardKey.arrowRight);
 
       expect(_titles(tester), before);
-      expect(_chipSays('Max Mana'), isFalse);
+      expect(_chipSays('Go to Items'), isFalse);
     });
   });
 
@@ -230,13 +247,15 @@ void main() {
 
     await _press(tester, LogicalKeyboardKey.enter);
 
-    expect(find.byType(CommandPalette), findsNothing);
+    expect(find.byType(CommandPanel), findsNothing);
     expect(store.state.selectedItem?.uiName, 'Diamond Sword');
     expect(router.state.uri.toString(), '/items/detail?tab=lore');
   });
 
   group('marker and hints', () {
-    testWidgets('items carry the marker, attributes do not', (tester) async {
+    testWidgets('entities carry the marker, Go-to entries do not', (
+      tester,
+    ) async {
       await _pump(tester);
       await _open(tester);
       await _type(tester, '#');
@@ -249,7 +268,9 @@ void main() {
         matching: find.byKey(const Key('command-palette-steps-in')),
       );
       expect(markerOn('Diamond Sword'), findsOneWidget);
-      expect(markerOn('Max Mana'), findsNothing);
+      // Since Delete, attributes have something to step into as well.
+      expect(markerOn('Max Mana'), findsOneWidget);
+      expect(markerOn('Go to Sound'), findsNothing);
     });
 
     testWidgets('the step-in hint shows only where it applies', (tester) async {
@@ -258,13 +279,13 @@ void main() {
       Finder hint(String text) =>
           find.descendant(of: _hints, matching: find.text(text));
 
-      expect(hint('Tabs'), findsNothing);
+      expect(hint('More'), findsNothing);
 
       await _type(tester, '#');
-      expect(hint('Tabs'), findsOneWidget);
+      expect(hint('More'), findsOneWidget);
 
       await _press(tester, LogicalKeyboardKey.arrowRight);
-      expect(hint('Tabs'), findsNothing);
+      expect(hint('More'), findsNothing);
       expect(hint('Back'), findsOneWidget);
     });
   });
