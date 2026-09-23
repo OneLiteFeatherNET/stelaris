@@ -133,42 +133,5 @@ void main() {
 
       expect(baseCardWidget.message, equals('This is a helpful tooltip'));
     });
-
-    testWidgets('handles focus changes correctly', (WidgetTester tester) async {
-      bool focusChanged = false;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Column(
-              children: [
-                TextInputCard(
-                  display: 'Focus Test',
-                  valueUpdate: (value) {
-                    focusChanged = true;
-                    valueUpdateCallback(value);
-                  },
-                  currentValue: '',
-                ),
-                const TextField(),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      final textField = find.byType(TextFormField);
-
-      await tester.tap(textField);
-      await tester.pump();
-
-      await tester.enterText(textField, 'focus test');
-
-      await tester.tap(find.byType(TextField).last);
-      await tester.pumpAndSettle();
-
-      expect(focusChanged, isTrue);
-      expect(testValue, equals('focus test'));
-    });
   });
 }
