@@ -31,7 +31,7 @@ class FormDialog extends StatelessWidget {
   /// Overrides the action button's background color, e.g. for destructive
   /// actions like a delete confirmation.
   final Color? actionColor;
-  final VoidCallback onSubmit;
+  final VoidCallback? onSubmit;
   final double minWidth;
   final double maxWidth;
   final double maxHeight;
