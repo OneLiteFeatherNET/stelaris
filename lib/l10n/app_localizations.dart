@@ -898,12 +898,6 @@ abstract class AppLocalizations {
   /// **'Get started by creating your first project.'**
   String get project_selection_empty_subtitle;
 
-  /// No description provided for @project_selection_dropdown_label.
-  ///
-  /// In en, this message translates to:
-  /// **'Project / Namespace'**
-  String get project_selection_dropdown_label;
-
   /// No description provided for @project_selection_open_button.
   ///
   /// In en, this message translates to:
