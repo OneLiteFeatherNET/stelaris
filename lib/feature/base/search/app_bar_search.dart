@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/search_actions.dart';
@@ -96,6 +97,13 @@ class _AppBarSearchState extends State<AppBarSearch> {
     });
   }
 
+  void _clear() {
+    _debounceTimer?.cancel();
+    _controller.clear();
+    _syncedQuery = '';
+    context.dispatch(UpdateSearchQueryAction(''));
+  }
+
   Future<void> _leaveDetail(NavigationEntry entry) async {
     if (_leavingDetail) return;
     _leavingDetail = true;
@@ -169,7 +177,7 @@ class _AppBarSearchState extends State<AppBarSearch> {
   }) {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
-    return SearchBar(
+    final searchBar = SearchBar(
       controller: _controller,
       focusNode: _focusNode,
       // Only when just expanded from the compact icon — the always-visible
@@ -194,33 +202,51 @@ class _AppBarSearchState extends State<AppBarSearch> {
         EdgeInsets.symmetric(horizontal: 12),
       ),
       hintText: l10n.app_bar_search_hint(entry.display),
+      // In compact mode the leading button collapses the field (the query
+      // keeps filtering the list), so the trailing X can always mean clear.
       leading: SizedBox(
         width: _iconButtonSize,
         height: _iconButtonSize,
-        child: IconButton(
-          padding: EdgeInsets.zero,
-          icon: const Icon(Icons.search),
-          tooltip: l10n.command_bar_search_tooltip,
-          onPressed: () => _focusNode.requestFocus(),
-        ),
+        child: showClose
+            ? IconButton(
+                key: const Key('app_bar_search_close'),
+                padding: EdgeInsets.zero,
+                icon: const Icon(Icons.arrow_back),
+                tooltip: l10n.app_bar_search_close_tooltip,
+                onPressed: () => setState(() => _expanded = false),
+              )
+            : IconButton(
+                padding: EdgeInsets.zero,
+                icon: const Icon(Icons.search),
+                tooltip: l10n.command_bar_search_tooltip,
+                onPressed: () => _focusNode.requestFocus(),
+              ),
       ),
       onChanged: (value) => _onChanged(value, entry, onDetail),
       trailing: [
+        ValueListenableBuilder<TextEditingValue>(
+          valueListenable: _controller,
+          builder: (context, value, _) {
+            if (value.text.isEmpty) return const SizedBox.shrink();
+            return SizedBox(
+              width: _iconButtonSize,
+              height: _iconButtonSize,
+              child: IconButton(
+                key: const Key('app_bar_search_clear'),
+                padding: EdgeInsets.zero,
+                icon: const Icon(Icons.close),
+                tooltip: l10n.search_clear_tooltip,
+                onPressed: _clear,
+              ),
+            );
+          },
+        ),
         _buildFilterMenu(context, search),
-        if (showClose)
-          SizedBox(
-            width: _iconButtonSize,
-            height: _iconButtonSize,
-            child: IconButton(
-              key: const Key('app_bar_search_close'),
-              padding: EdgeInsets.zero,
-              icon: const Icon(Icons.close),
-              tooltip: l10n.app_bar_search_close_tooltip,
-              // Only collapses — the query keeps filtering the list.
-              onPressed: () => setState(() => _expanded = false),
-            ),
-          ),
       ],
+    );
+    return CallbackShortcuts(
+      bindings: {const SingleActivator(LogicalKeyboardKey.escape): _clear},
+      child: searchBar,
     );
   }
 

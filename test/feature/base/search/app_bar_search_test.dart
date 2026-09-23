@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/search_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -214,5 +215,27 @@ void main() {
       bar.side!.resolve({WidgetState.focused}),
       BorderSide(color: colorScheme.primary, width: 2),
     );
+  });
+
+  testWidgets('the clear button and Esc empty the field and the query', (
+    tester,
+  ) async {
+    await pump(tester);
+
+    await tester.enterText(find.byType(TextField), 'ruby');
+    await tester.pump(const Duration(milliseconds: 350));
+    expect(store.state.modelSearch.query, 'ruby');
+
+    await tester.tap(find.byKey(const Key('app_bar_search_clear')));
+    await tester.pump();
+    expect(store.state.modelSearch.query, '');
+    expect(find.text('ruby'), findsNothing);
+
+    await tester.enterText(find.byType(TextField), 'ruby');
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pump();
+    expect(store.state.modelSearch.query, '');
+    expect(find.text('ruby'), findsNothing);
   });
 }
