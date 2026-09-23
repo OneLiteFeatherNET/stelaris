@@ -12,8 +12,8 @@ sound can be opened directly on the tab they want.
 The system SHALL show, when the user presses Arrow Right on a highlighted entity that has tabs
 (items, fonts and sounds), that entity's tabs in the palette instead of the previous list. The chip
 SHALL name the entity. This SHALL only happen while the cursor is at the end of the search text.
-Anywhere else, Arrow Right SHALL move the cursor as usual. On entries without tabs, Arrow Right SHALL
-do nothing beyond moving the cursor.
+Anywhere else, Arrow Right SHALL move the cursor as usual. On entries without sub-entries, Arrow
+Right SHALL do nothing beyond moving the cursor.
 
 #### Scenario: Step into an item
 
@@ -25,9 +25,9 @@ do nothing beyond moving the cursor.
 - **WHEN** the query is `sword`, the cursor is after `sw`, and the user presses Arrow Right
 - **THEN** the cursor moves one character and the palette still lists the entities
 
-#### Scenario: Entry without tabs
+#### Scenario: Entry without sub-entries
 
-- **WHEN** an attribute is highlighted and the user presses Arrow Right
+- **WHEN** "Go to Items" is highlighted and the user presses Arrow Right
 - **THEN** the list stays as it was
 
 ### Requirement: Choosing a tab opens the detail page on it
@@ -68,10 +68,10 @@ The system SHALL mark entries that can be stepped into with a trailing `›`. Th
 list SHALL mention Arrow Right while the list contains such an entry. The Keyboard help section
 SHALL list Arrow Right and Arrow Left.
 
-#### Scenario: Marker on items, not on attributes
+#### Scenario: Marker only where there is something to step into
 
-- **WHEN** the entity list shows an item and an attribute
-- **THEN** the item row shows `›` and the attribute row does not
+- **WHEN** the entity list shows an item and a "Go to" entry
+- **THEN** the item row shows `›` and the "Go to" row does not
 
 ### Requirement: Detail pages open on a requested tab
 

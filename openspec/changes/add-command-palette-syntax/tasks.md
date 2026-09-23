@@ -32,6 +32,8 @@
 
 - [x] 5.7 List the current page's "Go to" command instead of hiding it and mark it (filled icon, primary color, "Current page" label) in every mode, keep it out of the entity-mode "Go to" fallback, and verify with unit and widget tests that on `/fonts` and `/fonts/detail` "Go to Fonts" is listed and marked, other pages are not marked, choosing it on the detail page returns to `/fonts`, and `#font ` on `/fonts` offers no "Go to Fonts"
 
+- [x] 5.8 Keep rebuilds to what changed: stable row keys per entry id, the highlight as a `ValueNotifier` that only the two affected rows listen to, a lazily built list laid out once per search, a new search only on a locale change, and fixed shortcut and action maps outside the page's `StoreConnector`. Verify with widget tests that typing keeps a still-matching row's element, moving the highlight or hovering leaves the search field and uninvolved rows untouched, a resize keeps the highlight, and a project switch keeps the shortcut's actions
+
 ## 6. Validation
 
 - [x] 6.1 Run `flutter analyze` and `flutter test` and verify both pass

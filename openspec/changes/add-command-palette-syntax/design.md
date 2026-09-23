@@ -204,6 +204,20 @@ A footer under the list shows the keys (`↑↓` navigate, `Enter` run, `Esc` cl
 list then ends on a straight edge above it instead of being cut by the dialog's rounded corner,
 and the most important help is visible without opening `?`.
 
+### Rebuild only what changed
+
+- Rows are keyed by entry id, and the keys survive searches, so a row that still matches after a
+  keystroke keeps its element.
+- The highlight is a `ValueNotifier`. Each row listens through a small widget that rebuilds only
+  when that row gains or loses the highlight. Arrow keys and hovering rebuild two rows, not the
+  palette.
+- The list is a `ListView.builder` over headings and entries laid out once per search, so only
+  visible rows are built however many entities are loaded.
+- `didChangeDependencies` searches again only when the locale changes. Theme or media changes don't
+  reset the results or the highlight.
+- `CommandPaletteShortcuts` holds its shortcut and action maps in state and sits outside
+  `BasePage`'s `StoreConnector`, so a project switch doesn't hand `Actions` a new map.
+
 ### Chip in the field, Backspace to leave
 
 The `TextField`'s `prefixIcon` becomes an `InputChip` with the mode or kind label and a delete

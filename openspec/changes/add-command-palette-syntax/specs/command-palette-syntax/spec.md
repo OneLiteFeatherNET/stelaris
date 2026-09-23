@@ -147,7 +147,8 @@ edit dialog.
 
 ### Requirement: Entity search is honest about what is loaded
 
-The system SHALL tell the user in entity mode that only loaded entries are searched. When a kind
+The system SHALL tell the user in entity mode that only loaded entries are searched, as long as no
+entity search source is configured. When a kind
 has nothing loaded, the palette SHALL offer that kind's "Go to" command instead of an empty result,
 so opening the list loads it, unless the user is already on that list.
 
