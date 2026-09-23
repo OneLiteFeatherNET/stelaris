@@ -17,6 +17,14 @@ class UpdateSearchQueryAction extends ReduxAction<AppState> {
   }
 }
 
+/// Clears query and active filters; sort order and section stay.
+class ClearSearchAction extends ReduxAction<AppState> {
+  @override
+  AppState reduce() => state.copyWith(
+    modelSearch: state.modelSearch.copyWith(query: '', activeFilters: {}),
+  );
+}
+
 class ToggleSearchFilterAction extends ReduxAction<AppState> {
   ToggleSearchFilterAction(this.option);
 
