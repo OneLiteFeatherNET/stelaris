@@ -17,7 +17,6 @@ const EdgeInsets generalPadding = EdgeInsets.only(top: 10, left: 10);
 const loader = SizedBox(height: 25, width: 25, child: CircularProgressIndicator());
 const divider = Divider();
 
-Text appTitle = const Text('S T E L A R I S');
 
 /// Regs
 RegExp numberPattern = RegExp('[1-9]\\d*');
