@@ -55,7 +55,7 @@ void main() {
         ),
         findsOneWidget,
       );
-      expect(find.text('Cancel'), findsNothing);
+      expect(find.text('Cancel'), findsOneWidget);
     });
 
     testWidgets('hides the key chip without a key', (tester) async {

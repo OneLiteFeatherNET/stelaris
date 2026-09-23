@@ -58,10 +58,11 @@ class _ModelDeleteDialogState<E> extends State<ModelDeleteDialog<E>> {
 
     return FormDialog(
       title: widget.title,
+      actionIcon: Icons.delete_outline,
       actionLabel: context.l10n.tooltip_delete,
+      actionColor: errorColor,
       maxWidth: 420,
-      showActions: false,
-      onSubmit: _delete,
+      onSubmit: _canDelete ? _delete : null,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -122,15 +123,6 @@ class _ModelDeleteDialogState<E> extends State<ModelDeleteDialog<E>> {
             ),
             onChanged: (_) => setState(() {}),
             onSubmitted: (_) => _delete(),
-          ),
-          verticalSpacing10,
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: errorColor,
-              foregroundColor: theme.colorScheme.onError,
-            ),
-            onPressed: _canDelete ? _delete : null,
-            child: Text(context.l10n.tooltip_delete),
           ),
         ],
       ),
