@@ -17,6 +17,36 @@ class UpdateSearchQueryAction extends ReduxAction<AppState> {
   }
 }
 
+/// The list filter as the user types: only the last dispatch within the
+/// pause reaches the store.
+///
+/// [DebouncedSearchQueryAction.cancel] shares the lock and changes nothing,
+/// so dispatching it drops a query still waiting - for when the query is set
+/// at once instead, cleared, or its field goes away.
+class DebouncedSearchQueryAction extends ReduxAction<AppState> with Debounce {
+  DebouncedSearchQueryAction(String this.query);
+
+  DebouncedSearchQueryAction.cancel() : query = null;
+
+  final String? query;
+
+  @override
+  int get debounce => 300;
+
+  // Cancelling has to hit the same lock as the queries it drops.
+  @override
+  Object? lockBuilder() => DebouncedSearchQueryAction;
+
+  @override
+  AppState? reduce() {
+    final String? query = this.query;
+    if (query == null || state.modelSearch.query == query) return null;
+    return state.copyWith(
+      modelSearch: state.modelSearch.copyWith(query: query),
+    );
+  }
+}
+
 /// Clears query and active filters; sort order and section stay.
 class ClearSearchAction extends ReduxAction<AppState> {
   @override

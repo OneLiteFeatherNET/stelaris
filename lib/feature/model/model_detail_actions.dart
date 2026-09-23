@@ -1,18 +1,16 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
-import 'package:stelaris/feature/dialogs/model_delete_dialog.dart';
 import 'package:stelaris/feature/dialogs/model_info_dialog.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/feature/model/model_delete.dart';
 
 /// The Info / Delete / Save actions of a detail page's [PageHeader]. Opens
 /// the same dialogs as a grid card's menu, so both places stay in sync.
@@ -63,24 +61,17 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
     final state = StoreProvider.state<AppState>(context);
     final model = selectModel(state);
     if (model == null) return;
-    final deleted = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => ModelDeleteDialog<E>(
-        title: deleteTitle,
-        name: nameSelector(model),
-        value: model,
-        namespacedKey: _namespacedKey(state, model),
-        warning: deleteWarning,
-        successfully: (value) {
-          // Pending edits of a deleted model are moot — drop them so
-          // leaving doesn't ask about them.
-          context.dispatch(DiscardUnsavedChangesAction());
-          context.dispatch(removeAction(value));
-          return true;
-        },
-      ),
+    await confirmAndDeleteModel<E>(
+      context,
+      entry: entry,
+      title: deleteTitle,
+      name: nameSelector(model),
+      namespacedKey: _namespacedKey(state, model),
+      model: model,
+      removeAction: removeAction,
+      warning: deleteWarning,
+      returnToList: true,
     );
-    if (deleted == true && context.mounted) context.go(entry.route);
   }
 
   @override

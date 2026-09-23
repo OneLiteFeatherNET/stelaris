@@ -7,7 +7,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/notification/notification_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
-import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
+import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -42,7 +42,11 @@ class NotificationPage extends StatelessWidget {
           keySelector: (model) => model.key ?? '',
           projectKey: vm.projectKey,
           matchesFilter: (model, filter) => true,
-          onAdd: () => _openCreationDialog(context, vm.projectKey),
+          onAdd: () => openModelCreateDialog(
+            context,
+            NavigationEntry.notifications,
+            vm.projectKey,
+          ),
           onModelTap: (model) {
             context.dispatch(SelectedNotificationAction(model));
             context.go('${NavigationEntry.notifications.route}/detail');
@@ -94,23 +98,4 @@ class NotificationPage extends StatelessWidget {
   }
 
   /// Opens a dialog for creating a new notification.
-  void _openCreationDialog(BuildContext context, String projectKey) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ModelCreateDialog(
-          title: context.l10n.dialog_notification_create,
-          projectNamespace: projectKey,
-          onSubmit: (name, key) {
-            final NotificationModel model = NotificationModel(
-              uiName: name,
-              key: key,
-            );
-            context.dispatchAndWait(NotificationAddAction(model));
-            Navigator.pop(context, true);
-          },
-        );
-      },
-    );
-  }
 }

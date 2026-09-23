@@ -8,6 +8,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/model_search_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/search/app_bar_search.dart';
+import 'package:stelaris/feature/command_palette/command_palette.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_sort_option.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -25,9 +26,12 @@ void main() {
     double width = 1000,
   }) async {
     store = Store<AppState>(initialState: state);
-    Widget page(String label) => Scaffold(
-      appBar: AppBar(title: const AppBarSearch()),
-      body: Text(label),
+    // As in the app: the shell's palette shortcut is around the search.
+    Widget page(String label) => CommandPaletteShortcuts(
+      child: Scaffold(
+        appBar: AppBar(title: const AppBarSearch()),
+        body: Text(label),
+      ),
     );
     router = GoRouter(
       initialLocation: location,
@@ -62,7 +66,7 @@ void main() {
 
   testWidgets('shows a section-specific hint', (tester) async {
     await pump(tester);
-    expect(find.text('Search Items...'), findsOneWidget);
+    expect(find.text('Search Items, or ? for more'), findsOneWidget);
   });
 
   testWidgets('dispatches the query only after the 300ms debounce', (
@@ -139,19 +143,24 @@ void main() {
     expect(find.byType(TextField), findsNothing);
   });
 
-  testWidgets('typing on a clean detail page navigates to the list with '
-      'the query', (tester) async {
+  testWidgets('typing on a detail page stays there; Enter shows the list '
+      'with the query', (tester) async {
     await pump(tester, location: '/items/detail');
 
     await tester.enterText(find.byType(TextField), 'ruby');
+    await tester.pumpAndSettle();
+    expect(find.text('Item Detail'), findsOneWidget);
+    expect(find.text('Show Items matching \u201cruby\u201d'), findsOneWidget);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
 
     expect(find.text('Item List'), findsOneWidget);
     expect(store.state.modelSearch.query, 'ruby');
   });
 
-  testWidgets('cancelling the guard on a dirty detail page restores the '
-      'field and stays', (tester) async {
+  testWidgets('cancelling the guard on a dirty detail page stays and keeps '
+      'the query', (tester) async {
     await pump(
       tester,
       location: '/items/detail',
@@ -163,10 +172,9 @@ void main() {
 
     await tester.enterText(find.byType(TextField), 'oldx');
     await tester.pumpAndSettle();
-    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.byType(AlertDialog), findsNothing);
 
-    // Typing more while the dialog is open must not open a second dialog.
-    await tester.enterText(find.byType(TextField), 'oldxy');
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(find.byType(AlertDialog), findsOneWidget);
 
@@ -174,7 +182,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Item Detail'), findsOneWidget);
-    expect(find.text('old'), findsOneWidget);
     expect(store.state.modelSearch.query, 'old');
   });
 
@@ -190,6 +197,8 @@ void main() {
     await tester.enterText(find.byType(TextField), 'r');
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'ruby');
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('unsaved_dialog_discard')));
     await tester.pumpAndSettle();
@@ -233,6 +242,10 @@ void main() {
 
     await tester.enterText(find.byType(TextField), 'ruby');
     await tester.pump(const Duration(milliseconds: 350));
+    // The first Esc closes the dropdown the typing opened; the second clears.
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pump();
+    expect(store.state.modelSearch.query, 'ruby');
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pump();
     expect(store.state.modelSearch.query, '');

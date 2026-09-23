@@ -279,6 +279,19 @@
     }
   },
   "command_palette_loaded_only": "Only entries that are already loaded are searched",
+  "command_palette_searching": "Searching\u2026",
+  "command_palette_search_failed": "The search service is unavailable; showing loaded entries",
+  "command_palette_capped": "{shown} of {matched} shown",
+  "@command_palette_capped": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "matched": {
+        "type": "int"
+      }
+    }
+  },
   "command_palette_fallback_entities": "Search entities for “{text}”",
   "@command_palette_fallback_entities": {
     "placeholders": {
@@ -323,12 +336,55 @@
   "command_palette_footer_run": "Run",
   "command_palette_footer_close": "Close",
   "command_palette_footer_help": "Help",
-  "command_palette_footer_step_in": "Tabs",
+  "command_palette_footer_step_in": "More",
   "command_palette_footer_step_out": "Back",
   "command_palette_current_page": "Current page",
+  "command_palette_group_create": "Create",
+  "command_palette_hint_section": "Search {section}, or ? for more",
+  "@command_palette_hint_section": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      }
+    }
+  },
+  "command_palette_filter_list": "Filter {section} by \u201c{text}\u201d",
+  "@command_palette_filter_list": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "command_palette_show_matching": "Show {section} matching \u201c{text}\u201d",
+  "@command_palette_show_matching": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "command_create_item": "New item",
+  "command_create_font": "New font",
+  "command_create_sound": "New sound",
+  "command_create_notification": "New notification",
+  "command_create_attribute": "New attribute",
+  "command_create_keywords": "create add new",
+  "command_delete_entry": "Delete\u2026",
+  "command_delete_keywords": "delete remove",
+  "command_delete_this_item": "Delete this item\u2026",
+  "command_delete_this_font": "Delete this font\u2026",
+  "command_delete_this_sound": "Delete this sound\u2026",
+  "command_delete_this_notification": "Delete this notification\u2026",
   "command_palette_key_step_in": "Show the tabs of the highlighted entry",
   "command_palette_key_step_out": "Back to the list, with the cursor at the start",
-  "command_palette_hint_drill": "Pick a tab of {name}",
+  "command_palette_hint_drill": "{name}: pick a tab or an action",
   "@command_palette_hint_drill": {
     "placeholders": {
       "name": {

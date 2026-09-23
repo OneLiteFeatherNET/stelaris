@@ -3,9 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/base_page.dart';
+import 'package:stelaris/feature/base/search/app_bar_search.dart';
 import 'package:stelaris/feature/command_palette/command_palette.dart';
+import 'package:stelaris/feature/command_palette/command_panel.dart';
 import 'package:stelaris/feature/settings/settings_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -152,7 +155,7 @@ void main() {
       expect(find.text('Font List'), findsOneWidget);
       expect(store.state.modelSearch.query, '');
       expect(find.text('abc'), findsNothing);
-      expect(find.text('Search Fonts...'), findsOneWidget);
+      expect(find.text('Search Fonts, or ? for more'), findsOneWidget);
     });
   });
 
@@ -217,6 +220,37 @@ void main() {
           ),
         );
 
+    testWidgets('a project switch keeps the shortcut and its actions', (
+      tester,
+    ) async {
+      await pumpShell(tester);
+      Map<Type, Action<Intent>> actions() => tester
+          .widget<Actions>(
+            find
+                .descendant(
+                  of: find.byType(CommandPaletteShortcuts),
+                  matching: find.byType(Actions),
+                )
+                .first,
+          )
+          .actions;
+      final before = actions();
+      final store = StoreProvider.backdoorInheritedWidget<AppState>(
+        tester.element(find.byType(BasePage)),
+      );
+
+      store.dispatch(
+        SelectProjectAction(
+          const Project(id: 'proj_2', key: 'other', displayName: 'Other'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(identical(actions(), before), isTrue);
+      await pressCtrlK(tester);
+      expect(find.byType(CommandPanel), findsOneWidget);
+    });
+
     testWidgets('Ctrl+K opens the palette before anything was clicked', (
       tester,
     ) async {
@@ -224,7 +258,7 @@ void main() {
 
       await pressCtrlK(tester);
 
-      expect(find.byType(CommandPalette), findsOneWidget);
+      expect(find.byType(CommandPanel), findsOneWidget);
     });
 
     testWidgets('Ctrl+K opens it while the search bar has focus and leaves '
@@ -237,22 +271,29 @@ void main() {
 
       await pressCtrlK(tester);
 
-      expect(find.byType(CommandPalette), findsOneWidget);
+      expect(find.byType(CommandPanel), findsOneWidget);
       expect(searchField(tester).controller.text, 'sword');
     });
 
-    testWidgets('Escape closes the palette and gives focus back to the '
-        'search bar', (tester) async {
+    testWidgets('Escape closes the dropdown and the app bar field keeps its '
+        'focus', (tester) async {
       await pumpShell(tester);
       await tester.tap(find.byKey(const Key('model-search')));
       await tester.pumpAndSettle();
       await pressCtrlK(tester);
+      expect(find.byType(CommandPanel), findsOneWidget);
 
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
       await tester.pumpAndSettle();
 
-      expect(find.byType(CommandPalette), findsNothing);
-      expect(searchField(tester).focusNode.hasFocus, isTrue);
+      expect(find.byType(CommandPanel), findsNothing);
+      final EditableText appBarField = tester.widget<EditableText>(
+        find.descendant(
+          of: find.byType(AppBarSearch),
+          matching: find.byType(EditableText),
+        ),
+      );
+      expect(appBarField.focusNode.hasFocus, isTrue);
     });
 
     testWidgets('Ctrl+K does nothing on the project selection page', (
@@ -262,7 +303,7 @@ void main() {
 
       await pressCtrlK(tester);
 
-      expect(find.byType(CommandPalette), findsNothing);
+      expect(find.byType(CommandPanel), findsNothing);
     });
 
     testWidgets('Ctrl+K does nothing while the settings dialog is open', (
@@ -275,7 +316,7 @@ void main() {
 
       await pressCtrlK(tester);
 
-      expect(find.byType(CommandPalette), findsNothing);
+      expect(find.byType(CommandPanel), findsNothing);
     });
   });
 }
