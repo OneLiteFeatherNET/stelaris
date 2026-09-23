@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/model_detail_actions.dart';
+import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:stelaris/feature/model/model_detail_shell.dart';
 import 'package:stelaris/feature/model/model_detail_tab_bar.dart';
 import 'package:stelaris/feature/sound/sound_file_entries.dart';
@@ -21,9 +22,10 @@ import 'package:stelaris/util/l10n_ext.dart';
 class SoundDetailPage extends StatelessWidget {
   const SoundDetailPage({super.key});
 
-  static const List<Tab> _tabs = [
-    Tab(text: 'General'),
-    Tab(text: 'Entries'),
+  /// The tabs in order. Also what `?tab=` and the command palette name them by.
+  static const List<String> tabs = [
+    'General',
+    'Entries',
   ];
 
   @override
@@ -47,12 +49,18 @@ class SoundDetailPage extends StatelessWidget {
           ),
         ],
         body: DefaultTabController(
-          length: _tabs.length,
-          child: const Column(
+          // Keyed by the requested tab: a new ?tab= on the same route has to
+          // start a new controller, or the old tab would stay selected.
+          key: ValueKey(requestedTab(context)),
+          initialIndex: initialTabIndex(context, tabs),
+          length: tabs.length,
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ModelDetailTabBar(tabs: _tabs),
-              Expanded(
+              ModelDetailTabBar(
+                tabs: [for (final tab in tabs) Tab(text: tab)],
+              ),
+              const Expanded(
                 child: TabBarView(
                   children: [
                     SoundGeneralPage(),
