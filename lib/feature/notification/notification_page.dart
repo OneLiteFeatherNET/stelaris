@@ -9,7 +9,6 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/feature/model/model_page.dart';
-import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 /// A widget that represents the notification management page.
@@ -32,8 +31,7 @@ class NotificationPage extends StatelessWidget {
         return ModelPage<NotificationModel>(
           mapToDataModelItem: (value) =>
               _buildCardContent(context, vm.projectKey, value),
-          mapToDeleteDialog: (value) =>
-              createDeleteText(value.uiName, context),
+          deleteTitle: context.l10n.dialog_notification_delete_title,
           mapToDeleteSuccessfully: (value) {
             context.dispatch(NotificationRemoveAction(value));
             return true;

@@ -9,7 +9,6 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/feature/model/model_page.dart';
-import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 /// A widget that represents the font management page.
@@ -31,8 +30,8 @@ class FontPage extends StatelessWidget {
         return ModelPage<FontModel>(
           mapToDataModelItem: (value) =>
               _buildCardContent(context, vm.projectKey, value),
-          mapToDeleteDialog: (value) =>
-              createDeleteText(value.uiName, context),
+          deleteTitle: context.l10n.dialog_font_delete_title,
+          deleteWarning: context.l10n.delete_dialog_related_font,
           mapToDeleteSuccessfully: (value) {
             context.dispatch(FontRemoveAction(value));
             return true;

@@ -9,7 +9,6 @@ import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_page.dart';
-import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 /// A widget that represents the attribute management page.
@@ -42,8 +41,7 @@ class AttributePage extends StatelessWidget {
         return ModelPage<AttributeModel>(
           mapToDataModelItem: (value) =>
               _buildCardContent(context, vm.projectKey, value),
-          mapToDeleteDialog: (value) =>
-              createDeleteText(value.uiName, context),
+          deleteTitle: context.l10n.dialog_attribute_delete_title,
           mapToDeleteSuccessfully: (value) {
             context.dispatch(AttributeRemoveAction(value));
             return true;
@@ -65,10 +63,8 @@ class AttributePage extends StatelessWidget {
           onAdd: () => _openDialog(context, vm.projectKey),
           onModelTap: (model) => showDialog(
             context: context,
-            builder: (_) => AttributeEditDialog(
-              model: model,
-              projectKey: vm.projectKey,
-            ),
+            builder: (_) =>
+                AttributeEditDialog(model: model, projectKey: vm.projectKey),
           ),
           onRefresh: () => context.dispatch(RefreshAttributeAction()),
           hasMore: vm.hasNextPage,
