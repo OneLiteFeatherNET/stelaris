@@ -566,6 +566,257 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command_bar_refresh_tooltip => 'Refresh';
 
   @override
+  String get command_palette_no_results => 'No matching commands';
+
+  @override
+  String get command_palette_group_navigation => 'Navigation';
+
+  @override
+  String get command_palette_group_interface => 'Interface';
+
+  @override
+  String get command_palette_group_backend => 'Backend';
+
+  @override
+  String command_go_to(String page) {
+    return 'Go to $page';
+  }
+
+  @override
+  String get command_go_to_keywords => 'navigate open page';
+
+  @override
+  String get command_go_to_projects => 'Go to project list';
+
+  @override
+  String get command_go_to_projects_keywords => 'switch change select project';
+
+  @override
+  String get command_toggle_dark_mode => 'Toggle dark mode';
+
+  @override
+  String get command_toggle_dark_mode_keywords =>
+      'theme light night appearance';
+
+  @override
+  String get command_toggle_system_theme => 'Toggle system theme';
+
+  @override
+  String get command_toggle_system_theme_keywords =>
+      'follow system appearance automatic';
+
+  @override
+  String get command_open_settings => 'Open settings';
+
+  @override
+  String get command_open_settings_keywords =>
+      'preferences options configuration';
+
+  @override
+  String get command_open_build => 'Open build dialog';
+
+  @override
+  String get command_open_build_keywords => 'generate release download code';
+
+  @override
+  String get command_reload_list => 'Reload current list';
+
+  @override
+  String get command_reload_list_keywords => 'refresh fetch update';
+
+  @override
+  String get command_reload_list_success => 'List reloaded';
+
+  @override
+  String get command_reload_list_failure => 'Could not reload the list';
+
+  @override
+  String get command_reload_branches => 'Reload git branches';
+
+  @override
+  String get command_reload_branches_keywords => 'refresh fetch git branch';
+
+  @override
+  String get command_reload_branches_success => 'Branches reloaded';
+
+  @override
+  String get command_reload_branches_failure => 'Could not reload the branches';
+
+  @override
+  String get command_reload_release => 'Reload release information';
+
+  @override
+  String get command_reload_release_keywords => 'refresh fetch build version';
+
+  @override
+  String get command_reload_release_success => 'Release information reloaded';
+
+  @override
+  String get command_reload_release_unchanged => 'No new release information';
+
+  @override
+  String get command_palette_group_entities => 'Entities';
+
+  @override
+  String get command_palette_group_projects => 'Projects';
+
+  @override
+  String get command_palette_group_help => 'Syntax';
+
+  @override
+  String get command_palette_mode_commands => 'Commands';
+
+  @override
+  String get command_palette_mode_commands_help => 'Run a command';
+
+  @override
+  String get command_palette_mode_entities => 'Entities';
+
+  @override
+  String get command_palette_mode_entities_help =>
+      'Open an item, font, sound, notification or attribute';
+
+  @override
+  String get command_palette_mode_projects => 'Projects';
+
+  @override
+  String get command_palette_mode_projects_help => 'Switch to another project';
+
+  @override
+  String get command_palette_mode_settings => 'Settings';
+
+  @override
+  String get command_palette_mode_settings_help =>
+      'Change the theme or open the settings';
+
+  @override
+  String get command_palette_mode_help => 'Help';
+
+  @override
+  String get command_palette_kind_items => 'Items';
+
+  @override
+  String get command_palette_kind_fonts => 'Fonts';
+
+  @override
+  String get command_palette_kind_sounds => 'Sounds';
+
+  @override
+  String get command_palette_kind_notifications => 'Notifications';
+
+  @override
+  String get command_palette_kind_attributes => 'Attributes';
+
+  @override
+  String command_palette_aliases(String aliases) {
+    return 'Also: $aliases';
+  }
+
+  @override
+  String get command_palette_loaded_only =>
+      'Only entries that are already loaded are searched';
+
+  @override
+  String command_palette_fallback_entities(String text) {
+    return 'Search entities for “$text”';
+  }
+
+  @override
+  String command_palette_fallback_projects(String text) {
+    return 'Search projects for “$text”';
+  }
+
+  @override
+  String get command_palette_remove_mode => 'Leave this mode';
+
+  @override
+  String get command_palette_hint_default =>
+      'Type a command, or ? to see what else you can search';
+
+  @override
+  String get command_palette_hint_commands => 'Search commands';
+
+  @override
+  String get command_palette_hint_entities =>
+      'Search loaded items, fonts, sounds, notifications and attributes';
+
+  @override
+  String command_palette_hint_kind(String kind) {
+    return 'Search loaded $kind';
+  }
+
+  @override
+  String get command_palette_hint_projects => 'Search a project to switch to';
+
+  @override
+  String get command_palette_hint_settings => 'Search settings';
+
+  @override
+  String get command_palette_hint_help => 'Pick a mode, or type its prefix';
+
+  @override
+  String get command_palette_mode_navigation => 'Navigation';
+
+  @override
+  String get command_palette_mode_navigation_help => 'Go to a page';
+
+  @override
+  String get command_palette_hint_navigation => 'Search pages to go to';
+
+  @override
+  String get command_palette_help_keyboard => 'Keyboard';
+
+  @override
+  String get command_palette_key_move => 'Move the highlight';
+
+  @override
+  String get command_palette_key_run => 'Run the highlighted entry';
+
+  @override
+  String get command_palette_key_close => 'Close the palette';
+
+  @override
+  String get command_palette_key_leave =>
+      'Leave the mode when the field is empty';
+
+  @override
+  String get command_palette_key_toggle => 'Open or close the palette';
+
+  @override
+  String get command_palette_footer_move => 'Navigate';
+
+  @override
+  String get command_palette_footer_run => 'Run';
+
+  @override
+  String get command_palette_footer_close => 'Close';
+
+  @override
+  String get command_palette_footer_help => 'Help';
+
+  @override
+  String get command_palette_footer_step_in => 'Tabs';
+
+  @override
+  String get command_palette_footer_step_out => 'Back';
+
+  @override
+  String get command_palette_current_page => 'Current page';
+
+  @override
+  String get command_palette_key_step_in =>
+      'Show the tabs of the highlighted entry';
+
+  @override
+  String get command_palette_key_step_out =>
+      'Back to the list, with the cursor at the start';
+
+  @override
+  String command_palette_hint_drill(String name) {
+    return 'Pick a tab of $name';
+  }
+
+  @override
   String get sort_name_ascending => 'Name (A–Z)';
 
   @override
