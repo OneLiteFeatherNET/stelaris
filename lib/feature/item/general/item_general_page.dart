@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/selected_item_state.dart';
-import 'package:stelaris/feature/base/button/positioned_save_button.dart';
+import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/feature/item/general/item_group_card.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/api/state/actions/unsaved_actions.dart';
+import 'package:stelaris/api/util/navigation.dart';
 
 class ItemGeneralPage extends StatefulWidget {
   const ItemGeneralPage({super.key});
@@ -38,6 +40,9 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
             policy: OrderedTraversalPolicy(),
             child: Form(
               key: _formKey,
+              onChanged: () => context.dispatch(
+                MarkUnsavedChangesAction(NavigationEntry.items),
+              ),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Stack(
                 children: [
@@ -97,11 +102,7 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                   ),
                 ),
               ),
-              PositionedSaveButton.standard(
-                formKey: _formKey,
-                successMessage: context.l10n.feedback_save_success,
-                callback: () => context.dispatchAndWait(ItemDatabaseUpdate()),
-              ),
+              RegisterDetailForm(formKey: _formKey),
             ],
           ),
         ),

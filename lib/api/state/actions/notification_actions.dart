@@ -2,6 +2,8 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/actions/unsaved_actions.dart';
+import 'package:stelaris/api/util/navigation.dart';
 
 class SelectedNotificationAction extends ReduxAction<AppState> {
   final NotificationModel model;
@@ -9,14 +11,18 @@ class SelectedNotificationAction extends ReduxAction<AppState> {
   SelectedNotificationAction(this.model);
 
   @override
-  AppState reduce() => state.copyWith(selectedNotification: model);
+  AppState reduce() => state
+      .copyWith(selectedNotification: model)
+      .clearUnsavedChanges(NavigationEntry.notifications);
 }
 
 class RemoveSelectNotificationAction extends ReduxAction<AppState> {
   @override
   AppState? reduce() {
     if (state.selectedNotification == null) return null;
-    return state.copyWith(selectedNotification: null);
+    return state
+        .copyWith(selectedNotification: null)
+        .clearUnsavedChanges(NavigationEntry.notifications);
   }
 }
 
@@ -117,8 +123,10 @@ class UpdateNotificationAction extends ReduxAction<AppState> {
   UpdateNotificationAction(this.newEntry);
 
   @override
-  Future<AppState?> reduce() async =>
-      state.copyWith(selectedNotification: newEntry);
+  Future<AppState?> reduce() async => state.copyWith(
+    selectedNotification: newEntry,
+    unsavedChanges: NavigationEntry.notifications,
+  );
 }
 
 class NotificationAddAction extends ReduxAction<AppState> with NonReentrant {
@@ -160,15 +168,13 @@ class NotificationRemoveAction extends ReduxAction<AppState> {
       growable: true,
     )..remove(model);
 
-    final NotificationModel? selectedModel =
-        state.selectedNotification?.id == model.id
-        ? null
-        : state.selectedNotification;
-
+    // The selection stays: when deleting from the detail page, that page is
+    // still mounted during its exit transition and reads it. The page's
+    // onDispose clears it.
     return _updateNotificationInState(
       state,
       updatedList,
-      selectedModel,
+      state.selectedNotification,
       totalItems: state.notifications.totalItems - 1,
     );
   }
@@ -198,7 +204,11 @@ class NotificationDatabaseUpdate extends ReduxAction<AppState> with Throttle {
       updatedList[index] = dbModel;
     }
 
-    return _updateNotificationInState(state, updatedList, dbModel);
+    return _updateNotificationInState(
+      state,
+      updatedList,
+      dbModel,
+    ).clearUnsavedChanges(NavigationEntry.notifications);
   }
 }
 

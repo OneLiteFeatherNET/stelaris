@@ -2,6 +2,8 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/actions/unsaved_actions.dart';
+import 'package:stelaris/api/util/navigation.dart';
 
 class SelectSoundAction extends ReduxAction<AppState> {
   final SoundEventModel model;
@@ -9,14 +11,18 @@ class SelectSoundAction extends ReduxAction<AppState> {
   SelectSoundAction(this.model);
 
   @override
-  AppState reduce() => state.copyWith(selectedSoundEvent: model);
+  AppState reduce() => state
+      .copyWith(selectedSoundEvent: model)
+      .clearUnsavedChanges(NavigationEntry.sound);
 }
 
 class RemoveSelectedSoundEvent extends ReduxAction<AppState> {
   @override
   AppState? reduce() {
     if (state.selectedSoundEvent == null) return null;
-    return state.copyWith(selectedSoundEvent: null);
+    return state
+        .copyWith(selectedSoundEvent: null)
+        .clearUnsavedChanges(NavigationEntry.sound);
   }
 }
 
@@ -108,15 +114,13 @@ class SoundRemoveAction extends ReduxAction<AppState> {
       growable: true,
     )..remove(model);
 
-    final SoundEventModel? selectedModel =
-        state.selectedSoundEvent?.id == model.id
-        ? null
-        : state.selectedSoundEvent;
-
+    // The selection stays: when deleting from the detail page, that page is
+    // still mounted during its exit transition and reads it. The page's
+    // onDispose clears it.
     return _updateSoundEventsInState(
       state,
       updatedList,
-      selectedModel,
+      state.selectedSoundEvent,
       totalItems: state.soundEvents.totalItems - 1,
     );
   }
@@ -155,8 +159,10 @@ class UpdateSoundAction extends ReduxAction<AppState> {
   UpdateSoundAction(this.newEntry);
 
   @override
-  Future<AppState?> reduce() async =>
-      state.copyWith(selectedSoundEvent: newEntry);
+  Future<AppState?> reduce() async => state.copyWith(
+    selectedSoundEvent: newEntry,
+    unsavedChanges: NavigationEntry.sound,
+  );
 }
 
 class SoundDatabaseUpdate extends ReduxAction<AppState> with Throttle {
@@ -189,7 +195,11 @@ class SoundDatabaseUpdate extends ReduxAction<AppState> with Throttle {
       updatedList[index] = response;
     }
 
-    return _updateSoundEventsInState(state, updatedList, dbModel);
+    return _updateSoundEventsInState(
+      state,
+      updatedList,
+      dbModel,
+    ).clearUnsavedChanges(NavigationEntry.sound);
   }
 }
 

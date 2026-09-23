@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/model/model_detail_back_bar.dart';
+import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/feature/sound/sound_file_entries.dart';
 import 'package:stelaris/feature/sound/sound_general_page.dart';
@@ -53,11 +53,11 @@ void main() {
       (tester) async {
         await pumpPage(tester);
 
-        expect(find.byType(ModelDetailBackBar), findsOneWidget);
+        expect(find.byType(PageHeader), findsOneWidget);
         expect(find.text('Ding'), findsOneWidget);
 
         final backBarPosition = tester.getTopLeft(
-          find.byType(ModelDetailBackBar),
+          find.byType(PageHeader),
         );
         final tabBarPosition = tester.getTopLeft(find.byType(TabBar));
         expect(backBarPosition.dy, lessThan(tabBarPosition.dy));
@@ -80,10 +80,19 @@ void main() {
     testWidgets('tapping back navigates to the sound list', (tester) async {
       await pumpPage(tester);
 
-      await tester.tap(find.byKey(const Key('model_detail_back_button')));
+      await tester.tap(find.byKey(const Key('page_header_back_button')));
       await tester.pumpAndSettle();
 
       expect(find.text('Sound List'), findsOneWidget);
+    });
+
+    testWidgets('shows info, delete and save in the header', (tester) async {
+      await pumpPage(tester);
+
+      expect(find.text('Info'), findsOneWidget);
+      expect(find.text('Delete'), findsOneWidget);
+      expect(find.text('Save'), findsOneWidget);
+      expect(find.byType(FloatingActionButton), findsNothing);
     });
   });
 }

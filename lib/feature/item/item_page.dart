@@ -28,6 +28,7 @@ class ItemPage extends StatelessWidget {
       onInit: (store) => store.dispatchAndWait(InitItemAction()),
       builder: (context, vm) {
         return ModelPage<ItemModel>(
+          entry: NavigationEntry.items,
           mapToDataModelItem: (value) =>
               _buildCardContent(context, vm.projectKey, value),
           deleteTitle: context.l10n.dialog_item_delete_title,

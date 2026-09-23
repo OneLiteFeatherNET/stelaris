@@ -4,11 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/sound/selected_sound_state.dart';
-import 'package:stelaris/feature/base/button/positioned_save_button.dart';
+import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
-import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/api/state/actions/unsaved_actions.dart';
+import 'package:stelaris/api/util/navigation.dart';
 
 /// A widget that represents the general sound event management page.
 ///
@@ -43,6 +44,9 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
             policy: OrderedTraversalPolicy(),
             child: Form(
               key: _formKey,
+              onChanged: () => context.dispatch(
+                MarkUnsavedChangesAction(NavigationEntry.sound),
+              ),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Stack(
                 children: [
@@ -103,11 +107,7 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                   ),
                 ),
               ),
-              PositionedSaveButton.standard(
-                formKey: _formKey,
-                successMessage: context.l10n.feedback_save_success,
-                callback: () => context.dispatchAndWait(SoundDatabaseUpdate()),
-              ),
+              RegisterDetailForm(formKey: _formKey),
             ],
           ),
         ),

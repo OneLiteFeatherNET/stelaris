@@ -53,6 +53,7 @@ class SelectProjectAction extends ReduxAction<AppState> {
       selectedNotification: null,
       selectedAttribute: null,
       selectedSoundEvent: null,
+      unsavedChanges: null,
     );
   }
 }

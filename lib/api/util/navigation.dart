@@ -47,3 +47,14 @@ enum NavigationEntry {
     this.selected,
   );
 }
+
+/// The section [location] belongs to — its own route or one nested below
+/// it (e.g. `/items/detail`) — or null outside the sections.
+NavigationEntry? entryForLocation(String location) {
+  for (final entry in NavigationEntry.values) {
+    if (location == entry.route || location.startsWith('${entry.route}/')) {
+      return entry;
+    }
+  }
+  return null;
+}

@@ -2,6 +2,8 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/actions/unsaved_actions.dart';
+import 'package:stelaris/api/util/navigation.dart';
 
 class SelectedItemAction extends ReduxAction<AppState> {
   final ItemModel model;
@@ -10,7 +12,9 @@ class SelectedItemAction extends ReduxAction<AppState> {
 
   @override
   AppState reduce() {
-    return state.copyWith(selectedItem: model);
+    return state
+        .copyWith(selectedItem: model)
+        .clearUnsavedChanges(NavigationEntry.items);
   }
 }
 
@@ -20,7 +24,9 @@ class RemoveSelectItemAction extends ReduxAction<AppState> {
   @override
   AppState? reduce() {
     if (state.selectedItem == null) return null;
-    return state.copyWith(selectedItem: null);
+    return state
+        .copyWith(selectedItem: null)
+        .clearUnsavedChanges(NavigationEntry.items);
   }
 }
 
@@ -31,7 +37,10 @@ class UpdateItemAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    return state.copyWith(selectedItem: newEntry);
+    return state.copyWith(
+      selectedItem: newEntry,
+      unsavedChanges: NavigationEntry.items,
+    );
   }
 }
 
@@ -147,10 +156,13 @@ class ItemRemoveAction extends ReduxAction<AppState> {
     final ItemModel removedEntry = await ApiService().itemApi.remove(model);
     final List<ItemModel> items = List.of(state.items.items, growable: true)
       ..removeWhere((element) => element.id == removedEntry.id);
+    // The selection stays: when deleting from the detail page, that page is
+    // still mounted during its exit transition and reads it. The page's
+    // onDispose clears it.
     return _updateItemInState(
       state,
       items,
-      null,
+      state.selectedItem,
       totalItems: state.items.totalItems - 1,
     );
   }
@@ -178,7 +190,7 @@ class ItemDatabaseUpdate extends ReduxAction<AppState> with Throttle {
     return updateSingleItemInState(
       state,
       response,
-    ).copyWith(selectedItem: dbModel);
+    ).clearUnsavedChanges(NavigationEntry.items);
   }
 }
 

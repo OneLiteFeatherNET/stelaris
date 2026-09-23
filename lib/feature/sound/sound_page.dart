@@ -28,6 +28,7 @@ class SoundPage extends StatelessWidget {
       onInit: (store) => store.dispatchAndWait(InitSoundAction()),
       builder: (context, vm) {
         return ModelPage<SoundEventModel>(
+          entry: NavigationEntry.sound,
           mapToDataModelItem: (value) =>
               _buildCardContent(context, vm.projectKey, value),
           deleteTitle: context.l10n.dialog_sound_delete_title,
