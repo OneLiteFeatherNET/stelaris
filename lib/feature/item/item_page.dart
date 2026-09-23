@@ -38,8 +38,6 @@ class ItemPage extends StatelessWidget {
             return true;
           },
           models: vm.itemModels,
-          matchesSearch: (model, query) =>
-              model.uiName.toLowerCase().contains(query.toLowerCase()),
           nameSelector: (model) => model.uiName,
           keySelector: (model) => model.key ?? '',
           projectKey: vm.projectKey,

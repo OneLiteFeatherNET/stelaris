@@ -49,8 +49,6 @@ class AttributePage extends StatelessWidget {
             return true;
           },
           models: vm.models,
-          matchesSearch: (model, query) =>
-              model.uiName.toLowerCase().contains(query.toLowerCase()),
           nameSelector: (model) => model.uiName,
           keySelector: (model) => model.key ?? '',
           projectKey: vm.projectKey,
