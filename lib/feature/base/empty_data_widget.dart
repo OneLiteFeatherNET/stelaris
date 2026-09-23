@@ -7,9 +7,8 @@ class EmptyDataWidget extends StatelessWidget {
     this.header = 'No data available',
     this.subHeader = 'Use the add button to add new data!',
     this.icon = Icons.auto_awesome,
-    this.action,
     super.key,
-  });
+  }) : action = null;
 
   /// Constructor with a required header and default sub header
   ///
@@ -18,9 +17,8 @@ class EmptyDataWidget extends StatelessWidget {
     required this.header,
     this.subHeader = 'Use the add button to add new data!',
     this.icon = Icons.auto_awesome,
-    this.action,
     super.key,
-  });
+  }) : action = null;
 
   /// Constructor with fully customizable header and sub header
   ///
