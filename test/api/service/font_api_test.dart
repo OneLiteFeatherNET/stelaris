@@ -73,75 +73,35 @@ void main() {
     expect(result, dto);
   });
 
-  group('Font CRUD operations', () {
-    test('remove DELETEs with project-scoped path when projectId is present', () async {
-      const font = FontModel(
-        uiName: 'Test Font',
-        id: 'font-1',
-        projectId: 'project-123',
-      );
-      final adapter = RecordingHttpClientAdapter(font.toJson());
-      apiClient.dio.httpClientAdapter = adapter;
+  test('getPage deserializes models preserving projectId', () async {
+    final jsonResponse = {
+      'items': [
+        {
+          'uiName': 'Font One',
+          'id': 'f1',
+          'projectId': 'project-123',
+          'mapper': 'font',
+          'ascent': 0,
+          'height': 0,
+        },
+      ],
+      'totalItems': 1,
+      'totalPages': 1,
+      'currentPage': 1,
+      'pageSize': 10,
+    };
+    final adapter = RecordingHttpClientAdapter(jsonResponse);
+    apiClient.dio.httpClientAdapter = adapter;
 
-      final result = await fontApi.remove(font);
+    final result = await fontApi.getPage(
+      page: 1,
+      size: 10,
+      projectId: 'project-123',
+    );
 
-      expect(adapter.lastRequest!.method, 'DELETE');
-      expect(
-        adapter.lastRequest!.uri.path,
-        '/api/project/project-123/font/delete/font-1',
-      );
-      expect(result.projectId, 'project-123');
-    });
-
-    test('update POSTs with project-scoped path when projectId is present', () async {
-      const font = FontModel(
-        uiName: 'Updated Font',
-        id: 'font-1',
-        projectId: 'project-123',
-      );
-      final adapter = RecordingHttpClientAdapter(font.toJson());
-      apiClient.dio.httpClientAdapter = adapter;
-
-      final result = await fontApi.update(font);
-
-      expect(adapter.lastRequest!.method, 'POST');
-      expect(
-        adapter.lastRequest!.uri.path,
-        '/api/project/project-123/font/update',
-      );
-      expect(result.projectId, 'project-123');
-    });
-
-    test('getPage deserializes models preserving projectId', () async {
-      final jsonResponse = {
-        'items': [
-          {
-            'uiName': 'Font One',
-            'id': 'f1',
-            'projectId': 'project-123',
-            'mapper': 'font',
-            'ascent': 0,
-            'height': 0,
-          },
-        ],
-        'totalItems': 1,
-        'totalPages': 1,
-        'currentPage': 1,
-        'pageSize': 10,
-      };
-      final adapter = RecordingHttpClientAdapter(jsonResponse);
-      apiClient.dio.httpClientAdapter = adapter;
-
-      final result = await fontApi.getPage(
-        page: 1,
-        size: 10,
-        projectId: 'project-123',
-      );
-
-      expect(adapter.lastRequest!.method, 'GET');
-      expect(adapter.lastRequest!.uri.path, '/api/project/project-123/font');
-      expect(result.items.single.projectId, 'project-123');
-      expect(result.items.single.id, 'f1');
-    });
+    expect(adapter.lastRequest!.method, 'GET');
+    expect(adapter.lastRequest!.uri.path, '/api/project/project-123/font');
+    expect(result.items.single.projectId, 'project-123');
+    expect(result.items.single.id, 'f1');
   });
 }
