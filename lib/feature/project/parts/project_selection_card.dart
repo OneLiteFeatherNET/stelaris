@@ -57,21 +57,20 @@ class ProjectSelectionCard extends StatelessWidget {
                 verticalSpacing25,
                 Row(
                   children: [
-                    OutlinedButton.icon(
-                      onPressed: onCreateProject,
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 16,
-                          horizontal: 20,
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: onCreateProject,
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        icon: const Icon(Icons.add),
+                        label: Text(
+                          context.l10n.dialog_project_create_title,
+                          style: const TextStyle(fontSize: 16),
                         ),
-                      ),
-                      icon: const Icon(Icons.add),
-                      label: Text(
-                        context.l10n.dialog_project_create_title,
-                        style: const TextStyle(fontSize: 16),
                       ),
                     ),
                     horizontalSpacing10,
