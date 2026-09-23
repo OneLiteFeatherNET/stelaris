@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/model_search_state.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_sort_option.dart';
 
@@ -49,28 +50,33 @@ class UpdateSearchSortAction extends ReduxAction<AppState> {
 /// Dispatched by a list page when it mounts, so the AppBar's filter menu
 /// shows that page's filters. Active filters the page doesn't offer are
 /// dropped, so a hidden filter can't keep narrowing the list.
+///
+/// A different [section] than before drops query, filters and sort — they
+/// were set for the other section. Coming back from a detail page registers
+/// the same section again and keeps them.
 class RegisterSearchFiltersAction extends ReduxAction<AppState> {
-  RegisterSearchFiltersAction(this.filters);
+  RegisterSearchFiltersAction(this.section, this.filters);
 
+  final NavigationEntry section;
   final List<FilterOption> filters;
 
   @override
-  AppState reduce() => state.copyWith(
-    modelSearch: state.modelSearch.copyWith(
-      availableFilters: filters,
-      activeFilters: state.modelSearch.activeFilters
-          .where(filters.contains)
-          .toSet(),
-    ),
-  );
-}
-
-/// Dispatched when switching to a different navigation section — a query
-/// typed for items means nothing for fonts.
-class ResetSearchAction extends ReduxAction<AppState> {
-  @override
-  AppState? reduce() {
-    if (state.modelSearch == const ModelSearchState()) return null;
-    return state.copyWith(modelSearch: const ModelSearchState());
+  AppState reduce() {
+    final search = state.modelSearch;
+    if (search.section != null && search.section != section) {
+      return state.copyWith(
+        modelSearch: ModelSearchState(
+          section: section,
+          availableFilters: filters,
+        ),
+      );
+    }
+    return state.copyWith(
+      modelSearch: search.copyWith(
+        section: section,
+        availableFilters: filters,
+        activeFilters: search.activeFilters.where(filters.contains).toSet(),
+      ),
+    );
   }
 }

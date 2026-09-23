@@ -1,11 +1,9 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:stelaris/api/state/actions/search_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/navigation_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
-import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/util/color_scheme_ext.dart';
 
 const double maxXOffset = 180;
@@ -51,18 +49,10 @@ class NavigationSideBar extends StatelessWidget {
     );
   }
 
-  /// Handles the selection of a navigation destination. Asks first if the
-  /// current detail page has unsaved edits, and drops the search when
-  /// switching to a different section — its query was typed for this one.
-  Future<void> _onDestinationSelected(BuildContext context, int index) async {
-    final target = navigationEntries[index];
-    final current = entryForLocation(
-      GoRouterState.of(context).matchedLocation,
-    );
-    if (!await confirmLeaveIfDirty(context) || !context.mounted) return;
-    if (target != current) context.dispatch(ResetSearchAction());
-    context.go(target.route);
-  }
+  /// Handles the selection of a navigation destination. Leaving a detail
+  /// page with unsaved edits is guarded by the detail route's `onExit`.
+  void _onDestinationSelected(BuildContext context, int index) =>
+      context.go(navigationEntries[index].route);
 
   /// Builds the list of navigation destinations for the [NavigationRail].
   List<NavigationRailDestination> _buildNavigationView() {

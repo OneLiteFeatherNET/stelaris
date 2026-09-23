@@ -53,9 +53,10 @@ Future<bool> saveUnsavedChanges(
 }
 
 /// Asks what to do with unsaved edits before navigating away. Returns true
-/// if navigation may proceed. Used by every exit of a detail page: the
-/// header's back arrow, system back, the side bar, the AppBar search and
-/// the project switch.
+/// if navigation may proceed. Navigation away from a detail page runs it
+/// through [detailExitGuard]; the AppBar search calls it itself (to restore
+/// the field on cancel), and so does the project switch, which changes no
+/// route.
 Future<bool> confirmLeaveIfDirty(BuildContext context) async {
   final entry = StoreProvider.state<AppState>(context).unsavedChanges;
   if (entry == null) return true;

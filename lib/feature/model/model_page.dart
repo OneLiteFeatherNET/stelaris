@@ -124,7 +124,11 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
     // AppBar search mid-build.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      context.dispatch(RegisterSearchFiltersAction(widget.filterOptions));
+      // Also tells the search which section it belongs to: a search typed
+      // in another section is dropped here.
+      context.dispatch(
+        RegisterSearchFiltersAction(widget.entry, widget.filterOptions),
+      );
     });
   }
 

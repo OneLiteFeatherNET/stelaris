@@ -1,6 +1,8 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/button/build_button.dart';
 import 'package:stelaris/feature/base/button/settings_button.dart';
 import 'package:stelaris/feature/base/button/toggle_navigation_button.dart';
@@ -43,7 +45,13 @@ class BasePage extends StatelessWidget {
             leadingWidth: 80,
             leading: const ToggleNavigationBar(),
             elevation: 0,
-            title: const AppBarSearch(),
+            // Keyed by section: switching sections starts with a fresh field
+            // and drops a query still waiting in the debounce.
+            title: AppBarSearch(
+              key: ValueKey(
+                entryForLocation(GoRouterState.of(context).matchedLocation),
+              ),
+            ),
             centerTitle: true,
             actions: const [
               ProjectAppBarBadge(),
