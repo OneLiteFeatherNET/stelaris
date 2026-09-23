@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_sort_option.dart';
 
@@ -19,5 +20,9 @@ abstract class ModelSearchState with _$ModelSearchState {
     @Default(<FilterOption>[]) List<FilterOption> availableFilters,
     @Default(SortField.name) SortField sortField,
     @Default(SortDirection.ascending) SortDirection sortDirection,
+
+    /// The section the search was typed for. Lets the AppBar search notice
+    /// a section change however it happens (side bar, browser back, URL).
+    NavigationEntry? section,
   }) = _ModelSearchState;
 }

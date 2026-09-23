@@ -17,7 +17,9 @@ mixin _$ModelSearchState {
 
  String get query; Set<FilterOption> get activeFilters;/// The filters the current list page offers, registered by that page —
 /// the AppBar has no other way to know which ones apply.
- List<FilterOption> get availableFilters; SortField get sortField; SortDirection get sortDirection;
+ List<FilterOption> get availableFilters; SortField get sortField; SortDirection get sortDirection;/// The section the search was typed for. Lets the AppBar search notice
+/// a section change however it happens (side bar, browser back, URL).
+ NavigationEntry? get section;
 /// Create a copy of ModelSearchState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,20 +31,20 @@ $ModelSearchStateCopyWith<ModelSearchState> get copyWith => _$ModelSearchStateCo
 @override
 bool operator ==(Object other) {
   final _this = this as ModelSearchState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ModelSearchState&&(identical(other.query, _this.query) || other.query == _this.query)&&const DeepCollectionEquality().equals(other.activeFilters, _this.activeFilters)&&const DeepCollectionEquality().equals(other.availableFilters, _this.availableFilters)&&(identical(other.sortField, _this.sortField) || other.sortField == _this.sortField)&&(identical(other.sortDirection, _this.sortDirection) || other.sortDirection == _this.sortDirection));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ModelSearchState&&(identical(other.query, _this.query) || other.query == _this.query)&&const DeepCollectionEquality().equals(other.activeFilters, _this.activeFilters)&&const DeepCollectionEquality().equals(other.availableFilters, _this.availableFilters)&&(identical(other.sortField, _this.sortField) || other.sortField == _this.sortField)&&(identical(other.sortDirection, _this.sortDirection) || other.sortDirection == _this.sortDirection)&&(identical(other.section, _this.section) || other.section == _this.section));
 }
 
 
 @override
 int get hashCode {
   final _this = this as ModelSearchState;
-  return Object.hash(runtimeType,_this.query,const DeepCollectionEquality().hash(_this.activeFilters),const DeepCollectionEquality().hash(_this.availableFilters),_this.sortField,_this.sortDirection);
+  return Object.hash(runtimeType,_this.query,const DeepCollectionEquality().hash(_this.activeFilters),const DeepCollectionEquality().hash(_this.availableFilters),_this.sortField,_this.sortDirection,_this.section);
 }
 
 @override
 String toString() {
   final _this = this as ModelSearchState;
-  return 'ModelSearchState(query: ${_this.query}, activeFilters: ${_this.activeFilters}, availableFilters: ${_this.availableFilters}, sortField: ${_this.sortField}, sortDirection: ${_this.sortDirection})';
+  return 'ModelSearchState(query: ${_this.query}, activeFilters: ${_this.activeFilters}, availableFilters: ${_this.availableFilters}, sortField: ${_this.sortField}, sortDirection: ${_this.sortDirection}, section: ${_this.section})';
 }
 
 
@@ -53,7 +55,7 @@ abstract mixin class $ModelSearchStateCopyWith<$Res>  {
   factory $ModelSearchStateCopyWith(ModelSearchState value, $Res Function(ModelSearchState) _then) = _$ModelSearchStateCopyWithImpl;
 @useResult
 $Res call({
- String query, Set<FilterOption> activeFilters, List<FilterOption> availableFilters, SortField sortField, SortDirection sortDirection
+ String query, Set<FilterOption> activeFilters, List<FilterOption> availableFilters, SortField sortField, SortDirection sortDirection, NavigationEntry? section
 });
 
 
@@ -70,14 +72,15 @@ class _$ModelSearchStateCopyWithImpl<$Res>
 
 /// Create a copy of ModelSearchState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? query = null,Object? activeFilters = null,Object? availableFilters = null,Object? sortField = null,Object? sortDirection = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? query = null,Object? activeFilters = null,Object? availableFilters = null,Object? sortField = null,Object? sortDirection = null,Object? section = freezed,}) {
   return _then(ModelSearchState(
 query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String,activeFilters: null == activeFilters ? _self.activeFilters : activeFilters // ignore: cast_nullable_to_non_nullable
 as Set<FilterOption>,availableFilters: null == availableFilters ? _self.availableFilters : availableFilters // ignore: cast_nullable_to_non_nullable
 as List<FilterOption>,sortField: null == sortField ? _self.sortField : sortField // ignore: cast_nullable_to_non_nullable
 as SortField,sortDirection: null == sortDirection ? _self.sortDirection : sortDirection // ignore: cast_nullable_to_non_nullable
-as SortDirection,
+as SortDirection,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
+as NavigationEntry?,
   ));
 }
 
@@ -162,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String query,  Set<FilterOption> activeFilters,  List<FilterOption> availableFilters,  SortField sortField,  SortDirection sortDirection)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String query,  Set<FilterOption> activeFilters,  List<FilterOption> availableFilters,  SortField sortField,  SortDirection sortDirection,  NavigationEntry? section)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ModelSearchState() when $default != null:
-return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sortField,_that.sortDirection);case _:
+return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sortField,_that.sortDirection,_that.section);case _:
   return orElse();
 
 }
@@ -183,10 +186,10 @@ return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sor
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String query,  Set<FilterOption> activeFilters,  List<FilterOption> availableFilters,  SortField sortField,  SortDirection sortDirection)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String query,  Set<FilterOption> activeFilters,  List<FilterOption> availableFilters,  SortField sortField,  SortDirection sortDirection,  NavigationEntry? section)  $default,) {final _that = this;
 switch (_that) {
 case _ModelSearchState():
-return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sortField,_that.sortDirection);case _:
+return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sortField,_that.sortDirection,_that.section);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +206,10 @@ return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sor
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String query,  Set<FilterOption> activeFilters,  List<FilterOption> availableFilters,  SortField sortField,  SortDirection sortDirection)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String query,  Set<FilterOption> activeFilters,  List<FilterOption> availableFilters,  SortField sortField,  SortDirection sortDirection,  NavigationEntry? section)?  $default,) {final _that = this;
 switch (_that) {
 case _ModelSearchState() when $default != null:
-return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sortField,_that.sortDirection);case _:
+return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sortField,_that.sortDirection,_that.section);case _:
   return null;
 
 }
@@ -218,7 +221,7 @@ return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sor
 
 
 class _ModelSearchState implements ModelSearchState {
-  const _ModelSearchState({this.query = '', this.activeFilters = const <FilterOption>{}, this.availableFilters = const <FilterOption>[], this.sortField = SortField.name, this.sortDirection = SortDirection.ascending});
+  const _ModelSearchState({this.query = '', this.activeFilters = const <FilterOption>{}, this.availableFilters = const <FilterOption>[], this.sortField = SortField.name, this.sortDirection = SortDirection.ascending, this.section});
   
 
 @override@JsonKey() final  String query;
@@ -228,6 +231,9 @@ class _ModelSearchState implements ModelSearchState {
 @override@JsonKey() final  List<FilterOption> availableFilters;
 @override@JsonKey() final  SortField sortField;
 @override@JsonKey() final  SortDirection sortDirection;
+/// The section the search was typed for. Lets the AppBar search notice
+/// a section change however it happens (side bar, browser back, URL).
+@override final  NavigationEntry? section;
 
 /// Create a copy of ModelSearchState
 /// with the given fields replaced by the non-null parameter values.
@@ -239,18 +245,18 @@ _$ModelSearchStateCopyWith<_ModelSearchState> get copyWith => __$ModelSearchStat
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ModelSearchState&&(identical(other.query, query) || other.query == query)&&const DeepCollectionEquality().equals(other.activeFilters, activeFilters)&&const DeepCollectionEquality().equals(other.availableFilters, availableFilters)&&(identical(other.sortField, sortField) || other.sortField == sortField)&&(identical(other.sortDirection, sortDirection) || other.sortDirection == sortDirection));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ModelSearchState&&(identical(other.query, query) || other.query == query)&&const DeepCollectionEquality().equals(other.activeFilters, activeFilters)&&const DeepCollectionEquality().equals(other.availableFilters, availableFilters)&&(identical(other.sortField, sortField) || other.sortField == sortField)&&(identical(other.sortDirection, sortDirection) || other.sortDirection == sortDirection)&&(identical(other.section, section) || other.section == section));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,query,const DeepCollectionEquality().hash(activeFilters),const DeepCollectionEquality().hash(availableFilters),sortField,sortDirection);
+    return Object.hash(runtimeType,query,const DeepCollectionEquality().hash(activeFilters),const DeepCollectionEquality().hash(availableFilters),sortField,sortDirection,section);
 }
 
 @override
 String toString() {
-    return 'ModelSearchState(query: $query, activeFilters: $activeFilters, availableFilters: $availableFilters, sortField: $sortField, sortDirection: $sortDirection)';
+    return 'ModelSearchState(query: $query, activeFilters: $activeFilters, availableFilters: $availableFilters, sortField: $sortField, sortDirection: $sortDirection, section: $section)';
 }
 
 
@@ -261,7 +267,7 @@ abstract mixin class _$ModelSearchStateCopyWith<$Res> implements $ModelSearchSta
   factory _$ModelSearchStateCopyWith(_ModelSearchState value, $Res Function(_ModelSearchState) _then) = __$ModelSearchStateCopyWithImpl;
 @override @useResult
 $Res call({
- String query, Set<FilterOption> activeFilters, List<FilterOption> availableFilters, SortField sortField, SortDirection sortDirection
+ String query, Set<FilterOption> activeFilters, List<FilterOption> availableFilters, SortField sortField, SortDirection sortDirection, NavigationEntry? section
 });
 
 
@@ -278,14 +284,15 @@ class __$ModelSearchStateCopyWithImpl<$Res>
 
 /// Create a copy of ModelSearchState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? query = null,Object? activeFilters = null,Object? availableFilters = null,Object? sortField = null,Object? sortDirection = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? query = null,Object? activeFilters = null,Object? availableFilters = null,Object? sortField = null,Object? sortDirection = null,Object? section = freezed,}) {
   return _then(_ModelSearchState(
 query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String,activeFilters: null == activeFilters ? _self.activeFilters : activeFilters // ignore: cast_nullable_to_non_nullable
 as Set<FilterOption>,availableFilters: null == availableFilters ? _self.availableFilters : availableFilters // ignore: cast_nullable_to_non_nullable
 as List<FilterOption>,sortField: null == sortField ? _self.sortField : sortField // ignore: cast_nullable_to_non_nullable
 as SortField,sortDirection: null == sortDirection ? _self.sortDirection : sortDirection // ignore: cast_nullable_to_non_nullable
-as SortDirection,
+as SortDirection,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
+as NavigationEntry?,
   ));
 }
 
