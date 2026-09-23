@@ -107,7 +107,7 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
 class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
     with InfiniteScrollMixin<ModelPage<E>> {
   // Single source of truth for the page's horizontal margin — applied once
-  // below instead of separately on the command bar and the grid, so the
+  // below instead of separately on the header and the grid, so the
   // two can't drift out of alignment with each other.
   static const double _horizontalPagePadding = 16;
   static const double _gridMaxCardExtent = 320;
