@@ -77,6 +77,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_dialog_irreversible => 'This action cannot be undone.';
 
   @override
+  String get delete_dialog_type_name_before => 'To confirm, type \"';
+
+  @override
+  String get delete_dialog_type_name_after => '\" in the box below';
+
+  @override
   String get delete_dialog_related_font =>
       'All characters that belong to this font will also be deleted.';
 
@@ -89,7 +95,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'All sound files that belong to this event will also be deleted.';
 
   @override
-  String get dialog_delete_confirm => 'Confirm deletion';
+  String get dialog_attribute_delete_title => 'Delete attribute';
+
+  @override
+  String get dialog_font_delete_title => 'Delete font';
+
+  @override
+  String get dialog_item_delete_title => 'Delete item';
+
+  @override
+  String get dialog_notification_delete_title => 'Delete notification';
+
+  @override
+  String get dialog_sound_delete_title => 'Delete sound event';
 
   @override
   String get dialog_attribute_create => 'Create attribute';
