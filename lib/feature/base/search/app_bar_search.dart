@@ -56,7 +56,6 @@ class _AppBarSearchState extends State<AppBarSearch> {
 
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
-  final _menuController = MenuController();
   Timer? _debounceTimer;
 
   /// Compact mode only: whether the field is expanded over the AppBar.
@@ -257,7 +256,6 @@ class _AppBarSearchState extends State<AppBarSearch> {
       label: Text('${search.activeFilters.length}'),
       isLabelVisible: search.activeFilters.isNotEmpty,
       child: MenuAnchor(
-        controller: _menuController,
         menuChildren: [
           ..._sortOptions(l10n).map((option) {
             final (field, direction, label) = option;
