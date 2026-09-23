@@ -13,7 +13,7 @@ void main() {
       expect(find.byType(IconButton), findsOneWidget);
 
       // Verify the settings icon is present
-      expect(find.byIcon(Icons.settings), findsOneWidget);
+      expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
     });
   });
 }

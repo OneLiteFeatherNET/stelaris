@@ -13,7 +13,7 @@ class SettingsButton extends StatelessWidget {
           builder: (context) => const SettingsDialog(),
         );
       },
-      icon: const Icon(Icons.settings),
+      icon: const Icon(Icons.settings_outlined),
     );
   }
 }
