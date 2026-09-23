@@ -226,6 +226,18 @@ abstract class AppLocalizations {
   /// **'This action cannot be undone.'**
   String get delete_dialog_irreversible;
 
+  /// No description provided for @delete_dialog_type_name_before.
+  ///
+  /// In en, this message translates to:
+  /// **'To confirm, type \"'**
+  String get delete_dialog_type_name_before;
+
+  /// No description provided for @delete_dialog_type_name_after.
+  ///
+  /// In en, this message translates to:
+  /// **'\" in the box below'**
+  String get delete_dialog_type_name_after;
+
   /// No description provided for @delete_dialog_related_font.
   ///
   /// In en, this message translates to:
@@ -244,11 +256,35 @@ abstract class AppLocalizations {
   /// **'All sound files that belong to this event will also be deleted.'**
   String get delete_dialog_related_sound;
 
-  /// No description provided for @dialog_delete_confirm.
+  /// No description provided for @dialog_attribute_delete_title.
   ///
   /// In en, this message translates to:
-  /// **'Confirm deletion'**
-  String get dialog_delete_confirm;
+  /// **'Delete attribute'**
+  String get dialog_attribute_delete_title;
+
+  /// No description provided for @dialog_font_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete font'**
+  String get dialog_font_delete_title;
+
+  /// No description provided for @dialog_item_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete item'**
+  String get dialog_item_delete_title;
+
+  /// No description provided for @dialog_notification_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete notification'**
+  String get dialog_notification_delete_title;
+
+  /// No description provided for @dialog_sound_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete sound event'**
+  String get dialog_sound_delete_title;
 
   /// No description provided for @dialog_attribute_create.
   ///

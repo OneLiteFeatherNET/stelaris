@@ -20,9 +20,10 @@ List<TextSpan> createDeleteText(
     TextSpan(text: context.l10n.delete_dialog_first_line, style: textStyle),
     TextSpan(
       text: name ?? unknownEntry,
-      style: redStyle,
+      style: textStyle?.copyWith(fontWeight: FontWeight.bold),
     ),
     TextSpan(text: context.l10n.delete_dialog_entry, style: textStyle),
-    if (relatedDataText != null) TextSpan(text: ' $relatedDataText', style: textStyle),
+    if (relatedDataText != null)
+      TextSpan(text: ' $relatedDataText', style: textStyle),
   ];
 }

@@ -78,7 +78,10 @@ class _ModelListState {
 class ModelPage<E extends DataModel> extends StatefulWidget {
   final List<E> models;
   final MapToDataModelItem<E> mapToDataModelItem;
-  final MapToDeleteDialog<E> mapToDeleteDialog;
+
+  /// The type-specific wording of the delete dialog opened from a card.
+  final String deleteTitle;
+  final String? deleteWarning;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
   final VoidCallback onAdd;
   final ValueChanged<E> onModelTap;
@@ -107,7 +110,7 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
   const ModelPage({
     required this.models,
     required this.mapToDataModelItem,
-    required this.mapToDeleteDialog,
+    required this.deleteTitle,
     required this.mapToDeleteSuccessfully,
     required this.onAdd,
     required this.onModelTap,
@@ -117,6 +120,7 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
     required this.keySelector,
     required this.projectKey,
     required this.onRefresh,
+    this.deleteWarning,
     this.isRefreshing = false,
     this.filterOptions = const [],
     this.onLoadMore,
@@ -302,7 +306,8 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
     // so adding another would just double the compositing layer per card.
     return ModelGridCard<E>(
       key: model.id != null ? ValueKey(model.id) : ObjectKey(model),
-      mapToDeleteDialog: widget.mapToDeleteDialog,
+      deleteTitle: widget.deleteTitle,
+      deleteWarning: widget.deleteWarning,
       mapToDeleteSuccessfully: widget.mapToDeleteSuccessfully,
       mapToDataModelItem: widget.mapToDataModelItem,
       rawModel: model,

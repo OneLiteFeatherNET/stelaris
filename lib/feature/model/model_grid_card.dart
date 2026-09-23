@@ -17,23 +17,30 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
   const ModelGridCard({
     required this.rawModel,
     required this.mapToDataModelItem,
-    required this.mapToDeleteDialog,
+    required this.deleteTitle,
     required this.mapToDeleteSuccessfully,
     required this.nameSelector,
     required this.keySelector,
     required this.projectKey,
+    this.deleteWarning,
     this.onTap,
     super.key,
   });
 
   final E rawModel;
   final MapToDataModelItem<E> mapToDataModelItem;
-  final MapToDeleteDialog<E> mapToDeleteDialog;
+  final String deleteTitle;
+  final String? deleteWarning;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
   final ModelNameSelector<E> nameSelector;
   final ModelKeySelector<E> keySelector;
   final String projectKey;
   final VoidCallback? onTap;
+
+  String? get _namespacedKey {
+    final key = keySelector(rawModel);
+    return key.isEmpty ? null : '$projectKey:$key';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +80,11 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
                       ),
                       DeleteModelButton<E>(
                         value: rawModel,
-                        mapToDeleteDialog: mapToDeleteDialog,
+                        deleteTitle: deleteTitle,
+                        deleteWarning: deleteWarning,
+                        name: nameSelector(rawModel),
                         mapToDeleteSuccessfully: mapToDeleteSuccessfully,
+                        namespacedKey: _namespacedKey,
                       ),
                     ],
                   ),
