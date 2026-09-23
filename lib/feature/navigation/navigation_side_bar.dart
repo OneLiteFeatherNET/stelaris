@@ -1,9 +1,11 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:stelaris/api/state/actions/search_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/navigation_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/util/color_scheme_ext.dart';
 
 const double maxXOffset = 180;
@@ -20,12 +22,12 @@ class NavigationSideBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routerUri = GoRouterState.of(context).matchedLocation;
-    final selectedIndex = navigationEntries.indexWhere((element) {
-      // Nested routes (e.g. a model's `/detail` route) share the parent
-      // entry's highlight rather than falling back to the first entry.
-      return routerUri == element.route ||
-          routerUri.startsWith('${element.route}/');
-    });
+    // Nested routes (e.g. a model's `/detail` route) share the parent
+    // entry's highlight rather than falling back to the first entry.
+    final currentEntry = entryForLocation(routerUri);
+    final selectedIndex = currentEntry == null
+        ? -1
+        : navigationEntries.indexOf(currentEntry);
 
     return StoreConnector<AppState, NavigationViewModel>(
       vm: () => NavigationStateFactory(),
@@ -49,9 +51,17 @@ class NavigationSideBar extends StatelessWidget {
     );
   }
 
-  /// Handles the selection of a navigation destination.
-  void _onDestinationSelected(BuildContext context, int index) {
-    context.go(navigationEntries[index].route);
+  /// Handles the selection of a navigation destination. Asks first if the
+  /// current detail page has unsaved edits, and drops the search when
+  /// switching to a different section — its query was typed for this one.
+  Future<void> _onDestinationSelected(BuildContext context, int index) async {
+    final target = navigationEntries[index];
+    final current = entryForLocation(
+      GoRouterState.of(context).matchedLocation,
+    );
+    if (!await confirmLeaveIfDirty(context) || !context.mounted) return;
+    if (target != current) context.dispatch(ResetSearchAction());
+    context.go(target.route);
   }
 
   /// Builds the list of navigation destinations for the [NavigationRail].
