@@ -8,6 +8,7 @@ import 'package:stelaris/feature/item/general/item_general_page.dart';
 import 'package:stelaris/feature/item/lore/lore_page.dart';
 import 'package:stelaris/feature/item/meta/item_meta_page.dart';
 import 'package:stelaris/feature/model/model_detail_shell.dart';
+import 'package:stelaris/feature/model/model_detail_tab_bar.dart';
 
 /// The detail view reached by tapping an item card in [ItemPage].
 ///
@@ -40,7 +41,7 @@ class ItemDetailPage extends StatelessWidget {
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TabBar(tabs: _tabs),
+              ModelDetailTabBar(tabs: _tabs),
               Expanded(
                 child: TabBarView(
                   children: [

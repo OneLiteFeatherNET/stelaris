@@ -4,6 +4,7 @@ import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/model_detail_shell.dart';
+import 'package:stelaris/feature/model/model_detail_tab_bar.dart';
 import 'package:stelaris/feature/sound/sound_file_entries.dart';
 import 'package:stelaris/feature/sound/sound_general_page.dart';
 
@@ -36,7 +37,7 @@ class SoundDetailPage extends StatelessWidget {
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TabBar(tabs: _tabs),
+              ModelDetailTabBar(tabs: _tabs),
               Expanded(
                 child: TabBarView(
                   children: [

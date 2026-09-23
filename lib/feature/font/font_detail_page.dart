@@ -7,6 +7,7 @@ import 'package:stelaris/feature/font/chars/font_char_page.dart';
 import 'package:stelaris/feature/font/face/font_face_page.dart';
 import 'package:stelaris/feature/font/font_general_page.dart';
 import 'package:stelaris/feature/model/model_detail_shell.dart';
+import 'package:stelaris/feature/model/model_detail_tab_bar.dart';
 
 /// The detail view reached by tapping a font card in [FontPage].
 ///
@@ -37,7 +38,7 @@ class FontDetailPage extends StatelessWidget {
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TabBar(tabs: _tabs),
+              ModelDetailTabBar(tabs: _tabs),
               Expanded(
                 child: TabBarView(
                   children: [
