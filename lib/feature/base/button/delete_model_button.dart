@@ -1,21 +1,26 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
-import 'package:stelaris/feature/dialogs/delete_dialog.dart';
-import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/feature/dialogs/model_delete_dialog.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class DeleteModelButton<E extends DataModel> extends StatelessWidget {
   const DeleteModelButton({
     required this.value,
-    required this.mapToDeleteDialog,
+    required this.deleteTitle,
+    required this.name,
     required this.mapToDeleteSuccessfully,
+    this.deleteWarning,
+    this.namespacedKey,
     super.key,
   });
 
   final E value;
-  final MapToDeleteDialog<E> mapToDeleteDialog;
+  final String deleteTitle;
+  final String name;
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
+  final String? deleteWarning;
+  final String? namespacedKey;
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +30,13 @@ class DeleteModelButton<E extends DataModel> extends StatelessWidget {
         showDialog(
           context: context,
           builder: (context) {
-            return DeleteDialog<E>(
-              title: context.l10n.dialog_delete_confirm,
-              header: mapToDeleteDialog(value),
+            return ModelDeleteDialog<E>(
+              title: deleteTitle,
+              name: name,
               value: value,
               successfully: mapToDeleteSuccessfully,
+              namespacedKey: namespacedKey,
+              warning: deleteWarning,
             );
           },
         );

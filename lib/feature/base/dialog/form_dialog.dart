@@ -19,6 +19,7 @@ class FormDialog extends StatelessWidget {
     this.minWidth = 0,
     this.maxWidth = 520,
     this.maxHeight = 650,
+    this.showActions = true,
     super.key,
   });
 
@@ -34,6 +35,9 @@ class FormDialog extends StatelessWidget {
   final double minWidth;
   final double maxWidth;
   final double maxHeight;
+
+  /// Hides the cancel/confirm row for dialogs with their own action button.
+  final bool showActions;
 
   void _handleCancel(BuildContext context) {
     FocusScope.of(context).unfocus();
@@ -82,29 +86,31 @@ class FormDialog extends StatelessWidget {
               ),
               const Divider(height: 24),
               Flexible(child: SingleChildScrollView(child: content)),
-              const Divider(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => _handleCancel(context),
-                    child: Text(context.l10n.button_cancel),
-                  ),
-                  horizontalSpacing10,
-                  actionIcon == null
-                      ? FilledButton(
-                          style: actionStyle,
-                          onPressed: onSubmit,
-                          child: Text(actionLabel),
-                        )
-                      : FilledButton.icon(
-                          style: actionStyle,
-                          onPressed: onSubmit,
-                          icon: Icon(actionIcon),
-                          label: Text(actionLabel),
-                        ),
-                ],
-              ),
+              if (showActions) ...[
+                const Divider(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => _handleCancel(context),
+                      child: Text(context.l10n.button_cancel),
+                    ),
+                    horizontalSpacing10,
+                    actionIcon == null
+                        ? FilledButton(
+                            style: actionStyle,
+                            onPressed: onSubmit,
+                            child: Text(actionLabel),
+                          )
+                        : FilledButton.icon(
+                            style: actionStyle,
+                            onPressed: onSubmit,
+                            icon: Icon(actionIcon),
+                            label: Text(actionLabel),
+                          ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),
