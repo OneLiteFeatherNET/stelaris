@@ -187,10 +187,9 @@ class ItemDatabaseUpdate extends ReduxAction<AppState> with Throttle {
       enchantments: current.enchantments,
       flags: current.flags,
     );
-    return updateSingleItemInState(
-      state,
-      response,
-    ).clearUnsavedChanges(NavigationEntry.items);
+    return updateSingleItemInState(state, response)
+        .copyWith(selectedItem: dbModel)
+        .clearUnsavedChanges(NavigationEntry.items);
   }
 }
 
