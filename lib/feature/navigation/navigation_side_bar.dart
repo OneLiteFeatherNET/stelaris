@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/navigation_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/util/color_scheme_ext.dart';
 
 const double maxXOffset = 180;
 const List<NavigationEntry> navigationEntries = NavigationEntry.values;
@@ -31,6 +32,8 @@ class NavigationSideBar extends StatelessWidget {
       builder: (context, vm) {
         return FocusTraversalGroup(
           child: NavigationRail(
+            // Same tone as the AppBar — see BasePage.
+            backgroundColor: Theme.of(context).colorScheme.appChrome,
             minExtendedWidth: maxXOffset,
             extended: MediaQuery.of(context).size.width >= 1000
                 ? vm.openNavigation

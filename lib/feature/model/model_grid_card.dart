@@ -48,14 +48,13 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final timestamp = _TimestampInfo.of(context, rawModel);
 
-    return Card.outlined(
+    // Fill only, no outline — the content sheet behind it already provides
+    // the framing, so fill + border on top of that read as nested boxes.
+    return Card.filled(
       clipBehavior: Clip.antiAlias,
       elevation: 0,
       color: colorScheme.surfaceContainerLow,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: colorScheme.outlineVariant),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         key: const Key('model_grid_card_inkwell'),
         onTap: onTap,
