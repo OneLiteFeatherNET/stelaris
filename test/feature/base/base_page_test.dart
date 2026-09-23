@@ -1,9 +1,12 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/base_page.dart';
+import 'package:stelaris/feature/command_palette/command_palette.dart';
+import 'package:stelaris/feature/settings/settings_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -150,6 +153,129 @@ void main() {
       expect(store.state.modelSearch.query, '');
       expect(find.text('abc'), findsNothing);
       expect(find.text('Search Fonts...'), findsOneWidget);
+    });
+  });
+
+  group('BasePage command palette shortcut', () {
+    const project = Project(
+      id: 'proj_1',
+      key: 'test_key',
+      displayName: 'Test Project',
+    );
+
+    /// The real shell: [BasePage] around a list page with a search bar, next
+    /// to a project selection page outside the shell.
+    Future<void> pumpShell(WidgetTester tester, {String at = '/items'}) async {
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(selectedProject: project),
+      );
+      final router = GoRouter(
+        initialLocation: at,
+        routes: [
+          GoRoute(
+            path: '/projects',
+            builder: (context, state) =>
+                const Scaffold(body: Text('Project Selection Page')),
+          ),
+          ShellRoute(
+            builder: (context, state, child) => BasePage(child: child),
+            routes: [
+              GoRoute(
+                path: '/items',
+                builder: (context, state) =>
+                    const SearchBar(key: Key('model-search')),
+              ),
+            ],
+          ),
+        ],
+      );
+      await tester.pumpWidget(
+        StoreProvider<AppState>(
+          store: store,
+          child: MaterialApp.router(
+            routerConfig: router,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> pressCtrlK(WidgetTester tester) async {
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.keyK);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+      await tester.pumpAndSettle();
+    }
+
+    EditableText searchField(WidgetTester tester) =>
+        tester.widget<EditableText>(
+          find.descendant(
+            of: find.byKey(const Key('model-search')),
+            matching: find.byType(EditableText),
+          ),
+        );
+
+    testWidgets('Ctrl+K opens the palette before anything was clicked', (
+      tester,
+    ) async {
+      await pumpShell(tester);
+
+      await pressCtrlK(tester);
+
+      expect(find.byType(CommandPalette), findsOneWidget);
+    });
+
+    testWidgets('Ctrl+K opens it while the search bar has focus and leaves '
+        'the search text alone', (tester) async {
+      await pumpShell(tester);
+      await tester.tap(find.byKey(const Key('model-search')));
+      await tester.enterText(find.byKey(const Key('model-search')), 'sword');
+      await tester.pumpAndSettle();
+      expect(searchField(tester).focusNode.hasFocus, isTrue);
+
+      await pressCtrlK(tester);
+
+      expect(find.byType(CommandPalette), findsOneWidget);
+      expect(searchField(tester).controller.text, 'sword');
+    });
+
+    testWidgets('Escape closes the palette and gives focus back to the '
+        'search bar', (tester) async {
+      await pumpShell(tester);
+      await tester.tap(find.byKey(const Key('model-search')));
+      await tester.pumpAndSettle();
+      await pressCtrlK(tester);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CommandPalette), findsNothing);
+      expect(searchField(tester).focusNode.hasFocus, isTrue);
+    });
+
+    testWidgets('Ctrl+K does nothing on the project selection page', (
+      tester,
+    ) async {
+      await pumpShell(tester, at: '/projects');
+
+      await pressCtrlK(tester);
+
+      expect(find.byType(CommandPalette), findsNothing);
+    });
+
+    testWidgets('Ctrl+K does nothing while the settings dialog is open', (
+      tester,
+    ) async {
+      await pumpShell(tester);
+      await tester.tap(find.byIcon(Icons.settings_outlined));
+      await tester.pumpAndSettle();
+      expect(find.byType(SettingsDialog), findsOneWidget);
+
+      await pressCtrlK(tester);
+
+      expect(find.byType(CommandPalette), findsNothing);
     });
   });
 }

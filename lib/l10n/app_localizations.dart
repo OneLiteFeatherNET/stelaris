@@ -1222,6 +1222,462 @@ abstract class AppLocalizations {
   /// **'Refresh'**
   String get command_bar_refresh_tooltip;
 
+  /// No description provided for @command_palette_no_results.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching commands'**
+  String get command_palette_no_results;
+
+  /// No description provided for @command_palette_group_navigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation'**
+  String get command_palette_group_navigation;
+
+  /// No description provided for @command_palette_group_interface.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface'**
+  String get command_palette_group_interface;
+
+  /// No description provided for @command_palette_group_backend.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend'**
+  String get command_palette_group_backend;
+
+  /// No description provided for @command_go_to.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to {page}'**
+  String command_go_to(String page);
+
+  /// No description provided for @command_go_to_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'navigate open page'**
+  String get command_go_to_keywords;
+
+  /// No description provided for @command_go_to_projects.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to project list'**
+  String get command_go_to_projects;
+
+  /// No description provided for @command_go_to_projects_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'switch change select project'**
+  String get command_go_to_projects_keywords;
+
+  /// No description provided for @command_toggle_dark_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle dark mode'**
+  String get command_toggle_dark_mode;
+
+  /// No description provided for @command_toggle_dark_mode_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'theme light night appearance'**
+  String get command_toggle_dark_mode_keywords;
+
+  /// No description provided for @command_toggle_system_theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle system theme'**
+  String get command_toggle_system_theme;
+
+  /// No description provided for @command_toggle_system_theme_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'follow system appearance automatic'**
+  String get command_toggle_system_theme_keywords;
+
+  /// No description provided for @command_open_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get command_open_settings;
+
+  /// No description provided for @command_open_settings_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'preferences options configuration'**
+  String get command_open_settings_keywords;
+
+  /// No description provided for @command_open_build.
+  ///
+  /// In en, this message translates to:
+  /// **'Open build dialog'**
+  String get command_open_build;
+
+  /// No description provided for @command_open_build_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'generate release download code'**
+  String get command_open_build_keywords;
+
+  /// No description provided for @command_reload_list.
+  ///
+  /// In en, this message translates to:
+  /// **'Reload current list'**
+  String get command_reload_list;
+
+  /// No description provided for @command_reload_list_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'refresh fetch update'**
+  String get command_reload_list_keywords;
+
+  /// No description provided for @command_reload_list_success.
+  ///
+  /// In en, this message translates to:
+  /// **'List reloaded'**
+  String get command_reload_list_success;
+
+  /// No description provided for @command_reload_list_failure.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reload the list'**
+  String get command_reload_list_failure;
+
+  /// No description provided for @command_reload_branches.
+  ///
+  /// In en, this message translates to:
+  /// **'Reload git branches'**
+  String get command_reload_branches;
+
+  /// No description provided for @command_reload_branches_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'refresh fetch git branch'**
+  String get command_reload_branches_keywords;
+
+  /// No description provided for @command_reload_branches_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches reloaded'**
+  String get command_reload_branches_success;
+
+  /// No description provided for @command_reload_branches_failure.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reload the branches'**
+  String get command_reload_branches_failure;
+
+  /// No description provided for @command_reload_release.
+  ///
+  /// In en, this message translates to:
+  /// **'Reload release information'**
+  String get command_reload_release;
+
+  /// No description provided for @command_reload_release_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'refresh fetch build version'**
+  String get command_reload_release_keywords;
+
+  /// No description provided for @command_reload_release_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Release information reloaded'**
+  String get command_reload_release_success;
+
+  /// No description provided for @command_reload_release_unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'No new release information'**
+  String get command_reload_release_unchanged;
+
+  /// No description provided for @command_palette_group_entities.
+  ///
+  /// In en, this message translates to:
+  /// **'Entities'**
+  String get command_palette_group_entities;
+
+  /// No description provided for @command_palette_group_projects.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get command_palette_group_projects;
+
+  /// No description provided for @command_palette_group_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Syntax'**
+  String get command_palette_group_help;
+
+  /// No description provided for @command_palette_mode_commands.
+  ///
+  /// In en, this message translates to:
+  /// **'Commands'**
+  String get command_palette_mode_commands;
+
+  /// No description provided for @command_palette_mode_commands_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Run a command'**
+  String get command_palette_mode_commands_help;
+
+  /// No description provided for @command_palette_mode_entities.
+  ///
+  /// In en, this message translates to:
+  /// **'Entities'**
+  String get command_palette_mode_entities;
+
+  /// No description provided for @command_palette_mode_entities_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Open an item, font, sound, notification or attribute'**
+  String get command_palette_mode_entities_help;
+
+  /// No description provided for @command_palette_mode_projects.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get command_palette_mode_projects;
+
+  /// No description provided for @command_palette_mode_projects_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to another project'**
+  String get command_palette_mode_projects_help;
+
+  /// No description provided for @command_palette_mode_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get command_palette_mode_settings;
+
+  /// No description provided for @command_palette_mode_settings_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the theme or open the settings'**
+  String get command_palette_mode_settings_help;
+
+  /// No description provided for @command_palette_mode_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get command_palette_mode_help;
+
+  /// No description provided for @command_palette_kind_items.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get command_palette_kind_items;
+
+  /// No description provided for @command_palette_kind_fonts.
+  ///
+  /// In en, this message translates to:
+  /// **'Fonts'**
+  String get command_palette_kind_fonts;
+
+  /// No description provided for @command_palette_kind_sounds.
+  ///
+  /// In en, this message translates to:
+  /// **'Sounds'**
+  String get command_palette_kind_sounds;
+
+  /// No description provided for @command_palette_kind_notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get command_palette_kind_notifications;
+
+  /// No description provided for @command_palette_kind_attributes.
+  ///
+  /// In en, this message translates to:
+  /// **'Attributes'**
+  String get command_palette_kind_attributes;
+
+  /// No description provided for @command_palette_aliases.
+  ///
+  /// In en, this message translates to:
+  /// **'Also: {aliases}'**
+  String command_palette_aliases(String aliases);
+
+  /// No description provided for @command_palette_loaded_only.
+  ///
+  /// In en, this message translates to:
+  /// **'Only entries that are already loaded are searched'**
+  String get command_palette_loaded_only;
+
+  /// No description provided for @command_palette_fallback_entities.
+  ///
+  /// In en, this message translates to:
+  /// **'Search entities for “{text}”'**
+  String command_palette_fallback_entities(String text);
+
+  /// No description provided for @command_palette_fallback_projects.
+  ///
+  /// In en, this message translates to:
+  /// **'Search projects for “{text}”'**
+  String command_palette_fallback_projects(String text);
+
+  /// No description provided for @command_palette_remove_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave this mode'**
+  String get command_palette_remove_mode;
+
+  /// No description provided for @command_palette_hint_default.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a command, or ? to see what else you can search'**
+  String get command_palette_hint_default;
+
+  /// No description provided for @command_palette_hint_commands.
+  ///
+  /// In en, this message translates to:
+  /// **'Search commands'**
+  String get command_palette_hint_commands;
+
+  /// No description provided for @command_palette_hint_entities.
+  ///
+  /// In en, this message translates to:
+  /// **'Search loaded items, fonts, sounds, notifications and attributes'**
+  String get command_palette_hint_entities;
+
+  /// No description provided for @command_palette_hint_kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Search loaded {kind}'**
+  String command_palette_hint_kind(String kind);
+
+  /// No description provided for @command_palette_hint_projects.
+  ///
+  /// In en, this message translates to:
+  /// **'Search a project to switch to'**
+  String get command_palette_hint_projects;
+
+  /// No description provided for @command_palette_hint_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Search settings'**
+  String get command_palette_hint_settings;
+
+  /// No description provided for @command_palette_hint_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a mode, or type its prefix'**
+  String get command_palette_hint_help;
+
+  /// No description provided for @command_palette_mode_navigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation'**
+  String get command_palette_mode_navigation;
+
+  /// No description provided for @command_palette_mode_navigation_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to a page'**
+  String get command_palette_mode_navigation_help;
+
+  /// No description provided for @command_palette_hint_navigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Search pages to go to'**
+  String get command_palette_hint_navigation;
+
+  /// No description provided for @command_palette_help_keyboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard'**
+  String get command_palette_help_keyboard;
+
+  /// No description provided for @command_palette_key_move.
+  ///
+  /// In en, this message translates to:
+  /// **'Move the highlight'**
+  String get command_palette_key_move;
+
+  /// No description provided for @command_palette_key_run.
+  ///
+  /// In en, this message translates to:
+  /// **'Run the highlighted entry'**
+  String get command_palette_key_run;
+
+  /// No description provided for @command_palette_key_close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the palette'**
+  String get command_palette_key_close;
+
+  /// No description provided for @command_palette_key_leave.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave the mode when the field is empty'**
+  String get command_palette_key_leave;
+
+  /// No description provided for @command_palette_key_toggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open or close the palette'**
+  String get command_palette_key_toggle;
+
+  /// No description provided for @command_palette_footer_move.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigate'**
+  String get command_palette_footer_move;
+
+  /// No description provided for @command_palette_footer_run.
+  ///
+  /// In en, this message translates to:
+  /// **'Run'**
+  String get command_palette_footer_run;
+
+  /// No description provided for @command_palette_footer_close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get command_palette_footer_close;
+
+  /// No description provided for @command_palette_footer_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get command_palette_footer_help;
+
+  /// No description provided for @command_palette_footer_step_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Tabs'**
+  String get command_palette_footer_step_in;
+
+  /// No description provided for @command_palette_footer_step_out.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get command_palette_footer_step_out;
+
+  /// No description provided for @command_palette_current_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Current page'**
+  String get command_palette_current_page;
+
+  /// No description provided for @command_palette_key_step_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the tabs of the highlighted entry'**
+  String get command_palette_key_step_in;
+
+  /// No description provided for @command_palette_key_step_out.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the list, with the cursor at the start'**
+  String get command_palette_key_step_out;
+
+  /// No description provided for @command_palette_hint_drill.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a tab of {name}'**
+  String command_palette_hint_drill(String name);
+
   /// No description provided for @sort_name_ascending.
   ///
   /// In en, this message translates to:

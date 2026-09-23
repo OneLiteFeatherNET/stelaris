@@ -217,6 +217,125 @@
   "command_bar_search_tooltip": "Focus search",
   "command_bar_filter_sort_tooltip": "Filter & Sort",
   "command_bar_refresh_tooltip": "Refresh",
+
+  "command_palette_no_results": "No matching commands",
+  "command_palette_group_navigation": "Navigation",
+  "command_palette_group_interface": "Interface",
+  "command_palette_group_backend": "Backend",
+  "command_go_to": "Go to {page}",
+  "@command_go_to": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "command_go_to_keywords": "navigate open page",
+  "command_go_to_projects": "Go to project list",
+  "command_go_to_projects_keywords": "switch change select project",
+  "command_toggle_dark_mode": "Toggle dark mode",
+  "command_toggle_dark_mode_keywords": "theme light night appearance",
+  "command_toggle_system_theme": "Toggle system theme",
+  "command_toggle_system_theme_keywords": "follow system appearance automatic",
+  "command_open_settings": "Open settings",
+  "command_open_settings_keywords": "preferences options configuration",
+  "command_open_build": "Open build dialog",
+  "command_open_build_keywords": "generate release download code",
+  "command_reload_list": "Reload current list",
+  "command_reload_list_keywords": "refresh fetch update",
+  "command_reload_list_success": "List reloaded",
+  "command_reload_list_failure": "Could not reload the list",
+  "command_reload_branches": "Reload git branches",
+  "command_reload_branches_keywords": "refresh fetch git branch",
+  "command_reload_branches_success": "Branches reloaded",
+  "command_reload_branches_failure": "Could not reload the branches",
+  "command_reload_release": "Reload release information",
+  "command_reload_release_keywords": "refresh fetch build version",
+  "command_reload_release_success": "Release information reloaded",
+  "command_reload_release_unchanged": "No new release information",
+  "command_palette_group_entities": "Entities",
+  "command_palette_group_projects": "Projects",
+  "command_palette_group_help": "Syntax",
+  "command_palette_mode_commands": "Commands",
+  "command_palette_mode_commands_help": "Run a command",
+  "command_palette_mode_entities": "Entities",
+  "command_palette_mode_entities_help": "Open an item, font, sound, notification or attribute",
+  "command_palette_mode_projects": "Projects",
+  "command_palette_mode_projects_help": "Switch to another project",
+  "command_palette_mode_settings": "Settings",
+  "command_palette_mode_settings_help": "Change the theme or open the settings",
+  "command_palette_mode_help": "Help",
+  "command_palette_kind_items": "Items",
+  "command_palette_kind_fonts": "Fonts",
+  "command_palette_kind_sounds": "Sounds",
+  "command_palette_kind_notifications": "Notifications",
+  "command_palette_kind_attributes": "Attributes",
+  "command_palette_aliases": "Also: {aliases}",
+  "@command_palette_aliases": {
+    "placeholders": {
+      "aliases": {
+        "type": "String"
+      }
+    }
+  },
+  "command_palette_loaded_only": "Only entries that are already loaded are searched",
+  "command_palette_fallback_entities": "Search entities for “{text}”",
+  "@command_palette_fallback_entities": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "command_palette_fallback_projects": "Search projects for “{text}”",
+  "@command_palette_fallback_projects": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "command_palette_remove_mode": "Leave this mode",
+  "command_palette_hint_default": "Type a command, or ? to see what else you can search",
+  "command_palette_hint_commands": "Search commands",
+  "command_palette_hint_entities": "Search loaded items, fonts, sounds, notifications and attributes",
+  "command_palette_hint_kind": "Search loaded {kind}",
+  "@command_palette_hint_kind": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "command_palette_hint_projects": "Search a project to switch to",
+  "command_palette_hint_settings": "Search settings",
+  "command_palette_hint_help": "Pick a mode, or type its prefix",
+  "command_palette_mode_navigation": "Navigation",
+  "command_palette_mode_navigation_help": "Go to a page",
+  "command_palette_hint_navigation": "Search pages to go to",
+  "command_palette_help_keyboard": "Keyboard",
+  "command_palette_key_move": "Move the highlight",
+  "command_palette_key_run": "Run the highlighted entry",
+  "command_palette_key_close": "Close the palette",
+  "command_palette_key_leave": "Leave the mode when the field is empty",
+  "command_palette_key_toggle": "Open or close the palette",
+  "command_palette_footer_move": "Navigate",
+  "command_palette_footer_run": "Run",
+  "command_palette_footer_close": "Close",
+  "command_palette_footer_help": "Help",
+  "command_palette_footer_step_in": "Tabs",
+  "command_palette_footer_step_out": "Back",
+  "command_palette_current_page": "Current page",
+  "command_palette_key_step_in": "Show the tabs of the highlighted entry",
+  "command_palette_key_step_out": "Back to the list, with the cursor at the start",
+  "command_palette_hint_drill": "Pick a tab of {name}",
+  "@command_palette_hint_drill": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "sort_name_ascending": "Name (A–Z)",
   "sort_name_descending": "Name (Z–A)",
   "sort_created_newest_first": "Created (newest first)",
