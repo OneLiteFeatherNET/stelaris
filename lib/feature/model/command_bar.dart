@@ -129,8 +129,15 @@ class _CommandBarState extends State<CommandBar> {
                   // Tonal (not the add button's primary-filled look) since
                   // refresh is a secondary action — but still a filled
                   // circle, so it doesn't look like a stray flat icon next
-                  // to the add button's own filled shape.
+                  // to the add button's own filled shape. Stretched to the
+                  // full bar height — IconButton's own 40px
+                  // default would sit inside the 48px box with a transparent
+                  // inset, making the gap to the SearchBar look wider than
+                  // the one on the add button's side.
                   : IconButton.filledTonal(
+                      style: IconButton.styleFrom(
+                        minimumSize: const Size.square(_barHeight),
+                      ),
                       icon: const Icon(Icons.refresh),
                       tooltip: l10n.command_bar_refresh_tooltip,
                       onPressed: widget.onRefresh,
@@ -147,6 +154,9 @@ class _CommandBarState extends State<CommandBar> {
                 // it — SearchBar's own default (elevation 6) is meant for a
                 // floating full-screen search overlay, not an inline bar.
                 elevation: const WidgetStatePropertyAll(0),
+                padding: const WidgetStatePropertyAll(
+                  EdgeInsets.symmetric(horizontal: 12),
+                ),
                 hintText: l10n.command_bar_search_hint,
                 focusNode: _searchFocusNode,
                 // An IconButton, same as the trailing filter/sort icon,
