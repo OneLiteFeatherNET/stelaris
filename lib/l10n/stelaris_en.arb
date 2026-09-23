@@ -153,7 +153,6 @@
   "project_selection_title": "Select Project",
   "project_selection_empty_title": "No projects found",
   "project_selection_empty_subtitle": "Get started by creating your first project.",
-  "project_selection_dropdown_label": "Project / Namespace",
   "project_selection_open_button": "Open Project",
   "dialog_project_create_title": "Create new project",
   "dialog_project_display_name": "Display Name",

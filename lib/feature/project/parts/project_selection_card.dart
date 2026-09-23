@@ -43,10 +43,7 @@ class ProjectSelectionCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ProjectSelectionHeader(
-                showAddButton: projects.isNotEmpty,
-                onCreateProject: onCreateProject,
-              ),
+              const ProjectSelectionHeader(),
               const Divider(height: 32),
               if (projects.isEmpty) ...[
                 EmptyProjectView(onCreateProject: onCreateProject),
@@ -58,19 +55,42 @@ class ProjectSelectionCard extends StatelessWidget {
                   onEdit: onEditProject,
                 ),
                 verticalSpacing25,
-                FilledButton.icon(
-                  onPressed: selected == null ? null : onProceed,
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: onCreateProject,
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        icon: const Icon(Icons.add),
+                        label: Text(
+                          context.l10n.dialog_project_create_title,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
                     ),
-                  ),
-                  icon: const Icon(Icons.arrow_forward),
-                  label: Text(
-                    context.l10n.project_selection_open_button,
-                    style: const TextStyle(fontSize: 16),
-                  ),
+                    horizontalSpacing10,
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: selected == null ? null : onProceed,
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        icon: const Icon(Icons.arrow_forward),
+                        label: Text(
+                          context.l10n.project_selection_open_button,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ],

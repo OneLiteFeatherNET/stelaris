@@ -433,9 +433,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Get started by creating your first project.';
 
   @override
-  String get project_selection_dropdown_label => 'Project / Namespace';
-
-  @override
   String get project_selection_open_button => 'Open Project';
 
   @override

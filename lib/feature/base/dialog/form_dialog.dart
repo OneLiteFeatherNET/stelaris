@@ -41,7 +41,7 @@ class FormDialog extends StatelessWidget {
 
   void _handleCancel(BuildContext context) {
     FocusScope.of(context).unfocus();
-    Navigator.of(context).pop(false);
+    Navigator.of(context).pop();
   }
 
   @override
