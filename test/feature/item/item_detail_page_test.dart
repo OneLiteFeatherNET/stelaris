@@ -151,6 +151,15 @@ void main() {
       );
       await tester.pump();
       await tester.tap(find.text('Save'));
+      // On the web, dio finishes even a faked request in several real-async
+      // steps that testWidgets' fake-async zone doesn't run on its own, so
+      // alternate frames with a little real time until the save has landed.
+      for (var i = 0; i < 20 && store.state.unsavedChanges != null; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 10)),
+        );
+      }
       await tester.pumpAndSettle();
 
       expect((adapter.lastRequest!.data as Map)['comment'], 'Sharp blade');
