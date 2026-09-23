@@ -57,7 +57,6 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
   final VoidCallback onAdd;
   final ValueChanged<E> onModelTap;
-  final ModelSearchMatcher<E> matchesSearch;
   final ModelFilterMatcher<E> matchesFilter;
   final List<FilterOption> filterOptions;
   final ModelNameSelector<E> nameSelector;
@@ -87,7 +86,6 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
     required this.mapToDeleteSuccessfully,
     required this.onAdd,
     required this.onModelTap,
-    required this.matchesSearch,
     required this.matchesFilter,
     required this.nameSelector,
     required this.keySelector,
@@ -144,10 +142,11 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
   List<E> _filteredModels(ModelSearchState search) {
     final filtered = filterModels(
       models: widget.models,
-      // Lowercased once here rather than inside matchesSearch per model.
       query: search.query.toLowerCase(),
       activeFilters: search.activeFilters,
-      matchesSearch: widget.matchesSearch,
+      matchesSearch: (model, query) =>
+          widget.nameSelector(model).toLowerCase().contains(query) ||
+          widget.keySelector(model).toLowerCase().contains(query),
       matchesFilter: widget.matchesFilter,
     );
 
@@ -204,6 +203,19 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
 
   Widget _buildGridView(ModelSearchState search) {
     final models = _filteredModels(search);
+
+    if (models.isEmpty && widget.models.isNotEmpty) {
+      final l10n = context.l10n;
+      return EmptyDataWidget.full(
+        header: l10n.search_no_results,
+        subHeader: l10n.search_no_results_hint,
+        icon: Icons.search_off,
+        action: TextButton(
+          onPressed: () => context.dispatch(ClearSearchAction()),
+          child: Text(l10n.search_reset),
+        ),
+      );
+    }
 
     if (models.isEmpty) {
       // Reuse the same empty-state copy the other (unmigrated) pages

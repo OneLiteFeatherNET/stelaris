@@ -36,8 +36,6 @@ Widget createModelPage({
           mapToDataModelItem: (m) => Text(m.name),
           deleteTitle: 'Delete test model',
           mapToDeleteSuccessfully: (_) => true,
-          matchesSearch: (m, q) =>
-              m.name.toLowerCase().contains(q.toLowerCase()),
           matchesFilter: matchesFilter ?? (_, _) => true,
           nameSelector: (m) => m.name,
           keySelector: (m) => m.internalId.toString(),
@@ -157,7 +155,7 @@ void main() {
       },
     );
 
-    testWidgets('shows the same hint when a search yields no results', (
+    testWidgets('a search without matches offers to reset it', (
       tester,
     ) async {
       await tester.pumpWidget(
@@ -170,8 +168,14 @@ void main() {
       store.dispatch(UpdateSearchQueryAction('nope'));
       await tester.pumpAndSettle();
 
-      expect(find.text(emptyHeader), findsOneWidget);
-      expect(find.text('Model 1'), findsNothing);
+      expect(find.text('No matches'), findsOneWidget);
+      expect(find.text(emptyHeader), findsNothing);
+
+      await tester.tap(find.text('Reset search'));
+      await tester.pumpAndSettle();
+
+      expect(store.state.modelSearch.query, '');
+      expect(find.text('Model 1'), findsOneWidget);
     });
   });
 
@@ -314,6 +318,17 @@ void main() {
       TestModel(internalId: 1, name: 'Ruby'),
       TestModel(internalId: 2, name: 'Emerald'),
     ];
+
+    testWidgets('the search also matches the key', (tester) async {
+      await tester.pumpWidget(createModelPage(store: store, models: models));
+
+      // The helper's keySelector is the internal id.
+      store.dispatch(UpdateSearchQueryAction('2'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Emerald'), findsOneWidget);
+      expect(find.text('Ruby'), findsNothing);
+    });
 
     testWidgets('a search typed in another section is dropped', (tester) async {
       store = Store<AppState>(
