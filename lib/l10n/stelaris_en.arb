@@ -196,7 +196,6 @@
   "tooltip_copy_to_clipboard": "Copy to clipboard",
   "snackbar_copied_to_clipboard": "Copied to clipboard",
 
-  "command_bar_search_hint": "Search...",
   "command_bar_search_tooltip": "Focus search",
   "command_bar_filter_sort_tooltip": "Filter & Sort",
   "command_bar_refresh_tooltip": "Refresh",
@@ -233,5 +232,19 @@
         "type": "int"
       }
     }
-  }
+  },
+  "button_delete": "Delete",
+  "button_discard": "Discard",
+  "unsaved_dialog_title": "Unsaved changes",
+  "unsaved_dialog_message": "You have unsaved changes. Do you want to save them before leaving?",
+  "unsaved_indicator_tooltip": "Unsaved changes",
+  "app_bar_search_hint": "Search {section}...",
+  "@app_bar_search_hint": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      }
+    }
+  },
+  "app_bar_search_close_tooltip": "Close search"
 }

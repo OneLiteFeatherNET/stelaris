@@ -1144,12 +1144,6 @@ abstract class AppLocalizations {
   /// **'Copied to clipboard'**
   String get snackbar_copied_to_clipboard;
 
-  /// No description provided for @command_bar_search_hint.
-  ///
-  /// In en, this message translates to:
-  /// **'Search...'**
-  String get command_bar_search_hint;
-
   /// No description provided for @command_bar_search_tooltip.
   ///
   /// In en, this message translates to:
@@ -1239,6 +1233,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} d ago'**
   String relative_time_days_ago(int count);
+
+  /// No description provided for @button_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get button_delete;
+
+  /// No description provided for @button_discard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get button_discard;
+
+  /// No description provided for @unsaved_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved changes'**
+  String get unsaved_dialog_title;
+
+  /// No description provided for @unsaved_dialog_message.
+  ///
+  /// In en, this message translates to:
+  /// **'You have unsaved changes. Do you want to save them before leaving?'**
+  String get unsaved_dialog_message;
+
+  /// No description provided for @unsaved_indicator_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved changes'**
+  String get unsaved_indicator_tooltip;
+
+  /// No description provided for @app_bar_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search {section}...'**
+  String app_bar_search_hint(String section);
+
+  /// No description provided for @app_bar_search_close_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Close search'**
+  String get app_bar_search_close_tooltip;
 }
 
 class _AppLocalizationsDelegate
