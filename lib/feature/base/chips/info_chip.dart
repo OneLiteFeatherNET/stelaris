@@ -35,7 +35,7 @@ class InfoChip extends StatelessWidget {
               text,
               style: TextStyle(
                 fontFamily: 'monospace',
-                fontSize: 11,
+                fontSize: 12,
                 color: theme.colorScheme.primary,
                 fontWeight: FontWeight.w500,
               ),
