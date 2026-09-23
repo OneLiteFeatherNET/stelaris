@@ -1,12 +1,9 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_client.dart';
 import 'package:stelaris/api/base_api.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
-import '../support/fake_http_client_adapter.dart';
+import '../support/recording_http_client_adapter.dart';
 import '../test_model.dart';
 
 class ProjectScopedTestModel with DataModel {
@@ -48,172 +45,201 @@ class ProjectScopedTestModel with DataModel {
 }
 
 void main() {
-  group('BaseApi.getPage', () {
-    test('routes to /project/{projectId}/{endpoint} and omits projectId in queryParameters when provided', () async {
-      final client = ApiClient('http://localhost:8080');
-      String? capturedPath;
-      Map<String, dynamic>? capturedQueryParams;
+  late ApiClient apiClient;
+  late BaseApi<TestModel> baseApi;
 
-      client.dio.httpClientAdapter = FakeHttpClientAdapter((options) {
-        capturedPath = options.uri.path;
-        capturedQueryParams = options.uri.queryParameters;
-        return ResponseBody.fromString(
-          jsonEncode(
-            const PaginatedResult<TestModel>(
-              items: [],
-              totalItems: 0,
-              totalPages: 0,
-              currentPage: 1,
-              pageSize: 10,
-            ).toJson((item) => item.toJson()),
-          ),
-          200,
-          headers: {
-            Headers.contentTypeHeader: [Headers.jsonContentType],
-          },
-        );
+  setUp(() {
+    apiClient = ApiClient('http://backend.test/api');
+    baseApi = BaseApi<TestModel>(
+      apiClient: apiClient,
+      endpoint: 'items',
+      fromJson: TestModel.fromJson,
+      toJson: (model) => model.toJson(),
+    );
+  });
+
+  RecordingHttpClientAdapter respondWith(Object? json) {
+    final adapter = RecordingHttpClientAdapter(json);
+    apiClient.dio.httpClientAdapter = adapter;
+    return adapter;
+  }
+
+  group('get', () {
+    test('sends a GET to the endpoint and parses the model', () async {
+      final model = TestModel(internalId: 1, name: 'Item 1');
+      final adapter = respondWith(model.toJson());
+
+      final result = await baseApi.get();
+
+      expect(adapter.lastRequest!.method, 'GET');
+      expect(
+        adapter.lastRequest!.uri.toString(),
+        'http://backend.test/api/items',
+      );
+      expect(result, model);
+    });
+  });
+
+  group('add', () {
+    test('sends a POST with the model body to the endpoint', () async {
+      final model = TestModel(internalId: 2, name: 'New');
+      final adapter = respondWith(model.toJson());
+
+      final result = await baseApi.add(model);
+
+      expect(adapter.lastRequest!.method, 'POST');
+      expect(
+        adapter.lastRequest!.uri.toString(),
+        'http://backend.test/api/items',
+      );
+      expect(adapter.lastRequest!.data, model.toJson());
+      expect(result, model);
+    });
+  });
+
+  group('update', () {
+    test('sends a POST to the /update sub-path', () async {
+      final model = TestModel(internalId: 3, name: 'Updated');
+      final adapter = respondWith(model.toJson());
+
+      final result = await baseApi.update(model);
+
+      expect(adapter.lastRequest!.method, 'POST');
+      expect(
+        adapter.lastRequest!.uri.toString(),
+        'http://backend.test/api/items/update',
+      );
+      expect(adapter.lastRequest!.data, model.toJson());
+      expect(result, model);
+    });
+  });
+
+  group('remove', () {
+    test('sends a DELETE to the /delete/{id} sub-path', () async {
+      final model = TestModel(internalId: 4, name: 'Gone');
+      final adapter = respondWith(model.toJson());
+
+      final result = await baseApi.remove(model);
+
+      expect(adapter.lastRequest!.method, 'DELETE');
+      expect(
+        adapter.lastRequest!.uri.toString(),
+        'http://backend.test/api/items/delete/4',
+      );
+      expect(result, model);
+    });
+  });
+
+  group('getPage', () {
+    final emptyPage = const PaginatedResult<TestModel>(
+      items: [],
+      totalItems: 0,
+      totalPages: 0,
+      currentPage: 1,
+      pageSize: 10,
+    ).toJson((item) => item.toJson());
+
+    test('converts the 1-based page to the 0-based query param', () async {
+      final adapter = respondWith({
+        'items': [
+          {'id': 1, 'name': 'Item 1'},
+        ],
+        'totalItems': 1,
+        'totalPages': 1,
+        'currentPage': 1,
+        'pageSize': 10,
       });
 
-      final api = BaseApi<TestModel>(
-        apiClient: client,
-        endpoint: 'test',
-        fromJson: TestModel.fromJson,
-        toJson: (m) => m.toJson(),
-      );
+      final result = await baseApi.getPage(page: 1, size: 10);
 
-      await api.getPage(page: 1, size: 10, projectId: 'proj-123');
+      expect(adapter.lastRequest!.method, 'GET');
+      expect(adapter.lastRequest!.uri.path, '/api/items');
+      expect(adapter.lastRequest!.uri.queryParameters, {
+        'page': '0',
+        'size': '10',
+      });
+      expect(result.items, [TestModel(internalId: 1, name: 'Item 1')]);
+      expect(result.totalItems, 1);
+    });
 
-      expect(capturedPath, '/project/proj-123/test');
-      expect(capturedQueryParams?['projectId'], isNull);
-      expect(capturedQueryParams?['page'], '0');
-      expect(capturedQueryParams?['size'], '10');
+    test('routes to /project/{projectId}/{endpoint} and omits projectId in '
+        'queryParameters when provided', () async {
+      final adapter = respondWith(emptyPage);
+
+      await baseApi.getPage(page: 1, size: 10, projectId: 'proj-123');
+
+      expect(adapter.lastRequest!.uri.path, '/api/project/proj-123/items');
+      expect(adapter.lastRequest!.uri.queryParameters, {
+        'page': '0',
+        'size': '10',
+      });
     });
 
     test('routes to /{endpoint} when projectId is null', () async {
-      final client = ApiClient('http://localhost:8080');
-      String? capturedPath;
-      Map<String, dynamic>? capturedQueryParams;
+      final adapter = respondWith(emptyPage);
 
-      client.dio.httpClientAdapter = FakeHttpClientAdapter((options) {
-        capturedPath = options.uri.path;
-        capturedQueryParams = options.uri.queryParameters;
-        return ResponseBody.fromString(
-          jsonEncode(
-            const PaginatedResult<TestModel>(
-              items: [],
-              totalItems: 0,
-              totalPages: 0,
-              currentPage: 1,
-              pageSize: 10,
-            ).toJson((item) => item.toJson()),
-          ),
-          200,
-          headers: {
-            Headers.contentTypeHeader: [Headers.jsonContentType],
-          },
-        );
+      await baseApi.getPage(page: 2, size: 20);
+
+      expect(adapter.lastRequest!.uri.path, '/api/items');
+      expect(adapter.lastRequest!.uri.queryParameters, {
+        'page': '1',
+        'size': '20',
       });
-
-      final api = BaseApi<TestModel>(
-        apiClient: client,
-        endpoint: 'test',
-        fromJson: TestModel.fromJson,
-        toJson: (m) => m.toJson(),
-      );
-
-      await api.getPage(page: 2, size: 20);
-
-      expect(capturedPath, '/test');
-      expect(capturedQueryParams?['projectId'], isNull);
-      expect(capturedQueryParams?['page'], '1');
-      expect(capturedQueryParams?['size'], '20');
     });
   });
 
-  group('BaseApi CRUD project scoping', () {
-    test('add routes to /project/{projectId}/{endpoint} when model has projectId', () async {
-      final client = ApiClient('http://localhost:8080');
-      String? capturedPath;
+  group('project scoping', () {
+    late BaseApi<ProjectScopedTestModel> scopedApi;
+    final model = ProjectScopedTestModel(
+      internalId: 1,
+      name: 'foo',
+      projectId: 'proj-123',
+    );
 
-      client.dio.httpClientAdapter = FakeHttpClientAdapter((options) {
-        capturedPath = options.uri.path;
-        return ResponseBody.fromString(
-          jsonEncode({'id': 1, 'name': 'foo', 'projectId': 'proj-123'}),
-          200,
-          headers: {
-            Headers.contentTypeHeader: [Headers.jsonContentType],
-          },
-        );
-      });
-
-      final api = BaseApi<ProjectScopedTestModel>(
-        apiClient: client,
+    setUp(() {
+      scopedApi = BaseApi<ProjectScopedTestModel>(
+        apiClient: apiClient,
         endpoint: 'test',
         fromJson: ProjectScopedTestModel.fromJson,
         toJson: (m) => m.toJson(),
       );
-
-      final model = ProjectScopedTestModel(internalId: 1, name: 'foo', projectId: 'proj-123');
-      await api.add(model);
-
-      expect(capturedPath, '/project/proj-123/test');
     });
 
-    test('update routes to /project/{projectId}/{endpoint}/update when model has projectId', () async {
-      final client = ApiClient('http://localhost:8080');
-      String? capturedPath;
+    test('add routes to /project/{projectId}/{endpoint}', () async {
+      final adapter = respondWith(model.toJson());
 
-      client.dio.httpClientAdapter = FakeHttpClientAdapter((options) {
-        capturedPath = options.uri.path;
-        return ResponseBody.fromString(
-          jsonEncode({'id': 1, 'name': 'foo', 'projectId': 'proj-123'}),
-          200,
-          headers: {
-            Headers.contentTypeHeader: [Headers.jsonContentType],
-          },
-        );
-      });
+      await scopedApi.add(model);
 
-      final api = BaseApi<ProjectScopedTestModel>(
-        apiClient: client,
-        endpoint: 'test',
-        fromJson: ProjectScopedTestModel.fromJson,
-        toJson: (m) => m.toJson(),
+      expect(adapter.lastRequest!.uri.path, '/api/project/proj-123/test');
+    });
+
+    test('update routes to /project/{projectId}/{endpoint}/update', () async {
+      final adapter = respondWith(model.toJson());
+
+      final result = await scopedApi.update(model);
+
+      expect(adapter.lastRequest!.method, 'POST');
+      expect(
+        adapter.lastRequest!.uri.path,
+        '/api/project/proj-123/test/update',
       );
-
-      final model = ProjectScopedTestModel(internalId: 1, name: 'foo', projectId: 'proj-123');
-      await api.update(model);
-
-      expect(capturedPath, '/project/proj-123/test/update');
+      expect(result.projectId, 'proj-123');
     });
 
-    test('remove routes to /project/{projectId}/{endpoint}/delete/{id} when model has projectId', () async {
-      final client = ApiClient('http://localhost:8080');
-      String? capturedPath;
+    test(
+      'remove routes to /project/{projectId}/{endpoint}/delete/{id}',
+      () async {
+        final adapter = respondWith(model.toJson());
 
-      client.dio.httpClientAdapter = FakeHttpClientAdapter((options) {
-        capturedPath = options.uri.path;
-        return ResponseBody.fromString(
-          jsonEncode({'id': 1, 'name': 'foo', 'projectId': 'proj-123'}),
-          200,
-          headers: {
-            Headers.contentTypeHeader: [Headers.jsonContentType],
-          },
+        final result = await scopedApi.remove(model);
+
+        expect(adapter.lastRequest!.method, 'DELETE');
+        expect(
+          adapter.lastRequest!.uri.path,
+          '/api/project/proj-123/test/delete/1',
         );
-      });
-
-      final api = BaseApi<ProjectScopedTestModel>(
-        apiClient: client,
-        endpoint: 'test',
-        fromJson: ProjectScopedTestModel.fromJson,
-        toJson: (m) => m.toJson(),
-      );
-
-      final model = ProjectScopedTestModel(internalId: 1, name: 'foo', projectId: 'proj-123');
-      await api.remove(model);
-
-      expect(capturedPath, '/project/proj-123/test/delete/1');
-    });
+        expect(result.projectId, 'proj-123');
+      },
+    );
   });
 }
-
