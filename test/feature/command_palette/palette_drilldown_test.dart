@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -163,7 +164,11 @@ void main() {
 
       await _press(tester, LogicalKeyboardKey.arrowRight);
 
-      expect(_controller(tester).selection.baseOffset, 3);
+      // On the web the browser moves the cursor, not the framework, and a
+      // simulated key event never reaches it.
+      if (!kIsWeb) {
+        expect(_controller(tester).selection.baseOffset, 3);
+      }
       expect(_titles(tester), contains('Diamond Sword'));
       expect(_chipSays('Diamond Sword'), isFalse);
     });
