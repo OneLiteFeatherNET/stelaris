@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
@@ -10,6 +11,8 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+
+import '../../support/fake_http_client_adapter.dart';
 
 /// Records which actions were dispatched.
 class _Recorder implements ActionObserver<AppState> {
@@ -40,7 +43,7 @@ Future<(_Recorder, List<bool>)> _pump(
       store: Store<AppState>(
         initialState: const AppState(),
         actionObservers: [recorder],
-        // The add actions talk to the API, which a test has none of.
+        // The fake API answers every add with an error.
         globalErrorObserver: (_) => SwallowGlobalErrorObserver<AppState>(),
       ),
       child: MaterialApp(
@@ -73,6 +76,13 @@ Future<void> _submit(WidgetTester tester) async {
 
 void main() {
   final AppLocalizations l10n = lookupAppLocalizations(const Locale('en'));
+
+  // The five lists share one client. Answer at once: a real request outlives
+  // the test on the web and leaves Dio's timeout timer pending.
+  setUp(() {
+    ApiService().itemApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter.json(null, statusCode: 500);
+  });
 
   final cases = <NavigationEntry, (String, Type)>{
     NavigationEntry.items: (l10n.dialog_item_create, ItemAddAction),
