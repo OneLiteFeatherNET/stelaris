@@ -47,3 +47,8 @@ flutter:
   generate: true
   assets:
     - assets/
+  fonts:
+    # Generated from design/icons/navigation by tool/generate_icons.sh.
+    - family: StelarisIcons
+      fonts:
+        - asset: assets/fonts/StelarisIcons.ttf

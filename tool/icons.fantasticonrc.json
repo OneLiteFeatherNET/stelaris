@@ -1,0 +1,25 @@
+{
+  "name": "StelarisIcons",
+  "inputDir": "design/icons/navigation",
+  "outputDir": "assets/fonts",
+  "fontTypes": ["ttf"],
+  "assetTypes": [],
+  "normalize": false,
+  "fontHeight": 1200,
+  "descent": 0,
+  "formatOptions": {
+    "ttf": { "ts": 0, "version": "1.0" }
+  },
+  "codepoints": {
+    "heart_outlined": 57344,
+    "heart": 57345,
+    "pickaxe_outlined": 57346,
+    "pickaxe": 57347,
+    "advancement_outlined": 57348,
+    "advancement": 57349,
+    "letters_outlined": 57350,
+    "letters": 57351,
+    "note_block_outlined": 57352,
+    "note_block": 57353
+  }
+}

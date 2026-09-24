@@ -1,36 +1,37 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/util/stelaris_icons.dart';
 
 /// The enum class contains all relevant item for the navigation widget.
 enum NavigationEntry {
   attributes(
     'Attributes',
     '/attributes',
-    Icons.badge_outlined,
-    Icons.badge,
+    StelarisIcons.heartOutlined,
+    StelarisIcons.heart,
   ),
   items(
     'Items',
     '/items',
-    Icons.games_outlined,
-    Icons.games,
+    StelarisIcons.pickaxeOutlined,
+    StelarisIcons.pickaxe,
   ),
   notifications(
     'Notifications',
     '/notifications',
-    Icons.message_outlined,
-    Icons.message,
+    StelarisIcons.advancementOutlined,
+    StelarisIcons.advancement,
   ),
   font(
     'Fonts',
     '/fonts',
-    Icons.font_download_outlined,
-    Icons.font_download,
+    StelarisIcons.lettersOutlined,
+    StelarisIcons.letters,
   ),
   sound(
     'Sound',
     '/sound',
-    Icons.volume_up_outlined,
-    Icons.volume_up,
+    StelarisIcons.noteBlockOutlined,
+    StelarisIcons.noteBlock,
   )
   ;
 
