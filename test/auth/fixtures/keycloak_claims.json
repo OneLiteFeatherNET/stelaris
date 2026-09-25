@@ -1,0 +1,52 @@
+{
+  "_comment": "Claims only. The tokens they came from are deliberately not here: a signed JWT in a repository is a high-entropy blob that every secret scanner flags, and nothing in these tests needs the signature. Recorded from Keycloak 26.4 - see README.md to re-record.",
+  "access_token_claims": {
+    "exp": 1789887516,
+    "iat": 1789887216,
+    "auth_time": 1789887216,
+    "jti": "ofrtac:3ebc45c2-d616-5892-f264-5131162c4450",
+    "iss": "http://localhost:18081/realms/stelaris",
+    "sub": "e2ca39e3-5c1f-4195-8b81-350bc8fcef31",
+    "typ": "Bearer",
+    "azp": "stelaris-ui",
+    "sid": "4df41b3a-3ba2-8aea-9924-e63319a85f6a",
+    "acr": "1",
+    "allowed-origins": [
+      "http://localhost:18080"
+    ],
+    "realm_access": {
+      "roles": [
+        "offline_access",
+        "stelaris.admin"
+      ]
+    },
+    "scope": "openid offline_access email profile",
+    "email_verified": true,
+    "name": "Ada Lovelace",
+    "preferred_username": "ada",
+    "given_name": "Ada",
+    "family_name": "Lovelace",
+    "email": "ada@stelaris.example"
+  },
+  "id_token_claims": {
+    "exp": 1789887516,
+    "iat": 1789887216,
+    "auth_time": 1789887216,
+    "jti": "88befa67-e623-1ed2-34cb-49a5a66557d1",
+    "iss": "http://localhost:18081/realms/stelaris",
+    "aud": "stelaris-ui",
+    "sub": "e2ca39e3-5c1f-4195-8b81-350bc8fcef31",
+    "typ": "ID",
+    "azp": "stelaris-ui",
+    "nonce": "4MfntJLzPBK7-BooLFNicA",
+    "sid": "4df41b3a-3ba2-8aea-9924-e63319a85f6a",
+    "at_hash": "Lc8xV1d_i9d3-_AE2Yf0AA",
+    "acr": "1",
+    "email_verified": true,
+    "name": "Ada Lovelace",
+    "preferred_username": "ada",
+    "given_name": "Ada",
+    "family_name": "Lovelace",
+    "email": "ada@stelaris.example"
+  }
+}

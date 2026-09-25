@@ -30,6 +30,75 @@ config:
   # Base URL of the code generator service.
   generatorUrl: ""
 
+  # OpenID Connect provider the app authenticates against.
+  #
+  # Leave `issuer` empty to deploy without authentication: the app then behaves
+  # as it did before this existed - no sign-in, no bearer header - which is what
+  # lets the UI and the backend's token validation ship in separate releases.
+  #
+  # Any provider implementing OpenID Connect discovery works; the app reads every
+  # endpoint from the issuer's well-known document, so switching providers is a
+  # change here and nothing else. Two worked examples:
+  #
+  #   Keycloak:  issuer: https://kc.example/realms/stelaris
+  #   Entra ID:  issuer: https://login.microsoftonline.com/<tenant>/v2.0
+  #
+  # Both need provider-side setup before the backend can validate the token they
+  # issue - see docs/identity-provider.md. Narrowing the CSP below to named
+  # origins means naming the issuer's origin too, or sign-in is blocked.
+  auth:
+    # Issuer URL. Its /.well-known/openid-configuration must be reachable from
+    # the browser. Empty disables authentication entirely.
+    issuer: ""
+    # Client id of a public, browser-based client registered with the provider.
+    # There is no client secret: the app is a SPA and cannot keep one.
+    clientId: ""
+    # Scopes to request. Needs `openid`, and the scope that makes the provider
+    # issue an access token the backend can validate - for Entra ID that is a
+    # scope exposed by your API app registration, without which the token is
+    # opaque. `offline_access` is what gets you a refresh token.
+    scopes: []
+    #  - openid
+    #  - profile
+    #  - offline_access
+    #  - api://<api-app-id>/access_as_user
+    # Audience to request, for providers that want it named explicitly.
+    audience: ""
+    # Claim paths to read role names from. OpenID Connect does not standardise
+    # this, so it is configuration: each entry is a dotted path into the token's
+    # claims, and every one that is present contributes.
+    #
+    # Unset uses the defaults built into the app, which cover the common shapes:
+    # `roles`, `realm_access.roles`, `resource_access.<clientId>.roles`, `groups`.
+    # Set it only for a provider none of those reach - decode a token and look.
+    roleClaims: []
+    #  - "https://stelaris.example/roles"
+    # Which claim sets those paths are read from, in order: accessToken,
+    # idToken, userInfo. Providers disagree about this as much as about the
+    # paths - Keycloak puts realm and client roles in the access token, several
+    # others expose group membership only from userinfo.
+    #
+    # Unset searches all three. Naming them is also how you exclude one.
+    roleClaimsSource: []
+    #  - accessToken
+    #  - idToken
+    # Renames role values that arrive unreadable, keyed by the raw value.
+    #
+    # Some providers put identifiers where names would be useful: Entra ID's
+    # group claim emits an object id per group unless every group is synced from
+    # an on-premises directory, and those ids differ per tenant, so no code can
+    # name one. Map them to names the application gates on.
+    #
+    # Empty is the normal case - a provider that emits names needs nothing here.
+    # An unmapped value comes through unchanged.
+    roleAliases: {}
+    #  6dbd7a4d-d61c-47f5-8f7d-db368e3f9dae: stelaris.admin
+
+  # The three fields above are rendered only together: a block missing `issuer`,
+  # `clientId` or `scopes` cannot produce a sign-in that succeeds, so it is left
+  # out of the document entirely rather than half-served - the same rule the URLs
+  # above follow.
+
   # Use a Secret managed outside this chart instead of the one it creates.
   # It has to hold the whole document under `secretKey`.
   existingSecret: ""

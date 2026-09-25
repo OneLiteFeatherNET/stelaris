@@ -1,3 +1,4 @@
+import 'package:stelaris/feature/auth/session_indicator.dart';
 import 'package:async_redux/async_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -63,6 +64,9 @@ class BasePage extends StatelessWidget {
                 horizontalSpacing10,
                 BuildButton(),
                 SettingsButton(),
+                // Renders nothing where no identity provider is configured, so
+                // an unauthenticated deployment's app bar is unchanged.
+                SessionIndicator(),
               ],
             ),
             body: Row(

@@ -79,12 +79,27 @@ nginx:
     font-src 'self' data:; media-src 'self' data: blob:;
     worker-src 'self' blob:; child-src 'self' blob:; manifest-src 'self';
     connect-src 'self' https://api.stelaris.example https://gen.stelaris.example
+    https://idp.stelaris.example
 ```
 
 `'unsafe-inline'` and `'unsafe-eval'` are not optional — Flutter's loader
 bootstraps from an inline script and compiles Wasm at runtime. Dropping them
 gives a blank page. The reasoning is in
 [`docs/docker-image.md`](../../docs/docker-image.md).
+
+**`connect-src` has to name the issuer's origin too.** The app fetches the
+provider's discovery document and its key set, and exchanges and refreshes
+tokens, from the origin in `config.auth.issuer` — all of them `connect-src`.
+Leaving it out is a policy that works in every environment still on the shipped
+`https:` default and then blocks sign-in in the one that narrowed it, with
+nothing in the application logs and a CSP violation in the browser console as
+the only trace. Whatever host serves `config.auth.issuer` belongs in this list;
+`charts/stelaris-ui/ci/full-values.yaml` is a worked example.
+
+The redirect back from the provider is a top-level navigation, not a fetch, so
+it needs no `form-action` or `frame-src` relaxation. The app never renews a
+session in a hidden iframe — browsers block the third-party cookies that
+depends on — so `frame-src` stays absent and `frame-ancestors 'none'` stays.
 
 This replaces one file inside the image, so a change to it **does** roll the
 pods: nginx reads its configuration only at startup.
@@ -173,7 +188,14 @@ knowing about:
 | `config.backendUrl` | `""` | Without it the app has nothing to talk to |
 | `config.generatorUrl` | `""` | |
 | `config.existingSecret` | `""` | Manage the Secret elsewhere |
-| `nginx.contentSecurityPolicy` | `""` | Narrow `connect-src` to real origins |
+| `config.auth.issuer` | `""` | Empty deploys without authentication |
+| `config.auth.clientId` | `""` | Public client; there is no secret |
+| `config.auth.scopes` | `[]` | Needs `openid` and a backend-validatable scope |
+| `config.auth.audience` | `""` | Only for providers that want it named |
+| `config.auth.roleClaims` | `[]` | Empty uses the app's built-in claim paths |
+| `config.auth.roleClaimsSource` | `[]` | Empty searches access token, ID token and userinfo |
+| `config.auth.roleAliases` | `{}` | Renames raw claim values, e.g. group object ids |
+| `nginx.contentSecurityPolicy` | `""` | Narrow `connect-src` to real origins — issuer included |
 | `nginx.serverConfig` | `""` | Replace the server block entirely |
 | `image.tag` | `""` | Empty means the chart's `appVersion` |
 | `replicaCount` | `2` | Ignored when `autoscaling.enabled` |

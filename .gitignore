@@ -36,6 +36,11 @@ migrate_working_dir/
 
 # Web related
 
+# Runtime config written by tool/dev_auth.sh (or copied by hand) for a local
+# `flutter run -d web-server`. Never the default: without it the app runs
+# unauthenticated, which is what every other dev gets.
+/web/config.json
+
 # Symbolication related
 app.*.symbols
 
