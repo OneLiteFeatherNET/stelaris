@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:async_redux/async_redux.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
@@ -10,6 +14,8 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+
+import '../../support/fake_http_client_adapter.dart';
 
 /// Records which actions were dispatched.
 class _Recorder implements ActionObserver<AppState> {
@@ -33,6 +39,20 @@ Future<(_Recorder, List<bool>)> _pump(
   WidgetTester tester,
   NavigationEntry entry,
 ) async {
+  // Submitting dispatches an AddAction, which talks to the API; the dialog
+  // closes without waiting for it, but it still has to be stubbed so the
+  // test doesn't make a real request. All of ApiService's model APIs share
+  // one Dio client, so one stub covers every kind under test - echoing the
+  // submitted body back is valid JSON for whichever model is being added.
+  ApiService().itemApi.apiClient.dio.httpClientAdapter = FakeHttpClientAdapter(
+    (options) => ResponseBody.fromString(
+      jsonEncode(options.data),
+      200,
+      headers: {
+        Headers.contentTypeHeader: [Headers.jsonContentType],
+      },
+    ),
+  );
   final recorder = _Recorder();
   final results = <bool>[];
   await tester.pumpWidget(
@@ -67,8 +87,14 @@ Future<(_Recorder, List<bool>)> _pump(
 Future<void> _submit(WidgetTester tester) async {
   await tester.enterText(find.byType(TextFormField).at(0), 'Ruby Sword');
   await tester.enterText(find.byType(TextFormField).at(1), 'ruby_sword');
-  await tester.tap(find.text('Create'));
-  await tester.pumpAndSettle();
+  // Tapping "Create" fires an AddAction, which talks to the (fake) API
+  // through Dio's real Timer-guarded internals. Those don't resolve inside
+  // flutter_test's fake-async zone on web, so this runs outside it, in a
+  // real async zone, the same way the app would.
+  await tester.runAsync(() async {
+    await tester.tap(find.text('Create'));
+    await tester.pumpAndSettle();
+  });
 }
 
 void main() {

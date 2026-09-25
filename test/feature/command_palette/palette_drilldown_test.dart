@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -154,19 +155,33 @@ void main() {
       expect(_titles(tester), ['Enchantments']);
     });
 
-    testWidgets('Arrow Right inside the text moves the cursor', (tester) async {
-      await _pump(tester);
-      await _open(tester);
-      await _type(tester, '#sword');
-      _controller(tester).selection = const TextSelection.collapsed(offset: 2);
-      await tester.pump();
+    testWidgets(
+      'Arrow Right inside the text moves the cursor',
+      (tester) async {
+        await _pump(tester);
+        await _open(tester);
+        await _type(tester, '#sword');
+        _controller(tester).selection = const TextSelection.collapsed(
+          offset: 2,
+        );
+        await tester.pump();
 
-      await _press(tester, LogicalKeyboardKey.arrowRight);
+        await _press(tester, LogicalKeyboardKey.arrowRight);
 
-      expect(_controller(tester).selection.baseOffset, 3);
-      expect(_titles(tester), contains('Diamond Sword'));
-      expect(_chipSays('Diamond Sword'), isFalse);
-    });
+        expect(_controller(tester).selection.baseOffset, 3);
+        expect(_titles(tester), contains('Diamond Sword'));
+        expect(_chipSays('Diamond Sword'), isFalse);
+      },
+      // On web, EditableText hands arrow-key cursor movement to the native
+      // <input> instead of its own Shortcuts/Actions (see Flutter's
+      // DefaultTextEditingShortcuts._getDisablingShortcut, gated on kIsWeb).
+      // `flutter test --platform chrome` has no such element - it only
+      // synthesizes a Flutter-level key event - so the cursor never moves
+      // and this assertion cannot be exercised there. The palette's own
+      // logic (not stepping in while mid-text) is still covered by this
+      // test on the VM target.
+      skip: kIsWeb,
+    );
 
     testWidgets('Arrow Right on an entry without sub-entries does nothing', (
       tester,

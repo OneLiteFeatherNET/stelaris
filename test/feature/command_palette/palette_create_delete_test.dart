@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/command_palette/command_palette.dart';
 import 'package:stelaris/feature/command_palette/command_panel.dart';
@@ -115,7 +116,11 @@ Future<void> _press(WidgetTester tester, LogicalKeyboardKey key) async {
   await tester.pumpAndSettle();
 }
 
-Future<void> _confirmDelete(WidgetTester tester, String name) async {
+Future<void> _confirmDelete(
+  WidgetTester tester,
+  Store<AppState> store,
+  String name,
+) async {
   await tester.enterText(
     find.descendant(
       of: find.byType(ModelDeleteDialog<ItemModel>),
@@ -124,12 +129,20 @@ Future<void> _confirmDelete(WidgetTester tester, String name) async {
     name,
   );
   await tester.pumpAndSettle();
-  await tester.tap(
-    find.descendant(
-      of: find.byType(ModelDeleteDialog<ItemModel>),
-      matching: find.text('Delete'),
-    ),
-  );
+  // Tapping "Delete" fires ItemRemoveAction and closes the dialog without
+  // waiting for it. Its Dio call, even through the fake adapter, uses real
+  // Timer-guarded internals that never resolve inside flutter_test's
+  // fake-async zone on web unless the whole chain - the tap that starts it
+  // included - runs in a real one; waiting for it afterwards is too late.
+  await tester.runAsync(() async {
+    await tester.tap(
+      find.descendant(
+        of: find.byType(ModelDeleteDialog<ItemModel>),
+        matching: find.text('Delete'),
+      ),
+    );
+    await store.waitActionType(ItemRemoveAction, completeImmediately: true);
+  });
   await tester.pumpAndSettle();
 }
 
@@ -138,6 +151,17 @@ void main() {
     testWidgets('New item opens the item dialog; submitting shows Items', (
       tester,
     ) async {
+      // Submitting dispatches ItemAddAction, which talks to the API; the
+      // dialog closes without waiting for it, but it still has to be
+      // stubbed so the test doesn't make a real request.
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json(
+            const ItemModel(
+              uiName: 'Ruby Sword',
+              key: 'ruby_sword',
+              id: 'i2',
+            ).toJson(),
+          );
       final (_, router) = await _pump(tester);
       await _open(tester);
       await _type(tester, '>new item');
@@ -153,8 +177,14 @@ void main() {
 
       await tester.enterText(find.byType(TextFormField).at(0), 'Ruby Sword');
       await tester.enterText(find.byType(TextFormField).at(1), 'ruby_sword');
-      await tester.tap(find.text('Create'));
-      await tester.pumpAndSettle();
+      // Tapping "Create" fires ItemAddAction, which talks to the (fake)
+      // API through Dio's real Timer-guarded internals. Those don't
+      // resolve inside flutter_test's fake-async zone on web, so this runs
+      // outside it, in a real async zone, the same way the app would.
+      await tester.runAsync(() async {
+        await tester.tap(find.text('Create'));
+        await tester.pumpAndSettle();
+      });
 
       expect(router.state.matchedLocation, '/items');
     });
@@ -230,7 +260,7 @@ void main() {
     await _press(tester, LogicalKeyboardKey.enter);
     expect(find.byType(ModelDeleteDialog<ItemModel>), findsOneWidget);
 
-    await _confirmDelete(tester, 'Diamond Sword');
+    await _confirmDelete(tester, store, 'Diamond Sword');
 
     expect(store.state.items.items, isNot(contains(_sword)));
     expect(router.state.matchedLocation, '/items');
