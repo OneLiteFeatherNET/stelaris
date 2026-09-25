@@ -7,7 +7,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/sound/sound_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
-import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
+import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -42,7 +42,11 @@ class SoundPage extends StatelessWidget {
           keySelector: (model) => model.key ?? '',
           projectKey: vm.projectKey,
           matchesFilter: (model, filter) => true,
-          onAdd: () => _openCreationDialog(context, vm.projectKey),
+          onAdd: () => openModelCreateDialog(
+            context,
+            NavigationEntry.sound,
+            vm.projectKey,
+          ),
           onModelTap: (model) {
             context.dispatch(SelectSoundAction(model));
             context.go('${NavigationEntry.sound.route}/detail');
@@ -94,20 +98,4 @@ class SoundPage extends StatelessWidget {
   }
 
   /// Opens a dialog for creating a new sound event.
-  void _openCreationDialog(BuildContext context, String projectKey) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ModelCreateDialog(
-          title: context.l10n.dialog_sound_create,
-          projectNamespace: projectKey,
-          onSubmit: (name, key) {
-            final model = SoundEventModel(uiName: name, key: key);
-            context.dispatch(SoundAddAction(model));
-            Navigator.pop(context, true);
-          },
-        );
-      },
-    );
-  }
 }

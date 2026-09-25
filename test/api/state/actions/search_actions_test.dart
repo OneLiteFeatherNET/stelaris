@@ -44,8 +44,7 @@ void main() {
     expect(store.state.modelSearch.sortDirection, SortDirection.descending);
   });
 
-  test('registering drops active filters that are no longer offered',
-      () async {
+  test('registering drops active filters that are no longer offered', () async {
     await store.dispatchAndWait(
       RegisterSearchFiltersAction(NavigationEntry.items, [filterA, filterB]),
     );
@@ -105,5 +104,23 @@ void main() {
         availableFilters: [filterB],
       ),
     );
+  });
+
+  group('DebouncedSearchQueryAction', () {
+    test('only the last query within the pause reaches the store', () async {
+      store.dispatch(DebouncedSearchQueryAction('s'));
+      store.dispatch(DebouncedSearchQueryAction('sw'));
+      await store.dispatchAndWait(DebouncedSearchQueryAction('sword'));
+
+      expect(store.state.modelSearch.query, 'sword');
+    });
+
+    test('a cancel drops the pending query', () async {
+      final before = store.state.modelSearch.query;
+      store.dispatch(DebouncedSearchQueryAction('sword'));
+      await store.dispatchAndWait(DebouncedSearchQueryAction.cancel());
+
+      expect(store.state.modelSearch.query, before);
+    });
   });
 }
