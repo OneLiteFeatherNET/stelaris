@@ -260,6 +260,54 @@ Between steps 2 and 3 the sign-in is cosmetic: anyone who can reach the backend
 directly still gets in without a token. That window is fine while the backend is
 not publicly reachable, and is worth closing quickly when it is.
 
+## Try it locally
+
+`tool/dev_auth.sh` runs a throwaway Keycloak in Docker, imports a realm with
+three demo users, and starts `flutter run -d web-server` wired to it - no real
+identity provider, no chart, no deployment.
+
+```sh
+tool/dev_auth.sh
+```
+
+It starts Keycloak (`docker/keycloak/compose.yaml`), waits for its discovery
+document to answer, writes `web/config.json` (gitignored - never the default
+for anyone who has not run this script) from `docker/keycloak/config.local.json`,
+and runs the app on `http://localhost:8080`.
+
+| | |
+|---|---|
+| App | http://localhost:8080 |
+| Keycloak admin console | http://localhost:8081/admin (`admin` / `admin`) |
+| Realm | `stelaris`, at `http://localhost:8081/realms/stelaris` |
+
+Demo users, one per role the app gates on, and one with none:
+
+| Username | Password | Role |
+|---|---|---|
+| `admin` | `admin` | `stelaris.admin` |
+| `editor` | `editor` | `stelaris.editor` |
+| `viewer` | `viewer` | *(none)* |
+
+**No backend is started by this script.** Sign-in, the account menu showing
+who is signed in and with which roles, and sign-out all work without one -
+they only talk to Keycloak. Anything that calls the Stelaris API (the project
+list, items, ...) shows a connection error until a backend is running at the
+`backendUrl` in `docker/keycloak/config.local.json` (`http://localhost:8085`
+by default).
+
+Stop the app with Ctrl+C. Keycloak keeps running so the next `tool/dev_auth.sh`
+is fast; stop it with:
+
+```sh
+docker compose -f docker/keycloak/compose.yaml down
+```
+
+The realm (`docker/keycloak/realm/stelaris-realm.json`) is adapted from
+the one in `test/auth/fixtures/keycloak-realm.json` for interactive use on
+port 8080 instead of the fixture's 18080, with an editor and a role-less
+viewer added alongside the admin.
+
 ## When it does not work
 
 | Symptom | Usually |
