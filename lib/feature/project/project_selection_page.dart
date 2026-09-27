@@ -1,3 +1,4 @@
+import 'package:stelaris/feature/auth/session_indicator.dart';
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
@@ -29,7 +30,19 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      body: StoreConnector<AppState, ProjectViewModel>(
+      // This page sits outside the shell that carries the app bar, and it is
+      // the first thing anyone sees after signing in - and where they stay if
+      // they have no project. Without this there is no way to sign out of it.
+      // Renders nothing where no identity provider is configured, so an
+      // unauthenticated deployment looks exactly as it did.
+      body: Stack(
+        children: [
+          const Positioned(
+            top: 8,
+            right: 8,
+            child: SafeArea(child: SessionIndicator()),
+          ),
+          StoreConnector<AppState, ProjectViewModel>(
         onInit: (store) => store.dispatchAndWait(InitProjectAction()),
         vm: () => ProjectVmFactory(localSelection: _selected),
         builder: (context, vm) {
@@ -74,7 +87,9 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
               ),
             ),
           );
-        },
+            },
+          ),
+        ],
       ),
     );
   }

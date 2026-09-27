@@ -1,5 +1,7 @@
 import 'package:flutter/rendering.dart' show ScrollCacheExtent;
+import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:stelaris/api/state/app_state.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/factory/font/selected_font_char_state.dart';
 import 'package:stelaris/feature/font/chars/char_list_view.dart';
@@ -30,10 +32,13 @@ void main() {
       ]);
 
       await tester.pumpWidget(
-        MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(body: CharListView(fontModel: view)),
+        StoreProvider<AppState>(
+          store: Store<AppState>(initialState: const AppState()),
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: CharListView(fontModel: view)),
+          ),
         ),
       );
 
@@ -47,10 +52,13 @@ void main() {
         final view = buildView([const FontStringDTO(id: '1', line: 'A')]);
 
         await tester.pumpWidget(
-          MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: Scaffold(body: CharListView(fontModel: view)),
+          StoreProvider<AppState>(
+            store: Store<AppState>(initialState: const AppState()),
+            child: MaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: Scaffold(body: CharListView(fontModel: view)),
+            ),
           ),
         );
 

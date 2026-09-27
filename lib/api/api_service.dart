@@ -3,6 +3,7 @@ import 'package:stelaris/api/base_api.dart';
 import 'package:stelaris/api/service/client/project_client_api.dart';
 import 'package:stelaris/api/service/client/sound_client_api.dart';
 import 'package:stelaris/api/client_api.dart';
+import 'package:stelaris/auth/auth_sessions.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/service/font_api.dart';
 import 'package:stelaris/api/service/generate_api.dart';
@@ -54,10 +55,23 @@ class ApiService {
   /// Read from [RuntimeConfig] rather than from the compiled-in constants, so
   /// the client points at whatever the deployment configured. The clients are
   /// `late final`, so this runs on first use - long after `main()` has loaded
-  /// the configuration.
-  ApiClient _createApiClient() => ApiClient(RuntimeConfig.current.backendUrl);
+  /// the configuration and started the session.
+  ///
+  /// These two clients are the only ones given a token source, and that is the
+  /// whole of the rule that keeps the credential off everything else. The
+  /// configuration document and the provider's own endpoints are fetched by
+  /// clients built elsewhere, which have none - so there is no allowlist of
+  /// hosts to maintain and none to get wrong when a call site is added.
+  /// [AuthSessions.current] is null in a deployment with no provider, which
+  /// makes these plain clients again.
+  ApiClient _createApiClient() => ApiClient(
+    RuntimeConfig.current.backendUrl,
+    tokens: AuthSessions.current,
+  );
 
   /// Creates an instance of [ApiClient] with the generator URL.
-  ApiClient _createGeneratorClient() =>
-      ApiClient(RuntimeConfig.current.generatorUrl);
+  ApiClient _createGeneratorClient() => ApiClient(
+    RuntimeConfig.current.generatorUrl,
+    tokens: AuthSessions.current,
+  );
 }

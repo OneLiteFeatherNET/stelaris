@@ -14,6 +14,24 @@
   "button_yes": "Yes",
   "button_cancel": "Cancel",
 
+  "auth_sign_in": "Sign in",
+  "auth_sign_out": "Sign out",
+  "auth_retry": "Try again",
+  "auth_account": "Account",
+  "auth_signed_in": "Signed in",
+  "auth_no_roles": "No roles granted",
+  "auth_roles_more": "and {count} more",
+  "@auth_roles_more": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "auth_sign_in_required": "Sign in to continue.",
+  "auth_session_expired": "Your session expired. Sign in again to continue.",
+  "auth_provider_unavailable": "The identity provider could not be reached. Check the deployment configuration, then try again.",
+
   "text_branch": "Please select a branch",
   "text_trigger_title": "Trigger a new build",
   "text_version_new": "Add new version",

@@ -178,6 +178,66 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get button_cancel;
 
+  /// No description provided for @auth_sign_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get auth_sign_in;
+
+  /// No description provided for @auth_sign_out.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get auth_sign_out;
+
+  /// No description provided for @auth_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get auth_retry;
+
+  /// No description provided for @auth_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get auth_account;
+
+  /// No description provided for @auth_signed_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in'**
+  String get auth_signed_in;
+
+  /// No description provided for @auth_no_roles.
+  ///
+  /// In en, this message translates to:
+  /// **'No roles granted'**
+  String get auth_no_roles;
+
+  /// No description provided for @auth_roles_more.
+  ///
+  /// In en, this message translates to:
+  /// **'and {count} more'**
+  String auth_roles_more(int count);
+
+  /// No description provided for @auth_sign_in_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue.'**
+  String get auth_sign_in_required;
+
+  /// No description provided for @auth_session_expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session expired. Sign in again to continue.'**
+  String get auth_session_expired;
+
+  /// No description provided for @auth_provider_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The identity provider could not be reached. Check the deployment configuration, then try again.'**
+  String get auth_provider_unavailable;
+
   /// No description provided for @text_branch.
   ///
   /// In en, this message translates to:

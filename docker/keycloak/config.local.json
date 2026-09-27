@@ -1,0 +1,8 @@
+{
+  "backendUrl": "http://localhost:8085",
+  "auth": {
+    "issuer": "http://localhost:8081/realms/stelaris",
+    "clientId": "stelaris-ui",
+    "scopes": ["openid", "profile", "offline_access"]
+  }
+}

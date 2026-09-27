@@ -1,0 +1,23 @@
+# Local Keycloak for trying sign-in without touching a real identity
+# provider. Not for anything but a developer's own machine: the admin
+# password is fixed, the realm has no TLS, and every user's password is its
+# own username.
+#
+# Start it directly with `docker compose -f docker/keycloak/compose.yaml up`,
+# or use `tool/dev_auth.sh`, which also waits for it and runs the app wired
+# to it.
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4
+    command: start-dev --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HTTP_PORT: "8080"
+    ports:
+      # Host 8081 -> container 8080: the flutter web dev server takes 8080
+      # (it is the redirect URI already documented in
+      # docs/identity-provider.md), so Keycloak gets the next one.
+      - "8081:8080"
+    volumes:
+      - ./realm:/opt/keycloak/data/import:ro

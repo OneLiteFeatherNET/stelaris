@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:stelaris/auth/auth_config.dart';
 import 'package:stelaris/env/environment.dart';
 
 /// Settings the app reads when it starts instead of at build time.
@@ -18,7 +19,11 @@ import 'package:stelaris/env/environment.dart';
 /// served configuration leaves empty.
 @immutable
 class RuntimeConfig {
-  const RuntimeConfig({required this.backendUrl, required this.generatorUrl});
+  const RuntimeConfig({
+    required this.backendUrl,
+    required this.generatorUrl,
+    this.auth,
+  });
 
   /// The document the web server serves from its runtime directory.
   ///
@@ -27,6 +32,12 @@ class RuntimeConfig {
   static const String configFileName = 'config.json';
 
   /// Values compiled into the bundle. Used unchanged when nothing is served.
+  ///
+  /// No identity provider is compiled in, and none can be: a provider is an
+  /// environment's decision, and a bundle that carried one would authenticate
+  /// against the wrong one wherever it was promoted. Unconfigured means
+  /// unauthenticated, which is also what makes a local `flutter run` work
+  /// without a provider to reach.
   static const RuntimeConfig compiledIn = RuntimeConfig(
     backendUrl: Environment.backendURl,
     generatorUrl: Environment.generatorUrl,
@@ -42,6 +53,11 @@ class RuntimeConfig {
 
   /// Base URL of the code generator service.
   final String generatorUrl;
+
+  /// The identity provider to authenticate against, or null to run without
+  /// authentication. See [AuthConfig] for why an incomplete block reads as
+  /// null rather than as a partly configured provider.
+  final AuthConfig? auth;
 
   /// Fetches [configFileName] and adopts what it provides.
   ///
@@ -93,6 +109,10 @@ class RuntimeConfig {
     return RuntimeConfig(
       backendUrl: _valueOr(decoded['backendUrl'], compiledIn.backendUrl),
       generatorUrl: _valueOr(decoded['generatorUrl'], compiledIn.generatorUrl),
+      // Field-by-field fallback deliberately stops here: the URLs have a
+      // sensible compiled-in default to fall back to, an identity provider does
+      // not, so the block is taken whole or not at all.
+      auth: AuthConfig.tryParse(decoded['auth']),
     );
   }
 

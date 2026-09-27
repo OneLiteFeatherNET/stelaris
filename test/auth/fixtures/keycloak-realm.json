@@ -1,0 +1,56 @@
+{
+  "realm": "stelaris",
+  "enabled": true,
+  "sslRequired": "none",
+  "roles": {
+    "realm": [
+      {
+        "name": "stelaris.admin"
+      },
+      {
+        "name": "stelaris.editor"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "stelaris-ui",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:18080/*"
+      ],
+      "webOrigins": [
+        "http://localhost:18080"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:18080/*"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "ada",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Ada",
+      "lastName": "Lovelace",
+      "email": "ada@stelaris.example",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "correcthorse",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "stelaris.admin",
+        "offline_access"
+      ]
+    }
+  ]
+}
