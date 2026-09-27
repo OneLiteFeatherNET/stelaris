@@ -27,7 +27,7 @@ class DeleteDialog<E> extends StatelessWidget {
       title: title,
       actionIcon: Icons.delete_outline,
       actionLabel: context.l10n.tooltip_delete,
-      actionColor: theme.colorScheme.error,
+      destructive: true,
       maxWidth: 420,
       onSubmit: () {
         if (successfully(value)) {
@@ -38,7 +38,7 @@ class DeleteDialog<E> extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RichText(text: TextSpan(children: header)),
+          Text.rich(TextSpan(children: header)),
           verticalSpacing10,
           NoticeBox(
             icon: Icons.warning_amber_rounded,

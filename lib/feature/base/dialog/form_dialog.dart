@@ -15,7 +15,7 @@ class FormDialog extends StatelessWidget {
     required this.actionLabel,
     required this.onSubmit,
     this.actionIcon,
-    this.actionColor,
+    this.destructive = false,
     this.minWidth = 0,
     this.maxWidth = 520,
     this.maxHeight = 650,
@@ -28,9 +28,9 @@ class FormDialog extends StatelessWidget {
   final IconData? actionIcon;
   final String actionLabel;
 
-  /// Overrides the action button's background color, e.g. for destructive
-  /// actions like a delete confirmation.
-  final Color? actionColor;
+  /// Paints the action button in the error colors, e.g. for a delete
+  /// confirmation.
+  final bool destructive;
   final VoidCallback? onSubmit;
   final double minWidth;
   final double maxWidth;
@@ -47,9 +47,12 @@ class FormDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final actionStyle = actionColor == null
-        ? null
-        : FilledButton.styleFrom(backgroundColor: actionColor);
+    final actionStyle = destructive
+        ? FilledButton.styleFrom(
+            backgroundColor: theme.colorScheme.error,
+            foregroundColor: theme.colorScheme.onError,
+          )
+        : null;
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

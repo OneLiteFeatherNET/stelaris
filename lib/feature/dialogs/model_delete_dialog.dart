@@ -60,7 +60,7 @@ class _ModelDeleteDialogState<E> extends State<ModelDeleteDialog<E>> {
       title: widget.title,
       actionIcon: Icons.delete_outline,
       actionLabel: context.l10n.tooltip_delete,
-      actionColor: errorColor,
+      destructive: true,
       maxWidth: 420,
       onSubmit: _canDelete ? _delete : null,
       content: Column(
