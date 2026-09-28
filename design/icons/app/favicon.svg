@@ -1,15 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Simplified favicon variant: a bright sun disc (with a dark outline for
-       edge definition) behind a dark bar with three bold tower notches, wide
-       enough to still separate at 16x16/32x32. Same palette as stelaris.svg. -->
-  <rect width="512" height="512" fill="#BAF0B6"/>
+  <!-- Simplified favicon variant: sun + skyline + horizon on navy only;
+       clouds, hills, stars and the comet are dropped so it still reads at
+       16x16/32x32. Same palette as stelaris.svg. -->
+  <rect width="512" height="512" fill="#0C0F2A"/>
 
-  <path d="M66,320 A190,190 0 0 1 446,320 Z" fill="#85B882" stroke="#002D09" stroke-width="14" stroke-linejoin="round"/>
+  <circle cx="256" cy="320" r="190" fill="#EC4C1B"/>
+  <circle cx="256" cy="320" r="120" fill="#F98E0E"/>
+  <circle cx="256" cy="320" r="60" fill="#FFF6DD"/>
 
-  <rect x="40" y="310" width="432" height="45" fill="#002D09"/>
+  <rect x="20" y="310" width="472" height="45" fill="#0C0F2A"/>
 
-  <rect x="107" y="215" width="70" height="105" fill="#002D09"/>
-  <rect x="221" y="170" width="70" height="150" fill="#002D09"/>
-  <path d="M221,170 L256,130 L291,170 Z" fill="#002D09"/>
-  <rect x="335" y="215" width="70" height="105" fill="#002D09"/>
+  <rect x="106" y="235" width="70" height="85" fill="#193968"/>
+  <rect x="221" y="170" width="70" height="150" fill="#193968"/>
+  <rect x="336" y="235" width="70" height="85" fill="#193968"/>
 </svg>
