@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/validators.dart';
 
 void main() {
@@ -49,6 +50,58 @@ void main() {
       expect(nonDetailed(''), 'Key is required');
       expect(nonDetailed('Ruby_sword'), contains('Invalid key'));
       expect(nonDetailed('ruby_sword'), isNull);
+    });
+  });
+
+  group('Validators.enchantmentLevel', () {
+    test('levels up to the max level are valid', () {
+      expect(Validators.enchantmentLevel(value: '1', maxLevel: 5), isNull);
+      expect(Validators.enchantmentLevel(value: '5', maxLevel: 5), isNull);
+    });
+
+    test('levels above the max level are rejected unless unsafe', () {
+      expect(
+        Validators.enchantmentLevel(value: '6', maxLevel: 5),
+        'The maximum is 5',
+      );
+      expect(
+        Validators.enchantmentLevel(value: '6', maxLevel: 5, unsafe: true),
+        isNull,
+      );
+    });
+
+    test('unsafe levels are limited to the range of a short', () {
+      expect(
+        Validators.enchantmentLevel(
+          value: '$maxEnchantmentLevel',
+          maxLevel: 5,
+          unsafe: true,
+        ),
+        isNull,
+      );
+      expect(
+        Validators.enchantmentLevel(
+          value: '${maxEnchantmentLevel + 1}',
+          maxLevel: 5,
+          unsafe: true,
+        ),
+        'The maximum is $maxEnchantmentLevel',
+      );
+    });
+
+    test('empty and invalid input is rejected', () {
+      expect(
+        Validators.enchantmentLevel(value: null, maxLevel: 5),
+        'Please enter a level',
+      );
+      expect(
+        Validators.enchantmentLevel(value: ' ', maxLevel: 5),
+        'Please enter a level',
+      );
+      expect(
+        Validators.enchantmentLevel(value: 'abc', maxLevel: 5),
+        'Please enter a valid number',
+      );
     });
   });
 }
