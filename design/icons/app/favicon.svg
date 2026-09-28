@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Simplified favicon variant: bolder shapes, no star/moon, so the motif still
+       reads at 16x16 / 32x32. Same palette as stelaris.svg. -->
+  <rect width="512" height="512" fill="#BAF0B6"/>
+
+  <path d="M106,336 A150,150 0 0 1 406,336 Z" fill="#39693B"/>
+
+  <rect x="90" y="326" width="332" height="24" fill="#215025"/>
+
+  <rect x="170" y="241" width="50" height="85" fill="#215025"/>
+  <rect x="231" y="201" width="50" height="125" fill="#215025"/>
+  <path d="M231,201 L256,146 L281,201 Z" fill="#215025"/>
+  <rect x="292" y="256" width="50" height="70" fill="#215025"/>
+</svg>

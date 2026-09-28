@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Monochrome silhouette (purpose: monochrome). Transparent background; the OS
+       recolors this using its own tint, so every shape shares a single opaque fill. -->
+  <path d="M136,356 A120,120 0 0 1 376,356 Z" fill="#000000"/>
+
+  <rect x="60" y="350" width="392" height="14" fill="#000000"/>
+
+  <rect x="146" y="302" width="36" height="54" fill="#000000"/>
+  <rect x="186" y="272" width="32" height="84" fill="#000000"/>
+  <rect x="222" y="248" width="24" height="108" fill="#000000"/>
+  <rect x="250" y="226" width="20" height="130" fill="#000000"/>
+  <path d="M250,226 L260,186 L270,226 Z" fill="#000000"/>
+  <rect x="274" y="254" width="28" height="102" fill="#000000"/>
+  <rect x="306" y="278" width="32" height="78" fill="#000000"/>
+  <rect x="342" y="304" width="28" height="52" fill="#000000"/>
+
+  <circle cx="146" cy="170" r="24" fill="#000000"/>
+
+  <path d="M376,146 L386,170 L410,180 L386,190 L376,214 L366,190 L342,180 L366,170 Z" fill="#000000"/>
+</svg>
