@@ -179,6 +179,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to delete this enchantment?';
 
   @override
+  String get dialog_item_enchantment_unsafe => 'Unsafe';
+
+  @override
+  String get dialog_item_enchantment_unsafe_hint =>
+      'Allows levels above the normal maximum of the enchantment';
+
+  @override
   String get dialog_item_lore_edit_title => 'Edit lore';
 
   @override

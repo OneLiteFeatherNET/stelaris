@@ -179,7 +179,8 @@ class Validators {
   }
 
   /// Validates an enchantment level input against [maxLevel].
-  /// When [unsafe] is true, the max-level constraint is skipped.
+  /// When [unsafe] is true, the max-level constraint is skipped, but the level
+  /// is still limited to [maxEnchantmentLevel] (the range of a short).
   static String? enchantmentLevel({
     required String? value,
     required int maxLevel,
@@ -194,6 +195,9 @@ class Validators {
     }
     if (!unsafe && level > maxLevel) {
       return 'The maximum is $maxLevel';
+    }
+    if (level > maxEnchantmentLevel) {
+      return 'The maximum is $maxEnchantmentLevel';
     }
     return null;
   }

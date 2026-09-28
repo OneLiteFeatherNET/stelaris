@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/api/state/factory/item/enchantment_view_state.dart';
@@ -20,6 +19,9 @@ class ItemEnchantmentAddDialog extends StatefulWidget {
   State<ItemEnchantmentAddDialog> createState() =>
       _ItemEnchantmentAddDialogState();
 }
+
+/// Lines the checkbox up with the text inside the outlined input fields.
+const EdgeInsets _unsafePadding = EdgeInsets.symmetric(horizontal: 4);
 
 class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
     with EnchantmentReducer {
@@ -84,18 +86,20 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
           ValueListenableBuilder<bool>(
             valueListenable: _unsafe,
             builder: (context, unsafe, child) {
-              return Transform.translate(
-                offset: const Offset(-12, 0),
-                child: CheckboxListTile(
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  title: const Text('Unsafe'),
-                  value: unsafe,
-                  onChanged: (value) {
-                    _unsafe.value = value ?? false;
-                    _key.currentState?.validate();
-                  },
-                  controlAffinity: ListTileControlAffinity.leading,
-                  contentPadding: EdgeInsets.zero,
+              return CheckboxListTile(
+                title: Text(context.l10n.dialog_item_enchantment_unsafe),
+                subtitle: Text(
+                  context.l10n.dialog_item_enchantment_unsafe_hint,
+                ),
+                value: unsafe,
+                onChanged: (value) {
+                  _unsafe.value = value ?? false;
+                  _key.currentState?.validate();
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+                contentPadding: _unsafePadding,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
                 ),
               );
             },
@@ -108,7 +112,7 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
               controller: _controller,
               autocorrect: false,
               keyboardType: numberInput,
-              inputFormatters: [FilteringTextInputFormatter.allow(numberPattern)],
+              inputFormatters: enchantmentLevelFormatters,
               decoration: InputDecoration(
                 labelText: context.l10n.label_level,
                 border: const OutlineInputBorder(),

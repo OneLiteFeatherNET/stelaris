@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Strings
@@ -37,6 +38,15 @@ const TextInputType decimalInput = TextInputType.numberWithOptions(decimal: true
 
 /// Lore page
 const int maxLoreLines = 64;
+
+/// Enchantments are stored as a short, so this is the highest possible level
+const int maxEnchantmentLevel = 32767;
+
+/// Only positive numbers with at most as many digits as [maxEnchantmentLevel]
+final List<TextInputFormatter> enchantmentLevelFormatters = [
+  FilteringTextInputFormatter.allow(numberPattern),
+  LengthLimitingTextInputFormatter(maxEnchantmentLevel.toString().length),
+];
 
 /// Input field
 const double fiftyLength = 50;
