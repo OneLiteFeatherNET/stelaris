@@ -352,6 +352,18 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete this enchantment?'**
   String get dialog_item_enchantment_delete_header;
 
+  /// No description provided for @dialog_item_enchantment_unsafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsafe'**
+  String get dialog_item_enchantment_unsafe;
+
+  /// No description provided for @dialog_item_enchantment_unsafe_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Allows levels above the normal maximum of the enchantment'**
+  String get dialog_item_enchantment_unsafe_hint;
+
   /// No description provided for @dialog_item_lore_edit_title.
   ///
   /// In en, this message translates to:
