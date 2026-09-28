@@ -1,0 +1,60 @@
+name: Publish develop image
+
+# A container image only gets published today when release-please cuts a
+# release, so a plain push to develop with no release pending never reaches
+# Harbor - and Flux on the cluster has nothing new to pull into the dev
+# environment. This workflow publishes an image for every push to develop,
+# tagged develop-<committer-unix-ts>-<sha7>. The timestamp comes from the
+# commit itself (`git show -s --format=%ct HEAD`), not the run, so a rerun of
+# the same commit reproduces the same tag instead of minting a new one. Flux's
+# ImagePolicy in Kubernetes-FLUX matches `^develop-(?P<ts>[0-9]+)-[0-9a-f]{7}$`
+# and picks the newest tag numerically by ts.
+#
+# The shared docker-publish workflow derives semver tags - and the `latest`
+# tag that riding along with them would enable - from a version that parses as
+# semver (docker/metadata-action's type=semver rule silently produces no tag,
+# and sets no `latest` flag, when it doesn't). A `develop-...` string is never
+# valid semver, so this build only ever pushes its own tag plus the workflow's
+# unconditional sha tag - it can't move `latest` or any release tag production
+# pulls.
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # keyless cosign signing
+
+concurrency:
+  group: publish-develop-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    if: github.repository_owner == 'OneLiteFeatherNET'
+    name: Compute the develop tag
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.tag.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Compute tag
+        id: tag
+        run: |
+          ts="$(git show -s --format=%ct HEAD)"
+          sha7="$(git rev-parse --short=7 HEAD)"
+          echo "version=develop-${ts}-${sha7}" >> "$GITHUB_OUTPUT"
+
+  docker:
+    name: Publish the image
+    needs: tag
+    if: github.repository_owner == 'OneLiteFeatherNET'
+    uses: OneLiteFeatherNET/workflows/.github/workflows/docker-publish.yml@v2.9.0
+    with:
+      image-name: "onelitefeather/stelaris"
+      version: ${{ needs.tag.outputs.version }}
+      context: "."
+    secrets: inherit
