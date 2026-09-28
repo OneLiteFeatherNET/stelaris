@@ -47,7 +47,8 @@ jobs:
         uses: docker/setup-buildx-action@v4
 
       # Not pushed anywhere: this job proves the image builds, it does not
-      # publish. Releases do that, from the release workflow.
+      # publish. Releases and develop pushes do that, from their own
+      # workflows.
       - name: Build image
         uses: docker/build-push-action@v7
         with:
