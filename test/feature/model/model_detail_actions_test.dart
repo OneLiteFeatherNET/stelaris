@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/page_header.dart';
@@ -39,6 +40,7 @@ void main() {
                       keySelector: (m) => m.key ?? '',
                       deleteTitle: 'Delete item',
                       removeAction: (m) => _RecordRemove(m, (v) => removed = v),
+                      readNotes: (m) => m.comment,
                     ),
                   ],
                 ),
@@ -100,6 +102,46 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(ModelInfoDialog), findsOneWidget);
+  });
+
+  Badge notesBadge(WidgetTester tester) =>
+      tester.widget<Badge>(find.byType(Badge));
+
+  testWidgets('the notes action only shows its indicator when there are '
+      'notes', (tester) async {
+    await pump(tester, const AppState(selectedItem: item));
+    expect(notesBadge(tester).isLabelVisible, isFalse);
+
+    store.dispatch(UpdateItemAction(item.copyWith(comment: 'Boss drop')));
+    await tester.pumpAndSettle();
+    expect(notesBadge(tester).isLabelVisible, isTrue);
+  });
+
+  testWidgets('the notes action is disabled without notes', (tester) async {
+    await pump(tester, const AppState(selectedItem: item));
+
+    final notes = tester.widget<FilledButton>(
+      find.ancestor(
+        of: find.text('Notes'),
+        matching: find.bySubtype<FilledButton>(),
+      ),
+    );
+    expect(notes.onPressed, isNull);
+  });
+
+  testWidgets('the notes open read-only and change nothing', (tester) async {
+    await pump(
+      tester,
+      AppState(selectedItem: item.copyWith(comment: 'Boss drop\nNether only')),
+    );
+
+    await tester.tap(find.text('Notes'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Notes for Ruby Sword'), findsOneWidget);
+    expect(find.text('Boss drop\nNether only'), findsOneWidget);
+    expect(find.byType(TextField), findsNothing);
+    expect(store.state.unsavedChanges, isNull);
   });
 
   testWidgets('deleting with unsaved edits skips the guard and returns to '

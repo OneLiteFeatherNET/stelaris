@@ -122,10 +122,15 @@ void main() {
       await pumpPage(tester);
       expect(saveButton(tester).onPressed, isNull);
 
-      // The General tab's first field: the item description.
+      // The Meta tab's first field: the item material.
+      await tester.tap(find.widgetWithText(Tab, 'Meta'));
+      await tester.pumpAndSettle();
       await tester.enterText(
-        find.byType(TextFormField).first,
-        'Sharp blade',
+        find.descendant(
+          of: find.byType(ItemMetaPage),
+          matching: find.byType(TextFormField),
+        ).first,
+        'minecraft:diamond_sword',
       );
       await tester.pump();
 
@@ -139,15 +144,20 @@ void main() {
       final adapter = RecordingHttpClientAdapter({
         'id': 'item-1',
         'uiName': 'Ruby Sword',
-        'comment': 'Sharp blade',
+        'material': 'minecraft:diamond_sword',
       });
       ApiService().itemApi.apiClient.dio.httpClientAdapter = adapter;
       await pumpPage(tester);
 
-      // The General tab's first field: the item description.
+      // The Meta tab's first field: the item material.
+      await tester.tap(find.widgetWithText(Tab, 'Meta'));
+      await tester.pumpAndSettle();
       await tester.enterText(
-        find.byType(TextFormField).first,
-        'Sharp blade',
+        find.descendant(
+          of: find.byType(ItemMetaPage),
+          matching: find.byType(TextFormField),
+        ).first,
+        'minecraft:diamond_sword',
       );
       await tester.pump();
       await tester.tap(find.text('Save'));
@@ -162,7 +172,10 @@ void main() {
       }
       await tester.pumpAndSettle();
 
-      expect((adapter.lastRequest!.data as Map)['comment'], 'Sharp blade');
+      expect(
+        (adapter.lastRequest!.data as Map)['material'],
+        'minecraft:diamond_sword',
+      );
       expect(store.state.unsavedChanges, isNull);
     });
 

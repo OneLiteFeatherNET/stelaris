@@ -85,8 +85,8 @@
   "dialog_group_change": "Change group?",
   "dialog_group_change_text": "The model contains enchantments which are not in the new selected group.\nAll enchantments which are not in the group will be deleted.\n\nAre you sure you want to change the group?",
 
-  "card_description": "Description",
-  "card_comment": "Comment",
+  "action_notes": "Notes",
+  "notes_hint": "Internal notes for your team. The first line is shown in the overview.",
   "card_material": "Material",
   "card_model_data": "ModelData",
   "card_amount": "Amount",
@@ -205,6 +205,17 @@
 
   "tooltip_more_actions": "More actions",
   "menu_item_info": "Info",
+  "menu_item_edit_notes": "Edit notes",
+  "notes_edit_in_overview": "To edit the notes, use \u22ef \u2192 Edit notes on the overview card.",
+  "tooltip_notes_present": "Has notes",
+  "dialog_notes_title": "Notes for {name}",
+  "@dialog_notes_title": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "dialog_model_info_id_label": "ID",
   "dialog_model_info_created_label": "Created",
   "dialog_model_info_modified_label": "Modified",

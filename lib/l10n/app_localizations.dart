@@ -502,17 +502,17 @@ abstract class AppLocalizations {
   /// **'The model contains enchantments which are not in the new selected group.\nAll enchantments which are not in the group will be deleted.\n\nAre you sure you want to change the group?'**
   String get dialog_group_change_text;
 
-  /// No description provided for @card_description.
+  /// No description provided for @action_notes.
   ///
   /// In en, this message translates to:
-  /// **'Description'**
-  String get card_description;
+  /// **'Notes'**
+  String get action_notes;
 
-  /// No description provided for @card_comment.
+  /// No description provided for @notes_hint.
   ///
   /// In en, this message translates to:
-  /// **'Comment'**
-  String get card_comment;
+  /// **'Internal notes for your team. The first line is shown in the overview.'**
+  String get notes_hint;
 
   /// No description provided for @card_material.
   ///
@@ -1155,6 +1155,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Info'**
   String get menu_item_info;
+
+  /// No description provided for @menu_item_edit_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit notes'**
+  String get menu_item_edit_notes;
+
+  /// No description provided for @notes_edit_in_overview.
+  ///
+  /// In en, this message translates to:
+  /// **'To edit the notes, use ⋯ → Edit notes on the overview card.'**
+  String get notes_edit_in_overview;
+
+  /// No description provided for @tooltip_notes_present.
+  ///
+  /// In en, this message translates to:
+  /// **'Has notes'**
+  String get tooltip_notes_present;
+
+  /// No description provided for @dialog_notes_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes for {name}'**
+  String dialog_notes_title(String name);
 
   /// No description provided for @dialog_model_info_id_label.
   ///

@@ -31,6 +31,7 @@ class NotificationDetailPage extends StatelessWidget {
             keySelector: (model) => model.key ?? '',
             deleteTitle: context.l10n.dialog_notification_delete_title,
             removeAction: NotificationRemoveAction.new,
+            readNotes: (model) => model.comment,
           ),
         ],
         body: const NotificationGeneralPage(),

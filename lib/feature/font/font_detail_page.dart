@@ -47,6 +47,7 @@ class FontDetailPage extends StatelessWidget {
             deleteTitle: context.l10n.dialog_font_delete_title,
             deleteWarning: context.l10n.delete_dialog_related_font,
             removeAction: FontRemoveAction.new,
+            readNotes: (model) => model.comment,
           ),
         ],
         body: DefaultTabController(

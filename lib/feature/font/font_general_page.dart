@@ -78,20 +78,6 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   ),
                                   focusOrder: const NumericFocusOrder(1),
                                 ),
-                                TextInputCard<String>(
-                                  display: context.l10n.card_comment,
-                                  currentValue:
-                                      vm.selected.comment ?? emptyString,
-                                  formatter: [withSpacesFormatter],
-                                  valueUpdate: (value) => _updateFont(
-                                    context,
-                                    value,
-                                    vm.selected.comment,
-                                    (newValue) =>
-                                        vm.selected.copyWith(comment: newValue),
-                                  ),
-                                  focusOrder: const NumericFocusOrder(2),
-                                ),
                               ],
                             ),
                           ),

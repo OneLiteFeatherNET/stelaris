@@ -11,6 +11,7 @@ import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_filter.dart';
 import 'package:stelaris/feature/model/model_grid_card.dart';
+import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/feature/model/model_sort_option.dart';
 import 'package:stelaris/feature/model/model_sorter.dart';
 import 'package:stelaris/util/constants.dart';
@@ -61,6 +62,10 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
   final List<FilterOption> filterOptions;
   final ModelNameSelector<E> nameSelector;
   final ModelKeySelector<E> keySelector;
+  /// The models' notes: their first line is shown on each card, the whole
+  /// text is matched by the AppBar search, and the card menu offers to edit
+  /// them.
+  final ModelNotes<E>? notes;
 
   /// The current project's key — used to build the namespaced key shown in
   /// the info dialog opened from a model card's action menu.
@@ -92,6 +97,7 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
     required this.projectKey,
     required this.onRefresh,
     this.deleteWarning,
+    this.notes,
     this.isRefreshing = false,
     this.filterOptions = const [],
     this.onLoadMore,
@@ -146,7 +152,8 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
       activeFilters: search.activeFilters,
       matchesSearch: (model, query) =>
           widget.nameSelector(model).toLowerCase().contains(query) ||
-          widget.keySelector(model).toLowerCase().contains(query),
+          widget.keySelector(model).toLowerCase().contains(query) ||
+          (widget.notes?.read(model)?.toLowerCase().contains(query) ?? false),
       matchesFilter: widget.matchesFilter,
     );
 
@@ -280,6 +287,7 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
       rawModel: model,
       nameSelector: widget.nameSelector,
       keySelector: widget.keySelector,
+      notes: widget.notes,
       projectKey: widget.projectKey,
       onTap: () => widget.onModelTap(model),
     );

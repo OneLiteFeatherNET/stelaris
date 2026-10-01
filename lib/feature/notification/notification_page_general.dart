@@ -137,28 +137,6 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                       ],
                                       focusOrder: const NumericFocusOrder(2),
                                     ),
-                                    TextInputCard<String>(
-                                      display: context.l10n.card_description,
-                                      currentValue:
-                                          vm.selected.comment ?? emptyString,
-                                      formatter: [
-                                        FilteringTextInputFormatter.allow(
-                                          stringWithSpacePattern,
-                                        ),
-                                      ],
-                                      valueUpdate: (value) {
-                                        if (value != vm.selected.comment) {
-                                          final oldModel = vm.selected;
-                                          final newEntry = oldModel.copyWith(
-                                            comment: value,
-                                          );
-                                          context.dispatch(
-                                            UpdateNotificationAction(newEntry),
-                                          );
-                                        }
-                                      },
-                                      focusOrder: const NumericFocusOrder(3),
-                                    ),
                                     DropdownCard<FrameType, NotificationModel>(
                                       display: context.l10n.card_frame_type,
                                       currentValue: vm.selected,
@@ -176,7 +154,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                       },
                                       defaultValue: (value) => value.frameType,
                                       matchTextInputHeight: true,
-                                      focusOrder: const NumericFocusOrder(4),
+                                      focusOrder: const NumericFocusOrder(3),
                                     ),
                                   ],
                                 ),
