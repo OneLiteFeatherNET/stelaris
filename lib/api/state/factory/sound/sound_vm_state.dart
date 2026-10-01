@@ -9,7 +9,6 @@ class SoundVmFactory extends VmFactory<AppState, SoundPage, SoundViewModel> {
   @override
   SoundViewModel fromStore() => SoundViewModel(
     models: state.soundEvents.items,
-    selected: state.selectedSoundEvent,
     hasNextPage: state.soundEvents.hasNextPage,
     isLoadingMore: state.isLoadingMoreSoundEvents,
     projectKey: state.selectedProject!.key,
@@ -19,13 +18,11 @@ class SoundVmFactory extends VmFactory<AppState, SoundPage, SoundViewModel> {
 class SoundViewModel extends Vm {
   SoundViewModel({
     required this.models,
-    required this.selected,
     required this.hasNextPage,
     required this.isLoadingMore,
     required this.projectKey,
   }) : super(
          equals: [
-           selected,
            models,
            hasNextPage,
            isLoadingMore,
@@ -33,20 +30,8 @@ class SoundViewModel extends Vm {
          ],
        );
 
-  final SoundEventModel? selected;
   final List<SoundEventModel> models;
   final bool hasNextPage;
   final bool isLoadingMore;
   final String projectKey;
-
-  bool isSelectedItem(SoundEventModel model) {
-    if (selected == null) return false;
-
-    final selectedModel = selected!;
-
-    if (selectedModel.id != null && model.id != null) {
-      return selectedModel.id == model.id;
-    }
-    return selectedModel.hashCode == model.hashCode;
-  }
 }

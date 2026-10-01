@@ -9,7 +9,6 @@ class FontVmFactory extends VmFactory<AppState, FontPage, FontViewModel> {
   @override
   FontViewModel fromStore() => FontViewModel(
     models: state.fonts.items,
-    selected: state.selectedFont,
     hasNextPage: state.fonts.hasNextPage,
     isLoadingMore: state.isLoadingMoreFonts,
     projectKey: state.selectedProject!.key,
@@ -18,35 +17,21 @@ class FontVmFactory extends VmFactory<AppState, FontPage, FontViewModel> {
 
 class FontViewModel extends Vm {
   final List<FontModel> models;
-  final FontModel? selected;
   final bool hasNextPage;
   final bool isLoadingMore;
   final String projectKey;
 
   FontViewModel({
     required this.models,
-    required this.selected,
     required this.hasNextPage,
     required this.isLoadingMore,
     required this.projectKey,
   }) : super(
          equals: [
            models,
-           selected,
            hasNextPage,
            isLoadingMore,
            projectKey,
          ],
        );
-
-  bool isSelectedItem(FontModel model) {
-    if (selected == null) return false;
-
-    final selectedModel = selected!;
-
-    if (selectedModel.id != null && model.id != null) {
-      return selectedModel.id == model.id;
-    }
-    return selectedModel.hashCode == model.hashCode;
-  }
 }
