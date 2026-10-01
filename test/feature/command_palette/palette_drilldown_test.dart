@@ -135,7 +135,6 @@ void main() {
 
       expect(_titles(tester), [
         'General',
-        'Meta',
         'Enchantments',
         'Lore',
         'Delete\u2026',
