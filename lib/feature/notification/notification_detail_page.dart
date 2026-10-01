@@ -20,6 +20,8 @@ class NotificationDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _NotificationTitleView>(
       vm: () => _NotificationTitleFactory(),
+      onDispose: (store) =>
+          store.dispatch(RemoveSelectNotificationAction(), notify: false),
       builder: (context, vm) => ModelDetailShell(
         entry: NavigationEntry.notifications,
         title: vm.title,

@@ -19,7 +19,6 @@ void main() {
 
     late Store<AppState> store;
 
-
     Future<void> pumpPage(WidgetTester tester) async {
       store = Store<AppState>(
         initialState: const AppState(selectedNotification: selected),
@@ -107,6 +106,15 @@ void main() {
         store.state.selectedNotification?.title,
         'Level 5 – Glückwunsch!',
       );
+    });
+
+    testWidgets('leaving the page clears the selection', (tester) async {
+      await pumpPage(tester);
+
+      await tester.tap(find.byKey(const Key('page_header_back_button')));
+      await tester.pumpAndSettle();
+
+      expect(store.state.selectedNotification, isNull);
     });
   });
 }
