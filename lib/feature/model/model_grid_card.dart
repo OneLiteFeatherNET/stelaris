@@ -2,7 +2,10 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
 import 'package:stelaris/feature/base/button/model_actions_menu.dart';
+import 'package:stelaris/feature/dialogs/notes_edit_dialog.dart';
+import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/notes.dart';
 import 'package:stelaris/util/relative_time.dart';
 import 'package:stelaris/util/typedefs.dart';
 
@@ -10,7 +13,8 @@ import 'model_card_actions.dart';
 import 'model_page.dart';
 
 /// A grid-friendly card for [ModelPage]: primary content in a header row,
-/// a divider, and a "last edited" footer row (from
+/// the first line of the model's [notes] below it, a
+/// divider, and a "last edited" footer row (from
 /// [DataModel.modificationDate]) below it. The info/delete actions sit in
 /// the header's corner.
 class ModelGridCard<E extends DataModel> extends StatelessWidget {
@@ -23,6 +27,7 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
     required this.keySelector,
     required this.projectKey,
     this.deleteWarning,
+    this.notes,
     this.onTap,
     super.key,
   });
@@ -34,6 +39,7 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
   final MapToDeleteSuccessfully<E> mapToDeleteSuccessfully;
   final ModelNameSelector<E> nameSelector;
   final ModelKeySelector<E> keySelector;
+  final ModelNotes<E>? notes;
   final String projectKey;
   final VoidCallback? onTap;
 
@@ -47,6 +53,9 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final timestamp = _TimestampInfo.of(context, rawModel);
+    final notes = this.notes;
+    final currentNotes = notes?.read(rawModel);
+    final summary = notesSummary(currentNotes);
 
     // Fill only, no outline — the content sheet behind it already provides
     // the framing, so fill + border on top of that read as nested boxes.
@@ -76,6 +85,17 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
                         nameSelector: nameSelector,
                         keySelector: keySelector,
                         projectKey: projectKey,
+                        onEditNotes: notes == null
+                            ? null
+                            : () => showDialog<void>(
+                                context: context,
+                                builder: (_) => NotesEditDialog(
+                                  name: nameSelector(rawModel),
+                                  notes: currentNotes,
+                                  saveAction: (value) =>
+                                      notes.update(rawModel, value),
+                                ),
+                              ),
                       ),
                       DeleteModelButton<E>(
                         value: rawModel,
@@ -89,6 +109,17 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
                   ),
                 ],
               ),
+              if (summary != null) ...[
+                const SizedBox(height: 6),
+                Text(
+                  summary,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
               if (timestamp != null) ...[
                 const SizedBox(height: 8),
                 Divider(height: 1, color: colorScheme.outlineVariant),

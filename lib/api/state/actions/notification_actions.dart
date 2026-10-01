@@ -230,3 +230,38 @@ AppState _updateNotificationInState(
     selectedNotification: selectedItem,
   );
 }
+
+/// Saves new [notes] for [model] straight from the overview, without going
+/// through the selection and its unsaved-changes flow. The list entry is
+/// replaced with the server's response. A selection of the same model only
+/// gets the new notes — its other fields may hold unsaved edits, and a
+/// later Save must not send the old notes back.
+class NotificationNotesUpdateAction extends ReduxAction<AppState>
+    with NonReentrant {
+  final NotificationModel model;
+  final String? notes;
+
+  NotificationNotesUpdateAction(this.model, this.notes);
+
+  @override
+  Future<AppState?> reduce() async {
+    final NotificationModel response = await ApiService().notificationApi
+        .update(model.copyWith(comment: notes));
+    final List<NotificationModel> items = List.of(
+      state.notifications.items,
+      growable: true,
+    );
+    final int index = items.indexWhere((item) => item.id == response.id);
+    if (index != -1) {
+      items[index] = response;
+    }
+    final selected = state.selectedNotification;
+    return _updateNotificationInState(
+      state,
+      items,
+      selected?.id == response.id
+          ? selected!.copyWith(comment: response.comment)
+          : selected,
+    );
+  }
+}

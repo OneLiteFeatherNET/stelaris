@@ -6,6 +6,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/model_search_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
+import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/feature/model/model_sort_option.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -23,6 +24,7 @@ Widget createModelPage({
   VoidCallback? onAdd,
   VoidCallback? onRefresh,
   bool isRefreshing = false,
+  ModelNotes<TestModel>? notes,
 }) {
   return StoreProvider<AppState>(
     store: store,
@@ -39,6 +41,7 @@ Widget createModelPage({
           matchesFilter: matchesFilter ?? (_, _) => true,
           nameSelector: (m) => m.name,
           keySelector: (m) => m.internalId.toString(),
+          notes: notes,
           projectKey: 'proj',
           filterOptions: filterOptions,
           onAdd: onAdd ?? () {},
@@ -50,6 +53,27 @@ Widget createModelPage({
     ),
   );
 }
+
+/// Records the notes it was dispatched with, or fails like a rejected save.
+class _RecordNotesAction extends ReduxAction<AppState> {
+  _RecordNotesAction(this.saved, this.notes, {this.fail = false});
+
+  final List<String?> saved;
+  final String? notes;
+  final bool fail;
+
+  @override
+  Future<AppState?> reduce() async {
+    if (fail) throw const UserException('Save failed');
+    saved.add(notes);
+    return null;
+  }
+}
+
+/// Notes read from [TestModel.notes], saved through [update].
+ModelNotes<TestModel> _testNotes(
+  ReduxAction<AppState> Function(TestModel, String?) update,
+) => ModelNotes(read: (m) => m.notes, update: update);
 
 void main() {
   late Store<AppState> store;
@@ -330,6 +354,29 @@ void main() {
       expect(find.text('Ruby'), findsNothing);
     });
 
+    testWidgets('the search also matches the whole notes', (tester) async {
+      await tester.pumpWidget(
+        createModelPage(
+          store: store,
+          models: [
+            TestModel(
+              internalId: 1,
+              name: 'Ruby',
+              notes: 'Boss drop\nOnly given out in the nether',
+            ),
+            TestModel(internalId: 2, name: 'Emerald'),
+          ],
+          notes: _testNotes((_, notes) => _RecordNotesAction([], notes)),
+        ),
+      );
+
+      store.dispatch(UpdateSearchQueryAction('nether'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Ruby'), findsOneWidget);
+      expect(find.text('Emerald'), findsNothing);
+    });
+
     testWidgets('a search typed in another section is dropped', (tester) async {
       store = Store<AppState>(
         initialState: const AppState(
@@ -346,6 +393,73 @@ void main() {
       expect(store.state.modelSearch.query, '');
       expect(store.state.modelSearch.section, NavigationEntry.items);
       expect(find.text('Emerald'), findsOneWidget);
+    });
+  });
+
+  group('ModelPage notes', () {
+    final models = [
+      TestModel(internalId: 1, name: 'Ruby', notes: 'Boss drop'),
+    ];
+
+    Future<void> openNotesDialog(WidgetTester tester) async {
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Edit notes'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('the card menu offers no notes edit without notes', (
+      tester,
+    ) async {
+      await tester.pumpWidget(createModelPage(store: store, models: models));
+
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Edit notes'), findsNothing);
+    });
+
+    testWidgets('editing the notes from the card saves and closes', (
+      tester,
+    ) async {
+      final saved = <String?>[];
+      await tester.pumpWidget(
+        createModelPage(
+          store: store,
+          models: models,
+          notes: _testNotes((_, notes) => _RecordNotesAction(saved, notes)),
+        ),
+      );
+
+      await openNotesDialog(tester);
+      expect(find.text('Notes for Ruby'), findsOneWidget);
+
+      await tester.enterText(find.byType(TextField), 'Boss drop\nNether only');
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(saved, ['Boss drop\nNether only']);
+      expect(find.text('Notes for Ruby'), findsNothing);
+    });
+
+    testWidgets('a failed save keeps the dialog open', (tester) async {
+      final saved = <String?>[];
+      await tester.pumpWidget(
+        createModelPage(
+          store: store,
+          models: models,
+          notes: _testNotes(
+            (_, notes) => _RecordNotesAction(saved, notes, fail: true),
+          ),
+        ),
+      );
+
+      await openNotesDialog(tester);
+      await tester.enterText(find.byType(TextField), 'Changed');
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Notes for Ruby'), findsOneWidget);
     });
   });
 }

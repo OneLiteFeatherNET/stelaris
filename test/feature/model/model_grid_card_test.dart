@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
 import 'package:stelaris/feature/base/button/model_actions_menu.dart';
 import 'package:stelaris/feature/model/model_grid_card.dart';
+import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 
 import '../../test_model.dart';
@@ -16,7 +17,7 @@ void main() {
       modificationDate: now,
     );
 
-    Widget createWidget({VoidCallback? onTap}) {
+    Widget createWidget({VoidCallback? onTap, TestModel? rawModel}) {
       return MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -26,12 +27,16 @@ void main() {
         ),
         home: Scaffold(
           body: ModelGridCard<TestModel>(
-            rawModel: model,
+            rawModel: rawModel ?? model,
             mapToDataModelItem: (m) => Text(m.name),
             deleteTitle: 'Delete test model',
             mapToDeleteSuccessfully: (_) => true,
             nameSelector: (m) => m.name,
             keySelector: (m) => m.internalId.toString(),
+            notes: ModelNotes(
+              read: (m) => m.notes,
+              update: (_, _) => throw UnimplementedError(),
+            ),
             projectKey: 'proj',
             onTap: onTap,
           ),
@@ -51,6 +56,22 @@ void main() {
         expect(find.textContaining('Edited'), findsOneWidget);
       },
     );
+
+    testWidgets('shows only the first line of the notes', (tester) async {
+      await tester.pumpWidget(
+        createWidget(
+          rawModel: TestModel(
+            internalId: 1,
+            name: 'Test Attribute',
+            modificationDate: now,
+            notes: '\n  Boss drop  \nOnly given out in the nether',
+          ),
+        ),
+      );
+
+      expect(find.text('Boss drop'), findsOneWidget);
+      expect(find.textContaining('nether'), findsNothing);
+    });
 
     testWidgets('triggers onTap callback', (tester) async {
       var tapped = false;

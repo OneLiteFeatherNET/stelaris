@@ -8,6 +8,7 @@ import 'package:stelaris/api/state/factory/font/font_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/model/model_create.dart';
+import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -40,6 +41,10 @@ class FontPage extends StatelessWidget {
           models: vm.models,
           nameSelector: (model) => model.uiName,
           keySelector: (model) => model.key ?? '',
+          notes: ModelNotes(
+            read: (model) => model.comment,
+            update: FontNotesUpdateAction.new,
+          ),
           projectKey: vm.projectKey,
           matchesFilter: (model, filter) => true,
           onAdd: () => openModelCreateDialog(

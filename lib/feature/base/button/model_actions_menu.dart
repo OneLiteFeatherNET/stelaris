@@ -5,15 +5,16 @@ import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
-/// The 3-dot action menu on a model card. Only "Info" today; further
-/// actions (e.g. a future "Copy…") can be added as more [PopupMenuItem]s
-/// without changing callers.
+/// The 3-dot action menu on a model card: "Info", plus "Edit notes" when
+/// [onEditNotes] is given. Further actions (e.g. a future "Copy…") can be
+/// added as more [PopupMenuItem]s.
 class ModelActionsMenu<E extends DataModel> extends StatelessWidget {
   const ModelActionsMenu({
     required this.value,
     required this.nameSelector,
     required this.keySelector,
     required this.projectKey,
+    this.onEditNotes,
     super.key,
   });
 
@@ -25,6 +26,9 @@ class ModelActionsMenu<E extends DataModel> extends StatelessWidget {
   /// the info dialog (just the key — the dialog has no use for the rest of
   /// the [Project], e.g. its display name or labor flag).
   final String projectKey;
+
+  /// Opens the notes dialog; the menu entry is hidden while this is null.
+  final VoidCallback? onEditNotes;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +49,15 @@ class ModelActionsMenu<E extends DataModel> extends StatelessWidget {
             label: context.l10n.menu_item_info,
           ),
         ),
+        if (onEditNotes case final onEditNotes?)
+          PopupMenuItem<void>(
+            // Like the info dialog: wait for the menu route to pop first.
+            onTap: () => Future.microtask(onEditNotes),
+            child: _MenuItemContent(
+              icon: Icons.sticky_note_2_outlined,
+              label: context.l10n.menu_item_edit_notes,
+            ),
+          ),
       ],
     );
   }

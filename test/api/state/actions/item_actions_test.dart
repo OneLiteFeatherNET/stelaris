@@ -250,4 +250,66 @@ void main() {
       expect(listed.flags.items, isEmpty);
     });
   });
+
+  group('ItemNotesUpdateAction', () {
+    test('replaces the list entry and only patches the notes into a '
+        'selection of the same item', () async {
+      const listed = ItemModel(id: 'item-1', uiName: 'Sword');
+      // The selection carries an unsaved rename that must survive.
+      final selected = listed.copyWith(uiName: 'Renamed', comment: 'Old');
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedItem: selected,
+          items: const PaginatedResult<ItemModel>(
+            items: [listed],
+            totalItems: 1,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json({
+            'id': 'item-1',
+            'uiName': 'Sword',
+            'comment': 'Boss drop',
+          });
+
+      await store.dispatchAndWait(ItemNotesUpdateAction(listed, 'Boss drop'));
+
+      expect(store.state.items.items.single.comment, 'Boss drop');
+      expect(store.state.selectedItem!.comment, 'Boss drop');
+      expect(store.state.selectedItem!.uiName, 'Renamed');
+    });
+
+    test('leaves a selection of another item alone', () async {
+      const listed = ItemModel(id: 'item-1', uiName: 'Sword');
+      const other = ItemModel(id: 'item-2', uiName: 'Shield', comment: 'Old');
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedItem: other,
+          items: const PaginatedResult<ItemModel>(
+            items: [listed, other],
+            totalItems: 2,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json({
+            'id': 'item-1',
+            'uiName': 'Sword',
+            'comment': 'Boss drop',
+          });
+
+      await store.dispatchAndWait(ItemNotesUpdateAction(listed, 'Boss drop'));
+
+      expect(store.state.selectedItem, other);
+    });
+  });
 }

@@ -219,3 +219,38 @@ AppState _updateFontInState(
   );
   return state.copyWith(fonts: updated, selectedFont: selectedItem);
 }
+
+/// Saves new [notes] for [model] straight from the overview, without going
+/// through the selection and its unsaved-changes flow. The list entry is
+/// replaced with the server's response. A selection of the same model only
+/// gets the new notes — its other fields may hold unsaved edits, and a
+/// later Save must not send the old notes back.
+class FontNotesUpdateAction extends ReduxAction<AppState> with NonReentrant {
+  final FontModel model;
+  final String? notes;
+
+  FontNotesUpdateAction(this.model, this.notes);
+
+  @override
+  Future<AppState?> reduce() async {
+    final withNotes = model.copyWith(comment: notes);
+    final FontModel response = await ApiService().fontApi.update(
+      withNotes.projectId == null && state.selectedProject != null
+          ? withNotes.copyWith(projectId: state.selectedProject!.id)
+          : withNotes,
+    );
+    final List<FontModel> items = List.of(state.fonts.items, growable: true);
+    final int index = items.indexWhere((item) => item.id == response.id);
+    if (index != -1) {
+      items[index] = response;
+    }
+    final selected = state.selectedFont;
+    return _updateFontInState(
+      state,
+      items,
+      selected?.id == response.id
+          ? selected!.copyWith(comment: response.comment)
+          : selected,
+    );
+  }
+}

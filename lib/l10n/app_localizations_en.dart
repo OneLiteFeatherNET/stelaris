@@ -227,10 +227,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'The model contains enchantments which are not in the new selected group.\nAll enchantments which are not in the group will be deleted.\n\nAre you sure you want to change the group?';
 
   @override
-  String get card_description => 'Description';
+  String get action_notes => 'Notes';
 
   @override
-  String get card_comment => 'Comment';
+  String get notes_hint =>
+      'Internal notes for your team. The first line is shown in the overview.';
 
   @override
   String get card_material => 'Material';
@@ -569,6 +570,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get menu_item_info => 'Info';
+
+  @override
+  String get menu_item_edit_notes => 'Edit notes';
+
+  @override
+  String get notes_edit_in_overview =>
+      'To edit the notes, use ⋯ → Edit notes on the overview card.';
+
+  @override
+  String get tooltip_notes_present => 'Has notes';
+
+  @override
+  String dialog_notes_title(String name) {
+    return 'Notes for $name';
+  }
 
   @override
   String get dialog_model_info_id_label => 'ID';
