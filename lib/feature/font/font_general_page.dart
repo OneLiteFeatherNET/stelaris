@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/selected_font_state.dart';
@@ -11,6 +12,8 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 
+/// The font's General tab: its provider and the face it renders with
+/// (texture path, ascent, height).
 class FontGeneralPage extends StatefulWidget {
   const FontGeneralPage({super.key});
 
@@ -19,7 +22,6 @@ class FontGeneralPage extends StatefulWidget {
 }
 
 class _FontGeneralPageState extends State<FontGeneralPage> {
-  /// Scroll controller for the scrollable content
   final ScrollController _scrollController = ScrollController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
@@ -68,15 +70,88 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   currentValue:
                                       vm.selected.provider ?? emptyString,
                                   formatter: [stringPatternFormatter],
-                                  valueUpdate: (value) => _updateFont(
-                                    context,
-                                    value,
-                                    vm.selected.provider,
-                                    (newValue) => vm.selected.copyWith(
-                                      provider: newValue,
-                                    ),
-                                  ),
+                                  valueUpdate: (value) {
+                                    if (value == vm.selected.provider) {
+                                      return;
+                                    }
+                                    context.dispatch(
+                                      UpdateFontAction(
+                                        vm.selected.copyWith(provider: value),
+                                      ),
+                                    );
+                                  },
                                   focusOrder: const NumericFocusOrder(1),
+                                ),
+                                TextInputCard<String>(
+                                  display: context.l10n.card_font_texture_path,
+                                  currentValue:
+                                      vm.selected.texturePath ?? emptyString,
+                                  formatter: [stringPatternFormatter],
+                                  valueUpdate: (value) {
+                                    if (value == vm.selected.texturePath) {
+                                      return;
+                                    }
+                                    final oldModel = vm.selected;
+                                    final newEntry = oldModel.copyWith(
+                                      texturePath: value,
+                                    );
+                                    context.dispatch(
+                                      UpdateFontAction(newEntry),
+                                    );
+                                  },
+                                  focusOrder: const NumericFocusOrder(2),
+                                ),
+                                TextInputCard<int>(
+                                  tooltipMessage: context.l10n.tooltip_ascent,
+                                  display: context.l10n.card_ascent,
+                                  currentValue: vm.selected.ascent.toString(),
+                                  valueUpdate: (value) {
+                                    final parsedValue =
+                                        int.tryParse(value) ?? 0;
+                                    if (parsedValue == vm.selected.ascent) {
+                                      return;
+                                    }
+                                    final oldModel = vm.selected;
+                                    final newEntry = oldModel.copyWith(
+                                      ascent: parsedValue,
+                                    );
+                                    context.dispatch(
+                                      UpdateFontAction(newEntry),
+                                    );
+                                  },
+                                  inputType: numberInput,
+                                  formatter: [
+                                    FilteringTextInputFormatter.allow(
+                                      fontNumberPattern,
+                                    ),
+                                  ],
+                                  focusOrder: const NumericFocusOrder(3),
+                                ),
+                                TextInputCard<int>(
+                                  tooltipMessage: context.l10n.tooltip_height,
+                                  display: context.l10n.card_height,
+                                  currentValue: vm.selected.height.toString(),
+                                  valueUpdate: (value) {
+                                    final parsedValue =
+                                        int.tryParse(value) ?? 0;
+                                    if (parsedValue == vm.selected.height) {
+                                      return;
+                                    }
+                                    final oldModel = vm.selected;
+                                    final newEntry = oldModel.copyWith(
+                                      height: parsedValue,
+                                    );
+                                    context.dispatch(
+                                      UpdateFontAction(newEntry),
+                                    );
+                                  },
+                                  inputType: numberInput,
+                                  formatter: [
+                                    FilteringTextInputFormatter.allow(
+                                      fontNumberPattern,
+                                    ),
+                                  ],
+                                  focusOrder: const NumericFocusOrder(4),
                                 ),
                               ],
                             ),
@@ -95,19 +170,5 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
     );
   },
 );
-  }
-
-  void _updateFont(
-    BuildContext context,
-    String value,
-    String? currentValue,
-    dynamic Function(String) createNewModel,
-  ) {
-    if (value == currentValue) {
-      return;
-    }
-
-    final newEntry = createNewModel(value);
-    context.dispatch(UpdateFontAction(newEntry));
   }
 }

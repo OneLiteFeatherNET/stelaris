@@ -7,7 +7,6 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/general/item_general_page.dart';
 import 'package:stelaris/feature/item/lore/lore_page.dart';
-import 'package:stelaris/feature/item/meta/item_meta_page.dart';
 import 'package:stelaris/feature/model/model_detail_actions.dart';
 import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:stelaris/feature/model/model_detail_shell.dart';
@@ -17,19 +16,19 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// The detail view reached by tapping an item card in [ItemPage].
 ///
 /// Shows the shared [ModelDetailShell] header row with its actions, with a `TabBar`/
-/// `TabBarView` (General/Meta/Enchantments/Lore) below it as the body. Each
-/// tab renders one of the existing, unchanged [ItemGeneralPage]/
-/// [ItemMetaPage]/[ItemEnchantmentPage]/[LorePage] widgets, which already
+/// `TabBarView` (General/Enchantments/Lore) below it as the body. Each tab
+/// renders one of [ItemGeneralPage]/[ItemEnchantmentPage]/[LorePage], which
 /// read the selected item from Redux themselves.
 class ItemDetailPage extends StatelessWidget {
   const ItemDetailPage({super.key});
 
-  /// The tabs in order. Also what `?tab=` and the command palette name them by.
-  static const List<String> tabs = [
-    'General',
-    'Meta',
-    'Enchantments',
-    'Lore',
+  /// The tabs in order. Their ids are what `?tab=` and the command palette
+  /// refer to.
+  static final List<DetailTab> tabs = [
+    // Meta was merged into General.
+    DetailTab('general', (l10n) => l10n.tab_general, formerIds: ['meta']),
+    DetailTab('enchantments', (l10n) => l10n.tab_enchantments),
+    DetailTab('lore', (l10n) => l10n.tab_lore),
   ];
 
   @override
@@ -63,13 +62,12 @@ class ItemDetailPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ModelDetailTabBar(
-                tabs: [for (final tab in tabs) Tab(text: tab)],
+                tabs: [for (final tab in tabs) Tab(text: tab.label(context.l10n))],
               ),
               const Expanded(
                 child: TabBarView(
                   children: [
                     ItemGeneralPage(),
-                    ItemMetaPage(),
                     ItemEnchantmentPage(),
                     LorePage(),
                   ],

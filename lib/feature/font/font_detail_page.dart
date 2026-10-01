@@ -5,7 +5,6 @@ import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/font/chars/font_char_page.dart';
-import 'package:stelaris/feature/font/face/font_face_page.dart';
 import 'package:stelaris/feature/font/font_general_page.dart';
 import 'package:stelaris/feature/model/model_detail_actions.dart';
 import 'package:stelaris/feature/model/detail_tabs.dart';
@@ -16,18 +15,22 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// The detail view reached by tapping a font card in [FontPage].
 ///
 /// Shows the shared [ModelDetailShell] header row with its actions, with a `TabBar`/
-/// `TabBarView` (General/FontFace/Chars) below it as the body. Each tab
-/// renders one of the existing, unchanged [FontGeneralPage]/[FontFacePage]/
-/// [FontCharPage] widgets, which already read the selected font from Redux
-/// themselves.
+/// `TabBarView` (General/Characters) below it as the body. Each tab renders
+/// one of [FontGeneralPage]/[FontCharPage], which read the selected font
+/// from Redux themselves.
 class FontDetailPage extends StatelessWidget {
   const FontDetailPage({super.key});
 
-  /// The tabs in order. Also what `?tab=` and the command palette name them by.
-  static const List<String> tabs = [
-    'General',
-    'FontFace',
-    'Chars',
+  /// The tabs in order. Their ids are what `?tab=` and the command palette
+  /// refer to.
+  static final List<DetailTab> tabs = [
+    // FontFace was merged into General.
+    DetailTab('general', (l10n) => l10n.tab_general, formerIds: ['fontface']),
+    DetailTab(
+      'characters',
+      (l10n) => l10n.tab_characters,
+      formerIds: ['chars'],
+    ),
   ];
 
   @override
@@ -60,13 +63,12 @@ class FontDetailPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ModelDetailTabBar(
-                tabs: [for (final tab in tabs) Tab(text: tab)],
+                tabs: [for (final tab in tabs) Tab(text: tab.label(context.l10n))],
               ),
               const Expanded(
                 child: TabBarView(
                   children: [
                     FontGeneralPage(),
-                    FontFacePage(),
                     FontCharPage(),
                   ],
                 ),

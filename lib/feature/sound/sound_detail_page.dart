@@ -22,10 +22,11 @@ import 'package:stelaris/util/l10n_ext.dart';
 class SoundDetailPage extends StatelessWidget {
   const SoundDetailPage({super.key});
 
-  /// The tabs in order. Also what `?tab=` and the command palette name them by.
-  static const List<String> tabs = [
-    'General',
-    'Entries',
+  /// The tabs in order. Their ids are what `?tab=` and the command palette
+  /// refer to.
+  static final List<DetailTab> tabs = [
+    DetailTab('general', (l10n) => l10n.tab_general),
+    DetailTab('entries', (l10n) => l10n.tab_entries),
   ];
 
   @override
@@ -58,7 +59,7 @@ class SoundDetailPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ModelDetailTabBar(
-                tabs: [for (final tab in tabs) Tab(text: tab)],
+                tabs: [for (final tab in tabs) Tab(text: tab.label(context.l10n))],
               ),
               const Expanded(
                 child: TabBarView(
