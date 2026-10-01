@@ -82,35 +82,54 @@ void main() {
       expect(testValue, equals('test value'));
     });
 
-    testWidgets(
-      'does not call valueUpdate when focus is lost with empty value',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: Column(
-                children: [
-                  TextInputCard(
-                    display: 'Test Input',
-                    valueUpdate: valueUpdateCallback,
-                    currentValue: 'initial',
-                  ),
-                  const TextField(),
-                ],
-              ),
+    Future<List<String>> blurAfter(
+      WidgetTester tester, {
+      required String currentValue,
+      String? typed,
+    }) async {
+      final reported = <String>[];
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                TextInputCard(
+                  display: 'Test Input',
+                  valueUpdate: reported.add,
+                  currentValue: currentValue,
+                ),
+                const TextField(),
+              ],
             ),
           ),
-        );
+        ),
+      );
 
-        final textField = find.byType(TextFormField);
-        await tester.enterText(textField, '   ');
+      final field = find.byType(TextFormField);
+      if (typed == null) {
+        await tester.tap(field);
+      } else {
+        await tester.enterText(field, typed);
+      }
+      await tester.tap(find.byType(TextField).last);
+      await tester.pumpAndSettle();
+      return reported;
+    }
 
-        await tester.tap(find.byType(TextField).last);
-        await tester.pumpAndSettle();
+    testWidgets('clearing a field reports an empty value', (tester) async {
+      expect(
+        await blurAfter(tester, currentValue: 'initial', typed: '   '),
+        [''],
+      );
+    });
 
-        expect(testValue, equals(''));
-      },
-    );
+    testWidgets('an unchanged value is not reported', (tester) async {
+      expect(await blurAfter(tester, currentValue: 'same'), isEmpty);
+      expect(
+        await blurAfter(tester, currentValue: 'same', typed: 'same'),
+        isEmpty,
+      );
+    });
 
     testWidgets('displays tooltip message through BaseCard', (
       WidgetTester tester,

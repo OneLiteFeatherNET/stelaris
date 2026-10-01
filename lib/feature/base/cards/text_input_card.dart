@@ -137,10 +137,13 @@ class _TextInputCardState extends State<TextInputCard> {
     return FocusTraversalOrder(order: focusOrder, child: child);
   }
 
-  /// Handles the submission of the given input to the outer update logic.
+  /// Hands a changed value to [TextInputCard.valueUpdate]. A field cleared
+  /// down to whitespace reports an empty string, so values can be removed;
+  /// an unchanged value isn't reported, so merely tabbing through a field
+  /// doesn't mark the model as edited.
   void _handleFieldSubmitted(String value) {
-    if (value.trim().isNotEmpty) {
-      widget.valueUpdate(value);
-    }
+    final String submitted = value.trim().isEmpty ? emptyString : value;
+    if (submitted == widget.currentValue) return;
+    widget.valueUpdate(submitted);
   }
 }
