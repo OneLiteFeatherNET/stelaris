@@ -1,14 +1,9 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
-import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/selected_item_state.dart';
 import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
-import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/feature/item/general/item_group_card.dart';
-import 'package:stelaris/util/l10n_ext.dart';
-import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 
@@ -64,34 +59,10 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                               spacing: 16,
                               runSpacing: 16,
                               children: [
-                                TextInputCard<String>(
-                                  display: context.l10n.card_description,
-                                  currentValue:
-                                      vm.selected.comment ?? emptyString,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      stringWithSpacePattern,
-                                    ),
-                                  ],
-                                  valueUpdate: (value) {
-                                    if (value == vm.selected.comment) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      comment: value,
-                                    );
-                                    context.dispatch(
-                                      UpdateItemAction(newEntry),
-                                    );
-                                  },
-                                  maxLength: 30,
-                                  focusOrder: const NumericFocusOrder(1),
-                                ),
                                 ItemGroupCard(
                                   model: vm.selected,
                                   groupKey: _groupKey,
-                                  focusOrder: const NumericFocusOrder(2),
+                                  focusOrder: const NumericFocusOrder(1),
                                 ),
                               ],
                             ),
