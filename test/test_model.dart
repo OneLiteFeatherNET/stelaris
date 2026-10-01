@@ -4,10 +4,12 @@ import 'package:stelaris_models/stelaris_models.dart';
 class TestModel with DataModel {
   final int internalId;
   final String name;
+  final String? notes;
 
   TestModel({
     required this.internalId,
     required this.name,
+    this.notes,
     this.creationDate,
     this.modificationDate,
   });
