@@ -234,6 +234,21 @@ class AppLocalizationsEn extends AppLocalizations {
       'Internal notes for your team. The first line is shown in the overview.';
 
   @override
+  String get tab_general => 'General';
+
+  @override
+  String get tab_enchantments => 'Enchantments';
+
+  @override
+  String get tab_lore => 'Lore';
+
+  @override
+  String get tab_characters => 'Characters';
+
+  @override
+  String get tab_entries => 'Entries';
+
+  @override
   String get card_material => 'Material';
 
   @override

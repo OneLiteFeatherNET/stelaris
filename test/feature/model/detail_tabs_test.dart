@@ -3,7 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/model/detail_tabs.dart';
 
-const List<String> _tabs = ['General', 'Meta', 'Enchantments', 'Lore'];
+final List<DetailTab> _tabs = [
+  DetailTab('general', (_) => 'General', formerIds: ['meta']),
+  DetailTab('enchantments', (_) => 'Enchantments'),
+  DetailTab('lore', (_) => 'Lore'),
+];
 
 /// The index [initialTabIndex] picks at [location].
 Future<int> _indexAt(WidgetTester tester, String location) async {
@@ -28,11 +32,15 @@ Future<int> _indexAt(WidgetTester tester, String location) async {
 void main() {
   group('initialTabIndex', () {
     testWidgets('a named tab gives its index', (tester) async {
-      expect(await _indexAt(tester, '/items/detail?tab=lore'), 3);
+      expect(await _indexAt(tester, '/items/detail?tab=lore'), 2);
     });
 
     testWidgets('the name is matched case-insensitively', (tester) async {
-      expect(await _indexAt(tester, '/items/detail?tab=ENCHANTMENTS'), 2);
+      expect(await _indexAt(tester, '/items/detail?tab=ENCHANTMENTS'), 1);
+    });
+
+    testWidgets('a former id gives the tab it was merged into', (tester) async {
+      expect(await _indexAt(tester, '/items/detail?tab=meta'), 0);
     });
 
     testWidgets('no parameter gives the first tab', (tester) async {
@@ -49,10 +57,10 @@ void main() {
       expect(detailLocation('/items'), '/items/detail');
     });
 
-    test('with a tab adds it, lowercased', () {
+    test('with a tab adds its id', () {
       expect(
-        detailLocation('/fonts', 'FontFace'),
-        '/fonts/detail?tab=fontface',
+        detailLocation('/fonts', DetailTab('characters', (_) => 'Characters')),
+        '/fonts/detail?tab=characters',
       );
     });
   });

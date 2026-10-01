@@ -5,7 +5,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/font/chars/font_char_page.dart';
-import 'package:stelaris/feature/font/face/font_face_page.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/font/font_general_page.dart';
 import 'package:stelaris/feature/base/page_header.dart';
@@ -74,18 +73,16 @@ void main() {
         expect(backBarPosition.dy, lessThan(tabBarPosition.dy));
 
         expect(find.text('General'), findsOneWidget);
-        expect(find.text('FontFace'), findsOneWidget);
-        expect(find.text('Chars'), findsOneWidget);
+        expect(find.text('Characters'), findsOneWidget);
       },
     );
 
-    testWidgets('wires the tab views to General, FontFace and Chars pages', (tester) async {
+    testWidgets('wires the tab views to General and Characters pages', (tester) async {
       await pumpPage(tester);
 
       final tabBarView = tester.widget<TabBarView>(find.byType(TabBarView));
       expect(tabBarView.children.map((w) => w.runtimeType), [
         FontGeneralPage,
-        FontFacePage,
         FontCharPage,
       ]);
     });
@@ -102,7 +99,7 @@ void main() {
     int selectedTab(WidgetTester tester) =>
         DefaultTabController.of(tester.element(find.byType(TabBar))).index;
 
-    testWidgets('?tab=chars opens on the Chars tab', (tester) async {
+    testWidgets('?tab=characters opens on the Characters tab', (tester) async {
       // The Chars tab loads its entries as soon as it is shown.
       ApiService().fontApi.apiClient.dio.httpClientAdapter =
           FakeHttpClientAdapter.json(
@@ -114,9 +111,15 @@ void main() {
               pageSize: 10,
             ).toJson((c) => c.toJson()),
           );
-      await pumpPage(tester, location: '/fonts/detail?tab=chars');
+      await pumpPage(tester, location: '/fonts/detail?tab=characters');
 
-      expect(selectedTab(tester), FontDetailPage.tabs.indexOf('Chars'));
+      expect(selectedTab(tester), 1);
+    });
+
+    testWidgets('an old ?tab=fontface link opens on General', (tester) async {
+      await pumpPage(tester, location: '/fonts/detail?tab=fontface');
+
+      expect(selectedTab(tester), 0);
     });
 
     testWidgets('an unknown ?tab= opens on the first tab', (tester) async {

@@ -9,7 +9,6 @@ import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/general/item_general_page.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
 import 'package:stelaris/feature/item/lore/lore_page.dart';
-import 'package:stelaris/feature/item/meta/item_meta_page.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -22,13 +21,16 @@ void main() {
 
     late Store<AppState> store;
 
-    Future<void> pumpPage(WidgetTester tester) async {
+    Future<void> pumpPage(
+      WidgetTester tester, {
+      String location = '/items/detail',
+    }) async {
       store = Store<AppState>(
         initialState: const AppState(selectedItem: selected),
       );
 
       final router = GoRouter(
-        initialLocation: '/items/detail',
+        initialLocation: location,
         routes: [
           GoRoute(
             path: '/items',
@@ -73,12 +75,12 @@ void main() {
         final tabBar = tester.widget<TabBar>(find.byType(TabBar));
         expect(
           tabBar.tabs.map((tab) => (tab as Tab).text),
-          ['General', 'Meta', 'Enchantments', 'Lore'],
+          ['General', 'Enchantments', 'Lore'],
         );
       },
     );
 
-    testWidgets('wires the tab views to General, Meta, Enchantments and Lore pages', (
+    testWidgets('wires the tab views to General, Enchantments and Lore pages', (
       tester,
     ) async {
       await pumpPage(tester);
@@ -86,7 +88,6 @@ void main() {
       final tabBarView = tester.widget<TabBarView>(find.byType(TabBarView));
       expect(tabBarView.children.map((w) => w.runtimeType), [
         ItemGeneralPage,
-        ItemMetaPage,
         ItemEnchantmentPage,
         LorePage,
       ]);
@@ -122,12 +123,10 @@ void main() {
       await pumpPage(tester);
       expect(saveButton(tester).onPressed, isNull);
 
-      // The Meta tab's first field: the item material.
-      await tester.tap(find.widgetWithText(Tab, 'Meta'));
-      await tester.pumpAndSettle();
+      // A field on the General tab: the item material.
       await tester.enterText(
         find.descendant(
-          of: find.byType(ItemMetaPage),
+          of: find.byType(ItemGeneralPage),
           matching: find.byType(TextFormField),
         ).first,
         'minecraft:diamond_sword',
@@ -149,12 +148,10 @@ void main() {
       ApiService().itemApi.apiClient.dio.httpClientAdapter = adapter;
       await pumpPage(tester);
 
-      // The Meta tab's first field: the item material.
-      await tester.tap(find.widgetWithText(Tab, 'Meta'));
-      await tester.pumpAndSettle();
+      // A field on the General tab: the item material.
       await tester.enterText(
         find.descendant(
-          of: find.byType(ItemMetaPage),
+          of: find.byType(ItemGeneralPage),
           matching: find.byType(TextFormField),
         ).first,
         'minecraft:diamond_sword',
@@ -200,6 +197,15 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Item List'), findsOneWidget);
+    });
+
+    testWidgets('an old ?tab=meta link opens on General', (tester) async {
+      await pumpPage(tester, location: '/items/detail?tab=meta');
+
+      expect(
+        DefaultTabController.of(tester.element(find.byType(TabBar))).index,
+        0,
+      );
     });
   });
 }

@@ -87,6 +87,11 @@
 
   "action_notes": "Notes",
   "notes_hint": "Internal notes for your team. The first line is shown in the overview.",
+  "tab_general": "General",
+  "tab_enchantments": "Enchantments",
+  "tab_lore": "Lore",
+  "tab_characters": "Characters",
+  "tab_entries": "Entries",
   "card_material": "Material",
   "card_model_data": "ModelData",
   "card_amount": "Amount",

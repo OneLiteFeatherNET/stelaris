@@ -452,7 +452,7 @@ class EntityProvider implements PaletteProvider {
     EntityKind kind,
     String? id,
     String name,
-    List<String> tabs,
+    List<DetailTab> tabs,
     void Function(BuildContext context) select,
     List<StelarisCommand> actions,
   ) {
@@ -466,10 +466,10 @@ class EntityProvider implements PaletteProvider {
         context.go(detailLocation(route));
       },
       children: () => [
-        for (final String tab in tabs)
+        for (final DetailTab tab in tabs)
           StelarisCommand(
-            id: 'entity.${kind.name}.${id ?? name}.tab.${tab.toLowerCase()}',
-            title: (_) => tab,
+            id: 'entity.${kind.name}.${id ?? name}.tab.${tab.id}',
+            title: tab.label,
             section: (_) => name,
             group: CommandGroup.entities,
             icon: Icons.tab_outlined,
