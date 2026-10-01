@@ -6,13 +6,16 @@ import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/feature/dialogs/model_info_dialog.dart';
+import 'package:stelaris/feature/dialogs/notes_view_dialog.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/notes.dart';
 import 'package:stelaris/feature/model/model_delete.dart';
 
-/// The Info / Delete / Save actions of a detail page's [PageHeader]. Opens
+/// The Notes / Info / Delete / Save actions of a detail page's [PageHeader].
+/// Notes only appear when [readNotes] is given. Opens
 /// the same dialogs as a grid card's menu, so both places stay in sync.
 ///
 /// The model is read from the store when an action is pressed (via
@@ -27,6 +30,7 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
     required this.deleteTitle,
     required this.removeAction,
     this.deleteWarning,
+    this.readNotes,
     super.key,
   });
 
@@ -37,6 +41,9 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
   final String deleteTitle;
   final String? deleteWarning;
   final ReduxAction<AppState> Function(E model) removeAction;
+  /// Returns the model's internal notes, shown read-only — they are edited
+  /// from the overview, see [NotesViewDialog].
+  final String? Function(E model)? readNotes;
 
   String _namespacedKey(AppState state, E model) =>
       '${state.selectedProject?.key ?? ''}:${keySelector(model)}';
@@ -54,6 +61,16 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
         creationDate: model.creationDate,
         modificationDate: model.modificationDate,
       ),
+    );
+  }
+
+  void _openNotes(BuildContext context, String? Function(E) readNotes) {
+    final model = selectModel(StoreProvider.state<AppState>(context));
+    final notes = model == null ? null : readNotes(model)?.trim();
+    if (model == null || notes == null || notes.isEmpty) return;
+    showDialog<void>(
+      context: context,
+      builder: (_) => NotesViewDialog(name: nameSelector(model), notes: notes),
     );
   }
 
@@ -80,6 +97,33 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (readNotes case final readNotes?) ...[
+          StoreConnector<AppState, bool>(
+            // Only rebuilds when notes appear or disappear, not per keystroke.
+            converter: (store) {
+              final model = selectModel(store.state);
+              return model != null && notesSummary(readNotes(model)) != null;
+            },
+            builder: (context, hasNotes) => PageHeaderAction(
+              icon: Badge(
+                isLabelVisible: hasNotes,
+                smallSize: 8,
+                child: Icon(
+                  hasNotes
+                      ? Icons.sticky_note_2
+                      : Icons.sticky_note_2_outlined,
+                  semanticLabel: hasNotes ? l10n.tooltip_notes_present : null,
+                ),
+              ),
+              label: l10n.action_notes,
+              // Nothing to read without notes; they are added from the overview.
+              onPressed: hasNotes
+                  ? () => _openNotes(context, readNotes)
+                  : null,
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
         PageHeaderAction(
           icon: const Icon(Icons.info_outline),
           label: l10n.menu_item_info,

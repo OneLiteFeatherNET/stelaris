@@ -50,6 +50,7 @@ class ItemDetailPage extends StatelessWidget {
             deleteTitle: context.l10n.dialog_item_delete_title,
             deleteWarning: context.l10n.delete_dialog_related_item,
             removeAction: ItemRemoveAction.new,
+            readNotes: (model) => model.comment,
           ),
         ],
         body: DefaultTabController(
