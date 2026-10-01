@@ -54,8 +54,6 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, SelectedNotificationView>(
       vm: () => SelectedNotificationFactory(),
-      onDispose: (store) =>
-          store.dispatch(RemoveSelectNotificationAction(), notify: false),
       builder: (context, vm) {
         return FocusScope(
           child: FocusTraversalGroup(
