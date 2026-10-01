@@ -9,6 +9,7 @@ import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/validators.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 
@@ -86,7 +87,9 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   display: context.l10n.card_font_texture_path,
                                   currentValue:
                                       vm.selected.texturePath ?? emptyString,
-                                  formatter: [stringPatternFormatter],
+                                  hintText: 'minecraft:font/ascii.png',
+                                  formValidator: (value) =>
+                                      _texturePathValidator(value as String?),
                                   valueUpdate: (value) {
                                     if (value == vm.selected.texturePath) {
                                       return;
@@ -171,4 +174,11 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
   },
 );
   }
+
+  /// A texture path is a resource location: an optional namespace, then a
+  /// lowercase path that may contain slashes and dots.
+  static final _texturePathValidator = Validators.pattern(
+    adventureKeyPattern,
+    'Invalid texture path (e.g. "minecraft:font/ascii.png")',
+  );
 }

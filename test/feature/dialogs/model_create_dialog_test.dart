@@ -94,6 +94,26 @@ void main() {
       expect(find.text('Key is required'), findsOneWidget);
     });
 
+    testWidgets('the name keeps digits, punctuation and umlauts', (
+      tester,
+    ) async {
+      String? submittedName;
+      await pumpDialog(
+        tester,
+        onSubmit: (name, key) => submittedName = name,
+      );
+
+      await tester.enterText(
+        find.byType(TextFormField).at(0),
+        'Schwert Lvl. 2 für Bosse!',
+      );
+      await tester.enterText(find.byType(TextFormField).at(1), 'sword');
+      await tester.tap(find.text('Create'));
+      await tester.pump();
+
+      expect(submittedName, 'Schwert Lvl. 2 für Bosse!');
+    });
+
     testWidgets('validates invalid key characters', (tester) async {
       await pumpDialog(
         tester,

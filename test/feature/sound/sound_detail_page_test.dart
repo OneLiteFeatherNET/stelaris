@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/feature/sound/sound_file_entries.dart';
@@ -14,8 +15,11 @@ void main() {
   group('SoundDetailPage', () {
     final selected = SoundEventModel(id: 'sound-1', uiName: 'Ding');
 
+    late Store<AppState> store;
+
+
     Future<void> pumpPage(WidgetTester tester) async {
-      final store = Store<AppState>(
+      store = Store<AppState>(
         initialState: AppState(selectedSoundEvent: selected),
       );
 
@@ -84,6 +88,37 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Sound List'), findsOneWidget);
+    });
+
+    /// The text field of the card labelled [label].
+    Finder fieldOf(String label) => find.descendant(
+      of: find.ancestor(
+        of: find.text(label),
+        matching: find.byWidgetPredicate((w) => w is TextInputCard),
+      ),
+      matching: find.byType(TextFormField),
+    );
+
+    Future<void> enterAndBlur(
+      WidgetTester tester,
+      String label,
+      String text,
+    ) async {
+      await tester.enterText(fieldOf(label), text);
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('the key keeps its dots and the subtitle its spaces', (
+      tester,
+    ) async {
+      await pumpPage(tester);
+
+      await enterAndBlur(tester, 'Key', 'entity.player.hurt');
+      await enterAndBlur(tester, 'Subtitle', 'Player hurt');
+
+      expect(store.state.selectedSoundEvent?.keyName, 'entity.player.hurt');
+      expect(store.state.selectedSoundEvent?.subTitle, 'Player hurt');
     });
   });
 }

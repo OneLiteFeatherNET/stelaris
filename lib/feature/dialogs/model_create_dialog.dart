@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/dialog/notice_box.dart';
@@ -73,9 +72,6 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
             TextFormField(
               controller: _nameController,
               autofocus: true,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(stringWithSpacePattern),
-              ],
               decoration: InputDecoration(
                 labelText: '${context.l10n.dialog_model_name_label} *',
                 hintText: widget.nameHint ?? context.l10n.dialog_model_name_hint,

@@ -7,6 +7,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/font/chars/font_char_page.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/font/font_general_page.dart';
+import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -17,11 +18,14 @@ void main() {
   group('FontDetailPage', () {
     const selected = FontModel(id: 'font-1', uiName: 'Roboto Mono');
 
+    late Store<AppState> store;
+
+
     Future<void> pumpPage(
       WidgetTester tester, {
       String location = '/fonts/detail',
     }) async {
-      final store = Store<AppState>(
+      store = Store<AppState>(
         initialState: const AppState(selectedFont: selected),
       );
 
@@ -132,6 +136,46 @@ void main() {
       await pumpPage(tester);
 
       expect(selectedTab(tester), 0);
+    });
+
+    /// The text field of the card labelled [label].
+    Finder fieldOf(String label) => find.descendant(
+      of: find.ancestor(
+        of: find.text(label),
+        matching: find.byWidgetPredicate((w) => w is TextInputCard),
+      ),
+      matching: find.byType(TextFormField),
+    );
+
+    Future<void> enterAndBlur(
+      WidgetTester tester,
+      String label,
+      String text,
+    ) async {
+      await tester.enterText(fieldOf(label), text);
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('the texture path keeps its namespace, slashes and dots', (
+      tester,
+    ) async {
+      await pumpPage(tester);
+
+      await enterAndBlur(tester, 'Texture path', 'minecraft:font/ascii.png');
+
+      expect(store.state.selectedFont?.texturePath, 'minecraft:font/ascii.png');
+    });
+
+    testWidgets('an invalid texture path shows an error', (tester) async {
+      await pumpPage(tester);
+
+      await enterAndBlur(tester, 'Texture path', 'Not A Path');
+
+      expect(
+        find.text('Invalid texture path (e.g. "minecraft:font/ascii.png")'),
+        findsOneWidget,
+      );
     });
 });
 }

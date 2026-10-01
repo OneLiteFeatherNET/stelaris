@@ -7,6 +7,4 @@ import 'package:stelaris/util/formatter/lower_case_formatter.dart';
 
 final TextInputFormatter stringPatternFormatter =
     FilteringTextInputFormatter.allow(stringPattern);
-final TextInputFormatter withSpacesFormatter =
-    FilteringTextInputFormatter.allow(stringWithSpacePattern);
 const TextInputFormatter lowerCaseFormatter = LowerCaseTextFormatter();

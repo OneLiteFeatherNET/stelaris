@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/notification_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -130,11 +129,6 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                           );
                                         }
                                       },
-                                      formatter: [
-                                        FilteringTextInputFormatter.allow(
-                                          stringWithSpacePattern,
-                                        ),
-                                      ],
                                       focusOrder: const NumericFocusOrder(2),
                                     ),
                                     DropdownCard<FrameType, NotificationModel>(

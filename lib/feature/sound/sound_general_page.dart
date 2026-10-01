@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/sound/selected_sound_state.dart';
@@ -8,6 +7,7 @@ import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/util/validators.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 
@@ -74,7 +74,8 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                                     checkIfEmptyAndReturnErrorString(
                                       value,
                                       context,
-                                    ),
+                                    ) ??
+                                    _soundKeyValidator(value as String?),
                                 onChanged: (value) {
                                   final newEntry = selected.copyWith(
                                     keyName: value,
@@ -117,6 +118,13 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
 );
   }
 
+  /// A sound key is a resource location, e.g. `entity.player.hurt` or
+  /// `custom:ui/click`.
+  static final _soundKeyValidator = Validators.pattern(
+    adventureKeyPattern,
+    'Invalid key (e.g. "entity.player.hurt" or "custom:ui/click")',
+  );
+
   /// The method builds a reusable text input card for updating string values.
   /// It takes different parameters to customize different aspects of the text field.
   Widget _buildTextField({
@@ -129,7 +137,6 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
     return TextInputCard<String>(
       display: label,
       currentValue: currentValue ?? emptyString,
-      formatter: [FilteringTextInputFormatter.allow(stringPattern)],
       formValidator: validator,
       valueUpdate: (value) {
         if (value != currentValue) {

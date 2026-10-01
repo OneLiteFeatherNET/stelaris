@@ -23,7 +23,6 @@ const divider = Divider();
 RegExp numberPattern = RegExp('[1-9]\\d*');
 RegExp fontNumberPattern = RegExp('^(0|[1-9][0-9]*)');
 RegExp stringPattern = RegExp('[a-zA-Z]\\w*');
-RegExp stringWithSpacePattern = RegExp('[a-zA-Z][a-zA-Z ]*');
 RegExp dotPattern = RegExp('\\.');
 RegExp minecraftPattern = RegExp('minecraft:');
 RegExp gitCommitPattern = RegExp('[0-9a-fA-F]{10}');
