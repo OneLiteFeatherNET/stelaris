@@ -514,6 +514,36 @@ abstract class AppLocalizations {
   /// **'Internal notes for your team. The first line is shown in the overview.'**
   String get notes_hint;
 
+  /// No description provided for @tab_general.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get tab_general;
+
+  /// No description provided for @tab_enchantments.
+  ///
+  /// In en, this message translates to:
+  /// **'Enchantments'**
+  String get tab_enchantments;
+
+  /// No description provided for @tab_lore.
+  ///
+  /// In en, this message translates to:
+  /// **'Lore'**
+  String get tab_lore;
+
+  /// No description provided for @tab_characters.
+  ///
+  /// In en, this message translates to:
+  /// **'Characters'**
+  String get tab_characters;
+
+  /// No description provided for @tab_entries.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries'**
+  String get tab_entries;
+
   /// No description provided for @card_material.
   ///
   /// In en, this message translates to:
