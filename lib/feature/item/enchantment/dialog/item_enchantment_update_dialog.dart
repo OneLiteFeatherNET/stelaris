@@ -61,6 +61,7 @@ class _ItemEnchantmentUpdateDialogState
             border: const OutlineInputBorder(),
           ),
           validator: (value) => Validators.enchantmentLevel(
+            context.l10n,
             value: value,
             maxLevel: widget.enchantment.maxLevel,
             unsafe: widget.dto.unsafe,

@@ -88,8 +88,10 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
                                   currentValue:
                                       vm.selected.texturePath ?? emptyString,
                                   hintText: 'minecraft:font/ascii.png',
-                                  formValidator: (value) =>
-                                      _texturePathValidator(value as String?),
+                                  formValidator: (value) => Validators.pattern(
+                                    adventureKeyPattern,
+                                    context.l10n.validation_texture_path_invalid,
+                                  )(value as String?),
                                   valueUpdate: (value) {
                                     if (value == vm.selected.texturePath) {
                                       return;
@@ -174,11 +176,4 @@ class _FontGeneralPageState extends State<FontGeneralPage> {
   },
 );
   }
-
-  /// A texture path is a resource location: an optional namespace, then a
-  /// lowercase path that may contain slashes and dots.
-  static final _texturePathValidator = Validators.pattern(
-    adventureKeyPattern,
-    'Invalid texture path (e.g. "minecraft:font/ascii.png")',
-  );
 }

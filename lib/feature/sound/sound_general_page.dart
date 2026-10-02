@@ -10,6 +10,7 @@ import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/validators.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 /// A widget that represents the general sound event management page.
 ///
@@ -68,14 +69,19 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                             runSpacing: 16,
                             children: [
                               _buildTextField(
-                                label: 'Key',
+                                label: context.l10n.sound_key,
                                 currentValue: selected.keyName,
                                 validator: (value) =>
                                     checkIfEmptyAndReturnErrorString(
                                       value,
                                       context,
                                     ) ??
-                                    _soundKeyValidator(value as String?),
+                                    // A resource location, e.g.
+                                    // `entity.player.hurt` or `custom:ui/click`.
+                                    Validators.pattern(
+                                      adventureKeyPattern,
+                                      context.l10n.validation_sound_key_invalid,
+                                    )(value as String?),
                                 onChanged: (value) {
                                   final newEntry = selected.copyWith(
                                     keyName: value,
@@ -85,7 +91,7 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
                                 focusOrder: 1,
                               ),
                               _buildTextField(
-                                label: 'Subtitle',
+                                label: context.l10n.sound_subtitle,
                                 currentValue: selected.subTitle,
                                 validator: (value) =>
                                     checkIfEmptyAndReturnErrorString(
@@ -117,13 +123,6 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
   },
 );
   }
-
-  /// A sound key is a resource location, e.g. `entity.player.hurt` or
-  /// `custom:ui/click`.
-  static final _soundKeyValidator = Validators.pattern(
-    adventureKeyPattern,
-    'Invalid key (e.g. "entity.player.hurt" or "custom:ui/click")',
-  );
 
   /// The method builds a reusable text input card for updating string values.
   /// It takes different parameters to customize different aspects of the text field.

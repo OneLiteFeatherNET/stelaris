@@ -1,13 +1,17 @@
+import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/constants.dart';
 
 typedef FormValidator<T> = String? Function(T? value);
 
 /// Utility class providing reusable form validation rules.
+///
+/// Validators have no `BuildContext`, so the messages come in through the
+/// [AppLocalizations] passed to them (usually `context.l10n`).
 class Validators {
   Validators._();
 
   /// Validates that a string is not null, empty or only whitespace.
-  static FormValidator<String> required([String message = 'This field is required']) {
+  static FormValidator<String> required(String message) {
     return (value) {
       if (value == null || value.trim().isEmpty) {
         return message;
@@ -18,7 +22,7 @@ class Validators {
 
   /// Validates that a string matches the given [regex].
   /// Empty/null values are skipped so they can be handled by [required] if needed.
-  static FormValidator<String> pattern(RegExp regex, [String message = 'Invalid format']) {
+  static FormValidator<String> pattern(RegExp regex, String message) {
     return (value) {
       if (value == null || value.trim().isEmpty) return null;
       if (!regex.hasMatch(value.trim())) {
@@ -43,11 +47,12 @@ class Validators {
   /// Validates a Minecraft / Kyori Adventure key or namespace.
   ///
   /// Examples of valid keys: `my_project`, `minecraft:stone`, `custom:item/tool`
-  static FormValidator<String> adventureKey({
-    String requiredMessage = 'Key / Namespace is required',
-    String invalidMessage = 'Invalid Adventure key (e.g. "my_project" or "custom:my_project")',
+  static FormValidator<String> adventureKey(
+    AppLocalizations l10n, {
     bool detailed = true,
   }) {
+    final requiredMessage = l10n.validation_namespace_required;
+    final invalidMessage = l10n.validation_adventure_key_invalid;
     if (!detailed) {
       return compose([
         required(requiredMessage),
@@ -63,21 +68,21 @@ class Validators {
       final text = value.trim();
 
       if (text.contains(RegExp(r'[A-Z]'))) {
-        return 'Uppercase letters are not allowed in Adventure keys';
+        return l10n.validation_no_uppercase_key;
       }
       if (text.contains(' ')) {
-        return 'Spaces are not allowed';
+        return l10n.validation_no_spaces;
       }
       if (':'.allMatches(text).length > 1) {
-        return 'Only one colon (:) is allowed for namespace:key';
+        return l10n.validation_one_colon;
       }
       if (text.contains('..')) {
-        return 'Double dots (..) are not allowed';
+        return l10n.validation_no_double_dots;
       }
       if (text.contains(':')) {
         final parts = text.split(':');
         if (parts[0].contains('/')) {
-          return 'Namespace cannot contain slashes (/)';
+          return l10n.validation_namespace_slash_in_key;
         }
       }
       if (!adventureKeyPattern.hasMatch(text)) {
@@ -92,11 +97,12 @@ class Validators {
   /// Slashes (/), colons (:), double dots (..), uppercase letters, and spaces are not allowed.
   ///
   /// Examples of valid namespaces: `my_project`, `project-name`, `custom.addon_1`
-  static FormValidator<String> adventureNamespace({
-    String requiredMessage = 'Key / Namespace is required',
-    String invalidMessage = 'Invalid namespace (only lowercase letters, numbers, [._-] allowed, e.g. "my_project")',
+  static FormValidator<String> adventureNamespace(
+    AppLocalizations l10n, {
     bool detailed = true,
   }) {
+    final requiredMessage = l10n.validation_namespace_required;
+    final invalidMessage = l10n.validation_namespace_invalid;
     if (!detailed) {
       return compose([
         required(requiredMessage),
@@ -112,19 +118,19 @@ class Validators {
       final text = value.trim();
 
       if (text.contains('..')) {
-        return 'Double dots (..) are not allowed';
+        return l10n.validation_no_double_dots;
       }
       if (text.contains(':')) {
-        return 'Colons (:) are not allowed (only the namespace part, e.g. "my_project")';
+        return l10n.validation_namespace_no_colon;
       }
       if (text.contains('/')) {
-        return 'Slashes (/) are not allowed in a namespace';
+        return l10n.validation_namespace_no_slash;
       }
       if (text.contains(RegExp(r'[A-Z]'))) {
-        return 'Uppercase letters are not allowed';
+        return l10n.validation_no_uppercase;
       }
       if (text.contains(' ')) {
-        return 'Spaces are not allowed';
+        return l10n.validation_no_spaces;
       }
       if (!adventureNamespacePattern.hasMatch(text)) {
         return invalidMessage;
@@ -139,11 +145,12 @@ class Validators {
   /// Colons (:), double dots (..), uppercase letters, and spaces are not allowed.
   ///
   /// Examples of valid keys: `ruby_sword`, `item/weapon/sword`, `magic.wand`
-  static FormValidator<String> adventureKeyPart({
-    String requiredMessage = 'Key is required',
-    String invalidMessage = 'Invalid key (only lowercase letters, numbers, [._/-] allowed, e.g. "magic_wand")',
+  static FormValidator<String> adventureKeyPart(
+    AppLocalizations l10n, {
     bool detailed = true,
   }) {
+    final requiredMessage = l10n.validation_key_required;
+    final invalidMessage = l10n.validation_key_part_invalid;
     if (!detailed) {
       return compose([
         required(requiredMessage),
@@ -159,16 +166,16 @@ class Validators {
       final text = value.trim();
 
       if (text.contains('..')) {
-        return 'Double dots (..) are not allowed';
+        return l10n.validation_no_double_dots;
       }
       if (text.contains(':')) {
-        return 'Colons (:) are not allowed in the key part';
+        return l10n.validation_key_part_no_colon;
       }
       if (text.contains(RegExp(r'[A-Z]'))) {
-        return 'Uppercase letters are not allowed';
+        return l10n.validation_no_uppercase;
       }
       if (text.contains(' ')) {
-        return 'Spaces are not allowed';
+        return l10n.validation_no_spaces;
       }
       if (!adventureKeyPartPattern.hasMatch(text)) {
         return invalidMessage;
@@ -181,23 +188,24 @@ class Validators {
   /// Validates an enchantment level input against [maxLevel].
   /// When [unsafe] is true, the max-level constraint is skipped, but the level
   /// is still limited to [maxEnchantmentLevel] (the range of a short).
-  static String? enchantmentLevel({
+  static String? enchantmentLevel(
+    AppLocalizations l10n, {
     required String? value,
     required int maxLevel,
     bool unsafe = false,
   }) {
     if (value == null || value.trim().isEmpty) {
-      return 'Please enter a level';
+      return l10n.validation_level_required;
     }
     final level = int.tryParse(value);
     if (level == null) {
-      return 'Please enter a valid number';
+      return l10n.validation_number_invalid;
     }
     if (!unsafe && level > maxLevel) {
-      return 'The maximum is $maxLevel';
+      return l10n.validation_maximum(maxLevel);
     }
     if (level > maxEnchantmentLevel) {
-      return 'The maximum is $maxEnchantmentLevel';
+      return l10n.validation_maximum(maxEnchantmentLevel);
     }
     return null;
   }
