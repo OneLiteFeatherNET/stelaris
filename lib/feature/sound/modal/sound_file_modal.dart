@@ -58,7 +58,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
     final smallGap = isDense ? 12.0 : 16.0;
 
     return FormDialog(
-      title: widget.create ? 'Create Sound' : 'Edit Sound',
+      title: widget.create ? context.l10n.sound_create : context.l10n.sound_edit,
       actionIcon: widget.create ? Icons.add : Icons.save_outlined,
       actionLabel: context.l10n.button_save,
       minWidth: 400,
@@ -92,7 +92,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
             SizedBox(height: smallGap),
             // Combined Section: Switches + Type dropdown
             BaseSection(
-              title: 'Options',
+              title: context.l10n.sound_options,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -115,13 +115,19 @@ class _SoundFileModalState extends State<SoundFileModal> {
                   SizedBox(height: smallGap),
                   DropdownButtonFormField<String>(
                     initialValue: _type,
-                    decoration: const InputDecoration(
-                      labelText: 'Type',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: context.l10n.card_type,
+                      border: const OutlineInputBorder(),
                     ),
-                    items: const [
-                      DropdownMenuItem(value: 'file', child: Text('File')),
-                      DropdownMenuItem(value: 'event', child: Text('Event')),
+                    items: [
+                      DropdownMenuItem(
+                        value: 'file',
+                        child: Text(context.l10n.sound_type_file),
+                      ),
+                      DropdownMenuItem(
+                        value: 'event',
+                        child: Text(context.l10n.sound_type_event),
+                      ),
                     ],
                     onChanged: (v) => setState(() => _type = v ?? 'file'),
                   ),

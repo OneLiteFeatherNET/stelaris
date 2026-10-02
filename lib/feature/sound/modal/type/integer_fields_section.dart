@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/sound/modal/section/base_section.dart';
 import 'package:stelaris/feature/sound/modal/section/base_integer_section_field.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class IntegerFieldsSection extends StatelessWidget {
   final int weight;
@@ -24,7 +25,7 @@ class IntegerFieldsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final verticalGap = dense ? 8.0 : 12.0;
     return BaseSection(
-      title: 'Weight & Attenuation',
+      title: context.l10n.sound_section_weight_attenuation,
       padding: dense ? const EdgeInsets.all(16) : null,
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -34,7 +35,7 @@ class IntegerFieldsSection extends StatelessWidget {
               children: [
                 Expanded(
                   child: BaseIntegerField(
-                    label: 'Weight',
+                    label: context.l10n.sound_weight,
                     initialValue: weight,
                     minValue: minValue,
                     onChanged: onWeightChanged,
@@ -43,7 +44,7 @@ class IntegerFieldsSection extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: BaseIntegerField(
-                    label: 'Attenuation Distance',
+                    label: context.l10n.sound_attenuation_distance,
                     initialValue: attenuation,
                     minValue: minValue,
                     onChanged: onAttenuationChanged,
@@ -55,14 +56,14 @@ class IntegerFieldsSection extends StatelessWidget {
           return Column(
             children: [
               BaseIntegerField(
-                label: 'Weight',
+                label: context.l10n.sound_weight,
                 initialValue: weight,
                 minValue: minValue,
                 onChanged: onWeightChanged,
               ),
               SizedBox(height: verticalGap),
               BaseIntegerField(
-                label: 'Attenuation Distance',
+                label: context.l10n.sound_attenuation_distance,
                 initialValue: attenuation,
                 minValue: minValue,
                 onChanged: onAttenuationChanged,

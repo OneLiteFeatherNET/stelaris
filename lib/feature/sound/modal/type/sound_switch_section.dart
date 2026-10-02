@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/sound/modal/section/base_section.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 /// A section that exposes the Stream and Preload switches.
 ///
@@ -38,14 +39,14 @@ class SwitchesSection extends StatelessWidget {
             children: [
               _buildLabeledSwitchRow(
                 context: context,
-                label: 'Stream',
+                label: context.l10n.sound_stream,
                 value: streamValue,
                 onChanged: onStreamChanged,
               ),
               const SizedBox(height: 12),
               _buildLabeledSwitchRow(
                 context: context,
-                label: 'Preload',
+                label: context.l10n.sound_preload,
                 value: preloadValue,
                 onChanged: onPreloadChanged,
               ),
@@ -57,7 +58,7 @@ class SwitchesSection extends StatelessWidget {
               Expanded(
                 child: _buildLabeledSwitchRow(
                   context: context,
-                  label: 'Stream',
+                  label: context.l10n.sound_stream,
                   value: streamValue,
                   onChanged: onStreamChanged,
                 ),
@@ -66,7 +67,7 @@ class SwitchesSection extends StatelessWidget {
               Expanded(
                 child: _buildLabeledSwitchRow(
                   context: context,
-                  label: 'Preload',
+                  label: context.l10n.sound_preload,
                   value: preloadValue,
                   onChanged: onPreloadChanged,
                 ),

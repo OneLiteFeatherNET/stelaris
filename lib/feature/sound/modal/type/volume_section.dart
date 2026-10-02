@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/sound/modal/section/base_section.dart';
 import 'package:stelaris/feature/sound/modal/section/sound_slider.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 /// A dedicated section for controlling sound volume and pitch settings.
 ///
@@ -45,12 +46,12 @@ class _VolumeSectionState extends State<VolumeSection> {
   @override
   Widget build(BuildContext context) {
     return BaseSection(
-      title: 'Volume & Pitch',
+      title: context.l10n.sound_section_volume_pitch,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           SoundSliderRow(
-            label: 'Volume',
+            label: context.l10n.sound_volume,
             value: _currentVolume,
             onChanged: (newVolume) {
               setState(() {
@@ -61,7 +62,7 @@ class _VolumeSectionState extends State<VolumeSection> {
           ),
           const SizedBox(height: 12),
           SoundSliderRow(
-            label: 'Pitch',
+            label: context.l10n.sound_pitch,
             value: _currentPitch,
             onChanged: (newPitch) {
               setState(() {
