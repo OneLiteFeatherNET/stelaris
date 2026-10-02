@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 enum _MenuAction { edit, delete }
 
@@ -20,16 +21,19 @@ class CollapsedMenuActions extends StatelessWidget {
         _MenuAction.edit => onEdit(),
         _MenuAction.delete => onDelete(),
       },
-      itemBuilder: (context) => const [
+      itemBuilder: (context) => [
         PopupMenuItem(
           value: _MenuAction.edit,
-          child: _MenuItemContent(icon: Icon(Icons.edit), label: 'Edit'),
+          child: _MenuItemContent(
+            icon: const Icon(Icons.edit),
+            label: context.l10n.button_edit,
+          ),
         ),
         PopupMenuItem(
           value: _MenuAction.delete,
           child: _MenuItemContent(
-            icon: Icon(Icons.delete_forever),
-            label: 'Delete',
+            icon: const Icon(Icons.delete_forever),
+            label: context.l10n.button_delete,
           ),
         ),
       ],

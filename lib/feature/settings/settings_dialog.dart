@@ -7,19 +7,20 @@ import 'package:stelaris/feature/settings/rows/theme_settings_row.dart';
 import 'package:stelaris/feature/settings/settings_end_tile.dart';
 import 'package:stelaris/feature/settings/settings_header_tile.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class SettingsDialog extends StatelessWidget {
   const SettingsDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const AnimatedDialog(
+    return AnimatedDialog(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SettingsHeaderTile(text: 'Settings'),
+          SettingsHeaderTile(text: context.l10n.settings_title),
           verticalSpacing25,
-          Flexible(
+          const Flexible(
             child: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24),

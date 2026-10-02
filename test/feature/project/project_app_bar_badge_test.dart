@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/project/badge/project_app_bar_badge.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/l10n/app_localizations.dart';
 
 void main() {
   group('ProjectAppBarBadge Widget Tests', () {
@@ -14,6 +15,8 @@ void main() {
         StoreProvider<AppState>(
           store: store,
           child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(56),
@@ -44,6 +47,8 @@ void main() {
         StoreProvider<AppState>(
           store: store,
           child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(56),

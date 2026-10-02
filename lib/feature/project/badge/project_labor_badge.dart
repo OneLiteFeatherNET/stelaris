@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class ProjectLaborBadge extends StatelessWidget {
   final double fontSize;
@@ -19,7 +20,7 @@ class ProjectLaborBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
-        'Labor',
+        context.l10n.project_labor_badge,
         style: TextStyle(
           fontSize: fontSize,
           fontWeight: FontWeight.bold,

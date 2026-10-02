@@ -4,6 +4,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/project/badge/project_labor_badge.dart';
 import 'package:stelaris/feature/settings/settings_dialog.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class ProjectAppBarBadge extends StatelessWidget {
   const ProjectAppBarBadge({super.key});
@@ -19,7 +20,7 @@ class ProjectAppBarBadge extends StatelessWidget {
         if (project == null) return const SizedBox.shrink();
 
         return Tooltip(
-          message: 'Project: ${project.displayName} (${project.key})\nClick to open settings',
+          message: context.l10n.project_badge_tooltip(project.displayName, project.key),
           child: Material(
             color: Colors.transparent,
             child: InkWell(

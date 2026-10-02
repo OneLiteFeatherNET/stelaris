@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 const double snackBarWidth = 550;
 
@@ -175,7 +176,7 @@ extension ScaffoldMessengerContextExtension on BuildContext {
       problem = ProblemDetail.fromDioException(error);
     } else {
       problem = ProblemDetail(
-        title: 'Error',
+        title: l10n.error_title,
         status: 500,
         detail: error.toString(),
       );
