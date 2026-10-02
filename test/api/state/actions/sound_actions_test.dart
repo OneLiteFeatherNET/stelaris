@@ -219,4 +219,74 @@ void main() {
       expect(listed.files.items, isEmpty);
     });
   });
+
+  group('SoundNotesUpdateAction', () {
+    test('replaces the list entry and only patches the notes into a '
+        'selection of the same sound event', () async {
+      final listed = SoundEventModel(id: 'sound-1', uiName: 'Footsteps');
+      // The selection carries an unsaved rename that must survive.
+      final selected = listed.copyWith(uiName: 'Renamed', comment: 'Old');
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedSoundEvent: selected,
+          soundEvents: PaginatedResult<SoundEventModel>(
+            items: [listed],
+            totalItems: 1,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      (ApiService().soundApi as SoundClientApi)
+          .apiClient
+          .dio
+          .httpClientAdapter = FakeHttpClientAdapter.json({
+        'id': 'sound-1',
+        'uiName': 'Footsteps',
+        'comment': 'Boss room',
+      });
+
+      await store.dispatchAndWait(SoundNotesUpdateAction(listed, 'Boss room'));
+
+      expect(store.state.soundEvents.items.single.comment, 'Boss room');
+      expect(store.state.selectedSoundEvent!.comment, 'Boss room');
+      expect(store.state.selectedSoundEvent!.uiName, 'Renamed');
+    });
+
+    test('leaves a selection of another sound event alone', () async {
+      final listed = SoundEventModel(id: 'sound-1', uiName: 'Footsteps');
+      final other = SoundEventModel(
+        id: 'sound-2',
+        uiName: 'Other',
+        comment: 'Old',
+      );
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedSoundEvent: other,
+          soundEvents: PaginatedResult<SoundEventModel>(
+            items: [listed, other],
+            totalItems: 2,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      (ApiService().soundApi as SoundClientApi)
+          .apiClient
+          .dio
+          .httpClientAdapter = FakeHttpClientAdapter.json({
+        'id': 'sound-1',
+        'uiName': 'Footsteps',
+        'comment': 'Boss room',
+      });
+
+      await store.dispatchAndWait(SoundNotesUpdateAction(listed, 'Boss room'));
+
+      expect(store.state.selectedSoundEvent, other);
+    });
+  });
 }

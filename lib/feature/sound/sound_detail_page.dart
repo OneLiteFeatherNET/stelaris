@@ -47,6 +47,7 @@ class SoundDetailPage extends StatelessWidget {
             deleteTitle: context.l10n.dialog_sound_delete_title,
             deleteWarning: context.l10n.delete_dialog_related_sound,
             removeAction: SoundRemoveAction.new,
+            readNotes: (model) => model.comment,
           ),
         ],
         body: DefaultTabController(

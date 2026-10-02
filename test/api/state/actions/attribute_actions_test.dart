@@ -213,4 +213,78 @@ void main() {
       expect(status2.isDispatchAborted, isTrue);
     });
   });
+
+  group('AttributeNotesUpdateAction', () {
+    test('replaces the list entry and only patches the notes into a '
+        'selection of the same attribute', () async {
+      const listed = AttributeModel(id: 'attribute-1', uiName: 'Speed');
+      // The selection carries an unsaved rename that must survive.
+      final selected = listed.copyWith(uiName: 'Renamed', comment: 'Old');
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedAttribute: selected,
+          attributes: const PaginatedResult<AttributeModel>(
+            items: [listed],
+            totalItems: 1,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      (ApiService().attributeApi as BaseApi<AttributeModel>)
+          .apiClient
+          .dio
+          .httpClientAdapter = FakeHttpClientAdapter.json({
+        'id': 'attribute-1',
+        'uiName': 'Speed',
+        'comment': 'Boss room',
+      });
+
+      await store.dispatchAndWait(
+        AttributeNotesUpdateAction(listed, 'Boss room'),
+      );
+
+      expect(store.state.attributes.items.single.comment, 'Boss room');
+      expect(store.state.selectedAttribute!.comment, 'Boss room');
+      expect(store.state.selectedAttribute!.uiName, 'Renamed');
+    });
+
+    test('leaves a selection of another attribute alone', () async {
+      const listed = AttributeModel(id: 'attribute-1', uiName: 'Speed');
+      const other = AttributeModel(
+        id: 'attribute-2',
+        uiName: 'Other',
+        comment: 'Old',
+      );
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedAttribute: other,
+          attributes: const PaginatedResult<AttributeModel>(
+            items: [listed, other],
+            totalItems: 2,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      (ApiService().attributeApi as BaseApi<AttributeModel>)
+          .apiClient
+          .dio
+          .httpClientAdapter = FakeHttpClientAdapter.json({
+        'id': 'attribute-1',
+        'uiName': 'Speed',
+        'comment': 'Boss room',
+      });
+
+      await store.dispatchAndWait(
+        AttributeNotesUpdateAction(listed, 'Boss room'),
+      );
+
+      expect(store.state.selectedAttribute, other);
+    });
+  });
 }

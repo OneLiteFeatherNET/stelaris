@@ -5,7 +5,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// How a model's internal notes are read and written.
 ///
 /// Widgets that take a `ModelNotes` show notes only when given one, so
-/// models without notes (sounds, attributes) just leave it out.
+/// models without notes (dimensions) just leave it out.
 class ModelNotes<E extends DataModel> {
   const ModelNotes({required this.read, required this.update});
 

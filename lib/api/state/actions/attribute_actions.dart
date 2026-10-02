@@ -270,3 +270,37 @@ class AttributeDatabaseUpdate extends ReduxAction<AppState> with Throttle {
     return _updateAttributesInState(state, updatedList, dbModel);
   }
 }
+
+/// Saves new [notes] for [model] straight from the overview. The list entry
+/// is replaced with the server's response; a selection of the same
+/// attribute only gets the new notes, so edits in an open dialog survive.
+class AttributeNotesUpdateAction extends ReduxAction<AppState>
+    with NonReentrant {
+  final AttributeModel model;
+  final String? notes;
+
+  AttributeNotesUpdateAction(this.model, this.notes);
+
+  @override
+  Future<AppState?> reduce() async {
+    final AttributeModel response = await ApiService().attributeApi.update(
+      model.copyWith(comment: notes),
+    );
+    final List<AttributeModel> items = List.of(
+      state.attributes.items,
+      growable: true,
+    );
+    final int index = items.indexWhere((item) => item.id == response.id);
+    if (index != -1) {
+      items[index] = response;
+    }
+    final selected = state.selectedAttribute;
+    return _updateAttributesInState(
+      state,
+      items,
+      selected?.id == response.id
+          ? selected!.copyWith(comment: response.comment)
+          : selected,
+    );
+  }
+}
