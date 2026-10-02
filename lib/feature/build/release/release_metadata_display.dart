@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/status_card.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 enum ReleaseDisplayType { version, status }
 
@@ -41,7 +42,7 @@ class ReleaseMetadataDisplay extends StatelessWidget {
     if (releaseModel == null) {
       final colorScheme = theme.colorScheme;
       return StatusCard(
-        text: 'Service unavailable',
+        text: context.l10n.build_service_unavailable,
         backgroundColor: colorScheme.errorContainer.withValues(alpha: 0.8),
         textColor: colorScheme.onErrorContainer,
         height: height,
@@ -96,14 +97,14 @@ class ReleaseMetadataDisplay extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Build: ${model.version}',
+          context.l10n.build_release_version(model.version),
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 2),
         Text(
-          'Release: ${_format(model.publishedAt)}',
+          context.l10n.build_release_date(_format(model.publishedAt)),
           style: theme.textTheme.bodySmall,
         ),
       ],
@@ -131,13 +132,13 @@ class ReleaseMetadataDisplay extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'Status: ',
+          context.l10n.build_release_status,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
         Text(
-          isPrerelease ? 'Pre-Release' : 'Stable',
+          isPrerelease ? context.l10n.build_release_prerelease : context.l10n.build_release_stable,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
             color: isPrerelease ? Colors.orange : Colors.green,
@@ -161,7 +162,7 @@ class ReleaseMetadataDisplay extends StatelessWidget {
 
     if (commit == null || commit.isEmpty) {
       return Text(
-        'No commit info',
+        context.l10n.build_no_commit_info,
         style: theme.textTheme.bodySmall?.copyWith(
           color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
         ),
@@ -175,7 +176,7 @@ class ReleaseMetadataDisplay extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Commit: ', style: theme.textTheme.bodySmall),
+        Text(context.l10n.build_commit_label, style: theme.textTheme.bodySmall),
         Icon(
           Icons.commit,
           size: 14,

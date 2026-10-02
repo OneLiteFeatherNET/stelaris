@@ -79,7 +79,7 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: StatusCard(
-            text: 'Fetching branches...',
+            text: context.l10n.download_fetching_branches,
             backgroundColor: theme.colorScheme.secondaryContainer.withValues(
               alpha: 0.5,
             ),
@@ -101,7 +101,7 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: StatusCard(
-            text: 'No project selected! Please select a project first',
+            text: context.l10n.download_no_project,
             backgroundColor: theme.colorScheme.errorContainer,
             glowColor: theme.colorScheme.errorContainer.withValues(alpha: 0.5),
             height: 70,
@@ -115,7 +115,7 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: StatusCard(
-            text: 'Service unavailable',
+            text: context.l10n.build_service_unavailable,
             backgroundColor: theme.colorScheme.errorContainer.withValues(
               alpha: 0.8,
             ),
@@ -131,14 +131,14 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: StatusCard(
-            text: 'No branches found! Please create some in the repository',
+            text: context.l10n.download_no_branches,
             backgroundColor: theme.colorScheme.errorContainer,
             glowColor: theme.colorScheme.errorContainer.withValues(alpha: 0.5),
             height: 70,
             trailing: IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: widget.onRefresh,
-              tooltip: 'Refresh branches',
+              tooltip: context.l10n.download_refresh_branches,
             ),
           ),
         ),
@@ -160,7 +160,7 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Search by Commit',
+                  context.l10n.download_search_by_commit,
                   style: theme.textTheme.titleSmall,
                   textAlign: TextAlign.center,
                 ),
