@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Simplified favicon variant: sun + skyline + horizon on navy only;
+       clouds, hills, stars and the comet are dropped so it still reads at
+       16x16/32x32. Same palette as stelaris.svg. -->
+  <rect width="512" height="512" fill="#0C0F2A"/>
+
+  <circle cx="256" cy="320" r="190" fill="#EC4C1B"/>
+  <circle cx="256" cy="320" r="120" fill="#F98E0E"/>
+  <circle cx="256" cy="320" r="60" fill="#FFF6DD"/>
+
+  <rect x="20" y="310" width="472" height="45" fill="#0C0F2A"/>
+
+  <rect x="106" y="235" width="70" height="85" fill="#193968"/>
+  <rect x="221" y="170" width="70" height="150" fill="#193968"/>
+  <rect x="336" y="235" width="70" height="85" fill="#193968"/>
+</svg>
