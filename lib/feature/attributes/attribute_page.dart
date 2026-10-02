@@ -9,6 +9,7 @@ import 'package:stelaris/feature/attributes/attribute_edit_dialog.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_create.dart';
+import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -51,6 +52,10 @@ class AttributePage extends StatelessWidget {
           models: vm.models,
           nameSelector: (model) => model.uiName,
           keySelector: (model) => model.key ?? '',
+          notes: ModelNotes(
+            read: (model) => model.comment,
+            update: AttributeNotesUpdateAction.new,
+          ),
           projectKey: vm.projectKey,
           filterOptions: [hasDefaultValueFilter, hasMaximumValueFilter],
           matchesFilter: (model, filter) => switch (filter.id) {

@@ -203,6 +203,41 @@ class SoundDatabaseUpdate extends ReduxAction<AppState> with Throttle {
   }
 }
 
+/// Saves new [notes] for [model] straight from the overview, without going
+/// through the selection and its unsaved-changes flow. The list entry is
+/// replaced with the server's response. A selection of the same sound event
+/// only gets the new notes — its other fields may hold unsaved edits, and a
+/// later Save must not send the old notes back.
+class SoundNotesUpdateAction extends ReduxAction<AppState> with NonReentrant {
+  final SoundEventModel model;
+  final String? notes;
+
+  SoundNotesUpdateAction(this.model, this.notes);
+
+  @override
+  Future<AppState?> reduce() async {
+    final SoundEventModel response = await ApiService().soundApi.update(
+      model.copyWith(comment: notes),
+    );
+    final List<SoundEventModel> items = List.of(
+      state.soundEvents.items,
+      growable: true,
+    );
+    final int index = items.indexWhere((item) => item.id == response.id);
+    if (index != -1) {
+      items[index] = response;
+    }
+    final selected = state.selectedSoundEvent;
+    return _updateSoundEventsInState(
+      state,
+      items,
+      selected?.id == response.id
+          ? selected!.copyWith(comment: response.comment)
+          : selected,
+    );
+  }
+}
+
 /// Internal action to manage the loading state for sound pagination.
 ///
 /// This private action controls the `isLoadingMoreSoundEvents` flag in the state,
