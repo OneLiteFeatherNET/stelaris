@@ -1032,4 +1032,278 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get search_reset => 'Reset search';
+
+  @override
+  String get button_edit => 'Edit';
+
+  @override
+  String get button_view => 'View';
+
+  @override
+  String get error_title => 'Error';
+
+  @override
+  String get settings_title => 'Settings';
+
+  @override
+  String get empty_data_default_header => 'No data available';
+
+  @override
+  String get empty_data_default_subheader =>
+      'Use the add button to add new data!';
+
+  @override
+  String get validation_required => 'This field is required';
+
+  @override
+  String get validation_name_required => 'Name is required';
+
+  @override
+  String get validation_display_name_required => 'Display name is required';
+
+  @override
+  String get validation_key_required => 'Key is required';
+
+  @override
+  String get validation_namespace_required => 'Key / Namespace is required';
+
+  @override
+  String get validation_no_uppercase => 'Uppercase letters are not allowed';
+
+  @override
+  String get validation_no_uppercase_key =>
+      'Uppercase letters are not allowed in Adventure keys';
+
+  @override
+  String get validation_no_spaces => 'Spaces are not allowed';
+
+  @override
+  String get validation_no_double_dots => 'Double dots (..) are not allowed';
+
+  @override
+  String get validation_one_colon =>
+      'Only one colon (:) is allowed for namespace:key';
+
+  @override
+  String get validation_namespace_slash_in_key =>
+      'Namespace cannot contain slashes (/)';
+
+  @override
+  String get validation_namespace_no_colon =>
+      'Colons (:) are not allowed (only the namespace part, e.g. \"my_project\")';
+
+  @override
+  String get validation_namespace_no_slash =>
+      'Slashes (/) are not allowed in a namespace';
+
+  @override
+  String get validation_key_part_no_colon =>
+      'Colons (:) are not allowed in the key part';
+
+  @override
+  String get validation_adventure_key_invalid =>
+      'Invalid Adventure key (e.g. \"my_project\" or \"custom:my_project\")';
+
+  @override
+  String get validation_namespace_invalid =>
+      'Invalid namespace (only lowercase letters, numbers, [._-] allowed, e.g. \"my_project\")';
+
+  @override
+  String get validation_key_part_invalid =>
+      'Invalid key (only lowercase letters, numbers, [._/-] allowed, e.g. \"magic_wand\")';
+
+  @override
+  String get validation_texture_path_invalid =>
+      'Invalid texture path (e.g. \"minecraft:font/ascii.png\")';
+
+  @override
+  String get validation_sound_key_invalid =>
+      'Invalid key (e.g. \"entity.player.hurt\" or \"custom:ui/click\")';
+
+  @override
+  String get validation_level_required => 'Please enter a level';
+
+  @override
+  String get validation_number_invalid => 'Please enter a valid number';
+
+  @override
+  String validation_maximum(int max) {
+    return 'The maximum is $max';
+  }
+
+  @override
+  String validation_field_required(String field) {
+    return 'Enter a $field';
+  }
+
+  @override
+  String get validation_integer_invalid => 'Enter a valid integer';
+
+  @override
+  String get validation_codepoint_required => 'Please enter a codepoint';
+
+  @override
+  String get validation_codepoint_invalid =>
+      'Enter exactly 4 hex digits (e.g. E000)';
+
+  @override
+  String get validation_commit_length =>
+      'The commit must contain 10 characters';
+
+  @override
+  String get project_description_hint => 'Brief description of the project';
+
+  @override
+  String get project_labor_toggle =>
+      'Mark as laboratory / experimental project';
+
+  @override
+  String project_badge_tooltip(String name, String key) {
+    return 'Project: $name ($key)\nClick to open settings';
+  }
+
+  @override
+  String get project_labor_badge => 'Labor';
+
+  @override
+  String get build_service_unavailable => 'Service unavailable';
+
+  @override
+  String build_release_version(String version) {
+    return 'Build: $version';
+  }
+
+  @override
+  String build_release_date(String date) {
+    return 'Release: $date';
+  }
+
+  @override
+  String get build_release_status => 'Status: ';
+
+  @override
+  String get build_release_prerelease => 'Pre-Release';
+
+  @override
+  String get build_release_stable => 'Stable';
+
+  @override
+  String get build_no_commit_info => 'No commit info';
+
+  @override
+  String get build_commit_label => 'Commit: ';
+
+  @override
+  String get build_fetching_release => 'Fetching release info...';
+
+  @override
+  String get build_current_version => 'Current version';
+
+  @override
+  String get build_new_version => 'New Version';
+
+  @override
+  String get build_version_part_prompt =>
+      'Select the part of the version to update:';
+
+  @override
+  String get build_started => 'Build started successfully';
+
+  @override
+  String build_failed(String error) {
+    return 'Build failed: $error';
+  }
+
+  @override
+  String get build_tab_build => 'Build';
+
+  @override
+  String get build_dialog_title => 'Build & Download Vulpes';
+
+  @override
+  String get download_commit_label => 'Git commit';
+
+  @override
+  String get download_commit_tooltip =>
+      'Enter a valid Git commit (Only the first 10 characters)';
+
+  @override
+  String get download_fetching_branches => 'Fetching branches...';
+
+  @override
+  String get download_no_project =>
+      'No project selected! Please select a project first';
+
+  @override
+  String get download_no_branches =>
+      'No branches found! Please create some in the repository';
+
+  @override
+  String get download_refresh_branches => 'Refresh branches';
+
+  @override
+  String get download_search_by_commit => 'Search by Commit';
+
+  @override
+  String get sound_key => 'Key';
+
+  @override
+  String get sound_subtitle => 'Subtitle';
+
+  @override
+  String get sound_file_delete_title => 'Delete file';
+
+  @override
+  String get sound_file_delete_body => 'Unlink this file from the sound event?';
+
+  @override
+  String get sound_section_weight_attenuation => 'Weight & Attenuation';
+
+  @override
+  String get sound_weight => 'Weight';
+
+  @override
+  String get sound_attenuation_distance => 'Attenuation Distance';
+
+  @override
+  String get sound_section_volume_pitch => 'Volume & Pitch';
+
+  @override
+  String get sound_volume => 'Volume';
+
+  @override
+  String get sound_pitch => 'Pitch';
+
+  @override
+  String get sound_name => 'Name';
+
+  @override
+  String get sound_name_hint => 'Enter your sound name';
+
+  @override
+  String get sound_name_tooltip => 'The name of the sound';
+
+  @override
+  String get sound_stream => 'Stream';
+
+  @override
+  String get sound_preload => 'Preload';
+
+  @override
+  String get sound_create => 'Create Sound';
+
+  @override
+  String get sound_edit => 'Edit Sound';
+
+  @override
+  String get sound_options => 'Options';
+
+  @override
+  String get sound_type_file => 'File';
+
+  @override
+  String get sound_type_event => 'Event';
+
+  @override
+  String get font_char_label => 'Char *';
 }

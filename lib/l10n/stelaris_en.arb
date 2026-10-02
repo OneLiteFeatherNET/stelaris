@@ -460,5 +460,132 @@
   "search_clear_tooltip": "Clear search",
   "search_no_results": "No matches",
   "search_no_results_hint": "Try another search or reset the filters.",
-  "search_reset": "Reset search"
+  "search_reset": "Reset search",
+
+  "button_edit": "Edit",
+  "button_view": "View",
+  "error_title": "Error",
+  "settings_title": "Settings",
+  "empty_data_default_header": "No data available",
+  "empty_data_default_subheader": "Use the add button to add new data!",
+  "validation_required": "This field is required",
+  "validation_name_required": "Name is required",
+  "validation_display_name_required": "Display name is required",
+  "validation_key_required": "Key is required",
+  "validation_namespace_required": "Key / Namespace is required",
+  "validation_no_uppercase": "Uppercase letters are not allowed",
+  "validation_no_uppercase_key": "Uppercase letters are not allowed in Adventure keys",
+  "validation_no_spaces": "Spaces are not allowed",
+  "validation_no_double_dots": "Double dots (..) are not allowed",
+  "validation_one_colon": "Only one colon (:) is allowed for namespace:key",
+  "validation_namespace_slash_in_key": "Namespace cannot contain slashes (/)",
+  "validation_namespace_no_colon": "Colons (:) are not allowed (only the namespace part, e.g. \"my_project\")",
+  "validation_namespace_no_slash": "Slashes (/) are not allowed in a namespace",
+  "validation_key_part_no_colon": "Colons (:) are not allowed in the key part",
+  "validation_adventure_key_invalid": "Invalid Adventure key (e.g. \"my_project\" or \"custom:my_project\")",
+  "validation_namespace_invalid": "Invalid namespace (only lowercase letters, numbers, [._-] allowed, e.g. \"my_project\")",
+  "validation_key_part_invalid": "Invalid key (only lowercase letters, numbers, [._/-] allowed, e.g. \"magic_wand\")",
+  "validation_texture_path_invalid": "Invalid texture path (e.g. \"minecraft:font/ascii.png\")",
+  "validation_sound_key_invalid": "Invalid key (e.g. \"entity.player.hurt\" or \"custom:ui/click\")",
+  "validation_level_required": "Please enter a level",
+  "validation_number_invalid": "Please enter a valid number",
+  "validation_maximum": "The maximum is {max}",
+  "@validation_maximum": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "validation_field_required": "Enter a {field}",
+  "@validation_field_required": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "validation_integer_invalid": "Enter a valid integer",
+  "validation_codepoint_required": "Please enter a codepoint",
+  "validation_codepoint_invalid": "Enter exactly 4 hex digits (e.g. E000)",
+  "validation_commit_length": "The commit must contain 10 characters",
+  "project_description_hint": "Brief description of the project",
+  "project_labor_toggle": "Mark as laboratory / experimental project",
+  "project_badge_tooltip": "Project: {name} ({key})\nClick to open settings",
+  "@project_badge_tooltip": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "project_labor_badge": "Labor",
+  "build_service_unavailable": "Service unavailable",
+  "build_release_version": "Build: {version}",
+  "@build_release_version": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "build_release_date": "Release: {date}",
+  "@build_release_date": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "build_release_status": "Status: ",
+  "build_release_prerelease": "Pre-Release",
+  "build_release_stable": "Stable",
+  "build_no_commit_info": "No commit info",
+  "build_commit_label": "Commit: ",
+  "build_fetching_release": "Fetching release info...",
+  "build_current_version": "Current version",
+  "build_new_version": "New Version",
+  "build_version_part_prompt": "Select the part of the version to update:",
+  "build_started": "Build started successfully",
+  "build_failed": "Build failed: {error}",
+  "@build_failed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "build_tab_build": "Build",
+  "build_dialog_title": "Build & Download Vulpes",
+  "download_commit_label": "Git commit",
+  "download_commit_tooltip": "Enter a valid Git commit (Only the first 10 characters)",
+  "download_fetching_branches": "Fetching branches...",
+  "download_no_project": "No project selected! Please select a project first",
+  "download_no_branches": "No branches found! Please create some in the repository",
+  "download_refresh_branches": "Refresh branches",
+  "download_search_by_commit": "Search by Commit",
+  "sound_key": "Key",
+  "sound_subtitle": "Subtitle",
+  "sound_file_delete_title": "Delete file",
+  "sound_file_delete_body": "Unlink this file from the sound event?",
+  "sound_section_weight_attenuation": "Weight & Attenuation",
+  "sound_weight": "Weight",
+  "sound_attenuation_distance": "Attenuation Distance",
+  "sound_section_volume_pitch": "Volume & Pitch",
+  "sound_volume": "Volume",
+  "sound_pitch": "Pitch",
+  "sound_name": "Name",
+  "sound_name_hint": "Enter your sound name",
+  "sound_name_tooltip": "The name of the sound",
+  "sound_stream": "Stream",
+  "sound_preload": "Preload",
+  "sound_create": "Create Sound",
+  "sound_edit": "Edit Sound",
+  "sound_options": "Options",
+  "sound_type_file": "File",
+  "sound_type_event": "Event",
+  "font_char_label": "Char *"
 }
