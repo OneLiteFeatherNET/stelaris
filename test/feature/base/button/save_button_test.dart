@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/button/save_button.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/l10n/app_localizations.dart';
 
 void main() {
   testWidgets('SaveButton without text renders icon only and triggers callback',
@@ -304,6 +305,8 @@ void main() {
       StoreProvider<AppState>(
         store: store,
         child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: Builder(
               builder: (context) => SaveButton(

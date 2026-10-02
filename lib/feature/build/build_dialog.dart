@@ -10,6 +10,7 @@ import 'package:stelaris/feature/build/release/release_status_section.dart';
 import 'package:stelaris/feature/build/tabs/build_tabs.dart';
 import 'package:stelaris/feature/settings/settings_header_tile.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class BuildDialog extends StatelessWidget {
   const BuildDialog({super.key});
@@ -31,7 +32,7 @@ class BuildDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SettingsHeaderTile(text: 'Build & Download Vulpes'),
+                SettingsHeaderTile(text: context.l10n.build_dialog_title),
                 verticalSpacing25,
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50),

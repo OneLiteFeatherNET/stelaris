@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
+import 'package:stelaris/l10n/app_localizations.dart';
 
 void main() {
   group('EmptyDataWidget', () {
@@ -8,7 +9,11 @@ void main() {
       const widget = EmptyDataWidget();
 
       await tester.pumpWidget(
-        const MaterialApp(home: Scaffold(body: widget)),
+        const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: widget),
+        ),
       );
 
       // Find the widget
@@ -17,8 +22,8 @@ void main() {
 
       // Inspect the widget fields
       final emptyWidget = tester.widget<EmptyDataWidget>(finder);
-      expect(emptyWidget.header, 'No data available');
-      expect(emptyWidget.subHeader, 'Use the add button to add new data!');
+      expect(emptyWidget.header, isNull);
+      expect(emptyWidget.subHeader, isNull);
       expect(emptyWidget.icon, Icons.auto_awesome);
 
       // Check the rendered content
@@ -31,7 +36,11 @@ void main() {
       const widget = EmptyDataWidget.standard(header: 'Wonderful Header');
 
       await tester.pumpWidget(
-        const MaterialApp(home: Scaffold(body: widget)),
+        const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: widget),
+        ),
       );
 
       final finder = find.byType(EmptyDataWidget);
@@ -39,7 +48,7 @@ void main() {
 
       final emptyWidget = tester.widget<EmptyDataWidget>(finder);
       expect(emptyWidget.header, 'Wonderful Header');
-      expect(emptyWidget.subHeader, 'Use the add button to add new data!');
+      expect(emptyWidget.subHeader, isNull);
       expect(emptyWidget.icon, Icons.auto_awesome);
 
       expect(find.text('Wonderful Header'), findsOneWidget);
@@ -54,7 +63,11 @@ void main() {
       );
 
       await tester.pumpWidget(
-        const MaterialApp(home: Scaffold(body: widget)),
+        const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: widget),
+        ),
       );
 
       final finder = find.byType(EmptyDataWidget);

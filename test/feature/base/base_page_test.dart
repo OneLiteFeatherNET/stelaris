@@ -49,7 +49,11 @@ void main() {
       await tester.pumpWidget(
         StoreProvider<AppState>(
           store: store,
-          child: MaterialApp.router(routerConfig: testRouter),
+          child: MaterialApp.router(
+            routerConfig: testRouter,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -90,7 +94,11 @@ void main() {
       await tester.pumpWidget(
         StoreProvider<AppState>(
           store: store,
-          child: MaterialApp.router(routerConfig: testRouter),
+          child: MaterialApp.router(
+            routerConfig: testRouter,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+          ),
         ),
       );
       await tester.pumpAndSettle();

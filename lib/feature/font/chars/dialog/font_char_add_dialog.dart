@@ -41,10 +41,10 @@ class _FontCharAddDialogState extends State<FontCharAddDialog> {
           controller: _controller,
           autocorrect: false,
           validator: (value) => _validateHexGlyph(value),
-          decoration: const InputDecoration(
-            labelText: 'Char *',
+          decoration: InputDecoration(
+            labelText: context.l10n.font_char_label,
             hintText: 'E000',
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
           ),
           onFieldSubmitted: (_) => _handleAdd(),
         ),
@@ -63,14 +63,14 @@ class _FontCharAddDialogState extends State<FontCharAddDialog> {
 
   String? _validateHexGlyph(String? input) {
     if (input == null || input.trim().isEmpty) {
-      return 'Please enter a codepoint';
+      return context.l10n.validation_codepoint_required;
     }
 
     final hex = input.trim();
 
     // Must be 4 hex digits
     if (!regex.hasMatch(hex)) {
-      return 'Enter exactly 4 hex digits (e.g. E000)';
+      return context.l10n.validation_codepoint_invalid;
     }
 
     return null;

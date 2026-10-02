@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/sound/modal/section/base_section.dart';
 import 'package:stelaris/util/typedefs.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class StringInputSection extends StatefulWidget {
   const StringInputSection({
@@ -40,7 +41,7 @@ class _StringInputSectionState extends State<StringInputSection> {
       borderSide: BorderSide(color: colorScheme.outline),
     );
     return BaseSection(
-      title: 'Name',
+      title: context.l10n.sound_name,
       child: TextField(
         controller: _controller,
         onChanged: (value) {
@@ -48,12 +49,12 @@ class _StringInputSectionState extends State<StringInputSection> {
           widget.onUpdate(value);
         },
         decoration: InputDecoration(
-          hintText: 'Enter your sound name',
+          hintText: context.l10n.sound_name_hint,
           hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
           border: outlineBorder,
-          suffixIcon: const Tooltip(
-            message: 'The name of the sound',
-            child: Icon(Icons.info_outline),
+          suffixIcon: Tooltip(
+            message: context.l10n.sound_name_tooltip,
+            child: const Icon(Icons.info_outline),
           ),
           enabledBorder: outlineBorder,
           focusedBorder: OutlineInputBorder(

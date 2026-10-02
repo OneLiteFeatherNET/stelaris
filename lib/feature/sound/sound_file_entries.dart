@@ -13,6 +13,7 @@ import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/sound/card/sound_file_card.dart';
 import 'package:stelaris/feature/sound/modal/sound_file_modal_helper.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class SoundFileEntryPage extends StatefulWidget {
   const SoundFileEntryPage({super.key});
@@ -117,19 +118,19 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
     showDialog<bool>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: const Text('Delete file'),
-        content: const Text('Unlink this file from the sound event?'),
+        title: Text(context.l10n.sound_file_delete_title),
+        content: Text(context.l10n.sound_file_delete_body),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.button_cancel),
           ),
           FilledButton(
             onPressed: () {
               Navigator.of(context).pop(true);
               context.dispatch(SoundFileSourceDeleteAction(source));
             },
-            child: const Text('Delete'),
+            child: Text(context.l10n.button_delete),
           ),
         ],
       ),

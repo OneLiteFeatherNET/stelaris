@@ -1,20 +1,21 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class BuildTabs extends StatelessWidget {
   const BuildTabs({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const TabBar.secondary(
+    return TabBar.secondary(
       dividerHeight: 0,
       tabs: [
         Tab(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.download),
-              SizedBox(width: 8),
-              Text('Download'),
+              const Icon(Icons.download),
+              const SizedBox(width: 8),
+              Text(context.l10n.button_download),
             ],
           ),
         ),
@@ -22,9 +23,9 @@ class BuildTabs extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.construction_sharp),
-              SizedBox(width: 8),
-              Text('Build'),
+              const Icon(Icons.construction_sharp),
+              const SizedBox(width: 8),
+              Text(context.l10n.build_tab_build),
             ],
           ),
         ),

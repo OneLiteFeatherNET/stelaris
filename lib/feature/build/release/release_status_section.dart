@@ -3,6 +3,7 @@ import 'package:stelaris/api/state/factory/build/build_vm_state.dart';
 import 'package:stelaris/feature/build/release/release_metadata_display.dart';
 import 'package:stelaris/feature/status_card.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class ReleaseStatusSection extends StatelessWidget {
   const ReleaseStatusSection({required this.vm, super.key});
@@ -15,7 +16,7 @@ class ReleaseStatusSection extends StatelessWidget {
 
     if (vm.isLoadingRelease) {
       return StatusCard(
-        text: 'Fetching release info...',
+        text: context.l10n.build_fetching_release,
         backgroundColor: themeData.colorScheme.secondaryContainer.withValues(
           alpha: 0.5,
         ),

@@ -3,6 +3,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/sound/card/folder_icon.dart';
 import 'package:stelaris/feature/sound/card/small_file_card.dart';
 import 'package:stelaris/feature/sound/card/sound_card_button.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class SoundFileCard extends StatelessWidget {
   static const double _fullCardMinWidth = 230;
@@ -61,7 +62,7 @@ class SoundFileCard extends StatelessWidget {
                 if (onDeleteRequested != null)
                   OutlinedButton(
                     onPressed: onDeleteRequested,
-                    child: const Text('Delete'),
+                    child: Text(context.l10n.button_delete),
                   ),
               ],
             ),

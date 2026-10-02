@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/formatter/min_value_formatter.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class BaseIntegerField extends StatefulWidget {
   final String label;
@@ -45,9 +46,9 @@ class _BaseIntegerFieldState extends State<BaseIntegerField> {
       ),
       inputFormatters: [MinValueFormatter(widget.minValue)],
       validator: (v) {
-        if (v == null || v.isEmpty) return 'Enter a ${widget.label}';
+        if (v == null || v.isEmpty) return context.l10n.validation_field_required(widget.label);
         final val = int.tryParse(v);
-        if (val == null) return 'Enter a valid integer';
+        if (val == null) return context.l10n.validation_integer_invalid;
         return null;
       },
       onChanged: (v) {

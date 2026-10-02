@@ -120,6 +120,7 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
               validator: (value) {
                 if (value == null) return null;
                 return Validators.enchantmentLevel(
+                  context.l10n,
                   value: value,
                   maxLevel: _selected.value.maxLevel,
                   unsafe: _unsafe.value,

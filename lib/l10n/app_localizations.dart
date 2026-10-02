@@ -1989,6 +1989,492 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset search'**
   String get search_reset;
+
+  /// No description provided for @button_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get button_edit;
+
+  /// No description provided for @button_view.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get button_view;
+
+  /// No description provided for @error_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error_title;
+
+  /// No description provided for @settings_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings_title;
+
+  /// No description provided for @empty_data_default_header.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available'**
+  String get empty_data_default_header;
+
+  /// No description provided for @empty_data_default_subheader.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the add button to add new data!'**
+  String get empty_data_default_subheader;
+
+  /// No description provided for @validation_required.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required'**
+  String get validation_required;
+
+  /// No description provided for @validation_name_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required'**
+  String get validation_name_required;
+
+  /// No description provided for @validation_display_name_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Display name is required'**
+  String get validation_display_name_required;
+
+  /// No description provided for @validation_key_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Key is required'**
+  String get validation_key_required;
+
+  /// No description provided for @validation_namespace_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Key / Namespace is required'**
+  String get validation_namespace_required;
+
+  /// No description provided for @validation_no_uppercase.
+  ///
+  /// In en, this message translates to:
+  /// **'Uppercase letters are not allowed'**
+  String get validation_no_uppercase;
+
+  /// No description provided for @validation_no_uppercase_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Uppercase letters are not allowed in Adventure keys'**
+  String get validation_no_uppercase_key;
+
+  /// No description provided for @validation_no_spaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Spaces are not allowed'**
+  String get validation_no_spaces;
+
+  /// No description provided for @validation_no_double_dots.
+  ///
+  /// In en, this message translates to:
+  /// **'Double dots (..) are not allowed'**
+  String get validation_no_double_dots;
+
+  /// No description provided for @validation_one_colon.
+  ///
+  /// In en, this message translates to:
+  /// **'Only one colon (:) is allowed for namespace:key'**
+  String get validation_one_colon;
+
+  /// No description provided for @validation_namespace_slash_in_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Namespace cannot contain slashes (/)'**
+  String get validation_namespace_slash_in_key;
+
+  /// No description provided for @validation_namespace_no_colon.
+  ///
+  /// In en, this message translates to:
+  /// **'Colons (:) are not allowed (only the namespace part, e.g. \"my_project\")'**
+  String get validation_namespace_no_colon;
+
+  /// No description provided for @validation_namespace_no_slash.
+  ///
+  /// In en, this message translates to:
+  /// **'Slashes (/) are not allowed in a namespace'**
+  String get validation_namespace_no_slash;
+
+  /// No description provided for @validation_key_part_no_colon.
+  ///
+  /// In en, this message translates to:
+  /// **'Colons (:) are not allowed in the key part'**
+  String get validation_key_part_no_colon;
+
+  /// No description provided for @validation_adventure_key_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid Adventure key (e.g. \"my_project\" or \"custom:my_project\")'**
+  String get validation_adventure_key_invalid;
+
+  /// No description provided for @validation_namespace_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid namespace (only lowercase letters, numbers, [._-] allowed, e.g. \"my_project\")'**
+  String get validation_namespace_invalid;
+
+  /// No description provided for @validation_key_part_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid key (only lowercase letters, numbers, [._/-] allowed, e.g. \"magic_wand\")'**
+  String get validation_key_part_invalid;
+
+  /// No description provided for @validation_texture_path_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid texture path (e.g. \"minecraft:font/ascii.png\")'**
+  String get validation_texture_path_invalid;
+
+  /// No description provided for @validation_sound_key_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid key (e.g. \"entity.player.hurt\" or \"custom:ui/click\")'**
+  String get validation_sound_key_invalid;
+
+  /// No description provided for @validation_level_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a level'**
+  String get validation_level_required;
+
+  /// No description provided for @validation_number_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid number'**
+  String get validation_number_invalid;
+
+  /// No description provided for @validation_maximum.
+  ///
+  /// In en, this message translates to:
+  /// **'The maximum is {max}'**
+  String validation_maximum(int max);
+
+  /// No description provided for @validation_field_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a {field}'**
+  String validation_field_required(String field);
+
+  /// No description provided for @validation_integer_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid integer'**
+  String get validation_integer_invalid;
+
+  /// No description provided for @validation_codepoint_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a codepoint'**
+  String get validation_codepoint_required;
+
+  /// No description provided for @validation_codepoint_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter exactly 4 hex digits (e.g. E000)'**
+  String get validation_codepoint_invalid;
+
+  /// No description provided for @validation_commit_length.
+  ///
+  /// In en, this message translates to:
+  /// **'The commit must contain 10 characters'**
+  String get validation_commit_length;
+
+  /// No description provided for @project_description_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Brief description of the project'**
+  String get project_description_hint;
+
+  /// No description provided for @project_labor_toggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as laboratory / experimental project'**
+  String get project_labor_toggle;
+
+  /// No description provided for @project_badge_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Project: {name} ({key})\nClick to open settings'**
+  String project_badge_tooltip(String name, String key);
+
+  /// No description provided for @project_labor_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Labor'**
+  String get project_labor_badge;
+
+  /// No description provided for @build_service_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Service unavailable'**
+  String get build_service_unavailable;
+
+  /// No description provided for @build_release_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Build: {version}'**
+  String build_release_version(String version);
+
+  /// No description provided for @build_release_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Release: {date}'**
+  String build_release_date(String date);
+
+  /// No description provided for @build_release_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: '**
+  String get build_release_status;
+
+  /// No description provided for @build_release_prerelease.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-Release'**
+  String get build_release_prerelease;
+
+  /// No description provided for @build_release_stable.
+  ///
+  /// In en, this message translates to:
+  /// **'Stable'**
+  String get build_release_stable;
+
+  /// No description provided for @build_no_commit_info.
+  ///
+  /// In en, this message translates to:
+  /// **'No commit info'**
+  String get build_no_commit_info;
+
+  /// No description provided for @build_commit_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Commit: '**
+  String get build_commit_label;
+
+  /// No description provided for @build_fetching_release.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching release info...'**
+  String get build_fetching_release;
+
+  /// No description provided for @build_current_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Current version'**
+  String get build_current_version;
+
+  /// No description provided for @build_new_version.
+  ///
+  /// In en, this message translates to:
+  /// **'New Version'**
+  String get build_new_version;
+
+  /// No description provided for @build_version_part_prompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the part of the version to update:'**
+  String get build_version_part_prompt;
+
+  /// No description provided for @build_started.
+  ///
+  /// In en, this message translates to:
+  /// **'Build started successfully'**
+  String get build_started;
+
+  /// No description provided for @build_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Build failed: {error}'**
+  String build_failed(String error);
+
+  /// No description provided for @build_tab_build.
+  ///
+  /// In en, this message translates to:
+  /// **'Build'**
+  String get build_tab_build;
+
+  /// No description provided for @build_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Build & Download Vulpes'**
+  String get build_dialog_title;
+
+  /// No description provided for @download_commit_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Git commit'**
+  String get download_commit_label;
+
+  /// No description provided for @download_commit_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid Git commit (Only the first 10 characters)'**
+  String get download_commit_tooltip;
+
+  /// No description provided for @download_fetching_branches.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching branches...'**
+  String get download_fetching_branches;
+
+  /// No description provided for @download_no_project.
+  ///
+  /// In en, this message translates to:
+  /// **'No project selected! Please select a project first'**
+  String get download_no_project;
+
+  /// No description provided for @download_no_branches.
+  ///
+  /// In en, this message translates to:
+  /// **'No branches found! Please create some in the repository'**
+  String get download_no_branches;
+
+  /// No description provided for @download_refresh_branches.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh branches'**
+  String get download_refresh_branches;
+
+  /// No description provided for @download_search_by_commit.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by Commit'**
+  String get download_search_by_commit;
+
+  /// No description provided for @sound_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Key'**
+  String get sound_key;
+
+  /// No description provided for @sound_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitle'**
+  String get sound_subtitle;
+
+  /// No description provided for @sound_file_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete file'**
+  String get sound_file_delete_title;
+
+  /// No description provided for @sound_file_delete_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink this file from the sound event?'**
+  String get sound_file_delete_body;
+
+  /// No description provided for @sound_section_weight_attenuation.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight & Attenuation'**
+  String get sound_section_weight_attenuation;
+
+  /// No description provided for @sound_weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get sound_weight;
+
+  /// No description provided for @sound_attenuation_distance.
+  ///
+  /// In en, this message translates to:
+  /// **'Attenuation Distance'**
+  String get sound_attenuation_distance;
+
+  /// No description provided for @sound_section_volume_pitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume & Pitch'**
+  String get sound_section_volume_pitch;
+
+  /// No description provided for @sound_volume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get sound_volume;
+
+  /// No description provided for @sound_pitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Pitch'**
+  String get sound_pitch;
+
+  /// No description provided for @sound_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get sound_name;
+
+  /// No description provided for @sound_name_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your sound name'**
+  String get sound_name_hint;
+
+  /// No description provided for @sound_name_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'The name of the sound'**
+  String get sound_name_tooltip;
+
+  /// No description provided for @sound_stream.
+  ///
+  /// In en, this message translates to:
+  /// **'Stream'**
+  String get sound_stream;
+
+  /// No description provided for @sound_preload.
+  ///
+  /// In en, this message translates to:
+  /// **'Preload'**
+  String get sound_preload;
+
+  /// No description provided for @sound_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Sound'**
+  String get sound_create;
+
+  /// No description provided for @sound_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Sound'**
+  String get sound_edit;
+
+  /// No description provided for @sound_options.
+  ///
+  /// In en, this message translates to:
+  /// **'Options'**
+  String get sound_options;
+
+  /// No description provided for @sound_type_file.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get sound_type_file;
+
+  /// No description provided for @sound_type_event.
+  ///
+  /// In en, this message translates to:
+  /// **'Event'**
+  String get sound_type_event;
+
+  /// No description provided for @font_char_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Char *'**
+  String get font_char_label;
 }
 
 class _AppLocalizationsDelegate

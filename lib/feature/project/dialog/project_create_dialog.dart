@@ -57,7 +57,7 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
                 border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.title),
               ),
-              validator: Validators.required('Display name is required'),
+              validator: Validators.required(context.l10n.validation_display_name_required),
             ),
             verticalSpacing10,
             TextFormField(
@@ -70,7 +70,7 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
                 border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.vpn_key_outlined),
               ),
-              validator: Validators.adventureNamespace(),
+              validator: Validators.adventureNamespace(context.l10n),
             ),
             verticalSpacing10,
             TextFormField(
@@ -78,7 +78,7 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
               maxLines: 3,
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_description,
-                hintText: 'Brief description of the project',
+                hintText: context.l10n.project_description_hint,
                 border: const OutlineInputBorder(),
                 alignLabelWithHint: true,
               ),
@@ -107,9 +107,9 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(context.l10n.dialog_project_labor),
-              subtitle: const Text(
-                'Mark as laboratory / experimental project',
-                style: TextStyle(fontSize: 12),
+              subtitle: Text(
+                context.l10n.project_labor_toggle,
+                style: const TextStyle(fontSize: 12),
               ),
               value: _labor,
               onChanged: (val) {

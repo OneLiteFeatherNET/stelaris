@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 const int maxCommitLength = 10;
 
@@ -24,7 +25,7 @@ class DevBuildOption extends StatelessWidget {
         maxLength: maxCommitLength,
         controller: controller,
         decoration: InputDecoration(
-          labelText: 'Git commit',
+          labelText: context.l10n.download_commit_label,
           prefixIcon: const Icon(Icons.commit),
           border: const OutlineInputBorder(),
           enabledBorder: OutlineInputBorder(
@@ -33,16 +34,16 @@ class DevBuildOption extends StatelessWidget {
               width: 1,
             ),
           ),
-          suffixIcon: const Tooltip(
-            message: 'Enter a valid Git commit (Only the first 10 characters)',
-            child: Icon(Icons.info_outline_rounded),
+          suffixIcon: Tooltip(
+            message: context.l10n.download_commit_tooltip,
+            child: const Icon(Icons.info_outline_rounded),
           ),
         ),
         keyboardType: TextInputType.text,
         inputFormatters: [FilteringTextInputFormatter.allow(gitCommitPattern)],
         validator: (value) {
           if (value != null && value.length < maxCommitLength) {
-            return 'The commit must contains 10 chars';
+            return context.l10n.validation_commit_length;
           }
           return null;
         },

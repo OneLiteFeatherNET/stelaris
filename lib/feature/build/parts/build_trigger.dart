@@ -6,6 +6,7 @@ import 'package:stelaris/feature/build/parts/build_branch_selection.dart';
 import 'package:stelaris/feature/build/parts/build_version_display.dart';
 import 'package:stelaris/feature/build/version_group_selection.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 class BuildTrigger extends StatefulWidget {
   const BuildTrigger({required this.version, super.key});
@@ -62,7 +63,7 @@ class _BuildTriggerState extends State<BuildTrigger>
               children: [
                 Expanded(
                   child: VersionUpdateInput(
-                    labelText: 'Current version',
+                    labelText: context.l10n.build_current_version,
                     controller: _controller,
                   ),
                 ),
@@ -71,7 +72,7 @@ class _BuildTriggerState extends State<BuildTrigger>
                 horizontalSpacing10,
                 Expanded(
                   child: VersionUpdateInput(
-                    labelText: 'New Version',
+                    labelText: context.l10n.build_new_version,
                     controller: _newVersionController,
                     highlight: true,
                     highlightedPart: _versionPart,
@@ -81,7 +82,7 @@ class _BuildTriggerState extends State<BuildTrigger>
             ),
             verticalSpacing25,
             Text(
-              'Select the part of the version to update:',
+              context.l10n.build_version_part_prompt,
               style: Theme.of(context).textTheme.titleSmall,
             ),
             heightTen,
@@ -124,15 +125,15 @@ class _BuildTriggerState extends State<BuildTrigger>
                             await ApiService().generateApi.generate(branch);
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Build started successfully'),
+                                SnackBar(
+                                  content: Text(context.l10n.build_started),
                                 ),
                               );
                             }
                           } catch (e) {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Build failed: $e')),
+                                SnackBar(content: Text(context.l10n.build_failed('$e'))),
                               );
                             }
                           } finally {
@@ -143,7 +144,7 @@ class _BuildTriggerState extends State<BuildTrigger>
                             }
                           }
                         },
-                        label: const Text('Generate'),
+                        label: Text(context.l10n.button_generate),
                       ),
                     ),
             ),
