@@ -86,7 +86,7 @@ jobs:
       # renovate: datasource=github-tags depName=helm-unittest/helm-unittest
       - name: Install the unittest plugin
         env:
-          UNITTEST_VERSION: v1.1.2
+          UNITTEST_VERSION: v1.2.0
         run: helm plugin install https://github.com/helm-unittest/helm-unittest --version "$UNITTEST_VERSION" --verify=false
 
       - name: Unit tests
