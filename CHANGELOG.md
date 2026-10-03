@@ -1,5 +1,43 @@
 # Changelog
 
+## [1.6.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.5.0...v1.6.0) (2026-10-03)
+
+
+### Features
+
+* **app:** improve layout ([3f1cefb](https://github.com/OneLiteFeatherNET/stelaris/commit/3f1cefb81d992d4d277facde878798ebcd33c53a))
+* **auth:** sign in with OpenID Connect ([#178](https://github.com/OneLiteFeatherNET/stelaris/issues/178)) ([e20a294](https://github.com/OneLiteFeatherNET/stelaris/commit/e20a2948fdbc731fe8050e220995d0816cd9e7a6))
+* **detail:** merge single-field tabs and give tabs stable ids ([#198](https://github.com/OneLiteFeatherNET/stelaris/issues/198)) ([99721ee](https://github.com/OneLiteFeatherNET/stelaris/commit/99721eea6f1f7259333f54310a6f19c62d316c49))
+* **dialog:** add name confirmation to delete a model ([#183](https://github.com/OneLiteFeatherNET/stelaris/issues/183)) ([615e08d](https://github.com/OneLiteFeatherNET/stelaris/commit/615e08df6a8e4fb0b0cb0d8260cfe0be12d0292f))
+* **model:** add info chip widget ([#182](https://github.com/OneLiteFeatherNET/stelaris/issues/182)) ([192f589](https://github.com/OneLiteFeatherNET/stelaris/commit/192f589489f29a6096f6447c4a6ecc6c48c2d86f))
+* **model:** add info dialog ([#181](https://github.com/OneLiteFeatherNET/stelaris/issues/181)) ([3e04f0f](https://github.com/OneLiteFeatherNET/stelaris/commit/3e04f0f323d317d5ae1503e2bdcbd8a40ef1350a))
+* **model:** overhaul comment field ([#197](https://github.com/OneLiteFeatherNET/stelaris/issues/197)) ([0c0c9fe](https://github.com/OneLiteFeatherNET/stelaris/commit/0c0c9feff7773539f808fb5f263481f1a222cfd1))
+* **navigation:** draw the rail icons from Minecraft ([#190](https://github.com/OneLiteFeatherNET/stelaris/issues/190)) ([1758a1f](https://github.com/OneLiteFeatherNET/stelaris/commit/1758a1f13ae7d83188907be66bf8572549f6c1ad))
+* **navigation:** draw the rail icons from Minecraft ([#191](https://github.com/OneLiteFeatherNET/stelaris/issues/191)) ([1758a1f](https://github.com/OneLiteFeatherNET/stelaris/commit/1758a1f13ae7d83188907be66bf8572549f6c1ad))
+* **page:** add note usage to attributes and sound entities ([#203](https://github.com/OneLiteFeatherNET/stelaris/issues/203)) ([47766db](https://github.com/OneLiteFeatherNET/stelaris/commit/47766db2a32daa859209396957f737ade1f5b657))
+* **palette:** run commands and jump anywhere with Ctrl+K ([#192](https://github.com/OneLiteFeatherNET/stelaris/issues/192)) ([61907ab](https://github.com/OneLiteFeatherNET/stelaris/commit/61907ab17b2fb255f501fbd5644f5753b3b414de))
+* **search:** overhauled search logic and widget ([#185](https://github.com/OneLiteFeatherNET/stelaris/issues/185)) ([85a2c77](https://github.com/OneLiteFeatherNET/stelaris/commit/85a2c77ed378f7925ea444fb21f14bdf6dec5844))
+* **state:** improve async redux flow and stability ([#173](https://github.com/OneLiteFeatherNET/stelaris/issues/173)) ([ddf8c30](https://github.com/OneLiteFeatherNET/stelaris/commit/ddf8c3044de81c22a7f8d6c3adfbd4d495411875))
+
+
+### Bug Fixes
+
+* **action:** avoid double model copy ([#184](https://github.com/OneLiteFeatherNET/stelaris/issues/184)) ([e0ccb2e](https://github.com/OneLiteFeatherNET/stelaris/commit/e0ccb2e82b2466ca55d19835866c30e8b9b7ef6f))
+* **chip:** increase fontSize by one ([5e8d2de](https://github.com/OneLiteFeatherNET/stelaris/commit/5e8d2dec2dac7b5cfe10f4067a6eb41d79141bc3))
+* **command:** improve button sizing ([b658b4d](https://github.com/OneLiteFeatherNET/stelaris/commit/b658b4d71e21a6a6911e25fbdb2fa7545b290364))
+* **command:** improve widget spacing ([#180](https://github.com/OneLiteFeatherNET/stelaris/issues/180)) ([63ddfc9](https://github.com/OneLiteFeatherNET/stelaris/commit/63ddfc91e9905200571a0cd522995bb1862ae0c8))
+* **deps:** update dependency go_router to ^18.0.2 ([#196](https://github.com/OneLiteFeatherNET/stelaris/issues/196)) ([8088a45](https://github.com/OneLiteFeatherNET/stelaris/commit/8088a458a43f1933fb2b2f8c5fea590b1b353ea3))
+* **deps:** update dependency material_ui to ^1.5.0 ([#201](https://github.com/OneLiteFeatherNET/stelaris/issues/201)) ([1707939](https://github.com/OneLiteFeatherNET/stelaris/commit/170793959faed00d295cecc5002fbd4ff56167d1))
+* **dialog:** improve color usage between themes ([7271b22](https://github.com/OneLiteFeatherNET/stelaris/commit/7271b227ef03211f76d998ad3f5a0de2983b4bd4))
+* **enchantment:** limit level input to the maximum of a short ([#193](https://github.com/OneLiteFeatherNET/stelaris/issues/193)) ([8642e67](https://github.com/OneLiteFeatherNET/stelaris/commit/8642e676614be3dd65d47e3279555c98f20d802f))
+* **input:** allow clearing text fields and ignore unchanged values ([6569e80](https://github.com/OneLiteFeatherNET/stelaris/commit/6569e8016a4bc27933290b17c9b3926bd30677cd))
+* **input:** stop input filters from dropping valid characters ([5320d1a](https://github.com/OneLiteFeatherNET/stelaris/commit/5320d1ae5e0a8cb572ac5f8c57e67c160f3ec48b))
+* **page:** add missing padding ([78fc357](https://github.com/OneLiteFeatherNET/stelaris/commit/78fc3577b12daa7324cca8fbf7d5680082bb9275))
+* **problem:** migrate to freezed model to avoid equality and other issues ([c7a52f2](https://github.com/OneLiteFeatherNET/stelaris/commit/c7a52f2c631a1b4ebe027b187234dbc53568410e))
+* **setting:** use outlined icon instead of the regular variant ([3fb39f7](https://github.com/OneLiteFeatherNET/stelaris/commit/3fb39f796dfa28f9257fcd798e4820eb1a0fbe88))
+* **state:** avoid naming typo and add error resilience ([08c567a](https://github.com/OneLiteFeatherNET/stelaris/commit/08c567aee0bf4524a602443bcdc415f55bbfdc0e))
+* **theme:** improve text theme copy to avoid black text ([7b52e7c](https://github.com/OneLiteFeatherNET/stelaris/commit/7b52e7c68906a46622a7c0487f59b57baac4a228))
+
 ## [1.5.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.4.1...v1.5.0) (2026-09-14)
 
 
