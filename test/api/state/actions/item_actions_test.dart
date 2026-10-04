@@ -415,6 +415,66 @@ void main() {
       expect(requested.path, endsWith('/project/p1/item/item-1/copy'));
     });
 
+    test('addresses a model with an empty projectId through the open project', () async {
+      const unscoped = ItemModel(
+        id: 'item-1',
+        uiName: 'Sword',
+        key: 'sword',
+        projectId: '',
+      );
+      final store = storeWith(unscoped);
+      late Uri requested;
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            requested = options.uri;
+            return ResponseBody.fromString(
+              '{"id":"item-2","uiName":"Sword (Copy)","projectId":"p1"}',
+              200,
+              headers: {
+                Headers.contentTypeHeader: [Headers.jsonContentType],
+              },
+            );
+          });
+
+      await store.dispatchAndWait(
+        ItemCopyAction(
+          unscoped,
+          const CopyModelResult(
+            targetProject: project,
+            name: 'Sword (Copy)',
+            key: 'sword-copy',
+          ),
+        ),
+      );
+
+      expect(requested.path, endsWith('/project/p1/item/item-1/copy'));
+    });
+
+    test('appends a copy whose response lacks a projectId under the target', () async {
+      final store = storeWith(source);
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json({
+            'id': 'item-2',
+            'uiName': 'Sword (Copy)',
+            'key': 'sword-copy',
+          });
+
+      await store.dispatchAndWait(
+        ItemCopyAction(
+          source,
+          const CopyModelResult(
+            targetProject: project,
+            name: 'Sword (Copy)',
+            key: 'sword-copy',
+          ),
+        ),
+      );
+
+      expect(store.state.items.items.map((i) => i.id), ['item-1', 'item-2']);
+      expect(store.state.items.items.last.projectId, 'p1');
+      expect(store.state.items.totalItems, 2);
+    });
+
     test('fails when the backend rejects the copy', () async {
       final store = storeWith(source);
       ApiService().itemApi.apiClient.dio.httpClientAdapter =

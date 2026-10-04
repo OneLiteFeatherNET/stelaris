@@ -4,6 +4,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/api/state/actions/copy_model_action.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 
 class SelectFontAction extends ReduxAction<AppState> {
@@ -99,8 +100,10 @@ class InitFontAction extends ReduxAction<AppState> {
 
 /// Copies [source] as described by [result]. The copy joins the list only
 /// when it landed in the open project; the selection is left alone.
-class FontCopyAction extends ReduxAction<AppState> with NonReentrant {
+class FontCopyAction extends ReduxAction<AppState>
+    with NonReentrant, CopyModelAction {
   final FontModel source;
+  @override
   final CopyModelResult result;
 
   FontCopyAction(this.source, this.result);
@@ -108,18 +111,19 @@ class FontCopyAction extends ReduxAction<AppState> with NonReentrant {
   @override
   Future<AppState?> reduce() async {
     final FontModel copied = await ApiService().fontApi.copy(
-      source.projectId == null
-          ? source.copyWith(projectId: state.selectedProject?.id)
-          : source,
+      source.copyWith(projectId: sourceProjectId(source.projectId)),
       targetProjectId: result.targetProjectId,
       targetName: result.name,
       targetKey: result.key,
       relations: result.relations,
     );
-    if (copied.projectId != state.selectedProject?.id) return null;
+    if (!copiesIntoOpenProject) return null;
     return _updateFontInState(
       state,
-      [...state.fonts.items, copied],
+      [
+        ...state.fonts.items,
+        copied.copyWith(projectId: result.targetProjectId),
+      ],
       state.selectedFont,
       totalItems: state.fonts.totalItems + 1,
     );

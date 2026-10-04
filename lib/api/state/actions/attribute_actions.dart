@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/actions/copy_model_action.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 
 /// Selects a specific attribute model and updates the state.
@@ -202,8 +203,10 @@ class AttributeAddAction extends ReduxAction<AppState> with NonReentrant {
 
 /// Copies [source] as described by [result]. The copy joins the list only
 /// when it landed in the open project; the selection is left alone.
-class AttributeCopyAction extends ReduxAction<AppState> with NonReentrant {
+class AttributeCopyAction extends ReduxAction<AppState>
+    with NonReentrant, CopyModelAction {
   final AttributeModel source;
+  @override
   final CopyModelResult result;
 
   AttributeCopyAction(this.source, this.result);
@@ -211,18 +214,19 @@ class AttributeCopyAction extends ReduxAction<AppState> with NonReentrant {
   @override
   Future<AppState?> reduce() async {
     final AttributeModel copied = await ApiService().attributeApi.copy(
-      source.projectId == null
-          ? source.copyWith(projectId: state.selectedProject?.id)
-          : source,
+      source.copyWith(projectId: sourceProjectId(source.projectId)),
       targetProjectId: result.targetProjectId,
       targetName: result.name,
       targetKey: result.key,
       relations: result.relations,
     );
-    if (copied.projectId != state.selectedProject?.id) return null;
+    if (!copiesIntoOpenProject) return null;
     return _updateAttributesInState(
       state,
-      [...state.attributes.items, copied],
+      [
+        ...state.attributes.items,
+        copied.copyWith(projectId: result.targetProjectId),
+      ],
       state.selectedAttribute,
       totalItems: state.attributes.totalItems + 1,
     );
