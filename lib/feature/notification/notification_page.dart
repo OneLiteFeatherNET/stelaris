@@ -11,6 +11,7 @@ import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/feature/model/model_copy.dart';
 
 /// A widget that represents the notification management page.
 ///
@@ -44,6 +45,10 @@ class NotificationPage extends StatelessWidget {
           notes: ModelNotes(
             read: (model) => model.comment,
             update: NotificationNotesUpdateAction.new,
+          ),
+          copy: ModelCopy(
+            title: (l10n) => l10n.dialog_notification_copy,
+            action: NotificationCopyAction.new,
           ),
           projectKey: vm.projectKey,
           matchesFilter: (model, filter) => true,
