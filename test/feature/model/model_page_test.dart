@@ -12,6 +12,10 @@ import 'package:stelaris/feature/model/model_sort_option.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 
 import '../../test_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/util/copy_model_result.dart';
+import 'package:stelaris/feature/model/model_copy.dart';
+import 'package:stelaris/feature/project/dialog/switch_project_dialog.dart';
 
 /// Wraps a [ModelPage] of [models] in the store it reads its search,
 /// filters and sort order from. The search field itself lives in the
@@ -25,6 +29,7 @@ Widget createModelPage({
   VoidCallback? onRefresh,
   bool isRefreshing = false,
   ModelNotes<TestModel>? notes,
+  ModelCopy<TestModel>? copy,
 }) {
   return StoreProvider<AppState>(
     store: store,
@@ -42,6 +47,7 @@ Widget createModelPage({
           nameSelector: (m) => m.name,
           keySelector: (m) => m.internalId.toString(),
           notes: notes,
+          copy: copy,
           projectKey: 'proj',
           filterOptions: filterOptions,
           onAdd: onAdd ?? () {},
@@ -66,6 +72,31 @@ class _RecordNotesAction extends ReduxAction<AppState> {
   Future<AppState?> reduce() async {
     if (fail) throw const UserException('Save failed');
     saved.add(notes);
+    return null;
+  }
+}
+
+/// Records the copy it was dispatched with, or fails like a taken key.
+class _RecordCopyAction extends ReduxAction<AppState> {
+  _RecordCopyAction(
+    this.copied,
+    this.result, {
+    this.fail = false,
+    this.crash = false,
+  });
+
+  final List<CopyModelResult> copied;
+  final CopyModelResult result;
+  final bool fail;
+
+  /// Throws a plain error, like a DioException from the API.
+  final bool crash;
+
+  @override
+  Future<AppState?> reduce() async {
+    if (fail) throw const UserException('Key already taken');
+    if (crash) throw StateError('409 Conflict');
+    copied.add(result);
     return null;
   }
 }
@@ -460,6 +491,167 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Notes for Ruby'), findsOneWidget);
+    });
+  });
+
+  group('ModelPage copying', () {
+    const project = Project(id: 'p1', displayName: 'Lobby', key: 'lobby');
+    const other = Project(id: 'p2', displayName: 'Arena', key: 'arena');
+    final models = [TestModel(internalId: 7, name: 'Ruby')];
+
+    Store<AppState> projectStore() => Store<AppState>(
+      initialState: const AppState().copyWith(
+        selectedProject: project,
+        projects: const [project, other],
+      ),
+    );
+
+    ModelCopy<TestModel> recordingCopy(
+      List<CopyModelResult> copied, {
+      bool fail = false,
+      bool crash = false,
+    }) => ModelCopy(
+      title: (l10n) => l10n.dialog_item_copy,
+      action: (_, result) =>
+          _RecordCopyAction(copied, result, fail: fail, crash: crash),
+    );
+
+    Future<void> openCopyDialog(WidgetTester tester) async {
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Copy…'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('the card menu offers no copy without copying', (tester) async {
+      await tester.pumpWidget(createModelPage(store: projectStore(), models: models));
+
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Copy…'), findsNothing);
+    });
+
+    testWidgets('copying within the project confirms it', (tester) async {
+      final copied = <CopyModelResult>[];
+      await tester.pumpWidget(
+        createModelPage(store: projectStore(), models: models, copy: recordingCopy(copied)),
+      );
+
+      await openCopyDialog(tester);
+      expect(find.text('Copy item'), findsOneWidget);
+      expect(find.text('lobby:7-copy'), findsOneWidget);
+
+      await tester.tap(find.text('Copy').last);
+      await tester.pumpAndSettle();
+
+      expect(copied.single.name, 'Ruby (Copy)');
+      expect(copied.single.targetProject, project);
+      expect(find.text('Copied'), findsOneWidget);
+    });
+
+    testWidgets('copying into another project offers to switch', (tester) async {
+      final copied = <CopyModelResult>[];
+      await tester.pumpWidget(
+        createModelPage(store: projectStore(), models: models, copy: recordingCopy(copied)),
+      );
+
+      await openCopyDialog(tester);
+      await tester.tap(find.text('Lobby (lobby)'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Arena (arena)').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Copy').last);
+      await tester.pumpAndSettle();
+
+      expect(copied.single.targetProject, other);
+      expect(find.text('Copied to Arena'), findsOneWidget);
+      expect(find.text('Switch project'), findsOneWidget);
+    });
+
+    testWidgets('a failed copy keeps the dialog open', (tester) async {
+      await tester.pumpWidget(
+        createModelPage(
+          store: projectStore(),
+          models: models,
+          copy: recordingCopy([], fail: true),
+        ),
+      );
+
+      await openCopyDialog(tester);
+      await tester.tap(find.text('Copy').last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Copy item'), findsOneWidget);
+      expect(find.text('Copied'), findsNothing);
+    });
+
+    testWidgets('a copy that throws keeps the dialog open and usable', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        createModelPage(
+          store: projectStore(),
+          models: models,
+          copy: recordingCopy([], crash: true),
+        ),
+      );
+
+      await openCopyDialog(tester);
+      await tester.tap(find.text('Copy').last);
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Copy item'), findsOneWidget);
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('"Switch project" still works after the card is gone', (
+      tester,
+    ) async {
+      final store = projectStore();
+      await tester.pumpWidget(
+        createModelPage(store: store, models: models, copy: recordingCopy([])),
+      );
+
+      await openCopyDialog(tester);
+      await tester.tap(find.text('Lobby (lobby)'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Arena (arena)').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Copy').last);
+      await tester.pumpAndSettle();
+
+      // The card that opened the dialog leaves, e.g. after a list refresh.
+      await tester.pumpWidget(
+        createModelPage(store: store, models: const [], copy: recordingCopy([])),
+      );
+      await tester.pump();
+
+      await tester.tap(find.text('Switch project'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SwitchProjectDialog), findsOneWidget);
+    });
+
+    testWidgets('the "Copied to" snackbar goes away on its own', (tester) async {
+      await tester.pumpWidget(
+        createModelPage(store: projectStore(), models: models, copy: recordingCopy([])),
+      );
+
+      await openCopyDialog(tester);
+      await tester.tap(find.text('Lobby (lobby)'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Arena (arena)').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Copy').last);
+      await tester.pumpAndSettle();
+      expect(find.text('Copied to Arena'), findsOneWidget);
+
+      await tester.pump(const Duration(seconds: 10));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Copied to Arena'), findsNothing);
     });
   });
 }
