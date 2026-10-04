@@ -1192,6 +1192,120 @@ abstract class AppLocalizations {
   /// **'Edit notes'**
   String get menu_item_edit_notes;
 
+  /// No description provided for @menu_item_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy…'**
+  String get menu_item_copy;
+
+  /// No description provided for @dialog_item_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy item'**
+  String get dialog_item_copy;
+
+  /// No description provided for @dialog_font_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy font'**
+  String get dialog_font_copy;
+
+  /// No description provided for @dialog_sound_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy sound event'**
+  String get dialog_sound_copy;
+
+  /// No description provided for @dialog_notification_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy notification'**
+  String get dialog_notification_copy;
+
+  /// No description provided for @dialog_attribute_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy attribute'**
+  String get dialog_attribute_copy;
+
+  /// No description provided for @dialog_model_copy_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get dialog_model_copy_button;
+
+  /// No description provided for @dialog_model_copy_project_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Target project'**
+  String get dialog_model_copy_project_label;
+
+  /// No description provided for @dialog_model_copy_relations_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy along'**
+  String get dialog_model_copy_relations_label;
+
+  /// No description provided for @copy_relation_lore.
+  ///
+  /// In en, this message translates to:
+  /// **'Lore'**
+  String get copy_relation_lore;
+
+  /// No description provided for @copy_relation_flags.
+  ///
+  /// In en, this message translates to:
+  /// **'Flags'**
+  String get copy_relation_flags;
+
+  /// No description provided for @copy_relation_enchantments.
+  ///
+  /// In en, this message translates to:
+  /// **'Enchantments'**
+  String get copy_relation_enchantments;
+
+  /// No description provided for @copy_relation_sources.
+  ///
+  /// In en, this message translates to:
+  /// **'Sources'**
+  String get copy_relation_sources;
+
+  /// No description provided for @copy_relation_chars.
+  ///
+  /// In en, this message translates to:
+  /// **'Characters'**
+  String get copy_relation_chars;
+
+  /// No description provided for @dialog_model_copy_name_suffix.
+  ///
+  /// In en, this message translates to:
+  /// **' (Copy)'**
+  String get dialog_model_copy_name_suffix;
+
+  /// No description provided for @dialog_model_copy_key_suffix.
+  ///
+  /// In en, this message translates to:
+  /// **'-copy'**
+  String get dialog_model_copy_key_suffix;
+
+  /// No description provided for @copy_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copy_success;
+
+  /// No description provided for @copy_success_other_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to {project}'**
+  String copy_success_other_project(String project);
+
+  /// No description provided for @copy_switch_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch project'**
+  String get copy_switch_project;
+
   /// No description provided for @notes_edit_in_overview.
   ///
   /// In en, this message translates to:

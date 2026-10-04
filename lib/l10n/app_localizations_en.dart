@@ -590,6 +590,65 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menu_item_edit_notes => 'Edit notes';
 
   @override
+  String get menu_item_copy => 'Copy…';
+
+  @override
+  String get dialog_item_copy => 'Copy item';
+
+  @override
+  String get dialog_font_copy => 'Copy font';
+
+  @override
+  String get dialog_sound_copy => 'Copy sound event';
+
+  @override
+  String get dialog_notification_copy => 'Copy notification';
+
+  @override
+  String get dialog_attribute_copy => 'Copy attribute';
+
+  @override
+  String get dialog_model_copy_button => 'Copy';
+
+  @override
+  String get dialog_model_copy_project_label => 'Target project';
+
+  @override
+  String get dialog_model_copy_relations_label => 'Copy along';
+
+  @override
+  String get copy_relation_lore => 'Lore';
+
+  @override
+  String get copy_relation_flags => 'Flags';
+
+  @override
+  String get copy_relation_enchantments => 'Enchantments';
+
+  @override
+  String get copy_relation_sources => 'Sources';
+
+  @override
+  String get copy_relation_chars => 'Characters';
+
+  @override
+  String get dialog_model_copy_name_suffix => ' (Copy)';
+
+  @override
+  String get dialog_model_copy_key_suffix => '-copy';
+
+  @override
+  String get copy_success => 'Copied';
+
+  @override
+  String copy_success_other_project(String project) {
+    return 'Copied to $project';
+  }
+
+  @override
+  String get copy_switch_project => 'Switch project';
+
+  @override
   String get notes_edit_in_overview =>
       'To edit the notes, use ⋯ → Edit notes on the overview card.';
 
