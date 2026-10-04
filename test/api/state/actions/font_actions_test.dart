@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/util/copy_model_result.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
@@ -253,6 +254,53 @@ void main() {
       final listed = store.state.fonts.items.single;
       expect(listed.uiName, 'Renamed');
       expect(listed.chars.items, isEmpty);
+    });
+  });
+
+  group('FontCopyAction', () {
+    const project = Project(id: 'p1', displayName: 'P1', key: 'p1');
+    const other = Project(id: 'p2', displayName: 'P2', key: 'p2');
+    const source = FontModel(id: 'font-1', uiName: 'Icons', key: 'icons', projectId: 'p1');
+
+    Store<AppState> store() => Store<AppState>(
+      initialState: const AppState().copyWith(
+        selectedProject: project,
+        fonts: const PaginatedResult<FontModel>(
+          items: [source],
+          totalItems: 1,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: 10,
+        ),
+      ),
+    );
+
+    test('appends a copy into the open project', () async {
+      final s = store();
+      ApiService().fontApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json({'id': 'font-2', 'uiName': 'Icons (Copy)', 'projectId': 'p1'});
+
+      await s.dispatchAndWait(FontCopyAction(
+        source,
+        const CopyModelResult(targetProject: project, name: 'Icons (Copy)', key: 'icons-copy', relations: {'CHARS'}),
+      ));
+
+      expect(s.state.fonts.items.map((f) => f.id), ['font-1', 'font-2']);
+      expect(s.state.fonts.totalItems, 2);
+    });
+
+    test('leaves the state alone for a copy into another project', () async {
+      final s = store();
+      final before = s.state;
+      ApiService().fontApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json({'id': 'font-2', 'uiName': 'Icons', 'projectId': 'p2'});
+
+      await s.dispatchAndWait(FontCopyAction(
+        source,
+        const CopyModelResult(targetProject: other, name: 'Icons', key: 'icons'),
+      ));
+
+      expect(s.state, before);
     });
   });
 }

@@ -72,4 +72,15 @@ abstract class ClientAPI<T extends DataModel> {
   ///
   /// Throws an exception if the removal fails or if the model doesn't exist.
   Future<T> remove(T model);
+
+  /// Copies [model] into the project [targetProjectId] (its own project for
+  /// a duplicate) as [targetName]/[targetKey], together with the [relations]
+  /// named by their backend ids (e.g. `LORE`). Completes with the copy.
+  Future<T> copy(
+    T model, {
+    required String targetProjectId,
+    required String targetName,
+    required String targetKey,
+    Set<String> relations = const {},
+  });
 }

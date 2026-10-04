@@ -4,6 +4,7 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/service/client/sound_client_api.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/util/copy_model_result.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
@@ -287,6 +288,56 @@ void main() {
       await store.dispatchAndWait(SoundNotesUpdateAction(listed, 'Boss room'));
 
       expect(store.state.selectedSoundEvent, other);
+    });
+  });
+
+  group('SoundCopyAction', () {
+    const project = Project(id: 'p1', displayName: 'P1', key: 'p1');
+    const other = Project(id: 'p2', displayName: 'P2', key: 'p2');
+    final source = SoundEventModel(id: 'sound-1', uiName: 'Steps', key: 'steps', projectId: 'p1');
+
+    Store<AppState> store() => Store<AppState>(
+      initialState: const AppState().copyWith(
+        selectedProject: project,
+        soundEvents: PaginatedResult<SoundEventModel>(
+          items: [source],
+          totalItems: 1,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: 10,
+        ),
+      ),
+    );
+
+    void respond(Map<String, dynamic> json) {
+      (ApiService().soundApi as SoundClientApi).apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json(json);
+    }
+
+    test('appends a copy into the open project', () async {
+      final s = store();
+      respond({'id': 'sound-2', 'uiName': 'Steps (Copy)', 'projectId': 'p1'});
+
+      await s.dispatchAndWait(SoundCopyAction(
+        source,
+        const CopyModelResult(targetProject: project, name: 'Steps (Copy)', key: 'steps-copy', relations: {'SOURCES'}),
+      ));
+
+      expect(s.state.soundEvents.items.map((e) => e.id), ['sound-1', 'sound-2']);
+      expect(s.state.soundEvents.totalItems, 2);
+    });
+
+    test('leaves the state alone for a copy into another project', () async {
+      final s = store();
+      final before = s.state;
+      respond({'id': 'sound-2', 'uiName': 'Steps', 'projectId': 'p2'});
+
+      await s.dispatchAndWait(SoundCopyAction(
+        source,
+        const CopyModelResult(targetProject: other, name: 'Steps', key: 'steps'),
+      ));
+
+      expect(s.state, before);
     });
   });
 }
