@@ -11,6 +11,7 @@ import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_filter.dart';
 import 'package:stelaris/feature/model/model_grid_card.dart';
+import 'package:stelaris/feature/model/model_copy.dart';
 import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/feature/model/model_sort_option.dart';
 import 'package:stelaris/feature/model/model_sorter.dart';
@@ -67,6 +68,9 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
   /// them.
   final ModelNotes<E>? notes;
 
+  /// How the models are copied; with it each card's menu offers "Copy…".
+  final ModelCopy<E>? copy;
+
   /// The current project's key — used to build the namespaced key shown in
   /// the info dialog opened from a model card's action menu.
   final String projectKey;
@@ -98,6 +102,7 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
     required this.onRefresh,
     this.deleteWarning,
     this.notes,
+    this.copy,
     this.isRefreshing = false,
     this.filterOptions = const [],
     this.onLoadMore,
@@ -288,6 +293,7 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
       nameSelector: widget.nameSelector,
       keySelector: widget.keySelector,
       notes: widget.notes,
+      copy: widget.copy,
       projectKey: widget.projectKey,
       onTap: () => widget.onModelTap(model),
     );
