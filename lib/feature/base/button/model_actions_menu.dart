@@ -5,7 +5,7 @@ import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
-/// The 3-dot action menu on a model card: "Info", plus "Copy…" when
+/// The 3-dot action menu on a model card: "Info", plus "Copy" when
 /// [onCopy] is given and "Edit notes" when [onEditNotes] is given.
 /// Further actions can be added as more [PopupMenuItem]s.
 class ModelActionsMenu<E extends DataModel> extends StatelessWidget {

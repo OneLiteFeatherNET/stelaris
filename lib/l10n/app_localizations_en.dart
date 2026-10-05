@@ -590,7 +590,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menu_item_edit_notes => 'Edit notes';
 
   @override
-  String get menu_item_copy => 'Copy…';
+  String get menu_item_copy => 'Copy';
 
   @override
   String get dialog_item_copy => 'Copy item';

@@ -68,7 +68,7 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
   /// them.
   final ModelNotes<E>? notes;
 
-  /// How the models are copied; with it each card's menu offers "Copy…".
+  /// How the models are copied; with it each card's menu offers "Copy".
   final ModelCopy<E>? copy;
 
   /// The current project's key — used to build the namespaced key shown in

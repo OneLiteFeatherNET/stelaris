@@ -519,7 +519,7 @@ void main() {
     Future<void> openCopyDialog(WidgetTester tester) async {
       await tester.tap(find.byIcon(Icons.more_vert));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Copy…'));
+      await tester.tap(find.text('Copy'));
       await tester.pumpAndSettle();
     }
 
@@ -529,7 +529,7 @@ void main() {
       await tester.tap(find.byIcon(Icons.more_vert));
       await tester.pumpAndSettle();
 
-      expect(find.text('Copy…'), findsNothing);
+      expect(find.text('Copy'), findsNothing);
     });
 
     testWidgets('copying within the project confirms it', (tester) async {

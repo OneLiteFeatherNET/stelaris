@@ -109,7 +109,7 @@ void main() {
         findsOneWidget,
       );
     });
-    testWidgets('offers "Copy…" in the menu when copying is enabled', (tester) async {
+    testWidgets('offers "Copy" in the menu when copying is enabled', (tester) async {
       await tester.pumpWidget(
         createWidget(
           copy: ModelCopy<TestModel>(
@@ -122,16 +122,16 @@ void main() {
       await tester.tap(find.byIcon(Icons.more_vert));
       await tester.pumpAndSettle();
 
-      expect(find.text('Copy…'), findsOneWidget);
+      expect(find.text('Copy'), findsOneWidget);
     });
 
-    testWidgets('has no "Copy…" without copying enabled', (tester) async {
+    testWidgets('has no "Copy" without copying enabled', (tester) async {
       await tester.pumpWidget(createWidget());
 
       await tester.tap(find.byIcon(Icons.more_vert));
       await tester.pumpAndSettle();
 
-      expect(find.text('Copy…'), findsNothing);
+      expect(find.text('Copy'), findsNothing);
     });
   });
 }

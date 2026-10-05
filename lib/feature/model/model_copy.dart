@@ -10,7 +10,7 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// How a page's models are copied. Pages that pass one to [ModelPage] get a
-/// "Copy…" entry in each card's menu.
+/// "Copy" entry in each card's menu.
 class ModelCopy<E extends DataModel> {
   const ModelCopy({
     required this.title,

@@ -1195,7 +1195,7 @@ abstract class AppLocalizations {
   /// No description provided for @menu_item_copy.
   ///
   /// In en, this message translates to:
-  /// **'Copy…'**
+  /// **'Copy'**
   String get menu_item_copy;
 
   /// No description provided for @dialog_item_copy.
