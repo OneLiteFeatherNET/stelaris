@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:async_redux/async_redux.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
@@ -6,6 +9,7 @@ import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
+import '../../../../support/fake_http_client_adapter.dart';
 import '../../../../support/recording_http_client_adapter.dart';
 
 void main() {
@@ -103,5 +107,30 @@ void main() {
     store.dispatch(SelectedItemAction(item));
     await store.dispatchAndWait(RemoveSelectItemAction());
     expect(store.state.selectedItemComponents, isEmpty);
+  });
+
+  test('a component is not saved twice at the same time', () async {
+    final store = storeWith(const [food, glider]);
+    var requests = 0;
+    ApiService().itemApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter((options) {
+          requests++;
+          return ResponseBody.fromString(
+            jsonEncode(options.data),
+            200,
+            headers: {
+              Headers.contentTypeHeader: [Headers.jsonContentType],
+            },
+          );
+        });
+
+    await Future.wait([
+      store.dispatchAndWait(ItemComponentUpdateAction(food)),
+      store.dispatchAndWait(ItemComponentUpdateAction(food)),
+      // Another component is saved alongside.
+      store.dispatchAndWait(ItemComponentUpdateAction(glider)),
+    ]);
+
+    expect(requests, 2);
   });
 }

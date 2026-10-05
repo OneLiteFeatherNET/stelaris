@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/components/component_category_menu.dart';
 import 'package:stelaris/feature/item/components/schema_field.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -294,26 +295,38 @@ class _ComponentRow extends StatelessWidget {
   }
 }
 
+/// Saves the value of a component; resolves to the error, or null when it
+/// worked.
+typedef ComponentSave = Future<Object?> Function(Object? value);
+
 /// Edits the value of a component in a form built from its schema.
 ///
-/// Returns a record with the new value, or null when the dialog was
-/// cancelled. The record keeps a cancel apart from a value which is null.
-Future<({Object? value})?> showComponentEditDialog(
+/// Submitting waits for [onSave]: on an error the dialog stays open and
+/// shows it, otherwise it closes. Resolves to whether the value was saved.
+Future<bool> showComponentEditDialog(
   BuildContext context, {
   required ComponentSpec spec,
   required Object? value,
-}) {
-  return showDialog<({Object? value})>(
+  required ComponentSave onSave,
+}) async {
+  final saved = await showDialog<bool>(
     context: context,
-    builder: (_) => _ComponentEditDialog(spec: spec, value: value),
+    builder: (_) =>
+        _ComponentEditDialog(spec: spec, value: value, onSave: onSave),
   );
+  return saved ?? false;
 }
 
 class _ComponentEditDialog extends StatefulWidget {
-  const _ComponentEditDialog({required this.spec, required this.value});
+  const _ComponentEditDialog({
+    required this.spec,
+    required this.value,
+    required this.onSave,
+  });
 
   final ComponentSpec spec;
   final Object? value;
+  final ComponentSave onSave;
 
   @override
   State<_ComponentEditDialog> createState() => _ComponentEditDialogState();
@@ -322,10 +335,19 @@ class _ComponentEditDialog extends StatefulWidget {
 class _ComponentEditDialogState extends State<_ComponentEditDialog> {
   final _formKey = GlobalKey<FormState>();
   late Object? _value = widget.value;
+  bool _saving = false;
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? true)) return;
-    Navigator.of(context).pop((value: _value));
+    setState(() => _saving = true);
+    final error = await widget.onSave(_value);
+    if (!mounted) return;
+    setState(() => _saving = false);
+    if (error != null) {
+      context.showErrorSnackBar(error);
+      return;
+    }
+    Navigator.of(context).pop(true);
   }
 
   @override
@@ -334,7 +356,8 @@ class _ComponentEditDialogState extends State<_ComponentEditDialog> {
     return FormDialog(
       title: widget.spec.displayName,
       actionLabel: context.l10n.button_save,
-      onSubmit: _submit,
+      onSubmit: _saving ? null : _submit,
+      busy: _saving,
       maxWidth: 600,
       content: Form(
         key: _formKey,

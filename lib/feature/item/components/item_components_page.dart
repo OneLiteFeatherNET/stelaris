@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/page_header.dart';
+import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/components/component_category_menu.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
 import 'package:stelaris/feature/item/components/schema_field.dart';
@@ -109,29 +110,38 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
       materialDefaults: defaultComponentsOf(vm.material).toSet(),
     );
     if (spec == null || !mounted) return;
-    final result = await showComponentEditDialog(
+    await showComponentEditDialog(
       context,
       spec: spec,
       value: initialValue(spec.schema),
-    );
-    if (result == null || !mounted) return;
-    context.dispatch(
-      ItemComponentAddAction(
-        ItemComponentDto(componentKey: spec.key, value: result.value),
+      onSave: (value) => _run(
+        ItemComponentAddAction(
+          ItemComponentDto(componentKey: spec.key, value: value),
+        ),
       ),
     );
   }
 
   Future<void> _edit(ComponentSpec spec, ItemComponentDto component) async {
-    final result = await showComponentEditDialog(
+    await showComponentEditDialog(
       context,
       spec: spec,
       value: component.value,
+      onSave: (value) =>
+          _run(ItemComponentUpdateAction(component.copyWith(value: value))),
     );
-    if (result == null || !mounted) return;
-    context.dispatch(
-      ItemComponentUpdateAction(component.copyWith(value: result.value)),
-    );
+  }
+
+  /// Runs [action] and resolves to its error, or null when it worked.
+  Future<Object?> _run(ReduxAction<AppState> action) async {
+    // Without a wrapError on the store, a backend error is rethrown rather
+    // than reported through the status.
+    try {
+      final status = await context.dispatchAndWait(action);
+      return status.isCompletedFailed ? status.originalError : null;
+    } catch (error) {
+      return error;
+    }
   }
 
   Future<void> _remove(String name, ItemComponentDto component) async {
@@ -147,7 +157,8 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
       ),
     );
     if (confirmed != true || !mounted) return;
-    context.dispatch(ItemComponentDeleteAction(component));
+    final error = await _run(ItemComponentDeleteAction(component));
+    if (error != null && mounted) context.showErrorSnackBar(error);
   }
 
   @override

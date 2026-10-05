@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
@@ -181,8 +183,12 @@ void main() {
         context,
         spec: _spec('minecraft:food'),
         value: initialValue(_spec('minecraft:food').schema),
+        onSave: (value) async {
+          saved = (value: value);
+          return null;
+        },
       ),
-      (result) => saved = result as ({Object? value})?,
+      (_) {},
     );
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
@@ -212,8 +218,12 @@ void main() {
         context,
         spec: _spec('minecraft:item_model'),
         value: initialValue(_spec('minecraft:item_model').schema),
+        onSave: (value) async {
+          saved = (value: value);
+          return null;
+        },
       ),
-      (result) => saved = result as ({Object? value})?,
+      (_) {},
     );
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
@@ -238,8 +248,12 @@ void main() {
         context,
         spec: _spec('minecraft:max_stack_size'),
         value: 1,
+        onSave: (value) async {
+          saved = (value: value);
+          return null;
+        },
       ),
-      (result) => saved = result as ({Object? value})?,
+      (_) {},
     );
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
@@ -249,6 +263,42 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Between 1 and 99'), findsWidgets);
+    expect(saved, isNull);
+  });
+
+  testWidgets('edit dialog waits for the save and stays open on an error', (
+    tester,
+  ) async {
+    final save = Completer<Object?>();
+    var saves = 0;
+    bool? saved;
+    await pumpOpener(
+      tester,
+      (context) => showComponentEditDialog(
+        context,
+        spec: _spec('minecraft:max_stack_size'),
+        value: 16,
+        onSave: (_) {
+          saves++;
+          return save.future;
+        },
+      ),
+      (result) => saved = result as bool?,
+    );
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Save'));
+    await tester.pump();
+    // While saving, a second click does nothing.
+    await tester.tap(find.text('Save'));
+    await tester.pump();
+    expect(saves, 1);
+
+    save.complete('Backend down');
+    await tester.pumpAndSettle();
+    expect(find.byType(Dialog), findsOneWidget);
+    expect(find.text('Backend down'), findsOneWidget);
     expect(saved, isNull);
   });
 }

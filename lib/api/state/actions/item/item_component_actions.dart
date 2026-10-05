@@ -36,11 +36,15 @@ class ItemComponentFetchAction extends ReduxAction<AppState> with NonReentrant {
 }
 
 /// Adds a data component to the selected item.
-class ItemComponentAddAction extends ReduxAction<AppState> {
+class ItemComponentAddAction extends ReduxAction<AppState> with NonReentrant {
   ItemComponentAddAction(this.component);
 
   /// The component to add, without an id.
   final ItemComponentDto component;
+
+  /// Different components can be added at the same time, the same one not.
+  @override
+  Object? nonReentrantKeyParams() => component.componentKey;
 
   @override
   Future<AppState?> reduce() async {
@@ -59,11 +63,15 @@ class ItemComponentAddAction extends ReduxAction<AppState> {
 }
 
 /// Updates a data component of the selected item.
-class ItemComponentUpdateAction extends ReduxAction<AppState> {
+class ItemComponentUpdateAction extends ReduxAction<AppState>
+    with NonReentrant {
   ItemComponentUpdateAction(this.component);
 
   /// The component with its id and the new value.
   final ItemComponentDto component;
+
+  @override
+  Object? nonReentrantKeyParams() => component.id;
 
   @override
   Future<AppState?> reduce() async {
@@ -85,11 +93,15 @@ class ItemComponentUpdateAction extends ReduxAction<AppState> {
 }
 
 /// Removes a data component from the selected item.
-class ItemComponentDeleteAction extends ReduxAction<AppState> {
+class ItemComponentDeleteAction extends ReduxAction<AppState>
+    with NonReentrant {
   ItemComponentDeleteAction(this.component);
 
   /// The component to remove.
   final ItemComponentDto component;
+
+  @override
+  Object? nonReentrantKeyParams() => component.id;
 
   @override
   Future<AppState?> reduce() async {
