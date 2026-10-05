@@ -33,13 +33,74 @@ class ItemComponentsPage extends StatefulWidget {
   State<ItemComponentsPage> createState() => _ItemComponentsPageState();
 }
 
-class _ItemComponentsPageState extends State<ItemComponentsPage> {
+class _ItemComponentsPageState extends State<ItemComponentsPage>
+    with AutomaticKeepAliveClientMixin {
   static const double _maxCardExtent = 320;
   static const double _cardHeight = 112;
   static const double _spacing = 12;
 
   /// Shows only the components of this category, null shows all.
   ComponentCategory? _category;
+
+  /// The tab animation which brought this tab into view, until it settled.
+  Animation<double>? _tabAnimation;
+
+  /// Whether the tab animation settled. Loading and building the grid wait
+  /// for it, so the switch to this tab doesn't stutter.
+  bool _settled = false;
+
+  /// The item whose components were requested, so each item loads once
+  /// while the tab is kept alive.
+  String? _loadedFor;
+
+  /// The fetch is scheduled for the next frame but not dispatched yet.
+  bool _fetchScheduled = false;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_settled || _tabAnimation != null) return;
+    final animation = DefaultTabController.maybeOf(context)?.animation;
+    if (animation == null || _isSettled(animation)) {
+      _settled = true;
+      return;
+    }
+    _tabAnimation = animation..addListener(_onTabAnimation);
+  }
+
+  @override
+  void dispose() {
+    _tabAnimation?.removeListener(_onTabAnimation);
+    super.dispose();
+  }
+
+  /// The animation rests on a tab, it isn't between two.
+  static bool _isSettled(Animation<double> animation) =>
+      animation.value == animation.value.roundToDouble();
+
+  void _onTabAnimation() {
+    final animation = _tabAnimation;
+    if (animation == null || !_isSettled(animation)) return;
+    animation.removeListener(_onTabAnimation);
+    _tabAnimation = null;
+    setState(() => _settled = true);
+  }
+
+  /// Requests the components of [itemId] once the tab has settled.
+  void _loadIfNeeded(String? itemId) {
+    if (!_settled || itemId == _loadedFor) return;
+    _loadedFor = itemId;
+    _fetchScheduled = true;
+    // Not during build, the dispatch changes the store.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() => _fetchScheduled = false);
+      context.dispatch(ItemComponentFetchAction());
+    });
+  }
 
   Future<void> _add(_ComponentsView vm) async {
     final spec = await showComponentPickerDialog(
@@ -91,14 +152,17 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return StoreConnector<AppState, _ComponentsView>(
       vm: () => _ComponentsFactory(),
-      onInit: (store) => store.dispatch(ItemComponentFetchAction()),
       builder: (context, vm) {
+        _loadIfNeeded(vm.itemId);
+        // A spinner until the components of this item are loaded, the grid
+        // is only built once the tab stands still.
+        final pending = !_settled || _fetchScheduled || vm.loading;
         final defaults = defaultComponentsOf(vm.material).toSet();
         final all = [...vm.components]
           ..sort((a, b) => _sortIndex(a).compareTo(_sortIndex(b)));
-        // Only categories the item has, in the order of the grid.
         // The menu only offers the categories the item has.
         final counts = <ComponentCategory, int>{};
         for (final component in all) {
@@ -141,17 +205,15 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
                     icon: const Icon(Icons.add),
                     label: context.l10n.button_add,
                     primary: true,
-                    loading: vm.loading,
+                    loading: pending,
                     onPressed: () => _add(vm),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
               Expanded(
-                child: switch ((vm.loading, components.isEmpty)) {
-                  (true, true) => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                child: switch ((pending, components.isEmpty)) {
+                  (true, _) => const Center(child: CircularProgressIndicator()),
                   (false, true) => const EmptyDataWidget.full(
                     header: 'No components yet',
                     subHeader: 'Add a component to change how the item behaves, e.g. food or a tool.',
@@ -213,11 +275,13 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
 
 class _ComponentsView extends Vm {
   _ComponentsView({
+    required this.itemId,
     required this.material,
     required this.components,
     required this.loading,
-  }) : super(equals: [material, components, loading]);
+  }) : super(equals: [itemId, material, components, loading]);
 
+  final String? itemId;
   final String material;
   final List<ItemComponentDto> components;
   final bool loading;
@@ -227,6 +291,7 @@ class _ComponentsFactory
     extends VmFactory<AppState, ItemComponentsPage, _ComponentsView> {
   @override
   _ComponentsView fromStore() => _ComponentsView(
+    itemId: state.selectedItem?.id,
     material: state.selectedItem?.material ?? defaultMaterial,
     components: state.selectedItemComponents,
     loading: isWaiting(ItemComponentFetchAction),

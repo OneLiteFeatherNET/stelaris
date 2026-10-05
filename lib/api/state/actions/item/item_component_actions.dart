@@ -9,7 +9,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 ///
 /// An item only has a handful of components, so every page is loaded at once
 /// instead of paginating like the enchantments.
-class ItemComponentFetchAction extends ReduxAction<AppState> {
+class ItemComponentFetchAction extends ReduxAction<AppState> with NonReentrant {
   @override
   Future<AppState?> reduce() async {
     final selectedItem = state.selectedItem;
