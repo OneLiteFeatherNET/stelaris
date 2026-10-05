@@ -41,7 +41,7 @@ class _EnchantmentListState extends State<EnchantmentList>
           final enchantment = widget.view[index];
           return EnchantmentItem(
             dto:
-                widget.view.selectedEnchantmentMap[enchantment.minecraftValue]!,
+                widget.view.selectedEnchantmentMap[enchantment.key]!,
             enchantment: enchantment,
           );
         },

@@ -6,7 +6,7 @@ import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
-import 'package:vulpes_data/api/enchantment.dart';
+import 'package:vulpes_data/enchantment.dart';
 
 class ItemEnchantmentUpdateDialog extends StatefulWidget {
   const ItemEnchantmentUpdateDialog({

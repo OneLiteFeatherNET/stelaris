@@ -6,7 +6,7 @@ import 'package:stelaris/feature/base/action/entry_actions.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris/feature/item/enchantment/dialog/item_enchantment_update_dialog.dart';
 import 'package:stelaris/util/l10n_ext.dart';
-import 'package:vulpes_data/api/enchantment.dart';
+import 'package:vulpes_data/enchantment.dart';
 
 class EnchantmentItem extends StatefulWidget {
   const EnchantmentItem({
