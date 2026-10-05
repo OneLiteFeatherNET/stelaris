@@ -4,14 +4,14 @@ import 'package:stelaris/feature/item/enchantment/dialog/item_enchantment_update
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris_models/stelaris_models.dart';
-import 'package:vulpes_data/api/enchantment.dart';
+import 'package:vulpes_data/enchantment.dart';
 
 class _FakeEnchantment implements Enchantment {
   @override
   String get displayName => 'Sharpness';
 
   @override
-  String get minecraftValue => 'sharpness';
+  String get key => 'sharpness';
 
   @override
   int get maxLevel => 5;

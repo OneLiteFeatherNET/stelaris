@@ -8,7 +8,7 @@ import 'package:stelaris/feature/item/enchantment_reducer.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/validators.dart';
-import 'package:vulpes_data/api/enchantment.dart';
+import 'package:vulpes_data/enchantment.dart';
 
 class ItemEnchantmentAddDialog extends StatefulWidget {
   const ItemEnchantmentAddDialog({required this.view, super.key});
@@ -152,7 +152,7 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
   /// [unsafe] indication if the [Enchantment] is unsafe or not
   void _handleAddCallback(Enchantment enchantment, int level, bool unsafe) {
     final ItemEnchantmentDto dto = ItemEnchantmentDto(
-      name: enchantment.minecraftValue,
+      name: enchantment.key,
       level: level,
       unsafe: unsafe,
     );

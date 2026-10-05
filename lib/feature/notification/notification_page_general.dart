@@ -9,7 +9,7 @@ import 'package:stelaris/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
-import 'package:vulpes_data/frame_type.dart';
+import 'package:vulpes_data/advancement.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 
@@ -40,7 +40,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
     types.length,
     (index) => DropdownMenuItem(
       value: types[index],
-      child: Text(types[index].display),
+      child: Text(types[index].displayName),
     ),
   );
 

@@ -3,7 +3,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/enchantment_reducer.dart';
-import 'package:vulpes_data/api/enchantment.dart';
+import 'package:vulpes_data/enchantment.dart';
 
 class EnchantmentViewFactory
     extends VmFactory<AppState, ItemEnchantmentPage, EnchantmentView> {
@@ -32,7 +32,7 @@ class EnchantmentView extends Vm with EnchantmentReducer {
   List<Enchantment> get activeEnchantments {
     return enchantments
         .where(
-          (ench) => selectedEnchantmentMap.containsKey(ench.minecraftValue),
+          (ench) => selectedEnchantmentMap.containsKey(ench.key),
         )
         .toList();
   }

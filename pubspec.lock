@@ -1039,7 +1039,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "8c7c399238af7f3c92ca474639cf3d80ffe584f9"
+      resolved-ref: "5eff19c39bb9f1d97347af519024be8f12ff36a2"
       url: "https://github.com/OneLiteFeatherNET/stelaris-model.git"
     source: git
     version: "0.0.1"
@@ -1184,7 +1184,7 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: "7664d25841676a9bd0547dab19512cb960daa294"
+      resolved-ref: d80fcacb53c026c0627a7f95e43ead54af419634
       url: "https://github.com/OneLiteFeatherNET/vulpes-minecraft-dart.git"
     source: git
     version: "1.0.0"

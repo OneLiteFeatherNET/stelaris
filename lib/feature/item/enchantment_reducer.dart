@@ -1,9 +1,5 @@
 import 'package:stelaris_models/stelaris_models.dart';
-import 'package:vulpes_data/api/enchantment.dart';
-import 'package:vulpes_data/enchantment/armor_enchantment.dart';
-import 'package:vulpes_data/enchantment/meta_enchantment.dart';
-import 'package:vulpes_data/enchantment/tool_enchantment.dart';
-import 'package:vulpes_data/enchantment/weapon_enchantment.dart';
+import 'package:vulpes_data/enchantment.dart' hide EnchantmentGroup;
 
 mixin EnchantmentReducer {
   static const Set<ToolEnchantment> toolEnchantments = {
@@ -74,7 +70,7 @@ mixin EnchantmentReducer {
     // Efficiently filter the set and return a list.
     return exclude
         ? groupEnchantments
-              .where((e) => !existingEnchantmentKeys.contains(e.minecraftValue))
+              .where((e) => !existingEnchantmentKeys.contains(e.key))
               .toList()
         : groupEnchantments.toList();
   }
@@ -91,7 +87,7 @@ mixin EnchantmentReducer {
     // Explicitly specify the type parameter for firstWhere as Enchantment?
     // This tells Dart that the method can return a nullable Enchantment.
     for (var ench in groupEnchantments) {
-      if (ench.minecraftValue == enchantmentValue) return ench;
+      if (ench.key == enchantmentValue) return ench;
     }
     return null;
   }
@@ -105,7 +101,7 @@ mixin EnchantmentReducer {
     final newGroupEnchantments = _getEnchantments(newGroup);
     // Create a set of the string values for fast lookups.
     final allowedMinecraftValues = newGroupEnchantments
-        .map((e) => e.minecraftValue)
+        .map((e) => e.key)
         .toSet();
 
     // Filter the existing keys based on whether they are in the new allowed set.
