@@ -20,6 +20,7 @@ class FormDialog extends StatelessWidget {
     this.maxWidth = 520,
     this.maxHeight = 650,
     this.showActions = true,
+    this.busy = false,
     super.key,
   });
 
@@ -39,6 +40,10 @@ class FormDialog extends StatelessWidget {
   /// Hides the cancel/confirm row for dialogs with their own action button.
   final bool showActions;
 
+  /// Keeps the dialog open while its action runs: close, cancel and Esc do
+  /// nothing, so a result can't arrive after the dialog is gone.
+  final bool busy;
+
   void _handleCancel(BuildContext context) {
     FocusScope.of(context).unfocus();
     Navigator.of(context).pop();
@@ -54,67 +59,70 @@ class FormDialog extends StatelessWidget {
           )
         : null;
 
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: minWidth,
-          maxWidth: maxWidth,
-          maxHeight: maxHeight,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      title,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+    return PopScope(
+      canPop: !busy,
+      child: Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minWidth: minWidth,
+            maxWidth: maxWidth,
+            maxHeight: maxHeight,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () => _handleCancel(context),
-                    icon: const Icon(Icons.close),
-                    splashRadius: 20,
-                  ),
-                ],
-              ),
-              const Divider(height: 24),
-              Flexible(child: SingleChildScrollView(child: content)),
-              if (showActions) ...[
-                const Divider(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => _handleCancel(context),
-                      child: Text(context.l10n.button_cancel),
+                    IconButton(
+                      onPressed: busy ? null : () => _handleCancel(context),
+                      icon: const Icon(Icons.close),
+                      splashRadius: 20,
                     ),
-                    horizontalSpacing10,
-                    actionIcon == null
-                        ? FilledButton(
-                            style: actionStyle,
-                            onPressed: onSubmit,
-                            child: Text(actionLabel),
-                          )
-                        : FilledButton.icon(
-                            style: actionStyle,
-                            onPressed: onSubmit,
-                            icon: Icon(actionIcon),
-                            label: Text(actionLabel),
-                          ),
                   ],
                 ),
+                const Divider(height: 24),
+                Flexible(child: SingleChildScrollView(child: content)),
+                if (showActions) ...[
+                  const Divider(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: busy ? null : () => _handleCancel(context),
+                        child: Text(context.l10n.button_cancel),
+                      ),
+                      horizontalSpacing10,
+                      actionIcon == null
+                          ? FilledButton(
+                              style: actionStyle,
+                              onPressed: onSubmit,
+                              child: Text(actionLabel),
+                            )
+                          : FilledButton.icon(
+                              style: actionStyle,
+                              onPressed: onSubmit,
+                              icon: Icon(actionIcon),
+                              label: Text(actionLabel),
+                            ),
+                    ],
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

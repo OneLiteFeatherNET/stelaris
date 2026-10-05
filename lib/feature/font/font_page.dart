@@ -11,6 +11,7 @@ import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/feature/model/model_copy.dart';
 
 /// A widget that represents the font management page.
 ///
@@ -44,6 +45,11 @@ class FontPage extends StatelessWidget {
           notes: ModelNotes(
             read: (model) => model.comment,
             update: FontNotesUpdateAction.new,
+          ),
+          copy: ModelCopy(
+            title: (l10n) => l10n.dialog_font_copy,
+            relations: fontCopyRelations,
+            action: FontCopyAction.new,
           ),
           projectKey: vm.projectKey,
           matchesFilter: (model, filter) => true,

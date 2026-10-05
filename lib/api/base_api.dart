@@ -90,6 +90,30 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
   }
 
   @override
+  Future<T> copy(
+    T model, {
+    required String targetProjectId,
+    required String targetName,
+    required String targetKey,
+    Set<String> relations = const {},
+  }) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final projectId = _extractProjectId(model);
+    final path = _buildPath(projectId: projectId, suffix: '${model.id}/copy');
+    final uri = baseUri.replace(path: '${baseUri.path}/$path');
+    final result = await apiClient.dio.postUri(
+      uri,
+      data: {
+        'targetProjectId': targetProjectId,
+        'targetName': targetName,
+        'targetKey': targetKey,
+        if (relations.isNotEmpty) 'relations': relations.toList(),
+      },
+    );
+    return fromJson(result.data!);
+  }
+
+  @override
   Future<PaginatedResult<T>> getPage({
     int page = 1,
     int size = 10,

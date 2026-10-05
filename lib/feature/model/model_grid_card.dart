@@ -3,6 +3,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
 import 'package:stelaris/feature/base/button/model_actions_menu.dart';
 import 'package:stelaris/feature/dialogs/notes_edit_dialog.dart';
+import 'package:stelaris/feature/model/model_copy.dart';
 import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/notes.dart';
@@ -28,6 +29,7 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
     required this.projectKey,
     this.deleteWarning,
     this.notes,
+    this.copy,
     this.onTap,
     super.key,
   });
@@ -40,6 +42,7 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
   final ModelNameSelector<E> nameSelector;
   final ModelKeySelector<E> keySelector;
   final ModelNotes<E>? notes;
+  final ModelCopy<E>? copy;
   final String projectKey;
   final VoidCallback? onTap;
 
@@ -85,6 +88,15 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
                         nameSelector: nameSelector,
                         keySelector: keySelector,
                         projectKey: projectKey,
+                        onCopy: copy == null
+                            ? null
+                            : () => openCopyModelDialog<E>(
+                                context,
+                                model: rawModel,
+                                copy: copy!,
+                                name: nameSelector(rawModel),
+                                key: keySelector(rawModel),
+                              ),
                         onEditNotes: notes == null
                             ? null
                             : () => showDialog<void>(

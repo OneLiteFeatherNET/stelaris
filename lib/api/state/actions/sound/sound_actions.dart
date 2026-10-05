@@ -4,6 +4,8 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/api/state/actions/copy_model_action.dart';
+import 'package:stelaris/util/copy_model_result.dart';
 
 class SelectSoundAction extends ReduxAction<AppState> {
   final SoundEventModel model;
@@ -98,6 +100,38 @@ class InitSoundAction extends ReduxAction<AppState> {
           );
       return state.copyWith(soundEvents: result);
     }
+  }
+}
+
+/// Copies [source] as described by [result]. The copy joins the list only
+/// when it landed in the open project; the selection is left alone.
+class SoundCopyAction extends ReduxAction<AppState>
+    with NonReentrant, CopyModelAction {
+  final SoundEventModel source;
+  @override
+  final CopyModelResult result;
+
+  SoundCopyAction(this.source, this.result);
+
+  @override
+  Future<AppState?> reduce() async {
+    final SoundEventModel copied = await ApiService().soundApi.copy(
+      source.copyWith(projectId: sourceProjectId(source.projectId)),
+      targetProjectId: result.targetProjectId,
+      targetName: result.name,
+      targetKey: result.key,
+      relations: result.relations,
+    );
+    if (!copiesIntoOpenProject) return null;
+    return _updateSoundEventsInState(
+      state,
+      [
+        ...state.soundEvents.items,
+        copied.copyWith(projectId: result.targetProjectId),
+      ],
+      state.selectedSoundEvent,
+      totalItems: state.soundEvents.totalItems + 1,
+    );
   }
 }
 

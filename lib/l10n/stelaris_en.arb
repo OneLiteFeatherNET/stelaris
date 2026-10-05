@@ -211,6 +211,32 @@
   "tooltip_more_actions": "More actions",
   "menu_item_info": "Info",
   "menu_item_edit_notes": "Edit notes",
+  "menu_item_copy": "Copy",
+  "dialog_item_copy": "Copy item",
+  "dialog_font_copy": "Copy font",
+  "dialog_sound_copy": "Copy sound event",
+  "dialog_notification_copy": "Copy notification",
+  "dialog_attribute_copy": "Copy attribute",
+  "dialog_model_copy_button": "Copy",
+  "dialog_model_copy_project_label": "Target project",
+  "dialog_model_copy_relations_label": "Copy along",
+  "copy_relation_lore": "Lore",
+  "copy_relation_flags": "Flags",
+  "copy_relation_enchantments": "Enchantments",
+  "copy_relation_sources": "Sources",
+  "copy_relation_chars": "Characters",
+  "dialog_model_copy_name_suffix": " (Copy)",
+  "dialog_model_copy_key_suffix": "-copy",
+  "copy_success": "Copied",
+  "copy_success_other_project": "Copied to {project}",
+  "@copy_success_other_project": {
+    "placeholders": {
+      "project": {
+        "type": "String"
+      }
+    }
+  },
+  "copy_switch_project": "Switch project",
   "notes_edit_in_overview": "To edit the notes, use \u22ef \u2192 Edit notes on the overview card.",
   "tooltip_notes_present": "Has notes",
   "dialog_notes_title": "Notes for {name}",

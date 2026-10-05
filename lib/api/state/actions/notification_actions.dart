@@ -4,6 +4,8 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/api/state/actions/copy_model_action.dart';
+import 'package:stelaris/util/copy_model_result.dart';
 
 class SelectedNotificationAction extends ReduxAction<AppState> {
   final NotificationModel model;
@@ -150,6 +152,38 @@ class NotificationAddAction extends ReduxAction<AppState> with NonReentrant {
       state,
       updatedList,
       databaseModel,
+      totalItems: state.notifications.totalItems + 1,
+    );
+  }
+}
+
+/// Copies [source] as described by [result]. The copy joins the list only
+/// when it landed in the open project; the selection is left alone.
+class NotificationCopyAction extends ReduxAction<AppState>
+    with NonReentrant, CopyModelAction {
+  final NotificationModel source;
+  @override
+  final CopyModelResult result;
+
+  NotificationCopyAction(this.source, this.result);
+
+  @override
+  Future<AppState?> reduce() async {
+    final NotificationModel copied = await ApiService().notificationApi.copy(
+      source.copyWith(projectId: sourceProjectId(source.projectId)),
+      targetProjectId: result.targetProjectId,
+      targetName: result.name,
+      targetKey: result.key,
+      relations: result.relations,
+    );
+    if (!copiesIntoOpenProject) return null;
+    return _updateNotificationInState(
+      state,
+      [
+        ...state.notifications.items,
+        copied.copyWith(projectId: result.targetProjectId),
+      ],
+      state.selectedNotification,
       totalItems: state.notifications.totalItems + 1,
     );
   }

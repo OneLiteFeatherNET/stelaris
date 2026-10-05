@@ -11,6 +11,7 @@ import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/feature/model/model_copy.dart';
 
 /// A widget that represents the item management page.
 ///
@@ -44,6 +45,11 @@ class ItemPage extends StatelessWidget {
           notes: ModelNotes(
             read: (model) => model.comment,
             update: ItemNotesUpdateAction.new,
+          ),
+          copy: ModelCopy(
+            title: (l10n) => l10n.dialog_item_copy,
+            relations: itemCopyRelations,
+            action: ItemCopyAction.new,
           ),
           projectKey: vm.projectKey,
           matchesFilter: (model, filter) => true,

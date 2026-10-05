@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
 import 'package:stelaris/feature/base/button/model_actions_menu.dart';
+import 'package:stelaris/feature/model/model_copy.dart';
 import 'package:stelaris/feature/model/model_grid_card.dart';
 import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -17,7 +18,11 @@ void main() {
       modificationDate: now,
     );
 
-    Widget createWidget({VoidCallback? onTap, TestModel? rawModel}) {
+    Widget createWidget({
+      VoidCallback? onTap,
+      TestModel? rawModel,
+      ModelCopy<TestModel>? copy,
+    }) {
       return MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -39,6 +44,7 @@ void main() {
             ),
             projectKey: 'proj',
             onTap: onTap,
+            copy: copy,
           ),
         ),
       );
@@ -102,6 +108,30 @@ void main() {
         ),
         findsOneWidget,
       );
+    });
+    testWidgets('offers "Copy" in the menu when copying is enabled', (tester) async {
+      await tester.pumpWidget(
+        createWidget(
+          copy: ModelCopy<TestModel>(
+            title: (l10n) => l10n.dialog_item_copy,
+            action: (_, _) => throw UnimplementedError(),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Copy'), findsOneWidget);
+    });
+
+    testWidgets('has no "Copy" without copying enabled', (tester) async {
+      await tester.pumpWidget(createWidget());
+
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Copy'), findsNothing);
     });
   });
 }

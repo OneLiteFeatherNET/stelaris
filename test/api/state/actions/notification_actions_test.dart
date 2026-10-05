@@ -4,6 +4,7 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/base_api.dart';
 import 'package:stelaris/api/state/actions/notification_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/util/copy_model_result.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
@@ -137,6 +138,56 @@ void main() {
 
       expect(store.state.notifications.totalItems, 19);
       expect(store.state.notifications.items, isEmpty);
+    });
+  });
+
+  group('NotificationCopyAction', () {
+    const project = Project(id: 'p1', displayName: 'P1', key: 'p1');
+    const other = Project(id: 'p2', displayName: 'P2', key: 'p2');
+    const source = NotificationModel(id: 'n-1', uiName: 'Welcome', key: 'welcome', projectId: 'p1');
+
+    Store<AppState> store() => Store<AppState>(
+      initialState: const AppState().copyWith(
+        selectedProject: project,
+        notifications: const PaginatedResult<NotificationModel>(
+          items: [source],
+          totalItems: 1,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: 10,
+        ),
+      ),
+    );
+
+    void respond(Map<String, dynamic> json) {
+      (ApiService().notificationApi as BaseApi<NotificationModel>).apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json(json);
+    }
+
+    test('appends a copy into the open project', () async {
+      final s = store();
+      respond({'id': 'n-2', 'uiName': 'Welcome (Copy)', 'projectId': 'p1'});
+
+      await s.dispatchAndWait(NotificationCopyAction(
+        source,
+        const CopyModelResult(targetProject: project, name: 'Welcome (Copy)', key: 'welcome-copy'),
+      ));
+
+      expect(s.state.notifications.items.map((n) => n.id), ['n-1', 'n-2']);
+      expect(s.state.notifications.totalItems, 2);
+    });
+
+    test('leaves the state alone for a copy into another project', () async {
+      final s = store();
+      final before = s.state;
+      respond({'id': 'n-2', 'uiName': 'Welcome', 'projectId': 'p2'});
+
+      await s.dispatchAndWait(NotificationCopyAction(
+        source,
+        const CopyModelResult(targetProject: other, name: 'Welcome', key: 'welcome'),
+      ));
+
+      expect(s.state, before);
     });
   });
 }

@@ -36,6 +36,7 @@ class InfoBarFactory {
     String text, {
     double width = snackBarWidth,
     Duration duration = const Duration(seconds: 3),
+    SnackBarAction? action,
   }) {
     return SnackBar(
       content: Row(
@@ -52,6 +53,9 @@ class InfoBarFactory {
         ],
       ),
       backgroundColor: Colors.green.shade700,
+      action: action,
+      // A button would otherwise keep the bar up until it is dismissed.
+      persist: false,
       duration: duration,
       width: width,
       elevation: 2,
@@ -146,11 +150,20 @@ class InfoBarFactory {
 
 /// Convenience extensions on [BuildContext] for showing feedback snackbars.
 extension ScaffoldMessengerContextExtension on BuildContext {
-  /// Shows a floating success [SnackBar] with green background and check icon.
-  void showSuccessSnackBar(String text) {
+  /// Shows a floating success [SnackBar] with green background and check
+  /// icon, and [action] as its button when given.
+  void showSuccessSnackBar(
+    String text, {
+    SnackBarAction? action,
+    Duration duration = const Duration(seconds: 3),
+  }) {
     ScaffoldMessenger.of(this)
       ..hideCurrentSnackBar()
-      ..showSnackBar(InfoBarFactory().createSuccess(text));
+      ..showSnackBar(InfoBarFactory().createSuccess(
+          text,
+          action: action,
+          duration: duration,
+        ));
   }
 
   /// Shows a floating warning [SnackBar] with amber background and warning icon.
