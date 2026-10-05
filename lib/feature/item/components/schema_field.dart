@@ -1,5 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/component.dart';
 
 /// The value a component starts with when it is added: required fields get a
@@ -22,21 +25,27 @@ Object? initialValue(ComponentSchema schema) => switch (schema) {
 };
 
 /// A one line description of a component [value], shown on its card.
-String summarize(ComponentSchema schema, Object? value) => switch (schema) {
-  UnitSchema() => 'Set',
+String summarize(
+  AppLocalizations l10n,
+  ComponentSchema schema,
+  Object? value,
+) => switch (schema) {
+  UnitSchema() => l10n.component_summary_set,
   ColorSchema() when value is int => colorHex(value),
-  ListSchema() when value is List => '${value.length} entries',
+  ListSchema() when value is List => l10n.component_summary_entries(
+    value.length,
+  ),
   ObjectSchema(:final fields) when value is Map =>
     value.entries
         .map((e) {
           final field = fields[e.key];
           final text = field == null
               ? '${e.value}'
-              : summarize(field.schema, e.value);
+              : summarize(l10n, field.schema, e.value);
           return '${field?.label ?? e.key}: $text';
         })
         .join(', '),
-  UnsupportedSchema() => 'Not editable yet',
+  UnsupportedSchema() => l10n.component_not_editable,
   _ when value == null || value == '' => '—',
   _ => '$value',
 };
@@ -69,6 +78,7 @@ class SchemaField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final schema = this.schema;
+    final l10n = context.l10n;
     return switch (schema) {
       IntSchema(:final min, :final max) => _NumberField(
         label: label,
@@ -89,41 +99,46 @@ class SchemaField extends StatelessWidget {
       ),
       BoolSchema() => SwitchListTile(
         contentPadding: EdgeInsets.zero,
-        title: Text(label ?? 'Enabled'),
+        title: Text(label ?? l10n.component_field_enabled),
         value: value as bool? ?? false,
         onChanged: onChanged,
       ),
-      UnitSchema() => const _Hint(
-        'This component has no value. Adding it to the item is enough.',
-      ),
+      UnitSchema() => _Hint(l10n.component_no_value),
       StringSchema() || TextSchema() => TextFormField(
         initialValue: value as String? ?? '',
-        decoration: InputDecoration(labelText: label),
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: label,
+        ),
         maxLines: schema is TextSchema ? null : 1,
         onChanged: onChanged,
       ),
       KeySchema(:final registry) => TextFormField(
         initialValue: value as String? ?? '',
         decoration: InputDecoration(
+          border: const OutlineInputBorder(),
           labelText: label,
           hintText: 'minecraft:…',
           helperText: registry == null
               ? null
-              : 'Key from the $registry registry',
+              : l10n.component_key_helper(registry),
         ),
         // Shown only when the field is required or switched on, so it always
         // needs a key: the codecs can't read an empty one.
         validator: (text) => switch (text) {
-          null || '' => 'A key is required',
+          null || '' => l10n.component_key_required,
           final key when !_keyPattern.hasMatch(key) =>
-            'Expected a key like minecraft:stone',
+            l10n.component_key_invalid,
           _ => null,
         },
         onChanged: onChanged,
       ),
       EnumSchema(:final values) => DropdownButtonFormField<String>(
         initialValue: value as String?,
-        decoration: InputDecoration(labelText: label),
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: label,
+        ),
         items: [
           for (final entry in values)
             DropdownMenuItem(value: entry, child: Text(_readable(entry))),
@@ -148,7 +163,8 @@ class SchemaField extends StatelessWidget {
         onChanged: onChanged,
       ),
       UnsupportedSchema(:final javaType) => _Hint(
-        '${label == null ? '' : '$label: '}not editable yet ($javaType).',
+        '${label == null ? '' : '$label: '}'
+        '${l10n.component_not_editable_type(javaType)}',
       ),
     };
   }
@@ -200,18 +216,24 @@ class _NumberField extends StatelessWidget {
   final num? Function(String) parse;
   final ValueChanged<Object?> onChanged;
 
-  String? get _range => switch ((min, max)) {
+  String? _range(AppLocalizations l10n) => switch ((min, max)) {
     (null, null) => null,
-    (final min?, null) => 'At least $min',
-    (null, final max?) => 'At most $max',
-    (final min?, final max?) => 'Between $min and $max',
+    (final min?, null) => l10n.component_range_min('$min'),
+    (null, final max?) => l10n.component_range_max('$max'),
+    (final min?, final max?) => l10n.component_range_between('$min', '$max'),
   };
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final range = _range(l10n);
     return TextFormField(
       initialValue: text,
-      decoration: InputDecoration(labelText: label, helperText: _range),
+      decoration: InputDecoration(
+        border: const OutlineInputBorder(),
+        labelText: label,
+        helperText: range,
+      ),
       keyboardType: TextInputType.numberWithOptions(
         decimal: decimal,
         signed: true,
@@ -222,11 +244,13 @@ class _NumberField extends StatelessWidget {
         ),
       ],
       validator: (input) {
-        if (input == null || input.isEmpty) return 'A value is required';
+        if (input == null || input.isEmpty) {
+          return l10n.component_value_required;
+        }
         final number = parse(input);
-        if (number == null) return 'Not a number';
-        if (min != null && number < min!) return _range;
-        if (max != null && number > max!) return _range;
+        if (number == null) return l10n.component_not_a_number;
+        if (min != null && number < min!) return range;
+        if (max != null && number > max!) return range;
         return null;
       },
       onChanged: (input) => onChanged(parse(input)),
@@ -262,13 +286,17 @@ class _ColorField extends StatelessWidget {
         Expanded(
           child: TextFormField(
             initialValue: colorHex(value),
-            decoration: InputDecoration(labelText: label ?? 'Color'),
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: label ?? context.l10n.component_field_color,
+            ),
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp('[#0-9a-fA-F]')),
               LengthLimitingTextInputFormatter(7),
             ],
-            validator: (input) =>
-                _parseHex(input) == null ? 'Expected #RRGGBB' : null,
+            validator: (input) => _parseHex(input) == null
+                ? context.l10n.component_color_invalid
+                : null,
             onChanged: (input) {
               final rgb = _parseHex(input);
               if (rgb != null) onChanged(rgb);
@@ -306,9 +334,10 @@ class _ListField extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return _Section(
-      title: '${label ?? 'Entries'} (${values.length})',
+      title:
+          '${label ?? context.l10n.component_field_entries} (${values.length})',
       trailing: IconButton(
-        tooltip: 'Add entry',
+        tooltip: context.l10n.component_entry_add,
         icon: const Icon(Icons.add),
         onPressed: _full
             ? null
@@ -317,7 +346,7 @@ class _ListField extends StatelessWidget {
       children: [
         if (values.isEmpty)
           Text(
-            'No entries',
+            context.l10n.component_entries_empty,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -337,7 +366,7 @@ class _ListField extends StatelessWidget {
                 ),
               ),
               IconButton(
-                tooltip: 'Remove entry',
+                tooltip: context.l10n.component_entry_remove,
                 icon: const Icon(Icons.remove_circle_outline),
                 onPressed: () => onChanged([...values]..removeAt(i)),
               ),
@@ -373,7 +402,7 @@ class _ObjectField extends StatelessWidget {
   Widget build(BuildContext context) {
     final fields = [
       for (final entry in schema.fields.entries)
-        _buildField(entry.key, entry.value),
+        _buildField(context.l10n, entry.key, entry.value),
     ];
     final label = this.label;
     // The top level object of a component needs no frame, the dialog is one.
@@ -386,7 +415,7 @@ class _ObjectField extends StatelessWidget {
     return _Section(title: label, children: fields);
   }
 
-  Widget _buildField(String name, ComponentField field) {
+  Widget _buildField(AppLocalizations l10n, String name, ComponentField field) {
     final included = values.containsKey(name);
     final input = SchemaField(
       schema: field.schema,
@@ -402,11 +431,12 @@ class _ObjectField extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           dense: true,
           controlAffinity: ListTileControlAffinity.leading,
-          title: Text('${field.label} (optional)'),
+          title: Text(l10n.component_field_optional(field.label)),
           value: included,
           onChanged: (include) => _toggle(name, field, include ?? false),
         ),
-        if (included) input,
+        // The floating label of the outlined input needs room below the box.
+        if (included) ...[verticalSpacing10, input],
       ],
     );
   }
@@ -446,7 +476,7 @@ class _Section extends StatelessWidget {
 
 List<Widget> _spaced(List<Widget> children) => [
   for (var i = 0; i < children.length; i++) ...[
-    if (i > 0) const SizedBox(height: 12),
+    if (i > 0) verticalSpacing10,
     children[i],
   ],
 ];

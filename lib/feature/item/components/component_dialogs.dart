@@ -1,8 +1,10 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/feature/base/hide_tooltips_while_scrolling.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/components/component_category_menu.dart';
 import 'package:stelaris/feature/item/components/schema_field.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/component.dart';
 
@@ -63,11 +65,20 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
   /// The category picked in the filter menu. Null shows all.
   ComponentCategory? _category;
 
-  /// The components which can still be added, independent of the filters.
-  late final List<ComponentSpec> _addable = [
-    for (final spec in offeredComponents)
-      if (!widget.existing.contains(spec.key)) spec,
-  ];
+  /// The components which can still be added, independent of the filters,
+  /// grouped by their category in the order of the categories. Categories
+  /// without any are left out.
+  late final Map<ComponentCategory, List<ComponentSpec>> _addable = () {
+    final byCategory = <ComponentCategory, List<ComponentSpec>>{
+      for (final category in ComponentCategory.values) category: [],
+    };
+    for (final spec in offeredComponents) {
+      if (!widget.existing.contains(spec.key)) {
+        byCategory[spec.category]!.add(spec);
+      }
+    }
+    return byCategory..removeWhere((_, specs) => specs.isEmpty);
+  }();
 
   @override
   void dispose() {
@@ -83,32 +94,31 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
 
   /// The addable components per category, for the filter menu.
   late final Map<ComponentCategory, int> _counts = {
-    for (final category in ComponentCategory.values)
-      category: _addable.where((spec) => spec.category == category).length,
+    for (final MapEntry(key: category, value: specs) in _addable.entries)
+      category: specs.length,
   };
 
-  /// Matches the name and key of a component, and the name of its category,
-  /// so typing e.g. `combat` lists every combat component.
-  bool _matches(ComponentSpec spec) {
-    if (_category != null && spec.category != _category) return false;
-    final search = _search.trim().toLowerCase();
-    return search.isEmpty ||
-        spec.displayName.toLowerCase().contains(search) ||
-        spec.key.contains(search) ||
-        spec.category.displayName.toLowerCase().contains(search);
-  }
-
   /// The rows of the list: a header per category followed by its components.
-  List<Object> _rows() {
-    final rows = <Object>[];
-    for (final category in ComponentCategory.values) {
-      final specs = _addable.where(
-        (spec) => spec.category == category && _matches(spec),
-      );
-      if (specs.isEmpty) continue;
+  ///
+  /// The search matches the name and key of a component, and the name of its
+  /// category, so typing e.g. `combat` lists every combat component.
+  List<_Row> _rows() {
+    final search = _search.trim().toLowerCase();
+    final rows = <_Row>[];
+    for (final MapEntry(key: category, value: specs) in _addable.entries) {
+      if (_category != null && category != _category) continue;
+      final Iterable<ComponentSpec> matches =
+          search.isEmpty || category.displayName.toLowerCase().contains(search)
+          ? specs
+          : specs.where(
+              (spec) =>
+                  spec.displayName.toLowerCase().contains(search) ||
+                  spec.key.contains(search),
+            );
+      if (matches.isEmpty) continue;
       rows
-        ..add(category)
-        ..addAll(specs);
+        ..add(_HeaderRow(category))
+        ..addAll(matches.map(_SpecRow.new));
     }
     return rows;
   }
@@ -119,7 +129,7 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
     final rows = _rows();
     final category = _category;
     return FormDialog(
-      title: 'Add component',
+      title: context.l10n.component_add_title,
       actionLabel: context.l10n.button_add,
       onSubmit: null,
       showActions: false,
@@ -135,8 +145,8 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
               focusNode: _focusNode,
               autoFocus: true,
               hintText: category == null
-                  ? 'Search components or categories'
-                  : 'Search in ${category.displayName}',
+                  ? context.l10n.component_search_hint
+                  : context.l10n.component_search_in(category.displayName),
               leading: const Icon(Icons.search),
               trailing: [
                 ComponentCategoryMenu(
@@ -153,7 +163,7 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
                       padding: EdgeInsets.zero,
                       isSelected: category != null,
                       icon: const Icon(Icons.filter_list),
-                      tooltip: 'Filter by category',
+                      tooltip: context.l10n.component_filter_tooltip,
                       onPressed: toggle,
                     ),
                   ),
@@ -177,38 +187,40 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
               ),
               onChanged: (value) => setState(() => _search = value),
             ),
-            const SizedBox(height: 8),
+            verticalSpacing10,
             Expanded(
               child: rows.isEmpty
-                  ? const Center(
-                      child: Text('No component matches the search.'),
-                    )
+                  ? Center(child: Text(context.l10n.component_search_empty))
                   // The rows paint their ink on this material, which clips
                   // it to the list. On the dialog's material the highlight
                   // of a row scrolled half out drew past the list.
                   : Material(
                       type: MaterialType.transparency,
                       clipBehavior: Clip.hardEdge,
-                      child: ListView.builder(
-                        itemCount: rows.length,
-                        itemBuilder: (context, index) => switch (rows[index]) {
-                          final ComponentCategory category => _CategoryHeader(
-                            category,
-                            // A filtered list has only this header, so it
-                            // offers nothing to click.
-                            onTap: _category == null
-                                ? () => _selectCategory(category)
-                                : null,
-                          ),
-                          final ComponentSpec spec => _ComponentRow(
-                            spec: spec,
-                            isDefault: widget.materialDefaults.contains(
-                              spec.key,
-                            ),
-                            onTap: () => Navigator.of(context).pop(spec),
-                          ),
-                          _ => const SizedBox.shrink(),
-                        },
+                      child: HideTooltipsWhileScrolling(
+                        child: ListView.builder(
+                          // Keeps the rows clear of the scrollbar.
+                          padding: const EdgeInsets.only(right: 16),
+                          itemCount: rows.length,
+                          itemBuilder: (context, index) =>
+                              switch (rows[index]) {
+                                _HeaderRow(:final category) => _CategoryHeader(
+                                  category,
+                                  // A filtered list has only this header, so it
+                                  // offers nothing to click.
+                                  onTap: _category == null
+                                      ? () => _selectCategory(category)
+                                      : null,
+                                ),
+                                _SpecRow(:final spec) => _ComponentRow(
+                                  spec: spec,
+                                  isDefault: widget.materialDefaults.contains(
+                                    spec.key,
+                                  ),
+                                  onTap: () => Navigator.of(context).pop(spec),
+                                ),
+                              },
+                        ),
                       ),
                     ),
             ),
@@ -217,6 +229,23 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
       ),
     );
   }
+}
+
+/// A row of the component list.
+sealed class _Row {
+  const _Row();
+}
+
+final class _HeaderRow extends _Row {
+  const _HeaderRow(this.category);
+
+  final ComponentCategory category;
+}
+
+final class _SpecRow extends _Row {
+  const _SpecRow(this.spec);
+
+  final ComponentSpec spec;
 }
 
 class _CategoryHeader extends StatelessWidget {
@@ -248,7 +277,7 @@ class _CategoryHeader extends StatelessWidget {
     );
     if (onTap == null) return header;
     return Tooltip(
-      message: 'Only show ${category.displayName}',
+      message: context.l10n.component_category_only(category.displayName),
       child: InkWell(
         key: Key('component_category_header_${category.key}'),
         borderRadius: BorderRadius.circular(8),
@@ -281,9 +310,9 @@ class _ComponentRow extends StatelessWidget {
       // A plain label instead of a chip keeps every row the same height.
       trailing: isDefault
           ? Tooltip(
-              message: 'The material has this component by default',
+              message: context.l10n.component_default_tooltip,
               child: Text(
-                'Default',
+                context.l10n.component_default_label,
                 style: theme.textTheme.labelSmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -355,6 +384,7 @@ class _ComponentEditDialogState extends State<_ComponentEditDialog> {
     final theme = Theme.of(context);
     return FormDialog(
       title: widget.spec.displayName,
+      actionIcon: Icons.save_outlined,
       actionLabel: context.l10n.button_save,
       onSubmit: _saving ? null : _submit,
       busy: _saving,
@@ -370,7 +400,7 @@ class _ComponentEditDialogState extends State<_ComponentEditDialog> {
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 16),
+            verticalSpacing10,
             SchemaField(
               schema: widget.spec.schema,
               value: _value,

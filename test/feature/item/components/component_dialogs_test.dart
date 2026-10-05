@@ -10,6 +10,8 @@ import 'package:vulpes_data/component.dart';
 ComponentSpec _spec(String key) =>
     dataComponents.singleWhere((spec) => spec.key == key);
 
+final l10n = lookupAppLocalizations(const Locale('en'));
+
 void main() {
   Future<void> pumpOpener(
     WidgetTester tester,
@@ -53,12 +55,12 @@ void main() {
 
   test('summaries', () {
     expect(
-      summarize(_spec('minecraft:dyed_color').schema, 0xFF0000),
+      summarize(l10n, _spec('minecraft:dyed_color').schema, 0xFF0000),
       '#FF0000',
     );
-    expect(summarize(_spec('minecraft:glider').schema, null), 'Set');
+    expect(summarize(l10n, _spec('minecraft:glider').schema, null), 'Set');
     expect(
-      summarize(_spec('minecraft:food').schema, {
+      summarize(l10n, _spec('minecraft:food').schema, {
         'nutrition': 4,
         'saturation': 2.4,
       }),

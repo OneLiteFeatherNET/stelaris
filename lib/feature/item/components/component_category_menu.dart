@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/component.dart';
 
 /// Opens a menu to filter components by their category, null stands for
@@ -78,7 +79,7 @@ class ComponentCategoryMenu extends StatelessWidget {
         ),
       ),
       menuChildren: [
-        item(null, 'All categories', total),
+        item(null, context.l10n.component_all_categories, total),
         const Divider(height: 9),
         for (final category in ComponentCategory.values)
           if (counts[category] case final count? when count > 0)

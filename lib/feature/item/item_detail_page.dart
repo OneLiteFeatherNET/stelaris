@@ -30,8 +30,7 @@ class ItemDetailPage extends StatelessWidget {
     DetailTab('general', (l10n) => l10n.tab_general, formerIds: ['meta']),
     DetailTab('enchantments', (l10n) => l10n.tab_enchantments),
     DetailTab('lore', (l10n) => l10n.tab_lore),
-    // Proof of concept, not localized yet.
-    DetailTab('components', (_) => 'Components'),
+    DetailTab('components', (l10n) => l10n.tab_components),
   ];
 
   @override

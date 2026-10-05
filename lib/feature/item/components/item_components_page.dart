@@ -2,7 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
@@ -147,14 +147,27 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
   Future<void> _remove(String name, ItemComponentDto component) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => FormDialog(
-        title: 'Remove component',
-        content: Text('Remove "$name" from the item? Its value will be lost.'),
-        actionLabel: 'Remove',
-        actionIcon: Icons.delete_forever,
-        destructive: true,
-        onSubmit: () => Navigator.of(context).pop(true),
-      ),
+      // Only confirms; the removal runs here, so its error can be shown.
+      builder: (context) {
+        // Split around the name, so it can be bold wherever a language puts
+        // it.
+        final [before, after] = context.l10n
+            .component_delete_header('\u0000')
+            .split('\u0000');
+        return DeleteDialog<ItemComponentDto>(
+          title: context.l10n.component_delete_title,
+          header: [
+            TextSpan(text: before),
+            TextSpan(
+              text: name,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            TextSpan(text: after),
+          ],
+          value: component,
+          successfully: (_) => true,
+        );
+      },
     );
     if (confirmed != true || !mounted) return;
     final error = await _run(ItemComponentDeleteAction(component));
@@ -198,7 +211,7 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PageHeader(
-                title: 'Components (${all.length})',
+                title: context.l10n.component_page_title(all.length),
                 actions: [
                   if (counts.isNotEmpty)
                     ComponentCategoryMenu(
@@ -208,7 +221,9 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
                       builder: (context, toggle) => PageHeaderAction(
                         key: const Key('component_category_filter'),
                         icon: const Icon(Icons.filter_list),
-                        label: category?.displayName ?? 'All categories',
+                        label:
+                            category?.displayName ??
+                            context.l10n.component_all_categories,
                         onPressed: toggle,
                       ),
                     ),
@@ -225,9 +240,9 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
               Expanded(
                 child: switch ((pending, components.isEmpty)) {
                   (true, _) => const Center(child: CircularProgressIndicator()),
-                  (false, true) => const EmptyDataWidget.full(
-                    header: 'No components yet',
-                    subHeader: 'Add a component to change how the item behaves, e.g. food or a tool.',
+                  (false, true) => EmptyDataWidget.full(
+                    header: context.l10n.component_empty_header,
+                    subHeader: context.l10n.component_empty_body,
                   ),
                   _ => LayoutBuilder(
                     builder: (context, constraints) {
@@ -373,13 +388,13 @@ class _ComponentCard extends StatelessWidget {
                       if (onEdit != null)
                         IconButton(
                           key: const Key('component_card_edit'),
-                          tooltip: 'Edit component',
+                          tooltip: context.l10n.component_edit_tooltip,
                           icon: const Icon(Icons.edit_outlined),
                           onPressed: onEdit,
                         ),
                       IconButton(
                         key: const Key('component_card_remove'),
-                        tooltip: 'Remove component',
+                        tooltip: context.l10n.component_delete_tooltip,
                         icon: deleteIcon,
                         onPressed: onRemove,
                       ),
@@ -389,9 +404,11 @@ class _ComponentCard extends StatelessWidget {
               ),
               Text(
                 switch (spec) {
-                  null => 'Unknown component',
+                  null => context.l10n.component_unknown,
                   final spec when overridesDefault =>
-                    '${spec.category.displayName} · overrides the default',
+                    context.l10n.component_overrides_default(
+                      spec.category.displayName,
+                    ),
                   final spec => spec.category.displayName,
                 },
                 style: mutedStyle,
@@ -401,8 +418,8 @@ class _ComponentCard extends StatelessWidget {
               const Spacer(),
               Text(
                 switch (spec) {
-                  null => '$componentKey is not in the component catalog',
-                  final spec => summarize(spec.schema, value),
+                  null => context.l10n.component_not_in_catalog(componentKey),
+                  final spec => summarize(context.l10n, spec.schema, value),
                 },
                 style: theme.textTheme.bodyMedium,
                 maxLines: 1,
