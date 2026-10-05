@@ -334,6 +334,7 @@ void main() {
         'General',
         'Enchantments',
         'Lore',
+        'Components',
         'Delete\u2026',
       ]);
       expect(childrenOf('Rune Script', everyKind), [

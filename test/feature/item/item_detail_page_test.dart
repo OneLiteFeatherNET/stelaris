@@ -8,6 +8,7 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/general/item_general_page.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
+import 'package:stelaris/feature/item/components/item_components_page.dart';
 import 'package:stelaris/feature/item/lore/lore_page.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -34,7 +35,8 @@ void main() {
         routes: [
           GoRoute(
             path: '/items',
-            builder: (context, state) => const Scaffold(body: Text('Item List')),
+            builder: (context, state) =>
+                const Scaffold(body: Text('Item List')),
             routes: [
               GoRoute(
                 path: 'detail',
@@ -58,40 +60,41 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets(
-      'shows the back arrow with the item name above the tabs',
-      (tester) async {
-        await pumpPage(tester);
-
-        expect(find.byType(PageHeader), findsOneWidget);
-        expect(find.text('Ruby Sword'), findsOneWidget);
-
-        final backBarPosition = tester.getTopLeft(
-          find.byType(PageHeader),
-        );
-        final tabBarPosition = tester.getTopLeft(find.byType(TabBar));
-        expect(backBarPosition.dy, lessThan(tabBarPosition.dy));
-
-        final tabBar = tester.widget<TabBar>(find.byType(TabBar));
-        expect(
-          tabBar.tabs.map((tab) => (tab as Tab).text),
-          ['General', 'Enchantments', 'Lore'],
-        );
-      },
-    );
-
-    testWidgets('wires the tab views to General, Enchantments and Lore pages', (
+    testWidgets('shows the back arrow with the item name above the tabs', (
       tester,
     ) async {
       await pumpPage(tester);
 
-      final tabBarView = tester.widget<TabBarView>(find.byType(TabBarView));
-      expect(tabBarView.children.map((w) => w.runtimeType), [
-        ItemGeneralPage,
-        ItemEnchantmentPage,
-        LorePage,
+      expect(find.byType(PageHeader), findsOneWidget);
+      expect(find.text('Ruby Sword'), findsOneWidget);
+
+      final backBarPosition = tester.getTopLeft(find.byType(PageHeader));
+      final tabBarPosition = tester.getTopLeft(find.byType(TabBar));
+      expect(backBarPosition.dy, lessThan(tabBarPosition.dy));
+
+      final tabBar = tester.widget<TabBar>(find.byType(TabBar));
+      expect(tabBar.tabs.map((tab) => (tab as Tab).text), [
+        'General',
+        'Enchantments',
+        'Lore',
+        'Components',
       ]);
     });
+
+    testWidgets(
+      'wires the tab views to General, Enchantments, Lore and Components pages',
+      (tester) async {
+        await pumpPage(tester);
+
+        final tabBarView = tester.widget<TabBarView>(find.byType(TabBarView));
+        expect(tabBarView.children.map((w) => w.runtimeType), [
+          ItemGeneralPage,
+          ItemEnchantmentPage,
+          LorePage,
+          ItemComponentsPage,
+        ]);
+      },
+    );
 
     testWidgets('tapping back navigates to the item list', (tester) async {
       await pumpPage(tester);
@@ -125,10 +128,12 @@ void main() {
 
       // A field on the General tab: the item material.
       await tester.enterText(
-        find.descendant(
-          of: find.byType(ItemGeneralPage),
-          matching: find.byType(TextFormField),
-        ).first,
+        find
+            .descendant(
+              of: find.byType(ItemGeneralPage),
+              matching: find.byType(TextFormField),
+            )
+            .first,
         'minecraft:diamond_sword',
       );
       await tester.pump();
@@ -150,10 +155,12 @@ void main() {
 
       // A field on the General tab: the item material.
       await tester.enterText(
-        find.descendant(
-          of: find.byType(ItemGeneralPage),
-          matching: find.byType(TextFormField),
-        ).first,
+        find
+            .descendant(
+              of: find.byType(ItemGeneralPage),
+              matching: find.byType(TextFormField),
+            )
+            .first,
         'minecraft:diamond_sword',
       );
       await tester.pump();
