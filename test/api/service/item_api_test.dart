@@ -87,6 +87,86 @@ void main() {
     });
   });
 
+  group('components', () {
+    test('getComponents requests the paginated sub-resource', () async {
+      const dto = ItemComponentDto(
+        id: 'c1',
+        componentKey: 'minecraft:food',
+        value: {'nutrition': 4, 'saturation': 2.4},
+      );
+      final adapter = RecordingHttpClientAdapter({
+        'items': [dto.toJson()],
+        'totalItems': 1,
+        'totalPages': 1,
+        'currentPage': 1,
+        'pageSize': 100,
+      });
+      apiClient.dio.httpClientAdapter = adapter;
+
+      final result = await itemApi.getComponents('item-1');
+
+      expect(adapter.lastRequest!.method, 'GET');
+      expect(adapter.lastRequest!.uri.path, '/api/item/item-1/components');
+      expect(adapter.lastRequest!.uri.queryParameters, {
+        'page': '0',
+        'size': '100',
+      });
+      expect(result.items.single.componentKey, 'minecraft:food');
+      expect(result.items.single.value, {'nutrition': 4, 'saturation': 2.4});
+    });
+
+    test('addComponent PUTs to the component sub-resource', () async {
+      const dto = ItemComponentDto(
+        componentKey: 'minecraft:max_stack_size',
+        value: 16,
+      );
+      final adapter = RecordingHttpClientAdapter(
+        dto.copyWith(id: 'c2').toJson(),
+      );
+      apiClient.dio.httpClientAdapter = adapter;
+
+      final result = await itemApi.addComponent('item-1', dto);
+
+      expect(adapter.lastRequest!.method, 'PUT');
+      expect(adapter.lastRequest!.uri.path, '/api/item/item-1/component');
+      expect(adapter.lastRequest!.data, dto.toJson());
+      expect(result.id, 'c2');
+    });
+
+    test('updateComponent POSTs to the component sub-resource', () async {
+      const dto = ItemComponentDto(
+        id: 'c2',
+        componentKey: 'minecraft:max_stack_size',
+        value: 8,
+      );
+      final adapter = RecordingHttpClientAdapter(dto.toJson());
+      apiClient.dio.httpClientAdapter = adapter;
+
+      final result = await itemApi.updateComponent('item-1', dto);
+
+      expect(adapter.lastRequest!.method, 'POST');
+      expect(adapter.lastRequest!.uri.path, '/api/item/item-1/component');
+      expect(adapter.lastRequest!.data, dto.toJson());
+      expect(result.value, 8);
+    });
+
+    test('deleteComponent DELETEs by item and component id', () async {
+      const dto = ItemComponentDto(
+        id: 'c2',
+        componentKey: 'minecraft:glider',
+        value: <String, Object?>{},
+      );
+      final adapter = RecordingHttpClientAdapter(dto.toJson());
+      apiClient.dio.httpClientAdapter = adapter;
+
+      final result = await itemApi.deleteComponent('item-1', dto);
+
+      expect(adapter.lastRequest!.method, 'DELETE');
+      expect(adapter.lastRequest!.uri.path, '/api/item/item-1/component/c2');
+      expect(result.id, 'c2');
+    });
+  });
+
   group('lore', () {
     test('getLore requests the paginated sub-resource', () async {
       const dto = ItemLoreDto(text: 'Once upon a time', id: 'l1');
