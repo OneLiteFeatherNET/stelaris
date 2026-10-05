@@ -15,7 +15,7 @@ class SelectedItemAction extends ReduxAction<AppState> {
   @override
   AppState reduce() {
     return state
-        .copyWith(selectedItem: model)
+        .copyWith(selectedItem: model, selectedItemComponents: const [])
         .clearUnsavedChanges(NavigationEntry.items);
   }
 }
@@ -27,7 +27,7 @@ class RemoveSelectItemAction extends ReduxAction<AppState> {
   AppState? reduce() {
     if (state.selectedItem == null) return null;
     return state
-        .copyWith(selectedItem: null)
+        .copyWith(selectedItem: null, selectedItemComponents: const [])
         .clearUnsavedChanges(NavigationEntry.items);
   }
 }

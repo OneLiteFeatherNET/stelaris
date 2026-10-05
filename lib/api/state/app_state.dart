@@ -110,6 +110,10 @@ abstract class AppState with _$AppState {
 
     @JsonKey(includeToJson: false, includeFromJson: false)
     ItemModel? selectedItem,
+    // The data components of the selected item, loaded by its components tab.
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default([])
+    List<ItemComponentDto> selectedItemComponents,
     @JsonKey(includeToJson: false, includeFromJson: false)
     NotificationModel? selectedNotification,
     @JsonKey(includeToJson: false, includeFromJson: false)
