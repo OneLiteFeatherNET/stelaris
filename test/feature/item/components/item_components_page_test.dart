@@ -86,6 +86,60 @@ void main() {
     },
   );
 
+  testWidgets(
+    'marks the custom components and keeps the material',
+    variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+    (tester) async {
+      const material = ItemComponentDto(
+        id: 'c3',
+        componentKey: 'stelaris:material',
+        value: 'minecraft:stone',
+      );
+      const amount = ItemComponentDto(
+        id: 'c4',
+        componentKey: 'stelaris:amount',
+        value: 5,
+      );
+      await pumpPage(tester, const [food, material, amount]);
+
+      Finder card(String name) =>
+          find.ancestor(of: find.text(name), matching: find.byType(Card));
+      Finder inCard(String name, Finder finder) =>
+          find.descendant(of: card(name), matching: finder);
+
+      // The material can be edited but not removed, every item has one.
+      expect(
+        inCard('Material', find.byKey(const Key('component_card_remove'))),
+        findsNothing,
+      );
+      expect(
+        inCard('Material', find.byKey(const Key('component_card_edit'))),
+        findsOneWidget,
+      );
+      expect(
+        inCard('Amount', find.byKey(const Key('component_card_remove'))),
+        findsOneWidget,
+      );
+      expect(
+        inCard('Food', find.byKey(const Key('component_card_remove'))),
+        findsOneWidget,
+      );
+
+      // The custom components name their category in the primary color.
+      final context = tester.element(find.text('Material'));
+      final primary = Theme.of(context).colorScheme.primary;
+      Color? subtitleColor(String name) => tester
+          .widget<Text>(
+            inCard(name, find.text(name == 'Food' ? 'Consumable' : 'Custom')),
+          )
+          .style
+          ?.color;
+      expect(subtitleColor('Material'), primary);
+      expect(subtitleColor('Amount'), primary);
+      expect(subtitleColor('Food'), isNot(primary));
+    },
+  );
+
   testWidgets('has no category filter without components', (tester) async {
     await pumpPage(tester, const []);
     expect(find.byKey(const Key('component_category_filter')), findsNothing);

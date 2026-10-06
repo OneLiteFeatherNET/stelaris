@@ -9,6 +9,7 @@ import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/components/component_category_menu.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
 import 'package:stelaris/feature/item/components/schema/schema.dart';
+import 'package:stelaris/feature/item/components/stelaris_components.dart';
 import 'package:stelaris/feature/model/model_card_actions.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -277,10 +278,13 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
                             onEdit: editable
                                 ? () => _edit(spec, component)
                                 : null,
-                            onRemove: () => _remove(
-                              spec?.displayName ?? component.componentKey,
-                              component,
-                            ),
+                            // Every item has its required components.
+                            onRemove: spec != null && spec.isRequired
+                                ? null
+                                : () => _remove(
+                                    spec?.displayName ?? component.componentKey,
+                                    component,
+                                  ),
                           );
                         },
                       );
@@ -347,7 +351,9 @@ class _ComponentCard extends StatelessWidget {
 
   /// Opens the edit dialog, null when the component can't be edited.
   final VoidCallback? onEdit;
-  final VoidCallback onRemove;
+
+  /// Asks to remove the component, null when it can't be removed.
+  final VoidCallback? onRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -394,12 +400,13 @@ class _ComponentCard extends StatelessWidget {
                           icon: const Icon(Icons.edit_outlined),
                           onPressed: onEdit,
                         ),
-                      IconButton(
-                        key: const Key('component_card_remove'),
-                        tooltip: context.l10n.component_delete_tooltip,
-                        icon: deleteIcon,
-                        onPressed: onRemove,
-                      ),
+                      if (onRemove != null)
+                        IconButton(
+                          key: const Key('component_card_remove'),
+                          tooltip: context.l10n.component_delete_tooltip,
+                          icon: deleteIcon,
+                          onPressed: onRemove,
+                        ),
                     ],
                   ),
                 ],
@@ -413,7 +420,10 @@ class _ComponentCard extends StatelessWidget {
                     ),
                   final spec => spec.category.displayName,
                 },
-                style: mutedStyle,
+                // The components Stelaris adds stand out from the vanilla ones.
+                style: spec?.category == ComponentCategory.custom
+                    ? mutedStyle?.copyWith(color: colorScheme.primary)
+                    : mutedStyle,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
