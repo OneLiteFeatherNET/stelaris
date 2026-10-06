@@ -53,12 +53,12 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 3. Vulpes-Backend
 
-- [x] 3.1 Move to vulpes-model 3.0.0 in `settings.gradle.kts`. Remove `material`, `amount`,
+- [ ] 3.1 Move to vulpes-model 3.0.0 in `settings.gradle.kts`. Remove `material`, `amount`,
   `displayName` and `customModelData` from `ItemModelDTO` (fields, `requiredProperties`,
   `toItemEntity`), from `ItemModelResponseDTO` and from `ItemModelCopier.copyRoot`. Update
   `ItemModelDTOValidationTest` and every test that builds an `ItemEntity` or posts those fields. Test
   that an item body which still contains them is accepted and answered without them. Verify with
-  `./gradlew test`
+  `./gradlew test`. Done except the test for a body with the old fields
 - [x] 3.2 Remove the item flags: `ItemFlagController`, `ItemFlagDTO`, `ItemFlagResponseDTO`, the flag
   methods of `ItemService`/`ItemServiceImpl`, `ItemRelation.FLAGS` with its branch in
   `ItemModelCopier`, and their tests. Verify with `./gradlew test`. Controller, DTOs, service and
