@@ -104,10 +104,11 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 4. stelaris-model
 
-- [ ] 4.1 Remove `material`, `amount`, `displayName`, `customModelData` and `flags` from `ItemModel`
-  in `lib/src/model/item_model.dart`, run
-  `dart run build_runner build --delete-conflicting-outputs`, and update tests that set them. Verify
-  with `dart analyze` and `flutter test`, then push to `main`
+- [x] 4.1 Remove `material`, `amount`, `displayName`, `customModelData` and `flags` from `ItemModel`
+  in `lib/src/model/item_model.dart`, delete `ItemFlagDto` and its export, run
+  `flutter pub run build_runner build --delete-conflicting-outputs` (a Flutter package, `dart run`
+  refuses it), and update tests that set them. Verify with `flutter analyze` and `flutter test`.
+  Done on stelaris-model `refactor/item` (717b4d7, ea1a2cb), to be merged into `main` through a PR
 
 ## 5. stelaris (frontend)
 
