@@ -324,7 +324,7 @@ class _ComponentsFactory
   @override
   _ComponentsView fromStore() => _ComponentsView(
     itemId: state.selectedItem?.id,
-    material: state.selectedItem?.material ?? defaultMaterial,
+    material: materialOf(state.selectedItemComponents),
     components: state.selectedItemComponents,
     loading: isWaiting(ItemComponentFetchAction),
   );

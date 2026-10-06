@@ -6,6 +6,7 @@ import 'package:stelaris/feature/item/components/component_dialogs.dart';
 import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/feature/item/components/stelaris_components.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:vulpes_data/component.dart';
 
 ComponentSpec _spec(String key) =>
@@ -60,6 +61,32 @@ void main() {
     expect(_spec('stelaris:material').isRequired, isTrue);
     expect(_spec('stelaris:amount').isRequired, isFalse);
     expect(_spec('minecraft:food').isRequired, isFalse);
+  });
+
+  test('the material is read from its component', () {
+    expect(materialOf(const []), 'minecraft:dirt');
+    expect(
+      materialOf(const [
+        ItemComponentDto(
+          id: 'c1',
+          componentKey: 'minecraft:food',
+          value: <String, Object?>{},
+        ),
+        ItemComponentDto(
+          id: 'c2',
+          componentKey: 'stelaris:material',
+          value: 'minecraft:stone',
+        ),
+      ]),
+      'minecraft:stone',
+    );
+    // A value which isn't a key falls back to the default.
+    expect(
+      materialOf(const [
+        ItemComponentDto(id: 'c3', componentKey: 'stelaris:material', value: 5),
+      ]),
+      'minecraft:dirt',
+    );
   });
 
   test('dedicated and runtime components are not offered', () {

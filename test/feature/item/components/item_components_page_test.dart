@@ -140,6 +140,33 @@ void main() {
     },
   );
 
+  const maxDamage = ItemComponentDto(
+    id: 'c5',
+    componentKey: 'minecraft:max_damage',
+    value: 100,
+  );
+  ItemComponentDto material(String key) =>
+      ItemComponentDto(id: 'c6', componentKey: 'stelaris:material', value: key);
+
+  testWidgets(
+    'marks a component the material has by default',
+    variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+    (tester) async {
+      await pumpPage(tester, [material('minecraft:diamond_sword'), maxDamage]);
+      expect(find.text('Properties · overrides the default'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    "doesn't mark a component the material doesn't have",
+    variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+    (tester) async {
+      await pumpPage(tester, [material('minecraft:stone'), maxDamage]);
+      expect(find.text('Properties · overrides the default'), findsNothing);
+      expect(find.text('Properties'), findsOneWidget);
+    },
+  );
+
   testWidgets('has no category filter without components', (tester) async {
     await pumpPage(tester, const []);
     expect(find.byKey(const Key('component_category_filter')), findsNothing);

@@ -1,3 +1,5 @@
+import 'package:stelaris/util/constants.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 import 'package:vulpes_data/component.dart';
 
 /// The components every item has, so they can't be removed.
@@ -24,6 +26,19 @@ const List<ComponentSpec> stelarisComponents = [
     IntSchema(min: 1, max: 99),
   ),
 ];
+
+/// The material of an item, read from its `stelaris:material` component;
+/// [defaultMaterial] while the components are loading or the value isn't a
+/// key.
+String materialOf(List<ItemComponentDto> components) {
+  for (final component in components) {
+    if (component.componentKey == 'stelaris:material' &&
+        component.value is String) {
+      return component.value! as String;
+    }
+  }
+  return defaultMaterial;
+}
 
 /// Whether a component is required, derived from its key.
 extension StelarisComponentSpec on ComponentSpec {

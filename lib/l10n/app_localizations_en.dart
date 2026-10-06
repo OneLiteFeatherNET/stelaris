@@ -252,18 +252,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get card_material => 'Material';
 
   @override
-  String get card_model_data => 'ModelData';
-
-  @override
-  String get card_amount => 'Amount';
-
-  @override
-  String get card_amount_to_high => 'The maximum amount is 64';
-
-  @override
-  String get card_display_name => 'DisplayName';
-
-  @override
   String get card_title => 'Title';
 
   @override
@@ -316,12 +304,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tooltip_material => 'Change the material';
-
-  @override
-  String get tooltip_model_data => 'Change the model data';
-
-  @override
-  String get tooltip_displayname => 'Change the Displayname';
 
   @override
   String get tooltip_title => 'Change title';

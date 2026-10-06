@@ -550,30 +550,6 @@ abstract class AppLocalizations {
   /// **'Material'**
   String get card_material;
 
-  /// No description provided for @card_model_data.
-  ///
-  /// In en, this message translates to:
-  /// **'ModelData'**
-  String get card_model_data;
-
-  /// No description provided for @card_amount.
-  ///
-  /// In en, this message translates to:
-  /// **'Amount'**
-  String get card_amount;
-
-  /// No description provided for @card_amount_to_high.
-  ///
-  /// In en, this message translates to:
-  /// **'The maximum amount is 64'**
-  String get card_amount_to_high;
-
-  /// No description provided for @card_display_name.
-  ///
-  /// In en, this message translates to:
-  /// **'DisplayName'**
-  String get card_display_name;
-
   /// No description provided for @card_title.
   ///
   /// In en, this message translates to:
@@ -681,18 +657,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change the material'**
   String get tooltip_material;
-
-  /// No description provided for @tooltip_model_data.
-  ///
-  /// In en, this message translates to:
-  /// **'Change the model data'**
-  String get tooltip_model_data;
-
-  /// No description provided for @tooltip_displayname.
-  ///
-  /// In en, this message translates to:
-  /// **'Change the Displayname'**
-  String get tooltip_displayname;
 
   /// No description provided for @tooltip_title.
   ///

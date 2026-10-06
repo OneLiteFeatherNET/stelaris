@@ -1,19 +1,14 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
-import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/selected_item_state.dart';
 import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
-import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/feature/item/general/item_group_card.dart';
-import 'package:stelaris/util/constants.dart';
-import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 
-/// The item's General tab: its group plus the fields of the item stack
-/// itself (material, display name, model data, amount).
+/// The item's General tab: its group. Everything about the item stack itself,
+/// like its material or name, is a component on the Components tab.
 class ItemGeneralPage extends StatefulWidget {
   const ItemGeneralPage({super.key});
 
@@ -52,159 +47,41 @@ class _ItemGeneralPageState extends State<ItemGeneralPage> {
                     child: AnimatedOpacity(
                       duration: const Duration(milliseconds: 300),
                       opacity: 1,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return Scrollbar(
-                        controller: _scrollController,
-                        thumbVisibility: true,
-                        trackVisibility: true,
-                        child: SingleChildScrollView(
-                          controller: _scrollController,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Wrap(
-                              spacing: 16,
-                              runSpacing: 16,
-                              children: [
-                                ItemGroupCard(
-                                  model: vm.selected,
-                                  groupKey: _groupKey,
-                                  focusOrder: const NumericFocusOrder(1),
-                                ),
-                                TextInputCard<String>(
-                                  display: context.l10n.card_material,
-                                  hintText: defaultMaterial,
-                                  currentValue:
-                                      vm.selected.material ?? emptyString,
-                                  valueUpdate: (value) {
-                                    if (value == vm.selected.material) return;
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      material: value,
-                                    );
-                                    context.dispatch(
-                                      UpdateItemAction(newEntry),
-                                    );
-                                  },
-                                  formValidator: (value) {
-                                    if (value == null) return null;
-                                    if (!minecraftPattern.hasMatch(value)) {
-                                      return context
-                                          .l10n
-                                          .input_validation_material;
-                                    }
-                                    return null;
-                                  },
-                                  maxLength: 30,
-                                  focusOrder: const NumericFocusOrder(2),
-                                ),
-                                TextInputCard<String>(
-                                  tooltipMessage:
-                                      context.l10n.tooltip_displayname,
-                                  display: context.l10n.card_display_name,
-                                  currentValue:
-                                      vm.selected.displayName ?? emptyString,
-                                  valueUpdate: (value) {
-                                    if (value == vm.selected.displayName) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      displayName: value,
-                                    );
-                                    context.dispatch(
-                                      UpdateItemAction(newEntry),
-                                    );
-                                  },
-                                  maxLength: 30,
-                                  focusOrder: const NumericFocusOrder(3),
-                                ),
-                                TextInputCard<int>(
-                                  tooltipMessage:
-                                      context.l10n.tooltip_model_data,
-                                  display: context.l10n.card_model_data,
-                                  currentValue:
-                                      vm.selected.customModelData?.toString() ??
-                                      zeroString,
-                                  valueUpdate: (value) {
-                                    final newValue = int.tryParse(value) ?? 0;
-                                    if (newValue ==
-                                        vm.selected.customModelData) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      customModelData: newValue,
-                                    );
-                                    context.dispatch(
-                                      UpdateItemAction(newEntry),
-                                    );
-                                  },
-                                  maxLength: 30,
-                                  inputType: numberInput,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      numberPattern,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return Scrollbar(
+                            controller: _scrollController,
+                            thumbVisibility: true,
+                            trackVisibility: true,
+                            child: SingleChildScrollView(
+                              controller: _scrollController,
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Wrap(
+                                  spacing: 16,
+                                  runSpacing: 16,
+                                  children: [
+                                    ItemGroupCard(
+                                      model: vm.selected,
+                                      groupKey: _groupKey,
+                                      focusOrder: const NumericFocusOrder(1),
                                     ),
                                   ],
-                                  focusOrder: const NumericFocusOrder(4),
                                 ),
-                                TextInputCard<int>(
-                                  display: context.l10n.card_amount,
-                                  currentValue:
-                                      vm.selected.amount?.toString() ??
-                                      zeroString,
-                                  valueUpdate: (value) {
-                                    final updatedValue =
-                                        int.tryParse(value) ?? 0;
-                                    if (updatedValue == vm.selected.amount) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      amount: updatedValue,
-                                    );
-                                    context.dispatch(
-                                      UpdateItemAction(newEntry),
-                                    );
-                                  },
-                                  inputType: numberInput,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      numberPattern,
-                                    ),
-                                  ],
-                                  formValidator: (value) {
-                                    if (value == null) return null;
-                                    final String input = value as String;
-                                    if (input.trim().isEmpty) {
-                                      return context.l10n.error_card_empty;
-                                    }
-
-                                    if (int.parse(input) > maxItemSize) {
-                                      return context.l10n.card_amount_to_high;
-                                    }
-                                    return null;
-                                  },
-                                  maxLength: 30,
-                                  focusOrder: const NumericFocusOrder(5),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      );
-                    },
+                          );
+                        },
+                      ),
+                    ),
                   ),
-                ),
+                  RegisterDetailForm(formKey: _formKey),
+                ],
               ),
-              RegisterDetailForm(formKey: _formKey),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
-  },
-);
   }
 }

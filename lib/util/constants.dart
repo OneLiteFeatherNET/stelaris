@@ -53,7 +53,6 @@ const double fiftyLength = 50;
 /// Minecraft related values
 const String zeroString = '0';
 const String emptyString = '';
-const int maxItemSize = 64;
 const String defaultMaterial = 'minecraft:dirt';
 
 // Text
