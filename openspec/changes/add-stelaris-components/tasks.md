@@ -19,22 +19,11 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 1. vulpes-minecraft-dart (vulpes_data)
 
-- [ ] 1.1 Add `final bool required` (default `false`) to `ComponentSpec` in
-  `lib/src/api/component_schema.dart`, documented as "has to be present on every item, so it can't
-  be removed", and add `custom('Custom', 'custom')` as the first entry of `ComponentCategory` in
-  `lib/src/api/component_category.dart`. Extend the class comment: `custom` is assigned by the
-  handwritten Stelaris specs, not by the CLI. Verify with `dart analyze` (exit code 0)
-- [ ] 1.2 Add `lib/src/api/stelaris_components.dart` with
-  `const List<ComponentSpec> stelarisComponents` holding
-  `ComponentSpec('stelaris:material', 'Material', ComponentCategory.custom, 'MATERIAL', KeySchema(registry: 'item'), required: true)`
-  and
-  `ComponentSpec('stelaris:amount', 'Amount', ComponentCategory.custom, 'AMOUNT', IntSchema(min: 1, max: 99))`.
-  Add `export 'src/api/stelaris_components.dart';` to `lib/vulpes_data.dart` in sorted position, the
-  same line the CLI writes on its next run. Verify with `dart analyze` (exit code 0) and by running
-  the CLI locally into a copy of the repository: `lib/vulpes_data.dart` keeps the export
-- [ ] 1.3 Push to `master` and verify that the frontend still builds against it with its current
-  code (`dart analyze` with a `pubspec_overrides.yaml` pointing at the clone, removed afterwards).
-  A switch over `ComponentCategory` that the analyzer reports is fixed in 5.1
+- [x] 1.1 Add `custom('Custom', 'custom')` as the first entry of `ComponentCategory` and say in the
+  class comment that the CLI never assigns it. Verified with `dart analyze` and the frontend's item
+  tests against the clone; pushed to `master` (e414954). The CLI's enum comment mentions it
+  (Stelaris-CLI 5f89d6a)
+- [x] ~~1.2 Stelaris specs and `ComponentSpec.required` in vulpes_data~~ moved to the frontend (5.1)
 
 ## 2. vulpes-model
 
@@ -114,14 +103,16 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 - [ ] 5.1 Upgrade `vulpes_data` and `stelaris_models` (`flutter pub upgrade vulpes_data
   stelaris_models`). Shrink `dedicatedComponents` to `minecraft:lore` and `minecraft:enchantments`
-  and adapt the test that pins it. Add `componentCatalog = [...stelarisComponents, ...dataComponents]` in
+  and adapt the test that pins it. Add `lib/feature/item/components/stelaris_components.dart` with
+  `requiredComponents`, `stelarisComponents` and the `isRequired` extension, as in design.md. Add
+  `componentCatalog = [...stelarisComponents, ...dataComponents]` in
   `component_dialogs.dart` and build `offeredComponents` and the components page's `_specsByKey` from
   it. Fix every switch over `ComponentCategory` the analyzer reports, and give `custom` a label like
   the other categories. Tests in `component_dialogs_test.dart`: the picker lists Custom first;
   Amount is offered while missing; Material is never offered. Verify with `dart analyze` and
   `flutter test`
 - [ ] 5.2 Components tab: cards of the `custom` category get a "Custom" badge next to the "Default"
-  one (new string `component_custom_label`), and a card whose spec is `required` has no remove
+  one (new string `component_custom_label`), and a card whose spec `isRequired` has no remove
   button. Tests in `item_components_page_test.dart`: the material card shows the badge and no
   remove button; an amount card can be removed. Verify with `flutter test`
 - [ ] 5.3 Default marks: replace `state.selectedItem?.material` and `SelectedItemView.material` with

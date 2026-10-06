@@ -17,13 +17,13 @@ can be replaced in one step.
 
 ## What Changes
 
-- **Two Stelaris components**, described by hand in vulpes_data next to the generated vanilla
+- **Two Stelaris components**, described by hand in the frontend next to the generated vanilla
   catalog:
   - `stelaris:material`: the item key, e.g. `minecraft:stone`. Required: created with every item and
     can't be removed.
   - `stelaris:amount`: 1 to 99. Optional: a missing amount is 1.
-- **`ComponentSpec.required`** and a **`custom` category** in vulpes_data, so any interface can tell
-  required components and Stelaris' own components apart.
+- **A `custom` category** in vulpes_data for components an application adds itself; which of them
+  are required is known to the frontend through an extension on `ComponentSpec`.
 - **Display name and custom model data** become the vanilla components `minecraft:custom_name` and
   `minecraft:custom_model_data`. Only lore and enchantments keep a dedicated editor and storage.
 - **Item flags** are removed: entity, repository, endpoints and model. `minecraft:tooltip_display`
@@ -54,8 +54,7 @@ can be replaced in one step.
 
 The change spans five repositories, released together:
 
-- **vulpes-minecraft-dart** (vulpes_data): `ComponentSpec.required`, `ComponentCategory.custom`,
-  `lib/src/api/stelaris_components.dart`. Additive.
+- **vulpes-minecraft-dart** (vulpes_data): `ComponentCategory.custom`. Additive.
 - **vulpes-model**: material, amount, display name, custom model data and flags removed from
   `ItemEntity`, `ItemFlagEntity` and its repository deleted. The model stays unaware of which keys
   exist. Breaking, released as 3.0.0.
