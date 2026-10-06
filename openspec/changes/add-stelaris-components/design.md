@@ -26,7 +26,7 @@ See proposal.md and specs/stelaris-components/spec.md.
 - Material, amount, display name and custom model data are stored and edited as components, with
   no field left on the item.
 - Item flags are gone.
-- Any interface can tell from vulpes_data which components are Stelaris' own and which are required.
+- The interface tells Stelaris' own components from the vanilla ones and knows which are required.
 
 **Non-Goals:**
 
@@ -91,7 +91,7 @@ namespace, nothing may be both custom and managed, a required key may not be man
 in the namespace must be custom, no key twice, and every value must be JSON. A broken configuration
 stops the start with a message.
 
-The backend only enforces which keys exist; what a key means lives in its spec in vulpes_data and,
+The backend only enforces which keys exist; what a key means lives in its spec in the frontend and,
 later, in the generator. So a new Stelaris component needs no backend release, and item creation can
 create every required component from its configured value instead of knowing the material.
 vulpes-model only stores components and doesn't know any key.
