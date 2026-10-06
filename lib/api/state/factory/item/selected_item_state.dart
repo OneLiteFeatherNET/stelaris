@@ -2,7 +2,6 @@ import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/util/constants.dart';
 
 class SelectedItemFactory<T extends Widget>
     extends VmFactory<AppState, T, SelectedItemView> {
@@ -21,6 +20,4 @@ class SelectedItemView extends Vm {
 
   final ItemModel selected;
   final Set<String> fieldsToDelete = {};
-
-  String get material => selected.material ?? defaultMaterial;
 }

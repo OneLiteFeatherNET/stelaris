@@ -252,18 +252,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get card_material => 'Material';
 
   @override
-  String get card_model_data => 'ModelData';
-
-  @override
-  String get card_amount => 'Amount';
-
-  @override
-  String get card_amount_to_high => 'The maximum amount is 64';
-
-  @override
-  String get card_display_name => 'DisplayName';
-
-  @override
   String get card_title => 'Title';
 
   @override
@@ -316,12 +304,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tooltip_material => 'Change the material';
-
-  @override
-  String get tooltip_model_data => 'Change the model data';
-
-  @override
-  String get tooltip_displayname => 'Change the Displayname';
 
   @override
   String get tooltip_title => 'Change title';
@@ -1365,4 +1347,179 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get font_char_label => 'Char *';
+
+  @override
+  String get tab_components => 'Components';
+
+  @override
+  String get component_add_title => 'Add component';
+
+  @override
+  String get component_search_hint => 'Search components or categories';
+
+  @override
+  String component_search_in(String category) {
+    return 'Search in $category';
+  }
+
+  @override
+  String get component_filter_tooltip => 'Filter by category';
+
+  @override
+  String get component_search_empty => 'No component matches the search.';
+
+  @override
+  String component_category_only(String category) {
+    return 'Only show $category';
+  }
+
+  @override
+  String get component_all_categories => 'All categories';
+
+  @override
+  String get component_default_label => 'Default';
+
+  @override
+  String get component_default_tooltip =>
+      'The material has this component by default';
+
+  @override
+  String component_overrides_default(String category) {
+    return '$category · overrides the default';
+  }
+
+  @override
+  String component_page_title(int count) {
+    return 'Components ($count)';
+  }
+
+  @override
+  String get component_empty_header => 'No components yet';
+
+  @override
+  String get component_empty_body =>
+      'Add a component to change how the item behaves, e.g. food or a tool.';
+
+  @override
+  String get component_edit_tooltip => 'Edit component';
+
+  @override
+  String get component_delete_tooltip => 'Delete component';
+
+  @override
+  String get component_delete_title => 'Delete component';
+
+  @override
+  String component_delete_header(String name) {
+    return 'Delete $name from the item?';
+  }
+
+  @override
+  String get component_unknown => 'Unknown component';
+
+  @override
+  String component_not_in_catalog(String key) {
+    return '$key is not in the component catalog';
+  }
+
+  @override
+  String get component_summary_set => 'Set';
+
+  @override
+  String component_summary_entries(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count entries',
+      one: '1 entry',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get component_not_editable => 'Not editable yet';
+
+  @override
+  String component_not_editable_type(String type) {
+    return 'not editable yet ($type).';
+  }
+
+  @override
+  String get component_no_value =>
+      'This component has no value. Adding it to the item is enough.';
+
+  @override
+  String get component_field_enabled => 'Enabled';
+
+  @override
+  String get component_field_color => 'Color';
+
+  @override
+  String get component_field_entries => 'Entries';
+
+  @override
+  String component_field_optional(String label) {
+    return '$label (optional)';
+  }
+
+  @override
+  String component_key_helper(String registry) {
+    return 'Key from the $registry registry';
+  }
+
+  @override
+  String get component_key_required => 'A key is required';
+
+  @override
+  String get component_key_invalid => 'Expected a key like minecraft:stone';
+
+  @override
+  String get component_tag_mode_keys => 'Keys';
+
+  @override
+  String get component_tag_mode_tag => 'Tag';
+
+  @override
+  String component_tag_helper(String registry) {
+    return 'Tag from the $registry registry';
+  }
+
+  @override
+  String get component_tag_required => 'A tag is required';
+
+  @override
+  String get component_tag_invalid => 'Expected a tag like #minecraft:logs';
+
+  @override
+  String get component_value_required => 'A value is required';
+
+  @override
+  String get component_not_a_number => 'Not a number';
+
+  @override
+  String component_range_min(String min) {
+    return 'At least $min';
+  }
+
+  @override
+  String component_range_max(String max) {
+    return 'At most $max';
+  }
+
+  @override
+  String component_range_between(String min, String max) {
+    return 'Between $min and $max';
+  }
+
+  @override
+  String get component_color_invalid => 'Expected #RRGGBB';
+
+  @override
+  String get component_entry_add => 'Add entry';
+
+  @override
+  String get component_entry_remove => 'Remove entry';
+
+  @override
+  String get component_entries_empty => 'No entries';
 }

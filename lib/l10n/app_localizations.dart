@@ -550,30 +550,6 @@ abstract class AppLocalizations {
   /// **'Material'**
   String get card_material;
 
-  /// No description provided for @card_model_data.
-  ///
-  /// In en, this message translates to:
-  /// **'ModelData'**
-  String get card_model_data;
-
-  /// No description provided for @card_amount.
-  ///
-  /// In en, this message translates to:
-  /// **'Amount'**
-  String get card_amount;
-
-  /// No description provided for @card_amount_to_high.
-  ///
-  /// In en, this message translates to:
-  /// **'The maximum amount is 64'**
-  String get card_amount_to_high;
-
-  /// No description provided for @card_display_name.
-  ///
-  /// In en, this message translates to:
-  /// **'DisplayName'**
-  String get card_display_name;
-
   /// No description provided for @card_title.
   ///
   /// In en, this message translates to:
@@ -681,18 +657,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change the material'**
   String get tooltip_material;
-
-  /// No description provided for @tooltip_model_data.
-  ///
-  /// In en, this message translates to:
-  /// **'Change the model data'**
-  String get tooltip_model_data;
-
-  /// No description provided for @tooltip_displayname.
-  ///
-  /// In en, this message translates to:
-  /// **'Change the Displayname'**
-  String get tooltip_displayname;
 
   /// No description provided for @tooltip_title.
   ///
@@ -2589,6 +2553,282 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Char *'**
   String get font_char_label;
+
+  /// No description provided for @tab_components.
+  ///
+  /// In en, this message translates to:
+  /// **'Components'**
+  String get tab_components;
+
+  /// No description provided for @component_add_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Add component'**
+  String get component_add_title;
+
+  /// No description provided for @component_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search components or categories'**
+  String get component_search_hint;
+
+  /// No description provided for @component_search_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Search in {category}'**
+  String component_search_in(String category);
+
+  /// No description provided for @component_filter_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by category'**
+  String get component_filter_tooltip;
+
+  /// No description provided for @component_search_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No component matches the search.'**
+  String get component_search_empty;
+
+  /// No description provided for @component_category_only.
+  ///
+  /// In en, this message translates to:
+  /// **'Only show {category}'**
+  String component_category_only(String category);
+
+  /// No description provided for @component_all_categories.
+  ///
+  /// In en, this message translates to:
+  /// **'All categories'**
+  String get component_all_categories;
+
+  /// No description provided for @component_default_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get component_default_label;
+
+  /// No description provided for @component_default_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'The material has this component by default'**
+  String get component_default_tooltip;
+
+  /// No description provided for @component_overrides_default.
+  ///
+  /// In en, this message translates to:
+  /// **'{category} · overrides the default'**
+  String component_overrides_default(String category);
+
+  /// No description provided for @component_page_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Components ({count})'**
+  String component_page_title(int count);
+
+  /// No description provided for @component_empty_header.
+  ///
+  /// In en, this message translates to:
+  /// **'No components yet'**
+  String get component_empty_header;
+
+  /// No description provided for @component_empty_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a component to change how the item behaves, e.g. food or a tool.'**
+  String get component_empty_body;
+
+  /// No description provided for @component_edit_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit component'**
+  String get component_edit_tooltip;
+
+  /// No description provided for @component_delete_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete component'**
+  String get component_delete_tooltip;
+
+  /// No description provided for @component_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete component'**
+  String get component_delete_title;
+
+  /// No description provided for @component_delete_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name} from the item?'**
+  String component_delete_header(String name);
+
+  /// No description provided for @component_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown component'**
+  String get component_unknown;
+
+  /// No description provided for @component_not_in_catalog.
+  ///
+  /// In en, this message translates to:
+  /// **'{key} is not in the component catalog'**
+  String component_not_in_catalog(String key);
+
+  /// No description provided for @component_summary_set.
+  ///
+  /// In en, this message translates to:
+  /// **'Set'**
+  String get component_summary_set;
+
+  /// No description provided for @component_summary_entries.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 entry} other{{count} entries}}'**
+  String component_summary_entries(int count);
+
+  /// No description provided for @component_not_editable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not editable yet'**
+  String get component_not_editable;
+
+  /// No description provided for @component_not_editable_type.
+  ///
+  /// In en, this message translates to:
+  /// **'not editable yet ({type}).'**
+  String component_not_editable_type(String type);
+
+  /// No description provided for @component_no_value.
+  ///
+  /// In en, this message translates to:
+  /// **'This component has no value. Adding it to the item is enough.'**
+  String get component_no_value;
+
+  /// No description provided for @component_field_enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get component_field_enabled;
+
+  /// No description provided for @component_field_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get component_field_color;
+
+  /// No description provided for @component_field_entries.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries'**
+  String get component_field_entries;
+
+  /// No description provided for @component_field_optional.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} (optional)'**
+  String component_field_optional(String label);
+
+  /// No description provided for @component_key_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Key from the {registry} registry'**
+  String component_key_helper(String registry);
+
+  /// No description provided for @component_key_required.
+  ///
+  /// In en, this message translates to:
+  /// **'A key is required'**
+  String get component_key_required;
+
+  /// No description provided for @component_key_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected a key like minecraft:stone'**
+  String get component_key_invalid;
+
+  /// No description provided for @component_tag_mode_keys.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys'**
+  String get component_tag_mode_keys;
+
+  /// No description provided for @component_tag_mode_tag.
+  ///
+  /// In en, this message translates to:
+  /// **'Tag'**
+  String get component_tag_mode_tag;
+
+  /// No description provided for @component_tag_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Tag from the {registry} registry'**
+  String component_tag_helper(String registry);
+
+  /// No description provided for @component_tag_required.
+  ///
+  /// In en, this message translates to:
+  /// **'A tag is required'**
+  String get component_tag_required;
+
+  /// No description provided for @component_tag_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected a tag like #minecraft:logs'**
+  String get component_tag_invalid;
+
+  /// No description provided for @component_value_required.
+  ///
+  /// In en, this message translates to:
+  /// **'A value is required'**
+  String get component_value_required;
+
+  /// No description provided for @component_not_a_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a number'**
+  String get component_not_a_number;
+
+  /// No description provided for @component_range_min.
+  ///
+  /// In en, this message translates to:
+  /// **'At least {min}'**
+  String component_range_min(String min);
+
+  /// No description provided for @component_range_max.
+  ///
+  /// In en, this message translates to:
+  /// **'At most {max}'**
+  String component_range_max(String max);
+
+  /// No description provided for @component_range_between.
+  ///
+  /// In en, this message translates to:
+  /// **'Between {min} and {max}'**
+  String component_range_between(String min, String max);
+
+  /// No description provided for @component_color_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected #RRGGBB'**
+  String get component_color_invalid;
+
+  /// No description provided for @component_entry_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add entry'**
+  String get component_entry_add;
+
+  /// No description provided for @component_entry_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove entry'**
+  String get component_entry_remove;
+
+  /// No description provided for @component_entries_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries'**
+  String get component_entries_empty;
 }
 
 class _AppLocalizationsDelegate

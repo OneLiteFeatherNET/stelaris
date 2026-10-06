@@ -93,10 +93,6 @@
   "tab_characters": "Characters",
   "tab_entries": "Entries",
   "card_material": "Material",
-  "card_model_data": "ModelData",
-  "card_amount": "Amount",
-  "card_amount_to_high": "The maximum amount is 64",
-  "card_display_name": "DisplayName",
   "card_title": "Title",
   "card_type": "Type",
   "card_group": "Group",
@@ -117,8 +113,6 @@
   "tooltip_delete": "Delete",
   "tooltip_description": "Change description",
   "tooltip_material": "Change the material",
-  "tooltip_model_data": "Change the model data",
-  "tooltip_displayname": "Change the Displayname",
   "tooltip_title": "Change title",
   "tooltip_amount": "Change amount",
   "tooltip_flag": "Change the flags",
@@ -613,5 +607,152 @@
   "sound_options": "Options",
   "sound_type_file": "File",
   "sound_type_event": "Event",
-  "font_char_label": "Char *"
+  "font_char_label": "Char *",
+  "tab_components": "Components",
+  "component_add_title": "Add component",
+  "component_search_hint": "Search components or categories",
+  "component_search_in": "Search in {category}",
+  "@component_search_in": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "component_filter_tooltip": "Filter by category",
+  "component_search_empty": "No component matches the search.",
+  "component_category_only": "Only show {category}",
+  "@component_category_only": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "component_all_categories": "All categories",
+  "component_default_label": "Default",
+  "component_default_tooltip": "The material has this component by default",
+  "component_overrides_default": "{category} · overrides the default",
+  "@component_overrides_default": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "component_page_title": "Components ({count})",
+  "@component_page_title": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "component_empty_header": "No components yet",
+  "component_empty_body": "Add a component to change how the item behaves, e.g. food or a tool.",
+  "component_edit_tooltip": "Edit component",
+  "component_delete_tooltip": "Delete component",
+  "component_delete_title": "Delete component",
+  "component_delete_header": "Delete {name} from the item?",
+  "@component_delete_header": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "component_unknown": "Unknown component",
+  "component_not_in_catalog": "{key} is not in the component catalog",
+  "@component_not_in_catalog": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "component_summary_set": "Set",
+  "component_summary_entries": "{count, plural, =1{1 entry} other{{count} entries}}",
+  "@component_summary_entries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "component_not_editable": "Not editable yet",
+  "component_not_editable_type": "not editable yet ({type}).",
+  "@component_not_editable_type": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "component_no_value": "This component has no value. Adding it to the item is enough.",
+  "component_field_enabled": "Enabled",
+  "component_field_color": "Color",
+  "component_field_entries": "Entries",
+  "component_field_optional": "{label} (optional)",
+  "@component_field_optional": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "component_key_helper": "Key from the {registry} registry",
+  "@component_key_helper": {
+    "placeholders": {
+      "registry": {
+        "type": "String"
+      }
+    }
+  },
+  "component_key_required": "A key is required",
+  "component_key_invalid": "Expected a key like minecraft:stone",
+  "component_tag_mode_keys": "Keys",
+  "component_tag_mode_tag": "Tag",
+  "component_tag_helper": "Tag from the {registry} registry",
+  "@component_tag_helper": {
+    "placeholders": {
+      "registry": {
+        "type": "String"
+      }
+    }
+  },
+  "component_tag_required": "A tag is required",
+  "component_tag_invalid": "Expected a tag like #minecraft:logs",
+  "component_value_required": "A value is required",
+  "component_not_a_number": "Not a number",
+  "component_range_min": "At least {min}",
+  "@component_range_min": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "component_range_max": "At most {max}",
+  "@component_range_max": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "component_range_between": "Between {min} and {max}",
+  "@component_range_between": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "component_color_invalid": "Expected #RRGGBB",
+  "component_entry_add": "Add entry",
+  "component_entry_remove": "Remove entry",
+  "component_entries_empty": "No entries"
 }

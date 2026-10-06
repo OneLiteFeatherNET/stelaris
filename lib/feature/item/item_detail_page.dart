@@ -4,6 +4,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/item/components/item_components_page.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/general/item_general_page.dart';
 import 'package:stelaris/feature/item/lore/lore_page.dart';
@@ -29,6 +30,7 @@ class ItemDetailPage extends StatelessWidget {
     DetailTab('general', (l10n) => l10n.tab_general, formerIds: ['meta']),
     DetailTab('enchantments', (l10n) => l10n.tab_enchantments),
     DetailTab('lore', (l10n) => l10n.tab_lore),
+    DetailTab('components', (l10n) => l10n.tab_components),
   ];
 
   @override
@@ -62,7 +64,9 @@ class ItemDetailPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ModelDetailTabBar(
-                tabs: [for (final tab in tabs) Tab(text: tab.label(context.l10n))],
+                tabs: [
+                  for (final tab in tabs) Tab(text: tab.label(context.l10n)),
+                ],
               ),
               const Expanded(
                 child: TabBarView(
@@ -70,6 +74,7 @@ class ItemDetailPage extends StatelessWidget {
                     ItemGeneralPage(),
                     ItemEnchantmentPage(),
                     LorePage(),
+                    ItemComponentsPage(),
                   ],
                 ),
               ),
@@ -87,7 +92,9 @@ class _ItemDetailView extends Vm {
   final String? title;
 }
 
-class _ItemDetailFactory extends VmFactory<AppState, ItemDetailPage, _ItemDetailView> {
+class _ItemDetailFactory
+    extends VmFactory<AppState, ItemDetailPage, _ItemDetailView> {
   @override
-  _ItemDetailView fromStore() => _ItemDetailView(title: state.selectedItem?.uiName);
+  _ItemDetailView fromStore() =>
+      _ItemDetailView(title: state.selectedItem?.uiName);
 }

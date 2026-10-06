@@ -15,7 +15,7 @@ class SelectedItemAction extends ReduxAction<AppState> {
   @override
   AppState reduce() {
     return state
-        .copyWith(selectedItem: model)
+        .copyWith(selectedItem: model, selectedItemComponents: const [])
         .clearUnsavedChanges(NavigationEntry.items);
   }
 }
@@ -27,7 +27,7 @@ class RemoveSelectItemAction extends ReduxAction<AppState> {
   AppState? reduce() {
     if (state.selectedItem == null) return null;
     return state
-        .copyWith(selectedItem: null)
+        .copyWith(selectedItem: null, selectedItemComponents: const [])
         .clearUnsavedChanges(NavigationEntry.items);
   }
 }
@@ -219,24 +219,10 @@ class ItemDatabaseUpdate extends ReduxAction<AppState> with Throttle {
     final dbModel = response.copyWith(
       lore: current.lore,
       enchantments: current.enchantments,
-      flags: current.flags,
     );
     return updateSingleItemInState(state, response)
         .copyWith(selectedItem: dbModel)
         .clearUnsavedChanges(NavigationEntry.items);
-  }
-}
-
-class ItemFlagFetchAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    if (state.selectedItem == null) return null;
-    final ItemModel selected = state.selectedItem!;
-    /*final ItemFlagModel dbModel = await ApiService().itemApi.getFlags(
-      selected.id!,
-    );*/
-    //final ItemModel updatedItem = selected.copyWith(flags: dbModel.flags);
-    return state.copyWith(selectedItem: selected);
   }
 }
 

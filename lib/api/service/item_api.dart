@@ -167,5 +167,70 @@ class ItemAPI extends BaseApi<ItemModel> {
       },
     );
   }
-}
 
+  /// Get the data components of an item
+  /// [id] the id of the item
+  /// [page] the page number
+  /// [size] the number of components per page
+  /// Returns a [PaginatedResult] containing a [List] of [ItemComponentDto]
+  Future<PaginatedResult<ItemComponentDto>> getComponents(
+    String id, {
+    int page = 1,
+    int size = 100,
+  }) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/$endpoint/$id/components',
+      queryParameters: {'page': (page - 1).toString(), 'size': size.toString()},
+    );
+    final result = await apiClient.dio.getUri(uri);
+    return PaginatedResult.fromJson(result.data, (json) {
+      return ItemComponentDto.fromJson(json as Map<String, dynamic>);
+    });
+  }
+
+  /// Add a data component to an item
+  /// [id] the id of the item
+  /// [dto] the [ItemComponentDto] without an id
+  /// Returns the created [ItemComponentDto]
+  Future<ItemComponentDto> addComponent(String id, ItemComponentDto dto) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/$endpoint/$id/component',
+    );
+    final result = await apiClient.dio.putUri(uri, data: dto.toJson());
+    return ItemComponentDto.fromJson(result.data!);
+  }
+
+  /// Update a data component of an item
+  /// [id] the id of the item
+  /// [dto] the [ItemComponentDto] with its id
+  /// Returns the updated [ItemComponentDto]
+  Future<ItemComponentDto> updateComponent(
+    String id,
+    ItemComponentDto dto,
+  ) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/$endpoint/$id/component',
+    );
+    final result = await apiClient.dio.postUri(uri, data: dto.toJson());
+    return ItemComponentDto.fromJson(result.data!);
+  }
+
+  /// Remove a data component from an item
+  /// [id] the id of the item
+  /// [dto] the [ItemComponentDto] to remove
+  /// Returns the removed [ItemComponentDto]
+  Future<ItemComponentDto> deleteComponent(
+    String id,
+    ItemComponentDto dto,
+  ) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/$endpoint/$id/component/${dto.id}',
+    );
+    final result = await apiClient.dio.deleteUri(uri);
+    return ItemComponentDto.fromJson(result.data!);
+  }
+}
