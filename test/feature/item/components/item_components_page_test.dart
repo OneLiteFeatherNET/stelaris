@@ -239,6 +239,19 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsWidgets);
       expect(requests, 0);
 
+      // On the web, dio finishes even a faked request in several real-async
+      // steps that testWidgets' fake-async zone doesn't run on its own, so
+      // alternate frames with a little real time until the components landed.
+      for (
+        var i = 0;
+        i < 20 && store.state.selectedItemComponents.isEmpty;
+        i++
+      ) {
+        await tester.pump(const Duration(milliseconds: 100));
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 10)),
+        );
+      }
       await tester.pumpAndSettle();
       expect(requests, 1);
       expect(find.text('Food'), findsOneWidget);
