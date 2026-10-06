@@ -8,13 +8,23 @@ import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/component.dart';
 
+/// The components which are edited outside of the components tab. The item
+/// keeps them in fields of its own, so the backend rejects them as components.
+const Set<String> dedicatedComponents = {
+  'minecraft:lore',
+  'minecraft:enchantments',
+  'minecraft:custom_name',
+  'minecraft:item_name',
+  'minecraft:custom_model_data',
+};
+
 /// The components which can be added in the components tab.
 ///
-/// Managed components (lore, enchantments, name, model data) have their own
-/// editors and runtime state can't be set, so neither is offered.
+/// Components with a dedicated editor and runtime state which can't be set
+/// are not offered.
 final List<ComponentSpec> offeredComponents = [
   for (final spec in dataComponents)
-    if (spec.editable && !spec.managed) spec,
+    if (spec.editable && !dedicatedComponents.contains(spec.key)) spec,
 ];
 
 /// Lets the user pick a component which the item doesn't have yet.

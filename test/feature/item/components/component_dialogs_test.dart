@@ -48,11 +48,9 @@ void main() {
     );
   }
 
-  test('managed and runtime components are not offered', () {
+  test('dedicated and runtime components are not offered', () {
     final keys = offeredComponents.map((spec) => spec.key).toSet();
-    expect(keys, isNot(contains('minecraft:lore')));
-    expect(keys, isNot(contains('minecraft:enchantments')));
-    expect(keys, isNot(contains('minecraft:custom_name')));
+    expect(keys.intersection(dedicatedComponents), isEmpty);
     expect(keys, isNot(contains('minecraft:bundle_contents')));
     expect(keys, contains('minecraft:food'));
   });

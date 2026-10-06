@@ -263,7 +263,9 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
                           final component = components[index];
                           final spec = _specsByKey[component.componentKey];
                           final editable =
-                              spec != null && spec.editable && !spec.managed;
+                              spec != null &&
+                              spec.editable &&
+                              !dedicatedComponents.contains(spec.key);
                           return _ComponentCard(
                             key: ValueKey(component.id),
                             componentKey: component.componentKey,
