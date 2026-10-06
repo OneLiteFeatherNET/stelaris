@@ -5,10 +5,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
 import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/feature/item/components/stelaris_components.dart';
 import 'package:vulpes_data/component.dart';
 
 ComponentSpec _spec(String key) =>
-    dataComponents.singleWhere((spec) => spec.key == key);
+    componentCatalog.singleWhere((spec) => spec.key == key);
 
 final l10n = lookupAppLocalizations(const Locale('en'));
 
@@ -48,9 +49,26 @@ void main() {
     );
   }
 
+  test('the stelaris components come first and the material is required', () {
+    expect(componentCatalog.take(2).map((spec) => spec.key), [
+      'stelaris:material',
+      'stelaris:amount',
+    ]);
+    expect(stelarisComponents.map((spec) => spec.category).toSet(), {
+      ComponentCategory.custom,
+    });
+    expect(_spec('stelaris:material').isRequired, isTrue);
+    expect(_spec('stelaris:amount').isRequired, isFalse);
+    expect(_spec('minecraft:food').isRequired, isFalse);
+  });
+
   test('dedicated and runtime components are not offered', () {
     final keys = offeredComponents.map((spec) => spec.key).toSet();
     expect(keys.intersection(dedicatedComponents), isEmpty);
+    expect(dedicatedComponents, {'minecraft:lore', 'minecraft:enchantments'});
+    // Plain components now, the backend accepts them.
+    expect(keys, containsAll(['minecraft:custom_name', 'minecraft:item_name']));
+    expect(keys, containsAll(['stelaris:material', 'stelaris:amount']));
     expect(keys, isNot(contains('minecraft:bundle_contents')));
     expect(keys, contains('minecraft:food'));
   });
@@ -160,6 +178,33 @@ void main() {
     expect((picked as ComponentSpec).key, 'minecraft:food');
   });
 
+  testWidgets('picker lists the custom components first', (tester) async {
+    await pumpOpener(
+      tester,
+      (context) => showComponentPickerDialog(
+        context,
+        existing: {'stelaris:material'},
+        materialDefaults: const {},
+      ),
+      (_) {},
+    );
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+
+    final custom = find.byKey(const Key('component_category_header_custom'));
+    final properties = find.byKey(
+      const Key('component_category_header_properties'),
+    );
+    expect(custom, findsOneWidget);
+    expect(
+      tester.getTopLeft(custom).dy,
+      lessThan(tester.getTopLeft(properties).dy),
+    );
+    expect(find.text('Amount'), findsOneWidget);
+    // The item has its material already.
+    expect(find.text('stelaris:material'), findsNothing);
+  });
+
   testWidgets('picker filters by category through the search', (tester) async {
     tester.view.physicalSize = const Size(1200, 1000);
     tester.view.devicePixelRatio = 1;
@@ -220,8 +265,9 @@ void main() {
     await tester.tap(find.byKey(const Key('component_category_item_all')));
     await tester.pumpAndSettle();
     expect(filterSelected(), isFalse);
-    // The list starts with properties again; food is too far down to build.
-    expect(find.text('minecraft:max_stack_size'), findsOneWidget);
+    // The list starts with the custom components again; food is too far down
+    // to build.
+    expect(find.text('stelaris:material'), findsOneWidget);
 
     // The search also matches category names.
     await tester.enterText(find.byType(SearchBar), 'consumable');

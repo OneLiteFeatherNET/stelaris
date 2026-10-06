@@ -19,7 +19,7 @@ import 'package:vulpes_data/material.dart';
 /// Every component of the catalog by its key, also the ones which can't be
 /// added, so stored components can always be shown.
 final Map<String, ComponentSpec> _specsByKey = {
-  for (final spec in dataComponents) spec.key: spec,
+  for (final spec in componentCatalog) spec.key: spec,
 };
 
 /// The item's Components tab: a grid with one card per added component.

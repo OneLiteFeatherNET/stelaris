@@ -4,26 +4,31 @@ import 'package:stelaris/feature/base/hide_tooltips_while_scrolling.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/components/component_category_menu.dart';
 import 'package:stelaris/feature/item/components/schema/schema.dart';
+import 'package:stelaris/feature/item/components/stelaris_components.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/component.dart';
 
 /// The components which are edited outside of the components tab. The item
-/// keeps them in fields of its own, so the backend rejects them as components.
+/// keeps them in its own storage, so the backend rejects them as components.
 const Set<String> dedicatedComponents = {
   'minecraft:lore',
   'minecraft:enchantments',
-  'minecraft:custom_name',
-  'minecraft:item_name',
-  'minecraft:custom_model_data',
 };
+
+/// Every component the components tab knows: the Stelaris ones first, then
+/// the vanilla catalog.
+final List<ComponentSpec> componentCatalog = [
+  ...stelarisComponents,
+  ...dataComponents,
+];
 
 /// The components which can be added in the components tab.
 ///
 /// Components with a dedicated editor and runtime state which can't be set
 /// are not offered.
 final List<ComponentSpec> offeredComponents = [
-  for (final spec in dataComponents)
+  for (final spec in componentCatalog)
     if (spec.editable && !dedicatedComponents.contains(spec.key)) spec,
 ];
 
