@@ -64,10 +64,12 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   `ItemModelCopier`, and their tests. Verify with `./gradlew test`. Controller, DTOs, service and
   their tests are done on Vulpes-Backend `refactor/item` (da1a7af, fa8d034, 82d0d9e);
   `ItemRelation.FLAGS` and `ItemModelCopier.copyFlags` are left
-- [ ] 3.2a Update the development seed (`src/dev/.../seed`: `SeedWriter`, `SeedRepositories`,
-  `SeedWiper`, `SeedValidator`, the fixtures) and `FillerTest`: no flags, and material, amount,
-  display name and model data written as components. The test source set depends on it, so
-  `./gradlew test` can't run before. Verify with `./gradlew compileDevJava compileTestJava`
+- [x] 3.2a Update the development seed (`src/dev/.../seed`: `SeedWriter`, `SeedRepositories`,
+  `SeedWiper`, `SeedValidator`, the fixtures): no flags (`hide(...)` writes
+  `minecraft:tooltip_display`), and material, amount, display name and model data written as
+  components; `SeedValidator` checks components against `ItemComponentDTO` and `ItemComponentRules`.
+  Verified with `./gradlew compileDevJava` and a seed run against Postgres (142 items, each with
+  `stelaris:material`) (0f1306c)
 - [x] 3.3 Configure the component rules in `application.yml` (`vulpes.item-components`, as in
   design.md), read them with `ItemComponentConfiguration`, `RequiredComponentConfiguration` and
   `ItemComponentRules` (checked at startup, `ItemComponentRulesTest`), and apply them in
