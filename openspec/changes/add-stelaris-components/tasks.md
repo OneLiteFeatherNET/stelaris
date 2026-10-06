@@ -86,12 +86,13 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
   Verified with the two test classes (16 tests, none skipped) in a copy of the backend without the
   parts 3.1, 3.2 and 3.2a still have to fix (ccb97c1, 039f033)
-- [ ] 3.4 Creating an item adds every component of `ItemComponentRules.required()` with its value in
+- [x] 3.4 Creating an item adds every component of `ItemComponentRules.required()` with its value in
   the same transaction: override `create(UUID projectId, ItemModelDTO dto)` in `ItemServiceImpl`,
   call `super.create`, save the components through `ItemComponentRepository`, and return the
   reloaded item. Test: a new item lists exactly one component, `stelaris:material` =
   `minecraft:dirt`, and `create_keepsTheJsonValue` expects two components. Verify with
-  `./gradlew test`
+  `./gradlew test`. Done in 1a950e7; the rollback test now lets Hibernate create the schema like
+  the other integration tests (ed6010e). 316 tests, 0 failures
 - [ ] 3.5 Add `ItemRelation.COMPONENTS`. `ItemModelCopier` copies all components for it and copies
   the required components (`ItemComponentRules.isRequired`) in every case. Tests in `ItemModelCopierTest`: copy with
   `COMPONENTS` keeps food and material; copy without it keeps only the material; a changed material
