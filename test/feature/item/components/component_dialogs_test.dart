@@ -66,6 +66,17 @@ void main() {
       }),
       'Nutrition: 4, Saturation: 2.4',
     );
+    expect(
+      summarize(l10n, _spec('minecraft:can_break').schema, [
+        {
+          'blocks': ['minecraft:dirt'],
+        },
+        {
+          'blocks': ['minecraft:stone', 'minecraft:sand'],
+        },
+      ]),
+      '3 entries',
+    );
   });
 
   testWidgets('picker hides existing components and returns the selection', (
@@ -210,6 +221,52 @@ void main() {
       'saturation': 0.0,
       'can_always_eat': false,
     });
+  });
+
+  testWidgets('edits the block predicates as one list of blocks', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    ({Object? value})? saved;
+    await pumpOpener(
+      tester,
+      (context) => showComponentEditDialog(
+        context,
+        spec: _spec('minecraft:can_break'),
+        value: [
+          {
+            'blocks': ['minecraft:dirt'],
+          },
+          {
+            'blocks': ['minecraft:stone'],
+          },
+        ],
+        onSave: (value) async {
+          saved = (value: value);
+          return null;
+        },
+      ),
+      (_) {},
+    );
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+
+    // One list of both blocks, no frame for the entries around it.
+    expect(find.text('Blocks (2)'), findsOneWidget);
+    expect(find.textContaining('Entries'), findsNothing);
+
+    await tester.tap(find.byTooltip('Remove entry').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(saved?.value, [
+      {
+        'blocks': ['minecraft:stone'],
+      },
+    ]);
   });
 
   testWidgets('edit dialog requires a key', (tester) async {

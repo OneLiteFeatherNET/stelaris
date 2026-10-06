@@ -33,7 +33,10 @@ String summarize(
   UnitSchema() => l10n.component_summary_set,
   ColorSchema() when value is int => colorHex(value),
   ListSchema() when value is List => l10n.component_summary_entries(
-    value.length,
+    switch (_flattened(schema)) {
+      (:final name, field: _) => _unwrap(name, value).length,
+      null => value.length,
+    },
   ),
   ObjectSchema(:final fields) when value is Map =>
     value.entries
@@ -150,12 +153,21 @@ class SchemaField extends StatelessWidget {
         value: value as int? ?? 0xFFFFFF,
         onChanged: onChanged,
       ),
-      ListSchema() => _ListField(
-        label: label,
-        schema: schema,
-        values: (value as List?) ?? const [],
-        onChanged: onChanged,
-      ),
+      ListSchema() => switch (_flattened(schema)) {
+        (:final name, :final field) => _ListField(
+          label: label ?? field.label,
+          schema: field.schema as ListSchema,
+          values: _unwrap(name, (value as List?) ?? const []),
+          onChanged: (values) =>
+              onChanged(_wrap(name, values! as List<Object?>)),
+        ),
+        null => _ListField(
+          label: label,
+          schema: schema,
+          values: (value as List?) ?? const [],
+          onChanged: onChanged,
+        ),
+      },
       ObjectSchema() => _ObjectField(
         label: label,
         schema: schema,
@@ -169,6 +181,32 @@ class SchemaField extends StatelessWidget {
     };
   }
 }
+
+/// The field of a list whose entries are objects with nothing but one list,
+/// like the block predicates of `minecraft:can_break`; null for other lists.
+///
+/// Such a list is edited as the one inner list: an item matches if any entry
+/// does, so the blocks of two entries do the same in a single one, and the
+/// second level of entries only nested the dialog.
+({String name, ComponentField field})? _flattened(ListSchema schema) =>
+    switch (schema.element) {
+      ObjectSchema(:final fields)
+          when fields.length == 1 &&
+              fields.values.single.schema is ListSchema =>
+        (name: fields.keys.single, field: fields.values.single),
+      _ => null,
+    };
+
+/// The inner lists of all [entries] joined into one.
+List<Object?> _unwrap(String name, List<Object?> entries) => [
+  for (final entry in entries)
+    if (entry is Map && entry[name] is List) ...entry[name] as List,
+];
+
+/// The joined [values] as the single entry of a flattened list.
+List<Object?> _wrap(String name, List<Object?> values) => [
+  if (values.isNotEmpty) {name: values},
+];
 
 final RegExp _keyPattern = RegExp(r'^[a-z0-9_.-]+:[a-z0-9_./-]+$');
 
