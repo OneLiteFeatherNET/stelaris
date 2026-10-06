@@ -93,10 +93,12 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   `minecraft:dirt`, and `create_keepsTheJsonValue` expects two components. Verify with
   `./gradlew test`. Done in 1a950e7; the rollback test now lets Hibernate create the schema like
   the other integration tests (ed6010e). 316 tests, 0 failures
-- [ ] 3.5 Add `ItemRelation.COMPONENTS`. `ItemModelCopier` copies all components for it and copies
+- [x] 3.5 Add `ItemRelation.COMPONENTS`. `ItemModelCopier` copies all components for it and copies
   the required components (`ItemComponentRules.isRequired`) in every case. Tests in `ItemModelCopierTest`: copy with
   `COMPONENTS` keeps food and material; copy without it keeps only the material; a changed material
-  (`minecraft:stone`) is copied as changed. Verify with `./gradlew test`
+  (`minecraft:stone`) is copied as changed. Verify with `./gradlew test`. Done in 8e2c659 through a
+  `copyAlways` hook in `AbstractRelationalModelCopier`; the root only `copy(...)` keeps the material
+  too. 320 tests, 0 failures
 - [ ] 3.6 Drop the old schema on local databases: `ALTER TABLE items DROP COLUMN material, DROP
   COLUMN amount, DROP COLUMN display_name, DROP COLUMN custom_model_data;` and
   `DROP TABLE item_flags;` (check the names with `\d items` first), or start with a fresh database.
