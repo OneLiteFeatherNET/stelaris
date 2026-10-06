@@ -2,16 +2,17 @@
 
 ## Purpose
 
-Describes the item stack itself, its material and amount, as Stelaris components, so an item is one
-list of components that the interface edits through the schema editor.
+Describes the item stack itself, its material and amount, as Stelaris components, and its display
+name and model data as vanilla components, so an item is one list of components that the interface
+edits through the schema editor.
 
 ## ADDED Requirements
 
 ### Requirement: Every item has a material component
 
 The system SHALL create the component `stelaris:material` with the value `minecraft:dirt` when an
-item is created. The system SHALL reject removing `stelaris:material` from an item, and removing all
-components of an item SHALL keep it.
+item is created. The system SHALL reject removing `stelaris:material` from an item or changing its
+key, and removing all components of an item SHALL keep it.
 
 #### Scenario: New item
 
@@ -28,10 +29,10 @@ components of an item SHALL keep it.
 The system SHALL treat an item without `stelaris:amount` as an amount of 1. The value of
 `stelaris:amount` SHALL be described as a whole number from 1 to 99.
 
-#### Scenario: Generated item without amount
+#### Scenario: Add an amount
 
-- **WHEN** an item without `stelaris:amount` is generated
-- **THEN** the generated item stack has an amount of 1 and the generated code sets no amount
+- **WHEN** a client adds `stelaris:amount` with `5` to an item
+- **THEN** the item lists the component with the value `5`
 
 ### Requirement: Only known Stelaris components are stored
 
@@ -42,6 +43,17 @@ but isn't one of the Stelaris components.
 
 - **WHEN** a client adds the component `stelaris:foo`
 - **THEN** the request is rejected
+
+### Requirement: Name and model data are plain components
+
+The system SHALL store the display name and the custom model data only as the components
+`minecraft:custom_name` and `minecraft:custom_model_data`, and SHALL accept them like any other
+vanilla component. The item SHALL have no flags.
+
+#### Scenario: Set a custom name
+
+- **WHEN** a client adds `minecraft:custom_name` with a text to an item
+- **THEN** the component is stored and the item has no other name field
 
 ### Requirement: Copies keep their material
 
@@ -58,7 +70,7 @@ the required components in every case.
 The components tab SHALL list the Stelaris components in a "Custom" section before the vanilla
 categories and mark their cards as custom. It SHALL offer no remove action for a required
 component. The picker SHALL offer `stelaris:amount` while the item doesn't have it. The General tab
-SHALL show no material or amount input.
+SHALL show no material, amount, display name or model data input.
 
 #### Scenario: Material card
 

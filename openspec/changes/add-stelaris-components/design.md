@@ -14,23 +14,25 @@ See proposal.md and specs/stelaris-components/spec.md.
 - vulpes_data splits handwritten API (`lib/src/api/`) from the catalog the Stelaris CLI generates
   (`lib/src/generated/`). The generated catalog describes vanilla data only and stays UI neutral.
 - `ItemModelCopier` copies lore, flags and enchantments, but no components.
-- vulpes-generator reads `getMaterial()` and `getAmount()` and depends on vulpes-model 2.0.0, which
-  has no components.
+- vulpes-generator reads `getMaterial()`, `getAmount()` and `getDisplayName()` and depends on
+  vulpes-model 2.0.0, which has no components.
+- Item flags (`ItemFlagEntity`) are HideFlags, which current Minecraft replaced with
+  `minecraft:tooltip_display`. The frontend only has commented-out code for them.
 
 ## Goals / Non-Goals
 
 **Goals:**
 
-- Material and amount are stored, edited and generated as components, with no field left on the
-  item.
-- One mechanism that later carries display name and model data as vanilla components.
+- Material, amount, display name and custom model data are stored and edited as components, with
+  no field left on the item.
+- Item flags are gone.
 - Any interface can tell from vulpes_data which components are Stelaris' own and which are required.
 
 **Non-Goals:**
 
-- Display name, custom model data and the item group.
-- Writing the vanilla components into the generated Java code. That gap exists today and stays a
-  separate change.
+- vulpes-generator. It needs a hard update of its own that reads all components; until then it
+  can't generate items from the new model.
+- Lore and enchantments, which keep their tables and dedicated editors, and the item group.
 - Checking component values in the backend. Vanilla components aren't checked either.
 - A material picker with search. Material is edited through the key field.
 
@@ -69,29 +71,26 @@ public final class StelarisComponents {
 }
 ```
 
-The constant names are the `javaField` of the Dart specs. Backend and generator share the class.
+The constant names are the `javaField` of the Dart specs. The backend uses the class now, the
+generator after its own update.
 
 ### Backend rules
 
 - Creating an item adds `stelaris:material` with `"minecraft:dirt"` in the same transaction.
 - `deleteComponent` rejects keys in `REQUIRED`; `deleteAllComponents` keeps them.
 - Creating or updating a component with a `stelaris:` key that isn't in `ALL` is rejected.
+- `updateComponent` rejects changing the key of a required component, which would remove it as well.
+- `MANAGED_COMPONENTS` keeps only `minecraft:lore` and `minecraft:enchantments`; custom name, item
+  name and custom model data are plain components now.
+- The flag endpoints, DTOs and service methods are removed, and `ItemRelation.FLAGS` with them.
 - `ItemRelation.COMPONENTS` copies all components. Required components are copied even without it,
   so a copy always has a material.
 
 ### Hard switch
 
 No dual writes and no deprecation phase: without production data, the fields are removed in the
-same release that adds the components. Local databases are recreated or get
-`ALTER TABLE ... DROP COLUMN` for material and amount.
-
-### Generator
-
-`ItemComponents.material(item)` and `ItemComponents.amount(item)` read the JSON values with Gson.
-A missing amount is 1. A missing material throws an `IllegalStateException` naming the item: the
-backend guarantees it, so its absence is a bug that should fail the pipeline rather than fall back
-silently. `.amount(n)` is only written for n ≠ 1. `ItemJsonGenerator` keeps the `material` and
-`amount` keys.
+same release that adds the components. Local databases are recreated, or get
+`ALTER TABLE ... DROP COLUMN` for the removed item columns and `DROP TABLE item_flags`.
 
 ### Frontend
 
@@ -102,14 +101,17 @@ silently. `.amount(n)` is only written for n ≠ 1. `ItemJsonGenerator` keeps th
   card has no remove button.
 - The material that decides the default components comes from the loaded `stelaris:material`
   component, `defaultMaterial` while loading.
-- The General tab drops the Material and Amount cards.
+- `dedicatedComponents` shrinks to `minecraft:lore` and `minecraft:enchantments`, matching the
+  backend.
+- The General tab drops the Material, Amount, Display Name and Model Data cards and keeps the group.
+- The commented-out `ItemFlagFetchAction` is removed.
 
 ## Risks / Trade-offs
 
 - **Six repositories released together** → the order in the tasks keeps each step building; the
   frontend's `pubspec.lock` pins vulpes_data and stelaris-model until it upgrades on purpose.
-- **vulpes-generator jumps from vulpes-model 2.0.0 to 3.0.0** → may surface unrelated changes from
-  2.1 to 2.5; they are fixed in that step.
+- **vulpes-generator can't generate items** until its own update, since the columns it reads are
+  dropped → accepted; the generator needs a hard update anyway.
 - **A switch over `ComponentCategory` in the frontend** breaks with the new entry → found by the
   analyzer when vulpes_data is upgraded.
 - **Amount max rises from 64 to 99** → matches vanilla and `max_stack_size`.

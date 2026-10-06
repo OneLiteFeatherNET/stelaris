@@ -1,22 +1,24 @@
 # Tasks
 
-The repositories build on each other in this order. Each task ends with its repository building and
-its tests passing. Commits are short conventional one-liners without attribution.
+The repositories build on each other in this order; vulpes-generator is out of scope. Each task
+ends with its repository building and its tests passing. Commits are short conventional
+one-liners without attribution.
 
 ## Review focus
 
 Inputs the spec implies but doesn't spell out, each pinned by a test in the task that owns the code:
 
 - Renaming `stelaris:material` through an update (changing its key) removes the material as surely
-  as deleting it, so it is rejected (3.2).
+  as deleting it, so it is rejected (3.3).
 - Updating another component to the key `stelaris:material` hits the duplicate check, the item
-  already has one (3.2).
-- `stelaris:amount` stored as `1` generates no `.amount(...)` call, the same as a missing amount
-  (4.1).
-- A material value that isn't a JSON string, e.g. a number from a hand-made request, fails the
-  generation with the item's key in the message instead of an unrelated parse error (4.1).
+  already has one (3.3).
+- A request that still sends `displayName`, `customModelData`, `material` or `amount` in the item
+  body is answered without them and doesn't fail, so an old client degrades instead of breaking
+  (3.1).
+- `minecraft:custom_name`, `minecraft:item_name` and `minecraft:custom_model_data`, rejected until
+  now, are accepted as components (3.3).
 - An item whose components are still loading shows the default marks of `minecraft:dirt`, not
-  those of the previous item (6.3).
+  those of the previous item (5.3).
 
 ## 1. vulpes-minecraft-dart (vulpes_data)
 
@@ -35,7 +37,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   the CLI locally into a copy of the repository: `lib/vulpes_data.dart` keeps the export
 - [ ] 1.3 Push to `master` and verify that the frontend still builds against it with its current
   code (`dart analyze` with a `pubspec_overrides.yaml` pointing at the clone, removed afterwards).
-  A switch over `ComponentCategory` that the analyzer reports is fixed in 6.1
+  A switch over `ComponentCategory` that the analyzer reports is fixed in 5.1
 
 ## 2. vulpes-model
 
@@ -44,85 +46,88 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   Verified with `./gradlew build` (49f21aa)
 - [x] 2.2 Remove `material` and `amount` from `ItemEntity`: fields, constructor parameters,
   accessors and `toString`. Verified with `./gradlew build` (fcbeba6, `feat(item)!:`)
-- [ ] 2.3 Merge `feat/stelaris-components` into `next` and let release-please publish 3.0.0
+- [x] 2.3 Remove `displayName` and `customModelData` from `ItemEntity`. Verified with
+  `./gradlew build` (03f72b4)
+- [x] 2.4 Remove the item flags: `ItemEntity.flags`, `ItemFlagEntity`, `ItemFlagRepository` and the
+  flag fetch in `ItemRepository.findAllWithFetches`. Verified with `./gradlew build` (526de0f)
+- [ ] 2.5 Merge `feat/stelaris-components` into `next` and let release-please publish 3.0.0
 
 ## 3. Vulpes-Backend
 
-- [ ] 3.1 Move to vulpes-model 3.0.0 in `settings.gradle.kts`. Remove `material` and `amount` from
-  `ItemModelDTO` (fields, `requiredProperties`, `toItemEntity`), from `ItemModelResponseDTO` and from
-  `ItemModelCopier.copyRoot`. Update `ItemModelDTOValidationTest` and every test that builds an
-  `ItemEntity` or posts `material`/`amount`. Verify with `./gradlew test`
-- [ ] 3.2 Component rules in `ItemComponentServiceImpl`, each with a case in
+- [ ] 3.1 Move to vulpes-model 3.0.0 in `settings.gradle.kts`. Remove `material`, `amount`,
+  `displayName` and `customModelData` from `ItemModelDTO` (fields, `requiredProperties`,
+  `toItemEntity`), from `ItemModelResponseDTO` and from `ItemModelCopier.copyRoot`. Update
+  `ItemModelDTOValidationTest` and every test that builds an `ItemEntity` or posts those fields. Test
+  that an item body which still contains them is accepted and answered without them. Verify with
+  `./gradlew test`
+- [ ] 3.2 Remove the item flags: `ItemFlagController`, `ItemFlagDTO`, `ItemFlagResponseDTO`, the flag
+  methods of `ItemService`/`ItemServiceImpl`, `ItemRelation.FLAGS` with its branch in
+  `ItemModelCopier`, and their tests. Verify with `./gradlew test`
+- [ ] 3.3 Component rules in `ItemComponentServiceImpl`, each with a case in
   `ItemComponentControllerIntegrationTest`:
   - `deleteComponent` rejects a key in `StelarisComponents.REQUIRED` with an invalid-request error
     ("can't be removed"); `deleteAllComponents` deletes everything else and keeps those.
   - `updateComponent` rejects changing the key of a required component.
   - `createComponent` and `updateComponent` reject a key that starts with
     `StelarisComponents.NAMESPACE` but isn't in `StelarisComponents.ALL`.
+  - `MANAGED_COMPONENTS` keeps only `minecraft:lore` and `minecraft:enchantments`; update its
+    comment and the class comment of `ItemComponentService`.
   - Tests: delete material → 400 and still listed; delete all → only material left; rename material
     to `minecraft:food` → 400; add `stelaris:foo` → 400; add `stelaris:amount` with `5` → 200; update
-    `minecraft:food` to key `stelaris:material` → 409 (duplicate).
+    `minecraft:food` to key `stelaris:material` → 409 (duplicate); add `minecraft:custom_name` →
+    200; add `minecraft:lore` → still 400.
 
   Verify with `./gradlew test`
-- [ ] 3.3 Creating an item adds `stelaris:material` with `"minecraft:dirt"` in the same transaction:
+- [ ] 3.4 Creating an item adds `stelaris:material` with `"minecraft:dirt"` in the same transaction:
   override `create(UUID projectId, ItemModelDTO dto)` in `ItemServiceImpl`, call `super.create`, save
   the component through `ItemComponentRepository`, and return the reloaded item. Test in
   `ItemControllerTest` (or the component integration test): a new item lists exactly one component,
   `stelaris:material` = `minecraft:dirt`. Verify with `./gradlew test`
-- [ ] 3.4 Add `ItemRelation.COMPONENTS`. `ItemModelCopier` copies all components for it and copies
+- [ ] 3.5 Add `ItemRelation.COMPONENTS`. `ItemModelCopier` copies all components for it and copies
   the keys in `StelarisComponents.REQUIRED` in every case. Tests in `ItemModelCopierTest`: copy with
   `COMPONENTS` keeps food and material; copy without it keeps only the material; a changed material
   (`minecraft:stone`) is copied as changed. Verify with `./gradlew test`
-- [ ] 3.5 Drop the old columns on local databases: `ALTER TABLE items DROP COLUMN material, DROP
-  COLUMN amount;` (check the column names with `\d items` first), or start with a fresh database.
-  Verify that the backend starts and that creating an item through the API returns no `material`
-  or `amount`
+- [ ] 3.6 Drop the old schema on local databases: `ALTER TABLE items DROP COLUMN material, DROP
+  COLUMN amount, DROP COLUMN display_name, DROP COLUMN custom_model_data;` and
+  `DROP TABLE item_flags;` (check the names with `\d items` first), or start with a fresh database.
+  Verify that the backend starts and that creating an item through the API returns none of the
+  removed fields
 
-## 4. vulpes-generator
+## 4. stelaris-model
 
-- [ ] 4.1 Move to vulpes-model 3.0.0 in `settings.gradle.kts` and fix what the jump from 2.0.0 brings.
-  Add `ItemComponents` in the generator with `static String material(ItemEntity)` and
-  `static int amount(ItemEntity)`, reading `getComponents()` and parsing `componentValue` with Gson.
-  A missing amount is 1. A missing material, or one that isn't a JSON string, throws an
-  `IllegalStateException` naming the item's key. Tests: material and amount are read; missing amount
-  → 1; stored amount 1 → 1; missing material → exception with the key; material `5` → exception with
-  the key. Verify with `./gradlew test`
-- [ ] 4.2 `ItemGenerator` takes the material from `ItemComponents.material` and writes `.amount(n)`
-  only for n ≠ 1. `ItemJsonGenerator` keeps the keys `material` and `amount` with the values from
-  `ItemComponents`. Update `ItemJsonGeneratorTest` to build items with components, and add a case
-  that the JSON of an item without amount has `"amount": 1`. Verify with `./gradlew test`
-
-## 5. stelaris-model
-
-- [ ] 5.1 Remove `material` and `amount` from `ItemModel` in `lib/src/model/item_model.dart`, run
+- [ ] 4.1 Remove `material`, `amount`, `displayName`, `customModelData` and `flags` from `ItemModel`
+  in `lib/src/model/item_model.dart`, run
   `dart run build_runner build --delete-conflicting-outputs`, and update tests that set them. Verify
   with `dart analyze` and `flutter test`, then push to `main`
 
-## 6. stelaris (frontend)
+## 5. stelaris (frontend)
 
-- [ ] 6.1 Upgrade `vulpes_data` and `stelaris_models` (`flutter pub upgrade vulpes_data
-  stelaris_models`). Add `componentCatalog = [...stelarisComponents, ...dataComponents]` in
+- [ ] 5.1 Upgrade `vulpes_data` and `stelaris_models` (`flutter pub upgrade vulpes_data
+  stelaris_models`). Shrink `dedicatedComponents` to `minecraft:lore` and `minecraft:enchantments`
+  and adapt the test that pins it. Add `componentCatalog = [...stelarisComponents, ...dataComponents]` in
   `component_dialogs.dart` and build `offeredComponents` and the components page's `_specsByKey` from
   it. Fix every switch over `ComponentCategory` the analyzer reports, and give `custom` a label like
   the other categories. Tests in `component_dialogs_test.dart`: the picker lists Custom first;
   Amount is offered while missing; Material is never offered. Verify with `dart analyze` and
   `flutter test`
-- [ ] 6.2 Components tab: cards of the `custom` category get a "Custom" badge next to the "Default"
+- [ ] 5.2 Components tab: cards of the `custom` category get a "Custom" badge next to the "Default"
   one (new string `component_custom_label`), and a card whose spec is `required` has no remove
   button. Tests in `item_components_page_test.dart`: the material card shows the badge and no
   remove button; an amount card can be removed. Verify with `flutter test`
-- [ ] 6.3 Default marks: replace `state.selectedItem?.material` and `SelectedItemView.material` with
+- [ ] 5.3 Default marks: replace `state.selectedItem?.material` and `SelectedItemView.material` with
   `materialOf(List<ItemComponentDto> components)`, which returns the value of `stelaris:material`
   or `defaultMaterial`. Tests: changing the material component changes the default marks; while the
   components are loading, the marks are those of `defaultMaterial`. Verify with `flutter test`
-- [ ] 6.4 General tab: remove the Material and Amount cards from `item_general_page.dart` and fix
-  the focus order of the remaining cards. Test that the tab shows no material or amount input.
+- [ ] 5.4 General tab: remove the Material, Amount, Display Name and Model Data cards from
+  `item_general_page.dart`, keep the group card, and drop the strings and tooltips only they used.
+  Remove the commented-out `ItemFlagFetchAction` and the `flags` copy in `item_actions.dart`. Test
+  that the tab shows only the group input.
   Verify with `dart analyze` and `flutter test`
 
-## 7. Release
+## 6. Release
 
-- [ ] 7.1 Release backend, generator and frontend together on a database without the old columns.
-  Test by hand: create an item (material is dirt), change the material and add an amount on the
-  components tab, try to remove the material (no button), copy the item with and without
-  components, and generate the project (material and amount appear in the Java and JSON output).
-  Record the results in the PR description
+- [ ] 6.1 Release backend and frontend together on a database without the old schema. The
+  generator can't generate items until its own update. Test by hand: create an item (material is
+  dirt), change the material, add an amount and a custom name on the components tab, try to remove
+  the material (no button), and copy the item with and without components. Record the results in
+  the PR description
