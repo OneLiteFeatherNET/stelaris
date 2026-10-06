@@ -8,7 +8,7 @@ import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/components/component_category_menu.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
-import 'package:stelaris/feature/item/components/schema_field.dart';
+import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/feature/model/model_card_actions.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';

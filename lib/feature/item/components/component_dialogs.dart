@@ -3,7 +3,7 @@ import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/hide_tooltips_while_scrolling.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/components/component_category_menu.dart';
-import 'package:stelaris/feature/item/components/schema_field.dart';
+import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/component.dart';
