@@ -12,6 +12,20 @@ ComponentSpec _spec(String key) =>
 
 final l10n = lookupAppLocalizations(const Locale('en'));
 
+/// The block predicates as the catalog describes them once the blocks are a
+/// registry tag, a list of keys or a single `#tag`.
+const _tagPredicates = ComponentSpec(
+  'minecraft:can_break',
+  'Can Break',
+  ComponentCategory.tool,
+  'CAN_BREAK',
+  ListSchema(
+    ObjectSchema({
+      'blocks': ComponentField('Blocks', RegistryTagSchema(registry: 'block')),
+    }),
+  ),
+);
+
 void main() {
   Future<void> pumpOpener(
     WidgetTester tester,
@@ -51,6 +65,43 @@ void main() {
     expect(initialValue(_spec('minecraft:max_stack_size').schema), 1);
     // Components without a value are an empty object in the vanilla format.
     expect(initialValue(_spec('minecraft:glider').schema), <String, Object?>{});
+  });
+
+  test('registry tags start as an empty list and summarize both forms', () {
+    const tag = RegistryTagSchema(registry: 'block');
+    expect(initialValue(tag), <Object?>[]);
+    expect(
+      summarize(l10n, tag, ['minecraft:stone', 'minecraft:dirt']),
+      '2 entries',
+    );
+    expect(summarize(l10n, tag, '#minecraft:logs'), '#minecraft:logs');
+    expect(
+      summarize(l10n, _tagPredicates.schema, [
+        {'blocks': '#minecraft:logs'},
+      ]),
+      '#minecraft:logs',
+    );
+    expect(
+      summarize(l10n, _tagPredicates.schema, [
+        {
+          'blocks': ['minecraft:stone'],
+        },
+        {
+          'blocks': ['minecraft:dirt', 'minecraft:sand'],
+        },
+      ]),
+      '3 entries',
+    );
+    // A tag can't be joined with the keys of another entry, so the entries stay.
+    expect(
+      summarize(l10n, _tagPredicates.schema, [
+        {'blocks': '#minecraft:logs'},
+        {
+          'blocks': ['minecraft:stone'],
+        },
+      ]),
+      '2 entries',
+    );
   });
 
   test('summaries', () {
@@ -262,6 +313,99 @@ void main() {
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
 
+    expect(saved?.value, [
+      {
+        'blocks': ['minecraft:stone'],
+      },
+    ]);
+  });
+
+  testWidgets('switches the blocks of a predicate between keys and a tag', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    ({Object? value})? saved;
+    await pumpOpener(
+      tester,
+      (context) => showComponentEditDialog(
+        context,
+        spec: _tagPredicates,
+        value: [
+          {
+            'blocks': ['minecraft:dirt'],
+          },
+        ],
+        onSave: (value) async {
+          saved = (value: value);
+          return null;
+        },
+      ),
+      (_) {},
+    );
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+
+    // Still one level: the keys of the only entry, no frame for the entries.
+    expect(find.text('Blocks (1)'), findsOneWidget);
+    expect(find.textContaining('Entries'), findsNothing);
+
+    await tester.tap(find.text('Tag'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(find.text('A tag is required'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextFormField), 'minecraft:logs');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(find.text('Expected a tag like #minecraft:logs'), findsOneWidget);
+    expect(saved, isNull);
+
+    await tester.enterText(find.byType(TextFormField), '#minecraft:logs');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(saved?.value, [
+      {'blocks': '#minecraft:logs'},
+    ]);
+  });
+
+  testWidgets('switching a tag back to keys starts an empty list', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    ({Object? value})? saved;
+    await pumpOpener(
+      tester,
+      (context) => showComponentEditDialog(
+        context,
+        spec: _tagPredicates,
+        value: [
+          {'blocks': '#minecraft:logs'},
+        ],
+        onSave: (value) async {
+          saved = (value: value);
+          return null;
+        },
+      ),
+      (_) {},
+    );
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('#minecraft:logs'), findsOneWidget);
+    await tester.tap(find.text('Keys'));
+    await tester.pumpAndSettle();
+    expect(find.text('Blocks (0)'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Add entry'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextFormField), 'minecraft:stone');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
     expect(saved?.value, [
       {
         'blocks': ['minecraft:stone'],

@@ -2782,6 +2782,36 @@ abstract class AppLocalizations {
   /// **'Expected a key like minecraft:stone'**
   String get component_key_invalid;
 
+  /// No description provided for @component_tag_mode_keys.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys'**
+  String get component_tag_mode_keys;
+
+  /// No description provided for @component_tag_mode_tag.
+  ///
+  /// In en, this message translates to:
+  /// **'Tag'**
+  String get component_tag_mode_tag;
+
+  /// No description provided for @component_tag_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Tag from the {registry} registry'**
+  String component_tag_helper(String registry);
+
+  /// No description provided for @component_tag_required.
+  ///
+  /// In en, this message translates to:
+  /// **'A tag is required'**
+  String get component_tag_required;
+
+  /// No description provided for @component_tag_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected a tag like #minecraft:logs'**
+  String get component_tag_invalid;
+
   /// No description provided for @component_value_required.
   ///
   /// In en, this message translates to:

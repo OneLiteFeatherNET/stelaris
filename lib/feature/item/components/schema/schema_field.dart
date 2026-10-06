@@ -3,6 +3,7 @@ import 'package:stelaris/feature/item/components/schema/fields/color_field.dart'
 import 'package:stelaris/feature/item/components/schema/fields/list_field.dart';
 import 'package:stelaris/feature/item/components/schema/fields/number_field.dart';
 import 'package:stelaris/feature/item/components/schema/fields/object_field.dart';
+import 'package:stelaris/feature/item/components/schema/fields/registry_tag_field.dart';
 import 'package:stelaris/feature/item/components/schema/fields/section.dart';
 import 'package:stelaris/feature/item/components/schema/schema_shape.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -104,13 +105,12 @@ class SchemaField extends StatelessWidget {
         value: value as int? ?? 0xFFFFFF,
         onChanged: onChanged,
       ),
-      ListSchema() => switch (flattened(schema)) {
-        (:final name, :final field) => ListField(
+      ListSchema() => switch (flattened(schema, (value as List?) ?? const [])) {
+        (:final name, :final field) => SchemaField(
           label: label ?? field.label,
-          schema: field.schema as ListSchema,
-          values: unwrap(name, (value as List?) ?? const []),
-          onChanged: (values) =>
-              onChanged(wrap(name, values! as List<Object?>)),
+          schema: field.schema,
+          value: unwrap(name, (value as List?) ?? const []),
+          onChanged: (inner) => onChanged(wrap(name, inner)),
         ),
         null => ListField(
           label: label,
@@ -119,6 +119,12 @@ class SchemaField extends StatelessWidget {
           onChanged: onChanged,
         ),
       },
+      RegistryTagSchema() => RegistryTagField(
+        label: label,
+        schema: schema,
+        value: value,
+        onChanged: onChanged,
+      ),
       ObjectSchema() => ObjectField(
         label: label,
         schema: schema,

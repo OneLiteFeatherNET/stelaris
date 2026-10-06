@@ -12,6 +12,7 @@ class ListField extends StatelessWidget {
     required this.schema,
     required this.values,
     required this.onChanged,
+    this.action,
     super.key,
   });
 
@@ -19,6 +20,9 @@ class ListField extends StatelessWidget {
   final ListSchema schema;
   final List<Object?> values;
   final ValueChanged<Object?> onChanged;
+
+  /// Shown in the header before the add button, e.g. to switch the input.
+  final Widget? action;
 
   bool get _full =>
       schema.maxLength != null && values.length >= schema.maxLength!;
@@ -29,12 +33,18 @@ class ListField extends StatelessWidget {
     return SchemaSection(
       title:
           '${label ?? context.l10n.component_field_entries} (${values.length})',
-      trailing: IconButton(
-        tooltip: context.l10n.component_entry_add,
-        icon: const Icon(Icons.add),
-        onPressed: _full
-            ? null
-            : () => onChanged([...values, initialValue(schema.element)]),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ?action,
+          IconButton(
+            tooltip: context.l10n.component_entry_add,
+            icon: const Icon(Icons.add),
+            onPressed: _full
+                ? null
+                : () => onChanged([...values, initialValue(schema.element)]),
+          ),
+        ],
       ),
       children: [
         if (values.isEmpty)

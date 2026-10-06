@@ -1492,6 +1492,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get component_key_invalid => 'Expected a key like minecraft:stone';
 
   @override
+  String get component_tag_mode_keys => 'Keys';
+
+  @override
+  String get component_tag_mode_tag => 'Tag';
+
+  @override
+  String component_tag_helper(String registry) {
+    return 'Tag from the $registry registry';
+  }
+
+  @override
+  String get component_tag_required => 'A tag is required';
+
+  @override
+  String get component_tag_invalid => 'Expected a tag like #minecraft:logs';
+
+  @override
   String get component_value_required => 'A value is required';
 
   @override

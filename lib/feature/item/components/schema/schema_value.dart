@@ -13,7 +13,7 @@ Object? initialValue(ComponentSchema schema) => switch (schema) {
   StringSchema() || TextSchema() || KeySchema() => '',
   ColorSchema() => 0xFFFFFF,
   EnumSchema(:final values) => values.first,
-  ListSchema() => <Object?>[],
+  ListSchema() || RegistryTagSchema() => <Object?>[],
   ObjectSchema(:final fields) => <String, Object?>{
     for (final entry in fields.entries)
       if (!entry.value.optional) entry.key: initialValue(entry.value.schema),
@@ -29,11 +29,16 @@ String summarize(
 ) => switch (schema) {
   UnitSchema() => l10n.component_summary_set,
   ColorSchema() when value is int => colorHex(value),
-  ListSchema() when value is List => l10n.component_summary_entries(
-    switch (flattened(schema)) {
-      (:final name, field: _) => unwrap(name, value).length,
-      null => value.length,
-    },
+  ListSchema() when value is List => switch (flattened(schema, value)) {
+    (:final name, :final field) => summarize(
+      l10n,
+      field.schema,
+      unwrap(name, value),
+    ),
+    null => l10n.component_summary_entries(value.length),
+  },
+  RegistryTagSchema() when value is List => l10n.component_summary_entries(
+    value.length,
   ),
   ObjectSchema(:final fields) when value is Map =>
     value.entries

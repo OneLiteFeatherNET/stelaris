@@ -716,6 +716,18 @@
   },
   "component_key_required": "A key is required",
   "component_key_invalid": "Expected a key like minecraft:stone",
+  "component_tag_mode_keys": "Keys",
+  "component_tag_mode_tag": "Tag",
+  "component_tag_helper": "Tag from the {registry} registry",
+  "@component_tag_helper": {
+    "placeholders": {
+      "registry": {
+        "type": "String"
+      }
+    }
+  },
+  "component_tag_required": "A tag is required",
+  "component_tag_invalid": "Expected a tag like #minecraft:logs",
   "component_value_required": "A value is required",
   "component_not_a_number": "Not a number",
   "component_range_min": "At least {min}",
