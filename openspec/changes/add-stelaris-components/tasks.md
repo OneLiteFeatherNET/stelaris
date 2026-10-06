@@ -101,7 +101,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 5. stelaris (frontend)
 
-- [ ] 5.1 Upgrade `vulpes_data` and `stelaris_models` (`flutter pub upgrade vulpes_data
+- [x] 5.1 Upgrade `vulpes_data` and `stelaris_models` (`flutter pub upgrade vulpes_data
   stelaris_models`). Shrink `dedicatedComponents` to `minecraft:lore` and `minecraft:enchantments`
   and adapt the test that pins it. Add `lib/feature/item/components/stelaris_components.dart` with
   `requiredComponents`, `stelarisComponents` and the `isRequired` extension, as in design.md. Add
@@ -111,20 +111,28 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   the other categories. Tests in `component_dialogs_test.dart`: the picker lists Custom first;
   Amount is offered while missing; Material is never offered. Verify with `dart analyze` and
   `flutter test`
-- [ ] 5.2 Components tab: cards of the `custom` category get a "Custom" badge next to the "Default"
+  Done in 2d19251.
+- [x] 5.2 Components tab: cards of the `custom` category get a "Custom" badge next to the "Default"
   one (new string `component_custom_label`), and a card whose spec `isRequired` has no remove
   button. Tests in `item_components_page_test.dart`: the material card shows the badge and no
   remove button; an amount card can be removed. Verify with `flutter test`
-- [ ] 5.3 Default marks: replace `state.selectedItem?.material` and `SelectedItemView.material` with
+  Done in 2e97dfd. Instead of a separate "Custom" badge, the subtitle that already names the
+  category ("Custom") is shown in the primary color, so no string repeats the category name.
+- [x] 5.3 Default marks: replace `state.selectedItem?.material` and `SelectedItemView.material` with
   `materialOf(List<ItemComponentDto> components)`, which returns the value of `stelaris:material`
   or `defaultMaterial`. Tests: changing the material component changes the default marks; while the
   components are loading, the marks are those of `defaultMaterial`. Verify with `flutter test`
-- [ ] 5.4 General tab: remove the Material, Amount, Display Name and Model Data cards from
+  Done in 48a27a4. Selecting an item resets its components to `[]`, so while they load the marks
+  are those of `defaultMaterial`, never those of the previous item.
+- [x] 5.4 General tab: remove the Material, Amount, Display Name and Model Data cards from
   `item_general_page.dart`, keep the group card, and drop the strings and tooltips only they used.
   Remove the commented-out `ItemFlagFetchAction` and the `flags` copy in `item_actions.dart`. Test
   that the tab shows only the group input.
   Verify with `dart analyze` and `flutter test`
 
+  Done in 48a27a4, which also removes `maxItemSize` and the six strings only the cards used. The
+  two detail page tests that typed into the material field now change the group instead (the only
+  input left on the General tab); the focus-commit-on-save path has no item test any more.
 ## 6. Release
 
 - [ ] 6.1 Release backend and frontend together on a database without the old schema. The
