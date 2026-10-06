@@ -41,9 +41,8 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 2. vulpes-model
 
-- [x] 2.1 Add `StelarisComponents` in `net.onelitefeather.vulpes.api.model.item` with `MATERIAL`,
-  `AMOUNT`, `REQUIRED`, `ALL`, `DEFAULT_MATERIAL` (`minecraft:dirt`) and `NAMESPACE` (`stelaris:`).
-  Verified with `./gradlew build` (49f21aa)
+- [x] 2.1 ~~Add `StelarisComponents` to the model~~ (49f21aa), moved to the backend in 3.3 and
+  removed from the model again (d45322a)
 - [x] 2.2 Remove `material` and `amount` from `ItemEntity`: fields, constructor parameters,
   accessors and `toString`. Verified with `./gradlew build` (fcbeba6, `feat(item)!:`)
 - [x] 2.3 Remove `displayName` and `customModelData` from `ItemEntity`. Verified with
@@ -62,8 +61,12 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   `./gradlew test`
 - [ ] 3.2 Remove the item flags: `ItemFlagController`, `ItemFlagDTO`, `ItemFlagResponseDTO`, the flag
   methods of `ItemService`/`ItemServiceImpl`, `ItemRelation.FLAGS` with its branch in
-  `ItemModelCopier`, and their tests. Verify with `./gradlew test`
-- [ ] 3.3 Component rules in `ItemComponentServiceImpl`, each with a case in
+  `ItemModelCopier`, and their tests. Verify with `./gradlew test`. Controller, DTOs, service and
+  their tests are done on Vulpes-Backend `refactor/item` (da1a7af, fa8d034, 82d0d9e);
+  `ItemRelation.FLAGS` and `ItemModelCopier.copyFlags` are left
+- [ ] 3.3 Add `StelarisComponents` in `net.onelitefeather.vulpes.backend.service.item` with `MATERIAL`,
+  `AMOUNT`, `REQUIRED`, `ALL`, `DEFAULT_MATERIAL` (`minecraft:dirt`) and `NAMESPACE` (`stelaris:`),
+  as in design.md. Component rules in `ItemComponentServiceImpl`, each with a case in
   `ItemComponentControllerIntegrationTest`:
   - `deleteComponent` rejects a key in `StelarisComponents.REQUIRED` with an invalid-request error
     ("can't be removed"); `deleteAllComponents` deletes everything else and keeps those.

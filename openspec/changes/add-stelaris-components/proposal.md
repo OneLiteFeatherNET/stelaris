@@ -56,10 +56,10 @@ The change spans five repositories, released together:
 
 - **vulpes-minecraft-dart** (vulpes_data): `ComponentSpec.required`, `ComponentCategory.custom`,
   `lib/src/api/stelaris_components.dart`. Additive.
-- **vulpes-model**: `StelarisComponents` key constants; material, amount, display name, custom
-  model data and flags removed from `ItemEntity`, `ItemFlagEntity` and its repository deleted.
-  Breaking, released as 3.0.0.
-- **Vulpes-Backend**: DTOs, flag endpoints removed, item creation, component service rules,
+- **vulpes-model**: material, amount, display name, custom model data and flags removed from
+  `ItemEntity`, `ItemFlagEntity` and its repository deleted. The model stays unaware of which keys
+  exist. Breaking, released as 3.0.0.
+- **Vulpes-Backend**: `StelarisComponents` with the keys and their rules, DTOs, flag endpoints removed, item creation, component service rules,
   `MANAGED_COMPONENTS` down to lore and enchantments, `ItemModelCopier` with a `COMPONENTS`
   relation. The old columns and the `item_flags` table are dropped by hand or with a fresh database.
 - **stelaris-model**: `ItemModel` without material, amount, display name, custom model data and
