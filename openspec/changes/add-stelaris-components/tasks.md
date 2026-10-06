@@ -41,8 +41,8 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 2. vulpes-model
 
-- [x] 2.1 ~~Add `StelarisComponents` to the model~~ (49f21aa), moved to the backend in 3.3 and
-  removed from the model again (d45322a)
+- [x] 2.1 ~~Add `StelarisComponents` to the model~~ (49f21aa), replaced by the backend
+  configuration in 3.3 and removed from the model again (d45322a)
 - [x] 2.2 Remove `material` and `amount` from `ItemEntity`: fields, constructor parameters,
   accessors and `toString`. Verified with `./gradlew build` (fcbeba6, `feat(item)!:`)
 - [x] 2.3 Remove `displayName` and `customModelData` from `ItemEntity`. Verified with
@@ -64,30 +64,34 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   `ItemModelCopier`, and their tests. Verify with `./gradlew test`. Controller, DTOs, service and
   their tests are done on Vulpes-Backend `refactor/item` (da1a7af, fa8d034, 82d0d9e);
   `ItemRelation.FLAGS` and `ItemModelCopier.copyFlags` are left
-- [ ] 3.3 Add `StelarisComponents` in `net.onelitefeather.vulpes.backend.service.item` with `MATERIAL`,
-  `AMOUNT`, `REQUIRED`, `ALL`, `DEFAULT_MATERIAL` (`minecraft:dirt`) and `NAMESPACE` (`stelaris:`),
-  as in design.md. Component rules in `ItemComponentServiceImpl`, each with a case in
-  `ItemComponentControllerIntegrationTest`:
-  - `deleteComponent` rejects a key in `StelarisComponents.REQUIRED` with an invalid-request error
-    ("can't be removed"); `deleteAllComponents` deletes everything else and keeps those.
+- [ ] 3.2a Update the development seed (`src/dev/.../seed`: `SeedWriter`, `SeedRepositories`,
+  `SeedWiper`, `SeedValidator`, the fixtures) and `FillerTest`: no flags, and material, amount,
+  display name and model data written as components. The test source set depends on it, so
+  `./gradlew test` can't run before. Verify with `./gradlew compileDevJava compileTestJava`
+- [x] 3.3 Configure the component rules in `application.yml` (`vulpes.item-components`, as in
+  design.md), read them with `ItemComponentConfiguration`, `RequiredComponentConfiguration` and
+  `ItemComponentRules` (checked at startup, `ItemComponentRulesTest`), and apply them in
+  `ItemComponentServiceImpl`, each with a case in `ItemComponentControllerIntegrationTest`:
+  - `deleteComponent` rejects a required component with an invalid-request error ("can't be
+    removed"); `deleteAllComponents` deletes everything else and keeps those.
   - `updateComponent` rejects changing the key of a required component.
-  - `createComponent` and `updateComponent` reject a key that starts with
-    `StelarisComponents.NAMESPACE` but isn't in `StelarisComponents.ALL`.
-  - `MANAGED_COMPONENTS` keeps only `minecraft:lore` and `minecraft:enchantments`; update its
-    comment and the class comment of `ItemComponentService`.
+  - `createComponent` and `updateComponent` reject a key in the custom namespace that isn't custom.
+  - Only `minecraft:lore` and `minecraft:enchantments` are managed; `MANAGED_COMPONENTS` is gone.
   - Tests: delete material → 400 and still listed; delete all → only material left; rename material
     to `minecraft:food` → 400; add `stelaris:foo` → 400; add `stelaris:amount` with `5` → 200; update
     `minecraft:food` to key `stelaris:material` → 409 (duplicate); add `minecraft:custom_name` →
     200; add `minecraft:lore` → still 400.
 
-  Verify with `./gradlew test`
-- [ ] 3.4 Creating an item adds `stelaris:material` with `"minecraft:dirt"` in the same transaction:
-  override `create(UUID projectId, ItemModelDTO dto)` in `ItemServiceImpl`, call `super.create`, save
-  the component through `ItemComponentRepository`, and return the reloaded item. Test in
-  `ItemControllerTest` (or the component integration test): a new item lists exactly one component,
-  `stelaris:material` = `minecraft:dirt`. Verify with `./gradlew test`
+  Verified with the two test classes (16 tests, none skipped) in a copy of the backend without the
+  parts 3.1, 3.2 and 3.2a still have to fix (ccb97c1, 039f033)
+- [ ] 3.4 Creating an item adds every component of `ItemComponentRules.required()` with its value in
+  the same transaction: override `create(UUID projectId, ItemModelDTO dto)` in `ItemServiceImpl`,
+  call `super.create`, save the components through `ItemComponentRepository`, and return the
+  reloaded item. Test: a new item lists exactly one component, `stelaris:material` =
+  `minecraft:dirt`, and `create_keepsTheJsonValue` expects two components. Verify with
+  `./gradlew test`
 - [ ] 3.5 Add `ItemRelation.COMPONENTS`. `ItemModelCopier` copies all components for it and copies
-  the keys in `StelarisComponents.REQUIRED` in every case. Tests in `ItemModelCopierTest`: copy with
+  the required components (`ItemComponentRules.isRequired`) in every case. Tests in `ItemModelCopierTest`: copy with
   `COMPONENTS` keeps food and material; copy without it keeps only the material; a changed material
   (`minecraft:stone`) is copied as changed. Verify with `./gradlew test`
 - [ ] 3.6 Drop the old schema on local databases: `ALTER TABLE items DROP COLUMN material, DROP
