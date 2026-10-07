@@ -12,7 +12,17 @@ class PageHeader extends StatelessWidget {
     this.onBack,
     this.showUnsavedIndicator = false,
     super.key,
-  });
+  }) : _small = false;
+
+  /// Heads a section of a page, like a tab below a detail page's header:
+  /// its title is smaller, so it doesn't compete with the page's.
+  const PageHeader.small({
+    required this.title,
+    this.actions = const [],
+    super.key,
+  }) : onBack = null,
+       showUnsavedIndicator = false,
+       _small = true;
 
   /// Below this width, [PageHeaderAction]s drop their label and render as
   /// icon-only buttons, leaving the title room to breathe.
@@ -24,6 +34,8 @@ class PageHeader extends StatelessWidget {
   final List<Widget> actions;
   final VoidCallback? onBack;
   final bool showUnsavedIndicator;
+
+  final bool _small;
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +66,11 @@ class PageHeader extends StatelessWidget {
                         title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style:
+                            (_small
+                                    ? theme.textTheme.titleMedium
+                                    : theme.textTheme.titleLarge)
+                                ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                     ),
                     if (showUnsavedIndicator) ...[

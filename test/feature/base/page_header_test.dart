@@ -37,6 +37,21 @@ void main() {
     );
   });
 
+  testWidgets('a small header has a smaller title than a page header', (
+    tester,
+  ) async {
+    double fontSize() =>
+        tester.widget<Text>(find.text('Lore')).style!.fontSize!;
+
+    await tester.pumpWidget(wrap(const PageHeader(title: 'Lore')));
+    final page = fontSize();
+    await tester.pumpWidget(
+      wrap(const PageHeader.small(title: 'Lore')),
+    );
+
+    expect(fontSize(), lessThan(page));
+  });
+
   testWidgets('actions show their label when wide', (tester) async {
     var pressed = false;
     await tester.pumpWidget(
