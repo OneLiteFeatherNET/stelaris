@@ -19,9 +19,11 @@ class ItemLoreFetchAction extends ReduxAction<AppState> {
               : selectedItem.lore.pageSize,
         );
 
-    final updatedItem = selectedItem.copyWith(lore: result);
-
-    return state.copyWith(selectedItem: updatedItem);
+    // Apply to the item as it is now: it may have been changed while the
+    // request was running, and another item may have been selected.
+    final latest = state.selectedItem;
+    if (latest == null || latest.id != selectedItem.id) return null;
+    return state.copyWith(selectedItem: latest.copyWith(lore: result));
   }
 }
 
