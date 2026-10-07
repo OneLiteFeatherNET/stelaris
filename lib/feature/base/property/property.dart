@@ -64,3 +64,40 @@ class TextProperty extends Property {
     if (result != null && result != value) onChanged(result);
   }
 }
+
+/// A choice between [options], edited in a dialog that lists them.
+class ChoiceProperty<T> extends Property {
+  const ChoiceProperty({
+    required this.label,
+    required this.value,
+    required this.options,
+    required this.display,
+    required this.onChanged,
+    this.tooltip,
+  });
+
+  @override
+  final String label;
+  final T value;
+  final List<T> options;
+
+  /// The name an option shows on the card and in the dialog.
+  final String Function(T option) display;
+
+  /// Called with the picked option when it differs from [value].
+  final ValueChanged<T> onChanged;
+  @override
+  final String? tooltip;
+
+  @override
+  String get displayValue => display(value);
+
+  @override
+  bool get showsPlaceholder => false;
+
+  @override
+  Future<void> edit(BuildContext context) async {
+    final picked = await showChoicePropertyDialog<T>(context, this);
+    if (picked != null && picked != value) onChanged(picked);
+  }
+}

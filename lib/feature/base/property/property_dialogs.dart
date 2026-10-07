@@ -74,3 +74,34 @@ class _TextPropertyDialogState extends State<_TextPropertyDialog> {
     );
   }
 }
+
+/// Lets the user pick one of [property]'s options. Resolves to the picked
+/// option, or null when the dialog was closed.
+Future<T?> showChoicePropertyDialog<T>(
+  BuildContext context,
+  ChoiceProperty<T> property,
+) {
+  return showDialog<T>(
+    context: context,
+    builder: (context) => FormDialog(
+      title: property.label,
+      actionLabel: context.l10n.button_save,
+      onSubmit: null,
+      showActions: false,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final option in property.options)
+            ListTile(
+              selected: option == property.value,
+              leading: option == property.value
+                  ? const Icon(Icons.check)
+                  : const SizedBox(width: 24),
+              title: Text(property.display(option)),
+              onTap: () => Navigator.of(context).pop(option),
+            ),
+        ],
+      ),
+    ),
+  );
+}
