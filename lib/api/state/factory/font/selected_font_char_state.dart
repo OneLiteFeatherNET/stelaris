@@ -16,7 +16,6 @@ class SelectedFontCharView extends Vm {
   SelectedFontCharView({required this.selected}) : super(equals: [selected]);
 
   final FontModel selected;
-  final Set<FontStringDTO> selectedFields = {};
 
   /// Returns an indicator if the model contains any kind of chars
   bool get hasChars => selected.chars.hasItems;
@@ -26,27 +25,4 @@ class SelectedFontCharView extends Vm {
 
   /// Returns the list of chars
   List<FontStringDTO> get chars => selected.chars.items;
-
-  /// Returns true if the [index] is flagged for deletion
-  bool hasChar(FontStringDTO index) => chars.contains(index);
-
-  /// Adds a entry which was flagged for deletion to the internal list
-  /// [index] the entry to add
-  /// Returns true if the entry was added
-  bool addCharToDeleted(FontStringDTO index) {
-    return selectedFields.add(index);
-  }
-
-  /// Removes a entry which was flagged for deletion from the internal list
-  /// [index] the entry to remove
-  /// Returns true if the entry was found and removed
-  bool removeCharFromDeleted(FontStringDTO index) {
-    return selectedFields.remove(index);
-  }
-
-  /// Clears each selected fields for the deletion
-  void clearDeleted() {
-    if (selectedFields.isEmpty) return;
-    selectedFields.clear();
-  }
 }

@@ -74,40 +74,4 @@ mixin EnchantmentReducer {
               .toList()
         : groupEnchantments.toList();
   }
-
-  /// Checks if an item can have more enchantments added based on its group.
-  bool canAdd(ItemModel model) {
-    final groupEnchantments = _getEnchantments(model.groupName);
-    return model.enchantments.totalItems < groupEnchantments.length;
-  }
-
-  /// Finds an [Enchantment] enum by its string value within the context of an item's group.
-  Enchantment? getByGroup(ItemModel model, String enchantmentValue) {
-    final groupEnchantments = _getEnchantments(model.groupName);
-    // Explicitly specify the type parameter for firstWhere as Enchantment?
-    // This tells Dart that the method can return a nullable Enchantment.
-    for (var ench in groupEnchantments) {
-      if (ench.key == enchantmentValue) return ench;
-    }
-    return null;
-  }
-
-  /// Calculates which enchantments to remove if an item's group is changed to [newGroup].
-  List<String> getRemoveItems(ItemModel itemModel, EnchantmentGroup newGroup) {
-    if (!itemModel.enchantments.hasItems) {
-      return [];
-    }
-
-    final newGroupEnchantments = _getEnchantments(newGroup);
-    // Create a set of the string values for fast lookups.
-    final allowedMinecraftValues = newGroupEnchantments
-        .map((e) => e.key)
-        .toSet();
-
-    // Filter the existing keys based on whether they are in the new allowed set.
-    return itemModel.enchantments.items
-        .where((key) => !allowedMinecraftValues.contains(key.name))
-        .map((element) => element.name)
-        .toList();
-  }
 }

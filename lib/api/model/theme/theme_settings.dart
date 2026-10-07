@@ -44,19 +44,4 @@ abstract class ThemeSettings with _$ThemeSettings {
       useSystemTheme: true,
     );
   }
-
-  /// Creates a copy of the current settings adapted for the specified theme mode.
-  ///
-  /// Adjusts colors based on whether [isDark] is true.
-  ThemeSettings forThemeMode(bool isDark) {
-    return copyWith(
-      isDarkMode: isDark,
-      primaryColor: isDark
-          ? Colors.teal[400] ?? Colors.teal
-          : Colors.green[400] ?? Colors.green,
-      accentColor: isDark
-          ? Colors.teal[800] ?? Colors.teal
-          : Colors.green[200] ?? Colors.green,
-    );
-  }
 }
