@@ -3,11 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/base/cards/text_input_card.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/notification/notification_detail_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:vulpes_data/advancement.dart';
+
+import '../../support/property_editing.dart';
 
 void main() {
   group('NotificationDetailPage', () {
@@ -76,36 +79,26 @@ void main() {
       expect(find.text('Notification List'), findsOneWidget);
     });
 
-    /// The text field of the card labelled [label].
-    Finder fieldOf(String label) => find.descendant(
-      of: find.ancestor(
-        of: find.text(label),
-        matching: find.byWidgetPredicate((w) => w is TextInputCard),
-      ),
-      matching: find.byType(TextFormField),
-    );
-
-    Future<void> enterAndBlur(
-      WidgetTester tester,
-      String label,
-      String text,
-    ) async {
-      await tester.enterText(fieldOf(label), text);
-      FocusManager.instance.primaryFocus?.unfocus();
-      await tester.pumpAndSettle();
-    }
-
     testWidgets('the title keeps digits, punctuation and umlauts', (
       tester,
     ) async {
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Title', 'Level 5 – Glückwunsch!');
+      await editTextProperty(tester, 'Title', 'Level 5 – Glückwunsch!');
 
-      expect(
-        store.state.selectedNotification?.title,
-        'Level 5 – Glückwunsch!',
+      expect(store.state.selectedNotification?.title, 'Level 5 – Glückwunsch!');
+    });
+
+    testWidgets('the frame type is picked in a dialog', (tester) async {
+      await pumpPage(tester);
+      final other = FrameType.values.firstWhere(
+        (type) => type != store.state.selectedNotification?.frameType,
       );
+
+      await pickChoice(tester, 'FrameType', other.displayName);
+
+      expect(store.state.selectedNotification?.frameType, other);
+      expect(store.state.unsavedChanges, NavigationEntry.notifications);
     });
 
     testWidgets('leaving the page clears the selection', (tester) async {
