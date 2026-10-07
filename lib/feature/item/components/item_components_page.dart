@@ -211,7 +211,7 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              PageHeader(
+              PageHeader.small(
                 title: context.l10n.component_page_title(all.length),
                 actions: [
                   if (counts.isNotEmpty)
