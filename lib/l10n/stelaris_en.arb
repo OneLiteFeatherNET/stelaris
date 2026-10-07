@@ -640,6 +640,14 @@
       }
     }
   },
+  "enchantment_page_title": "Enchantments ({count})",
+  "@enchantment_page_title": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "component_page_title": "Components ({count})",
   "@component_page_title": {
     "placeholders": {

@@ -6,7 +6,6 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/item/components/item_components_page.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
-import 'package:stelaris/feature/item/general/item_general_page.dart';
 import 'package:stelaris/feature/item/lore/lore_page.dart';
 import 'package:stelaris/feature/model/model_detail_actions.dart';
 import 'package:stelaris/feature/model/detail_tabs.dart';
@@ -17,18 +16,22 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// The detail view reached by tapping an item card in [ItemPage].
 ///
 /// Shows the shared [ModelDetailShell] header row with its actions, with a `TabBar`/
-/// `TabBarView` (General/Enchantments/Lore) below it as the body. Each tab
-/// renders one of [ItemGeneralPage]/[ItemEnchantmentPage]/[LorePage], which
-/// read the selected item from Redux themselves.
+/// `TabBarView` (Enchantments/Lore/Components) below it as the body. Each tab
+/// renders one of [ItemEnchantmentPage]/[LorePage]/[ItemComponentsPage],
+/// which read the selected item from Redux themselves.
 class ItemDetailPage extends StatelessWidget {
   const ItemDetailPage({super.key});
 
   /// The tabs in order. Their ids are what `?tab=` and the command palette
   /// refer to.
   static final List<DetailTab> tabs = [
-    // Meta was merged into General.
-    DetailTab('general', (l10n) => l10n.tab_general, formerIds: ['meta']),
-    DetailTab('enchantments', (l10n) => l10n.tab_enchantments),
+    // General (formerly Meta) only held the group, which moved next to the
+    // enchantments it decides.
+    DetailTab(
+      'enchantments',
+      (l10n) => l10n.tab_enchantments,
+      formerIds: ['general', 'meta'],
+    ),
     DetailTab('lore', (l10n) => l10n.tab_lore),
     DetailTab('components', (l10n) => l10n.tab_components),
   ];
@@ -71,7 +74,6 @@ class ItemDetailPage extends StatelessWidget {
               const Expanded(
                 child: TabBarView(
                   children: [
-                    ItemGeneralPage(),
                     ItemEnchantmentPage(),
                     LorePage(),
                     ItemComponentsPage(),

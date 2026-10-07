@@ -134,7 +134,6 @@ void main() {
       await _press(tester, LogicalKeyboardKey.arrowRight);
 
       expect(_titles(tester), [
-        'General',
         'Enchantments',
         'Lore',
         'Components',

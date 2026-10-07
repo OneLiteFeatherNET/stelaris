@@ -2620,6 +2620,12 @@ abstract class AppLocalizations {
   /// **'{category} · overrides the default'**
   String component_overrides_default(String category);
 
+  /// No description provided for @enchantment_page_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Enchantments ({count})'**
+  String enchantment_page_title(int count);
+
   /// No description provided for @component_page_title.
   ///
   /// In en, this message translates to:
