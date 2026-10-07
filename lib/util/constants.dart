@@ -33,7 +33,6 @@ RegExp adventureKeyPartPattern = RegExp(r'^(?!.*\.\.)[a-z0-9/._-]+$');
 
 /// Formatter
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);
-const TextInputType decimalInput = TextInputType.numberWithOptions(decimal: true, signed: true);
 
 /// Lore page
 const int maxLoreLines = 64;
@@ -72,8 +71,6 @@ const SizedBox verticalSpacing10 = SizedBox(height: 15);
 const SizedBox verticalSpacing25 = SizedBox(height: 25);
 
 const EdgeInsets dialogPadding = EdgeInsets.all(20);
-
-const double sizeFifty = 50;
 
 const borderRadius12 = BorderRadius.all(Radius.circular(12));
 

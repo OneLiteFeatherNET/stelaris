@@ -19,19 +19,6 @@ class SelectAttributeAction extends ReduxAction<AppState> {
   AppState reduce() => state.copyWith(selectedAttribute: model);
 }
 
-/// Clears the currently selected attribute from the state.
-///
-/// This action removes the selected attribute, typically used when navigating away
-/// from an attribute detail view or canceling an operation. If no attribute is
-/// currently selected, this action has no effect and returns null.
-class RemoveSelectAttributeAction extends ReduxAction<AppState> {
-  @override
-  AppState? reduce() {
-    if (state.selectedAttribute == null) return null;
-    return state.copyWith(selectedAttribute: null);
-  }
-}
-
 /// Always refetches page 1 and replaces the current list, regardless of
 /// how many pages were already loaded — used by the grid's manual refresh
 /// button, as opposed to [InitAttributeAction] which only ever loads the
@@ -124,21 +111,6 @@ class _SetAttributesLoadMore extends ReduxAction<AppState> {
   _SetAttributesLoadMore(this.value);
   @override
   AppState reduce() => state.copyWith(isLoadingAttributesMore: value);
-}
-
-/// Updates the currently selected attribute in the state without database persistence.
-///
-/// This action is used for local state updates, such as when editing attribute
-/// properties in a form before saving. The changes are only reflected in the
-/// application state and do not trigger any API calls.
-class UpdateAttributeAction extends ReduxAction<AppState> {
-  final AttributeModel newEntry;
-
-  UpdateAttributeAction(this.newEntry);
-
-  @override
-  Future<AppState?> reduce() async =>
-      store.state.copyWith(selectedAttribute: newEntry);
 }
 
 /// Helper method to update the attributes list in state
