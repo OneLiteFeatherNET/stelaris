@@ -19,5 +19,4 @@ class SelectedItemView extends Vm {
     : super(equals: [selected, selected.id]);
 
   final ItemModel selected;
-  final Set<String> fieldsToDelete = {};
 }
