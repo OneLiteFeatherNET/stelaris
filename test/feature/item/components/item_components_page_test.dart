@@ -5,12 +5,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
+import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/item/components/item_components_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
+import '../../../support/settle_requests.dart';
 
 void main() {
   Future<void> pumpPage(
@@ -173,7 +176,7 @@ void main() {
   });
 
   testWidgets(
-    'loads once the tab settled and keeps the components while switching',
+    'shows the components once the tab settled and keeps them while switching',
     variant: TargetPlatformVariant.only(TargetPlatform.macOS),
     (tester) async {
       tester.view.physicalSize = const Size(1400, 1000);
@@ -235,9 +238,13 @@ void main() {
       await tester.tap(find.text('Comp'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 50));
-      // Mid animation: a spinner, nothing requested yet.
-      expect(find.byType(CircularProgressIndicator), findsWidgets);
-      expect(requests, 0);
+      // The tab is built once it scrolls into view; it requests after that
+      // frame.
+      await tester.pump(const Duration(milliseconds: 16));
+      // Mid animation: already requested, but still skeleton cards.
+      expect(requests, 1);
+      expect(find.byKey(const Key('component_skeleton')), findsOneWidget);
+      expect(find.text('Food'), findsNothing);
 
       // On the web, dio finishes even a faked request in several real-async
       // steps that testWidgets' fake-async zone doesn't run on its own, so
@@ -263,6 +270,97 @@ void main() {
       // Kept alive: shown again without another request.
       expect(requests, 1);
       expect(find.text('Food'), findsOneWidget);
+
+      // Another item loads its own components.
+      store.dispatch(
+        SelectedItemAction(const ItemModel(id: 'item-2', uiName: 'Bread')),
+      );
+      await settleRequests(
+        tester,
+        () => store.isWaiting(ItemComponentFetchAction),
+      );
+      expect(requests, 2);
+      expect(find.text('Food'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'as the tab a page opens on, shows them once the page slid in',
+    variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+    (tester) async {
+      tester.view.physicalSize = const Size(1400, 1000);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      var requests = 0;
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            requests++;
+            return ResponseBody.fromString(
+              jsonEncode({
+                'items': [food.toJson()],
+                'totalItems': 1,
+                'totalPages': 1,
+                'currentPage': 0,
+                'pageSize': 100,
+              }),
+              200,
+              headers: {
+                Headers.contentTypeHeader: [Headers.jsonContentType],
+              },
+            );
+          });
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedItem: const ItemModel(id: 'item-1', uiName: 'Apple'),
+        ),
+      );
+      await tester.pumpWidget(
+        StoreProvider<AppState>(
+          store: store,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Builder(
+              builder: (context) => TextButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const Scaffold(
+                      body: DefaultTabController(
+                        length: 1,
+                        child: TabBarView(children: [ItemComponentsPage()]),
+                      ),
+                    ),
+                  ),
+                ),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Open'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+      // Mid transition: already requested, but still skeleton cards.
+      expect(requests, 1);
+      expect(find.byKey(const Key('component_skeleton')), findsOneWidget);
+      expect(find.text('Food'), findsNothing);
+
+      for (
+        var i = 0;
+        i < 20 && store.state.selectedItemComponents.isEmpty;
+        i++
+      ) {
+        await tester.pump(const Duration(milliseconds: 100));
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 10)),
+        );
+      }
+      await tester.pumpAndSettle();
+      expect(requests, 1);
+      expect(find.text('Food'), findsOneWidget);
+      expect(find.byKey(const Key('component_skeleton')), findsNothing);
     },
   );
 }

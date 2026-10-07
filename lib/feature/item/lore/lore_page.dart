@@ -6,21 +6,38 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/item_lore_view_state.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/page_header.dart';
+import 'package:stelaris/feature/base/skeleton_bar.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/item/lore/lore_count_chip.dart';
 import 'package:stelaris/feature/item/lore/lore_page_view.dart';
+import 'package:stelaris/feature/item/item_tab_loading.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/util/settled_after_transitions.dart';
 
-class LorePage extends StatelessWidget {
+class LorePage extends StatefulWidget {
   const LorePage({super.key});
 
   @override
+  State<LorePage> createState() => _LorePageState();
+}
+
+class _LorePageState extends State<LorePage>
+    with
+        AutomaticKeepAliveClientMixin,
+        SettledAfterTransitions,
+        ItemTabLoading {
+  @override
+  ReduxAction<AppState> createLoadAction() => ItemLoreFetchAction();
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return StoreConnector<AppState, ItemLoreView>(
       vm: () => ItemLoreViewFactory(),
-      onInit: (store) => store.dispatchAndWait(ItemLoreFetchAction()),
+      onDidChange: (context, store, vm) => selectedItemChanged(vm.selected.id),
       builder: (context, vm) {
+        final pending = !settled || vm.loading;
         return Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -34,15 +51,18 @@ class LorePage extends StatelessWidget {
                     icon: const Icon(Icons.add),
                     label: context.l10n.button_add,
                     primary: true,
+                    loading: pending,
                     onPressed: () => _openCreateDialog(vm, context),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
               Expanded(
-                child: !vm.selected.lore.hasItems
-                    ? const EmptyDataWidget()
-                    : LorePageView(view: vm),
+                child: switch ((pending, vm.selected.lore.hasItems)) {
+                  (true, _) => const _LoreSkeleton(),
+                  (false, false) => const EmptyDataWidget(),
+                  _ => LorePageView(view: vm),
+                },
               ),
             ],
           ),
@@ -69,6 +89,28 @@ class LorePage extends StatelessWidget {
           formKey: GlobalKey<FormState>(),
         );
       },
+    );
+  }
+}
+
+/// Stands in for the lore lines while they load: rows in the shape of a
+/// line in [LorePageView], with bars for its number and text.
+class _LoreSkeleton extends StatelessWidget {
+  const _LoreSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      key: const Key('lore_skeleton'),
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 6,
+      itemBuilder: (context, index) => const ListTile(
+        leading: SizedBox(
+          width: 14,
+          child: SkeletonBar(widthFactor: 1, height: 14),
+        ),
+        title: SkeletonBar(widthFactor: 0.6, height: 14),
+      ),
     );
   }
 }

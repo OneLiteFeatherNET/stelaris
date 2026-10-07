@@ -5,14 +5,17 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/page_header.dart';
+import 'package:stelaris/feature/base/skeleton_bar.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/components/component_category_menu.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
 import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/feature/item/components/stelaris_components.dart';
+import 'package:stelaris/feature/item/item_tab_loading.dart';
 import 'package:stelaris/feature/model/model_card_actions.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/settled_after_transitions.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:vulpes_data/component.dart';
 import 'package:vulpes_data/material.dart';
@@ -36,7 +39,10 @@ class ItemComponentsPage extends StatefulWidget {
 }
 
 class _ItemComponentsPageState extends State<ItemComponentsPage>
-    with AutomaticKeepAliveClientMixin {
+    with
+        AutomaticKeepAliveClientMixin,
+        SettledAfterTransitions,
+        ItemTabLoading {
   static const double _maxCardExtent = 320;
   static const double _cardHeight = 112;
   static const double _spacing = 12;
@@ -44,65 +50,8 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
   /// Shows only the components of this category, null shows all.
   ComponentCategory? _category;
 
-  /// The tab animation which brought this tab into view, until it settled.
-  Animation<double>? _tabAnimation;
-
-  /// Whether the tab animation settled. Loading and building the grid wait
-  /// for it, so the switch to this tab doesn't stutter.
-  bool _settled = false;
-
-  /// The item whose components were requested, so each item loads once
-  /// while the tab is kept alive.
-  String? _loadedFor;
-
-  /// The fetch is scheduled for the next frame but not dispatched yet.
-  bool _fetchScheduled = false;
-
   @override
-  bool get wantKeepAlive => true;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_settled || _tabAnimation != null) return;
-    final animation = DefaultTabController.maybeOf(context)?.animation;
-    if (animation == null || _isSettled(animation)) {
-      _settled = true;
-      return;
-    }
-    _tabAnimation = animation..addListener(_onTabAnimation);
-  }
-
-  @override
-  void dispose() {
-    _tabAnimation?.removeListener(_onTabAnimation);
-    super.dispose();
-  }
-
-  /// The animation rests on a tab, it isn't between two.
-  static bool _isSettled(Animation<double> animation) =>
-      animation.value == animation.value.roundToDouble();
-
-  void _onTabAnimation() {
-    final animation = _tabAnimation;
-    if (animation == null || !_isSettled(animation)) return;
-    animation.removeListener(_onTabAnimation);
-    _tabAnimation = null;
-    setState(() => _settled = true);
-  }
-
-  /// Requests the components of [itemId] once the tab has settled.
-  void _loadIfNeeded(String? itemId) {
-    if (!_settled || itemId == _loadedFor) return;
-    _loadedFor = itemId;
-    _fetchScheduled = true;
-    // Not during build, the dispatch changes the store.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      setState(() => _fetchScheduled = false);
-      context.dispatch(ItemComponentFetchAction());
-    });
-  }
+  ReduxAction<AppState> createLoadAction() => ItemComponentFetchAction();
 
   Future<void> _add(_ComponentsView vm) async {
     final spec = await showComponentPickerDialog(
@@ -180,11 +129,11 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
     super.build(context);
     return StoreConnector<AppState, _ComponentsView>(
       vm: () => _ComponentsFactory(),
+      onDidChange: (context, store, vm) => selectedItemChanged(vm.itemId),
       builder: (context, vm) {
-        _loadIfNeeded(vm.itemId);
-        // A spinner until the components of this item are loaded, the grid
-        // is only built once the tab stands still.
-        final pending = !_settled || _fetchScheduled || vm.loading;
+        // Skeleton cards until the components of this item are loaded, the
+        // grid is only built once the page and tab stand still.
+        final pending = !settled || vm.loading;
         final defaults = defaultComponentsOf(vm.material).toSet();
         final all = [...vm.components]
           ..sort((a, b) => _sortIndex(a).compareTo(_sortIndex(b)));
@@ -240,53 +189,40 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
               const SizedBox(height: 12),
               Expanded(
                 child: switch ((pending, components.isEmpty)) {
-                  (true, _) => const Center(child: CircularProgressIndicator()),
+                  (true, _) => _grid(
+                    key: const Key('component_skeleton'),
+                    itemCount: (columns) => columns * 2,
+                    itemBuilder: (context, index) => const _SkeletonCard(),
+                  ),
                   (false, true) => EmptyDataWidget.full(
                     header: context.l10n.component_empty_header,
                     subHeader: context.l10n.component_empty_body,
                   ),
-                  _ => LayoutBuilder(
-                    builder: (context, constraints) {
-                      final columns =
-                          ((constraints.maxWidth + _spacing) /
-                                  (_maxCardExtent + _spacing))
-                              .floor()
-                              .clamp(1, 4);
-                      return GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: columns,
-                          mainAxisExtent: _cardHeight,
-                          crossAxisSpacing: _spacing,
-                          mainAxisSpacing: _spacing,
+                  _ => _grid(
+                    itemCount: (_) => components.length,
+                    itemBuilder: (context, index) {
+                      final component = components[index];
+                      final spec = _specsByKey[component.componentKey];
+                      final editable =
+                          spec != null &&
+                          spec.editable &&
+                          !dedicatedComponents.contains(spec.key);
+                      return _ComponentCard(
+                        key: ValueKey(component.id),
+                        componentKey: component.componentKey,
+                        spec: spec,
+                        value: component.value,
+                        overridesDefault: defaults.contains(
+                          component.componentKey,
                         ),
-                        itemCount: components.length,
-                        itemBuilder: (context, index) {
-                          final component = components[index];
-                          final spec = _specsByKey[component.componentKey];
-                          final editable =
-                              spec != null &&
-                              spec.editable &&
-                              !dedicatedComponents.contains(spec.key);
-                          return _ComponentCard(
-                            key: ValueKey(component.id),
-                            componentKey: component.componentKey,
-                            spec: spec,
-                            value: component.value,
-                            overridesDefault: defaults.contains(
-                              component.componentKey,
-                            ),
-                            onEdit: editable
-                                ? () => _edit(spec, component)
-                                : null,
-                            // Every item has its required components.
-                            onRemove: spec != null && spec.isRequired
-                                ? null
-                                : () => _remove(
-                                    spec?.displayName ?? component.componentKey,
-                                    component,
-                                  ),
-                          );
-                        },
+                        onEdit: editable ? () => _edit(spec, component) : null,
+                        // Every item has its required components.
+                        onRemove: spec != null && spec.isRequired
+                            ? null
+                            : () => _remove(
+                                spec?.displayName ?? component.componentKey,
+                                component,
+                              ),
                       );
                     },
                   ),
@@ -294,6 +230,34 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
               ),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  /// The card grid, with as many columns of cards as fit. [itemCount]
+  /// gets the number of columns.
+  Widget _grid({
+    required int Function(int columns) itemCount,
+    required NullableIndexedWidgetBuilder itemBuilder,
+    Key? key,
+  }) {
+    return LayoutBuilder(
+      key: key,
+      builder: (context, constraints) {
+        final columns =
+            ((constraints.maxWidth + _spacing) / (_maxCardExtent + _spacing))
+                .floor()
+                .clamp(1, 4);
+        return GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+            mainAxisExtent: _cardHeight,
+            crossAxisSpacing: _spacing,
+            mainAxisSpacing: _spacing,
+          ),
+          itemCount: itemCount(columns),
+          itemBuilder: itemBuilder,
         );
       },
     );
@@ -328,6 +292,35 @@ class _ComponentsFactory
     components: state.selectedItemComponents,
     loading: isWaiting(ItemComponentFetchAction),
   );
+}
+
+/// Stands in for a [_ComponentCard] while the components load: the same
+/// card, with bars where its texts go.
+class _SkeletonCard extends StatelessWidget {
+  const _SkeletonCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Card.filled(
+      elevation: 0,
+      color: colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: const Padding(
+        padding: EdgeInsets.fromLTRB(16, 16, 16, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SkeletonBar(widthFactor: 0.55, height: 16),
+            SizedBox(height: 8),
+            SkeletonBar(widthFactor: 0.3, height: 12),
+            Spacer(),
+            SkeletonBar(widthFactor: 0.75, height: 14),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _ComponentCard extends StatelessWidget {

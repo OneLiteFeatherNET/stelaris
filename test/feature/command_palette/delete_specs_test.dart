@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/command_palette/delete_specs.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
@@ -14,6 +15,7 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/fake_http_client_adapter.dart';
+import '../../support/settle_requests.dart';
 
 /// Renders [page] as its detail route does and returns the delete title and
 /// warning it hands to its header's [ModelDetailActions].
@@ -31,12 +33,13 @@ Future<(String, String?)> _detailPageDelete(
       ),
     ],
   );
+  final store = Store<AppState>(
+    initialState: state,
+    globalErrorObserver: (_) => SwallowGlobalErrorObserver<AppState>(),
+  );
   await tester.pumpWidget(
     StoreProvider<AppState>(
-      store: Store<AppState>(
-        initialState: state,
-        globalErrorObserver: (_) => SwallowGlobalErrorObserver<AppState>(),
-      ),
+      store: store,
       child: MaterialApp.router(
         routerConfig: router,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -48,9 +51,9 @@ Future<(String, String?)> _detailPageDelete(
   final dynamic actions = tester.widget(
     find.byWidgetPredicate((widget) => widget is ModelDetailActions),
   );
-  // Let what the page started on open, like the item's enchantment fetch,
+  // Let what the page started on open, like the item's component fetch,
   // finish before the test ends.
-  await tester.pumpAndSettle();
+  await settleRequests(tester, () => store.isWaiting(ItemEnchantmentFetchAction));
   return (actions.deleteTitle as String, actions.deleteWarning as String?);
 }
 
