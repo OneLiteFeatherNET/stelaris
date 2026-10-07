@@ -331,9 +331,9 @@ void main() {
 
     test('tabs come first, then Delete, for items, fonts and sounds', () {
       expect(childrenOf('Diamond Sword', everyKind), [
+        'Components',
         'Enchantments',
         'Lore',
-        'Components',
         'Delete\u2026',
       ]);
       expect(childrenOf('Rune Script', everyKind), [

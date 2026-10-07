@@ -19,9 +19,9 @@ import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/fake_http_client_adapter.dart';
 import '../../support/recording_http_client_adapter.dart';
+import '../../support/settle_requests.dart';
 
-/// An empty page, for the fetches the Components and Enchantments tabs
-/// start.
+/// An empty page, for the fetches the tabs start.
 const Map<String, Object> _emptyPage = {
   'items': <Object>[],
   'totalItems': 0,
@@ -30,15 +30,21 @@ const Map<String, Object> _emptyPage = {
   'pageSize': 5,
 };
 
-/// Answers the component and enchantment fetches with [_emptyPage] and
-/// hands every other request to [other].
-HttpClientAdapter _withEmptyLists(HttpClientAdapter other) {
+/// The fetches of the tabs, by the last segment of their path.
+const List<String> _tabLists = ['components', 'enchantments', 'lore'];
+
+/// Answers the fetches of the tabs with [_emptyPage], counting them in
+/// [requests], and hands every other request to [other].
+HttpClientAdapter _withEmptyLists(
+  HttpClientAdapter other,
+  Map<String, int> requests,
+) {
   final empty = FakeHttpClientAdapter.json(_emptyPage);
   return _RoutingAdapter((options) {
-    final path = options.uri.path;
-    return path.endsWith('/components') || path.endsWith('/enchantments')
-        ? empty
-        : other;
+    final list = options.uri.pathSegments.last;
+    if (!_tabLists.contains(list)) return other;
+    requests[list] = (requests[list] ?? 0) + 1;
+    return empty;
   });
 }
 
@@ -64,13 +70,25 @@ void main() {
 
     late Store<AppState> store;
 
+    /// The fetches of the tabs so far, see [_withEmptyLists].
+    late Map<String, int> requests;
+
+    /// Whether the shown tab still waits for its data.
+    bool showsPlaceholders() => [
+      'component_skeleton',
+      'enchantment_skeleton',
+      'lore_skeleton',
+    ].any((key) => find.byKey(Key(key)).evaluate().isNotEmpty);
+
     Future<void> pumpPage(
       WidgetTester tester, {
       String location = '/items/detail',
       HttpClientAdapter? adapter,
     }) async {
+      requests = {};
       ApiService().itemApi.apiClient.dio.httpClientAdapter = _withEmptyLists(
         adapter ?? RecordingHttpClientAdapter({}),
+        requests,
       );
       store = Store<AppState>(
         initialState: const AppState(selectedItem: selected),
@@ -105,7 +123,8 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      // Components, the tab the page opens on, loads right away.
+      await settleRequests(tester, showsPlaceholders);
     }
 
     testWidgets('shows the back arrow with the item name above the tabs', (
@@ -113,7 +132,7 @@ void main() {
     ) async {
       await pumpPage(tester);
 
-      // The Enchantments tab has a PageHeader of its own.
+      // The Components tab has a PageHeader of its own.
       final header = find.ancestor(
         of: find.byKey(const Key('page_header_back_button')),
         matching: find.byType(PageHeader),
@@ -127,22 +146,32 @@ void main() {
 
       final tabBar = tester.widget<TabBar>(find.byType(TabBar));
       expect(tabBar.tabs.map((tab) => (tab as Tab).text), [
+        'Components',
         'Enchantments',
         'Lore',
-        'Components',
       ]);
     });
 
+    testWidgets('opens on Components', (tester) async {
+      await pumpPage(tester);
+
+      expect(
+        DefaultTabController.of(tester.element(find.byType(TabBar))).index,
+        0,
+      );
+      expect(find.byType(ItemComponentsPage), findsOneWidget);
+    });
+
     testWidgets(
-      'wires the tab views to Enchantments, Lore and Components pages',
+      'wires the tab views to Components, Enchantments and Lore pages',
       (tester) async {
         await pumpPage(tester);
 
         final tabBarView = tester.widget<TabBarView>(find.byType(TabBarView));
         expect(tabBarView.children.map((w) => w.runtimeType), [
+          ItemComponentsPage,
           ItemEnchantmentPage,
           LorePage,
-          ItemComponentsPage,
         ]);
       },
     );
@@ -172,9 +201,50 @@ void main() {
       ),
     );
 
+    Future<void> openEnchantments(WidgetTester tester) async {
+      await tester.tap(find.widgetWithText(Tab, 'Enchantments'));
+      // The tab shows its data once it loaded and stands still.
+      await settleRequests(tester, showsPlaceholders);
+    }
+
+    for (final (tab, skeleton) in [
+      ('Enchantments', 'enchantment_skeleton'),
+      ('Lore', 'lore_skeleton'),
+    ]) {
+      testWidgets('$tab shows placeholders until it loaded', (tester) async {
+        await pumpPage(tester);
+
+        await tester.tap(find.widgetWithText(Tab, tab));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 50));
+        expect(find.byKey(Key(skeleton)), findsOneWidget);
+
+        await settleRequests(tester, showsPlaceholders);
+        expect(find.byKey(Key(skeleton)), findsNothing);
+      });
+    }
+
+    testWidgets('each tab loads once, not again when swiping back', (
+      tester,
+    ) async {
+      await pumpPage(tester);
+      expect(requests, {'components': 1});
+
+      await openEnchantments(tester);
+      await tester.tap(find.widgetWithText(Tab, 'Lore'));
+      await settleRequests(tester, showsPlaceholders);
+      await openEnchantments(tester);
+      await tester.tap(find.widgetWithText(Tab, 'Components'));
+      await tester.pumpAndSettle();
+
+      // Back on tabs which already loaded: no further requests.
+      expect(requests, {'components': 1, 'enchantments': 1, 'lore': 1});
+    });
+
     /// Changes the group next to the add button on the Enchantments tab,
     /// and confirms that the enchantments are reset.
     Future<void> chooseArmorGroup(WidgetTester tester) async {
+      await openEnchantments(tester);
       await tester.tap(
         find.descendant(
           of: find.byType(ItemGroupSelector),
@@ -192,6 +262,7 @@ void main() {
       tester,
     ) async {
       await pumpPage(tester);
+      await openEnchantments(tester);
       final enchantments = find.byType(ItemEnchantmentPage);
       expect(
         find.descendant(
@@ -208,6 +279,7 @@ void main() {
 
     testWidgets('cancelling a group change keeps the group', (tester) async {
       await pumpPage(tester);
+      await openEnchantments(tester);
 
       await tester.tap(find.text('Meta'));
       await tester.pumpAndSettle();
@@ -293,7 +365,7 @@ void main() {
 
         expect(
           DefaultTabController.of(tester.element(find.byType(TabBar))).index,
-          0,
+          1,
         );
       });
     }
