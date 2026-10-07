@@ -4,19 +4,20 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/font/chars/font_char_page.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/font/font_general_page.dart';
-import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/fake_http_client_adapter.dart';
+import '../../support/property_editing.dart';
 
 void main() {
   group('FontDetailPage', () {
-    const selected = FontModel(id: 'font-1', uiName: 'Roboto Mono');
+    const selected = FontModel(id: 'font-1', uiName: 'Roboto Mono', height: 8);
 
     late Store<AppState> store;
 
@@ -138,44 +139,37 @@ void main() {
       expect(selectedTab(tester), 0);
     });
 
-    /// The text field of the card labelled [label].
-    Finder fieldOf(String label) => find.descendant(
-      of: find.ancestor(
-        of: find.text(label),
-        matching: find.byWidgetPredicate((w) => w is TextInputCard),
-      ),
-      matching: find.byType(TextFormField),
-    );
-
-    Future<void> enterAndBlur(
-      WidgetTester tester,
-      String label,
-      String text,
-    ) async {
-      await tester.enterText(fieldOf(label), text);
-      FocusManager.instance.primaryFocus?.unfocus();
-      await tester.pumpAndSettle();
-    }
-
     testWidgets('the texture path keeps its namespace, slashes and dots', (
       tester,
     ) async {
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Texture path', 'minecraft:font/ascii.png');
+      await editTextProperty(tester, 'Texture path', 'minecraft:font/ascii.png');
 
       expect(store.state.selectedFont?.texturePath, 'minecraft:font/ascii.png');
+      expect(store.state.unsavedChanges, NavigationEntry.font);
     });
 
-    testWidgets('an invalid texture path shows an error', (tester) async {
+    testWidgets('an invalid texture path keeps the dialog open', (
+      tester,
+    ) async {
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Texture path', 'Not A Path');
+      await editTextProperty(tester, 'Texture path', 'Not A Path');
 
       expect(
         find.text('Invalid texture path (e.g. "minecraft:font/ascii.png")'),
         findsOneWidget,
       );
+      expect(store.state.selectedFont?.texturePath, isNot('Not A Path'));
+    });
+
+    testWidgets('an emptied height becomes 0', (tester) async {
+      await pumpPage(tester);
+
+      await editTextProperty(tester, 'Height', '');
+
+      expect(store.state.selectedFont?.height, 0);
     });
 });
 }

@@ -1,179 +1,72 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/selected_font_state.dart';
-import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
-import 'package:stelaris/feature/base/cards/text_input_card.dart';
+import 'package:stelaris/feature/base/property/property.dart';
+import 'package:stelaris/feature/base/property/property_grid.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
-import 'package:stelaris/api/state/actions/unsaved_actions.dart';
-import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The font's General tab: its provider and the face it renders with
 /// (texture path, ascent, height).
-class FontGeneralPage extends StatefulWidget {
+class FontGeneralPage extends StatelessWidget {
   const FontGeneralPage({super.key});
-
-  @override
-  State<FontGeneralPage> createState() => _FontGeneralPageState();
-}
-
-class _FontGeneralPageState extends State<FontGeneralPage> {
-  final ScrollController _scrollController = ScrollController();
-  final GlobalKey<FormState> _key = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, SelectedFontView>(
       vm: () => SelectedFontFactory(),
       builder: (context, vm) {
-        return FocusScope(
-          child: FocusTraversalGroup(
-            policy: OrderedTraversalPolicy(),
-            child: Form(
-              key: _key,
-              onChanged: () => context.dispatch(
-                MarkUnsavedChangesAction(NavigationEntry.font),
+        final font = vm.selected;
+        void update(FontModel changed) =>
+            context.dispatch(UpdateFontAction(changed));
+        final numberFormatters = [
+          FilteringTextInputFormatter.allow(fontNumberPattern),
+        ];
+        return PropertyGrid(
+          properties: [
+            TextProperty(
+              label: context.l10n.card_font_provider,
+              value: font.provider ?? emptyString,
+              formatters: [stringPatternFormatter],
+              onChanged: (value) => update(font.copyWith(provider: value)),
+            ),
+            TextProperty(
+              label: context.l10n.card_font_texture_path,
+              value: font.texturePath ?? emptyString,
+              hintText: 'minecraft:font/ascii.png',
+              validator: Validators.pattern(
+                adventureKeyPattern,
+                context.l10n.validation_texture_path_invalid,
               ),
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 300),
-                      opacity: 1,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return Scrollbar(
-                        controller: _scrollController,
-                        thumbVisibility: true,
-                        trackVisibility: true,
-                        child: SingleChildScrollView(
-                          controller: _scrollController,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Wrap(
-                              spacing: 16,
-                              runSpacing: 16,
-                              children: [
-                                TextInputCard<String>(
-                                  display: context.l10n.card_font_provider,
-                                  currentValue:
-                                      vm.selected.provider ?? emptyString,
-                                  formatter: [stringPatternFormatter],
-                                  valueUpdate: (value) {
-                                    if (value == vm.selected.provider) {
-                                      return;
-                                    }
-                                    context.dispatch(
-                                      UpdateFontAction(
-                                        vm.selected.copyWith(provider: value),
-                                      ),
-                                    );
-                                  },
-                                  focusOrder: const NumericFocusOrder(1),
-                                ),
-                                TextInputCard<String>(
-                                  display: context.l10n.card_font_texture_path,
-                                  currentValue:
-                                      vm.selected.texturePath ?? emptyString,
-                                  hintText: 'minecraft:font/ascii.png',
-                                  formValidator: (value) => Validators.pattern(
-                                    adventureKeyPattern,
-                                    context.l10n.validation_texture_path_invalid,
-                                  )(value as String?),
-                                  valueUpdate: (value) {
-                                    if (value == vm.selected.texturePath) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      texturePath: value,
-                                    );
-                                    context.dispatch(
-                                      UpdateFontAction(newEntry),
-                                    );
-                                  },
-                                  focusOrder: const NumericFocusOrder(2),
-                                ),
-                                TextInputCard<int>(
-                                  tooltipMessage: context.l10n.tooltip_ascent,
-                                  display: context.l10n.card_ascent,
-                                  currentValue: vm.selected.ascent.toString(),
-                                  valueUpdate: (value) {
-                                    final parsedValue =
-                                        int.tryParse(value) ?? 0;
-                                    if (parsedValue == vm.selected.ascent) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      ascent: parsedValue,
-                                    );
-                                    context.dispatch(
-                                      UpdateFontAction(newEntry),
-                                    );
-                                  },
-                                  inputType: numberInput,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      fontNumberPattern,
-                                    ),
-                                  ],
-                                  focusOrder: const NumericFocusOrder(3),
-                                ),
-                                TextInputCard<int>(
-                                  tooltipMessage: context.l10n.tooltip_height,
-                                  display: context.l10n.card_height,
-                                  currentValue: vm.selected.height.toString(),
-                                  valueUpdate: (value) {
-                                    final parsedValue =
-                                        int.tryParse(value) ?? 0;
-                                    if (parsedValue == vm.selected.height) {
-                                      return;
-                                    }
-                                    final oldModel = vm.selected;
-                                    final newEntry = oldModel.copyWith(
-                                      height: parsedValue,
-                                    );
-                                    context.dispatch(
-                                      UpdateFontAction(newEntry),
-                                    );
-                                  },
-                                  inputType: numberInput,
-                                  formatter: [
-                                    FilteringTextInputFormatter.allow(
-                                      fontNumberPattern,
-                                    ),
-                                  ],
-                                  focusOrder: const NumericFocusOrder(4),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              RegisterDetailForm(formKey: _key),
-            ],
-          ),
-        ),
-      ),
+              onChanged: (value) => update(font.copyWith(texturePath: value)),
+            ),
+            TextProperty(
+              label: context.l10n.card_ascent,
+              tooltip: context.l10n.tooltip_ascent,
+              value: font.ascent.toString(),
+              keyboardType: numberInput,
+              formatters: numberFormatters,
+              onChanged: (value) =>
+                  update(font.copyWith(ascent: int.tryParse(value) ?? 0)),
+            ),
+            TextProperty(
+              label: context.l10n.card_height,
+              tooltip: context.l10n.tooltip_height,
+              value: font.height.toString(),
+              keyboardType: numberInput,
+              formatters: numberFormatters,
+              onChanged: (value) =>
+                  update(font.copyWith(height: int.tryParse(value) ?? 0)),
+            ),
+          ],
+        );
+      },
     );
-  },
-);
   }
 }
