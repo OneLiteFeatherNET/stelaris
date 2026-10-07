@@ -3,13 +3,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/base/cards/text_input_card.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/feature/sound/sound_file_entries.dart';
 import 'package:stelaris/feature/sound/sound_general_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+
+import '../../support/property_editing.dart';
 
 void main() {
   group('SoundDetailPage', () {
@@ -90,35 +92,26 @@ void main() {
       expect(find.text('Sound List'), findsOneWidget);
     });
 
-    /// The text field of the card labelled [label].
-    Finder fieldOf(String label) => find.descendant(
-      of: find.ancestor(
-        of: find.text(label),
-        matching: find.byWidgetPredicate((w) => w is TextInputCard),
-      ),
-      matching: find.byType(TextFormField),
-    );
-
-    Future<void> enterAndBlur(
-      WidgetTester tester,
-      String label,
-      String text,
-    ) async {
-      await tester.enterText(fieldOf(label), text);
-      FocusManager.instance.primaryFocus?.unfocus();
-      await tester.pumpAndSettle();
-    }
-
     testWidgets('the key keeps its dots and the subtitle its spaces', (
       tester,
     ) async {
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Key', 'entity.player.hurt');
-      await enterAndBlur(tester, 'Subtitle', 'Player hurt');
+      await editTextProperty(tester, 'Key', 'entity.player.hurt');
+      await editTextProperty(tester, 'Subtitle', 'Player hurt');
 
       expect(store.state.selectedSoundEvent?.keyName, 'entity.player.hurt');
       expect(store.state.selectedSoundEvent?.subTitle, 'Player hurt');
+    });
+
+    testWidgets('an invalid key keeps the dialog open', (tester) async {
+      await pumpPage(tester);
+      final before = store.state.selectedSoundEvent?.keyName;
+
+      await editTextProperty(tester, 'Key', 'Not A Key');
+
+      expect(find.byType(FormDialog), findsOneWidget);
+      expect(store.state.selectedSoundEvent?.keyName, before);
     });
   });
 }

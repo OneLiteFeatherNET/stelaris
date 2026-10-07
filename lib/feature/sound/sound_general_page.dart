@@ -3,146 +3,53 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/sound/selected_sound_state.dart';
-import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
-import 'package:stelaris/feature/base/cards/text_input_card.dart';
+import 'package:stelaris/feature/base/property/property.dart';
+import 'package:stelaris/feature/base/property/property_grid.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
-import 'package:stelaris/util/validators.dart';
-import 'package:stelaris/api/state/actions/unsaved_actions.dart';
-import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/validators.dart';
 
-/// A widget that represents the general sound event management page.
-///
-/// The [SoundGeneralPage] allows users to view and edit the details
-/// of a selected sound event, including its name, material, title, description,
-/// and frame type. It provides a form for input and a save button to commit changes.
-class SoundGeneralPage extends StatefulWidget {
+/// The sound's General tab: its key and subtitle.
+class SoundGeneralPage extends StatelessWidget {
   const SoundGeneralPage({super.key});
-
-  @override
-  State<SoundGeneralPage> createState() => _SoundGeneralPageState();
-}
-
-class _SoundGeneralPageState extends State<SoundGeneralPage> {
-  final _formKey = GlobalKey<FormState>();
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, SelectedSoundView>(
       vm: () => SelectedSoundState(),
       builder: (context, vm) {
-        final selected = vm.selected;
-        return FocusScope(
-          child: FocusTraversalGroup(
-            policy: OrderedTraversalPolicy(),
-            child: Form(
-              key: _formKey,
-              onChanged: () => context.dispatch(
-                MarkUnsavedChangesAction(NavigationEntry.sound),
+        final sound = vm.selected;
+        String? required(String? value) =>
+            checkIfEmptyAndReturnErrorString(value ?? emptyString, context);
+        return PropertyGrid(
+          properties: [
+            TextProperty(
+              label: context.l10n.sound_key,
+              value: sound.keyName ?? emptyString,
+              // A resource location, e.g. `entity.player.hurt` or
+              // `custom:ui/click`.
+              validator: (value) =>
+                  required(value) ??
+                  Validators.pattern(
+                    adventureKeyPattern,
+                    context.l10n.validation_sound_key_invalid,
+                  )(value),
+              onChanged: (value) => context.dispatch(
+                UpdateSoundAction(sound.copyWith(keyName: value)),
               ),
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 300),
-                      opacity: 1,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return Scrollbar(
-                        controller: _scrollController,
-                        thumbVisibility: true,
-                        trackVisibility: true,
-                        child: SingleChildScrollView(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.all(16),
-                          child: Wrap(
-                            spacing: 16,
-                            runSpacing: 16,
-                            children: [
-                              _buildTextField(
-                                label: context.l10n.sound_key,
-                                currentValue: selected.keyName,
-                                validator: (value) =>
-                                    checkIfEmptyAndReturnErrorString(
-                                      value,
-                                      context,
-                                    ) ??
-                                    // A resource location, e.g.
-                                    // `entity.player.hurt` or `custom:ui/click`.
-                                    Validators.pattern(
-                                      adventureKeyPattern,
-                                      context.l10n.validation_sound_key_invalid,
-                                    )(value as String?),
-                                onChanged: (value) {
-                                  final newEntry = selected.copyWith(
-                                    keyName: value,
-                                  );
-                                  context.dispatch(UpdateSoundAction(newEntry));
-                                },
-                                focusOrder: 1,
-                              ),
-                              _buildTextField(
-                                label: context.l10n.sound_subtitle,
-                                currentValue: selected.subTitle,
-                                validator: (value) =>
-                                    checkIfEmptyAndReturnErrorString(
-                                      value,
-                                      context,
-                                    ),
-                                onChanged: (value) {
-                                  final newEntry = selected.copyWith(
-                                    subTitle: value,
-                                  );
-                                  context.dispatch(UpdateSoundAction(newEntry));
-                                },
-                                focusOrder: 2,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+            ),
+            TextProperty(
+              label: context.l10n.sound_subtitle,
+              value: sound.subTitle ?? emptyString,
+              validator: required,
+              onChanged: (value) => context.dispatch(
+                UpdateSoundAction(sound.copyWith(subTitle: value)),
               ),
-              RegisterDetailForm(formKey: _formKey),
-            ],
-          ),
-        ),
-      ),
-    );
-  },
-);
-  }
-
-  /// The method builds a reusable text input card for updating string values.
-  /// It takes different parameters to customize different aspects of the text field.
-  Widget _buildTextField({
-    required String label,
-    required String? currentValue,
-    required void Function(String) onChanged,
-    required double focusOrder,
-    String? Function(dynamic)? validator,
-  }) {
-    return TextInputCard<String>(
-      display: label,
-      currentValue: currentValue ?? emptyString,
-      formValidator: validator,
-      valueUpdate: (value) {
-        if (value != currentValue) {
-          onChanged(value);
-        }
+            ),
+          ],
+        );
       },
-      focusOrder: NumericFocusOrder(focusOrder),
     );
   }
 }
