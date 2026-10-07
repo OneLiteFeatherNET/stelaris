@@ -69,10 +69,10 @@ packages:
     dependency: "direct main"
     description:
       name: async_redux
-      sha256: "4aa7eb87c6d5af42c0467a28359477d50bd94b16f248969878861a1f193b45d8"
+      sha256: afe0465aff0516bf54c23bb0a137e21a8c4a8d6e4aef2bf8e025317557004bf6
       url: "https://pub.dev"
     source: hosted
-    version: "29.0.0"
+    version: "29.2.1"
   async_redux_core:
     dependency: transitive
     description:
@@ -293,10 +293,10 @@ packages:
     dependency: transitive
     description:
       name: fast_immutable_collections
-      sha256: "58cec99fc068427c71901e82d4b31b232240ebe6e61200993c2cb91bcada0ff6"
+      sha256: "293012edcb75c742f39a5cfe184baab8d6382cd478dabca8f2cf264f668494da"
       url: "https://pub.dev"
     source: hosted
-    version: "11.2.0"
+    version: "12.0.0"
   ffi:
     dependency: transitive
     description:
@@ -625,10 +625,10 @@ packages:
     dependency: "direct main"
     description:
       name: material_ui
-      sha256: "32d98f11cf5942a095a8c3e01b03e4de3b17941437713dcf36b1088fb62e23d2"
+      sha256: "98ab9eda579ecae623e4b376c603035c5def78ce706f735f30bd632af5814695"
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.0"
+    version: "1.6.0"
   meta:
     dependency: transitive
     description:
