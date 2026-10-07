@@ -19,18 +19,3 @@ class DiscardUnsavedChangesAction extends ReduxAction<AppState> {
     return state.copyWith(unsavedChanges: null);
   }
 }
-
-/// Marks [entry] as having unsaved edits while a text field is still being
-/// typed in — the fields only commit their value (via the Update…Actions)
-/// on submit or blur, which would leave the Save action disabled until then.
-class MarkUnsavedChangesAction extends ReduxAction<AppState> {
-  MarkUnsavedChangesAction(this.entry);
-
-  final NavigationEntry entry;
-
-  @override
-  AppState? reduce() {
-    if (state.unsavedChanges == entry) return null;
-    return state.copyWith(unsavedChanges: entry);
-  }
-}

@@ -9,7 +9,6 @@ import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
-import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 enum _UnsavedChangesChoice { save, discard, cancel }
@@ -33,14 +32,6 @@ Future<bool> saveUnsavedChanges(
 ) async {
   final action = saveActionFor(entry);
   if (action == null) return true;
-
-  // The fields commit their value on blur. Unfocus and let that commit land
-  // first, or the text still being typed wouldn't be part of the save.
-  FocusManager.instance.primaryFocus?.unfocus();
-  await WidgetsBinding.instance.endOfFrame;
-  if (!context.mounted) return false;
-
-  if (!DetailForms.validateAll()) return false;
 
   final status = await context.dispatchAndWait(action);
   if (!context.mounted) return false;
