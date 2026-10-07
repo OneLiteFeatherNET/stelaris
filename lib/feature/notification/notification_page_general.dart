@@ -45,6 +45,7 @@ class NotificationGeneralPage extends StatelessWidget {
             ),
             ChoiceProperty<FrameType>(
               label: context.l10n.card_frame_type,
+              help: context.l10n.help_notification_frame_type,
               value: notification.frameType,
               options: FrameType.values,
               display: (type) => type.displayName,

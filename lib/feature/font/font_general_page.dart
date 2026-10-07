@@ -32,12 +32,18 @@ class FontGeneralPage extends StatelessWidget {
           properties: [
             TextProperty(
               label: context.l10n.card_font_provider,
+              help: context.l10n.help_font_provider,
+              examples: const ['bitmap', 'space', 'ttf'],
               value: font.provider ?? emptyString,
               formatters: [stringPatternFormatter],
               onChanged: (value) => update(font.copyWith(provider: value)),
             ),
             TextProperty(
               label: context.l10n.card_font_texture_path,
+              help: context.l10n.help_font_texture_path,
+              examples: [
+                '${vm.projectKey ?? minecraftNamespace}:font/ascii.png',
+              ],
               value: font.texturePath ?? emptyString,
               hintText: 'minecraft:font/ascii.png',
               validator: Validators.pattern(
@@ -48,7 +54,7 @@ class FontGeneralPage extends StatelessWidget {
             ),
             TextProperty(
               label: context.l10n.card_ascent,
-              tooltip: context.l10n.tooltip_ascent,
+              help: context.l10n.help_font_ascent,
               value: font.ascent.toString(),
               keyboardType: numberInput,
               formatters: numberFormatters,
@@ -57,7 +63,7 @@ class FontGeneralPage extends StatelessWidget {
             ),
             TextProperty(
               label: context.l10n.card_height,
-              tooltip: context.l10n.tooltip_height,
+              help: context.l10n.help_font_height,
               value: font.height.toString(),
               keyboardType: numberInput,
               formatters: numberFormatters,

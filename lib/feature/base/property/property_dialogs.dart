@@ -1,6 +1,8 @@
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/property/property.dart';
+import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 /// Edits [property] in a dialog. Resolves to the saved value, or null when
@@ -49,6 +51,7 @@ class _TextPropertyDialogState extends State<_TextPropertyDialog> {
     final property = widget.property;
     return FormDialog(
       title: property.label,
+      description: property.help,
       actionIcon: Icons.check,
       actionLabel: context.l10n.button_save,
       onSubmit: _save,
@@ -66,7 +69,6 @@ class _TextPropertyDialogState extends State<_TextPropertyDialog> {
           onFieldSubmitted: (_) => _save(),
           decoration: InputDecoration(
             hintText: property.hintText,
-            helperText: property.tooltip,
             border: const OutlineInputBorder(),
           ),
         ),
@@ -85,6 +87,7 @@ Future<T?> showChoicePropertyDialog<T>(
     context: context,
     builder: (context) => FormDialog(
       title: property.label,
+      description: property.help,
       actionLabel: context.l10n.button_save,
       onSubmit: null,
       showActions: false,
@@ -104,4 +107,93 @@ Future<T?> showChoicePropertyDialog<T>(
       ),
     ),
   );
+}
+
+/// Explains what [property] expects: its [Property.help] and, under it,
+/// its [Property.examples], each in a block to copy it from.
+Future<void> showPropertyInfoDialog(BuildContext context, Property property) {
+  return showDialog<void>(
+    context: context,
+    builder: (context) {
+      final theme = Theme.of(context);
+      final help = property.help;
+      final examples = property.examples;
+      return FormDialog(
+        title: property.label,
+        actionLabel: context.l10n.button_close,
+        onSubmit: null,
+        showActions: false,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (help != null) Text(help, style: theme.textTheme.bodyMedium),
+            if (examples.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Text(
+                context.l10n
+                    .property_info_examples(examples.length)
+                    .toUpperCase(),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  letterSpacing: 0.8,
+                ),
+              ),
+              for (final example in examples) ...[
+                const SizedBox(height: 6),
+                _ExampleBlock(example: example),
+              ],
+            ],
+          ],
+        ),
+      );
+    },
+  );
+}
+
+/// One example in monospace on a tinted block, with a button that copies
+/// it, like the copyable rows of the model info dialog.
+class _ExampleBlock extends StatelessWidget {
+  const _ExampleBlock({required this.example});
+
+  final String example;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 4, 4, 4),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                example,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontFamily: 'monospace',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.copy_outlined, size: 16),
+              visualDensity: VisualDensity.compact,
+              tooltip: context.l10n.tooltip_copy_to_clipboard,
+              onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: example));
+                if (!context.mounted) return;
+                context.showSuccessSnackBar(
+                  context.l10n.snackbar_copied_to_clipboard,
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

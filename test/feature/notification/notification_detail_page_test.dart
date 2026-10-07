@@ -6,6 +6,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/notification/notification_detail_page.dart';
+import 'package:stelaris/feature/base/property/property_card.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:vulpes_data/advancement.dart';
@@ -99,6 +100,18 @@ void main() {
 
       expect(store.state.selectedNotification?.frameType, other);
       expect(store.state.unsavedChanges, NavigationEntry.notifications);
+    });
+
+    testWidgets('only the frame type has an info button', (tester) async {
+      await pumpPage(tester);
+
+      Finder info(String label) => find.descendant(
+        of: find.widgetWithText(PropertyCard, label),
+        matching: find.byIcon(Icons.info_outline_rounded),
+      );
+      expect(info('Material'), findsNothing);
+      expect(info('Title'), findsNothing);
+      expect(info('FrameType'), findsOneWidget);
     });
 
     testWidgets('leaving the page clears the selection', (tester) async {

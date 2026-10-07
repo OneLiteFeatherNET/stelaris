@@ -8,7 +8,9 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/font/chars/font_char_page.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/font/font_general_page.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/page_header.dart';
+import 'package:stelaris/feature/base/property/property_card.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -25,9 +27,13 @@ void main() {
     Future<void> pumpPage(
       WidgetTester tester, {
       String location = '/fonts/detail',
+      Project? project,
     }) async {
       store = Store<AppState>(
-        initialState: const AppState(selectedFont: selected),
+        initialState: AppState(
+          selectedFont: selected,
+          selectedProject: project,
+        ),
       );
 
       final router = GoRouter(
@@ -162,6 +168,57 @@ void main() {
         findsOneWidget,
       );
       expect(store.state.selectedFont?.texturePath, isNot('Not A Path'));
+    });
+
+    testWidgets('the texture path help gives an example in the project', (
+      tester,
+    ) async {
+      await pumpPage(
+        tester,
+        project: const Project(
+          id: 'p-1',
+          key: 'stelaris',
+          displayName: 'Stelaris',
+        ),
+      );
+
+      await tester.tap(
+        find.descendant(
+          of: find.widgetWithText(PropertyCard, 'Texture path'),
+          matching: find.byIcon(Icons.info_outline_rounded),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.descendant(
+          of: find.byType(FormDialog),
+          matching: find.text('stelaris:font/ascii.png'),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('without a project the example uses minecraft', (
+      tester,
+    ) async {
+      await pumpPage(tester);
+
+      await tester.tap(
+        find.descendant(
+          of: find.widgetWithText(PropertyCard, 'Texture path'),
+          matching: find.byIcon(Icons.info_outline_rounded),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.descendant(
+          of: find.byType(FormDialog),
+          matching: find.text('minecraft:font/ascii.png'),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('an emptied height becomes 0', (tester) async {

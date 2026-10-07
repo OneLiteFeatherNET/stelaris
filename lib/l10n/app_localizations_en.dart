@@ -244,12 +244,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tooltip_delete => 'Delete';
 
   @override
-  String get tooltip_ascent => 'Change ascent';
-
-  @override
-  String get tooltip_height => 'Change height';
-
-  @override
   String get tooltip_line_count => 'Current line count';
 
   @override
@@ -258,6 +252,37 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tooltip_item_enchantment_all_set =>
       'All enchantments has been set for this group!';
+
+  @override
+  String get help_font_provider => 'The provider type';
+
+  @override
+  String get help_font_texture_path => 'Resource location of the PNG';
+
+  @override
+  String get help_font_ascent =>
+      'Pixels above the baseline, at most the height';
+
+  @override
+  String get help_font_height => 'Character height in pixels, default 8';
+
+  @override
+  String get help_sound_key => 'The sound event to play';
+
+  @override
+  String property_info_examples(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Examples',
+      one: 'Example',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get help_notification_frame_type =>
+      'The frame of the icon and the toast\'s heading';
 
   @override
   String get empty_data_header => 'No data selected';

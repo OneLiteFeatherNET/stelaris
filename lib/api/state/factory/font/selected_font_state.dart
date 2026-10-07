@@ -8,14 +8,20 @@ class SelectedFontFactory<T extends Widget>
   SelectedFontFactory();
 
   @override
-  SelectedFontView fromStore() =>
-      SelectedFontView(selected: state.selectedFont!);
+  SelectedFontView fromStore() => SelectedFontView(
+    selected: state.selectedFont!,
+    projectKey: state.selectedProject?.key,
+  );
 }
 
 class SelectedFontView extends Vm {
-  SelectedFontView({required this.selected}) : super(equals: [selected]);
+  SelectedFontView({required this.selected, this.projectKey})
+    : super(equals: [selected, projectKey]);
 
   final FontModel selected;
+
+  /// The key of the open project, the namespace of its resources.
+  final String? projectKey;
 
   String get name => selected.uiName;
 }

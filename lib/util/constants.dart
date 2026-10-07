@@ -54,6 +54,9 @@ const String zeroString = '0';
 const String emptyString = '';
 const String defaultMaterial = 'minecraft:dirt';
 
+/// The namespace of the vanilla resources, the fallback outside a project.
+const String minecraftNamespace = 'minecraft';
+
 // Text
 // Button
 Icon addModelIcon = const Icon(Icons.add);

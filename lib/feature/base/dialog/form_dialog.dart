@@ -15,6 +15,7 @@ class FormDialog extends StatelessWidget {
     required this.actionLabel,
     required this.onSubmit,
     this.actionIcon,
+    this.description,
     this.destructive = false,
     this.minWidth = 0,
     this.maxWidth = 520,
@@ -28,6 +29,9 @@ class FormDialog extends StatelessWidget {
   final Widget content;
   final IconData? actionIcon;
   final String actionLabel;
+
+  /// A short explanation under the title, e.g. what a field expects.
+  final String? description;
 
   /// Paints the action button in the error colors, e.g. for a delete
   /// confirmation.
@@ -94,6 +98,13 @@ class FormDialog extends StatelessWidget {
                     ),
                   ],
                 ),
+                if (description case final description?)
+                  Text(
+                    description,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 const Divider(height: 24),
                 Flexible(child: SingleChildScrollView(child: content)),
                 if (showActions) ...[

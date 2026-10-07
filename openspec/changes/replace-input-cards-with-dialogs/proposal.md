@@ -21,7 +21,7 @@ and the form registry can go.
   label, value, rules and what to do on a change. A shared grid builds the cards and dialogs from
   that list. The pages keep reading their model and dispatching their own update actions.
 - **Every field keeps its rules**: input formatters, validators, required fields, hint texts,
-  tooltips and the 30-character limit text inputs have today. A dialog doesn't accept an invalid
+  help texts and the 30-character limit text inputs have today. A dialog doesn't accept an invalid
   value, so no invalid value reaches the store.
 - **Removed**: `TextInputCard`, `DropdownCard`, `BaseCard`, the form registry (`DetailForms`,
   `RegisterDetailForm`) and the header save's check of registered forms.

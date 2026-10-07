@@ -93,11 +93,22 @@
   "item_level": "Level: ",
 
   "tooltip_delete": "Delete",
-  "tooltip_ascent": "Change ascent",
-  "tooltip_height": "Change height",
   "tooltip_line_count": "Current line count",
   "tooltip_item_group": "Change the group of an item",
   "tooltip_item_enchantment_all_set": "All enchantments has been set for this group!",
+
+  "help_font_provider": "The provider type",
+  "help_font_texture_path": "Resource location of the PNG",
+  "help_font_ascent": "Pixels above the baseline, at most the height",
+  "help_font_height": "Character height in pixels, default 8",
+  "help_sound_key": "The sound event to play",
+  "property_info_examples": "{count, plural, =1{Example} other{Examples}}",
+  "@property_info_examples": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "help_notification_frame_type": "The frame of the icon and the toast's heading",
 
   "empty_data_header": "No data selected",
   "empty_data_subHeader": "Please create or selected a model",

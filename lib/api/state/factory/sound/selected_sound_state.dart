@@ -17,6 +17,7 @@ class SelectedSoundState
 
     return SelectedSoundView(
       selected: state.selectedSoundEvent!,
+      projectKey: state.selectedProject?.key,
       onLoadMoreSoundFiles: () {
         if (selectedEvent != null &&
             selectedEvent.id != null &&
@@ -44,9 +45,13 @@ class SelectedSoundView extends Vm {
   SelectedSoundView({
     required this.selected,
     required this.onLoadMoreSoundFiles,
-  }) : super(equals: [selected, selected.files.items.length]);
+    this.projectKey,
+  }) : super(equals: [selected, selected.files.items.length, projectKey]);
 
   final SoundEventModel selected;
+
+  /// The key of the open project, the namespace of its resources.
+  final String? projectKey;
   final VoidCallback onLoadMoreSoundFiles;
 
   /// Returns a boolean indicator if the selected sound event contains sound files or not.

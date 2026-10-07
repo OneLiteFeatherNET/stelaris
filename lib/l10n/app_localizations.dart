@@ -538,18 +538,6 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get tooltip_delete;
 
-  /// No description provided for @tooltip_ascent.
-  ///
-  /// In en, this message translates to:
-  /// **'Change ascent'**
-  String get tooltip_ascent;
-
-  /// No description provided for @tooltip_height.
-  ///
-  /// In en, this message translates to:
-  /// **'Change height'**
-  String get tooltip_height;
-
   /// No description provided for @tooltip_line_count.
   ///
   /// In en, this message translates to:
@@ -567,6 +555,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All enchantments has been set for this group!'**
   String get tooltip_item_enchantment_all_set;
+
+  /// No description provided for @help_font_provider.
+  ///
+  /// In en, this message translates to:
+  /// **'The provider type'**
+  String get help_font_provider;
+
+  /// No description provided for @help_font_texture_path.
+  ///
+  /// In en, this message translates to:
+  /// **'Resource location of the PNG'**
+  String get help_font_texture_path;
+
+  /// No description provided for @help_font_ascent.
+  ///
+  /// In en, this message translates to:
+  /// **'Pixels above the baseline, at most the height'**
+  String get help_font_ascent;
+
+  /// No description provided for @help_font_height.
+  ///
+  /// In en, this message translates to:
+  /// **'Character height in pixels, default 8'**
+  String get help_font_height;
+
+  /// No description provided for @help_sound_key.
+  ///
+  /// In en, this message translates to:
+  /// **'The sound event to play'**
+  String get help_sound_key;
+
+  /// No description provided for @property_info_examples.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Example} other{Examples}}'**
+  String property_info_examples(int count);
+
+  /// No description provided for @help_notification_frame_type.
+  ///
+  /// In en, this message translates to:
+  /// **'The frame of the icon and the toast\'s heading'**
+  String get help_notification_frame_type;
 
   /// No description provided for @empty_data_header.
   ///

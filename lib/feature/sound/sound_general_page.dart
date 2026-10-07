@@ -26,9 +26,9 @@ class SoundGeneralPage extends StatelessWidget {
           properties: [
             TextProperty(
               label: context.l10n.sound_key,
+              help: context.l10n.help_sound_key,
+              examples: ['${vm.projectKey ?? minecraftNamespace}:ui/click'],
               value: sound.keyName ?? emptyString,
-              // A resource location, e.g. `entity.player.hurt` or
-              // `custom:ui/click`.
               validator: (value) =>
                   required(value) ??
                   Validators.pattern(

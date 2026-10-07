@@ -12,7 +12,12 @@ abstract class Property {
   const Property();
 
   String get label;
-  String? get tooltip;
+
+  /// What the field expects, shown in its dialog under the title.
+  String? get help;
+
+  /// Values the field accepts, shown with [help] in the info dialog.
+  List<String> get examples => const [];
 
   /// What the card shows for the current value.
   String get displayValue;
@@ -30,7 +35,8 @@ class TextProperty extends Property {
     required this.label,
     required this.value,
     required this.onChanged,
-    this.tooltip,
+    this.help,
+    this.examples = const [],
     this.hintText,
     this.validator,
     this.formatters = const [],
@@ -45,7 +51,9 @@ class TextProperty extends Property {
   /// Called with the new value when the dialog saved a changed one.
   final ValueChanged<String> onChanged;
   @override
-  final String? tooltip;
+  final String? help;
+  @override
+  final List<String> examples;
   final String? hintText;
   final FormFieldValidator<String>? validator;
   final List<TextInputFormatter> formatters;
@@ -73,7 +81,7 @@ class ChoiceProperty<T> extends Property {
     required this.options,
     required this.display,
     required this.onChanged,
-    this.tooltip,
+    this.help,
   });
 
   @override
@@ -87,7 +95,7 @@ class ChoiceProperty<T> extends Property {
   /// Called with the picked option when it differs from [value].
   final ValueChanged<T> onChanged;
   @override
-  final String? tooltip;
+  final String? help;
 
   @override
   String get displayValue => display(value);

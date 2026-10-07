@@ -27,6 +27,7 @@ void main() {
     value: Frame.goal,
     options: Frame.values,
     display: (frame) => frame.name.toUpperCase(),
+    help: 'The frame of the toast',
     onChanged: (frame) => changed = frame,
   );
 
@@ -55,6 +56,21 @@ void main() {
     expect(tester.widget<ListTile>(current).selected, isTrue);
   });
 
+  testWidgets('the dialog explains the field under its title', (tester) async {
+    await pumpGrid(tester, [frame()]);
+
+    await tester.tap(find.text('Frame'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.descendant(
+        of: find.byType(FormDialog),
+        matching: find.text('The frame of the toast'),
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('picking another option reports it', (tester) async {
     await pumpGrid(tester, [frame()]);
     await tester.tap(find.text('Frame'));
@@ -76,5 +92,56 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(changed, isNull);
+  });
+
+  testWidgets('the cards grow with larger text instead of cutting it off', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: MediaQuery(
+          data: const MediaQueryData(textScaler: TextScaler.linear(1.5)),
+          child: Scaffold(
+            body: PropertyGrid(
+              properties: [
+                frame(),
+                TextProperty(label: 'Title', value: 'Hi', onChanged: (_) {}),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('GOAL'), findsOneWidget);
+  });
+
+  testWidgets('the cards are as tall as the component cards', (tester) async {
+    await pumpGrid(tester, [frame()]);
+
+    expect(tester.getSize(find.byType(PropertyCard)).height, 112);
+  });
+
+  testWidgets('the info button shows the help in a dialog', (tester) async {
+    await pumpGrid(tester, [frame()]);
+
+    await tester.tap(find.byIcon(Icons.info_outline_rounded));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(FormDialog), findsOneWidget);
+    expect(find.text('The frame of the toast'), findsOneWidget);
+    // Only the help, not the options to pick from.
+    expect(find.byType(ListTile), findsNothing);
+  });
+
+  testWidgets('a field without help has no info button', (tester) async {
+    await pumpGrid(tester, [
+      TextProperty(label: 'Title', value: 'Hi', onChanged: (_) {}),
+    ]);
+
+    expect(find.byIcon(Icons.info_outline_rounded), findsNothing);
   });
 }

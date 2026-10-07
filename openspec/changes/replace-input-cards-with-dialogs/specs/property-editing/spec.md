@@ -10,7 +10,10 @@ edits: each field shows as a card, and a click opens a dialog for that field.
 ### Requirement: Fields show as cards
 The General tabs of fonts and sounds and the notification page SHALL show each of their fields as a
 card with the field's name and current value. A card SHALL show the field's hint text when the
-value is empty, or "–" when the field has no hint. A field with a tooltip SHALL show it on its card.
+value is empty, or "–" when the field has no hint. A card SHALL grow with its text instead of
+cutting it off. A field with a help text SHALL have an info button on its card that shows the help
+in a dialog, with the field's examples in blocks to copy from; examples that use a namespace SHALL use
+the open project's key. The edit dialog SHALL show the help under its title.
 
 #### Scenario: Font fields
 - **WHEN** the user opens a font's General tab

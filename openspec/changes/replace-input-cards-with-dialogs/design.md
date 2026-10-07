@@ -48,14 +48,14 @@ A page builds a list of properties and hands it to a `PropertyGrid`. There are t
 ```dart
 sealed class Property {
   String get label;
-  String? get tooltip;
+  String? get help;
 }
 
 class TextProperty extends Property {
   final String label;
   final String value;              // what the field holds now
   final ValueChanged<String> onChanged;
-  final String? tooltip;
+  final String? help;
   final String? hintText;
   final FormFieldValidator<String>? validator;
   final List<TextInputFormatter> formatters;
@@ -69,7 +69,7 @@ class ChoiceProperty<T> extends Property {
   final List<T> options;
   final String Function(T option) display;
   final ValueChanged<T> onChanged;
-  final String? tooltip;
+  final String? help;
 }
 ```
 
@@ -92,8 +92,9 @@ class ChoiceProperty<T> extends Property {
 - `property_grid.dart`: `PropertyGrid(properties: [...])` lays out one `PropertyCard` per property,
   as many columns as fit, like the components grid.
 - `property_card.dart`: `PropertyCard` shows the label, the current value (the hint text when the
-  value is empty, otherwise "–"), the tooltip and an edit icon. A click opens the dialog for its
-  property.
+  value is empty, otherwise "–"), styled like a component card. A property with a help text gets
+  an info button that shows the help in a dialog; there are no other buttons. It is at least
+  as tall as a component card and grows with its text. A click opens the dialog for its property.
 - `property_dialogs.dart`:
   - `showTextPropertyDialog` and `showChoicePropertyDialog` build on `FormDialog`, return the new
     value, and return `null` on cancel.
@@ -114,7 +115,7 @@ is invalid. Invalid values never reach the store. That makes the header's
 |---------------------------|-----------------------------------------------------------------------------|
 | Font provider             | `stringPatternFormatter`                                                    |
 | Font texture path         | hint `minecraft:font/ascii.png`; `adventureKeyPattern` validator            |
-| Font ascent, height       | tooltip; number keyboard; `fontNumberPattern` formatter; empty becomes `0`  |
+| Font ascent, height       | help;    number keyboard; `fontNumberPattern` formatter; empty becomes `0`  |
 | Sound key                 | required; `adventureKeyPattern` validator                                   |
 | Sound subtitle            | required                                                                    |
 | Notification material     | hint `defaultMaterial`; `minecraftPattern` validator                        |
@@ -137,7 +138,10 @@ All text fields keep `maxLength: 30`, which `TextInputCard` applies to every fie
 ## Testing
 
 - **Shared widgets**:
-  - A card shows its value, its hint text when empty, and its tooltip.
+  - A card shows its value and its hint text when empty, and grows with larger text.
+  - A dialog shows the field's help text under its title.
+  - The info button shows the help and the examples in a dialog; a field without help has none.
+  - An example can be copied; namespaced examples use the open project's key.
   - A click opens the dialog with the value filled in.
   - An invalid value keeps the dialog open with the error.
   - Save calls `onChanged` with the new value. An unchanged value or cancel doesn't call it.
