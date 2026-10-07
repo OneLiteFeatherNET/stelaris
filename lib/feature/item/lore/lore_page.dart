@@ -5,11 +5,11 @@ import 'package:stelaris/api/state/actions/item/item_lore_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/item_lore_view_state.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
+import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris/feature/item/lore/lore_action_chips.dart';
+import 'package:stelaris/feature/item/lore/lore_count_chip.dart';
 import 'package:stelaris/feature/item/lore/lore_page_view.dart';
 import 'package:stelaris/util/l10n_ext.dart';
-import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
 
 class LorePage extends StatelessWidget {
@@ -22,23 +22,27 @@ class LorePage extends StatelessWidget {
       onInit: (store) => store.dispatchAndWait(ItemLoreFetchAction()),
       builder: (context, vm) {
         return Padding(
-          padding: const EdgeInsets.only(left: 25, right: 25),
-          child: Stack(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Column(
-                children: [
-                  verticalSpacing25,
-                  LoreActionChips(
-                    dialogFunction: () => _openCreateDialog(vm, context),
-                    currentIndex: vm.selected.lore.items.length,
-                  ),
-                  verticalSpacing25,
-                  Flexible(
-                    child: !vm.selected.lore.hasItems
-                        ? const EmptyDataWidget()
-                        : LorePageView(view: vm),
+              PageHeader.small(
+                title: context.l10n.tab_lore,
+                actions: [
+                  LoreCountChip(currentIndex: vm.selected.lore.items.length),
+                  PageHeaderAction(
+                    icon: const Icon(Icons.add),
+                    label: context.l10n.button_add,
+                    primary: true,
+                    onPressed: () => _openCreateDialog(vm, context),
                   ),
                 ],
+              ),
+              const SizedBox(height: 12),
+              Expanded(
+                child: !vm.selected.lore.hasItems
+                    ? const EmptyDataWidget()
+                    : LorePageView(view: vm),
               ),
             ],
           ),
