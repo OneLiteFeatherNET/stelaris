@@ -19,9 +19,11 @@ class ItemEnchantmentFetchAction extends ReduxAction<AppState> {
       size: current.pageSize == 0 ? 5 : current.pageSize,
     );
 
-    // result is already safe and immutable
-    final updated = selectedItem.copyWith(enchantments: result);
-    return state.copyWith(selectedItem: updated);
+    // Apply to the item as it is now: the group may have been changed while
+    // the request was running, and another item may have been selected.
+    final latest = state.selectedItem;
+    if (latest == null || latest.id != selectedItem.id) return null;
+    return state.copyWith(selectedItem: latest.copyWith(enchantments: result));
   }
 }
 
