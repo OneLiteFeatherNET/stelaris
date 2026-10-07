@@ -118,12 +118,6 @@ abstract class AppLocalizations {
   /// **'Changes saved successfully'**
   String get feedback_save_success;
 
-  /// No description provided for @feedback_save_error.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to save changes'**
-  String get feedback_save_error;
-
   /// No description provided for @button_download.
   ///
   /// In en, this message translates to:
@@ -135,24 +129,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Generate'**
   String get button_generate;
-
-  /// No description provided for @button_trigger_go.
-  ///
-  /// In en, this message translates to:
-  /// **'Go!'**
-  String get button_trigger_go;
-
-  /// No description provided for @button_continue.
-  ///
-  /// In en, this message translates to:
-  /// **'Continue'**
-  String get button_continue;
-
-  /// No description provided for @button_finish.
-  ///
-  /// In en, this message translates to:
-  /// **'Finish'**
-  String get button_finish;
 
   /// No description provided for @button_back.
   ///
@@ -237,36 +213,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The identity provider could not be reached. Check the deployment configuration, then try again.'**
   String get auth_provider_unavailable;
-
-  /// No description provided for @text_branch.
-  ///
-  /// In en, this message translates to:
-  /// **'Please select a branch'**
-  String get text_branch;
-
-  /// No description provided for @text_trigger_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Trigger a new build'**
-  String get text_trigger_title;
-
-  /// No description provided for @text_version_new.
-  ///
-  /// In en, this message translates to:
-  /// **'Add new version'**
-  String get text_version_new;
-
-  /// No description provided for @text_version_type.
-  ///
-  /// In en, this message translates to:
-  /// **'Version type'**
-  String get text_version_type;
-
-  /// No description provided for @text_wiki.
-  ///
-  /// In en, this message translates to:
-  /// **'When you need help, click on the copy button the get the wiki link'**
-  String get text_wiki;
 
   /// No description provided for @delete_dialog_first_line.
   ///
@@ -466,41 +412,11 @@ abstract class AppLocalizations {
   /// **'Delete char'**
   String get dialog_font_char_delete;
 
-  /// No description provided for @dialog_char_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Add char'**
-  String get dialog_char_title;
-
-  /// No description provided for @dialog_abort_chars_add.
-  ///
-  /// In en, this message translates to:
-  /// **'Unable to add char'**
-  String get dialog_abort_chars_add;
-
-  /// No description provided for @dialog_abort_chars_text.
-  ///
-  /// In en, this message translates to:
-  /// **'There is already an entry called '**
-  String get dialog_abort_chars_text;
-
   /// No description provided for @dialog_notification_create.
   ///
   /// In en, this message translates to:
   /// **'Create new notification'**
   String get dialog_notification_create;
-
-  /// No description provided for @dialog_group_change.
-  ///
-  /// In en, this message translates to:
-  /// **'Change group?'**
-  String get dialog_group_change;
-
-  /// No description provided for @dialog_group_change_text.
-  ///
-  /// In en, this message translates to:
-  /// **'The model contains enchantments which are not in the new selected group.\nAll enchantments which are not in the group will be deleted.\n\nAre you sure you want to change the group?'**
-  String get dialog_group_change_text;
 
   /// No description provided for @action_notes.
   ///
@@ -562,24 +478,6 @@ abstract class AppLocalizations {
   /// **'Type'**
   String get card_type;
 
-  /// No description provided for @card_group.
-  ///
-  /// In en, this message translates to:
-  /// **'Group'**
-  String get card_group;
-
-  /// No description provided for @card_enchantments.
-  ///
-  /// In en, this message translates to:
-  /// **'Enchantments'**
-  String get card_enchantments;
-
-  /// No description provided for @card_lore.
-  ///
-  /// In en, this message translates to:
-  /// **'Lore'**
-  String get card_lore;
-
   /// No description provided for @card_frame_type.
   ///
   /// In en, this message translates to:
@@ -597,12 +495,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Height'**
   String get card_height;
-
-  /// No description provided for @card_chars.
-  ///
-  /// In en, this message translates to:
-  /// **'Chars'**
-  String get card_chars;
 
   /// No description provided for @card_attribute_default_value.
   ///
@@ -645,36 +537,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get tooltip_delete;
-
-  /// No description provided for @tooltip_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Change description'**
-  String get tooltip_description;
-
-  /// No description provided for @tooltip_material.
-  ///
-  /// In en, this message translates to:
-  /// **'Change the material'**
-  String get tooltip_material;
-
-  /// No description provided for @tooltip_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Change title'**
-  String get tooltip_title;
-
-  /// No description provided for @tooltip_amount.
-  ///
-  /// In en, this message translates to:
-  /// **'Change amount'**
-  String get tooltip_amount;
-
-  /// No description provided for @tooltip_flag.
-  ///
-  /// In en, this message translates to:
-  /// **'Change the flags'**
-  String get tooltip_flag;
 
   /// No description provided for @tooltip_ascent.
   ///
@@ -730,29 +592,11 @@ abstract class AppLocalizations {
   /// **'The material starts not with minecraft:'**
   String get input_validation_material;
 
-  /// No description provided for @error_generation_failure.
-  ///
-  /// In en, this message translates to:
-  /// **'Generation failure in the backend'**
-  String get error_generation_failure;
-
   /// No description provided for @error_generation_submit.
   ///
   /// In en, this message translates to:
   /// **'Generation submitted to backend'**
   String get error_generation_submit;
-
-  /// No description provided for @error_not_unicode_start.
-  ///
-  /// In en, this message translates to:
-  /// **'The string does not start\'s with a \\u'**
-  String get error_not_unicode_start;
-
-  /// No description provided for @error_not_unicode.
-  ///
-  /// In en, this message translates to:
-  /// **'The string is to long for a unicode'**
-  String get error_not_unicode;
 
   /// No description provided for @error_card_empty.
   ///
@@ -789,36 +633,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update your preferred theme'**
   String get settings_item_dark_mode_subtitle;
-
-  /// No description provided for @settings_theme_colors.
-  ///
-  /// In en, this message translates to:
-  /// **'Theme Colors'**
-  String get settings_theme_colors;
-
-  /// No description provided for @settings_primary_color.
-  ///
-  /// In en, this message translates to:
-  /// **'Primary Color'**
-  String get settings_primary_color;
-
-  /// No description provided for @settings_primary_color_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose the primary color for the app theme'**
-  String get settings_primary_color_desc;
-
-  /// No description provided for @settings_accent_color.
-  ///
-  /// In en, this message translates to:
-  /// **'Accent Color'**
-  String get settings_accent_color;
-
-  /// No description provided for @settings_accent_color_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose the accent color for the app theme'**
-  String get settings_accent_color_desc;
 
   /// No description provided for @settings_item_font_title.
   ///
@@ -1035,24 +849,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select or switch the active project workspace'**
   String get settings_project_active_subtitle;
-
-  /// No description provided for @settings_misc_switch_project_header.
-  ///
-  /// In en, this message translates to:
-  /// **'Switch Project'**
-  String get settings_misc_switch_project_header;
-
-  /// No description provided for @settings_misc_switch_project_body.
-  ///
-  /// In en, this message translates to:
-  /// **'Change the currently selected project workspace'**
-  String get settings_misc_switch_project_body;
-
-  /// No description provided for @settings_misc_switch_project_button.
-  ///
-  /// In en, this message translates to:
-  /// **'Switch'**
-  String get settings_misc_switch_project_button;
 
   /// No description provided for @dialog_project_switch_title.
   ///
@@ -1305,24 +1101,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Modified'**
   String get dialog_model_info_modified_label;
-
-  /// No description provided for @dialog_model_info_relationships_label.
-  ///
-  /// In en, this message translates to:
-  /// **'Relationships'**
-  String get dialog_model_info_relationships_label;
-
-  /// No description provided for @dialog_model_info_relationships_yes.
-  ///
-  /// In en, this message translates to:
-  /// **'Yes'**
-  String get dialog_model_info_relationships_yes;
-
-  /// No description provided for @dialog_model_info_relationships_no.
-  ///
-  /// In en, this message translates to:
-  /// **'No'**
-  String get dialog_model_info_relationships_no;
 
   /// No description provided for @button_close.
   ///
@@ -1678,12 +1456,6 @@ abstract class AppLocalizations {
   /// **'Leave this mode'**
   String get command_palette_remove_mode;
 
-  /// No description provided for @command_palette_hint_default.
-  ///
-  /// In en, this message translates to:
-  /// **'Type a command, or ? to see what else you can search'**
-  String get command_palette_hint_default;
-
   /// No description provided for @command_palette_hint_commands.
   ///
   /// In en, this message translates to:
@@ -2032,12 +1804,6 @@ abstract class AppLocalizations {
   /// **'Unsaved changes'**
   String get unsaved_indicator_tooltip;
 
-  /// No description provided for @app_bar_search_hint.
-  ///
-  /// In en, this message translates to:
-  /// **'Search {section}...'**
-  String app_bar_search_hint(String section);
-
   /// No description provided for @app_bar_search_close_tooltip.
   ///
   /// In en, this message translates to:
@@ -2103,12 +1869,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Use the add button to add new data!'**
   String get empty_data_default_subheader;
-
-  /// No description provided for @validation_required.
-  ///
-  /// In en, this message translates to:
-  /// **'This field is required'**
-  String get validation_required;
 
   /// No description provided for @validation_name_required.
   ///

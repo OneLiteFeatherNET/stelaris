@@ -3,12 +3,8 @@
   "button_add_new_line": "Add new line",
   "button_save": "Save",
   "feedback_save_success": "Changes saved successfully",
-  "feedback_save_error": "Failed to save changes",
   "button_download": "Download",
   "button_generate": "Generate",
-  "button_trigger_go": "Go!",
-  "button_continue": "Continue",
-  "button_finish": "Finish",
   "button_back": "Back",
   "button_ok": "Ok",
   "button_yes": "Yes",
@@ -32,11 +28,6 @@
   "auth_session_expired": "Your session expired. Sign in again to continue.",
   "auth_provider_unavailable": "The identity provider could not be reached. Check the deployment configuration, then try again.",
 
-  "text_branch": "Please select a branch",
-  "text_trigger_title": "Trigger a new build",
-  "text_version_new": "Add new version",
-  "text_version_type": "Version type",
-  "text_wiki": "When you need help, click on the copy button the get the wiki link",
 
   "delete_dialog_first_line": "Are you sure you want to delete ",
   "delete_dialog_entry": "?",
@@ -76,14 +67,9 @@
   "dialog_font_char_add": "Add character",
   "dialog_font_char_edit": "Edit char",
   "dialog_font_char_delete": "Delete char",
-  "dialog_char_title": "Add char",
-  "dialog_abort_chars_add": "Unable to add char",
-  "dialog_abort_chars_text": "There is already an entry called ",
 
   "dialog_notification_create": "Create new notification",
 
-  "dialog_group_change": "Change group?",
-  "dialog_group_change_text": "The model contains enchantments which are not in the new selected group.\nAll enchantments which are not in the group will be deleted.\n\nAre you sure you want to change the group?",
 
   "action_notes": "Notes",
   "notes_hint": "Internal notes for your team. The first line is shown in the overview.",
@@ -95,13 +81,9 @@
   "card_material": "Material",
   "card_title": "Title",
   "card_type": "Type",
-  "card_group": "Group",
-  "card_enchantments": "Enchantments",
-  "card_lore": "Lore",
   "card_frame_type": "FrameType",
   "card_ascent": "Ascent",
   "card_height": "Height",
-  "card_chars": "Chars",
   "card_attribute_default_value": "Default value",
   "card_attribute_maximum_value": "Maximum value",
   "card_font_provider": "Provider",
@@ -111,11 +93,6 @@
   "item_level": "Level: ",
 
   "tooltip_delete": "Delete",
-  "tooltip_description": "Change description",
-  "tooltip_material": "Change the material",
-  "tooltip_title": "Change title",
-  "tooltip_amount": "Change amount",
-  "tooltip_flag": "Change the flags",
   "tooltip_ascent": "Change ascent",
   "tooltip_height": "Change height",
   "tooltip_line_count": "Current line count",
@@ -128,10 +105,7 @@
 
   "input_validation_material": "The material starts not with minecraft:",
 
-  "error_generation_failure": "Generation failure in the backend",
   "error_generation_submit": "Generation submitted to backend",
-  "error_not_unicode_start": "The string does not start's with a \\u",
-  "error_not_unicode": "The string is to long for a unicode",
   "error_card_empty": "The value can't be empty",
 
   "settings_display_title": "Display settings",
@@ -139,11 +113,6 @@
   "settings_theme_item_subtitle": "Automatically match your system's theme settings",
   "settings_item_dark_mode_title": "Dark Mode",
   "settings_item_dark_mode_subtitle": "Update your preferred theme",
-  "settings_theme_colors": "Theme Colors",
-  "settings_primary_color": "Primary Color",
-  "settings_primary_color_desc": "Choose the primary color for the app theme",
-  "settings_accent_color": "Accent Color",
-  "settings_accent_color_desc": "Choose the accent color for the app theme",
   "settings_item_font_title": "Font Size",
   "settings_item_font_subtitle": "Adjust the text size throughout the app",
 
@@ -184,9 +153,6 @@
   "settings_project_title": "Project",
   "settings_project_active_title": "Active Project",
   "settings_project_active_subtitle": "Select or switch the active project workspace",
-  "settings_misc_switch_project_header": "Switch Project",
-  "settings_misc_switch_project_body": "Change the currently selected project workspace",
-  "settings_misc_switch_project_button": "Switch",
   "dialog_project_switch_title": "Switch project?",
   "dialog_project_switch_hint": "Loaded items, fonts, notifications, attributes and sound events will be reset.",
   "dialog_project_switch_confirm": "Switch project",
@@ -244,9 +210,6 @@
   "dialog_model_info_id_label": "ID",
   "dialog_model_info_created_label": "Created",
   "dialog_model_info_modified_label": "Modified",
-  "dialog_model_info_relationships_label": "Relationships",
-  "dialog_model_info_relationships_yes": "Yes",
-  "dialog_model_info_relationships_no": "No",
   "button_close": "Close",
   "tooltip_copy_to_clipboard": "Copy to clipboard",
   "snackbar_copied_to_clipboard": "Copied to clipboard",
@@ -346,7 +309,6 @@
     }
   },
   "command_palette_remove_mode": "Leave this mode",
-  "command_palette_hint_default": "Type a command, or ? to see what else you can search",
   "command_palette_hint_commands": "Search commands",
   "command_palette_hint_entities": "Search loaded items, fonts, sounds, notifications and attributes",
   "command_palette_hint_kind": "Search loaded {kind}",
@@ -468,14 +430,6 @@
   "unsaved_dialog_title": "Unsaved changes",
   "unsaved_dialog_message": "You have unsaved changes. Do you want to save them before leaving?",
   "unsaved_indicator_tooltip": "Unsaved changes",
-  "app_bar_search_hint": "Search {section}...",
-  "@app_bar_search_hint": {
-    "placeholders": {
-      "section": {
-        "type": "String"
-      }
-    }
-  },
   "app_bar_search_close_tooltip": "Close search",
   "search_clear_tooltip": "Clear search",
   "search_no_results": "No matches",
@@ -488,7 +442,6 @@
   "settings_title": "Settings",
   "empty_data_default_header": "No data available",
   "empty_data_default_subheader": "Use the add button to add new data!",
-  "validation_required": "This field is required",
   "validation_name_required": "Name is required",
   "validation_display_name_required": "Display name is required",
   "validation_key_required": "Key is required",

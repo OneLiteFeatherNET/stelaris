@@ -22,22 +22,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedback_save_success => 'Changes saved successfully';
 
   @override
-  String get feedback_save_error => 'Failed to save changes';
-
-  @override
   String get button_download => 'Download';
 
   @override
   String get button_generate => 'Generate';
-
-  @override
-  String get button_trigger_go => 'Go!';
-
-  @override
-  String get button_continue => 'Continue';
-
-  @override
-  String get button_finish => 'Finish';
 
   @override
   String get button_back => 'Back';
@@ -84,22 +72,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get auth_provider_unavailable =>
       'The identity provider could not be reached. Check the deployment configuration, then try again.';
-
-  @override
-  String get text_branch => 'Please select a branch';
-
-  @override
-  String get text_trigger_title => 'Trigger a new build';
-
-  @override
-  String get text_version_new => 'Add new version';
-
-  @override
-  String get text_version_type => 'Version type';
-
-  @override
-  String get text_wiki =>
-      'When you need help, click on the copy button the get the wiki link';
 
   @override
   String get delete_dialog_first_line => 'Are you sure you want to delete ';
@@ -208,23 +180,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_font_char_delete => 'Delete char';
 
   @override
-  String get dialog_char_title => 'Add char';
-
-  @override
-  String get dialog_abort_chars_add => 'Unable to add char';
-
-  @override
-  String get dialog_abort_chars_text => 'There is already an entry called ';
-
-  @override
   String get dialog_notification_create => 'Create new notification';
-
-  @override
-  String get dialog_group_change => 'Change group?';
-
-  @override
-  String get dialog_group_change_text =>
-      'The model contains enchantments which are not in the new selected group.\nAll enchantments which are not in the group will be deleted.\n\nAre you sure you want to change the group?';
 
   @override
   String get action_notes => 'Notes';
@@ -258,15 +214,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get card_type => 'Type';
 
   @override
-  String get card_group => 'Group';
-
-  @override
-  String get card_enchantments => 'Enchantments';
-
-  @override
-  String get card_lore => 'Lore';
-
-  @override
   String get card_frame_type => 'FrameType';
 
   @override
@@ -274,9 +221,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get card_height => 'Height';
-
-  @override
-  String get card_chars => 'Chars';
 
   @override
   String get card_attribute_default_value => 'Default value';
@@ -298,21 +242,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tooltip_delete => 'Delete';
-
-  @override
-  String get tooltip_description => 'Change description';
-
-  @override
-  String get tooltip_material => 'Change the material';
-
-  @override
-  String get tooltip_title => 'Change title';
-
-  @override
-  String get tooltip_amount => 'Change amount';
-
-  @override
-  String get tooltip_flag => 'Change the flags';
 
   @override
   String get tooltip_ascent => 'Change ascent';
@@ -344,17 +273,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'The material starts not with minecraft:';
 
   @override
-  String get error_generation_failure => 'Generation failure in the backend';
-
-  @override
   String get error_generation_submit => 'Generation submitted to backend';
-
-  @override
-  String get error_not_unicode_start =>
-      'The string does not start\'s with a \\u';
-
-  @override
-  String get error_not_unicode => 'The string is to long for a unicode';
 
   @override
   String get error_card_empty => 'The value can\'t be empty';
@@ -374,23 +293,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings_item_dark_mode_subtitle => 'Update your preferred theme';
-
-  @override
-  String get settings_theme_colors => 'Theme Colors';
-
-  @override
-  String get settings_primary_color => 'Primary Color';
-
-  @override
-  String get settings_primary_color_desc =>
-      'Choose the primary color for the app theme';
-
-  @override
-  String get settings_accent_color => 'Accent Color';
-
-  @override
-  String get settings_accent_color_desc =>
-      'Choose the accent color for the app theme';
 
   @override
   String get settings_item_font_title => 'Font Size';
@@ -507,16 +409,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settings_project_active_subtitle =>
       'Select or switch the active project workspace';
-
-  @override
-  String get settings_misc_switch_project_header => 'Switch Project';
-
-  @override
-  String get settings_misc_switch_project_body =>
-      'Change the currently selected project workspace';
-
-  @override
-  String get settings_misc_switch_project_button => 'Switch';
 
   @override
   String get dialog_project_switch_title => 'Switch project?';
@@ -650,15 +542,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialog_model_info_modified_label => 'Modified';
-
-  @override
-  String get dialog_model_info_relationships_label => 'Relationships';
-
-  @override
-  String get dialog_model_info_relationships_yes => 'Yes';
-
-  @override
-  String get dialog_model_info_relationships_no => 'No';
 
   @override
   String get button_close => 'Close';
@@ -853,10 +736,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get command_palette_remove_mode => 'Leave this mode';
-
-  @override
-  String get command_palette_hint_default =>
-      'Type a command, or ? to see what else you can search';
 
   @override
   String get command_palette_hint_commands => 'Search commands';
@@ -1054,11 +933,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unsaved_indicator_tooltip => 'Unsaved changes';
 
   @override
-  String app_bar_search_hint(String section) {
-    return 'Search $section...';
-  }
-
-  @override
   String get app_bar_search_close_tooltip => 'Close search';
 
   @override
@@ -1092,9 +966,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get empty_data_default_subheader =>
       'Use the add button to add new data!';
-
-  @override
-  String get validation_required => 'This field is required';
 
   @override
   String get validation_name_required => 'Name is required';
