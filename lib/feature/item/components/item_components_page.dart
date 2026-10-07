@@ -11,11 +11,10 @@ import 'package:stelaris/feature/item/components/component_category_menu.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
 import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/feature/item/components/stelaris_components.dart';
-import 'package:stelaris/feature/item/item_tab_loading.dart';
+import 'package:stelaris/feature/item/item_tab_loader.dart';
 import 'package:stelaris/feature/model/model_card_actions.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
-import 'package:stelaris/util/settled_after_transitions.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:vulpes_data/component.dart';
 import 'package:vulpes_data/material.dart';
@@ -38,20 +37,13 @@ class ItemComponentsPage extends StatefulWidget {
   State<ItemComponentsPage> createState() => _ItemComponentsPageState();
 }
 
-class _ItemComponentsPageState extends State<ItemComponentsPage>
-    with
-        AutomaticKeepAliveClientMixin,
-        SettledAfterTransitions,
-        ItemTabLoading {
+class _ItemComponentsPageState extends State<ItemComponentsPage> {
   static const double _maxCardExtent = 320;
   static const double _cardHeight = 112;
   static const double _spacing = 12;
 
   /// Shows only the components of this category, null shows all.
   ComponentCategory? _category;
-
-  @override
-  ReduxAction<AppState> createLoadAction() => ItemComponentFetchAction();
 
   Future<void> _add(_ComponentsView vm) async {
     final spec = await showComponentPickerDialog(
@@ -126,14 +118,15 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    return ItemTabLoader(load: ItemComponentFetchAction.new, builder: _build);
+  }
+
+  /// Skeleton cards while [pending], the grid is only built once the
+  /// components of this item are loaded and the page and tab stand still.
+  Widget _build(BuildContext context, bool pending) {
     return StoreConnector<AppState, _ComponentsView>(
       vm: () => _ComponentsFactory(),
-      onDidChange: (context, store, vm) => selectedItemChanged(vm.itemId),
       builder: (context, vm) {
-        // Skeleton cards until the components of this item are loaded, the
-        // grid is only built once the page and tab stand still.
-        final pending = !settled || vm.loading;
         final defaults = defaultComponentsOf(vm.material).toSet();
         final all = [...vm.components]
           ..sort((a, b) => _sortIndex(a).compareTo(_sortIndex(b)));
@@ -270,27 +263,19 @@ class _ItemComponentsPageState extends State<ItemComponentsPage>
 }
 
 class _ComponentsView extends Vm {
-  _ComponentsView({
-    required this.itemId,
-    required this.material,
-    required this.components,
-    required this.loading,
-  }) : super(equals: [itemId, material, components, loading]);
+  _ComponentsView({required this.material, required this.components})
+    : super(equals: [material, components]);
 
-  final String? itemId;
   final String material;
   final List<ItemComponentDto> components;
-  final bool loading;
 }
 
 class _ComponentsFactory
     extends VmFactory<AppState, ItemComponentsPage, _ComponentsView> {
   @override
   _ComponentsView fromStore() => _ComponentsView(
-    itemId: state.selectedItem?.id,
     material: materialOf(state.selectedItemComponents),
     components: state.selectedItemComponents,
-    loading: isWaiting(ItemComponentFetchAction),
   );
 }
 

@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris_models/stelaris_models.dart';
-import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/enchantment_reducer.dart';
@@ -12,21 +11,14 @@ class EnchantmentViewFactory
 
   @override
   EnchantmentView fromStore() {
-    return EnchantmentView(
-      selected: state.selectedItem!,
-      loading: isWaiting(ItemEnchantmentFetchAction),
-    );
+    return EnchantmentView(selected: state.selectedItem!);
   }
 }
 
 class EnchantmentView extends Vm with EnchantmentReducer {
-  EnchantmentView({required this.selected, this.loading = false})
-    : super(equals: [selected, loading]);
+  EnchantmentView({required this.selected}) : super(equals: [selected]);
 
   final ItemModel selected;
-
-  /// The enchantments of [selected] are being loaded.
-  final bool loading;
 
   // General cache of the root enchantments which are available
   List<Enchantment> get enchantments => getEnchantments(selected);

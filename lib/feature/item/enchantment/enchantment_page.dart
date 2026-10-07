@@ -9,33 +9,21 @@ import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/enchantment/dialog/item_enchantments_dialog.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_list.dart';
 import 'package:stelaris/feature/item/enchantment/item_group_selector.dart';
-import 'package:stelaris/feature/item/item_tab_loading.dart';
+import 'package:stelaris/feature/item/item_tab_loader.dart';
 import 'package:stelaris/util/l10n_ext.dart';
-import 'package:stelaris/util/settled_after_transitions.dart';
 
-class ItemEnchantmentPage extends StatefulWidget {
+class ItemEnchantmentPage extends StatelessWidget {
   const ItemEnchantmentPage({super.key});
 
   @override
-  State<ItemEnchantmentPage> createState() => _ItemEnchantmentPageState();
-}
-
-class _ItemEnchantmentPageState extends State<ItemEnchantmentPage>
-    with
-        AutomaticKeepAliveClientMixin,
-        SettledAfterTransitions,
-        ItemTabLoading {
-  @override
-  ReduxAction<AppState> createLoadAction() => ItemEnchantmentFetchAction();
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
+    return ItemTabLoader(load: ItemEnchantmentFetchAction.new, builder: _build);
+  }
+
+  Widget _build(BuildContext context, bool pending) {
     return StoreConnector<AppState, EnchantmentView>(
       vm: () => EnchantmentViewFactory(),
-      onDidChange: (context, store, vm) => selectedItemChanged(vm.selected.id),
       builder: (context, vm) {
-        final pending = !settled || vm.loading;
         return Padding(
           padding: const EdgeInsets.all(16),
           child: Column(

@@ -10,34 +10,22 @@ import 'package:stelaris/feature/base/skeleton_bar.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/item/lore/lore_count_chip.dart';
 import 'package:stelaris/feature/item/lore/lore_page_view.dart';
-import 'package:stelaris/feature/item/item_tab_loading.dart';
+import 'package:stelaris/feature/item/item_tab_loader.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/functions.dart';
-import 'package:stelaris/util/settled_after_transitions.dart';
 
-class LorePage extends StatefulWidget {
+class LorePage extends StatelessWidget {
   const LorePage({super.key});
 
   @override
-  State<LorePage> createState() => _LorePageState();
-}
-
-class _LorePageState extends State<LorePage>
-    with
-        AutomaticKeepAliveClientMixin,
-        SettledAfterTransitions,
-        ItemTabLoading {
-  @override
-  ReduxAction<AppState> createLoadAction() => ItemLoreFetchAction();
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
+    return ItemTabLoader(load: ItemLoreFetchAction.new, builder: _build);
+  }
+
+  Widget _build(BuildContext context, bool pending) {
     return StoreConnector<AppState, ItemLoreView>(
       vm: () => ItemLoreViewFactory(),
-      onDidChange: (context, store, vm) => selectedItemChanged(vm.selected.id),
       builder: (context, vm) {
-        final pending = !settled || vm.loading;
         return Padding(
           padding: const EdgeInsets.all(16),
           child: Column(

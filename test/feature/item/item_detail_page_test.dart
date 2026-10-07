@@ -6,8 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
-import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
@@ -75,6 +73,13 @@ void main() {
     /// The fetches of the tabs so far, see [_withEmptyLists].
     late Map<String, int> requests;
 
+    /// Whether the shown tab still waits for its data.
+    bool showsPlaceholders() => [
+      'component_skeleton',
+      'enchantment_skeleton',
+      'lore_skeleton',
+    ].any((key) => find.byKey(Key(key)).evaluate().isNotEmpty);
+
     Future<void> pumpPage(
       WidgetTester tester, {
       String location = '/items/detail',
@@ -119,10 +124,7 @@ void main() {
         ),
       );
       // Components, the tab the page opens on, loads right away.
-      await settleRequests(
-        tester,
-        () => store.isWaiting(ItemComponentFetchAction),
-      );
+      await settleRequests(tester, showsPlaceholders);
     }
 
     testWidgets('shows the back arrow with the item name above the tabs', (
@@ -201,14 +203,8 @@ void main() {
 
     Future<void> openEnchantments(WidgetTester tester) async {
       await tester.tap(find.widgetWithText(Tab, 'Enchantments'));
-      // The tab loads once it stands still; until then its add button shows
-      // a spinner.
-      await settleRequests(
-        tester,
-        () =>
-            store.isWaiting(ItemEnchantmentFetchAction) ||
-            find.byType(CircularProgressIndicator).evaluate().isNotEmpty,
-      );
+      // The tab shows its data once it loaded and stands still.
+      await settleRequests(tester, showsPlaceholders);
     }
 
     for (final (tab, skeleton) in [
@@ -223,10 +219,7 @@ void main() {
         await tester.pump(const Duration(milliseconds: 50));
         expect(find.byKey(Key(skeleton)), findsOneWidget);
 
-        await settleRequests(
-          tester,
-          () => find.byType(CircularProgressIndicator).evaluate().isNotEmpty,
-        );
+        await settleRequests(tester, showsPlaceholders);
         expect(find.byKey(Key(skeleton)), findsNothing);
       });
     }
@@ -239,10 +232,7 @@ void main() {
 
       await openEnchantments(tester);
       await tester.tap(find.widgetWithText(Tab, 'Lore'));
-      await settleRequests(
-        tester,
-        () => find.byType(CircularProgressIndicator).evaluate().isNotEmpty,
-      );
+      await settleRequests(tester, showsPlaceholders);
       await openEnchantments(tester);
       await tester.tap(find.widgetWithText(Tab, 'Components'));
       await tester.pumpAndSettle();
