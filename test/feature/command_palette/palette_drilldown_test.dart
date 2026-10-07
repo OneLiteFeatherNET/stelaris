@@ -134,9 +134,9 @@ void main() {
       await _press(tester, LogicalKeyboardKey.arrowRight);
 
       expect(_titles(tester), [
+        'Components',
         'Enchantments',
         'Lore',
-        'Components',
         'Delete\u2026',
       ]);
       expect(_chipSays('Diamond Sword'), isTrue);

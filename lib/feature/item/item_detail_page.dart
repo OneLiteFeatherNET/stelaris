@@ -16,8 +16,8 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// The detail view reached by tapping an item card in [ItemPage].
 ///
 /// Shows the shared [ModelDetailShell] header row with its actions, with a `TabBar`/
-/// `TabBarView` (Enchantments/Lore/Components) below it as the body. Each tab
-/// renders one of [ItemEnchantmentPage]/[LorePage]/[ItemComponentsPage],
+/// `TabBarView` (Components/Enchantments/Lore) below it as the body. Each tab
+/// renders one of [ItemComponentsPage]/[ItemEnchantmentPage]/[LorePage],
 /// which read the selected item from Redux themselves.
 class ItemDetailPage extends StatelessWidget {
   const ItemDetailPage({super.key});
@@ -25,6 +25,7 @@ class ItemDetailPage extends StatelessWidget {
   /// The tabs in order. Their ids are what `?tab=` and the command palette
   /// refer to.
   static final List<DetailTab> tabs = [
+    DetailTab('components', (l10n) => l10n.tab_components),
     // General (formerly Meta) only held the group, which moved next to the
     // enchantments it decides.
     DetailTab(
@@ -33,7 +34,6 @@ class ItemDetailPage extends StatelessWidget {
       formerIds: ['general', 'meta'],
     ),
     DetailTab('lore', (l10n) => l10n.tab_lore),
-    DetailTab('components', (l10n) => l10n.tab_components),
   ];
 
   @override
@@ -74,9 +74,9 @@ class ItemDetailPage extends StatelessWidget {
               const Expanded(
                 child: TabBarView(
                   children: [
+                    ItemComponentsPage(),
                     ItemEnchantmentPage(),
                     LorePage(),
-                    ItemComponentsPage(),
                   ],
                 ),
               ),

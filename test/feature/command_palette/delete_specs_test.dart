@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
+import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/command_palette/delete_specs.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
@@ -53,14 +53,14 @@ Future<(String, String?)> _detailPageDelete(
   );
   // Let what the page started on open, like the item's component fetch,
   // finish before the test ends.
-  await settleRequests(tester, () => store.isWaiting(ItemEnchantmentFetchAction));
+  await settleRequests(tester, () => store.isWaiting(ItemComponentFetchAction));
   return (actions.deleteTitle as String, actions.deleteWarning as String?);
 }
 
 void main() {
   final AppLocalizations l10n = lookupAppLocalizations(const Locale('en'));
 
-  // The item page opens on Enchantments, which fetches them right away.
+  // The item page opens on Components, which fetches them right away.
   setUp(() {
     ApiService().itemApi.apiClient.dio.httpClientAdapter =
         FakeHttpClientAdapter.json({

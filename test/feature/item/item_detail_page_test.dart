@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
 import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
@@ -117,12 +118,10 @@ void main() {
           ),
         ),
       );
-      // Enchantments, the tab the page opens on, loads right away.
+      // Components, the tab the page opens on, loads right away.
       await settleRequests(
         tester,
-        () =>
-            store.isWaiting(ItemEnchantmentFetchAction) ||
-            find.byType(CircularProgressIndicator).evaluate().isNotEmpty,
+        () => store.isWaiting(ItemComponentFetchAction),
       );
     }
 
@@ -131,7 +130,7 @@ void main() {
     ) async {
       await pumpPage(tester);
 
-      // The Enchantments tab has a PageHeader of its own.
+      // The Components tab has a PageHeader of its own.
       final header = find.ancestor(
         of: find.byKey(const Key('page_header_back_button')),
         matching: find.byType(PageHeader),
@@ -145,22 +144,32 @@ void main() {
 
       final tabBar = tester.widget<TabBar>(find.byType(TabBar));
       expect(tabBar.tabs.map((tab) => (tab as Tab).text), [
+        'Components',
         'Enchantments',
         'Lore',
-        'Components',
       ]);
     });
 
+    testWidgets('opens on Components', (tester) async {
+      await pumpPage(tester);
+
+      expect(
+        DefaultTabController.of(tester.element(find.byType(TabBar))).index,
+        0,
+      );
+      expect(find.byType(ItemComponentsPage), findsOneWidget);
+    });
+
     testWidgets(
-      'wires the tab views to Enchantments, Lore and Components pages',
+      'wires the tab views to Components, Enchantments and Lore pages',
       (tester) async {
         await pumpPage(tester);
 
         final tabBarView = tester.widget<TabBarView>(find.byType(TabBarView));
         expect(tabBarView.children.map((w) => w.runtimeType), [
+          ItemComponentsPage,
           ItemEnchantmentPage,
           LorePage,
-          ItemComponentsPage,
         ]);
       },
     );
@@ -203,8 +212,8 @@ void main() {
     }
 
     for (final (tab, skeleton) in [
+      ('Enchantments', 'enchantment_skeleton'),
       ('Lore', 'lore_skeleton'),
-      ('Components', 'component_skeleton'),
     ]) {
       testWidgets('$tab shows placeholders until it loaded', (tester) async {
         await pumpPage(tester);
@@ -226,20 +235,17 @@ void main() {
       tester,
     ) async {
       await pumpPage(tester);
-      expect(requests, {'enchantments': 1});
+      expect(requests, {'components': 1});
 
-      for (final tab in [
-        'Lore',
-        'Enchantments',
-        'Components',
-        'Enchantments',
-      ]) {
-        await tester.tap(find.widgetWithText(Tab, tab));
-        await settleRequests(
-          tester,
-          () => find.byType(CircularProgressIndicator).evaluate().isNotEmpty,
-        );
-      }
+      await openEnchantments(tester);
+      await tester.tap(find.widgetWithText(Tab, 'Lore'));
+      await settleRequests(
+        tester,
+        () => find.byType(CircularProgressIndicator).evaluate().isNotEmpty,
+      );
+      await openEnchantments(tester);
+      await tester.tap(find.widgetWithText(Tab, 'Components'));
+      await tester.pumpAndSettle();
 
       // Back on tabs which already loaded: no further requests.
       expect(requests, {'components': 1, 'enchantments': 1, 'lore': 1});
@@ -369,7 +375,7 @@ void main() {
 
         expect(
           DefaultTabController.of(tester.element(find.byType(TabBar))).index,
-          0,
+          1,
         );
       });
     }
