@@ -1389,6 +1389,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String enchantment_page_title(int count) {
+    return 'Enchantments ($count)';
+  }
+
+  @override
   String component_page_title(int count) {
     return 'Components ($count)';
   }

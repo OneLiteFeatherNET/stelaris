@@ -331,7 +331,6 @@ void main() {
 
     test('tabs come first, then Delete, for items, fonts and sounds', () {
       expect(childrenOf('Diamond Sword', everyKind), [
-        'General',
         'Enchantments',
         'Lore',
         'Components',

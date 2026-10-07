@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/command_palette/delete_specs.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
@@ -11,6 +12,8 @@ import 'package:stelaris/feature/notification/notification_detail_page.dart';
 import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+
+import '../../support/fake_http_client_adapter.dart';
 
 /// Renders [page] as its detail route does and returns the delete title and
 /// warning it hands to its header's [ModelDetailActions].
@@ -45,11 +48,26 @@ Future<(String, String?)> _detailPageDelete(
   final dynamic actions = tester.widget(
     find.byWidgetPredicate((widget) => widget is ModelDetailActions),
   );
+  // Let what the page started on open, like the item's enchantment fetch,
+  // finish before the test ends.
+  await tester.pumpAndSettle();
   return (actions.deleteTitle as String, actions.deleteWarning as String?);
 }
 
 void main() {
   final AppLocalizations l10n = lookupAppLocalizations(const Locale('en'));
+
+  // The item page opens on Enchantments, which fetches them right away.
+  setUp(() {
+    ApiService().itemApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter.json({
+          'items': <Object>[],
+          'totalItems': 0,
+          'totalPages': 0,
+          'currentPage': 1,
+          'pageSize': 5,
+        });
+  });
 
   // The palette deletes through its own table; the detail pages configure
   // their delete button inline. This keeps the two saying the same thing.

@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:async_redux/async_redux.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -6,8 +9,7 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
-import 'package:stelaris/feature/item/general/item_general_page.dart';
-import 'package:stelaris/feature/item/general/item_group_card.dart';
+import 'package:stelaris/feature/item/enchantment/item_group_selector.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
 import 'package:stelaris/feature/item/components/item_components_page.dart';
 import 'package:stelaris/feature/item/lore/lore_page.dart';
@@ -15,7 +17,46 @@ import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
+import '../../support/fake_http_client_adapter.dart';
 import '../../support/recording_http_client_adapter.dart';
+
+/// An empty page, for the fetches the Components and Enchantments tabs
+/// start.
+const Map<String, Object> _emptyPage = {
+  'items': <Object>[],
+  'totalItems': 0,
+  'totalPages': 0,
+  'currentPage': 1,
+  'pageSize': 5,
+};
+
+/// Answers the component and enchantment fetches with [_emptyPage] and
+/// hands every other request to [other].
+HttpClientAdapter _withEmptyLists(HttpClientAdapter other) {
+  final empty = FakeHttpClientAdapter.json(_emptyPage);
+  return _RoutingAdapter((options) {
+    final path = options.uri.path;
+    return path.endsWith('/components') || path.endsWith('/enchantments')
+        ? empty
+        : other;
+  });
+}
+
+class _RoutingAdapter implements HttpClientAdapter {
+  _RoutingAdapter(this._route);
+
+  final HttpClientAdapter Function(RequestOptions options) _route;
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) => _route(options).fetch(options, requestStream, cancelFuture);
+
+  @override
+  void close({bool force = false}) {}
+}
 
 void main() {
   group('ItemDetailPage', () {
@@ -26,7 +67,11 @@ void main() {
     Future<void> pumpPage(
       WidgetTester tester, {
       String location = '/items/detail',
+      HttpClientAdapter? adapter,
     }) async {
+      ApiService().itemApi.apiClient.dio.httpClientAdapter = _withEmptyLists(
+        adapter ?? RecordingHttpClientAdapter({}),
+      );
       store = Store<AppState>(
         initialState: const AppState(selectedItem: selected),
       );
@@ -41,7 +86,9 @@ void main() {
             routes: [
               GoRoute(
                 path: 'detail',
-                builder: (context, state) => const ItemDetailPage(),
+                // The app shows detail pages inside BasePage's Scaffold.
+                builder: (context, state) =>
+                    const Scaffold(body: ItemDetailPage()),
               ),
             ],
           ),
@@ -66,16 +113,20 @@ void main() {
     ) async {
       await pumpPage(tester);
 
-      expect(find.byType(PageHeader), findsOneWidget);
+      // The Enchantments tab has a PageHeader of its own.
+      final header = find.ancestor(
+        of: find.byKey(const Key('page_header_back_button')),
+        matching: find.byType(PageHeader),
+      );
+      expect(header, findsOneWidget);
       expect(find.text('Ruby Sword'), findsOneWidget);
 
-      final backBarPosition = tester.getTopLeft(find.byType(PageHeader));
+      final backBarPosition = tester.getTopLeft(header);
       final tabBarPosition = tester.getTopLeft(find.byType(TabBar));
       expect(backBarPosition.dy, lessThan(tabBarPosition.dy));
 
       final tabBar = tester.widget<TabBar>(find.byType(TabBar));
       expect(tabBar.tabs.map((tab) => (tab as Tab).text), [
-        'General',
         'Enchantments',
         'Lore',
         'Components',
@@ -83,13 +134,12 @@ void main() {
     });
 
     testWidgets(
-      'wires the tab views to General, Enchantments, Lore and Components pages',
+      'wires the tab views to Enchantments, Lore and Components pages',
       (tester) async {
         await pumpPage(tester);
 
         final tabBarView = tester.widget<TabBarView>(find.byType(TabBarView));
         expect(tabBarView.children.map((w) => w.runtimeType), [
-          ItemGeneralPage,
           ItemEnchantmentPage,
           LorePage,
           ItemComponentsPage,
@@ -122,12 +172,12 @@ void main() {
       ),
     );
 
-    /// Changes the group on the General tab, its only field, and confirms
-    /// that the enchantments are reset.
+    /// Changes the group next to the add button on the Enchantments tab,
+    /// and confirms that the enchantments are reset.
     Future<void> chooseArmorGroup(WidgetTester tester) async {
       await tester.tap(
         find.descendant(
-          of: find.byType(ItemGeneralPage),
+          of: find.byType(ItemGroupSelector),
           matching: find.text('Meta'),
         ),
       );
@@ -138,18 +188,37 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('the General tab only edits the group', (tester) async {
+    testWidgets('the group sits next to the add button on Enchantments', (
+      tester,
+    ) async {
       await pumpPage(tester);
-      final general = find.byType(ItemGeneralPage);
+      final enchantments = find.byType(ItemEnchantmentPage);
       expect(
-        find.descendant(of: general, matching: find.byType(ItemGroupCard)),
+        find.descendant(
+          of: enchantments,
+          matching: find.byType(ItemGroupSelector),
+        ),
         findsOneWidget,
       );
-      // Material, amount, name and model data are components now.
       expect(
-        find.descendant(of: general, matching: find.byType(TextFormField)),
-        findsNothing,
+        find.descendant(of: enchantments, matching: find.text('Add')),
+        findsOneWidget,
       );
+    });
+
+    testWidgets('cancelling a group change keeps the group', (tester) async {
+      await pumpPage(tester);
+
+      await tester.tap(find.text('Meta'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Armor').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+
+      expect(store.state.selectedItem!.groupName, EnchantmentGroup.meta);
+      expect(store.state.unsavedChanges, isNull);
+      expect(find.text('Meta'), findsOneWidget);
     });
 
     testWidgets('changing the group marks the item unsaved right away', (
@@ -170,8 +239,7 @@ void main() {
         'uiName': 'Ruby Sword',
         'groupName': 'armor',
       });
-      ApiService().itemApi.apiClient.dio.httpClientAdapter = adapter;
-      await pumpPage(tester);
+      await pumpPage(tester, adapter: adapter);
 
       await chooseArmorGroup(tester);
       await tester.tap(find.text('Save'));
@@ -192,9 +260,13 @@ void main() {
 
     testWidgets('deleting from the header returns to the list without '
         'breaking the page while it slides out', (tester) async {
-      ApiService().itemApi.apiClient.dio.httpClientAdapter =
-          RecordingHttpClientAdapter({'id': 'item-1', 'uiName': 'Ruby Sword'});
-      await pumpPage(tester);
+      await pumpPage(
+        tester,
+        adapter: RecordingHttpClientAdapter({
+          'id': 'item-1',
+          'uiName': 'Ruby Sword',
+        }),
+      );
 
       await tester.tap(find.text('Delete'));
       await tester.pumpAndSettle();
@@ -213,13 +285,17 @@ void main() {
       expect(find.text('Item List'), findsOneWidget);
     });
 
-    testWidgets('an old ?tab=meta link opens on General', (tester) async {
-      await pumpPage(tester, location: '/items/detail?tab=meta');
+    for (final former in ['general', 'meta']) {
+      testWidgets('an old ?tab=$former link opens on Enchantments', (
+        tester,
+      ) async {
+        await pumpPage(tester, location: '/items/detail?tab=$former');
 
-      expect(
-        DefaultTabController.of(tester.element(find.byType(TabBar))).index,
-        0,
-      );
-    });
+        expect(
+          DefaultTabController.of(tester.element(find.byType(TabBar))).index,
+          0,
+        );
+      });
+    }
   });
 }

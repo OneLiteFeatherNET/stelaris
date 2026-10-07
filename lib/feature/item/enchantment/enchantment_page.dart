@@ -3,10 +3,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/enchantment_view_state.dart';
+import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/enchantment/dialog/item_enchantments_dialog.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_list.dart';
-import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/feature/item/enchantment/item_group_selector.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class ItemEnchantmentPage extends StatelessWidget {
@@ -19,19 +20,25 @@ class ItemEnchantmentPage extends StatelessWidget {
       onInit: (store) => store.dispatchAndWait(ItemEnchantmentFetchAction()),
       builder: (context, vm) {
         return Padding(
-          padding: const EdgeInsets.only(left: 25, right: 25),
+          padding: const EdgeInsets.all(16),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              verticalSpacing25,
-              Align(
-                alignment: Alignment.center,
-                child: ActionChip(
-                  avatar: const Icon(Icons.add),
-                  label: Text(context.l10n.button_add),
-                  onPressed: () => _showAddEnchantmentDialog(context, vm),
+              PageHeader.small(
+                title: context.l10n.enchantment_page_title(
+                  vm.selected.enchantments.totalItems,
                 ),
+                actions: [
+                  ItemGroupSelector(model: vm.selected),
+                  PageHeaderAction(
+                    icon: const Icon(Icons.add),
+                    label: context.l10n.button_add,
+                    primary: true,
+                    onPressed: () => _showAddEnchantmentDialog(context, vm),
+                  ),
+                ],
               ),
-              verticalSpacing10,
+              const SizedBox(height: 12),
               Expanded(
                 child: EnchantmentList(
                   view: vm,
