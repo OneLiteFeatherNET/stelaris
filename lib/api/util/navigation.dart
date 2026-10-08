@@ -15,25 +15,19 @@ enum NavigationEntry {
     StelarisIcons.pickaxeOutlined,
     StelarisIcons.pickaxe,
   ),
-  notifications(
-    'Notifications',
-    '/notifications',
+  advancements(
+    'Advancements',
+    '/advancements',
     StelarisIcons.advancementOutlined,
     StelarisIcons.advancement,
   ),
-  font(
-    'Fonts',
-    '/fonts',
-    StelarisIcons.lettersOutlined,
-    StelarisIcons.letters,
-  ),
+  font('Fonts', '/fonts', StelarisIcons.lettersOutlined, StelarisIcons.letters),
   sound(
     'Sound',
     '/sound',
     StelarisIcons.noteBlockOutlined,
     StelarisIcons.noteBlock,
-  )
-  ;
+  );
 
   final String display;
   final String route;
@@ -41,12 +35,7 @@ enum NavigationEntry {
   final IconData selected;
 
   /// Creates a new enum entry with the given value
-  const NavigationEntry(
-    this.display,
-    this.route,
-    this.data,
-    this.selected,
-  );
+  const NavigationEntry(this.display, this.route, this.data, this.selected);
 }
 
 /// The section [location] belongs to — its own route or one nested below

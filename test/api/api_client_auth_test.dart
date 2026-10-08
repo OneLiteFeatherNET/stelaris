@@ -77,7 +77,8 @@ ResponseBody json(Object? body, int status) => ResponseBody.fromString(
 
 /// Refuses whatever bearer [staleToken] carries, accepts anything else.
 RecordingAdapter refusing(String staleToken) => RecordingAdapter((options) {
-  final String? auth = options.headers[HttpHeaders.authorizationHeader] as String?;
+  final String? auth =
+      options.headers[HttpHeaders.authorizationHeader] as String?;
   if (auth == 'Bearer $staleToken') {
     return json({'detail': 'expired'}, 401);
   }
@@ -176,19 +177,22 @@ void main() {
       expect(adapter.calls, 1);
     });
 
-    test('is rejected exactly as before when no provider is configured', () async {
-      // The rollout gate again: a deployment whose backend is not yet
-      // validating tokens sees the behaviour it has always seen.
-      final adapter = RecordingAdapter((_) => json({'detail': 'no'}, 401));
-      final client = clientWith(null, adapter);
+    test(
+      'is rejected exactly as before when no provider is configured',
+      () async {
+        // The rollout gate again: a deployment whose backend is not yet
+        // validating tokens sees the behaviour it has always seen.
+        final adapter = RecordingAdapter((_) => json({'detail': 'no'}, 401));
+        final client = clientWith(null, adapter);
 
-      await expectLater(
-        client.dio.get<dynamic>('/items'),
-        throwsA(isA<DioException>()),
-      );
-      expect(adapter.calls, 1);
-      expect(adapter.authorizations.single, isNull);
-    });
+        await expectLater(
+          client.dio.get<dynamic>('/items'),
+          throwsA(isA<DioException>()),
+        );
+        expect(adapter.calls, 1);
+        expect(adapter.authorizations.single, isNull);
+      },
+    );
   });
 
   group('several requests hitting an expired token at once', () {
@@ -205,7 +209,7 @@ void main() {
         client.dio.get<dynamic>('/fonts'),
         client.dio.get<dynamic>('/sounds'),
         client.dio.get<dynamic>('/attributes'),
-        client.dio.get<dynamic>('/notifications'),
+        client.dio.get<dynamic>('/advancements'),
       ]);
 
       expect(tokens.refreshes, 1);

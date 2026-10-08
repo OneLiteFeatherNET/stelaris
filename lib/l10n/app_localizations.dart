@@ -280,11 +280,11 @@ abstract class AppLocalizations {
   /// **'Delete item'**
   String get dialog_item_delete_title;
 
-  /// No description provided for @dialog_notification_delete_title.
+  /// No description provided for @dialog_advancement_delete_title.
   ///
   /// In en, this message translates to:
-  /// **'Delete notification'**
-  String get dialog_notification_delete_title;
+  /// **'Delete advancement'**
+  String get dialog_advancement_delete_title;
 
   /// No description provided for @dialog_sound_delete_title.
   ///
@@ -412,11 +412,11 @@ abstract class AppLocalizations {
   /// **'Delete char'**
   String get dialog_font_char_delete;
 
-  /// No description provided for @dialog_notification_create.
+  /// No description provided for @dialog_advancement_create.
   ///
   /// In en, this message translates to:
-  /// **'Create new notification'**
-  String get dialog_notification_create;
+  /// **'Create new advancement'**
+  String get dialog_advancement_create;
 
   /// No description provided for @action_notes.
   ///
@@ -519,6 +519,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Texture path'**
   String get card_font_texture_path;
+
+  /// No description provided for @card_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get card_description;
+
+  /// No description provided for @card_advancement_parent.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent'**
+  String get card_advancement_parent;
+
+  /// No description provided for @card_advancement_background.
+  ///
+  /// In en, this message translates to:
+  /// **'Background'**
+  String get card_advancement_background;
+
+  /// No description provided for @card_advancement_x.
+  ///
+  /// In en, this message translates to:
+  /// **'Position X'**
+  String get card_advancement_x;
+
+  /// No description provided for @card_advancement_y.
+  ///
+  /// In en, this message translates to:
+  /// **'Position Y'**
+  String get card_advancement_y;
+
+  /// No description provided for @card_advancement_show_toast.
+  ///
+  /// In en, this message translates to:
+  /// **'Show toast'**
+  String get card_advancement_show_toast;
+
+  /// No description provided for @card_advancement_announce_to_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'Announce to chat'**
+  String get card_advancement_announce_to_chat;
+
+  /// No description provided for @card_advancement_hidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden'**
+  String get card_advancement_hidden;
+
+  /// No description provided for @advancement_parent_none.
+  ///
+  /// In en, this message translates to:
+  /// **'None (root)'**
+  String get advancement_parent_none;
+
+  /// No description provided for @tooltip_advancement_parent.
+  ///
+  /// In en, this message translates to:
+  /// **'A root advancement opens its own tab'**
+  String get tooltip_advancement_parent;
+
+  /// No description provided for @tooltip_advancement_background.
+  ///
+  /// In en, this message translates to:
+  /// **'The background texture of the tab'**
+  String get tooltip_advancement_background;
+
+  /// No description provided for @tooltip_advancement_position.
+  ///
+  /// In en, this message translates to:
+  /// **'The position in the advancement tree'**
+  String get tooltip_advancement_position;
+
+  /// No description provided for @tooltip_advancement_hidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden until the advancement is achieved'**
+  String get tooltip_advancement_hidden;
 
   /// No description provided for @label_level.
   ///
@@ -859,7 +937,7 @@ abstract class AppLocalizations {
   /// No description provided for @dialog_project_switch_hint.
   ///
   /// In en, this message translates to:
-  /// **'Loaded items, fonts, notifications, attributes and sound events will be reset.'**
+  /// **'Loaded items, fonts, advancements, attributes and sound events will be reset.'**
   String get dialog_project_switch_hint;
 
   /// No description provided for @dialog_project_switch_confirm.
@@ -976,11 +1054,11 @@ abstract class AppLocalizations {
   /// **'Copy sound event'**
   String get dialog_sound_copy;
 
-  /// No description provided for @dialog_notification_copy.
+  /// No description provided for @dialog_advancement_copy.
   ///
   /// In en, this message translates to:
-  /// **'Copy notification'**
-  String get dialog_notification_copy;
+  /// **'Copy advancement'**
+  String get dialog_advancement_copy;
 
   /// No description provided for @dialog_attribute_copy.
   ///
@@ -1345,7 +1423,7 @@ abstract class AppLocalizations {
   /// No description provided for @command_palette_mode_entities_help.
   ///
   /// In en, this message translates to:
-  /// **'Open an item, font, sound, notification or attribute'**
+  /// **'Open an item, font, sound, advancement or attribute'**
   String get command_palette_mode_entities_help;
 
   /// No description provided for @command_palette_mode_projects.
@@ -1396,11 +1474,11 @@ abstract class AppLocalizations {
   /// **'Sounds'**
   String get command_palette_kind_sounds;
 
-  /// No description provided for @command_palette_kind_notifications.
+  /// No description provided for @command_palette_kind_advancements.
   ///
   /// In en, this message translates to:
-  /// **'Notifications'**
-  String get command_palette_kind_notifications;
+  /// **'Advancements'**
+  String get command_palette_kind_advancements;
 
   /// No description provided for @command_palette_kind_attributes.
   ///
@@ -1465,7 +1543,7 @@ abstract class AppLocalizations {
   /// No description provided for @command_palette_hint_entities.
   ///
   /// In en, this message translates to:
-  /// **'Search loaded items, fonts, sounds, notifications and attributes'**
+  /// **'Search loaded items, fonts, sounds, advancements and attributes'**
   String get command_palette_hint_entities;
 
   /// No description provided for @command_palette_hint_kind.
@@ -1630,11 +1708,11 @@ abstract class AppLocalizations {
   /// **'New sound'**
   String get command_create_sound;
 
-  /// No description provided for @command_create_notification.
+  /// No description provided for @command_create_advancement.
   ///
   /// In en, this message translates to:
-  /// **'New notification'**
-  String get command_create_notification;
+  /// **'New advancement'**
+  String get command_create_advancement;
 
   /// No description provided for @command_create_attribute.
   ///
@@ -1678,11 +1756,11 @@ abstract class AppLocalizations {
   /// **'Delete this sound…'**
   String get command_delete_this_sound;
 
-  /// No description provided for @command_delete_this_notification.
+  /// No description provided for @command_delete_this_advancement.
   ///
   /// In en, this message translates to:
-  /// **'Delete this notification…'**
-  String get command_delete_this_notification;
+  /// **'Delete this advancement…'**
+  String get command_delete_this_advancement;
 
   /// No description provided for @command_palette_key_step_in.
   ///

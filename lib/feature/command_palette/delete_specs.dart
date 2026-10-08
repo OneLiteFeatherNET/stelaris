@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
-import 'package:stelaris/api/state/actions/notification_actions.dart';
+import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
@@ -96,12 +96,12 @@ final DeleteSpec<SoundEventModel> soundDelete = DeleteSpec<SoundEventModel>(
   name: (model) => model.uiName,
 );
 
-final DeleteSpec<NotificationModel> notificationDelete =
-    DeleteSpec<NotificationModel>(
-      entry: NavigationEntry.notifications,
-      title: (l10n) => l10n.dialog_notification_delete_title,
-      removeAction: NotificationRemoveAction.new,
-      selected: (state) => state.selectedNotification,
+final DeleteSpec<AdvancementModel> advancementDelete =
+    DeleteSpec<AdvancementModel>(
+      entry: NavigationEntry.advancements,
+      title: (l10n) => l10n.dialog_advancement_delete_title,
+      removeAction: AdvancementRemoveAction.new,
+      selected: (state) => state.selectedAdvancement,
       key: (model) => model.key,
       name: (model) => model.uiName,
     );

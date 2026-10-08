@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
-import 'package:stelaris/api/state/actions/notification_actions.dart';
+import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -46,11 +46,11 @@ final _detailCases = [
     selectAction: () => SelectSoundAction(SoundEventModel(uiName: 'Test')),
   ),
   _DetailRedirectCase(
-    name: 'notificationDetailRedirect',
-    listPath: '/notifications',
-    redirect: notificationDetailRedirect,
+    name: 'advancementDetailRedirect',
+    listPath: '/advancements',
+    redirect: advancementDetailRedirect,
     selectAction: () =>
-        SelectedNotificationAction(const NotificationModel(uiName: 'Test')),
+        SelectedAdvancementAction(const AdvancementModel(uiName: 'Test')),
   ),
 ];
 

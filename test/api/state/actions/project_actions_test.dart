@@ -9,90 +9,117 @@ import '../../../support/fake_http_client_adapter.dart';
 
 void main() {
   group('SelectProjectAction', () {
-    test('updates selectedProject and clears all entity caches and selections', () {
-      const projectA = Project(
-        id: 'proj-a',
-        displayName: 'Project A',
-        key: 'PROJ_A',
-      );
-      const projectB = Project(
-        id: 'proj-b',
-        displayName: 'Project B',
-        key: 'PROJ_B',
-      );
+    test(
+      'updates selectedProject and clears all entity caches and selections',
+      () {
+        const projectA = Project(
+          id: 'proj-a',
+          displayName: 'Project A',
+          key: 'PROJ_A',
+        );
+        const projectB = Project(
+          id: 'proj-b',
+          displayName: 'Project B',
+          key: 'PROJ_B',
+        );
 
-      const existingItem = ItemModel(uiName: 'Item 1', id: 'i1', projectId: 'proj-a');
-      const existingFont = FontModel(uiName: 'Font 1', id: 'f1', projectId: 'proj-a');
-      const existingNotification = NotificationModel(uiName: 'Notif 1', id: 'n1', projectId: 'proj-a');
-      const existingAttribute = AttributeModel(uiName: 'Attr 1', id: 'a1', projectId: 'proj-a');
-      final existingSound = SoundEventModel(uiName: 'Sound 1', id: 's1', projectId: 'proj-a');
+        const existingItem = ItemModel(
+          uiName: 'Item 1',
+          id: 'i1',
+          projectId: 'proj-a',
+        );
+        const existingFont = FontModel(
+          uiName: 'Font 1',
+          id: 'f1',
+          projectId: 'proj-a',
+        );
+        const existingAdvancement = AdvancementModel(
+          uiName: 'Notif 1',
+          id: 'n1',
+          projectId: 'proj-a',
+        );
+        const existingAttribute = AttributeModel(
+          uiName: 'Attr 1',
+          id: 'a1',
+          projectId: 'proj-a',
+        );
+        final existingSound = SoundEventModel(
+          uiName: 'Sound 1',
+          id: 's1',
+          projectId: 'proj-a',
+        );
 
-      final store = Store<AppState>(
-        initialState: AppState(
-          projects: const [projectA, projectB],
-          selectedProject: projectA,
-          items: const PaginatedResult<ItemModel>(
-            items: [existingItem],
-            totalItems: 1,
-            totalPages: 1,
-            currentPage: 1,
-            pageSize: 10,
+        final store = Store<AppState>(
+          initialState: AppState(
+            projects: const [projectA, projectB],
+            selectedProject: projectA,
+            items: const PaginatedResult<ItemModel>(
+              items: [existingItem],
+              totalItems: 1,
+              totalPages: 1,
+              currentPage: 1,
+              pageSize: 10,
+            ),
+            fonts: const PaginatedResult<FontModel>(
+              items: [existingFont],
+              totalItems: 1,
+              totalPages: 1,
+              currentPage: 1,
+              pageSize: 10,
+            ),
+            advancements: const PaginatedResult<AdvancementModel>(
+              items: [existingAdvancement],
+              totalItems: 1,
+              totalPages: 1,
+              currentPage: 1,
+              pageSize: 10,
+            ),
+            attributes: const PaginatedResult<AttributeModel>(
+              items: [existingAttribute],
+              totalItems: 1,
+              totalPages: 1,
+              currentPage: 1,
+              pageSize: 10,
+            ),
+            soundEvents: PaginatedResult<SoundEventModel>(
+              items: [existingSound],
+              totalItems: 1,
+              totalPages: 1,
+              currentPage: 1,
+              pageSize: 10,
+            ),
+            selectedItem: existingItem,
+            selectedFont: existingFont,
+            selectedAdvancement: existingAdvancement,
+            selectedAttribute: existingAttribute,
+            selectedSoundEvent: existingSound,
           ),
-          fonts: const PaginatedResult<FontModel>(
-            items: [existingFont],
-            totalItems: 1,
-            totalPages: 1,
-            currentPage: 1,
-            pageSize: 10,
-          ),
-          notifications: const PaginatedResult<NotificationModel>(
-            items: [existingNotification],
-            totalItems: 1,
-            totalPages: 1,
-            currentPage: 1,
-            pageSize: 10,
-          ),
-          attributes: const PaginatedResult<AttributeModel>(
-            items: [existingAttribute],
-            totalItems: 1,
-            totalPages: 1,
-            currentPage: 1,
-            pageSize: 10,
-          ),
-          soundEvents: PaginatedResult<SoundEventModel>(
-            items: [existingSound],
-            totalItems: 1,
-            totalPages: 1,
-            currentPage: 1,
-            pageSize: 10,
-          ),
-          selectedItem: existingItem,
-          selectedFont: existingFont,
-          selectedNotification: existingNotification,
-          selectedAttribute: existingAttribute,
-          selectedSoundEvent: existingSound,
-        ),
-      );
+        );
 
-      store.dispatchSync(SelectProjectAction(projectB));
+        store.dispatchSync(SelectProjectAction(projectB));
 
-      expect(store.state.selectedProject, projectB);
-      expect(store.state.items.items, isEmpty);
-      expect(store.state.fonts.items, isEmpty);
-      expect(store.state.notifications.items, isEmpty);
-      expect(store.state.attributes.items, isEmpty);
-      expect(store.state.soundEvents.items, isEmpty);
-      expect(store.state.selectedItem, isNull);
-      expect(store.state.selectedFont, isNull);
-      expect(store.state.selectedNotification, isNull);
-      expect(store.state.selectedAttribute, isNull);
-      expect(store.state.selectedSoundEvent, isNull);
-    });
+        expect(store.state.selectedProject, projectB);
+        expect(store.state.items.items, isEmpty);
+        expect(store.state.fonts.items, isEmpty);
+        expect(store.state.advancements.items, isEmpty);
+        expect(store.state.attributes.items, isEmpty);
+        expect(store.state.soundEvents.items, isEmpty);
+        expect(store.state.selectedItem, isNull);
+        expect(store.state.selectedFont, isNull);
+        expect(store.state.selectedAdvancement, isNull);
+        expect(store.state.selectedAttribute, isNull);
+        expect(store.state.selectedSoundEvent, isNull);
+      },
+    );
   });
 
   group('AddProjectAction', () {
     test('adds project to list and selects it by default', () async {
-      const newProj = Project(id: 'proj-new', displayName: 'New Proj', key: 'key_new');
+      const newProj = Project(
+        id: 'proj-new',
+        displayName: 'New Proj',
+        key: 'key_new',
+      );
       ApiService().projectApi.apiClient.dio.httpClientAdapter =
           FakeHttpClientAdapter.json(newProj.toJson());
 
@@ -104,39 +131,60 @@ void main() {
       expect(store.state.selectedProject, newProj);
     });
 
-    test('adds project to list without selecting when select is false', () async {
-      const existing = Project(id: 'proj-old', displayName: 'Old Proj', key: 'key_old');
-      const newProj = Project(id: 'proj-new', displayName: 'New Proj', key: 'key_new');
-      ApiService().projectApi.apiClient.dio.httpClientAdapter =
-          FakeHttpClientAdapter.json(newProj.toJson());
+    test(
+      'adds project to list without selecting when select is false',
+      () async {
+        const existing = Project(
+          id: 'proj-old',
+          displayName: 'Old Proj',
+          key: 'key_old',
+        );
+        const newProj = Project(
+          id: 'proj-new',
+          displayName: 'New Proj',
+          key: 'key_new',
+        );
+        ApiService().projectApi.apiClient.dio.httpClientAdapter =
+            FakeHttpClientAdapter.json(newProj.toJson());
 
-      final store = Store<AppState>(
-        initialState: const AppState(projects: [existing], selectedProject: existing),
-      );
-      await store.dispatchAndWait(AddProjectAction(newProj, select: false));
+        final store = Store<AppState>(
+          initialState: const AppState(
+            projects: [existing],
+            selectedProject: existing,
+          ),
+        );
+        await store.dispatchAndWait(AddProjectAction(newProj, select: false));
 
-      expect(store.state.projects.length, 2);
-      expect(store.state.projects.last, newProj);
-      expect(store.state.selectedProject, existing);
-    });
+        expect(store.state.projects.length, 2);
+        expect(store.state.projects.last, newProj);
+        expect(store.state.selectedProject, existing);
+      },
+    );
   });
 
   group('UpdateProjectAction', () {
-    test('updates project in list and updates selectedProject if matched', () async {
-      const orig = Project(id: 'proj-1', displayName: 'Original', key: 'k1');
-      const updated = Project(id: 'proj-1', displayName: 'Updated', key: 'k1');
+    test(
+      'updates project in list and updates selectedProject if matched',
+      () async {
+        const orig = Project(id: 'proj-1', displayName: 'Original', key: 'k1');
+        const updated = Project(
+          id: 'proj-1',
+          displayName: 'Updated',
+          key: 'k1',
+        );
 
-      ApiService().projectApi.apiClient.dio.httpClientAdapter =
-          FakeHttpClientAdapter.json(updated.toJson());
+        ApiService().projectApi.apiClient.dio.httpClientAdapter =
+            FakeHttpClientAdapter.json(updated.toJson());
 
-      final store = Store<AppState>(
-        initialState: const AppState(projects: [orig], selectedProject: orig),
-      );
-      await store.dispatchAndWait(UpdateProjectAction(updated));
+        final store = Store<AppState>(
+          initialState: const AppState(projects: [orig], selectedProject: orig),
+        );
+        await store.dispatchAndWait(UpdateProjectAction(updated));
 
-      expect(store.state.projects.first.displayName, 'Updated');
-      expect(store.state.selectedProject?.displayName, 'Updated');
-    });
+        expect(store.state.projects.first.displayName, 'Updated');
+        expect(store.state.selectedProject?.displayName, 'Updated');
+      },
+    );
 
     test('appends updated project if not found in existing list', () async {
       const updated = Project(id: 'proj-1', displayName: 'Updated', key: 'k1');
@@ -165,21 +213,24 @@ void main() {
   });
 
   group('RemoveProjectAction', () {
-    test('removes project from list and unselects if currently selected', () async {
-      const p1 = Project(id: 'p1', displayName: 'P1', key: 'k1');
-      const p2 = Project(id: 'p2', displayName: 'P2', key: 'k2');
+    test(
+      'removes project from list and unselects if currently selected',
+      () async {
+        const p1 = Project(id: 'p1', displayName: 'P1', key: 'k1');
+        const p2 = Project(id: 'p2', displayName: 'P2', key: 'k2');
 
-      ApiService().projectApi.apiClient.dio.httpClientAdapter =
-          FakeHttpClientAdapter.json(p1.toJson());
+        ApiService().projectApi.apiClient.dio.httpClientAdapter =
+            FakeHttpClientAdapter.json(p1.toJson());
 
-      final store = Store<AppState>(
-        initialState: const AppState(projects: [p1, p2], selectedProject: p1),
-      );
-      await store.dispatchAndWait(RemoveProjectAction(p1));
+        final store = Store<AppState>(
+          initialState: const AppState(projects: [p1, p2], selectedProject: p1),
+        );
+        await store.dispatchAndWait(RemoveProjectAction(p1));
 
-      expect(store.state.projects, [p2]);
-      expect(store.state.selectedProject, isNull);
-    });
+        expect(store.state.projects, [p2]);
+        expect(store.state.selectedProject, isNull);
+      },
+    );
   });
 
   group('DeleteAllProjectsAction', () {
@@ -217,7 +268,10 @@ void main() {
           FakeHttpClientAdapter.json(paginated.toJson((p) => p.toJson()));
 
       final store = Store<AppState>(
-        initialState: const AppState(projects: [prevP1], selectedProject: prevP1),
+        initialState: const AppState(
+          projects: [prevP1],
+          selectedProject: prevP1,
+        ),
       );
       await store.dispatchAndWait(InitProjectAction());
 
@@ -226,4 +280,3 @@ void main() {
     });
   });
 }
-

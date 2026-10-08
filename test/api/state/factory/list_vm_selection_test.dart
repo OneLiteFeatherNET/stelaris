@@ -5,7 +5,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/attribute/attribute_vm_state.dart';
 import 'package:stelaris/api/state/factory/font/font_vm_state.dart';
 import 'package:stelaris/api/state/factory/item/item_vm_state.dart';
-import 'package:stelaris/api/state/factory/notification/notification_vm_state.dart';
+import 'package:stelaris/api/state/factory/advancement/advancement_vm_state.dart';
 import 'package:stelaris/api/state/factory/sound/sound_vm_state.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -22,7 +22,10 @@ void main() {
     VmFactory<AppState, Widget?, Vm> Function() factory,
     AppState selected,
   ) {
-    final before = Vm.createFrom(Store<AppState>(initialState: base), factory());
+    final before = Vm.createFrom(
+      Store<AppState>(initialState: base),
+      factory(),
+    );
     final after = Vm.createFrom(
       Store<AppState>(initialState: selected),
       factory(),
@@ -55,20 +58,18 @@ void main() {
       expect(
         unchangedBySelection(
           SoundVmFactory.new,
-          base.copyWith(
-            selectedSoundEvent: SoundEventModel(uiName: 'Break'),
-          ),
+          base.copyWith(selectedSoundEvent: SoundEventModel(uiName: 'Break')),
         ),
         isTrue,
       );
     });
 
-    test('notifications', () {
+    test('advancements', () {
       expect(
         unchangedBySelection(
-          NotificationVmFactory.new,
+          AdvancementVmFactory.new,
           base.copyWith(
-            selectedNotification: const NotificationModel(uiName: 'Done'),
+            selectedAdvancement: const AdvancementModel(uiName: 'Done'),
           ),
         ),
         isTrue,

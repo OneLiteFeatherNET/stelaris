@@ -12,7 +12,7 @@ import 'package:stelaris/feature/base/base_page.dart';
 import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
-import 'package:stelaris/feature/notification/notification_detail_page.dart';
+import 'package:stelaris/feature/advancement/advancement_detail_page.dart';
 import 'package:stelaris/feature/project/project_selection_page.dart';
 import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/util/deferred_widget.dart';
@@ -21,8 +21,8 @@ import 'package:stelaris/feature/attributes/attribute_page.dart'
     deferred as attribute_page;
 import 'package:stelaris/feature/font/font_page.dart' deferred as font_page;
 import 'package:stelaris/feature/item/item_page.dart' deferred as item_page;
-import 'package:stelaris/feature/notification/notification_page.dart'
-    deferred as notification_page;
+import 'package:stelaris/feature/advancement/advancement_page.dart'
+    deferred as advancement_page;
 import 'package:stelaris/feature/sound/sound_page.dart' deferred as sound_page;
 
 const String projectSelectionRoute = '/projects';
@@ -105,18 +105,18 @@ String? projectSelectionRedirect(BuildContext context, GoRouterState state) {
   return null;
 }
 
-/// Redirects `/notifications/detail` back to `/notifications` when nothing
+/// Redirects `/advancements/detail` back to `/advancements` when nothing
 /// is selected — reachable by a direct URL visit or a page reload, since the
 /// detail route relies entirely on the already-dispatched Redux selection
 /// rather than a route parameter.
-String? notificationDetailRedirect(BuildContext context, GoRouterState state) {
+String? advancementDetailRedirect(BuildContext context, GoRouterState state) {
   try {
     final appState = StoreProvider.state<AppState>(context);
-    final isAtNotificationDetail = state.matchedLocation ==
-        '${NavigationEntry.notifications.route}/detail';
+    final isAtAdvancementDetail =
+        state.matchedLocation == '${NavigationEntry.advancements.route}/detail';
 
-    if (isAtNotificationDetail && appState.selectedNotification == null) {
-      return NavigationEntry.notifications.route;
+    if (isAtAdvancementDetail && appState.selectedAdvancement == null) {
+      return NavigationEntry.advancements.route;
     }
   } on StoreException catch (_) {}
   return null;
@@ -184,7 +184,10 @@ Widget buildDetailSlideTransition(
   Animation<double> secondaryAnimation,
   Widget child,
 ) {
-  final slideCurve = CurvedAnimation(parent: animation, curve: Curves.easeInOutCubic);
+  final slideCurve = CurvedAnimation(
+    parent: animation,
+    curve: Curves.easeInOutCubic,
+  );
   // Delayed relative to the slide: full opacity is reached only at the very
   // end, in sync with the slide settling, instead of the content looking
   // fully "arrived" while it's still visibly moving.
@@ -228,9 +231,8 @@ final GoRouter router = GoRouter(
   routes: [
     GoRoute(
       path: signInRoute,
-      builder: (context, state) => SignInPage(
-        returnTo: state.uri.queryParameters[signInFromParameter],
-      ),
+      builder: (context, state) =>
+          SignInPage(returnTo: state.uri.queryParameters[signInFromParameter]),
     ),
     GoRoute(
       path: projectSelectionRoute,
@@ -238,10 +240,7 @@ final GoRouter router = GoRouter(
         child: const ProjectSelectionPage(),
         key: state.pageKey,
         transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            FadeTransition(
-          opacity: animation,
-          child: child,
-        ),
+            FadeTransition(opacity: animation, child: child),
       ),
     ),
     ShellRoute(
@@ -255,12 +254,12 @@ final GoRouter router = GoRouter(
               builder: () => attribute_page.AttributePage(),
             ),
             key: state.pageKey,
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) =>
-                    FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
           ),
         ),
         GoRoute(
@@ -271,12 +270,12 @@ final GoRouter router = GoRouter(
               builder: () => item_page.ItemPage(),
             ),
             key: state.pageKey,
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) =>
-                    FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
           ),
           routes: [
             GoRoute(
@@ -292,27 +291,27 @@ final GoRouter router = GoRouter(
           ],
         ),
         GoRoute(
-          path: NavigationEntry.notifications.route,
+          path: NavigationEntry.advancements.route,
           pageBuilder: (context, state) => CustomTransitionPage(
             child: DeferredWidget(
-              loader: notification_page.loadLibrary,
-              builder: () => notification_page.NotificationPage(),
+              loader: advancement_page.loadLibrary,
+              builder: () => advancement_page.AdvancementPage(),
             ),
             key: state.pageKey,
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) =>
-                    FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
           ),
           routes: [
             GoRoute(
               path: 'detail',
-              redirect: notificationDetailRedirect,
+              redirect: advancementDetailRedirect,
               onExit: detailExitGuard,
               pageBuilder: (context, state) => CustomTransitionPage(
-                child: const NotificationDetailPage(),
+                child: const AdvancementDetailPage(),
                 key: state.pageKey,
                 transitionsBuilder: buildDetailSlideTransition,
               ),
@@ -327,12 +326,12 @@ final GoRouter router = GoRouter(
               builder: () => font_page.FontPage(),
             ),
             key: state.pageKey,
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) =>
-                    FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
           ),
           routes: [
             GoRoute(
@@ -355,12 +354,12 @@ final GoRouter router = GoRouter(
               builder: () => sound_page.SoundPage(),
             ),
             key: state.pageKey,
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) =>
-                    FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
           ),
           routes: [
             GoRoute(

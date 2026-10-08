@@ -110,7 +110,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_item_delete_title => 'Delete item';
 
   @override
-  String get dialog_notification_delete_title => 'Delete notification';
+  String get dialog_advancement_delete_title => 'Delete advancement';
 
   @override
   String get dialog_sound_delete_title => 'Delete sound event';
@@ -180,7 +180,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_font_char_delete => 'Delete char';
 
   @override
-  String get dialog_notification_create => 'Create new notification';
+  String get dialog_advancement_create => 'Create new advancement';
 
   @override
   String get action_notes => 'Notes';
@@ -233,6 +233,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get card_font_texture_path => 'Texture path';
+
+  @override
+  String get card_description => 'Description';
+
+  @override
+  String get card_advancement_parent => 'Parent';
+
+  @override
+  String get card_advancement_background => 'Background';
+
+  @override
+  String get card_advancement_x => 'Position X';
+
+  @override
+  String get card_advancement_y => 'Position Y';
+
+  @override
+  String get card_advancement_show_toast => 'Show toast';
+
+  @override
+  String get card_advancement_announce_to_chat => 'Announce to chat';
+
+  @override
+  String get card_advancement_hidden => 'Hidden';
+
+  @override
+  String get advancement_parent_none => 'None (root)';
+
+  @override
+  String get tooltip_advancement_parent =>
+      'A root advancement opens its own tab';
+
+  @override
+  String get tooltip_advancement_background =>
+      'The background texture of the tab';
+
+  @override
+  String get tooltip_advancement_position =>
+      'The position in the advancement tree';
+
+  @override
+  String get tooltip_advancement_hidden =>
+      'Hidden until the advancement is achieved';
 
   @override
   String get label_level => 'Level';
@@ -415,7 +458,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialog_project_switch_hint =>
-      'Loaded items, fonts, notifications, attributes and sound events will be reset.';
+      'Loaded items, fonts, advancements, attributes and sound events will be reset.';
 
   @override
   String get dialog_project_switch_confirm => 'Switch project';
@@ -476,7 +519,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_sound_copy => 'Copy sound event';
 
   @override
-  String get dialog_notification_copy => 'Copy notification';
+  String get dialog_advancement_copy => 'Copy advancement';
 
   @override
   String get dialog_attribute_copy => 'Copy attribute';
@@ -670,7 +713,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get command_palette_mode_entities_help =>
-      'Open an item, font, sound, notification or attribute';
+      'Open an item, font, sound, advancement or attribute';
 
   @override
   String get command_palette_mode_projects => 'Projects';
@@ -698,7 +741,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command_palette_kind_sounds => 'Sounds';
 
   @override
-  String get command_palette_kind_notifications => 'Notifications';
+  String get command_palette_kind_advancements => 'Advancements';
 
   @override
   String get command_palette_kind_attributes => 'Attributes';
@@ -742,7 +785,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get command_palette_hint_entities =>
-      'Search loaded items, fonts, sounds, notifications and attributes';
+      'Search loaded items, fonts, sounds, advancements and attributes';
 
   @override
   String command_palette_hint_kind(String kind) {
@@ -835,7 +878,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command_create_sound => 'New sound';
 
   @override
-  String get command_create_notification => 'New notification';
+  String get command_create_advancement => 'New advancement';
 
   @override
   String get command_create_attribute => 'New attribute';
@@ -859,7 +902,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command_delete_this_sound => 'Delete this sound…';
 
   @override
-  String get command_delete_this_notification => 'Delete this notification…';
+  String get command_delete_this_advancement => 'Delete this advancement…';
 
   @override
   String get command_palette_key_step_in =>

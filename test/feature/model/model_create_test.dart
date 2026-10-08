@@ -8,7 +8,7 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
-import 'package:stelaris/api/state/actions/notification_actions.dart';
+import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
@@ -104,9 +104,9 @@ void main() {
     NavigationEntry.items: (l10n.dialog_item_create, ItemAddAction),
     NavigationEntry.font: (l10n.dialog_font_create_title, FontAddAction),
     NavigationEntry.sound: (l10n.dialog_sound_create, SoundAddAction),
-    NavigationEntry.notifications: (
-      l10n.dialog_notification_create,
-      NotificationAddAction,
+    NavigationEntry.advancements: (
+      l10n.dialog_advancement_create,
+      AdvancementAddAction,
     ),
     NavigationEntry.attributes: (
       l10n.dialog_attribute_create,

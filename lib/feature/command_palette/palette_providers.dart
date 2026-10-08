@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
-import 'package:stelaris/api/state/actions/notification_actions.dart';
+import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
@@ -195,12 +195,12 @@ NavigationEntry entryFor(EntityKind kind) {
     EntityKind.item => NavigationEntry.items,
     EntityKind.font => NavigationEntry.font,
     EntityKind.sound => NavigationEntry.sound,
-    EntityKind.notification => NavigationEntry.notifications,
+    EntityKind.advancement => NavigationEntry.advancements,
     EntityKind.attribute => NavigationEntry.attributes,
   };
 }
 
-/// Loaded items, fonts, sounds, notifications and attributes of the current
+/// Loaded items, fonts, sounds, advancements and attributes of the current
 /// project, each one an entry that opens it the way clicking its card does.
 /// Entity mode's answer: the entries, and how many entities matched before
 /// the cap cut the list to [maxEntityResults].
@@ -235,7 +235,7 @@ class _Candidate {
   String get key => '${kind.name}:${model.id ?? name}';
 }
 
-/// Loaded items, fonts, sounds, notifications and attributes of the current
+/// Loaded items, fonts, sounds, advancements and attributes of the current
 /// project - and whatever an [EntitySearchSource] found - each one an entry
 /// that opens it the way clicking its card does. At most [maxEntityResults].
 class EntityProvider implements PaletteProvider {
@@ -335,8 +335,8 @@ class EntityProvider implements PaletteProvider {
       EntityKind.sound => [
         for (final SoundEventModel m in state.soundEvents.items) (m, m.uiName),
       ],
-      EntityKind.notification => [
-        for (final NotificationModel m in state.notifications.items)
+      EntityKind.advancement => [
+        for (final AdvancementModel m in state.advancements.items)
           (m, m.uiName),
       ],
       EntityKind.attribute => [
@@ -352,7 +352,7 @@ class EntityProvider implements PaletteProvider {
       (EntityKind.item, final ItemModel m) => m.uiName,
       (EntityKind.font, final FontModel m) => m.uiName,
       (EntityKind.sound, final SoundEventModel m) => m.uiName,
-      (EntityKind.notification, final NotificationModel m) => m.uiName,
+      (EntityKind.advancement, final AdvancementModel m) => m.uiName,
       (EntityKind.attribute, final AttributeModel m) => m.uiName,
       _ => null,
     };
@@ -390,11 +390,11 @@ class EntityProvider implements PaletteProvider {
         (context) => context.dispatch(SelectSoundAction(model)),
         actionsFor(model, soundDelete),
       ),
-      final NotificationModel model when kind == EntityKind.notification =>
+      final AdvancementModel model when kind == EntityKind.advancement =>
         _entity(kind, model.id, model.uiName, (context) async {
-          context.dispatch(SelectedNotificationAction(model));
-          context.go(detailLocation(NavigationEntry.notifications.route));
-        }, children: _childrenOf(actionsFor(model, notificationDelete))),
+          context.dispatch(SelectedAdvancementAction(model));
+          context.go(detailLocation(NavigationEntry.advancements.route));
+        }, children: _childrenOf(actionsFor(model, advancementDelete))),
       // Attributes have no detail page; their card opens this dialog.
       final AttributeModel model when kind == EntityKind.attribute => _entity(
         kind,

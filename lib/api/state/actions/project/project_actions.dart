@@ -27,7 +27,7 @@ class SelectProjectAction extends ReduxAction<AppState> {
         currentPage: 1,
         pageSize: 0,
       ),
-      notifications: const PaginatedResult(
+      advancements: const PaginatedResult(
         items: [],
         totalItems: 0,
         totalPages: 0,
@@ -50,7 +50,7 @@ class SelectProjectAction extends ReduxAction<AppState> {
       ),
       selectedItem: null,
       selectedFont: null,
-      selectedNotification: null,
+      selectedAdvancement: null,
       selectedAttribute: null,
       selectedSoundEvent: null,
       unsavedChanges: null,
@@ -129,9 +129,9 @@ class UpdateProjectAction extends ReduxAction<AppState> with NonReentrant {
     }
     final updatedSelected =
         (state.selectedProject?.id == updated.id ||
-                state.selectedProject?.key == updated.key)
-            ? updated
-            : state.selectedProject;
+            state.selectedProject?.key == updated.key)
+        ? updated
+        : state.selectedProject;
     return state.copyWith(
       projects: updatedProjects,
       selectedProject: updatedSelected,
@@ -164,9 +164,9 @@ class RemoveProjectAction extends ReduxAction<AppState> with NonReentrant {
       ..removeWhere((p) => p.id == project.id || p.key == project.key);
     final updatedSelected =
         (state.selectedProject?.id == project.id ||
-                state.selectedProject?.key == project.key)
-            ? null
-            : state.selectedProject;
+            state.selectedProject?.key == project.key)
+        ? null
+        : state.selectedProject;
     return state.copyWith(
       projects: updatedProjects,
       selectedProject: updatedSelected,
@@ -179,10 +179,6 @@ class DeleteAllProjectsAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     await ApiService().projectApi.deleteAll();
-    return state.copyWith(
-      projects: const [],
-      selectedProject: null,
-    );
+    return state.copyWith(projects: const [], selectedProject: null);
   }
 }
-
