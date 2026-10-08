@@ -235,6 +235,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String get card_font_texture_path => 'Texture path';
 
   @override
+  String get card_description => 'Description';
+
+  @override
+  String get card_advancement_parent => 'Parent';
+
+  @override
+  String get card_advancement_background => 'Background';
+
+  @override
+  String get card_advancement_x => 'Position X';
+
+  @override
+  String get card_advancement_y => 'Position Y';
+
+  @override
+  String get card_advancement_show_toast => 'Show toast';
+
+  @override
+  String get card_advancement_announce_to_chat => 'Announce to chat';
+
+  @override
+  String get card_advancement_hidden => 'Hidden';
+
+  @override
+  String get advancement_parent_none => 'None (root)';
+
+  @override
+  String get tooltip_advancement_parent =>
+      'A root advancement opens its own tab';
+
+  @override
+  String get tooltip_advancement_background =>
+      'The background texture of the tab';
+
+  @override
+  String get tooltip_advancement_position =>
+      'The position in the advancement tree';
+
+  @override
+  String get tooltip_advancement_hidden =>
+      'Hidden until the advancement is achieved';
+
+  @override
   String get label_level => 'Level';
 
   @override

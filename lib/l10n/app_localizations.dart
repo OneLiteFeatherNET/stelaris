@@ -520,6 +520,84 @@ abstract class AppLocalizations {
   /// **'Texture path'**
   String get card_font_texture_path;
 
+  /// No description provided for @card_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get card_description;
+
+  /// No description provided for @card_advancement_parent.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent'**
+  String get card_advancement_parent;
+
+  /// No description provided for @card_advancement_background.
+  ///
+  /// In en, this message translates to:
+  /// **'Background'**
+  String get card_advancement_background;
+
+  /// No description provided for @card_advancement_x.
+  ///
+  /// In en, this message translates to:
+  /// **'Position X'**
+  String get card_advancement_x;
+
+  /// No description provided for @card_advancement_y.
+  ///
+  /// In en, this message translates to:
+  /// **'Position Y'**
+  String get card_advancement_y;
+
+  /// No description provided for @card_advancement_show_toast.
+  ///
+  /// In en, this message translates to:
+  /// **'Show toast'**
+  String get card_advancement_show_toast;
+
+  /// No description provided for @card_advancement_announce_to_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'Announce to chat'**
+  String get card_advancement_announce_to_chat;
+
+  /// No description provided for @card_advancement_hidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden'**
+  String get card_advancement_hidden;
+
+  /// No description provided for @advancement_parent_none.
+  ///
+  /// In en, this message translates to:
+  /// **'None (root)'**
+  String get advancement_parent_none;
+
+  /// No description provided for @tooltip_advancement_parent.
+  ///
+  /// In en, this message translates to:
+  /// **'A root advancement opens its own tab'**
+  String get tooltip_advancement_parent;
+
+  /// No description provided for @tooltip_advancement_background.
+  ///
+  /// In en, this message translates to:
+  /// **'The background texture of the tab'**
+  String get tooltip_advancement_background;
+
+  /// No description provided for @tooltip_advancement_position.
+  ///
+  /// In en, this message translates to:
+  /// **'The position in the advancement tree'**
+  String get tooltip_advancement_position;
+
+  /// No description provided for @tooltip_advancement_hidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden until the advancement is achieved'**
+  String get tooltip_advancement_hidden;
+
   /// No description provided for @label_level.
   ///
   /// In en, this message translates to:

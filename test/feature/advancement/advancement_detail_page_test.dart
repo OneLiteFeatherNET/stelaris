@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/base/cards/switch_card.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/advancement/advancement_detail_page.dart';
@@ -19,10 +20,11 @@ void main() {
 
     late Store<AppState> store;
 
-    Future<void> pumpPage(WidgetTester tester) async {
-      store = Store<AppState>(
-        initialState: const AppState(selectedAdvancement: selected),
-      );
+    Future<void> pumpPage(
+      WidgetTester tester, {
+      AppState initialState = const AppState(selectedAdvancement: selected),
+    }) async {
+      store = Store<AppState>(initialState: initialState);
 
       final router = GoRouter(
         initialLocation: '/advancements/detail',
@@ -108,7 +110,93 @@ void main() {
 
       await enterAndBlur(tester, 'Title', 'Level 5 – Glückwunsch!');
 
-      expect(store.state.selectedAdvancement?.title, 'Level 5 – Glückwunsch!');
+      expect(
+        store.state.selectedAdvancement?.title,
+        '"Level 5 – Glückwunsch!"',
+      );
+    });
+
+    testWidgets('the description is stored as a text component', (
+      tester,
+    ) async {
+      await pumpPage(tester);
+
+      await enterAndBlur(tester, 'Description', 'Defeat a mob');
+
+      expect(store.state.selectedAdvancement?.description, '"Defeat a mob"');
+    });
+
+    testWidgets('the hidden switch updates the selection', (tester) async {
+      await pumpPage(tester);
+
+      final toggle = find.descendant(
+        of: find.ancestor(
+          of: find.text('Hidden'),
+          matching: find.byType(SwitchCard),
+        ),
+        matching: find.byType(Switch),
+      );
+      await tester.ensureVisible(toggle);
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+
+      expect(store.state.selectedAdvancement?.hidden, isTrue);
+    });
+
+    testWidgets('the background is only shown for a root advancement', (
+      tester,
+    ) async {
+      await pumpPage(
+        tester,
+        initialState: AppState(
+          selectedAdvancement: selected.copyWith(parentId: 'root'),
+        ),
+      );
+
+      expect(find.text('Background'), findsNothing);
+    });
+
+    testWidgets('the parent can be neither itself nor a descendant', (
+      tester,
+    ) async {
+      const root = AdvancementModel(id: 'root', uiName: 'Root');
+      const child = AdvancementModel(
+        id: 'child',
+        uiName: 'Child',
+        parentId: 'notif-1',
+      );
+      const grandChild = AdvancementModel(
+        id: 'grand-child',
+        uiName: 'Grand Child',
+        parentId: 'child',
+      );
+      await pumpPage(
+        tester,
+        initialState: const AppState(
+          selectedAdvancement: selected,
+          advancements: PaginatedResult(
+            items: [root, selected, child, grandChild],
+            totalItems: 4,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      final dropdown = find.byType(DropdownButtonFormField<String>);
+      await tester.ensureVisible(dropdown);
+      await tester.tap(dropdown);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Root'), findsWidgets);
+      expect(find.text('Child'), findsNothing);
+      expect(find.text('Grand Child'), findsNothing);
+
+      await tester.tap(find.text('Root').last);
+      await tester.pumpAndSettle();
+
+      expect(store.state.selectedAdvancement?.parentId, 'root');
     });
 
     testWidgets('leaving the page clears the selection', (tester) async {
