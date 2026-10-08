@@ -72,13 +72,10 @@ cd tool/wireframes/penpot && npm ci && npm run build   # click dummy
 | 07 | [`07-dialog-switch-project.svg`](07-dialog-switch-project.svg) |
 | 10 | [`10-items-list-rail-extended.svg`](10-items-list-rail-extended.svg) |
 | 11 | [`11-attributes-list-rail-collapsed-filter-sort-menu.svg`](11-attributes-list-rail-collapsed-filter-sort-menu.svg) |
-| 12 | [`12-list-empty-no-matches.svg`](12-list-empty-no-matches.svg) |
-| 13 | [`13-dialog-edit-attribute.svg`](13-dialog-edit-attribute.svg) |
-| 14 | [`14-dialog-create-model.svg`](14-dialog-create-model.svg) |
-| 15 | [`15-dialog-copy-model.svg`](15-dialog-copy-model.svg) |
-| 16 | [`16-dialog-delete-model-type-name.svg`](16-dialog-delete-model-type-name.svg) |
-| 17 | [`17-dialog-model-info.svg`](17-dialog-model-info.svg) |
-| 18 | [`18-dialogs-notes-edit-card-menu-notes-view-detail-header.svg`](18-dialogs-notes-edit-card-menu-notes-view-detail-header.svg) |
+| 12 | [`12-notifications-list.svg`](12-notifications-list.svg) |
+| 13 | [`13-fonts-list.svg`](13-fonts-list.svg) |
+| 14 | [`14-sound-list.svg`](14-sound-list.svg) |
+| 15 | [`15-list-empty-no-matches.svg`](15-list-empty-no-matches.svg) |
 | 20 | [`20-item-detail-components-tab.svg`](20-item-detail-components-tab.svg) |
 | 21 | [`21-dialog-add-component-picker.svg`](21-dialog-add-component-picker.svg) |
 | 22 | [`22-dialog-edit-component-schema-form.svg`](22-dialog-edit-component-schema-form.svg) |
@@ -103,3 +100,9 @@ cd tool/wireframes/penpot && npm ci && npm run build   # click dummy
 | 47 | [`47-snackbars-floating-550-wide.svg`](47-snackbars-floating-550-wide.svg) |
 | 48 | [`48-compact-layout-600-px.svg`](48-compact-layout-600-px.svg) |
 | 49 | [`49-oidc-redirect-page-web-redirect-html.svg`](49-oidc-redirect-page-web-redirect-html.svg) |
+| 50 | [`50-dialog-edit-attribute.svg`](50-dialog-edit-attribute.svg) |
+| 51 | [`51-dialog-create-model.svg`](51-dialog-create-model.svg) |
+| 52 | [`52-dialog-copy-model.svg`](52-dialog-copy-model.svg) |
+| 53 | [`53-dialog-delete-model-type-name.svg`](53-dialog-delete-model-type-name.svg) |
+| 54 | [`54-dialog-model-info.svg`](54-dialog-model-info.svg) |
+| 55 | [`55-dialogs-notes-edit-card-menu-notes-view-detail-header.svg`](55-dialogs-notes-edit-card-menu-notes-view-detail-header.svg) |
