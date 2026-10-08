@@ -160,6 +160,7 @@ class _AdvancementGeneralPageState extends State<AdvancementGeneralPage> {
                                     currentValue:
                                         selected.material ?? emptyString,
                                     hintText: defaultMaterial,
+                                    suggestsMaterials: true,
                                     valueUpdate: (value) => _update(
                                       context,
                                       selected,

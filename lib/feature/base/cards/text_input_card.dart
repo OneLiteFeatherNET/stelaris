@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris/feature/base/base_card.dart';
+import 'package:stelaris/feature/base/input/material_autocomplete.dart';
 import 'package:stelaris/util/constants.dart';
 
 /// A card widget that contains a text input field with validation and formatting options.
@@ -16,6 +17,7 @@ class TextInputCard<E> extends StatefulWidget {
     this.formValidator,
     this.maxLength = 30,
     this.isNumber = false,
+    this.suggestsMaterials = false,
     this.focusOrder,
     super.key,
   });
@@ -26,6 +28,9 @@ class TextInputCard<E> extends StatefulWidget {
   final TextInputType? inputType;
   final int maxLength;
   final bool isNumber;
+
+  /// Suggests Minecraft materials while typing; the text stays free.
+  final bool suggestsMaterials;
   final String tooltipMessage;
   final String? hintText;
   final List<TextInputFormatter>? formatter;
@@ -84,50 +89,72 @@ class _TextInputCardState extends State<TextInputCard> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 300),
           child: _wrapWithFocusOrder(
-            TextFormField(
-              focusNode: _focusNode,
-              onFieldSubmitted: _handleFieldSubmitted,
-              maxLength: widget.maxLength,
-              autovalidateMode: widget.formValidator != null
-                  ? AutovalidateMode.onUserInteraction
-                  : AutovalidateMode.disabled,
-              autocorrect: false,
-              controller: _editController,
-              keyboardType: widget.inputType,
-              inputFormatters: widget.formatter,
-              validator: widget.formValidator,
-              style: TextStyle(color: colorScheme.onSurface, fontSize: 16),
-              decoration: InputDecoration(
-                hintText: widget.hintText,
-                hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
-                border: outlineBorder,
-                enabledBorder: outlineBorder,
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: _borderRadius,
-                  borderSide: BorderSide(
-                    color: colorScheme.primary,
-                    width: 2,
+            widget.suggestsMaterials
+                ? MaterialAutocomplete(
+                    controller: _editController,
+                    focusNode: _focusNode,
+                    onSelected: _handleFieldSubmitted,
+                    fieldBuilder:
+                        (context, controller, focusNode, onSubmitted) =>
+                            _buildField(colorScheme, outlineBorder, (value) {
+                              // Taking a suggestion rewrites the text and
+                              // submits it through onSelected already.
+                              onSubmitted();
+                              if (controller.text == value) {
+                                _handleFieldSubmitted(value);
+                              }
+                            }),
+                  )
+                : _buildField(
+                    colorScheme,
+                    outlineBorder,
+                    _handleFieldSubmitted,
                   ),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: _borderRadius,
-                  borderSide: BorderSide(color: colorScheme.error),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: _borderRadius,
-                  borderSide: BorderSide(color: colorScheme.error, width: 2),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-              ),
-              textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
-            ),
           ),
         ),
       ),
       message: widget.tooltipMessage,
+    );
+  }
+
+  Widget _buildField(
+    ColorScheme colorScheme,
+    OutlineInputBorder outlineBorder,
+    ValueChanged<String> onFieldSubmitted,
+  ) {
+    return TextFormField(
+      focusNode: _focusNode,
+      onFieldSubmitted: onFieldSubmitted,
+      maxLength: widget.maxLength,
+      autovalidateMode: widget.formValidator != null
+          ? AutovalidateMode.onUserInteraction
+          : AutovalidateMode.disabled,
+      autocorrect: false,
+      controller: _editController,
+      keyboardType: widget.inputType,
+      inputFormatters: widget.formatter,
+      validator: widget.formValidator,
+      style: TextStyle(color: colorScheme.onSurface, fontSize: 16),
+      decoration: InputDecoration(
+        hintText: widget.hintText,
+        hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+        border: outlineBorder,
+        enabledBorder: outlineBorder,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: _borderRadius,
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: _borderRadius,
+          borderSide: BorderSide(color: colorScheme.error),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: _borderRadius,
+          borderSide: BorderSide(color: colorScheme.error, width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      ),
+      textAlign: widget.isNumber ? TextAlign.right : TextAlign.left,
     );
   }
 
