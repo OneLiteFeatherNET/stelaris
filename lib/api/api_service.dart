@@ -26,10 +26,10 @@ class ApiService {
 
   late final ItemAPI itemApi = ItemAPI(apiClient: _apiClient);
 
-  late final ClientAPI<NotificationModel> notificationApi = BaseApi(
+  late final ClientAPI<AdvancementModel> advancementApi = BaseApi(
     apiClient: _apiClient,
-    endpoint: 'notification',
-    fromJson: (p0) => NotificationModel.fromJson(p0),
+    endpoint: 'advancement',
+    fromJson: (p0) => AdvancementModel.fromJson(p0),
     toJson: (model) => model.toJson(),
   );
 
@@ -64,10 +64,8 @@ class ApiService {
   /// hosts to maintain and none to get wrong when a call site is added.
   /// [AuthSessions.current] is null in a deployment with no provider, which
   /// makes these plain clients again.
-  ApiClient _createApiClient() => ApiClient(
-    RuntimeConfig.current.backendUrl,
-    tokens: AuthSessions.current,
-  );
+  ApiClient _createApiClient() =>
+      ApiClient(RuntimeConfig.current.backendUrl, tokens: AuthSessions.current);
 
   /// Creates an instance of [ApiClient] with the generator URL.
   ApiClient _createGeneratorClient() => ApiClient(

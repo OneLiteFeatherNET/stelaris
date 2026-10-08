@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
-import 'package:stelaris/api/state/actions/notification_actions.dart';
+import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -18,7 +18,7 @@ enum _UnsavedChangesChoice { save, discard, cancel }
 /// edited in a dialog (attributes) that never have pending edits.
 ReduxAction<AppState>? saveActionFor(NavigationEntry entry) => switch (entry) {
   NavigationEntry.items => ItemDatabaseUpdate(),
-  NavigationEntry.notifications => NotificationDatabaseUpdate(),
+  NavigationEntry.advancements => AdvancementDatabaseUpdate(),
   NavigationEntry.font => FontDatabaseUpdate(),
   NavigationEntry.sound => SoundDatabaseUpdate(),
   NavigationEntry.attributes => null,
@@ -111,7 +111,8 @@ class _UnsavedChangesDialog extends StatelessWidget {
         ),
         FilledButton(
           key: const Key('unsaved_dialog_save'),
-          onPressed: () => Navigator.of(context).pop(_UnsavedChangesChoice.save),
+          onPressed: () =>
+              Navigator.of(context).pop(_UnsavedChangesChoice.save),
           child: Text(l10n.button_save),
         ),
       ],

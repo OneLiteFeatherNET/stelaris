@@ -16,7 +16,7 @@ abstract final class StelarisIcons {
   static const IconData pickaxeOutlined = IconData(0xe002, fontFamily: _family);
   static const IconData pickaxe = IconData(0xe003, fontFamily: _family);
 
-  /// Notifications: an advancement toast with a star.
+  /// Advancements: an advancement toast with a star.
   static const IconData advancementOutlined = IconData(
     0xe004,
     fontFamily: _family,

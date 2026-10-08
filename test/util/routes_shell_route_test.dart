@@ -37,7 +37,7 @@ void main() {
 
         expect(subPaths, contains(NavigationEntry.items.route));
         expect(subPaths, contains(NavigationEntry.attributes.route));
-        expect(subPaths, contains(NavigationEntry.notifications.route));
+        expect(subPaths, contains(NavigationEntry.advancements.route));
         expect(subPaths, contains(NavigationEntry.font.route));
         expect(subPaths, contains(NavigationEntry.sound.route));
 

@@ -435,7 +435,7 @@ void main() {
       expect(_titles(tester), [
         'Go to Attributes',
         'Go to Items',
-        'Go to Notifications',
+        'Go to Advancements',
         'Go to Fonts',
         'Go to Sound',
         'Go to project list',

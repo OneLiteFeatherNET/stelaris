@@ -9,7 +9,7 @@ import 'package:stelaris/feature/command_palette/delete_specs.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
 import 'package:stelaris/feature/model/model_detail_actions.dart';
-import 'package:stelaris/feature/notification/notification_detail_page.dart';
+import 'package:stelaris/feature/advancement/advancement_detail_page.dart';
 import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -96,12 +96,12 @@ void main() {
       ),
       soundDelete,
     ),
-    'notification': (
-      const NotificationDetailPage(),
+    'advancement': (
+      const AdvancementDetailPage(),
       const AppState(
-        selectedNotification: NotificationModel(uiName: 'Done', id: 'n1'),
+        selectedAdvancement: AdvancementModel(uiName: 'Done', id: 'n1'),
       ),
-      notificationDelete,
+      advancementDelete,
     ),
   };
 

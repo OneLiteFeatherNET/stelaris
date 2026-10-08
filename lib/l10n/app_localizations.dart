@@ -280,11 +280,11 @@ abstract class AppLocalizations {
   /// **'Delete item'**
   String get dialog_item_delete_title;
 
-  /// No description provided for @dialog_notification_delete_title.
+  /// No description provided for @dialog_advancement_delete_title.
   ///
   /// In en, this message translates to:
-  /// **'Delete notification'**
-  String get dialog_notification_delete_title;
+  /// **'Delete advancement'**
+  String get dialog_advancement_delete_title;
 
   /// No description provided for @dialog_sound_delete_title.
   ///
@@ -412,11 +412,11 @@ abstract class AppLocalizations {
   /// **'Delete char'**
   String get dialog_font_char_delete;
 
-  /// No description provided for @dialog_notification_create.
+  /// No description provided for @dialog_advancement_create.
   ///
   /// In en, this message translates to:
-  /// **'Create new notification'**
-  String get dialog_notification_create;
+  /// **'Create new advancement'**
+  String get dialog_advancement_create;
 
   /// No description provided for @action_notes.
   ///
@@ -859,7 +859,7 @@ abstract class AppLocalizations {
   /// No description provided for @dialog_project_switch_hint.
   ///
   /// In en, this message translates to:
-  /// **'Loaded items, fonts, notifications, attributes and sound events will be reset.'**
+  /// **'Loaded items, fonts, advancements, attributes and sound events will be reset.'**
   String get dialog_project_switch_hint;
 
   /// No description provided for @dialog_project_switch_confirm.
@@ -976,11 +976,11 @@ abstract class AppLocalizations {
   /// **'Copy sound event'**
   String get dialog_sound_copy;
 
-  /// No description provided for @dialog_notification_copy.
+  /// No description provided for @dialog_advancement_copy.
   ///
   /// In en, this message translates to:
-  /// **'Copy notification'**
-  String get dialog_notification_copy;
+  /// **'Copy advancement'**
+  String get dialog_advancement_copy;
 
   /// No description provided for @dialog_attribute_copy.
   ///
@@ -1345,7 +1345,7 @@ abstract class AppLocalizations {
   /// No description provided for @command_palette_mode_entities_help.
   ///
   /// In en, this message translates to:
-  /// **'Open an item, font, sound, notification or attribute'**
+  /// **'Open an item, font, sound, advancement or attribute'**
   String get command_palette_mode_entities_help;
 
   /// No description provided for @command_palette_mode_projects.
@@ -1396,11 +1396,11 @@ abstract class AppLocalizations {
   /// **'Sounds'**
   String get command_palette_kind_sounds;
 
-  /// No description provided for @command_palette_kind_notifications.
+  /// No description provided for @command_palette_kind_advancements.
   ///
   /// In en, this message translates to:
-  /// **'Notifications'**
-  String get command_palette_kind_notifications;
+  /// **'Advancements'**
+  String get command_palette_kind_advancements;
 
   /// No description provided for @command_palette_kind_attributes.
   ///
@@ -1465,7 +1465,7 @@ abstract class AppLocalizations {
   /// No description provided for @command_palette_hint_entities.
   ///
   /// In en, this message translates to:
-  /// **'Search loaded items, fonts, sounds, notifications and attributes'**
+  /// **'Search loaded items, fonts, sounds, advancements and attributes'**
   String get command_palette_hint_entities;
 
   /// No description provided for @command_palette_hint_kind.
@@ -1630,11 +1630,11 @@ abstract class AppLocalizations {
   /// **'New sound'**
   String get command_create_sound;
 
-  /// No description provided for @command_create_notification.
+  /// No description provided for @command_create_advancement.
   ///
   /// In en, this message translates to:
-  /// **'New notification'**
-  String get command_create_notification;
+  /// **'New advancement'**
+  String get command_create_advancement;
 
   /// No description provided for @command_create_attribute.
   ///
@@ -1678,11 +1678,11 @@ abstract class AppLocalizations {
   /// **'Delete this sound…'**
   String get command_delete_this_sound;
 
-  /// No description provided for @command_delete_this_notification.
+  /// No description provided for @command_delete_this_advancement.
   ///
   /// In en, this message translates to:
-  /// **'Delete this notification…'**
-  String get command_delete_this_notification;
+  /// **'Delete this advancement…'**
+  String get command_delete_this_advancement;
 
   /// No description provided for @command_palette_key_step_in.
   ///

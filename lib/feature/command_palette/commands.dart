@@ -5,7 +5,7 @@ import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/build/build_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
-import 'package:stelaris/api/state/actions/notification_actions.dart';
+import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/actions/theme_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -42,8 +42,8 @@ List<StelarisCommand> pocCommands() => [
   _deleteThis(fontDelete, (l10n) => l10n.command_delete_this_font),
   _deleteThis(soundDelete, (l10n) => l10n.command_delete_this_sound),
   _deleteThis(
-    notificationDelete,
-    (l10n) => l10n.command_delete_this_notification,
+    advancementDelete,
+    (l10n) => l10n.command_delete_this_advancement,
   ),
 ];
 
@@ -96,7 +96,7 @@ StelarisCommand _create(NavigationEntry entry) {
       NavigationEntry.items => l10n.command_create_item,
       NavigationEntry.font => l10n.command_create_font,
       NavigationEntry.sound => l10n.command_create_sound,
-      NavigationEntry.notifications => l10n.command_create_notification,
+      NavigationEntry.advancements => l10n.command_create_advancement,
       NavigationEntry.attributes => l10n.command_create_attribute,
     },
     keywords: (l10n) => _split(l10n.command_create_keywords),
@@ -215,7 +215,7 @@ ReduxAction<AppState> refreshActionFor(NavigationEntry entry) {
   return switch (entry) {
     NavigationEntry.attributes => RefreshAttributeAction(),
     NavigationEntry.items => RefreshItemAction(),
-    NavigationEntry.notifications => RefreshNotificationAction(),
+    NavigationEntry.advancements => RefreshAdvancementAction(),
     NavigationEntry.font => RefreshFontAction(),
     NavigationEntry.sound => RefreshSoundAction(),
   };

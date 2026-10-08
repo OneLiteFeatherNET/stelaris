@@ -5,13 +5,13 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
-import 'package:stelaris/feature/notification/notification_detail_page.dart';
+import 'package:stelaris/feature/advancement/advancement_detail_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 void main() {
-  group('NotificationDetailPage', () {
-    const selected = NotificationModel(
+  group('AdvancementDetailPage', () {
+    const selected = AdvancementModel(
       id: 'notif-1',
       uiName: 'Level Up',
       material: 'minecraft:diamond',
@@ -21,20 +21,20 @@ void main() {
 
     Future<void> pumpPage(WidgetTester tester) async {
       store = Store<AppState>(
-        initialState: const AppState(selectedNotification: selected),
+        initialState: const AppState(selectedAdvancement: selected),
       );
 
       final router = GoRouter(
-        initialLocation: '/notifications/detail',
+        initialLocation: '/advancements/detail',
         routes: [
           GoRoute(
-            path: '/notifications',
+            path: '/advancements',
             builder: (context, state) =>
-                const Scaffold(body: Text('Notification List')),
+                const Scaffold(body: Text('Advancement List')),
             routes: [
               GoRoute(
                 path: 'detail',
-                builder: (context, state) => const NotificationDetailPage(),
+                builder: (context, state) => const AdvancementDetailPage(),
               ),
             ],
           ),
@@ -54,26 +54,32 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('shows a back bar with the selected notification name', (tester) async {
+    testWidgets('shows a back bar with the selected advancement name', (
+      tester,
+    ) async {
       await pumpPage(tester);
 
       expect(find.byType(PageHeader), findsOneWidget);
       expect(find.text('Level Up'), findsOneWidget);
     });
 
-    testWidgets('shows the notification edit form below the back bar', (tester) async {
+    testWidgets('shows the advancement edit form below the back bar', (
+      tester,
+    ) async {
       await pumpPage(tester);
 
       expect(find.text('minecraft:diamond'), findsOneWidget);
     });
 
-    testWidgets('tapping back navigates to the notification list', (tester) async {
+    testWidgets('tapping back navigates to the advancement list', (
+      tester,
+    ) async {
       await pumpPage(tester);
 
       await tester.tap(find.byKey(const Key('page_header_back_button')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Notification List'), findsOneWidget);
+      expect(find.text('Advancement List'), findsOneWidget);
     });
 
     /// The text field of the card labelled [label].
@@ -102,10 +108,7 @@ void main() {
 
       await enterAndBlur(tester, 'Title', 'Level 5 – Glückwunsch!');
 
-      expect(
-        store.state.selectedNotification?.title,
-        'Level 5 – Glückwunsch!',
-      );
+      expect(store.state.selectedAdvancement?.title, 'Level 5 – Glückwunsch!');
     });
 
     testWidgets('leaving the page clears the selection', (tester) async {
@@ -114,7 +117,7 @@ void main() {
       await tester.tap(find.byKey(const Key('page_header_back_button')));
       await tester.pumpAndSettle();
 
-      expect(store.state.selectedNotification, isNull);
+      expect(store.state.selectedAdvancement, isNull);
     });
   });
 }

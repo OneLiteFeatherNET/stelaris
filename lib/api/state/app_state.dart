@@ -28,7 +28,7 @@ abstract class AppState with _$AppState {
     PaginatedResult<ItemModel> items,
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(
-      PaginatedResult<NotificationModel>(
+      PaginatedResult<AdvancementModel>(
         items: [],
         totalItems: 0,
         totalPages: 0,
@@ -36,7 +36,7 @@ abstract class AppState with _$AppState {
         pageSize: 0,
       ),
     )
-    PaginatedResult<NotificationModel> notifications,
+    PaginatedResult<AdvancementModel> advancements,
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(
       PaginatedResult<FontModel>(
@@ -80,7 +80,7 @@ abstract class AppState with _$AppState {
     bool isLoadingMoreItems,
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
-    bool isLoadingMoreNotifications,
+    bool isLoadingMoreAdvancements,
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingMoreFonts,
@@ -115,7 +115,7 @@ abstract class AppState with _$AppState {
     @Default([])
     List<ItemComponentDto> selectedItemComponents,
     @JsonKey(includeToJson: false, includeFromJson: false)
-    NotificationModel? selectedNotification,
+    AdvancementModel? selectedAdvancement,
     @JsonKey(includeToJson: false, includeFromJson: false)
     FontModel? selectedFont,
     @JsonKey(includeToJson: false, includeFromJson: false)

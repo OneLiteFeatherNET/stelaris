@@ -1,9 +1,9 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
-import 'package:stelaris/api/state/actions/notification_actions.dart';
+import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/api/state/factory/notification/selected_notification_state.dart';
+import 'package:stelaris/api/state/factory/advancement/selected_advancement_state.dart';
 import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
 import 'package:stelaris/feature/base/cards/dropdown_card.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
@@ -13,21 +13,20 @@ import 'package:vulpes_data/advancement.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 
-/// A widget that represents the general notification management page.
+/// A widget that represents the general advancement management page.
 ///
-/// The [NotificationGeneralPage] allows users to view and edit the details
-/// of a selected notification, including its name, material, title, description,
+/// The [AdvancementGeneralPage] allows users to view and edit the details
+/// of a selected advancement, including its name, material, title, description,
 /// and frame type. It provides a form for input and a save button to commit changes.
-class NotificationGeneralPage extends StatefulWidget {
-  /// Creates an instance of [NotificationGeneralPage].
-  const NotificationGeneralPage({super.key});
+class AdvancementGeneralPage extends StatefulWidget {
+  /// Creates an instance of [AdvancementGeneralPage].
+  const AdvancementGeneralPage({super.key});
 
   @override
-  State<NotificationGeneralPage> createState() =>
-      _NotificationGeneralPageState();
+  State<AdvancementGeneralPage> createState() => _AdvancementGeneralPageState();
 }
 
-class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
+class _AdvancementGeneralPageState extends State<AdvancementGeneralPage> {
   /// A global key for the form to manage its state and validation.
   final _key = GlobalKey<FormState>();
 
@@ -52,8 +51,8 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, SelectedNotificationView>(
-      vm: () => SelectedNotificationFactory(),
+    return StoreConnector<AppState, SelectedAdvancementView>(
+      vm: () => SelectedAdvancementFactory(),
       builder: (context, vm) {
         return FocusScope(
           child: FocusTraversalGroup(
@@ -61,7 +60,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
             child: Form(
               key: _key,
               onChanged: () => context.dispatch(
-                MarkUnsavedChangesAction(NavigationEntry.notifications),
+                MarkUnsavedChangesAction(NavigationEntry.advancements),
               ),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Stack(
@@ -96,7 +95,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                             material: value,
                                           );
                                           context.dispatch(
-                                            UpdateNotificationAction(newEntry),
+                                            UpdateAdvancementAction(newEntry),
                                           );
                                         }
                                       },
@@ -123,13 +122,13 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                             title: value,
                                           );
                                           context.dispatch(
-                                            UpdateNotificationAction(newEntry),
+                                            UpdateAdvancementAction(newEntry),
                                           );
                                         }
                                       },
                                       focusOrder: const NumericFocusOrder(2),
                                     ),
-                                    DropdownCard<FrameType, NotificationModel>(
+                                    DropdownCard<FrameType, AdvancementModel>(
                                       display: context.l10n.card_frame_type,
                                       currentValue: vm.selected,
                                       items: items,
@@ -140,7 +139,7 @@ class _NotificationGeneralPageState extends State<NotificationGeneralPage> {
                                             frameType: value,
                                           );
                                           context.dispatch(
-                                            UpdateNotificationAction(newEntry),
+                                            UpdateAdvancementAction(newEntry),
                                           );
                                         }
                                       },

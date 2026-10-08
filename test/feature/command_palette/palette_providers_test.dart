@@ -163,7 +163,7 @@ void main() {
       expect(ids(resolve(':', location: '/fonts')), [
         'nav.attributes',
         'nav.items',
-        'nav.notifications',
+        'nav.advancements',
         'nav.font',
         'nav.sound',
         'nav.projects',
@@ -220,7 +220,7 @@ void main() {
       expect(navigation, [
         'nav.attributes',
         'nav.items',
-        'nav.notifications',
+        'nav.advancements',
         'nav.font',
         'nav.sound',
         'nav.projects',
@@ -312,8 +312,8 @@ void main() {
   group('entity children', () {
     final AppState everyKind = loaded.copyWith(
       fonts: page(const [FontModel(uiName: 'Rune Script', id: 'f1')]),
-      notifications: page(const [
-        NotificationModel(uiName: 'Quest Done', id: 'n1'),
+      advancements: page(const [
+        AdvancementModel(uiName: 'Quest Done', id: 'n1'),
       ]),
     );
 
@@ -348,7 +348,7 @@ void main() {
       ]);
     });
 
-    test('attributes and notifications step into Delete alone', () {
+    test('attributes and advancements step into Delete alone', () {
       expect(childrenOf('Max Mana', everyKind), ['Delete\u2026']);
       expect(childrenOf('Quest Done', everyKind), ['Delete\u2026']);
     });
@@ -368,7 +368,7 @@ void main() {
         'create.items',
         'create.font',
         'create.sound',
-        'create.notifications',
+        'create.advancements',
         'create.attributes',
       ];
       expect(availableIds('/fonts'), containsAll(creates));

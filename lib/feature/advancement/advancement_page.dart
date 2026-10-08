@@ -2,9 +2,9 @@ import 'package:async_redux/async_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
-import 'package:stelaris/api/state/actions/notification_actions.dart';
+import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/api/state/factory/notification/notification_vm_state.dart';
+import 'package:stelaris/api/state/factory/advancement/advancement_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/model/model_create.dart';
@@ -13,30 +13,30 @@ import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/feature/model/model_copy.dart';
 
-/// A widget that represents the notification management page.
+/// A widget that represents the advancement management page.
 ///
-/// The [NotificationPage] allows users to view, search, and manage
-/// notifications through a [ModelPage]. It provides a dialog for creating
-/// new notifications and handles the state management through Redux.
-/// Tapping a notification navigates to its dedicated detail route, since a
-/// notification has more editable fields (material, title, comment, frame
+/// The [AdvancementPage] allows users to view, search, and manage
+/// advancements through a [ModelPage]. It provides a dialog for creating
+/// new advancements and handles the state management through Redux.
+/// Tapping a advancement navigates to its dedicated detail route, since a
+/// advancement has more editable fields (material, title, comment, frame
 /// type) than would comfortably fit in a small dialog.
-class NotificationPage extends StatelessWidget {
-  const NotificationPage({super.key});
+class AdvancementPage extends StatelessWidget {
+  const AdvancementPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, NotificationViewModel>(
-      vm: () => NotificationVmFactory(),
-      onInit: (store) => store.dispatchAndWait(InitNotificationAction()),
+    return StoreConnector<AppState, AdvancementViewModel>(
+      vm: () => AdvancementVmFactory(),
+      onInit: (store) => store.dispatchAndWait(InitAdvancementAction()),
       builder: (context, vm) {
-        return ModelPage<NotificationModel>(
-          entry: NavigationEntry.notifications,
+        return ModelPage<AdvancementModel>(
+          entry: NavigationEntry.advancements,
           mapToDataModelItem: (value) =>
               _buildCardContent(context, vm.projectKey, value),
-          deleteTitle: context.l10n.dialog_notification_delete_title,
+          deleteTitle: context.l10n.dialog_advancement_delete_title,
           mapToDeleteSuccessfully: (value) {
-            context.dispatch(NotificationRemoveAction(value));
+            context.dispatch(AdvancementRemoveAction(value));
             return true;
           },
           models: vm.models,
@@ -44,42 +44,42 @@ class NotificationPage extends StatelessWidget {
           keySelector: (model) => model.key ?? '',
           notes: ModelNotes(
             read: (model) => model.comment,
-            update: NotificationNotesUpdateAction.new,
+            update: AdvancementNotesUpdateAction.new,
           ),
           copy: ModelCopy(
-            title: (l10n) => l10n.dialog_notification_copy,
-            action: NotificationCopyAction.new,
+            title: (l10n) => l10n.dialog_advancement_copy,
+            action: AdvancementCopyAction.new,
           ),
           projectKey: vm.projectKey,
           matchesFilter: (model, filter) => true,
           onAdd: () => openModelCreateDialog(
             context,
-            NavigationEntry.notifications,
+            NavigationEntry.advancements,
             vm.projectKey,
           ),
           onModelTap: (model) {
-            context.dispatch(SelectedNotificationAction(model));
-            context.go('${NavigationEntry.notifications.route}/detail');
+            context.dispatch(SelectedAdvancementAction(model));
+            context.go('${NavigationEntry.advancements.route}/detail');
           },
-          onRefresh: () => context.dispatch(RefreshNotificationAction()),
+          onRefresh: () => context.dispatch(RefreshAdvancementAction()),
           hasMore: vm.hasNextPage,
           isLoadingMore: vm.isLoadingMore,
           onLoadMore: vm.hasNextPage && !vm.isLoadingMore
-              ? () => context.dispatch(InitNotificationAction())
+              ? () => context.dispatch(InitAdvancementAction())
               : null,
         );
       },
     );
   }
 
-  /// Builds the primary card content for a [NotificationModel]: its display
+  /// Builds the primary card content for a [AdvancementModel]: its display
   /// name plus its namespaced key (e.g. `manis:test`), derived client-side
   /// from the current project's key and the model's local
-  /// [NotificationModel.key].
+  /// [AdvancementModel.key].
   Widget _buildCardContent(
     BuildContext context,
     String projectKey,
-    NotificationModel value,
+    AdvancementModel value,
   ) {
     final key = value.key;
     final namespacedKey = key != null && key.isNotEmpty
@@ -107,5 +107,5 @@ class NotificationPage extends StatelessWidget {
     );
   }
 
-  /// Opens a dialog for creating a new notification.
+  /// Opens a dialog for creating a new advancement.
 }

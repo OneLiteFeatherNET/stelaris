@@ -2,7 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
-import 'package:stelaris/api/state/actions/notification_actions.dart';
+import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -16,29 +16,33 @@ void main() {
 
   setUp(() => store = Store<AppState>(initialState: const AppState()));
 
-  test('selecting is clean, each form update action marks its own section',
-      () async {
-    await store.dispatchAndWait(SelectedItemAction(item));
-    expect(store.state.unsavedChanges, isNull);
+  test(
+    'selecting is clean, each form update action marks its own section',
+    () async {
+      await store.dispatchAndWait(SelectedItemAction(item));
+      expect(store.state.unsavedChanges, isNull);
 
-    await store.dispatchAndWait(
-      UpdateItemAction(item.copyWith(uiName: 'Emerald Sword')),
-    );
-    expect(store.state.unsavedChanges, NavigationEntry.items);
+      await store.dispatchAndWait(
+        UpdateItemAction(item.copyWith(uiName: 'Emerald Sword')),
+      );
+      expect(store.state.unsavedChanges, NavigationEntry.items);
 
-    await store.dispatchAndWait(
-      UpdateNotificationAction(const NotificationModel(uiName: 'n')),
-    );
-    expect(store.state.unsavedChanges, NavigationEntry.notifications);
+      await store.dispatchAndWait(
+        UpdateAdvancementAction(const AdvancementModel(uiName: 'n')),
+      );
+      expect(store.state.unsavedChanges, NavigationEntry.advancements);
 
-    await store.dispatchAndWait(UpdateFontAction(const FontModel(uiName: 'f')));
-    expect(store.state.unsavedChanges, NavigationEntry.font);
+      await store.dispatchAndWait(
+        UpdateFontAction(const FontModel(uiName: 'f')),
+      );
+      expect(store.state.unsavedChanges, NavigationEntry.font);
 
-    await store.dispatchAndWait(
-      UpdateSoundAction(SoundEventModel(uiName: 's')),
-    );
-    expect(store.state.unsavedChanges, NavigationEntry.sound);
-  });
+      await store.dispatchAndWait(
+        UpdateSoundAction(SoundEventModel(uiName: 's')),
+      );
+      expect(store.state.unsavedChanges, NavigationEntry.sound);
+    },
+  );
 
   test('changes to the selection outside the form actions stay clean '
       '(e.g. paginated chars, lore or loading flags)', () async {
