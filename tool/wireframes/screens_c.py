@@ -19,7 +19,7 @@ def _list_bg(s, section="Items"):
 def s40_settings():
     s = Svg("40 Dialog – Settings")
     _list_bg(s)
-    x, y = s.strip_dialog(1000, 820, "Settings", y=40)
+    x, y = s.strip_dialog(1000, 856, "Settings", y=22)
     x += 24
     w = 952
     def section(yy, title):
@@ -32,6 +32,7 @@ def s40_settings():
     yy = section(y + 10, "Project")
     row(yy, "Active Project", "Select or switch the active project workspace")
     s.field(x + w - 280, yy + 4, 280, "", "Demo Project (demo)  Labor", dropdown=True, h=44)
+    s.link(x + w - 280, yy + 4, 280, 44, "07")
     yy = section(yy + 80, "Display settings")
     row(yy, "Use System Theme", "Automatically match your system's theme settings")
     s.switch(x + w - 52, yy + 10)
@@ -58,7 +59,7 @@ def s40_settings():
         else:
             s.rect(x + w - 80, yy + 12, 80, 30, fill=BG, stroke=STROKE, r=15)
             s.text(x + w - 40, yy + 32, "1.5.0", 13, INK, anchor="middle")
-    s.text(720, 846, "@2025 Onelitefeather • Made with ❤ by the team", 12, MUTED, anchor="middle")
+    s.text(720, 864, "@2025 Onelitefeather • Made with ❤ by the team", 12, MUTED, anchor="middle")
     return s
 
 
@@ -77,7 +78,7 @@ def _build_frame(s, tab):
     s.text(rx + 50, y + 30, "Status: Stable", 15, ACCENT, 700)
     s.text(rx + 50, y + 52, "Commit: abc1234", 13, MUTED)
     s.line(x, y + 94, x + 1000, y + 94)
-    s.tabs(x + 24, y + 98, 952, ["Download", "Build"], tab)
+    s.tabs(x + 24, y + 98, 952, ["Download", "Build"], tab, targets=["41", "42"])
     s.line(x, y + 150, x + 1000, y + 150)
     return x + 50, y + 170, 900
 
@@ -87,10 +88,12 @@ def s41_build_download():
     s = Svg("41 Dialog – Build & Download: Download tab")
     x, y, w = _build_frame(s, 0)
     s.rect(x, y, w, 230, fill=SURFACE, stroke=STROKE, r=12)
+    s.bg = SURFACE
     s.text(x + 24, y + 40, "Search by Commit", 15, INK)
     s.switch(x + w - 76, y + 18, on=False)
     s.field(x + 24, y + 72, w - 48, "", "main", dropdown=True)
     s.button(x + 24, y + 156, "Download", "filled", w=w - 48, icon=True)
+    s.link(x + 24, y + 156, w - 48, 40, "back")
     s.note(1160, 90, ["States of the Download tab:", "• Fetching branches… (spinner)",
                       "• No project selected!", "• Service unavailable",
                       "• No branches found! + refresh", "Switch on → \"Git commit\" field",
@@ -104,6 +107,7 @@ def s42_build_build():
     s = Svg("42 Dialog – Build & Download: Build tab")
     x, y, w = _build_frame(s, 1)
     s.rect(x, y, w, 330, fill=SURFACE, stroke=STROKE, r=12)
+    s.bg = SURFACE
     fw = (w - 48 - 60) / 2
     s.rect(x + 24, y + 24, fw, 56, fill=SURFACE_2, stroke=STROKE, r=4)
     s.text(x + 38, y + 20, "Current version", 12, MUTED)
@@ -123,9 +127,12 @@ def s42_build_build():
     return s
 
 
-def _palette(s, x, y, w, rows, footer, notice=None, h=None):
+def _palette(s, x, y, w, rows, footer, notice=None, h=None, targets=None):
+    """rows: ("h", heading) or ("r", title, subtitle, trailing, highlighted);
+    targets: {title: screen} for the click dummy."""
+    targets = targets or {}
     h = h or min(440, 70 + len(rows) * 40 + (28 if notice else 0))
-    s.rect(x, y, w, h, fill=BG, stroke=STROKE, r=16)
+    s.rect(x, y, w, h, fill=DIALOG, stroke="none", r=16)
     yy = y + 8
     if notice:
         s.text(x + 16, yy + 16, notice, 12, MUTED, italic=True)
@@ -137,6 +144,7 @@ def _palette(s, x, y, w, rows, footer, notice=None, h=None):
             continue
         title, sub, trail, hl = (r + [None, None, False])[:4]
         rh = 48 if sub else 38
+        s.link(x + 6, yy, w - 12, rh, targets.get(title))
         if hl:
             s.rect(x + 6, yy, w - 12, rh, fill=SECONDARY, stroke="none", r=8)
         s.icon(x + 18, yy + rh / 2 - 10, 20, fill="none")
@@ -171,7 +179,12 @@ def s43_palette_default():
             ("h", "Create"), ("r", "New attribute", None, None, True), ("r", "New item"),
             ("h", "Interface"), ("r", "Toggle dark mode"), ("r", "Open settings"),
             ("h", "Backend"), ("r", "Reload current list")]
-    _palette(s, 400, 58, 640, rows, FOOT, h=600)
+    s.link(0, 64, 400, s.h - 64, "back")      # click outside closes
+    s.link(1040, 64, 400, s.h - 64, "back")
+    _palette(s, 400, 58, 640, rows, FOOT, h=600, targets={
+        "Go to Attributes": "11", "Go to Notifications": "12", "Go to Fonts": "13",
+        "Go to Sound": "14", "Go to project list": "03", "New attribute": "51",
+        "New item": "51", "Open settings": "40", "Toggle dark mode": None})
     s.note(1080, 120, ["Palette = the app-bar search field;", "dropdown opens below it",
                        "(max 440 high, radius 16).", "Prefixes: > commands, : go,",
                        "# entities, @ projects, / settings,", "? help. Plain text first row:",
@@ -186,14 +199,17 @@ def s44_palette_entities():
     page_header(s, x, y, w, "Items (12)")
     rows = [("r", "Components", None, None, True), ("r", "Enchantments"), ("r", "Lore"),
             ("r", "Delete…")]
+    s.link(0, 64, 400, s.h - 64, "back")
     _palette(s, 400, 58, 640, rows, [("↑↓", "Navigate"), ("Enter", "Run"), ("←", "Back"),
                                      ("Esc", "Close"), ("?", "Help")],
-             notice="Ruby Sword: pick a tab or an action")
+             notice="Ruby Sword: pick a tab or an action",
+             targets={"Components": "20", "Enchantments": "23", "Lore": "25", "Delete…": "53"})
     rows2 = [("r", "Ruby Sword", "demo:ruby_sword", "Items ›", True),
              ("r", "Ruby Ore Sound", "demo:ruby_ore", "Sounds ›"),
              ("r", "Ruby", "demo:ruby", "Attributes")]
     s.text(400, 420, "Before drilling in (#ruby):", 13, MUTED, italic=True)
-    _palette(s, 400, 432, 640, rows2, FOOT, notice="Only entries that are already loaded are searched")
+    _palette(s, 400, 432, 640, rows2, FOOT, notice="Only entries that are already loaded are searched",
+             targets={"Ruby Sword": "20", "Ruby Ore Sound": "30", "Ruby": "50"})
     return s
 
 
@@ -208,6 +224,7 @@ def s45_palette_help():
             ("r", "/  Settings", "Change the theme or open the settings"),
             ("h", "Keyboard"), ("r", "↑ / ↓", "Move the highlight"),
             ("r", "Enter", "Run the highlighted entry"), ("r", "Esc", "Close the palette")]
+    s.link(0, 64, 400, s.h - 64, "back")
     _palette(s, 400, 58, 640, rows, FOOT, h=560)
     return s
 
@@ -219,13 +236,17 @@ def s46_menus():
     from screens_a import ITEMS
     grid(s, x, y + 64, w, ITEMS[:6], lambda s, x, y, w, n, k, note=None, ed="Edited 5 min ago":
          model_card(s, x, y, w, n, k, note, ed))
+    s.links.clear()
+    s.link(0, 0, s.w, s.h, "back")  # click outside closes the menu
     mx, my = 470, 180
-    s.rect(mx, my, 190, 140, fill=BG, stroke=STROKE, r=8)
-    for i, t in enumerate(["Info", "Copy", "Edit notes"]):
+    s.rect(mx, my, 190, 140, fill=DIALOG, stroke="none", r=8)
+    for i, (t, to) in enumerate([("Info", "54"), ("Copy", "52"), ("Edit notes", "55")]):
+        s.link(mx, my + 6 + i * 42, 190, 40, to)
         s.icon(mx + 16, my + 14 + i * 42, 20, fill="none")
         s.text(mx + 48, my + 30 + i * 42, t, 14)
     ax, ay = 1150, 56
-    s.rect(ax, ay, 270, 140, fill=BG, stroke=STROKE, r=8)
+    s.rect(ax, ay, 270, 140, fill=DIALOG, stroke="none", r=8)
+    s.link(ax, ay + 84, 270, 44, "02")
     s.icon(ax + 16, ay + 18, 24, fill="none")
     s.text(ax + 52, ay + 30, "Jane Doe", 15, MUTED, 500)
     s.text(ax + 52, ay + 50, "admin, editor and 1 more", 12, MUTED)
@@ -238,8 +259,9 @@ def s46_menus():
 @screen
 def s47_snackbars():
     s = Svg("47 Snackbars (floating, 550 wide)")
+    s.link(0, 0, s.w, s.h, "back")
     for i, (bg, msg, act, label) in enumerate([
-            ("#313033", "Copied to clipboard", None, "Info · 2 s"),
+            (M3["inverseSurface"], "Copied to clipboard", None, "Info · 2 s"),
             ("#388E3C", "✓  Copied to Survival", "Switch project", "Success · 3 s (6 s with action)"),
             ("#FF6F00", "⚠  Validation failed  • key: must be lowercase", None, "Warning · 4 s"),
             ("#C62828", "⨯  Could not save (CONFLICT)", None, "Error · 4 s")]):
@@ -270,7 +292,7 @@ def s48_compact():
     s.icon_button(320, 76, filled=True); s.icon_button(366, 76, filled=True)
     for i, (n, k) in enumerate([("Ruby Sword", "ruby_sword"), ("Healing Apple", "healing_apple"),
                                 ("Miner's Pick", "miners_pick"), ("Lucky Charm", "lucky_charm")]):
-        model_card(s, 96, 136 + i * 160, 308, n, k)
+        model_card(s, 96, 136 + i * 160, 308, n, k, open_to="20")
     s.note(96, 790, ["Rail always collapsed (< 1000).", "Search → icon; header buttons",
                      "icon-only (< 480). 1 column."], w=230)
     return s

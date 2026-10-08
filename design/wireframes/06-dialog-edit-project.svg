@@ -1,49 +1,49 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
   <title>06 Dialog – Edit project</title>
-  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#F7FBF1" stroke="none" stroke-width="1"/>
   <rect x="0" y="0" width="1440" height="900" rx="0" fill="#000000" fill-opacity="0.32" stroke="none" stroke-width="1"/>
-  <rect x="445.0" y="130.0" width="550" height="640" rx="16" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="469.0" y="172.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#18181B" text-anchor="start">Edit project</text>
-  <text x="963.0" y="172.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#71717A" text-anchor="middle">×</text>
-  <line x1="445.0" y1="194.0" x2="995.0" y2="194.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="445.0" y1="698.0" x2="995.0" y2="698.0" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="883.0" y="714.0" width="88" height="40" rx="20.0" fill="#4C662B" stroke="#4C662B" stroke-width="1"/>
+  <rect x="445.0" y="130.0" width="550" height="640" rx="16" fill="#E6E9E0" stroke="none" stroke-width="1"/>
+  <text x="469.0" y="172.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#181D17" text-anchor="start">Edit project</text>
+  <text x="963.0" y="172.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#424940" text-anchor="middle">×</text>
+  <line x1="445.0" y1="194.0" x2="995.0" y2="194.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="445.0" y1="698.0" x2="995.0" y2="698.0" stroke="#C2C9BD" stroke-width="1"/>
+  <rect x="883.0" y="714.0" width="88" height="40" rx="20.0" fill="#39693B" stroke="#39693B" stroke-width="1"/>
   <text x="927.0" y="739.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF" text-anchor="middle">Save</text>
-  <text x="831.0" y="739.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#4C662B" text-anchor="middle">Cancel</text>
-  <rect x="469.0" y="218.0" width="502" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="479.0" y="211.0" width="100.39999999999999" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
-  <text x="483.0" y="222.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Display Name *</text>
-  <text x="485.0" y="251.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#18181B" text-anchor="start">Demo Project</text>
-  <rect x="937.0" y="236.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="941.0" y1="240.0" x2="953.0" y2="252.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="953.0" y1="240.0" x2="941.0" y2="252.0" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="469.0" y="294.0" width="502" height="56" rx="4" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1"/>
-  <text x="483.0" y="298.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Key / Namespace</text>
-  <text x="485.0" y="328.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#71717A" text-anchor="start">demo</text>
-  <rect x="937.0" y="312.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="941.0" y1="316.0" x2="953.0" y2="328.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="953.0" y1="316.0" x2="941.0" y2="328.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="485.0" y="368.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Project key cannot be changed after creation</text>
-  <rect x="469.0" y="388.0" width="502" height="96" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="479.0" y="381.0" width="80.6" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
-  <text x="483.0" y="392.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Description</text>
-  <text x="485.0" y="416.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#18181B" text-anchor="start">Sandbox for the summer event</text>
-  <rect x="469.0" y="504.0" width="502" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="479.0" y="497.0" width="80.6" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
-  <text x="483.0" y="508.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Project URL</text>
-  <rect x="937.0" y="522.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="941.0" y1="526.0" x2="953.0" y2="538.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="953.0" y1="526.0" x2="941.0" y2="538.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="485.0" y="537.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#71717A" text-anchor="start">https://github.com/...</text>
-  <rect x="469.0" y="580.0" width="502" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="479.0" y="573.0" width="120.19999999999999" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
-  <text x="483.0" y="584.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Documentation URL</text>
-  <rect x="937.0" y="598.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="941.0" y1="602.0" x2="953.0" y2="614.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="953.0" y1="602.0" x2="941.0" y2="614.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="485.0" y="613.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#71717A" text-anchor="start">https://docs.example.com/...</text>
-  <text x="485.0" y="674.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#18181B" text-anchor="start">Labor / Experimental</text>
-  <text x="485.0" y="694.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Mark as laboratory / experimental project</text>
-  <rect x="911.0" y="664.0" width="52" height="32" rx="16" fill="#4C662B" stroke="#4C662B" stroke-width="1"/>
+  <text x="831.0" y="739.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#39693B" text-anchor="middle">Cancel</text>
+  <rect x="469.0" y="218.0" width="502" height="56" rx="4" fill="none" stroke="#72796F" stroke-width="1"/>
+  <rect x="479.0" y="211.0" width="100.39999999999999" height="14" rx="0" fill="#E6E9E0" stroke="none" stroke-width="1"/>
+  <text x="483.0" y="222.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Display Name *</text>
+  <text x="485.0" y="251.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#181D17" text-anchor="start">Demo Project</text>
+  <rect x="937.0" y="236.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="941.0" y1="240.0" x2="953.0" y2="252.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="953.0" y1="240.0" x2="941.0" y2="252.0" stroke="#C2C9BD" stroke-width="1"/>
+  <rect x="469.0" y="294.0" width="502" height="56" rx="4" fill="#F1F5EC" stroke="#E0E4DB" stroke-width="1"/>
+  <text x="483.0" y="298.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Key / Namespace</text>
+  <text x="485.0" y="328.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#424940" text-anchor="start">demo</text>
+  <rect x="937.0" y="312.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="941.0" y1="316.0" x2="953.0" y2="328.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="953.0" y1="316.0" x2="941.0" y2="328.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="485.0" y="368.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Project key cannot be changed after creation</text>
+  <rect x="469.0" y="388.0" width="502" height="96" rx="4" fill="none" stroke="#72796F" stroke-width="1"/>
+  <rect x="479.0" y="381.0" width="80.6" height="14" rx="0" fill="#E6E9E0" stroke="none" stroke-width="1"/>
+  <text x="483.0" y="392.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Description</text>
+  <text x="485.0" y="416.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#181D17" text-anchor="start">Sandbox for the summer event</text>
+  <rect x="469.0" y="504.0" width="502" height="56" rx="4" fill="none" stroke="#72796F" stroke-width="1"/>
+  <rect x="479.0" y="497.0" width="80.6" height="14" rx="0" fill="#E6E9E0" stroke="none" stroke-width="1"/>
+  <text x="483.0" y="508.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Project URL</text>
+  <rect x="937.0" y="522.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="941.0" y1="526.0" x2="953.0" y2="538.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="953.0" y1="526.0" x2="941.0" y2="538.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="485.0" y="537.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#424940" text-anchor="start">https://github.com/...</text>
+  <rect x="469.0" y="580.0" width="502" height="56" rx="4" fill="none" stroke="#72796F" stroke-width="1"/>
+  <rect x="479.0" y="573.0" width="120.19999999999999" height="14" rx="0" fill="#E6E9E0" stroke="none" stroke-width="1"/>
+  <text x="483.0" y="584.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Documentation URL</text>
+  <rect x="937.0" y="598.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="941.0" y1="602.0" x2="953.0" y2="614.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="953.0" y1="602.0" x2="941.0" y2="614.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="485.0" y="613.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#424940" text-anchor="start">https://docs.example.com/...</text>
+  <text x="485.0" y="674.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#181D17" text-anchor="start">Labor / Experimental</text>
+  <text x="485.0" y="694.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Mark as laboratory / experimental project</text>
+  <rect x="911.0" y="664.0" width="52" height="32" rx="16" fill="#39693B" stroke="#39693B" stroke-width="2"/>
   <circle cx="947.0" cy="680.0" r="12" fill="#FFFFFF" stroke="none"/>
 </svg>

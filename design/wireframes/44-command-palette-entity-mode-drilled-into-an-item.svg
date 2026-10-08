@@ -1,141 +1,141 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
   <title>44 Command palette – entity mode, drilled into an item</title>
-  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
-  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#EEEFE3" stroke="none" stroke-width="1"/>
-  <circle cx="40.0" cy="32.0" r="20.0" fill="#FFFFFF" stroke="#A1A1AA"/>
-  <rect x="31.0" y="23.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="35.0" y1="27.0" x2="45.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="45.0" y1="27.0" x2="35.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="400.0" y="12" width="640" height="40" rx="20" fill="#FFFFFF" stroke="#4C662B" stroke-width="2"/>
-  <rect x="408.0" y="18" width="106" height="28" rx="14" fill="#DCEBC8" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="420.0" y="37" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#18181B" text-anchor="start">Ruby Sword  ×</text>
-  <text x="524.0" y="37" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#71717A" text-anchor="start">Ruby Sword: pick a tab or an action</text>
-  <rect x="1006.0" y="22" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1010.0" y1="26" x2="1022.0" y2="38" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1022.0" y1="26" x2="1010.0" y2="38" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="1060" y="14" width="196" height="36" rx="18" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="1072" y="23" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1076" y1="27" x2="1086" y2="37" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1086" y1="27" x2="1076" y2="37" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="1098" y="37" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#18181B" text-anchor="start">Demo Project</text>
-  <rect x="1202" y="23" width="42" height="18" rx="9" fill="#F2DAFF" stroke="none" stroke-width="1"/>
-  <text x="1223" y="36" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="9" font-weight="700" fill="#18181B" text-anchor="middle">Labor</text>
-  <circle cx="1286.0" cy="32.0" r="20.0" fill="#FFFFFF" stroke="#A1A1AA"/>
-  <rect x="1277.0" y="23.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1281.0" y1="27.0" x2="1291.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1291.0" y1="27.0" x2="1281.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
-  <circle cx="1334.0" cy="32.0" r="20.0" fill="#FFFFFF" stroke="#A1A1AA"/>
-  <rect x="1325.0" y="23.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1329.0" y1="27.0" x2="1339.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1339.0" y1="27.0" x2="1329.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
-  <circle cx="1382.0" cy="32.0" r="20.0" fill="#FFFFFF" stroke="#A1A1AA"/>
-  <rect x="1373.0" y="23.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1377.0" y1="27.0" x2="1387.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1387.0" y1="27.0" x2="1377.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="28" y="90" width="24" height="24" rx="4" fill="#E4E4E7" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="32" y1="94" x2="48" y2="110" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="48" y1="94" x2="32" y2="110" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="66" y="107" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#18181B" text-anchor="start">Attributes</text>
-  <rect x="12" y="140" width="156" height="52" rx="26" fill="#DCEBC8" stroke="none" stroke-width="1"/>
-  <rect x="28" y="154" width="24" height="24" rx="4" fill="#4C662B" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="32" y1="158" x2="48" y2="174" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="48" y1="158" x2="32" y2="174" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="66" y="171" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="600" fill="#18181B" text-anchor="start">Items</text>
-  <rect x="28" y="218" width="24" height="24" rx="4" fill="#E4E4E7" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="32" y1="222" x2="48" y2="238" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="48" y1="222" x2="32" y2="238" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="66" y="235" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#18181B" text-anchor="start">Notifications</text>
-  <rect x="28" y="282" width="24" height="24" rx="4" fill="#E4E4E7" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="32" y1="286" x2="48" y2="302" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="48" y1="286" x2="32" y2="302" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="66" y="299" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#18181B" text-anchor="start">Fonts</text>
-  <rect x="28" y="346" width="24" height="24" rx="4" fill="#E4E4E7" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="32" y1="350" x2="48" y2="366" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="48" y1="350" x2="32" y2="366" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="66" y="363" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#18181B" text-anchor="start">Sound</text>
-  <rect x="180" y="64" width="1280" height="856" rx="16" fill="#FFFFFF" stroke="none" stroke-width="1"/>
-  <text x="196" y="103" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="500" fill="#18181B" text-anchor="start">Items (12)</text>
-  <rect x="1344" y="76" width="80" height="40" rx="20.0" fill="#4C662B" stroke="#4C662B" stroke-width="1"/>
-  <rect x="1358" y="87.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1362" y1="91.0" x2="1372" y2="101.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1372" y1="91.0" x2="1362" y2="101.0" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#F7FBF1" stroke="none" stroke-width="1"/>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#EBEFE6" stroke="none" stroke-width="1"/>
+  <circle cx="40.0" cy="32.0" r="20.0" fill="#F7FBF1" stroke="#C2C9BD"/>
+  <rect x="31.0" y="23.0" width="18" height="18" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="35.0" y1="27.0" x2="45.0" y2="37.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="45.0" y1="27.0" x2="35.0" y2="37.0" stroke="#C2C9BD" stroke-width="1"/>
+  <rect x="400.0" y="12" width="640" height="40" rx="20" fill="#F7FBF1" stroke="#39693B" stroke-width="2"/>
+  <rect x="408.0" y="18" width="106" height="28" rx="14" fill="#D5E8CF" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="420.0" y="37" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#181D17" text-anchor="start">Ruby Sword  ×</text>
+  <text x="524.0" y="37" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#424940" text-anchor="start">Ruby Sword: pick a tab or an action</text>
+  <rect x="1006.0" y="22" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1010.0" y1="26" x2="1022.0" y2="38" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1022.0" y1="26" x2="1010.0" y2="38" stroke="#C2C9BD" stroke-width="1"/>
+  <rect x="1060" y="14" width="196" height="36" rx="18" fill="#F7FBF1" stroke="#C2C9BD" stroke-width="1"/>
+  <rect x="1072" y="23" width="18" height="18" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1076" y1="27" x2="1086" y2="37" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1086" y1="27" x2="1076" y2="37" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="1098" y="37" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#181D17" text-anchor="start">Demo Project</text>
+  <rect x="1202" y="23" width="42" height="18" rx="9" fill="#BCEBF1" stroke="none" stroke-width="1"/>
+  <text x="1223" y="36" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="9" font-weight="700" fill="#181D17" text-anchor="middle">Labor</text>
+  <circle cx="1286.0" cy="32.0" r="20.0" fill="#F7FBF1" stroke="#C2C9BD"/>
+  <rect x="1277.0" y="23.0" width="18" height="18" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1281.0" y1="27.0" x2="1291.0" y2="37.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1291.0" y1="27.0" x2="1281.0" y2="37.0" stroke="#C2C9BD" stroke-width="1"/>
+  <circle cx="1334.0" cy="32.0" r="20.0" fill="#F7FBF1" stroke="#C2C9BD"/>
+  <rect x="1325.0" y="23.0" width="18" height="18" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1329.0" y1="27.0" x2="1339.0" y2="37.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1339.0" y1="27.0" x2="1329.0" y2="37.0" stroke="#C2C9BD" stroke-width="1"/>
+  <circle cx="1382.0" cy="32.0" r="20.0" fill="#F7FBF1" stroke="#C2C9BD"/>
+  <rect x="1373.0" y="23.0" width="18" height="18" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1377.0" y1="27.0" x2="1387.0" y2="37.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1387.0" y1="27.0" x2="1377.0" y2="37.0" stroke="#C2C9BD" stroke-width="1"/>
+  <rect x="28" y="90" width="24" height="24" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="32" y1="94" x2="48" y2="110" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="48" y1="94" x2="32" y2="110" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="66" y="107" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#424940" text-anchor="start">Attributes</text>
+  <rect x="12" y="140" width="156" height="52" rx="26" fill="#D5E8CF" stroke="none" stroke-width="1"/>
+  <rect x="28" y="154" width="24" height="24" rx="4" fill="#3B4B39" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="32" y1="158" x2="48" y2="174" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="48" y1="158" x2="32" y2="174" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="66" y="171" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="600" fill="#181D17" text-anchor="start">Items</text>
+  <rect x="28" y="218" width="24" height="24" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="32" y1="222" x2="48" y2="238" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="48" y1="222" x2="32" y2="238" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="66" y="235" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#424940" text-anchor="start">Notifications</text>
+  <rect x="28" y="282" width="24" height="24" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="32" y1="286" x2="48" y2="302" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="48" y1="286" x2="32" y2="302" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="66" y="299" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#424940" text-anchor="start">Fonts</text>
+  <rect x="28" y="346" width="24" height="24" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="32" y1="350" x2="48" y2="366" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="48" y1="350" x2="32" y2="366" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="66" y="363" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#424940" text-anchor="start">Sound</text>
+  <rect x="180" y="64" width="1280" height="856" rx="16" fill="#F7FBF1" stroke="none" stroke-width="1"/>
+  <text x="196" y="103" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="500" fill="#181D17" text-anchor="start">Items (12)</text>
+  <rect x="1344" y="76" width="80" height="40" rx="20.0" fill="#39693B" stroke="#39693B" stroke-width="1"/>
+  <rect x="1358" y="87.0" width="18" height="18" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1362" y1="91.0" x2="1372" y2="101.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1372" y1="91.0" x2="1362" y2="101.0" stroke="#C2C9BD" stroke-width="1"/>
   <text x="1394.0" y="101.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF" text-anchor="middle">Add</text>
-  <rect x="1224" y="76" width="112" height="40" rx="20.0" fill="#DCEBC8" stroke="#DCEBC8" stroke-width="1"/>
-  <rect x="1238" y="87.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1242" y1="91.0" x2="1252" y2="101.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1252" y1="91.0" x2="1242" y2="101.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="1290.0" y="101.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#18181B" text-anchor="middle">Refresh</text>
-  <rect x="400" y="58" width="640" height="258" rx="16" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="416" y="82" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start" font-style="italic">Ruby Sword: pick a tab or an action</text>
-  <rect x="406" y="94" width="628" height="38" rx="8" fill="#DCE7C8" stroke="none" stroke-width="1"/>
-  <rect x="418" y="103.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="422" y1="107.0" x2="434" y2="119.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="434" y1="107.0" x2="422" y2="119.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="452" y="118" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Components</text>
-  <rect x="418" y="141.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="422" y1="145.0" x2="434" y2="157.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="434" y1="145.0" x2="422" y2="157.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="452" y="156" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Enchantments</text>
-  <rect x="418" y="179.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="422" y1="183.0" x2="434" y2="195.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="434" y1="183.0" x2="422" y2="195.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="452" y="194" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Lore</text>
-  <rect x="418" y="217.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="422" y1="221.0" x2="434" y2="233.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="434" y1="221.0" x2="422" y2="233.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="452" y="232" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Delete…</text>
-  <line x1="400" y1="276" x2="1040" y2="276" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="416" y="286" width="26" height="20" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="429.0" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#18181B" text-anchor="middle">↑↓</text>
-  <text x="448" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Navigate</text>
-  <rect x="516.0" y="286" width="47" height="20" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="539.5" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#18181B" text-anchor="middle">Enter</text>
-  <text x="569.0" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Run</text>
-  <rect x="604.5" y="286" width="19" height="20" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="614.0" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#18181B" text-anchor="middle">←</text>
-  <text x="629.5" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Back</text>
-  <rect x="671.5" y="286" width="33" height="20" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="688.0" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#18181B" text-anchor="middle">Esc</text>
-  <text x="710.5" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Close</text>
-  <rect x="759.0" y="286" width="19" height="20" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="768.5" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#18181B" text-anchor="middle">?</text>
-  <text x="784.0" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Help</text>
-  <text x="400" y="420" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#71717A" text-anchor="start" font-style="italic">Before drilling in (#ruby):</text>
-  <rect x="400" y="432" width="640" height="218" rx="16" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="416" y="456" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start" font-style="italic">Only entries that are already loaded are searched</text>
-  <rect x="406" y="468" width="628" height="48" rx="8" fill="#DCE7C8" stroke="none" stroke-width="1"/>
-  <rect x="418" y="482.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="422" y1="486.0" x2="434" y2="498.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="434" y1="486.0" x2="422" y2="498.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="452" y="488" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Ruby Sword</text>
-  <text x="452" y="506" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">demo:ruby_sword</text>
-  <text x="1022" y="497.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="end">Items ›</text>
-  <rect x="418" y="530.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="422" y1="534.0" x2="434" y2="546.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="434" y1="534.0" x2="422" y2="546.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="452" y="536" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Ruby Ore Sound</text>
-  <text x="452" y="554" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">demo:ruby_ore</text>
-  <text x="1022" y="545.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="end">Sounds ›</text>
-  <rect x="418" y="578.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="422" y1="582.0" x2="434" y2="594.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="434" y1="582.0" x2="422" y2="594.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="452" y="584" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Ruby</text>
-  <text x="452" y="602" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">demo:ruby</text>
-  <text x="1022" y="593.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="end">Attributes</text>
-  <line x1="400" y1="610" x2="1040" y2="610" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="416" y="620" width="26" height="20" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="429.0" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#18181B" text-anchor="middle">↑↓</text>
-  <text x="448" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Navigate</text>
-  <rect x="516.0" y="620" width="47" height="20" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="539.5" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#18181B" text-anchor="middle">Enter</text>
-  <text x="569.0" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Run</text>
-  <rect x="604.5" y="620" width="19" height="20" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="614.0" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#18181B" text-anchor="middle">→</text>
-  <text x="629.5" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">More</text>
-  <rect x="671.5" y="620" width="33" height="20" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="688.0" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#18181B" text-anchor="middle">Esc</text>
-  <text x="710.5" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Close</text>
-  <rect x="759.0" y="620" width="19" height="20" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="768.5" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#18181B" text-anchor="middle">?</text>
-  <text x="784.0" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Help</text>
+  <rect x="1224" y="76" width="112" height="40" rx="20.0" fill="#D5E8CF" stroke="#D5E8CF" stroke-width="1"/>
+  <rect x="1238" y="87.0" width="18" height="18" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1242" y1="91.0" x2="1252" y2="101.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1252" y1="91.0" x2="1242" y2="101.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="1290.0" y="101.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#3B4B39" text-anchor="middle">Refresh</text>
+  <rect x="400" y="58" width="640" height="258" rx="16" fill="#E6E9E0" stroke="none" stroke-width="1"/>
+  <text x="416" y="82" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start" font-style="italic">Ruby Sword: pick a tab or an action</text>
+  <rect x="406" y="94" width="628" height="38" rx="8" fill="#D5E8CF" stroke="none" stroke-width="1"/>
+  <rect x="418" y="103.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="422" y1="107.0" x2="434" y2="119.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="434" y1="107.0" x2="422" y2="119.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="452" y="118" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Components</text>
+  <rect x="418" y="141.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="422" y1="145.0" x2="434" y2="157.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="434" y1="145.0" x2="422" y2="157.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="452" y="156" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Enchantments</text>
+  <rect x="418" y="179.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="422" y1="183.0" x2="434" y2="195.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="434" y1="183.0" x2="422" y2="195.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="452" y="194" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Lore</text>
+  <rect x="418" y="217.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="422" y1="221.0" x2="434" y2="233.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="434" y1="221.0" x2="422" y2="233.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="452" y="232" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Delete…</text>
+  <line x1="400" y1="276" x2="1040" y2="276" stroke="#C2C9BD" stroke-width="1"/>
+  <rect x="416" y="286" width="26" height="20" rx="4" fill="#F7FBF1" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="429.0" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#181D17" text-anchor="middle">↑↓</text>
+  <text x="448" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Navigate</text>
+  <rect x="516.0" y="286" width="47" height="20" rx="4" fill="#F7FBF1" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="539.5" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#181D17" text-anchor="middle">Enter</text>
+  <text x="569.0" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Run</text>
+  <rect x="604.5" y="286" width="19" height="20" rx="4" fill="#F7FBF1" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="614.0" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#181D17" text-anchor="middle">←</text>
+  <text x="629.5" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Back</text>
+  <rect x="671.5" y="286" width="33" height="20" rx="4" fill="#F7FBF1" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="688.0" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#181D17" text-anchor="middle">Esc</text>
+  <text x="710.5" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Close</text>
+  <rect x="759.0" y="286" width="19" height="20" rx="4" fill="#F7FBF1" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="768.5" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#181D17" text-anchor="middle">?</text>
+  <text x="784.0" y="300" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Help</text>
+  <text x="400" y="420" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#424940" text-anchor="start" font-style="italic">Before drilling in (#ruby):</text>
+  <rect x="400" y="432" width="640" height="218" rx="16" fill="#E6E9E0" stroke="none" stroke-width="1"/>
+  <text x="416" y="456" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start" font-style="italic">Only entries that are already loaded are searched</text>
+  <rect x="406" y="468" width="628" height="48" rx="8" fill="#D5E8CF" stroke="none" stroke-width="1"/>
+  <rect x="418" y="482.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="422" y1="486.0" x2="434" y2="498.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="434" y1="486.0" x2="422" y2="498.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="452" y="488" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Ruby Sword</text>
+  <text x="452" y="506" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">demo:ruby_sword</text>
+  <text x="1022" y="497.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="end">Items ›</text>
+  <rect x="418" y="530.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="422" y1="534.0" x2="434" y2="546.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="434" y1="534.0" x2="422" y2="546.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="452" y="536" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Ruby Ore Sound</text>
+  <text x="452" y="554" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">demo:ruby_ore</text>
+  <text x="1022" y="545.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="end">Sounds ›</text>
+  <rect x="418" y="578.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="422" y1="582.0" x2="434" y2="594.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="434" y1="582.0" x2="422" y2="594.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="452" y="584" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Ruby</text>
+  <text x="452" y="602" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">demo:ruby</text>
+  <text x="1022" y="593.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="end">Attributes</text>
+  <line x1="400" y1="610" x2="1040" y2="610" stroke="#C2C9BD" stroke-width="1"/>
+  <rect x="416" y="620" width="26" height="20" rx="4" fill="#F7FBF1" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="429.0" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#181D17" text-anchor="middle">↑↓</text>
+  <text x="448" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Navigate</text>
+  <rect x="516.0" y="620" width="47" height="20" rx="4" fill="#F7FBF1" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="539.5" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#181D17" text-anchor="middle">Enter</text>
+  <text x="569.0" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Run</text>
+  <rect x="604.5" y="620" width="19" height="20" rx="4" fill="#F7FBF1" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="614.0" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#181D17" text-anchor="middle">→</text>
+  <text x="629.5" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">More</text>
+  <rect x="671.5" y="620" width="33" height="20" rx="4" fill="#F7FBF1" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="688.0" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#181D17" text-anchor="middle">Esc</text>
+  <text x="710.5" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Close</text>
+  <rect x="759.0" y="620" width="19" height="20" rx="4" fill="#F7FBF1" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="768.5" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#181D17" text-anchor="middle">?</text>
+  <text x="784.0" y="634" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Help</text>
 </svg>

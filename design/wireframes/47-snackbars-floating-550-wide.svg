@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
   <title>47 Snackbars (floating, 550 wide)</title>
-  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
-  <text x="445" y="146" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#71717A" text-anchor="start">Info · 2 s</text>
-  <rect x="445" y="160" width="550" height="52" rx="4" fill="#313033" stroke="none" stroke-width="1"/>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#F7FBF1" stroke="none" stroke-width="1"/>
+  <text x="445" y="146" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#424940" text-anchor="start">Info · 2 s</text>
+  <rect x="445" y="160" width="550" height="52" rx="4" fill="#2D322C" stroke="none" stroke-width="1"/>
   <text x="461" y="192" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#FFFFFF" text-anchor="start">Copied to clipboard</text>
-  <text x="445" y="286" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#71717A" text-anchor="start">Success · 3 s (6 s with action)</text>
+  <text x="445" y="286" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#424940" text-anchor="start">Success · 3 s (6 s with action)</text>
   <rect x="445" y="300" width="550" height="52" rx="4" fill="#388E3C" stroke="none" stroke-width="1"/>
   <text x="461" y="332" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#FFFFFF" text-anchor="start">✓  Copied to Survival</text>
   <text x="979" y="332" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="end">Switch project</text>
-  <text x="445" y="426" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#71717A" text-anchor="start">Warning · 4 s</text>
+  <text x="445" y="426" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#424940" text-anchor="start">Warning · 4 s</text>
   <rect x="445" y="440" width="550" height="52" rx="4" fill="#FF6F00" stroke="none" stroke-width="1"/>
   <text x="461" y="472" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#FFFFFF" text-anchor="start">⚠  Validation failed  • key: must be lowercase</text>
-  <text x="445" y="566" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#71717A" text-anchor="start">Error · 4 s</text>
+  <text x="445" y="566" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#424940" text-anchor="start">Error · 4 s</text>
   <rect x="445" y="580" width="550" height="52" rx="4" fill="#C62828" stroke="none" stroke-width="1"/>
   <text x="461" y="612" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#FFFFFF" text-anchor="start">⨯  Could not save (CONFLICT)</text>
 </svg>

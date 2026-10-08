@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
   <title>01 Splash (web/index.html)</title>
-  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
-  <circle cx="720" cy="450" r="24" fill="none" stroke="#4C662B"/>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#F7FBF1" stroke="none" stroke-width="1"/>
+  <circle cx="720" cy="450" r="24" fill="none" stroke="#39693B"/>
   <rect x="1120" y="40" width="260" height="76" rx="4" fill="#FFF4C2" stroke="#E0C200" stroke-width="1" stroke-dasharray="4 3"/>
   <text x="1130" y="60" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">HTML splash before Flutter boots.</text>
   <text x="1130" y="78" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">48 px ring spinner in primary,</text>

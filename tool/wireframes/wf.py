@@ -10,18 +10,42 @@ from html import escape
 W, H = 1440, 900          # desktop frame
 FONT = "Work Sans, Roboto, Arial, sans-serif"
 
-# Grayscale palette + one accent for primary actions / selection.
-BG = "#FFFFFF"
-SURFACE = "#F4F4F5"
-SURFACE_2 = "#E4E4E7"
-STROKE = "#A1A1AA"
-INK = "#18181B"
-MUTED = "#71717A"
-ACCENT = "#4C662B"   # M3 primary from seed green[400]
-ACCENT_SOFT = "#DCEBC8"
-CHROME = "#EEEFE3"    # surfaceContainer: app bar + rail
-SECONDARY = "#DCE7C8"  # secondaryContainer
-DANGER = "#B3261E"
+# Material 3 light scheme of the app: ColorScheme.fromSeed(seedColor:
+# Colors.green[400], secondary: Colors.green[200]), tonal-spot variant,
+# computed with material-color-utilities (see lib/util/app_theme.dart).
+M3 = {
+    "primary": "#39693B", "onPrimary": "#FFFFFF",
+    "primaryContainer": "#BAF0B6", "onPrimaryContainer": "#215025",
+    "secondary": "#A5D6A7",  # overridden by accentColor green[200]
+    "secondaryContainer": "#D5E8CF", "onSecondaryContainer": "#3B4B39",
+    "tertiaryContainer": "#BCEBF1", "onTertiaryContainer": "#1F4D53",
+    "error": "#BA1A1A", "errorContainer": "#FFDAD6", "onErrorContainer": "#93000A",
+    "surface": "#F7FBF1", "onSurface": "#181D17", "onSurfaceVariant": "#424940",
+    "outline": "#72796F", "outlineVariant": "#C2C9BD",
+    "surfaceContainerLow": "#F1F5EC", "surfaceContainer": "#EBEFE6",
+    "surfaceContainerHigh": "#E6E9E0", "surfaceContainerHighest": "#E0E4DB",
+    "inverseSurface": "#2D322C", "inverseOnSurface": "#EEF2E9", "inversePrimary": "#9FD49C",
+    "scrim": "#000000",
+}
+BG = M3["surface"]
+SURFACE = M3["surfaceContainerLow"]          # cards
+SURFACE_2 = M3["surfaceContainerHighest"]    # chips, search, placeholders
+DIALOG = M3["surfaceContainerHigh"]          # dialogs, menus
+STROKE = M3["outlineVariant"]                # dividers, card borders
+OUTLINE = M3["outline"]                      # text fields, outlined buttons
+INK = M3["onSurface"]
+MUTED = M3["onSurfaceVariant"]
+ACCENT = M3["primary"]
+ON_ACCENT = M3["onPrimary"]
+ACCENT_SOFT = M3["secondaryContainer"]       # tonal buttons, nav indicator
+ON_SOFT = M3["onSecondaryContainer"]
+PRIMARY_CONTAINER = M3["primaryContainer"]   # dialog header strips
+CHROME = M3["surfaceContainer"]              # app bar + rail (appChrome)
+SECONDARY = M3["secondaryContainer"]         # BaseCard header
+LABOR = M3["tertiaryContainer"]
+DANGER = M3["error"]
+DANGER_SOFT = M3["errorContainer"]
+# Not part of the UI: designer notes.
 NOTE = "#FFF4C2"
 
 
@@ -29,7 +53,15 @@ class Svg:
     def __init__(self, title: str, w: int = W, h: int = H):
         self.title, self.w, self.h = title, w, h
         self.parts: list[str] = []
+        self.bg = BG  # surface under the next fields (label cut-out colour)
+        # Click-dummy hotspots: (x, y, w, h, target). target is a screen
+        # number ("10") or "back"; build.mjs turns them into interactions.
+        self.links: list[tuple] = []
         self.rect(0, 0, w, h, fill=BG, stroke="none")
+
+    def link(self, x, y, w, h, target):
+        if target:
+            self.links.append((x, y, w, h, target))
 
     # -- primitives -----------------------------------------------------
     def add(self, s: str):
@@ -73,19 +105,19 @@ class Svg:
         w = w or max(88, len(label) * 8 + (56 if icon else 40))
         if kind == "filled":
             self.rect(x, y, w, h, fill=ACCENT, stroke=ACCENT, r=h / 2)
-            col = "#FFFFFF"
+            col = ON_ACCENT
         elif kind == "tonal":
             self.rect(x, y, w, h, fill=ACCENT_SOFT, stroke=ACCENT_SOFT, r=h / 2)
-            col = INK
+            col = ON_SOFT
         elif kind == "outlined":
-            self.rect(x, y, w, h, fill=BG, stroke=STROKE, r=h / 2)
+            self.rect(x, y, w, h, fill=BG, stroke=OUTLINE, r=h / 2)
             col = ACCENT
         elif kind == "danger_tonal":
-            self.rect(x, y, w, h, fill="#F9DEDC", stroke="#F9DEDC", r=h / 2)
+            self.rect(x, y, w, h, fill=DANGER_SOFT, stroke=DANGER_SOFT, r=h / 2)
             col = DANGER
         elif kind == "danger":
             self.rect(x, y, w, h, fill=DANGER, stroke=DANGER, r=h / 2)
-            col = "#FFFFFF"
+            col = ON_ACCENT
         else:  # text button
             col = ACCENT
         tx = x + w / 2
@@ -103,8 +135,9 @@ class Svg:
     def field(self, x, y, w, label, value="", h=56, trailing=False,
               multiline=False, helper=None, dropdown=False):
         """Outlined Material text field."""
-        self.rect(x, y, w, h, fill=BG, stroke=STROKE, r=4)
-        self.rect(x + 10, y - 7, len(label) * 6.6 + 8, 14, fill=BG, stroke="none")
+        self.rect(x, y, w, h, fill="none", stroke=OUTLINE, r=4)
+        if label:
+            self.rect(x + 10, y - 7, len(label) * 6.6 + 8, 14, fill=self.bg, stroke="none")
         self.text(x + 14, y + 4, label, 12, MUTED)
         if value:
             self.text(x + 16, y + (28 if multiline else h / 2 + 5), value, 15, INK)
@@ -135,18 +168,18 @@ class Svg:
 
     def switch(self, x, y, on=True):
         self.rect(x, y, 52, 32, fill=ACCENT if on else SURFACE_2,
-                  stroke=ACCENT if on else STROKE, r=16)
+                  stroke=ACCENT if on else OUTLINE, r=16, sw=2)
         self.circle(x + (36 if on else 16), y + 16, 12 if on else 8,
-                    fill="#FFFFFF" if on else STROKE, stroke="none")
+                    fill=ON_ACCENT if on else OUTLINE, stroke="none")
 
     def checkbox(self, x, y, on=False):
         self.rect(x, y, 18, 18, fill=ACCENT if on else BG,
-                  stroke=ACCENT if on else STROKE, r=2, sw=2)
+                  stroke=ACCENT if on else OUTLINE, r=2, sw=2)
         if on:
-            self.text(x + 9, y + 14, "✓", 13, "#FFFFFF", 700, "middle")
+            self.text(x + 9, y + 14, "✓", 13, ON_ACCENT, 700, "middle")
 
     def radio(self, x, y, on=False):
-        self.circle(x + 9, y + 9, 9, fill=BG, stroke=ACCENT if on else STROKE)
+        self.circle(x + 9, y + 9, 9, fill="none", stroke=ACCENT if on else OUTLINE)
         if on:
             self.circle(x + 9, y + 9, 5, fill=ACCENT, stroke="none")
 
@@ -172,8 +205,11 @@ class Svg:
         if trailing:
             self.icon(x + w - 40, y + h / 2 - 10, 20, fill="none")
 
-    def tabs(self, x, y, w, labels, active=0, h=48):
+    def tabs(self, x, y, w, labels, active=0, h=48, targets=None):
         tw = w / len(labels)
+        for i, t in enumerate(targets or []):
+            if i != active:
+                self.link(x + tw * i, y, tw, h, t)
         self.line(x, y + h, x + w, y + h)
         for i, l in enumerate(labels):
             cx = x + tw * i + tw / 2
@@ -194,27 +230,31 @@ class Svg:
             self.text(x + 28, y + 37, "+", 26, INK, 400, "middle")
 
     def snackbar(self, x, y, msg, action=None, w=480):
-        self.rect(x, y, w, 48, fill="#313033", stroke="none", r=4)
-        self.text(x + 16, y + 29, msg, 14, "#F4EFF4")
+        self.rect(x, y, w, 48, fill=M3["inverseSurface"], stroke="none", r=4)
+        self.text(x + 16, y + 29, msg, 14, M3["inverseOnSurface"])
         if action:
-            self.text(x + w - 16, y + 29, action, 14, "#B1D18A", 600, "end")
+            self.text(x + w - 16, y + 29, action, 14, M3["inversePrimary"], 600, "end")
 
     def scrim(self):
+        self.links.clear()  # nothing under a modal is clickable
         self.rect(0, 0, self.w, self.h, fill="#000000", stroke="none")
         self.parts[-1] = self.parts[-1].replace('fill="#000000"', 'fill="#000000" fill-opacity="0.32"')
 
     def dialog(self, w, h, title, actions=("Cancel", "Save"), danger=False,
-               close=True, x=None, y=None, scrim=True):
+               close=True, x=None, y=None, scrim=True, links=None):
         """FormDialog: radius 16, title + close, dividers, right-aligned
         actions (last one primary). Returns (x, y, w) of the content area."""
         if scrim:
             self.scrim()
         x = (self.w - w) / 2 if x is None else x
         y = (self.h - h) / 2 if y is None else y
-        self.rect(x, y, w, h, fill="#FFFFFF", stroke=STROKE, r=16)
+        links = links or {}
+        self.rect(x, y, w, h, fill=DIALOG, stroke="none", r=16)
+        self.bg = DIALOG
         self.text(x + 24, y + 42, title, 20, INK, 600)
         if close:
             self.text(x + w - 32, y + 42, "×", 22, MUTED, anchor="middle")
+            self.link(x + w - 52, y + 22, 40, 40, links.get("×", "back"))
         self.line(x, y + 64, x + w, y + 64)
         if actions:
             self.line(x, y + h - 72, x + w, y + h - 72)
@@ -224,6 +264,7 @@ class Svg:
                 bw = max(88, len(a) * 8 + 40)
                 bx -= bw
                 self.button(bx, y + h - 56, a, kind, w=bw)
+                self.link(bx, y + h - 56, bw, 40, links.get(a, "back"))
                 bx -= 8
         return x + 24, y + 88, w - 48
 
@@ -232,16 +273,18 @@ class Svg:
         self.scrim()
         x = (self.w - w) / 2 if x is None else x
         y = (self.h - h) / 2 if y is None else y
-        self.rect(x, y, w, h, fill="#FFFFFF", stroke=STROKE, r=16)
-        self.rect(x, y, w, 50, fill=ACCENT_SOFT, stroke=STROKE, r=16)
-        self.rect(x + 1, y + 30, w - 2, 20, fill=ACCENT_SOFT, stroke="none")
-        self.text(x + 24, y + 32, title, 18, INK, 700)
-        self.text(x + w - 28, y + 33, "×", 22, MUTED, anchor="middle")
+        self.rect(x, y, w, h, fill=DIALOG, stroke="none", r=16)
+        self.bg = DIALOG
+        self.rect(x, y, w, 50, fill=PRIMARY_CONTAINER, stroke="none", r=16)
+        self.rect(x, y + 30, w, 20, fill=PRIMARY_CONTAINER, stroke="none")
+        self.text(x + 24, y + 32, title, 18, M3["onPrimaryContainer"], 700)
+        self.text(x + w - 28, y + 33, "×", 22, M3["onPrimaryContainer"], anchor="middle")
+        self.link(x + w - 48, y + 5, 40, 40, "back")
         return x, y + 75
 
     def notice(self, x, y, w, h, lines, danger=False):
         """NoticeBox: tinted callout with accent border and leading icon."""
-        self.rect(x, y, w, h, fill="#F9DEDC" if danger else ACCENT_SOFT,
+        self.rect(x, y, w, h, fill=DANGER_SOFT if danger else ACCENT_SOFT,
                   stroke=DANGER if danger else ACCENT, r=10)
         self.icon(x + 14, y + 14, 20, fill="none")
         for i, (t, size, weight) in enumerate(lines):

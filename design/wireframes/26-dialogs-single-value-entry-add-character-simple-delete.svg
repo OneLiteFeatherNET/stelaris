@@ -1,49 +1,48 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
   <title>26 Dialogs – Single-value entry, Add character, Simple delete</title>
-  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#F7FBF1" stroke="none" stroke-width="1"/>
   <rect x="0" y="0" width="1440" height="900" rx="0" fill="#000000" fill-opacity="0.32" stroke="none" stroke-width="1"/>
-  <rect x="40" y="300" width="420" height="260" rx="16" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="64" y="342" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#18181B" text-anchor="start">Add new line</text>
-  <text x="428" y="342" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#71717A" text-anchor="middle">×</text>
-  <line x1="40" y1="364" x2="460" y2="364" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="40" y1="488" x2="460" y2="488" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="348" y="504" width="88" height="40" rx="20.0" fill="#4C662B" stroke="#4C662B" stroke-width="1"/>
+  <rect x="40" y="300" width="420" height="260" rx="16" fill="#E6E9E0" stroke="none" stroke-width="1"/>
+  <text x="64" y="342" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#181D17" text-anchor="start">Add new line</text>
+  <text x="428" y="342" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#424940" text-anchor="middle">×</text>
+  <line x1="40" y1="364" x2="460" y2="364" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="40" y1="488" x2="460" y2="488" stroke="#C2C9BD" stroke-width="1"/>
+  <rect x="348" y="504" width="88" height="40" rx="20.0" fill="#39693B" stroke="#39693B" stroke-width="1"/>
   <text x="392.0" y="529.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF" text-anchor="middle">Add</text>
-  <text x="296.0" y="529.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#4C662B" text-anchor="middle">Cancel</text>
-  <rect x="64" y="388" width="372" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="74" y="381" width="8.0" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
-  <text x="78" y="392" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start"></text>
-  <text x="80" y="421.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#18181B" text-anchor="start">&lt;gray&gt;Damage: +7</text>
-  <rect x="402" y="406.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="406" y1="410.0" x2="418" y2="422.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="418" y1="410.0" x2="406" y2="422.0" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="510" y="300" width="420" height="260" rx="16" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="534" y="342" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#18181B" text-anchor="start">Add character</text>
-  <text x="898" y="342" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#71717A" text-anchor="middle">×</text>
-  <line x1="510" y1="364" x2="930" y2="364" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="510" y1="488" x2="930" y2="488" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="818" y="504" width="88" height="40" rx="20.0" fill="#4C662B" stroke="#4C662B" stroke-width="1"/>
+  <text x="296.0" y="529.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#39693B" text-anchor="middle">Cancel</text>
+  <rect x="64" y="388" width="372" height="56" rx="4" fill="none" stroke="#72796F" stroke-width="1"/>
+  <text x="78" y="392" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start"></text>
+  <text x="80" y="421.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#181D17" text-anchor="start">&lt;gray&gt;Damage: +7</text>
+  <rect x="402" y="406.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="406" y1="410.0" x2="418" y2="422.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="418" y1="410.0" x2="406" y2="422.0" stroke="#C2C9BD" stroke-width="1"/>
+  <rect x="510" y="300" width="420" height="260" rx="16" fill="#E6E9E0" stroke="none" stroke-width="1"/>
+  <text x="534" y="342" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#181D17" text-anchor="start">Add character</text>
+  <text x="898" y="342" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#424940" text-anchor="middle">×</text>
+  <line x1="510" y1="364" x2="930" y2="364" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="510" y1="488" x2="930" y2="488" stroke="#C2C9BD" stroke-width="1"/>
+  <rect x="818" y="504" width="88" height="40" rx="20.0" fill="#39693B" stroke="#39693B" stroke-width="1"/>
   <text x="862.0" y="529.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF" text-anchor="middle">Add</text>
-  <text x="766.0" y="529.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#4C662B" text-anchor="middle">Cancel</text>
-  <rect x="534" y="388" width="372" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="544" y="381" width="47.599999999999994" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
-  <text x="548" y="392" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Char *</text>
-  <text x="550" y="460" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Enter exactly 4 hex digits (e.g. E000)</text>
-  <text x="550" y="421" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#71717A" text-anchor="start">E000</text>
-  <rect x="980" y="280" width="420" height="300" rx="16" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="1004" y="322" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#18181B" text-anchor="start">Delete component</text>
-  <text x="1368" y="322" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#71717A" text-anchor="middle">×</text>
-  <line x1="980" y1="344" x2="1400" y2="344" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="980" y1="508" x2="1400" y2="508" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="1288" y="524" width="88" height="40" rx="20.0" fill="#B3261E" stroke="#B3261E" stroke-width="1"/>
+  <text x="766.0" y="529.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#39693B" text-anchor="middle">Cancel</text>
+  <rect x="534" y="388" width="372" height="56" rx="4" fill="none" stroke="#72796F" stroke-width="1"/>
+  <rect x="544" y="381" width="47.599999999999994" height="14" rx="0" fill="#E6E9E0" stroke="none" stroke-width="1"/>
+  <text x="548" y="392" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Char *</text>
+  <text x="550" y="460" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">Enter exactly 4 hex digits (e.g. E000)</text>
+  <text x="550" y="421" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#424940" text-anchor="start">E000</text>
+  <rect x="980" y="280" width="420" height="300" rx="16" fill="#E6E9E0" stroke="none" stroke-width="1"/>
+  <text x="1004" y="322" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#181D17" text-anchor="start">Delete component</text>
+  <text x="1368" y="322" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#424940" text-anchor="middle">×</text>
+  <line x1="980" y1="344" x2="1400" y2="344" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="980" y1="508" x2="1400" y2="508" stroke="#C2C9BD" stroke-width="1"/>
+  <rect x="1288" y="524" width="88" height="40" rx="20.0" fill="#BA1A1A" stroke="#BA1A1A" stroke-width="1"/>
   <text x="1332.0" y="549.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF" text-anchor="middle">Delete</text>
-  <text x="1236.0" y="549.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#4C662B" text-anchor="middle">Cancel</text>
-  <text x="1004" y="376" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Delete Food from the item?</text>
-  <rect x="1004" y="398" width="372" height="48" rx="10" fill="#F9DEDC" stroke="#B3261E" stroke-width="1"/>
-  <rect x="1018" y="412" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1022" y1="416" x2="1034" y2="428" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="1034" y1="416" x2="1022" y2="428" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="1050" y="427" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="700" fill="#B3261E" text-anchor="start">This action cannot be undone.</text>
+  <text x="1236.0" y="549.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#39693B" text-anchor="middle">Cancel</text>
+  <text x="1004" y="376" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Delete Food from the item?</text>
+  <rect x="1004" y="398" width="372" height="48" rx="10" fill="#FFDAD6" stroke="#BA1A1A" stroke-width="1"/>
+  <rect x="1018" y="412" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1022" y1="416" x2="1034" y2="428" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="1034" y1="416" x2="1022" y2="428" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="1050" y="427" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="700" fill="#BA1A1A" text-anchor="start">This action cannot be undone.</text>
   <rect x="40" y="620" width="440" height="58" rx="4" fill="#FFF4C2" stroke="#E0C200" stroke-width="1" stroke-dasharray="4 3"/>
   <text x="50" y="640" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Same single-field dialog: Add new line / Edit lore / Edit char.</text>
   <text x="50" y="658" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Simple delete variants: enchantment, lore, char, component.</text>

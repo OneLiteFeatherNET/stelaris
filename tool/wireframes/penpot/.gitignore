@@ -1,2 +1,4 @@
 node_modules/
 shapes.json
+flows.json
+__pycache__/

@@ -2,9 +2,9 @@
   "name": "stelaris-wireframes-penpot",
   "private": true,
   "type": "module",
-  "description": "Builds design/wireframes/stelaris-wireframes.penpot",
+  "description": "Builds design/wireframes/stelaris-click-dummy.penpot",
   "scripts": {
-    "build": "python3 export_shapes.py shapes.json && node build.mjs shapes.json ../../../design/wireframes/stelaris-wireframes.penpot"
+    "build": "python3 export_shapes.py shapes.json && node build.mjs shapes.json ../../../design/wireframes/stelaris-click-dummy.penpot flows.json && python3 patch_flows.py ../../../design/wireframes/stelaris-click-dummy.penpot flows.json"
   },
   "dependencies": {
     "@penpot/library": "1.1.0"

@@ -5,28 +5,41 @@ Flutter app, derived from the widget code in `lib/` (labels are the English
 strings from `lib/l10n`). Desktop frames are 1440×900; `48` is a 420 px
 compact frame.
 
-Grey boxes with a cross are icons or images. Yellow dashed boxes are
-designer notes, not UI. The only colour is the Material 3 primary from the
-app's seed (`Colors.green[400]`).
+Boxes with a cross are icons or images. Yellow dashed boxes are designer
+notes, not UI. All other colours are the app's real Material 3 light
+scheme: `ColorScheme.fromSeed(seedColor: Colors.green[400], secondary:
+Colors.green[200])`, computed with material-color-utilities (tonal spot),
+the same algorithm Flutter uses.
 
-## Import into Penpot
+## Click dummy in Penpot
 
-**Recommended:** `stelaris-wireframes.penpot` is a native Penpot file.
-In the Penpot dashboard open *Projects → ⋯ → Import Penpot files* (or drag
-the file onto the dashboard). You get:
+`stelaris-click-dummy.penpot` is a native Penpot file. Import it in the
+Penpot dashboard via *Projects → ⋯ → Import Penpot files* (or drag the file
+onto the dashboard).
 
-- 5 pages (Auth & Projects · Lists & Model dialogs · Detail – Items,
-  Notifications, Fonts · Detail – Sound & Unsaved guard · Settings, Build,
-  Palette & more), one board per screen, named like the files below
-- rectangles, circles and lines as native shapes, all labels as editable
-  text (Work Sans / Roboto Mono, loaded from Google Fonts by Penpot)
-- the wireframe palette as library colours (Primary, Primary container,
-  Outline …)
+- One page *Click-Dummy*, boards grouped in rows: Auth & Projects · Lists ·
+  Detail pages · Settings, Build, Palette & more · Model dialogs.
+- Press *Play* (view mode) to click through it. Two flows are set up:
+  **Sign in → Projects → App** (starts at the splash) and **App: Items**.
+- About 450 hotspots: navigation rail, app-bar actions (search opens the
+  command palette, project badge/settings, build, account), cards → detail
+  pages, Add/Delete/Info/Notes → dialogs, tabs, palette entries. Dialog
+  buttons and the × go back to the previous screen. Leaving a detail page
+  with unsaved edits (Items, Fonts, Sound) goes through the guard dialog.
+- Hotspots are invisible rectangles named `hotspot → 20` / `hotspot ← back`
+  on top of each board; select one to edit its interaction.
+- The M3 roles are library colours (`M3 Light/primary`, `…/surface`, …);
+  fills and strokes reference them, so changing a library colour recolours
+  the screens.
+- Rectangles, circles and lines are native shapes, labels are editable text
+  (Work Sans / Roboto Mono, loaded by Penpot from Google Fonts).
 
-Built with Penpot's own `@penpot/library` 1.1.0 (export format v1).
+Built with Penpot's own `@penpot/library` 1.1.0. The library cannot create
+flows, so `patch_flows.py` adds them to the page afterwards.
 
 **Alternative:** drag `all-screens.svg` or single SVGs onto the canvas.
-Shapes stay editable, but text may import as SVG content.
+Shapes stay editable, but text may import as SVG content and there are no
+interactions.
 
 ## Regenerate
 
@@ -34,7 +47,7 @@ The wireframes are code, so they can follow the UI:
 
 ```sh
 python3 tool/wireframes/build.py               # SVGs
-cd tool/wireframes/penpot && npm ci && npm run build   # .penpot
+cd tool/wireframes/penpot && npm ci && npm run build   # click dummy
 ```
 
 - `tool/wireframes/wf.py`: drawing kit (fields, buttons, chips, dialogs …)

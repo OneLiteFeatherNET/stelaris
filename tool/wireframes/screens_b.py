@@ -9,6 +9,10 @@ def screen(fn):
     return fn
 
 
+ITEM_T = ["20", "23", "25"]
+FONT_T = ["28", "29"]
+SOUND_T = ["30", "31"]
+
 COMPONENTS = [("Material", "Custom", "minecraft:diamond_sword", False),
               ("Amount", "Custom", "1", True),
               ("Food", "Consumable · overrides the default", "Nutrition: 4, …", True),
@@ -21,10 +25,13 @@ COMPONENTS = [("Material", "Custom", "minecraft:diamond_sword", False),
 
 def comp_card(s, x, y, w, name, cat, value, deletable):
     s.rect(x, y, w, 112, fill=SURFACE, stroke="none", r=12)
+    s.link(x, y, w, 112, "22")
+    if deletable:
+        s.link(x + w - 44, y + 8, 30, 30, "26")
     s.text(x + 16, y + 28, name, 15, INK, 700)
     s.icon(x + w - (68 if deletable else 40), y + 12, 22, fill="none")
     if deletable:
-        s.icon(x + w - 40, y + 12, 22, fill="#F9DEDC")
+        s.icon(x + w - 40, y + 12, 22, fill=DANGER_SOFT)
     s.text(x + 16, y + 50, cat, 12, ACCENT if cat == "Custom" else MUTED)
     s.text(x + 16, y + 96, value, 14, INK)
 
@@ -32,10 +39,11 @@ def comp_card(s, x, y, w, name, cat, value, deletable):
 @screen
 def s20_item_components():
     s = Svg("20 Item detail – Components tab")
-    x, y, w = shell(s, "Items")
-    y = detail_shell(s, x, y, w, "Ruby Sword", ["Components", "Enchantments", "Lore"], 0)
+    x, y, w = shell(s, "Items", dirty=True)
+    y = detail_shell(s, x, y, w, "Ruby Sword", ["Components", "Enchantments", "Lore"], 0,
+                     tab_targets=ITEM_T)
     page_header(s, x, y, w, "Components (8)", small=True,
-                actions=(("All categories", "tonal"), ("Add", "filled")))
+                actions=(("All categories", "tonal"), ("Add", "filled")), links={"Add": "21"})
     grid(s, x, y + 60, w, COMPONENTS, comp_card, h=112)
     s.note(1120, 790, ["Material is required: no delete.", "Card tap / pencil → Edit component.",
                        "Dot after name = unsaved changes."])
@@ -61,6 +69,7 @@ def s21_component_picker():
         s.icon(x + 16 + len(g) * 8, yy + 2, 14, fill="none")
         yy += 26
         for n, k, d in rows:
+            s.link(x, yy, w, 50, "22")
             s.text(x + 16, yy + 18, n, 14, INK)
             s.text(x + 16, yy + 36, k, 12, MUTED)
             if d:
@@ -74,7 +83,8 @@ def s21_component_picker():
 @screen
 def s22_component_edit():
     s = Svg("22 Dialog – Edit component (schema form)")
-    x, y, w = s.dialog(600, 760, "Can Break", actions=("Cancel", "Save"))
+    x, y, w = s.dialog(600, 760, "Can Break", actions=("Cancel", "Save"),
+                       links={"Save": "20", "Cancel": "20", "×": "20"})
     s.text(x, y, "Tool · minecraft:can_break", 13, MUTED)
     # list section
     s.rect(x, y + 20, w, 300, fill=BG, stroke=SURFACE_2, r=8)
@@ -112,19 +122,22 @@ def s22_component_edit():
 def s23_item_enchantments():
     s = Svg("23 Item detail – Enchantments tab (+ group menu)")
     x, y, w = shell(s, "Items")
-    y = detail_shell(s, x, y, w, "Ruby Sword", ["Components", "Enchantments", "Lore"], 1, dirty=False)
+    y = detail_shell(s, x, y, w, "Ruby Sword", ["Components", "Enchantments", "Lore"], 1, dirty=False,
+                     tab_targets=ITEM_T)
     page_header(s, x, y, w, "Enchantments (3)", small=True,
-                actions=(("Weapon", "tonal"), ("Add", "filled")))
+                actions=(("Weapon", "tonal"), ("Add", "filled")), links={"Add": "24"})
     for i, (n, l) in enumerate([("Sharpness", "Level: 5 / 5"), ("Fire Aspect", "Level: 2 / 2"),
                                 ("Looting", "Level: 7")]):
         cy = y + 60 + i * 80
         s.rect(x, cy, w, 68, fill=SURFACE, stroke=STROKE, r=12)
         s.text(x + 20, cy + 28, n, 15, INK, 700)
         s.text(x + 20, cy + 50, l, 13, MUTED)
-        s.icon(x + w - 96, cy + 22, 24, fill="#F9DEDC")
+        s.icon(x + w - 96, cy + 22, 24, fill=DANGER_SOFT)
         s.icon(x + w - 52, cy + 22, 24, fill="none")
+        s.link(x + w - 100, cy + 18, 32, 32, "26")
+        s.link(x + w - 56, cy + 18, 32, 32, "24")
     mx = x + w - 260
-    s.rect(mx, y + 48, 170, 184, fill=BG, stroke=STROKE, r=8)
+    s.rect(mx, y + 48, 170, 184, fill=DIALOG, stroke="none", r=8)
     for i, g in enumerate(["Armor", "Weapon", "Tool", "Meta"]):
         if g == "Weapon":
             s.rect(mx + 1, y + 56 + i * 44, 168, 40, fill=ACCENT_SOFT, stroke="none")
@@ -157,8 +170,9 @@ def s24_enchantment_dialogs():
 def s25_item_lore():
     s = Svg("25 Item detail – Lore tab")
     x, y, w = shell(s, "Items")
-    y = detail_shell(s, x, y, w, "Ruby Sword", ["Components", "Enchantments", "Lore"], 2, dirty=False)
-    page_header(s, x, y, w, "Lore", small=True, actions=(("Add", "filled"),))
+    y = detail_shell(s, x, y, w, "Ruby Sword", ["Components", "Enchantments", "Lore"], 2, dirty=False,
+                     tab_targets=ITEM_T)
+    page_header(s, x, y, w, "Lore", small=True, actions=(("Add", "filled"),), links={"Add": "26"})
     s.rect(x + 70, y + 8, 76, 32, fill=BG, stroke=STROKE, r=8)
     s.text(x + 108, y + 29, "# 4 / 64", 13, INK, anchor="middle")
     lines = ["<gold>Forged in the nether", "<gray>Damage: +7", "", "<italic>Legendary"]
@@ -169,8 +183,10 @@ def s25_item_lore():
             s.rect(x + 12, cy + 6, w - 24, 52, fill=BG, stroke=ACCENT, r=12)
         s.text(x + 24, cy + 34, str(i + 1), 14, MUTED)
         s.text(x + 64, cy + 34, t or "(empty line)", 15, INK if t else MUTED)
-        s.icon(x + w - 140, cy + 18, 22, fill="#F9DEDC")
+        s.icon(x + w - 140, cy + 18, 22, fill=DANGER_SOFT)
         s.icon(x + w - 100, cy + 18, 22, fill="none")
+        s.link(x + w - 144, cy + 14, 30, 30, "26")
+        s.link(x + w - 104, cy + 14, 30, 30, "26")
         s.text(x + w - 40, cy + 36, "≡", 20, MUTED, anchor="middle")
         s.line(x, cy + 56, x + w, cy + 56, stroke=SURFACE_2)
     s.note(1100, 560, ["Reorderable: drag handle ≡.", "Dragged row: card + accent border.",
@@ -200,7 +216,7 @@ def s26_entry_dialogs():
 def s27_notification_detail():
     s = Svg("27 Notification detail")
     x, y, w = shell(s, "Notifications")
-    y = detail_shell(s, x, y, w, "Welcome Toast", dirty=False)
+    y = detail_shell(s, x, y, w, "Welcome Toast", dirty=False, section="Notifications")
     base_card(s, x, y + 8, "Material", "", hint="minecraft:dirt", counter="0/30")
     base_card(s, x + 366, y + 8, "Title", "Welcome!", counter="8/…")
     base_card(s, x + 732, y + 8, "FrameType", "Task", dropdown=True)
@@ -212,8 +228,9 @@ def s27_notification_detail():
 @screen
 def s28_font_general():
     s = Svg("28 Font detail – General tab")
-    x, y, w = shell(s, "Fonts")
-    y = detail_shell(s, x, y, w, "Icons", ["General", "Characters"], 0)
+    x, y, w = shell(s, "Fonts", dirty=True)
+    y = detail_shell(s, x, y, w, "Icons", ["General", "Characters"], 0, section="Fonts",
+                     tab_targets=FONT_T)
     base_card(s, x, y + 8, "Provider", "bitmap")
     base_card(s, x + 366, y + 8, "Texture path", "minecraft:font/icons.png")
     base_card(s, x + 732, y + 8, "Ascent", "7")
@@ -225,15 +242,19 @@ def s28_font_general():
 def s29_font_chars():
     s = Svg("29 Font detail – Characters tab")
     x, y, w = shell(s, "Fonts")
-    y = detail_shell(s, x, y, w, "Icons", ["General", "Characters"], 1, dirty=False)
+    y = detail_shell(s, x, y, w, "Icons", ["General", "Characters"], 1, dirty=False,
+                     section="Fonts", tab_targets=FONT_T)
     s.rect(x + w / 2 - 40, y + 20, 80, 32, fill=BG, stroke=STROKE, r=8)
     s.text(x + w / 2 + 8, y + 41, "+ Add", 13, INK, anchor="middle")
+    s.link(x + w / 2 - 40, y + 20, 80, 32, "26")
     for i, c in enumerate(["E000", "E001", "E002", "E010"]):
         cy = y + 76 + i * 72
         s.rect(x + 9, cy, w - 18, 60, fill=SURFACE, stroke=STROKE, r=12)
         s.text(x + 30, cy + 36, c, 15, INK)
-        s.icon(x + w - 100, cy + 18, 24, fill="#F9DEDC")
+        s.icon(x + w - 100, cy + 18, 24, fill=DANGER_SOFT)
         s.icon(x + w - 60, cy + 18, 24, fill="none")
+        s.link(x + w - 104, cy + 14, 32, 32, "26")
+        s.link(x + w - 64, cy + 14, 32, 32, "26")
     s.note(1100, 700, ["Legacy inline ActionChip \"Add\"", "(not in the page header)."])
     return s
 
@@ -241,8 +262,9 @@ def s29_font_chars():
 @screen
 def s30_sound_general():
     s = Svg("30 Sound detail – General tab")
-    x, y, w = shell(s, "Sound")
-    y = detail_shell(s, x, y, w, "UI Click", ["General", "Entries"], 0)
+    x, y, w = shell(s, "Sound", dirty=True)
+    y = detail_shell(s, x, y, w, "UI Click", ["General", "Entries"], 0, section="Sound",
+                     tab_targets=SOUND_T)
     base_card(s, x, y + 8, "Key", "custom:ui/click")
     base_card(s, x + 366, y + 8, "Subtitle", "Button clicked")
     return s
@@ -252,10 +274,12 @@ def s30_sound_general():
 def s31_sound_entries():
     s = Svg("31 Sound detail – Entries tab")
     x, y, w = shell(s, "Sound")
-    y = detail_shell(s, x, y, w, "UI Click", ["General", "Entries"], 1, dirty=False)
+    y = detail_shell(s, x, y, w, "UI Click", ["General", "Entries"], 1, dirty=False,
+                     section="Sound", tab_targets=SOUND_T)
     cx = x + w / 2
     s.rect(cx - 130, y + 20, 80, 32, fill=BG, stroke=STROKE, r=8)
     s.text(cx - 90, y + 41, "+ Add", 13, INK, anchor="middle")
+    s.link(cx - 130, y + 20, 80, 32, "32")
     s.button(cx + 0, y + 16, "Save", "filled", w=100, icon=True)
     for i, n in enumerate(["click_1", "click_2", "click_soft"]):
         cy = y + 80 + i * 92
@@ -265,6 +289,7 @@ def s31_sound_entries():
         s.text(x + 82, cy + 34, n, 15, INK, 500)
         s.text(x + 82, cy + 54, n, 12, MUTED)
         s.button(x + 220, cy + 22, "View", "tonal", w=80, h=36)
+        s.link(x + 220, cy + 22, 80, 36, "32")
         s.button(x + 308, cy + 22, "Delete", "outlined", w=80, h=36)
     s.note(1100, 680, ["Second save path: inline Save chip", "bypasses the header Save.",
                        "Delete → \"Delete file\" / Unlink this", "file from the sound event?",
@@ -276,6 +301,8 @@ def s31_sound_entries():
 def s32_sound_modal():
     s = Svg("32 Dialog – Edit Sound (file modal)")
     x, y, w = s.dialog(560, 800, "Edit Sound", actions=("Cancel", "Save"))
+    s.bg = SURFACE_2
+
     def sec(yy, h, title):
         s.rect(x, yy, w, h, fill=SURFACE_2, stroke="none", r=16)
         s.text(x + 20, yy + 30, title, 15, INK, 600)
@@ -307,14 +334,19 @@ def s32_sound_modal():
 def s33_unsaved():
     s = Svg("33 Dialog – Unsaved changes guard")
     x, y, w = shell(s, "Items")
+    s.links.clear()
     detail_shell(s, x, y, w, "Ruby Sword", ["Components", "Enchantments", "Lore"], 0)
+    s.links.clear()
     s.scrim()
     dx, dy = 520, 330
-    s.rect(dx, dy, 400, 220, fill="#FFFFFF", stroke=STROKE, r=28)
+    s.rect(dx, dy, 400, 220, fill=DIALOG, stroke="none", r=28)
     s.text(dx + 24, dy + 48, "Unsaved changes", 22, INK, 500)
     s.text(dx + 24, dy + 86, "You have unsaved changes. Do you want to", 14, MUTED)
     s.text(dx + 24, dy + 106, "save them before leaving?", 14, MUTED)
     s.button(dx + 100, dy + 156, "Cancel", "text", w=80)
     s.button(dx + 184, dy + 156, "Discard", "text", w=90)
     s.button(dx + 284, dy + 156, "Save", "filled", w=92)
+    s.link(dx + 100, dy + 156, 80, 40, "back")
+    s.link(dx + 184, dy + 156, 90, 40, "10")
+    s.link(dx + 284, dy + 156, 92, 40, "10")
     return s

@@ -97,13 +97,13 @@ def shapes_of(svg_text):
 
 def main(dest):
     boards = []
-    for i, s in enumerate(build.load_screens()):
-        r, c = divmod(i, build.COLS)
-        bx, by = c * (build.W + build.GAP), r * (build.H + build.GAP + build.LABEL)
+    for s in build.load_screens():
         bg, shapes = shapes_of(s.svg())
-        boards.append({"name": s.title, "x": bx, "y": by, "width": s.w, "height": s.h,
-                       "fill": bg, "shapes": shapes})
-    pathlib.Path(dest).write_text(json.dumps(boards))
+        boards.append({"name": s.title, "key": s.title.split()[0], "width": s.w,
+                       "height": s.h, "fill": bg, "shapes": shapes,
+                       "links": [dict(zip("xywh", l[:4]), target=l[4]) for l in s.links]})
+    from wf import M3
+    pathlib.Path(dest).write_text(json.dumps({"colors": M3, "boards": boards}))
     print(f"{len(boards)} boards -> {dest}")
 
 

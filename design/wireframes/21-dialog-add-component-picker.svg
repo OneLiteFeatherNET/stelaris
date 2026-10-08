@@ -1,48 +1,48 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
   <title>21 Dialog – Add component (picker)</title>
-  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#F7FBF1" stroke="none" stroke-width="1"/>
   <rect x="0" y="0" width="1440" height="900" rx="0" fill="#000000" fill-opacity="0.32" stroke="none" stroke-width="1"/>
-  <rect x="440.0" y="130.0" width="560" height="640" rx="16" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="464.0" y="172.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#18181B" text-anchor="start">Add component</text>
-  <text x="968.0" y="172.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#71717A" text-anchor="middle">×</text>
-  <line x1="440.0" y1="194.0" x2="1000.0" y2="194.0" stroke="#A1A1AA" stroke-width="1"/>
-  <rect x="464.0" y="210.0" width="512" height="48" rx="24.0" fill="#E4E4E7" stroke="none" stroke-width="1"/>
-  <rect x="480.0" y="224.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="484.0" y1="228.0" x2="496.0" y2="240.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="496.0" y1="228.0" x2="484.0" y2="240.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="512.0" y="239.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#71717A" text-anchor="start">Search components or categories</text>
-  <rect x="936.0" y="224.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="940.0" y1="228.0" x2="952.0" y2="240.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="952.0" y1="228.0" x2="940.0" y2="240.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="472.0" y="292.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="600" fill="#4C662B" text-anchor="start">Properties</text>
-  <rect x="560.0" y="280.0" width="14" height="14" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="564.0" y1="284.0" x2="570.0" y2="290.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="570.0" y1="284.0" x2="564.0" y2="290.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="480.0" y="322.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Max Damage</text>
-  <text x="480.0" y="340.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">minecraft:max_damage</text>
-  <text x="960.0" y="332.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="end">Default</text>
-  <text x="480.0" y="372.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Unbreakable</text>
-  <text x="480.0" y="390.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">minecraft:unbreakable</text>
-  <text x="480.0" y="422.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Max Stack Size</text>
-  <text x="480.0" y="440.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">minecraft:max_stack_size</text>
-  <text x="960.0" y="432.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="end">Default</text>
-  <text x="472.0" y="468.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="600" fill="#4C662B" text-anchor="start">Display</text>
-  <rect x="536.0" y="456.0" width="14" height="14" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="540.0" y1="460.0" x2="546.0" y2="466.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="546.0" y1="460.0" x2="540.0" y2="466.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="480.0" y="498.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Custom Name</text>
-  <text x="480.0" y="516.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">minecraft:custom_name</text>
-  <text x="480.0" y="548.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Dyed Color</text>
-  <text x="480.0" y="566.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">minecraft:dyed_color</text>
-  <text x="480.0" y="598.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Rarity</text>
-  <text x="480.0" y="616.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">minecraft:rarity</text>
-  <text x="960.0" y="608.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="end">Default</text>
-  <text x="472.0" y="644.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="600" fill="#4C662B" text-anchor="start">Consumable</text>
-  <rect x="560.0" y="632.0" width="14" height="14" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="564.0" y1="636.0" x2="570.0" y2="642.0" stroke="#A1A1AA" stroke-width="1"/>
-  <line x1="570.0" y1="636.0" x2="564.0" y2="642.0" stroke="#A1A1AA" stroke-width="1"/>
-  <text x="480.0" y="674.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Food</text>
-  <text x="480.0" y="692.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">minecraft:food</text>
+  <rect x="440.0" y="130.0" width="560" height="640" rx="16" fill="#E6E9E0" stroke="none" stroke-width="1"/>
+  <text x="464.0" y="172.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#181D17" text-anchor="start">Add component</text>
+  <text x="968.0" y="172.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#424940" text-anchor="middle">×</text>
+  <line x1="440.0" y1="194.0" x2="1000.0" y2="194.0" stroke="#C2C9BD" stroke-width="1"/>
+  <rect x="464.0" y="210.0" width="512" height="48" rx="24.0" fill="#E0E4DB" stroke="none" stroke-width="1"/>
+  <rect x="480.0" y="224.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="484.0" y1="228.0" x2="496.0" y2="240.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="496.0" y1="228.0" x2="484.0" y2="240.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="512.0" y="239.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#424940" text-anchor="start">Search components or categories</text>
+  <rect x="936.0" y="224.0" width="20" height="20" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="940.0" y1="228.0" x2="952.0" y2="240.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="952.0" y1="228.0" x2="940.0" y2="240.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="472.0" y="292.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="600" fill="#39693B" text-anchor="start">Properties</text>
+  <rect x="560.0" y="280.0" width="14" height="14" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="564.0" y1="284.0" x2="570.0" y2="290.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="570.0" y1="284.0" x2="564.0" y2="290.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="480.0" y="322.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Max Damage</text>
+  <text x="480.0" y="340.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">minecraft:max_damage</text>
+  <text x="960.0" y="332.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="end">Default</text>
+  <text x="480.0" y="372.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Unbreakable</text>
+  <text x="480.0" y="390.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">minecraft:unbreakable</text>
+  <text x="480.0" y="422.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Max Stack Size</text>
+  <text x="480.0" y="440.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">minecraft:max_stack_size</text>
+  <text x="960.0" y="432.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="end">Default</text>
+  <text x="472.0" y="468.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="600" fill="#39693B" text-anchor="start">Display</text>
+  <rect x="536.0" y="456.0" width="14" height="14" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="540.0" y1="460.0" x2="546.0" y2="466.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="546.0" y1="460.0" x2="540.0" y2="466.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="480.0" y="498.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Custom Name</text>
+  <text x="480.0" y="516.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">minecraft:custom_name</text>
+  <text x="480.0" y="548.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Dyed Color</text>
+  <text x="480.0" y="566.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">minecraft:dyed_color</text>
+  <text x="480.0" y="598.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Rarity</text>
+  <text x="480.0" y="616.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">minecraft:rarity</text>
+  <text x="960.0" y="608.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="end">Default</text>
+  <text x="472.0" y="644.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="600" fill="#39693B" text-anchor="start">Consumable</text>
+  <rect x="560.0" y="632.0" width="14" height="14" rx="4" fill="none" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="564.0" y1="636.0" x2="570.0" y2="642.0" stroke="#C2C9BD" stroke-width="1"/>
+  <line x1="570.0" y1="636.0" x2="564.0" y2="642.0" stroke="#C2C9BD" stroke-width="1"/>
+  <text x="480.0" y="674.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#181D17" text-anchor="start">Food</text>
+  <text x="480.0" y="692.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#424940" text-anchor="start">minecraft:food</text>
   <rect x="1040" y="200" width="260" height="94" rx="4" fill="#FFF4C2" stroke="#E0C200" stroke-width="1" stroke-dasharray="4 3"/>
   <text x="1050" y="220" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Grouped by category; tapping a</text>
   <text x="1050" y="238" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">heading filters to it.</text>

@@ -25,6 +25,7 @@ ITEMS = [("Ruby Sword", "ruby_sword", "Drops from the boss in the nether arena")
 def s01_splash():
     s = Svg("01 Splash (web/index.html)")
     s.circle(720, 450, 24, fill="none", stroke=ACCENT)
+    s.link(0, 0, s.w, s.h, "02")
     s.note(1120, 40, ["HTML splash before Flutter boots.", "48 px ring spinner in primary,",
                       "bg #fff / #121212 (dark). Fades out."])
     return s
@@ -37,6 +38,7 @@ def s02_sign_in():
     s.text(720, 390, "Stelaris", 24, INK, 500, "middle")
     s.text(720, 424, "Sign in to continue.", 15, MUTED, anchor="middle")
     s.button(658, 450, "Sign in", "filled", w=124, icon=True)
+    s.link(658, 450, 124, 40, "03")
     s.note(1100, 40, ["Max width 420, centered.", "States of the message line:",
                       "• Signed out: Sign in to continue.",
                       "• Expired: Your session expired. Sign",
@@ -54,7 +56,7 @@ def s03_project_select():
     s.image(680, 70, 80, 80, "logo")
     s.text(720, 196, "Welcome to Stelaris", 28, INK, 700, "middle")
     x, y = 460, 226
-    s.rect(x, y, 520, 468, fill=BG, stroke=STROKE, r=20)
+    s.rect(x, y, 520, 468, fill=SURFACE, stroke="none", r=20)
     s.text(720, y + 52, "Select Project", 22, INK, 700, "middle")
     s.line(x + 28, y + 76, x + 492, y + 76)
     s.rect(x + 28, y + 96, 464, 280, fill=BG, stroke=STROKE, r=12)
@@ -74,16 +76,19 @@ def s03_project_select():
         s.text(kx, yy + (24 if desc else 27), f"({key})", 11, MUTED)
         if labor:
             lx = kx + len(key) * 6.5 + 20
-            s.rect(lx, yy + (12 if desc else 15), 34, 14, fill="#F2DAFF", stroke="none", r=7)
+            s.rect(lx, yy + (12 if desc else 15), 34, 14, fill=LABOR, stroke="none", r=7)
             s.text(lx + 17, yy + (22 if desc else 25), "Labor", 9, INK, 700, "middle")
         if desc:
             s.text(x + 78, yy + 43, desc, 12, MUTED)
         s.icon(x + 452, yy + h / 2 - 10, 20, fill="none")
+        s.link(x + 446, yy + h / 2 - 16, 32, 32, "06")
         yy += h
         s.line(x + 29, yy, x + 491, yy, stroke=SURFACE_2)
     s.rect(x + 486, y + 104, 4, 120, fill=STROKE, stroke="none", r=2)
     s.button(x + 28, y + 400, "Create new project", "outlined", w=226, icon=True)
     s.button(x + 266, y + 400, "Open Project", "filled", w=226, icon=True)
+    s.link(x + 28, y + 400, 226, 40, "05")
+    s.link(x + 266, y + 400, 226, 40, "10")
     s.note(1040, 300, ["Project list: 80–280 px high,", "scrollbar always visible.",
                        "Open Project disabled until a", "row is selected → /attributes.",
                        "Pencil per row = Edit project.", "No delete-project UI exists."])
@@ -97,13 +102,14 @@ def s04_project_empty():
     s.image(680, 120, 80, 80, "logo")
     s.text(720, 246, "Welcome to Stelaris", 28, INK, 700, "middle")
     x, y = 460, 280
-    s.rect(x, y, 520, 330, fill=BG, stroke=STROKE, r=20)
+    s.rect(x, y, 520, 330, fill=SURFACE, stroke="none", r=20)
     s.text(720, y + 52, "Select Project", 22, INK, 700, "middle")
     s.line(x + 28, y + 76, x + 492, y + 76)
     s.icon(692, y + 110, 56)
     s.text(720, y + 206, "No projects found", 18, INK, 600, "middle")
     s.text(720, y + 232, "Get started by creating your first project.", 14, MUTED, anchor="middle")
     s.button(668, y + 256, "Create", "filled", w=104, icon=True)
+    s.link(668, y + 256, 104, 40, "05")
     return s
 
 
@@ -155,7 +161,7 @@ def s07_switch_project():
     shell(s, "Items")
     x, y = 520, 290
     s.scrim()
-    s.rect(x, y, 400, 300, fill="#FFFFFF", stroke=STROKE, r=28)
+    s.rect(x, y, 400, 300, fill=DIALOG, stroke="none", r=28)
     s.text(720, y + 48, "Switch project?", 22, INK, 500, "middle")
     for i, (n, k) in enumerate([("Demo Project", "demo"), ("Survival", "survival")]):
         cx = x + 32 + i * 196
@@ -168,16 +174,23 @@ def s07_switch_project():
     s.text(x + 58, y + 192, "and sound events will be reset.", 12, MUTED)
     s.button(x + 160, y + 236, "Cancel", "text", w=88)
     s.button(x + 252, y + 236, "Switch project", "filled", w=128)
+    s.link(x + 160, y + 236, 88, 40, "back")
+    s.link(x + 252, y + 236, 128, 40, "10")
+    return s
+
+
+def list_screen(title, section, entries, open_to, create="51"):
+    s = Svg(title)
+    x, y, w = shell(s, section)
+    page_header(s, x, y, w, f"{section} ({len(entries)})", links={"Add": create})
+    grid(s, x, y + 64, w, entries, lambda s, x, y, w, n, k, note=None, ed="Edited 5 min ago":
+         model_card(s, x, y, w, n, k, note, ed, open_to=open_to))
     return s
 
 
 @screen
 def s10_items_list():
-    s = Svg("10 Items – list (rail extended)")
-    x, y, w = shell(s, "Items")
-    page_header(s, x, y, w, "Items (12)")
-    grid(s, x, y + 64, w, ITEMS, lambda s, x, y, w, n, k, note=None, ed="Edited 5 min ago":
-         model_card(s, x, y, w, n, k, note, ed))
+    s = list_screen("10 Items – list (rail extended)", "Items", ITEMS, "20")
     s.note(1180, 820, ["Grid: cols = (w+12)/332, 1–4.", "Card tap → /items/detail."], w=240)
     return s
 
@@ -186,13 +199,14 @@ def s10_items_list():
 def s11_attributes_filter():
     s = Svg("11 Attributes – list (rail collapsed) + Filter & Sort menu")
     x, y, w = shell(s, "Attributes", extended=False)
-    page_header(s, x, y, w, "Attributes (6)")
+    page_header(s, x, y, w, "Attributes (6)", links={"Add": "51"})
     attrs = [("Max Health", "max_health"), ("Movement Speed", "movement_speed"),
              ("Attack Damage", "attack_damage"), ("Armor", "armor"),
              ("Luck", "luck"), ("Knockback", "knockback")]
-    grid(s, x, y + 64, w, attrs, lambda s, x, y, w, n, k: model_card(s, x, y, w, n, k))
+    grid(s, x, y + 64, w, attrs,
+         lambda s, x, y, w, n, k: model_card(s, x, y, w, n, k, open_to="50"))
     mx, my = 760, 56
-    s.rect(mx, my, 300, 300, fill=BG, stroke=STROKE, r=8)
+    s.rect(mx, my, 300, 300, fill=DIALOG, stroke="none", r=8)
     for i, t in enumerate(["Name (A–Z)", "Name (Z–A)", "Created (newest first)",
                            "Created (oldest first)"]):
         s.radio(mx + 16, my + 16 + i * 44, on=i == 0)
@@ -202,15 +216,38 @@ def s11_attributes_filter():
         s.checkbox(mx + 16, my + 210 + i * 44, on=i == 0)
         s.text(mx + 48, my + 224 + i * 44, t, 14)
     s.circle(1056, 24, 8, fill=DANGER, stroke="none")
-    s.text(1056, 28, "1", 10, "#FFFFFF", 700, "middle")
+    s.text(1056, 28, "1", 10, ON_ACCENT, 700, "middle")
     s.note(1120, 120, ["Filter & Sort lives in the trailing", "icon of the app-bar search.",
                        "Checkbox filters: Attributes only.", "Rail < 1000 px: always collapsed."])
     return s
 
 
 @screen
-def s12_list_empty():
-    s = Svg("12 List – empty / no matches")
+def s12_notifications_list():
+    return list_screen("12 Notifications – list", "Notifications", [
+        ("Welcome Toast", "welcome_toast", "Shown on first join"),
+        ("Quest Complete", "quest_complete", None), ("Level Up", "level_up", None),
+        ("Daily Reward", "daily_reward", None, "Created 1 d ago")], "27")
+
+
+@screen
+def s13_fonts_list():
+    return list_screen("13 Fonts – list", "Fonts", [
+        ("Icons", "icons", "HUD icon font"), ("Emojis", "emojis", None),
+        ("Small Caps", "small_caps", None)], "28")
+
+
+@screen
+def s14_sound_list():
+    return list_screen("14 Sound – list", "Sound", [
+        ("UI Click", "ui_click", None), ("Level Up Jingle", "level_up_jingle", None),
+        ("Boss Roar", "boss_roar", "Phase 2 only"), ("Coin Pickup", "coin_pickup", None),
+        ("Door Creak", "door_creak", None)], "30")
+
+
+@screen
+def s15_list_empty():
+    s = Svg("15 List – empty / no matches")
     x, y, w = shell(s, "Fonts", query="zzz")
     page_header(s, x, y, w, "Fonts (0)")
     cx = x + w / 4
@@ -222,6 +259,7 @@ def s12_list_empty():
     s.text(cx, 410, "No matches", 18, INK, 500, "middle")
     s.text(cx, 436, "Try another search or reset the filters.", 14, MUTED, anchor="middle")
     s.button(cx - 60, 456, "Reset search", "text", w=120)
+    s.link(cx - 60, 456, 120, 40, "13")
     s.line(x + w / 2, 300, x + w / 2, 520, dash="6 4")
     s.text(x + 20, 560, "left: no models · right: search hides all", 12, MUTED, italic=True)
     return s
@@ -229,7 +267,7 @@ def s12_list_empty():
 
 @screen
 def s13_attribute_edit():
-    s = Svg("13 Dialog – Edit attribute")
+    s = Svg("50 Dialog – Edit attribute")
     x, y, w = s.dialog(420, 420, "Edit attribute")
     s.text(x, y + 6, "Max Health", 15, MUTED)
     s.info_chip(x, y + 16, "demo:max_health")
@@ -241,7 +279,7 @@ def s13_attribute_edit():
 
 @screen
 def s14_model_create():
-    s = Svg("14 Dialog – Create model")
+    s = Svg("51 Dialog – Create model")
     x, y, w = s.dialog(520, 420, "Create new item", actions=("Cancel", "Create"))
     s.field(x, y, w, "Name *", trailing=True)
     s.text(x + 16, y + 33, "e.g. My Entry", 15, MUTED)
@@ -256,7 +294,7 @@ def s14_model_create():
 
 @screen
 def s15_model_copy():
-    s = Svg("15 Dialog – Copy model")
+    s = Svg("52 Dialog – Copy model")
     x, y, w = s.dialog(520, 640, "Copy item", actions=("Cancel", "Copy"))
     s.field(x, y, w, "Target project", "Survival (survival)", dropdown=True)
     s.field(x, y + 76, w, "Name *", "Ruby Sword (Copy)")
@@ -274,7 +312,7 @@ def s15_model_copy():
 
 @screen
 def s16_model_delete():
-    s = Svg("16 Dialog – Delete model (type name)")
+    s = Svg("53 Dialog – Delete model (type name)")
     x, y, w = s.dialog(520, 500, "Delete item", actions=("Cancel", "Delete"), danger=True)
     s.text(x + w / 2, y + 8, "Ruby Sword", 18, INK, 600, "middle")
     s.info_chip(x + w / 2 - 80, y + 20, "demo:ruby_sword")
@@ -290,7 +328,7 @@ def s16_model_delete():
 
 @screen
 def s17_model_info():
-    s = Svg("17 Dialog – Model info")
+    s = Svg("54 Dialog – Model info")
     x, y, w = s.dialog(520, 360, "Ruby Sword", actions=("Close",))
     s.notice(x, y, w, 48, [("demo:ruby_sword", 13, 400)])
     for i, (k, v) in enumerate([("ID", "6650f1c2a9e4b1"), ("Created", "3 d ago"),
@@ -304,7 +342,7 @@ def s17_model_info():
 
 @screen
 def s18_notes():
-    s = Svg("18 Dialogs – Notes edit (card menu) & Notes view (detail header)")
+    s = Svg("55 Dialogs – Notes edit (card menu) & Notes view (detail header)")
     s.scrim()
     x, y, w = s.dialog(520, 460, "Notes for Ruby Sword", actions=("Cancel", "Save"),
                        x=120, y=220, scrim=False)
