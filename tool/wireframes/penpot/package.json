@@ -1,0 +1,12 @@
+{
+  "name": "stelaris-wireframes-penpot",
+  "private": true,
+  "type": "module",
+  "description": "Builds design/wireframes/stelaris-wireframes.penpot",
+  "scripts": {
+    "build": "python3 export_shapes.py shapes.json && node build.mjs shapes.json ../../../design/wireframes/stelaris-wireframes.penpot"
+  },
+  "dependencies": {
+    "@penpot/library": "1.1.0"
+  }
+}

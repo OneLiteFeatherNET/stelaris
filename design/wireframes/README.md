@@ -11,28 +11,38 @@ app's seed (`Colors.green[400]`).
 
 ## Import into Penpot
 
-- **Everything at once:** drag `all-screens.svg` onto the Penpot canvas.
-  Each screen becomes a group named after the screen. Select a group and use
-  *Selection to board* (Ctrl+Alt+G) to turn it into a board.
-- **Single screens:** drag one or more of the numbered SVGs onto the canvas,
-  or insert them with *Shift+K* (Image). Penpot converts them to shapes.
+**Recommended:** `stelaris-wireframes.penpot` is a native Penpot file.
+In the Penpot dashboard open *Projects → ⋯ → Import Penpot files* (or drag
+the file onto the dashboard). You get:
 
-Rectangles, lines and circles become native Penpot shapes. SVG text may
-import as SVG content instead of editable text; retype it with the text tool
-where you need to edit it.
+- 5 pages (Auth & Projects · Lists & Model dialogs · Detail – Items,
+  Notifications, Fonts · Detail – Sound & Unsaved guard · Settings, Build,
+  Palette & more), one board per screen, named like the files below
+- rectangles, circles and lines as native shapes, all labels as editable
+  text (Work Sans / Roboto Mono, loaded from Google Fonts by Penpot)
+- the wireframe palette as library colours (Primary, Primary container,
+  Outline …)
+
+Built with Penpot's own `@penpot/library` 1.1.0 (export format v1).
+
+**Alternative:** drag `all-screens.svg` or single SVGs onto the canvas.
+Shapes stay editable, but text may import as SVG content.
 
 ## Regenerate
 
 The wireframes are code, so they can follow the UI:
 
 ```sh
-python3 tool/wireframes/build.py
+python3 tool/wireframes/build.py               # SVGs
+cd tool/wireframes/penpot && npm ci && npm run build   # .penpot
 ```
 
 - `tool/wireframes/wf.py`: drawing kit (fields, buttons, chips, dialogs …)
 - `tool/wireframes/screens_base.py`: app shell, page header, cards
 - `tool/wireframes/screens_a.py`: auth, projects, list pages, model dialogs
 - `tool/wireframes/screens_b.py`: detail pages and their dialogs
+- `tool/wireframes/penpot/`: SVG shapes → JSON → `.penpot` via
+  `@penpot/library`
 - `tool/wireframes/screens_c.py`: settings, build, command palette, menus,
   snackbars, compact layout
 

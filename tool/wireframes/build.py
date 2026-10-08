@@ -23,16 +23,18 @@ def slug(title):
     return re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
 
 
+def load_screens():
+    screens = []
+    for m in MODULES:
+        screens += [f() for f in importlib.import_module(m).SCREENS]
+    return screens
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     for old in OUT.glob("*.svg"):
         old.unlink()
-    screens = []
-    for m in MODULES:
-        try:
-            screens += [f() for f in importlib.import_module(m).SCREENS]
-        except ModuleNotFoundError:
-            pass
+    screens = load_screens()
     board = []
     for i, s in enumerate(screens):
         svg = s.svg()
