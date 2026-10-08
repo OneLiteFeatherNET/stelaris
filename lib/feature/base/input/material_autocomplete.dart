@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/semantics.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:vulpes_data/material.dart';
 
@@ -39,6 +41,7 @@ class MaterialAutocomplete extends StatelessWidget {
     this.controller,
     this.focusNode,
     this.categories = const {},
+    @visibleForTesting this.skipSuggestions,
     super.key,
   }) : assert(
          (controller == null) == (focusNode == null),
@@ -65,6 +68,17 @@ class MaterialAutocomplete extends StatelessWidget {
   /// Restricts the suggestions to these categories; all when empty.
   final Set<MaterialCategory> categories;
 
+  /// Whether to skip the suggestions; by default they are skipped on the web
+  /// while its semantics tree is on.
+  ///
+  /// Showing the overlay then makes the engine re-parent the semantic nodes of
+  /// the route, which drops the DOM focus of the text field: after the first
+  /// typed character the field is blurred and the overlay closes again.
+  final bool? skipSuggestions;
+
+  bool get _skipSuggestions =>
+      skipSuggestions ?? (kIsWeb && SemanticsBinding.instance.semanticsEnabled);
+
   @override
   Widget build(BuildContext context) {
     return RawAutocomplete<MaterialSearchEntry>(
@@ -74,8 +88,9 @@ class MaterialAutocomplete extends StatelessWidget {
           ? TextEditingValue(text: initialValue)
           : null,
       displayStringForOption: (entry) => entry.key,
-      optionsBuilder: (value) =>
-          suggestMaterials(value.text, categories: categories),
+      optionsBuilder: (value) => _skipSuggestions
+          ? const []
+          : suggestMaterials(value.text, categories: categories),
       onSelected: (entry) => onSelected(entry.key),
       fieldViewBuilder: fieldBuilder,
       optionsViewBuilder: (context, onSelected, options) =>

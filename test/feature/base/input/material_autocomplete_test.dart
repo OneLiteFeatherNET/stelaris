@@ -8,6 +8,7 @@ void main() {
     WidgetTester tester, {
     Brightness brightness = Brightness.light,
     double? height,
+    bool? skipSuggestions,
   }) async {
     if (height != null) {
       tester.view.physicalSize = Size(400, height);
@@ -28,6 +29,7 @@ void main() {
             child: SizedBox(
               width: 300,
               child: MaterialAutocomplete(
+                skipSuggestions: skipSuggestions,
                 onSelected: (_) {},
                 fieldBuilder: (context, controller, focusNode, onSubmitted) =>
                     TextFormField(
@@ -66,9 +68,8 @@ void main() {
 
         await type(tester, 'diamond');
 
-        final scheme = Theme.of(
-          tester.element(find.byType(TextFormField)),
-        ).colorScheme;
+        final scheme = Theme.of(tester.element(find.byType(TextFormField)))
+            .colorScheme;
         final panel = tester.widget<Material>(
           find
               .ancestor(
@@ -122,11 +123,38 @@ void main() {
       await tester.pump();
 
       expect(
-        tester.getRect(find.byType(ListView)).contains(
-          tester.getRect(find.text(first.key)).center,
-        ),
+        tester
+            .getRect(find.byType(ListView))
+            .contains(tester.getRect(find.text(first.key)).center),
         isTrue,
       );
+    });
+  });
+
+  group('without the overlay', () {
+    testWidgets('keeps the focus and every typed character', (tester) async {
+      await pumpField(tester, skipSuggestions: true);
+
+      await tester.tap(find.byType(TextFormField));
+      for (final text in ['s', 'sw', 'swo', 'swor', 'sword']) {
+        await tester.enterText(find.byType(TextFormField), text);
+        await tester.pump();
+        final editable = tester.widget<EditableText>(find.byType(EditableText));
+        expect(editable.focusNode.hasFocus, isTrue, reason: 'after "$text"');
+        expect(editable.controller.text, text);
+      }
+      expect(find.byType(MenuItemButton), findsNothing);
+    });
+
+    testWidgets('does not show the overlay on the web with semantics', (
+      tester,
+    ) async {
+      // The web check can't run in a VM test; the flag is what it computes.
+      await pumpField(tester, skipSuggestions: true);
+
+      await type(tester, 'diamond');
+
+      expect(find.byType(MenuItemButton), findsNothing);
     });
   });
 }

@@ -88,3 +88,11 @@ highlighting an item while focus stays in a text field.
   without building it first.
 - **Cost**: `ListView.builder` builds only visible rows; the list listens to the highlight without
   depending on it, so only the rows repaint when the highlight moves.
+
+## Web semantics
+
+With the web semantics tree on (screen readers, browser automation), showing the options overlay
+makes the engine re-parent the semantic nodes of the dialog route, which blurs the DOM input: the
+field loses focus after the first typed character. A plain field is unaffected, and so is the web
+without semantics. `MaterialAutocomplete` therefore shows no suggestions on the web while
+semantics are on; typing keeps working.
