@@ -5,10 +5,10 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/advancement/selected_advancement_state.dart';
+import 'package:stelaris/feature/advancement/advancement_display_flags.dart';
 import 'package:stelaris/feature/advancement/text_component.dart';
 import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
 import 'package:stelaris/feature/base/cards/dropdown_card.dart';
-import 'package:stelaris/feature/base/cards/switch_card.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
@@ -30,9 +30,10 @@ const TextInputType _decimalInput = TextInputType.numberWithOptions(
 /// A widget that represents the general advancement management page.
 ///
 /// The [AdvancementGeneralPage] allows users to view and edit the details
-/// of a selected advancement: its icon, title, description, frame type, its
-/// place in the advancement tree and when it is shown. The title and
-/// description are edited as plain text and stored as JSON text components.
+/// of a selected advancement: how it is shown, its icon, title, description,
+/// frame type and its place in the advancement tree.
+/// The title and description are edited as plain text and stored as JSON
+/// text components.
 class AdvancementGeneralPage extends StatefulWidget {
   /// Creates an instance of [AdvancementGeneralPage].
   const AdvancementGeneralPage({super.key});
@@ -150,182 +151,175 @@ class _AdvancementGeneralPageState extends State<AdvancementGeneralPage> {
                               controller: _scrollController,
                               child: Padding(
                                 padding: const EdgeInsets.all(16),
-                                child: Wrap(
-                                  spacing: 16,
-                                  runSpacing: 16,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    TextInputCard<String>(
-                                      display: context.l10n.card_material,
-                                      currentValue:
-                                          selected.material ?? emptyString,
-                                      hintText: defaultMaterial,
-                                      valueUpdate: (value) => _update(
-                                        context,
-                                        selected,
-                                        (model) =>
-                                            model.copyWith(material: value),
-                                      ),
-                                      formValidator: (value) {
-                                        if (value == null) return null;
-                                        if (!minecraftPattern.hasMatch(value)) {
-                                          return context
+                                    AdvancementDisplayFlags(selected: selected),
+                                    const SizedBox(height: 16),
+                                    Wrap(
+                                      spacing: 16,
+                                      runSpacing: 16,
+                                      children: [
+                                        TextInputCard<String>(
+                                          display: context.l10n.card_material,
+                                          currentValue:
+                                              selected.material ?? emptyString,
+                                          hintText: defaultMaterial,
+                                          valueUpdate: (value) => _update(
+                                            context,
+                                            selected,
+                                            (model) =>
+                                                model.copyWith(material: value),
+                                          ),
+                                          formValidator: (value) {
+                                            if (value == null) return null;
+                                            if (!minecraftPattern.hasMatch(
+                                              value,
+                                            )) {
+                                              return context
+                                                  .l10n
+                                                  .input_validation_material;
+                                            }
+                                            return null;
+                                          },
+                                          maxLength: 30,
+                                          focusOrder: const NumericFocusOrder(
+                                            1,
+                                          ),
+                                        ),
+                                        TextInputCard<String>(
+                                          display: context.l10n.card_title,
+                                          currentValue: plainTextOf(
+                                            selected.title,
+                                          ),
+                                          valueUpdate: (value) => _update(
+                                            context,
+                                            selected,
+                                            (model) => model.copyWith(
+                                              title: textComponentOf(
+                                                value,
+                                                previous: model.title,
+                                              ),
+                                            ),
+                                          ),
+                                          focusOrder: const NumericFocusOrder(
+                                            2,
+                                          ),
+                                        ),
+                                        TextInputCard<String>(
+                                          display:
+                                              context.l10n.card_description,
+                                          currentValue: plainTextOf(
+                                            selected.description,
+                                          ),
+                                          valueUpdate: (value) => _update(
+                                            context,
+                                            selected,
+                                            (model) => model.copyWith(
+                                              description: textComponentOf(
+                                                value,
+                                                previous: model.description,
+                                              ),
+                                            ),
+                                          ),
+                                          maxLength: 120,
+                                          focusOrder: const NumericFocusOrder(
+                                            3,
+                                          ),
+                                        ),
+                                        DropdownCard<
+                                          FrameType,
+                                          AdvancementModel
+                                        >(
+                                          display: context.l10n.card_frame_type,
+                                          currentValue: selected,
+                                          items: items,
+                                          valueUpdate: (value) => _update(
+                                            context,
+                                            selected,
+                                            (model) => model.copyWith(
+                                              frameType: value,
+                                            ),
+                                          ),
+                                          defaultValue: (value) =>
+                                              value.frameType,
+                                          matchTextInputHeight: true,
+                                          focusOrder: const NumericFocusOrder(
+                                            4,
+                                          ),
+                                        ),
+                                        DropdownCard<String, AdvancementModel>(
+                                          display: context
                                               .l10n
-                                              .input_validation_material;
-                                        }
-                                        return null;
-                                      },
-                                      maxLength: 30,
-                                      focusOrder: const NumericFocusOrder(1),
-                                    ),
-                                    TextInputCard<String>(
-                                      display: context.l10n.card_title,
-                                      currentValue: plainTextOf(selected.title),
-                                      valueUpdate: (value) => _update(
-                                        context,
-                                        selected,
-                                        (model) => model.copyWith(
-                                          title: textComponentOf(
-                                            value,
-                                            previous: model.title,
+                                              .card_advancement_parent,
+                                          tooltipMessage: context
+                                              .l10n
+                                              .tooltip_advancement_parent,
+                                          currentValue: selected,
+                                          items: _parentItems(context, vm),
+                                          valueUpdate: (value) => _update(
+                                            context,
+                                            selected,
+                                            (model) => model.copyWith(
+                                              parentId: value == _noParent
+                                                  ? null
+                                                  : value,
+                                            ),
+                                          ),
+                                          defaultValue: (value) =>
+                                              value.parentId ?? _noParent,
+                                          matchTextInputHeight: true,
+                                          focusOrder: const NumericFocusOrder(
+                                            5,
                                           ),
                                         ),
-                                      ),
-                                      focusOrder: const NumericFocusOrder(2),
-                                    ),
-                                    TextInputCard<String>(
-                                      display: context.l10n.card_description,
-                                      currentValue: plainTextOf(
-                                        selected.description,
-                                      ),
-                                      valueUpdate: (value) => _update(
-                                        context,
-                                        selected,
-                                        (model) => model.copyWith(
-                                          description: textComponentOf(
-                                            value,
-                                            previous: model.description,
+                                        if (selected.isRoot)
+                                          TextInputCard<String>(
+                                            display: context
+                                                .l10n
+                                                .card_advancement_background,
+                                            tooltipMessage: context
+                                                .l10n
+                                                .tooltip_advancement_background,
+                                            currentValue:
+                                                selected.background ??
+                                                emptyString,
+                                            hintText: 'minecraft:gui/advancements/backgrounds/stone',
+                                            valueUpdate: (value) => _update(
+                                              context,
+                                              selected,
+                                              (model) => model.copyWith(
+                                                background: value.isEmpty
+                                                    ? null
+                                                    : value,
+                                              ),
+                                            ),
+                                            maxLength: 100,
+                                            focusOrder: const NumericFocusOrder(
+                                              6,
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      maxLength: 120,
-                                      focusOrder: const NumericFocusOrder(3),
-                                    ),
-                                    DropdownCard<FrameType, AdvancementModel>(
-                                      display: context.l10n.card_frame_type,
-                                      currentValue: selected,
-                                      items: items,
-                                      valueUpdate: (value) => _update(
-                                        context,
-                                        selected,
-                                        (model) =>
-                                            model.copyWith(frameType: value),
-                                      ),
-                                      defaultValue: (value) => value.frameType,
-                                      matchTextInputHeight: true,
-                                      focusOrder: const NumericFocusOrder(4),
-                                    ),
-                                    DropdownCard<String, AdvancementModel>(
-                                      display:
-                                          context.l10n.card_advancement_parent,
-                                      tooltipMessage: context
-                                          .l10n
-                                          .tooltip_advancement_parent,
-                                      currentValue: selected,
-                                      items: _parentItems(context, vm),
-                                      valueUpdate: (value) => _update(
-                                        context,
-                                        selected,
-                                        (model) => model.copyWith(
-                                          parentId: value == _noParent
-                                              ? null
-                                              : value,
-                                        ),
-                                      ),
-                                      defaultValue: (value) =>
-                                          value.parentId ?? _noParent,
-                                      matchTextInputHeight: true,
-                                      focusOrder: const NumericFocusOrder(5),
-                                    ),
-                                    if (selected.isRoot)
-                                      TextInputCard<String>(
-                                        display: context
-                                            .l10n
-                                            .card_advancement_background,
-                                        tooltipMessage: context
-                                            .l10n
-                                            .tooltip_advancement_background,
-                                        currentValue:
-                                            selected.background ?? emptyString,
-                                        hintText: 'minecraft:gui/advancements/backgrounds/stone',
-                                        valueUpdate: (value) => _update(
+                                        _positionCard(
                                           context,
-                                          selected,
-                                          (model) => model.copyWith(
-                                            background: value.isEmpty
-                                                ? null
-                                                : value,
-                                          ),
+                                          display:
+                                              context.l10n.card_advancement_x,
+                                          value: selected.x,
+                                          change: (x) =>
+                                              selected.copyWith(x: x),
+                                          order: 7,
+                                          vm: vm,
                                         ),
-                                        maxLength: 100,
-                                        focusOrder: const NumericFocusOrder(6),
-                                      ),
-                                    _positionCard(
-                                      context,
-                                      display: context.l10n.card_advancement_x,
-                                      value: selected.x,
-                                      change: (x) => selected.copyWith(x: x),
-                                      order: 7,
-                                      vm: vm,
-                                    ),
-                                    _positionCard(
-                                      context,
-                                      display: context.l10n.card_advancement_y,
-                                      value: selected.y,
-                                      change: (y) => selected.copyWith(y: y),
-                                      order: 8,
-                                      vm: vm,
-                                    ),
-                                    SwitchCard(
-                                      display: context
-                                          .l10n
-                                          .card_advancement_show_toast,
-                                      currentValue: selected.showToast,
-                                      valueUpdate: (value) => _update(
-                                        context,
-                                        selected,
-                                        (model) =>
-                                            model.copyWith(showToast: value),
-                                      ),
-                                      focusOrder: const NumericFocusOrder(9),
-                                    ),
-                                    SwitchCard(
-                                      display: context
-                                          .l10n
-                                          .card_advancement_announce_to_chat,
-                                      currentValue: selected.announceToChat,
-                                      valueUpdate: (value) => _update(
-                                        context,
-                                        selected,
-                                        (model) => model.copyWith(
-                                          announceToChat: value,
+                                        _positionCard(
+                                          context,
+                                          display:
+                                              context.l10n.card_advancement_y,
+                                          value: selected.y,
+                                          change: (y) =>
+                                              selected.copyWith(y: y),
+                                          order: 8,
+                                          vm: vm,
                                         ),
-                                      ),
-                                      focusOrder: const NumericFocusOrder(10),
-                                    ),
-                                    SwitchCard(
-                                      display:
-                                          context.l10n.card_advancement_hidden,
-                                      tooltipMessage: context
-                                          .l10n
-                                          .tooltip_advancement_hidden,
-                                      currentValue: selected.hidden,
-                                      valueUpdate: (value) => _update(
-                                        context,
-                                        selected,
-                                        (model) =>
-                                            model.copyWith(hidden: value),
-                                      ),
-                                      focusOrder: const NumericFocusOrder(11),
+                                      ],
                                     ),
                                   ],
                                 ),

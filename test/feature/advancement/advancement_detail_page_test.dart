@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/base/cards/switch_card.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/cards/text_input_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/advancement/advancement_detail_page.dart';
@@ -126,21 +126,18 @@ void main() {
       expect(store.state.selectedAdvancement?.description, '"Defeat a mob"');
     });
 
-    testWidgets('the hidden switch updates the selection', (tester) async {
+    testWidgets('the display segments toggle the flags', (tester) async {
       await pumpPage(tester);
 
-      final toggle = find.descendant(
-        of: find.ancestor(
-          of: find.text('Hidden'),
-          matching: find.byType(SwitchCard),
-        ),
-        matching: find.byType(Switch),
-      );
-      await tester.ensureVisible(toggle);
-      await tester.tap(toggle);
+      await tester.tap(find.text('Hidden'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Show toast'));
       await tester.pumpAndSettle();
 
-      expect(store.state.selectedAdvancement?.hidden, isTrue);
+      final advancement = store.state.selectedAdvancement!;
+      expect(advancement.hidden, isTrue);
+      expect(advancement.showToast, isNot(selected.showToast));
+      expect(store.state.unsavedChanges, NavigationEntry.advancements);
     });
 
     testWidgets('the background is only shown for a root advancement', (
