@@ -176,7 +176,7 @@ class _AdvancementGeneralPageState extends State<AdvancementGeneralPage> {
                                       }
                                       return null;
                                     },
-                                    maxLength: 30,
+                                    maxLength: 64,
                                     focusOrder: const NumericFocusOrder(1),
                                   ),
                                   TextInputCard<String>(

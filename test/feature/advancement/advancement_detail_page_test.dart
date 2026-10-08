@@ -196,6 +196,17 @@ void main() {
       expect(store.state.selectedAdvancement?.parentId, 'root');
     });
 
+    testWidgets('the material accepts keys longer than 30 characters', (
+      tester,
+    ) async {
+      const key = 'minecraft:light_blue_glazed_terracotta';
+      await pumpPage(tester);
+
+      await enterAndBlur(tester, 'Material', key);
+
+      expect(store.state.selectedAdvancement?.material, key);
+    });
+
     testWidgets('leaving the page clears the selection', (tester) async {
       await pumpPage(tester);
 
