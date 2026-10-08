@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <title>32 Dialog – Edit Sound (file modal)</title>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#000000" fill-opacity="0.32" stroke="none" stroke-width="1"/>
+  <rect x="440.0" y="50.0" width="560" height="800" rx="16" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="464.0" y="92.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#18181B" text-anchor="start">Edit Sound</text>
+  <text x="968.0" y="92.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#71717A" text-anchor="middle">×</text>
+  <line x1="440.0" y1="114.0" x2="1000.0" y2="114.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="440.0" y1="778.0" x2="1000.0" y2="778.0" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="888.0" y="794.0" width="88" height="40" rx="20.0" fill="#4C662B" stroke="#4C662B" stroke-width="1"/>
+  <text x="932.0" y="819.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF" text-anchor="middle">Save</text>
+  <text x="836.0" y="819.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#4C662B" text-anchor="middle">Cancel</text>
+  <rect x="464.0" y="130.0" width="512" height="116" rx="16" fill="#E4E4E7" stroke="none" stroke-width="1"/>
+  <text x="484.0" y="160.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="600" fill="#18181B" text-anchor="start">Name</text>
+  <rect x="484.0" y="178.0" width="472" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="494.0" y="171.0" width="8.0" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <text x="498.0" y="182.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start"></text>
+  <text x="500.0" y="211.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#18181B" text-anchor="start">click_1</text>
+  <rect x="922.0" y="196.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="926.0" y1="200.0" x2="938.0" y2="212.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="938.0" y1="200.0" x2="926.0" y2="212.0" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="464.0" y="258.0" width="512" height="132" rx="16" fill="#E4E4E7" stroke="none" stroke-width="1"/>
+  <text x="484.0" y="288.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="600" fill="#18181B" text-anchor="start">Volume &amp; Pitch</text>
+  <text x="484.0" y="323.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Volume</text>
+  <line x1="584.0" y1="318.0" x2="956.0" y2="318.0" stroke="#E4E4E7" stroke-width="4"/>
+  <line x1="584.0" y1="318.0" x2="844.4" y2="318.0" stroke="#4C662B" stroke-width="4"/>
+  <circle cx="844.4" cy="318.0" r="9" fill="#4C662B" stroke="none"/>
+  <text x="484.0" y="367.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Pitch</text>
+  <line x1="584.0" y1="362.0" x2="956.0" y2="362.0" stroke="#E4E4E7" stroke-width="4"/>
+  <line x1="584.0" y1="362.0" x2="770.0" y2="362.0" stroke="#4C662B" stroke-width="4"/>
+  <circle cx="770.0" cy="362.0" r="9" fill="#4C662B" stroke="none"/>
+  <rect x="464.0" y="402.0" width="512" height="116" rx="16" fill="#E4E4E7" stroke="none" stroke-width="1"/>
+  <text x="484.0" y="432.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="600" fill="#18181B" text-anchor="start">Weight &amp; Attenuation</text>
+  <rect x="484.0" y="446.0" width="228.0" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="494.0" y="439.0" width="47.599999999999994" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <text x="498.0" y="450.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Weight</text>
+  <text x="500.0" y="479.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#18181B" text-anchor="start">1</text>
+  <rect x="728.0" y="446.0" width="228.0" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="738.0" y="439.0" width="140.0" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <text x="742.0" y="450.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Attenuation Distance</text>
+  <text x="744.0" y="479.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#18181B" text-anchor="start">16</text>
+  <rect x="464.0" y="530.0" width="512" height="176" rx="16" fill="#E4E4E7" stroke="none" stroke-width="1"/>
+  <text x="484.0" y="560.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="600" fill="#18181B" text-anchor="start">Options</text>
+  <text x="484.0" y="594.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Stream</text>
+  <rect x="554.0" y="574.0" width="52" height="32" rx="16" fill="#E4E4E7" stroke="#A1A1AA" stroke-width="1"/>
+  <circle cx="570.0" cy="590.0" r="8" fill="#A1A1AA" stroke="none"/>
+  <text x="720.0" y="594.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Preload</text>
+  <rect x="796.0" y="574.0" width="52" height="32" rx="16" fill="#4C662B" stroke="#4C662B" stroke-width="1"/>
+  <circle cx="832.0" cy="590.0" r="12" fill="#FFFFFF" stroke="none"/>
+  <line x1="484.0" y1="624.0" x2="956.0" y2="624.0" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="484.0" y="638.0" width="472" height="52" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="494.0" y="631.0" width="34.4" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <text x="498.0" y="642.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Type</text>
+  <text x="500.0" y="669.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#18181B" text-anchor="start">File</text>
+  <text x="934.0" y="669.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#71717A" text-anchor="middle">▾</text>
+  <rect x="1060" y="120" width="260" height="76" rx="4" fill="#FFF4C2" stroke="#E0C200" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="1070" y="140" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Create: title &quot;Create Sound&quot;.</text>
+  <text x="1070" y="158" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Weight/Attenuation side by side</text>
+  <text x="1070" y="176" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">≥ 520 px; Stream/Preload ≥ 420 px.</text>
+</svg>

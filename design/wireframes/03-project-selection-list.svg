@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <title>03 Project selection – list</title>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <circle cx="1412.0" cy="28.0" r="20.0" fill="#FFFFFF" stroke="#A1A1AA"/>
+  <rect x="1403.0" y="19.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1407.0" y1="23.0" x2="1417.0" y2="33.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1417.0" y1="23.0" x2="1407.0" y2="33.0" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="680" y="70" width="80" height="80" rx="0" fill="#E4E4E7" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="680" y1="70" x2="760" y2="150" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="760" y1="70" x2="680" y2="150" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="720.0" y="114.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#71717A" text-anchor="middle">logo</text>
+  <text x="720" y="196" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="28" font-weight="700" fill="#18181B" text-anchor="middle">Welcome to Stelaris</text>
+  <rect x="460" y="226" width="520" height="468" rx="20" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="720" y="278" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="700" fill="#18181B" text-anchor="middle">Select Project</text>
+  <line x1="488" y1="302" x2="952" y2="302" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="488" y="322" width="464" height="280" rx="12" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="489" y="323" width="462" height="56" rx="0" fill="#DCEBC8" stroke="none" stroke-width="1"/>
+  <rect x="504" y="341.0" width="20" height="20" rx="4" fill="#4C662B" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="508" y1="345.0" x2="520" y2="357.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="520" y1="345.0" x2="508" y2="357.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="538" y="347" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="700" fill="#18181B" text-anchor="start">Demo Project</text>
+  <text x="635.2" y="347" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#71717A" text-anchor="start">(demo)</text>
+  <rect x="681.2" y="335" width="34" height="14" rx="7" fill="#F2DAFF" stroke="none" stroke-width="1"/>
+  <text x="698.2" y="345" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="9" font-weight="700" fill="#18181B" text-anchor="middle">Labor</text>
+  <text x="538" y="366" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Sandbox for the summer event</text>
+  <rect x="912" y="341.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="916" y1="345.0" x2="928" y2="357.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="928" y1="345.0" x2="916" y2="357.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="489" y1="379" x2="951" y2="379" stroke="#E4E4E7" stroke-width="1"/>
+  <rect x="504" y="397.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="508" y1="401.0" x2="520" y2="413.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="520" y1="401.0" x2="508" y2="413.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="538" y="403" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Survival</text>
+  <text x="604.8" y="403" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#71717A" text-anchor="start">(survival)</text>
+  <text x="538" y="422" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Main survival server</text>
+  <rect x="912" y="397.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="916" y1="401.0" x2="928" y2="413.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="928" y1="401.0" x2="916" y2="413.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="489" y1="435" x2="951" y2="435" stroke="#E4E4E7" stroke-width="1"/>
+  <rect x="504" y="447.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="508" y1="451.0" x2="520" y2="463.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="520" y1="451.0" x2="508" y2="463.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="538" y="462" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Lobby</text>
+  <text x="582.0" y="462" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#71717A" text-anchor="start">(lobby)</text>
+  <rect x="912" y="447.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="916" y1="451.0" x2="928" y2="463.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="928" y1="451.0" x2="916" y2="463.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="489" y1="479" x2="951" y2="479" stroke="#E4E4E7" stroke-width="1"/>
+  <rect x="504" y="497.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="508" y1="501.0" x2="520" y2="513.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="520" y1="501.0" x2="508" y2="513.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="538" y="503" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Minigames</text>
+  <text x="612.4" y="503" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#71717A" text-anchor="start">(minigames)</text>
+  <rect x="690.9" y="491" width="34" height="14" rx="7" fill="#F2DAFF" stroke="none" stroke-width="1"/>
+  <text x="707.9" y="501" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="9" font-weight="700" fill="#18181B" text-anchor="middle">Labor</text>
+  <text x="538" y="522" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Bedwars, SkyWars</text>
+  <rect x="912" y="497.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="916" y1="501.0" x2="928" y2="513.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="928" y1="501.0" x2="916" y2="513.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="489" y1="535" x2="951" y2="535" stroke="#E4E4E7" stroke-width="1"/>
+  <rect x="504" y="547.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="508" y1="551.0" x2="520" y2="563.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="520" y1="551.0" x2="508" y2="563.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="538" y="562" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Creative</text>
+  <text x="604.8" y="562" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="11" font-weight="400" fill="#71717A" text-anchor="start">(creative)</text>
+  <rect x="912" y="547.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="916" y1="551.0" x2="928" y2="563.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="928" y1="551.0" x2="916" y2="563.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="489" y1="579" x2="951" y2="579" stroke="#E4E4E7" stroke-width="1"/>
+  <rect x="946" y="330" width="4" height="120" rx="2" fill="#A1A1AA" stroke="none" stroke-width="1"/>
+  <rect x="488" y="626" width="226" height="40" rx="20.0" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="502" y="637.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="506" y1="641.0" x2="516" y2="651.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="516" y1="641.0" x2="506" y2="651.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="611.0" y="651.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#4C662B" text-anchor="middle">Create new project</text>
+  <rect x="726" y="626" width="226" height="40" rx="20.0" fill="#4C662B" stroke="#4C662B" stroke-width="1"/>
+  <rect x="740" y="637.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="744" y1="641.0" x2="754" y2="651.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="754" y1="641.0" x2="744" y2="651.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="849.0" y="651.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF" text-anchor="middle">Open Project</text>
+  <rect x="1040" y="300" width="260" height="130" rx="4" fill="#FFF4C2" stroke="#E0C200" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="1050" y="320" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Project list: 80–280 px high,</text>
+  <text x="1050" y="338" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">scrollbar always visible.</text>
+  <text x="1050" y="356" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Open Project disabled until a</text>
+  <text x="1050" y="374" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">row is selected → /attributes.</text>
+  <text x="1050" y="392" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Pencil per row = Edit project.</text>
+  <text x="1050" y="410" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">No delete-project UI exists.</text>
+</svg>

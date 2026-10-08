@@ -17,8 +17,10 @@ SURFACE_2 = "#E4E4E7"
 STROKE = "#A1A1AA"
 INK = "#18181B"
 MUTED = "#71717A"
-ACCENT = "#3F51B5"
-ACCENT_SOFT = "#E3E6F5"
+ACCENT = "#4C662B"   # M3 primary from seed green[400]
+ACCENT_SOFT = "#DCEBC8"
+CHROME = "#EEEFE3"    # surfaceContainer: app bar + rail
+SECONDARY = "#DCE7C8"  # secondaryContainer
 DANGER = "#B3261E"
 NOTE = "#FFF4C2"
 
@@ -78,6 +80,9 @@ class Svg:
         elif kind == "outlined":
             self.rect(x, y, w, h, fill=BG, stroke=STROKE, r=h / 2)
             col = ACCENT
+        elif kind == "danger_tonal":
+            self.rect(x, y, w, h, fill="#F9DEDC", stroke="#F9DEDC", r=h / 2)
+            col = DANGER
         elif kind == "danger":
             self.rect(x, y, w, h, fill=DANGER, stroke=DANGER, r=h / 2)
             col = "#FFFFFF"
@@ -192,36 +197,62 @@ class Svg:
         self.rect(x, y, w, 48, fill="#313033", stroke="none", r=4)
         self.text(x + 16, y + 29, msg, 14, "#F4EFF4")
         if action:
-            self.text(x + w - 16, y + 29, action, 14, "#C5CAE9", 600, "end")
+            self.text(x + w - 16, y + 29, action, 14, "#B1D18A", 600, "end")
 
     def scrim(self):
         self.rect(0, 0, self.w, self.h, fill="#000000", stroke="none")
         self.parts[-1] = self.parts[-1].replace('fill="#000000"', 'fill="#000000" fill-opacity="0.32"')
 
-    def dialog(self, w, h, title, x=None, y=None, actions=("Cancel", "Save"),
-               danger=False, icon=False):
-        """Centered Material dialog; returns content origin (x, y)."""
+    def dialog(self, w, h, title, actions=("Cancel", "Save"), danger=False,
+               close=True, x=None, y=None, scrim=True):
+        """FormDialog: radius 16, title + close, dividers, right-aligned
+        actions (last one primary). Returns (x, y, w) of the content area."""
+        if scrim:
+            self.scrim()
+        x = (self.w - w) / 2 if x is None else x
+        y = (self.h - h) / 2 if y is None else y
+        self.rect(x, y, w, h, fill="#FFFFFF", stroke=STROKE, r=16)
+        self.text(x + 24, y + 42, title, 20, INK, 600)
+        if close:
+            self.text(x + w - 32, y + 42, "×", 22, MUTED, anchor="middle")
+        self.line(x, y + 64, x + w, y + 64)
+        if actions:
+            self.line(x, y + h - 72, x + w, y + h - 72)
+            bx = x + w - 24
+            for i, a in enumerate(reversed(actions)):
+                kind = ("danger" if danger else "filled") if i == 0 else "text"
+                bw = max(88, len(a) * 8 + 40)
+                bx -= bw
+                self.button(bx, y + h - 56, a, kind, w=bw)
+                bx -= 8
+        return x + 24, y + 88, w - 48
+
+    def strip_dialog(self, w, h, title, x=None, y=None):
+        """AnimatedDialog with primaryContainer header strip (Settings/Build)."""
         self.scrim()
         x = (self.w - w) / 2 if x is None else x
         y = (self.h - h) / 2 if y is None else y
-        self.rect(x, y, w, h, fill="#FFFFFF", stroke=STROKE, r=28)
-        ty = y + 44
-        if icon:
-            self.icon(x + w / 2 - 12, y + 24, 24)
-            self.text(x + w / 2, y + 84, title, 22, INK, 500, "middle")
-            ty = y + 108
-        else:
-            self.text(x + 24, ty, title, 22, INK, 500)
-            ty += 28
-        bx = x + w - 24
-        for i, a in enumerate(reversed(actions)):
-            primary = i == 0
-            kind = ("danger" if danger else "filled") if primary else "text"
-            bw = max(88, len(a) * 8 + 40)
-            bx -= bw
-            self.button(bx, y + h - 64, a, kind, w=bw)
-            bx -= 8
-        return x + 24, ty
+        self.rect(x, y, w, h, fill="#FFFFFF", stroke=STROKE, r=16)
+        self.rect(x, y, w, 50, fill=ACCENT_SOFT, stroke=STROKE, r=16)
+        self.rect(x + 1, y + 30, w - 2, 20, fill=ACCENT_SOFT, stroke="none")
+        self.text(x + 24, y + 32, title, 18, INK, 700)
+        self.text(x + w - 28, y + 33, "×", 22, MUTED, anchor="middle")
+        return x, y + 75
+
+    def notice(self, x, y, w, h, lines, danger=False):
+        """NoticeBox: tinted callout with accent border and leading icon."""
+        self.rect(x, y, w, h, fill="#F9DEDC" if danger else ACCENT_SOFT,
+                  stroke=DANGER if danger else ACCENT, r=10)
+        self.icon(x + 14, y + 14, 20, fill="none")
+        for i, (t, size, weight) in enumerate(lines):
+            self.text(x + 46, y + 29 + 20 * i, t, size, DANGER if danger and i == 0 else INK, weight)
+
+    def info_chip(self, x, y, text):
+        w = len(text) * 7.4 + 40
+        self.rect(x, y, w, 24, fill=SURFACE_2, stroke="none", r=6)
+        self.icon(x + 6, y + 5, 14, fill="none")
+        self.add(f'<text x="{x + 26}" y="{y + 16}" font-family="monospace" font-size="12" fill="{ACCENT}">{escape(text)}</text>')
+        return w
 
     def note(self, x, y, lines, w=260):
         """Yellow annotation sticky – designer notes, not part of the UI."""

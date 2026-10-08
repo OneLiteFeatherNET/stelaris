@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <title>41 Dialog – Build &amp; Download: Download tab</title>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#EEEFE3" stroke="none" stroke-width="1"/>
+  <circle cx="40.0" cy="32.0" r="20.0" fill="#FFFFFF" stroke="#A1A1AA"/>
+  <rect x="31.0" y="23.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="35.0" y1="27.0" x2="45.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="45.0" y1="27.0" x2="35.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="400.0" y="12" width="640" height="40" rx="20" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="414.0" y="22" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="418.0" y1="26" x2="430.0" y2="38" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="430.0" y1="26" x2="418.0" y2="38" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="446.0" y="37" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#71717A" text-anchor="start">Search Items, or ? for more</text>
+  <rect x="1006.0" y="22" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1010.0" y1="26" x2="1022.0" y2="38" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1022.0" y1="26" x2="1010.0" y2="38" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="1060" y="14" width="196" height="36" rx="18" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="1072" y="23" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1076" y1="27" x2="1086" y2="37" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1086" y1="27" x2="1076" y2="37" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="1098" y="37" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#18181B" text-anchor="start">Demo Project</text>
+  <rect x="1202" y="23" width="42" height="18" rx="9" fill="#F2DAFF" stroke="none" stroke-width="1"/>
+  <text x="1223" y="36" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="9" font-weight="700" fill="#18181B" text-anchor="middle">Labor</text>
+  <circle cx="1286.0" cy="32.0" r="20.0" fill="#FFFFFF" stroke="#A1A1AA"/>
+  <rect x="1277.0" y="23.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1281.0" y1="27.0" x2="1291.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1291.0" y1="27.0" x2="1281.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
+  <circle cx="1334.0" cy="32.0" r="20.0" fill="#FFFFFF" stroke="#A1A1AA"/>
+  <rect x="1325.0" y="23.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1329.0" y1="27.0" x2="1339.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1339.0" y1="27.0" x2="1329.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
+  <circle cx="1382.0" cy="32.0" r="20.0" fill="#FFFFFF" stroke="#A1A1AA"/>
+  <rect x="1373.0" y="23.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1377.0" y1="27.0" x2="1387.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1387.0" y1="27.0" x2="1377.0" y2="37.0" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="28" y="90" width="24" height="24" rx="4" fill="#E4E4E7" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="32" y1="94" x2="48" y2="110" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="48" y1="94" x2="32" y2="110" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="66" y="107" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#18181B" text-anchor="start">Attributes</text>
+  <rect x="12" y="140" width="156" height="52" rx="26" fill="#DCEBC8" stroke="none" stroke-width="1"/>
+  <rect x="28" y="154" width="24" height="24" rx="4" fill="#4C662B" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="32" y1="158" x2="48" y2="174" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="48" y1="158" x2="32" y2="174" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="66" y="171" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="600" fill="#18181B" text-anchor="start">Items</text>
+  <rect x="28" y="218" width="24" height="24" rx="4" fill="#E4E4E7" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="32" y1="222" x2="48" y2="238" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="48" y1="222" x2="32" y2="238" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="66" y="235" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#18181B" text-anchor="start">Notifications</text>
+  <rect x="28" y="282" width="24" height="24" rx="4" fill="#E4E4E7" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="32" y1="286" x2="48" y2="302" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="48" y1="286" x2="32" y2="302" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="66" y="299" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#18181B" text-anchor="start">Fonts</text>
+  <rect x="28" y="346" width="24" height="24" rx="4" fill="#E4E4E7" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="32" y1="350" x2="48" y2="366" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="48" y1="350" x2="32" y2="366" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="66" y="363" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#18181B" text-anchor="start">Sound</text>
+  <rect x="180" y="64" width="1280" height="856" rx="16" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <text x="196" y="103" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="500" fill="#18181B" text-anchor="start">Items (12)</text>
+  <rect x="1344" y="76" width="80" height="40" rx="20.0" fill="#4C662B" stroke="#4C662B" stroke-width="1"/>
+  <rect x="1358" y="87.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1362" y1="91.0" x2="1372" y2="101.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1372" y1="91.0" x2="1362" y2="101.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="1394.0" y="101.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF" text-anchor="middle">Add</text>
+  <rect x="1224" y="76" width="112" height="40" rx="20.0" fill="#DCEBC8" stroke="#DCEBC8" stroke-width="1"/>
+  <rect x="1238" y="87.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1242" y1="91.0" x2="1252" y2="101.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="1252" y1="91.0" x2="1242" y2="101.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="1290.0" y="101.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#18181B" text-anchor="middle">Refresh</text>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#000000" fill-opacity="0.32" stroke="none" stroke-width="1"/>
+  <rect x="220.0" y="130" width="1000" height="640" rx="16" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="220.0" y="130" width="1000" height="50" rx="16" fill="#DCEBC8" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="221.0" y="160" width="998" height="20" rx="0" fill="#DCEBC8" stroke="none" stroke-width="1"/>
+  <text x="244.0" y="162" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="18" font-weight="700" fill="#18181B" text-anchor="start">Build &amp; Download Vulpes</text>
+  <text x="1192.0" y="163" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#71717A" text-anchor="middle">×</text>
+  <rect x="270.0" y="205" width="438.0" height="70" rx="12" fill="#F4F4F5" stroke="#DCEBC8" stroke-width="3"/>
+  <rect x="732.0" y="205" width="438.0" height="70" rx="12" fill="#F4F4F5" stroke="#DCEBC8" stroke-width="3"/>
+  <text x="290.0" y="235" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="700" fill="#18181B" text-anchor="start">Build: 1.5.0</text>
+  <text x="290.0" y="257" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#71717A" text-anchor="start">Release: 2026-09-30 14:22:05</text>
+  <rect x="752.0" y="219" width="20" height="20" rx="4" fill="#DCEBC8" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="756.0" y1="223" x2="768.0" y2="235" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="768.0" y1="223" x2="756.0" y2="235" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="782.0" y="235" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="700" fill="#4C662B" text-anchor="start">Status: Stable</text>
+  <text x="782.0" y="257" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#71717A" text-anchor="start">Commit: abc1234</text>
+  <line x1="220.0" y1="299" x2="1220.0" y2="299" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="244.0" y1="351" x2="1196.0" y2="351" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="482.0" y="332.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="600" fill="#4C662B" text-anchor="middle">Download</text>
+  <rect x="446.0" y="348" width="72" height="3" rx="1.5" fill="#4C662B" stroke="none" stroke-width="1"/>
+  <text x="958.0" y="332.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#71717A" text-anchor="middle">Build</text>
+  <line x1="220.0" y1="355" x2="1220.0" y2="355" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="270.0" y="375" width="900" height="230" rx="12" fill="#F4F4F5" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="294.0" y="415" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#18181B" text-anchor="start">Search by Commit</text>
+  <rect x="1094.0" y="393" width="52" height="32" rx="16" fill="#E4E4E7" stroke="#A1A1AA" stroke-width="1"/>
+  <circle cx="1110.0" cy="409" r="8" fill="#A1A1AA" stroke="none"/>
+  <rect x="294.0" y="447" width="852" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="304.0" y="440" width="8.0" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <text x="308.0" y="451" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start"></text>
+  <text x="310.0" y="480.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#18181B" text-anchor="start">main</text>
+  <text x="1124.0" y="480.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#71717A" text-anchor="middle">▾</text>
+  <rect x="294.0" y="531" width="852" height="40" rx="20.0" fill="#4C662B" stroke="#4C662B" stroke-width="1"/>
+  <rect x="308.0" y="542.0" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="312.0" y1="546.0" x2="322.0" y2="556.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="322.0" y1="546.0" x2="312.0" y2="556.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="730.0" y="556.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF" text-anchor="middle">Download</text>
+  <rect x="1160" y="90" width="260" height="184" rx="4" fill="#FFF4C2" stroke="#E0C200" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="1170" y="110" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">States of the Download tab:</text>
+  <text x="1170" y="128" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">• Fetching branches… (spinner)</text>
+  <text x="1170" y="146" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">• No project selected!</text>
+  <text x="1170" y="164" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">• Service unavailable</text>
+  <text x="1170" y="182" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">• No branches found! + refresh</text>
+  <text x="1170" y="200" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Switch on → &quot;Git commit&quot; field</text>
+  <text x="1170" y="218" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">(10 chars). Download closes the</text>
+  <text x="1170" y="236" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">dialog: snackbar &quot;Generation</text>
+  <text x="1170" y="254" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">submitted to backend&quot;.</text>
+</svg>

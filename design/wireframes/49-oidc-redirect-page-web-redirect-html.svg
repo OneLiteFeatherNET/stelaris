@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <title>49 OIDC redirect page (web/redirect.html)</title>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <rect x="520" y="340" width="400" height="160" rx="12" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="544" y="390" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#18181B" text-anchor="start">All done.</text>
+  <text x="544" y="424" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#71717A" text-anchor="start">You can now close this tab and return</text>
+  <text x="544" y="444" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#71717A" text-anchor="start">to the app.</text>
+  <rect x="1040" y="340" width="300" height="94" rx="4" fill="#FFF4C2" stroke="#E0C200" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="1050" y="360" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Other texts: Completing your request…,</text>
+  <text x="1050" y="378" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Redirecting…, You have been signed out…,</text>
+  <text x="1050" y="396" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Something went wrong (+ detail),</text>
+  <text x="1050" y="414" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">No cross-tab messaging support.</text>
+</svg>

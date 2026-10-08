@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <title>14 Dialog – Create model</title>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#000000" fill-opacity="0.32" stroke="none" stroke-width="1"/>
+  <rect x="460.0" y="240.0" width="520" height="420" rx="16" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="484.0" y="282.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#18181B" text-anchor="start">Create new item</text>
+  <text x="948.0" y="282.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#71717A" text-anchor="middle">×</text>
+  <line x1="460.0" y1="304.0" x2="980.0" y2="304.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="460.0" y1="588.0" x2="980.0" y2="588.0" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="868.0" y="604.0" width="88" height="40" rx="20.0" fill="#4C662B" stroke="#4C662B" stroke-width="1"/>
+  <text x="912.0" y="629.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF" text-anchor="middle">Create</text>
+  <text x="816.0" y="629.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#4C662B" text-anchor="middle">Cancel</text>
+  <rect x="484.0" y="328.0" width="472" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="494.0" y="321.0" width="47.599999999999994" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <text x="498.0" y="332.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Name *</text>
+  <rect x="922.0" y="346.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="926.0" y1="350.0" x2="938.0" y2="362.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="938.0" y1="350.0" x2="926.0" y2="362.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="500.0" y="361.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#71717A" text-anchor="start">e.g. My Entry</text>
+  <rect x="484.0" y="404.0" width="472" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="494.0" y="397.0" width="41.0" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <text x="498.0" y="408.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Key *</text>
+  <rect x="922.0" y="422.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="926.0" y1="426.0" x2="938.0" y2="438.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="938.0" y1="426.0" x2="926.0" y2="438.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="500.0" y="437.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#71717A" text-anchor="start">e.g. my_entry</text>
+  <rect x="484.0" y="484.0" width="472" height="64" rx="10" fill="#DCEBC8" stroke="#4C662B" stroke-width="1"/>
+  <rect x="498.0" y="498.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="502.0" y1="502.0" x2="514.0" y2="514.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="514.0" y1="502.0" x2="502.0" y2="514.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="530.0" y="513.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="600" fill="#18181B" text-anchor="start">NamespacedKey Preview</text>
+  <text x="530.0" y="533.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#18181B" text-anchor="start">demo:&lt;key&gt;</text>
+  <rect x="1010" y="210" width="270" height="76" rx="4" fill="#FFF4C2" stroke="#E0C200" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="1020" y="230" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Title per section: Create new item /</text>
+  <text x="1020" y="248" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">font / sound event / notification,</text>
+  <text x="1020" y="266" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Create attribute. Key is lowercase.</text>
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <title>18 Dialogs – Notes edit (card menu) &amp; Notes view (detail header)</title>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#000000" fill-opacity="0.32" stroke="none" stroke-width="1"/>
+  <rect x="120" y="220" width="520" height="460" rx="16" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="144" y="262" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#18181B" text-anchor="start">Notes for Ruby Sword</text>
+  <text x="608" y="262" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#71717A" text-anchor="middle">×</text>
+  <line x1="120" y1="284" x2="640" y2="284" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="120" y1="608" x2="640" y2="608" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="528" y="624" width="88" height="40" rx="20.0" fill="#4C662B" stroke="#4C662B" stroke-width="1"/>
+  <text x="572.0" y="649.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF" text-anchor="middle">Save</text>
+  <text x="476.0" y="649.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#4C662B" text-anchor="middle">Cancel</text>
+  <rect x="144" y="308" width="472" height="240" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="154" y="301" width="8.0" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <text x="158" y="312" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start"></text>
+  <text x="160" y="336" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#71717A" text-anchor="start">Internal notes for your team. The first line is</text>
+  <text x="160" y="356" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#71717A" text-anchor="start">shown in the overview.</text>
+  <rect x="800" y="220" width="520" height="300" rx="16" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="824" y="262" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#18181B" text-anchor="start">Notes for Ruby Sword</text>
+  <text x="1288" y="262" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#71717A" text-anchor="middle">×</text>
+  <line x1="800" y1="284" x2="1320" y2="284" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="824" y="316" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Drops from the boss in the nether arena.</text>
+  <text x="824" y="338" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Balance pass pending (@design).</text>
+  <rect x="824" y="458" width="18" height="18" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="828" y1="462" x2="838" y2="472" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="838" y1="462" x2="828" y2="472" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="850" y="472" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">To edit the notes, use ⋯ → Edit notes on the overview card.</text>
+</svg>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <title>15 Dialog – Copy model</title>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <rect x="0" y="0" width="1440" height="900" rx="0" fill="#000000" fill-opacity="0.32" stroke="none" stroke-width="1"/>
+  <rect x="460.0" y="130.0" width="520" height="640" rx="16" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="484.0" y="172.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="20" font-weight="600" fill="#18181B" text-anchor="start">Copy item</text>
+  <text x="948.0" y="172.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="22" font-weight="400" fill="#71717A" text-anchor="middle">×</text>
+  <line x1="460.0" y1="194.0" x2="980.0" y2="194.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="460.0" y1="698.0" x2="980.0" y2="698.0" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="868.0" y="714.0" width="88" height="40" rx="20.0" fill="#4C662B" stroke="#4C662B" stroke-width="1"/>
+  <text x="912.0" y="739.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF" text-anchor="middle">Copy</text>
+  <text x="816.0" y="739.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="500" fill="#4C662B" text-anchor="middle">Cancel</text>
+  <rect x="484.0" y="218.0" width="472" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="494.0" y="211.0" width="100.39999999999999" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <text x="498.0" y="222.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Target project</text>
+  <text x="500.0" y="251.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#18181B" text-anchor="start">Survival (survival)</text>
+  <text x="934.0" y="251.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="16" font-weight="400" fill="#71717A" text-anchor="middle">▾</text>
+  <rect x="484.0" y="294.0" width="472" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="494.0" y="287.0" width="47.599999999999994" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <text x="498.0" y="298.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Name *</text>
+  <text x="500.0" y="327.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#18181B" text-anchor="start">Ruby Sword (Copy)</text>
+  <rect x="484.0" y="370.0" width="472" height="56" rx="4" fill="#FFFFFF" stroke="#A1A1AA" stroke-width="1"/>
+  <rect x="494.0" y="363.0" width="41.0" height="14" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1"/>
+  <text x="498.0" y="374.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#71717A" text-anchor="start">Key *</text>
+  <text x="500.0" y="403.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="15" font-weight="400" fill="#18181B" text-anchor="start">ruby_sword-copy</text>
+  <rect x="484.0" y="446.0" width="472" height="64" rx="10" fill="#DCEBC8" stroke="#4C662B" stroke-width="1"/>
+  <rect x="498.0" y="460.0" width="20" height="20" rx="4" fill="none" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="502.0" y1="464.0" x2="514.0" y2="476.0" stroke="#A1A1AA" stroke-width="1"/>
+  <line x1="514.0" y1="464.0" x2="502.0" y2="476.0" stroke="#A1A1AA" stroke-width="1"/>
+  <text x="530.0" y="475.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="600" fill="#18181B" text-anchor="start">NamespacedKey Preview</text>
+  <text x="530.0" y="495.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="400" fill="#18181B" text-anchor="start">survival:ruby_sword-copy</text>
+  <text x="484.0" y="542.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="600" fill="#18181B" text-anchor="start">Copy along</text>
+  <rect x="488.0" y="558.0" width="18" height="18" rx="2" fill="#4C662B" stroke="#4C662B" stroke-width="2"/>
+  <text x="497.0" y="572.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">✓</text>
+  <text x="518.0" y="572.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Lore</text>
+  <rect x="488.0" y="594.0" width="18" height="18" rx="2" fill="#4C662B" stroke="#4C662B" stroke-width="2"/>
+  <text x="497.0" y="608.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">✓</text>
+  <text x="518.0" y="608.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Flags</text>
+  <rect x="488.0" y="630.0" width="18" height="18" rx="2" fill="#4C662B" stroke="#4C662B" stroke-width="2"/>
+  <text x="497.0" y="644.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">✓</text>
+  <text x="518.0" y="644.0" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="14" font-weight="400" fill="#18181B" text-anchor="start">Enchantments</text>
+  <rect x="1010" y="300" width="260" height="94" rx="4" fill="#FFF4C2" stroke="#E0C200" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="1020" y="320" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Copy-along options per type:</text>
+  <text x="1020" y="338" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Item: Lore/Flags/Enchantments</text>
+  <text x="1020" y="356" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Sound: Sources · Font: Characters</text>
+  <text x="1020" y="374" font-family="Work Sans, Roboto, Arial, sans-serif" font-size="12" font-weight="400" fill="#5C4B00" text-anchor="start">Notification/Attribute: none</text>
+</svg>
