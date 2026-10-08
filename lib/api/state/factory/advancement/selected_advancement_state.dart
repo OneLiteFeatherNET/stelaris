@@ -9,28 +9,31 @@ class SelectedAdvancementFactory
   SelectedAdvancementFactory();
 
   @override
-  SelectedAdvancementView fromStore() {
-    final selected = state.selectedAdvancement!;
-    final items = state.advancements.items;
-    final excluded = _descendantsOf(selected.id, items)..add(selected.id);
-    return SelectedAdvancementView(
-      selected: selected,
-      parents: [
-        for (final model in items)
-          if (model.id != null && !excluded.contains(model.id)) model,
-      ],
-    );
-  }
+  SelectedAdvancementView fromStore() => SelectedAdvancementView(
+    selected: state.selectedAdvancement!,
+    items: state.advancements.items,
+  );
 }
 
 class SelectedAdvancementView extends Vm {
-  SelectedAdvancementView({required this.selected, required this.parents})
-    : super(equals: [selected, parents]);
+  /// Compares [items] by identity: the state only replaces the list when the
+  /// loaded advancements change, so other dispatches don't rebuild the page.
+  SelectedAdvancementView({required this.selected, required this.items})
+    : super(equals: [selected, items]);
 
   final AdvancementModel selected;
 
+  /// The loaded advancements.
+  final List<AdvancementModel> items;
+
   /// The loaded advancements the selected one can use as its parent.
-  final List<AdvancementModel> parents;
+  late final List<AdvancementModel> parents = () {
+    final excluded = _descendantsOf(selected.id, items)..add(selected.id);
+    return [
+      for (final model in items)
+        if (model.id != null && !excluded.contains(model.id)) model,
+    ];
+  }();
 }
 
 /// Returns the ids of all loaded advancements below [id], which can't become
