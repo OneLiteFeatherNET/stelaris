@@ -44,9 +44,9 @@ void main() {
 
       await type(tester, 'diamond');
 
-      expect(find.byType(ListTile), findsAtLeastNWidgets(1));
+      expect(find.byType(MenuItemButton), findsAtLeastNWidgets(1));
       expect(
-        find.byType(ListTile).evaluate().length,
+        find.byType(MenuItemButton).evaluate().length,
         lessThanOrEqualTo(5),
         reason: 'more than five suggestions are shown',
       );
@@ -66,7 +66,7 @@ void main() {
 
       await type(tester, '');
 
-      expect(find.byType(ListTile), findsNothing);
+      expect(find.byType(MenuItemButton), findsNothing);
     });
 
     testWidgets('writes the key of a tapped suggestion and reports it', (
@@ -77,11 +77,12 @@ void main() {
 
       await type(tester, 'diamond sword');
       await tester.tap(find.text('Diamond Sword'));
-      await tester.pump();
+      // The menu item reports a press after the frame it was tapped in.
+      await tester.pumpAndSettle();
 
       expect(fieldText(tester), 'minecraft:diamond_sword');
       expect(changes.last, 'minecraft:diamond_sword');
-      expect(find.byType(ListTile), findsNothing, reason: 'list stays open');
+      expect(find.byType(MenuItemButton), findsNothing, reason: 'list stays open');
     });
 
     testWidgets('takes the highlighted suggestion with the keyboard', (
@@ -108,7 +109,7 @@ void main() {
 
       await type(tester, 'mymod:custom_item');
 
-      expect(find.byType(ListTile), findsNothing);
+      expect(find.byType(MenuItemButton), findsNothing);
       expect(changes.last, 'mymod:custom_item');
       expect(formKey.currentState!.validate(), isTrue);
       expect(fieldText(tester), 'mymod:custom_item');
@@ -135,7 +136,7 @@ void main() {
 
       await type(tester, 'sword');
 
-      expect(find.byType(ListTile), findsNothing);
+      expect(find.byType(MenuItemButton), findsNothing);
     });
   });
 
@@ -145,7 +146,7 @@ void main() {
 
       await type(tester, 'diamond');
 
-      expect(find.byType(ListTile), findsNothing);
+      expect(find.byType(MenuItemButton), findsNothing);
     });
 
     testWidgets('show no suggestions without a registry', (tester) async {
@@ -153,7 +154,7 @@ void main() {
 
       await type(tester, 'diamond');
 
-      expect(find.byType(ListTile), findsNothing);
+      expect(find.byType(MenuItemButton), findsNothing);
     });
   });
 }

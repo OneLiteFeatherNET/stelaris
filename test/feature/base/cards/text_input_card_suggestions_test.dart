@@ -36,8 +36,8 @@ void main() {
 
       await type(tester, 'diamond');
 
-      expect(find.byType(ListTile), findsAtLeastNWidgets(1));
-      expect(find.byType(ListTile).evaluate().length, lessThanOrEqualTo(5));
+      expect(find.byType(MenuItemButton), findsAtLeastNWidgets(1));
+      expect(find.byType(MenuItemButton).evaluate().length, lessThanOrEqualTo(5));
     });
 
     testWidgets('saves the key of the selected suggestion', (tester) async {
@@ -45,7 +45,8 @@ void main() {
 
       await type(tester, 'diamond sword');
       await tester.tap(find.text('Diamond Sword'));
-      await tester.pump();
+      // The menu item reports a press after the frame it was tapped in.
+      await tester.pumpAndSettle();
 
       expect(updates, ['minecraft:diamond_sword']);
       expect(find.text('minecraft:diamond_sword'), findsOneWidget);
@@ -80,7 +81,7 @@ void main() {
 
       await type(tester, 'diamond');
 
-      expect(find.byType(ListTile), findsNothing);
+      expect(find.byType(MenuItemButton), findsNothing);
     });
   });
 }
