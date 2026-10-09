@@ -30,9 +30,16 @@ class ListField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final registry = switch (schema.element) {
+      KeySchema(:final registry) => registry,
+      _ => null,
+    };
     return SchemaSection(
       title:
           '${label ?? context.l10n.component_field_entries} (${values.length})',
+      subtitle: registry == null
+          ? null
+          : context.l10n.component_key_helper(registry),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -54,27 +61,38 @@ class ListField extends StatelessWidget {
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-        for (var i = 0; i < values.length; i++)
-          Row(
-            // Stable while typing; a changed length rebuilds the rows, so a
-            // removed entry doesn't leave its text in the next field.
-            key: ValueKey('$i/${values.length}'),
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: SchemaField(
-                  schema: schema.element,
-                  value: values[i],
-                  onChanged: (value) => onChanged([...values]..[i] = value),
-                ),
-              ),
-              IconButton(
-                tooltip: context.l10n.component_entry_remove,
-                icon: const Icon(Icons.remove_circle_outline),
-                onPressed: () => onChanged([...values]..removeAt(i)),
-              ),
-            ],
-          ),
+        for (var i = 0; i < values.length; i++) _buildEntry(context, i),
+      ],
+    );
+  }
+
+  Widget _buildEntry(BuildContext context, int i) {
+    // Stable while typing; a changed length rebuilds the entries, so a
+    // removed entry doesn't leave its text in the next field.
+    final key = ValueKey('$i/${values.length}');
+    final remove = IconButton(
+      tooltip: context.l10n.component_entry_remove,
+      icon: const Icon(Icons.remove_circle_outline),
+      onPressed: () => onChanged([...values]..removeAt(i)),
+    );
+    final inline = SchemaField.takesSuffix(schema.element);
+    final field = SchemaField(
+      key: inline ? key : null,
+      schema: schema.element,
+      value: values[i],
+      registryHint: false,
+      // Inside a single line input the button stays centered on it, also
+      // while an error is shown below.
+      suffix: inline ? remove : null,
+      onChanged: (value) => onChanged([...values]..[i] = value),
+    );
+    if (inline) return field;
+    return Row(
+      key: key,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: field),
+        remove,
       ],
     );
   }

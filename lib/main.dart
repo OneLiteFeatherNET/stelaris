@@ -9,9 +9,10 @@ import 'package:stelaris/auth/auth_session.dart';
 import 'package:stelaris/auth/auth_sessions.dart';
 import 'package:stelaris/env/runtime_config.dart';
 import 'package:stelaris/app.dart';
+import 'package:stelaris/util/smooth_wheel_binding.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  SmoothWheelBinding.ensureInitialized();
 
   // Before anything can reach for an API client: the backend URLs come from
   // the deployment, not from the bundle. Never throws - a missing or unusable

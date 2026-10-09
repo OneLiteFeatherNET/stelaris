@@ -405,7 +405,7 @@ void main() {
         spec: _tagPredicates,
         value: [
           {
-            'blocks': ['minecraft:dirt'],
+            'blocks': ['minecraft:dirt', 'minecraft:stone'],
           },
         ],
         onSave: (value) async {
@@ -419,11 +419,14 @@ void main() {
     await tester.pumpAndSettle();
 
     // Still one level: the keys of the only entry, no frame for the entries.
-    expect(find.text('Blocks (1)'), findsOneWidget);
+    expect(find.text('Blocks (2)'), findsOneWidget);
     expect(find.textContaining('Entries'), findsNothing);
+    // The registry is named once under the title, not below every key.
+    expect(find.text('Key from the block registry'), findsOneWidget);
 
     await tester.tap(find.text('Tag'));
     await tester.pumpAndSettle();
+    expect(find.text('Tag from the block registry'), findsOneWidget);
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
     expect(find.text('A tag is required'), findsOneWidget);

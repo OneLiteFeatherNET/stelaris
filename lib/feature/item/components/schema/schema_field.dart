@@ -20,6 +20,8 @@ class SchemaField extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.label,
+    this.registryHint = true,
+    this.suffix,
     super.key,
   });
 
@@ -29,6 +31,20 @@ class SchemaField extends StatelessWidget {
 
   /// The label of the field, null for the top level value of a component.
   final String? label;
+
+  /// Whether a key input names its registry below the input. Off for the
+  /// entries of a list, which names it once in its header.
+  final bool registryHint;
+
+  /// An action inside a single line input, e.g. to remove a list entry.
+  /// Only used by the schemas in [takesSuffix].
+  final Widget? suffix;
+
+  /// Whether a [schema] renders a single line input which shows a [suffix].
+  static bool takesSuffix(ComponentSchema schema) => switch (schema) {
+    IntSchema() || FloatSchema() || StringSchema() || KeySchema() => true,
+    _ => false,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +57,7 @@ class SchemaField extends StatelessWidget {
         min: min,
         max: max,
         parse: int.tryParse,
+        suffix: suffix,
         onChanged: onChanged,
       ),
       FloatSchema(:final min, :final max) => NumberField(
@@ -50,6 +67,7 @@ class SchemaField extends StatelessWidget {
         max: max,
         decimal: true,
         parse: double.tryParse,
+        suffix: suffix,
         onChanged: onChanged,
       ),
       BoolSchema() => SwitchListTile(
@@ -64,6 +82,7 @@ class SchemaField extends StatelessWidget {
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: label,
+          suffixIcon: schema is TextSchema ? null : suffix,
         ),
         maxLines: schema is TextSchema ? null : 1,
         onChanged: onChanged,
@@ -74,7 +93,8 @@ class SchemaField extends StatelessWidget {
           border: const OutlineInputBorder(),
           labelText: label,
           hintText: 'minecraft:…',
-          helperText: registry == null
+          suffixIcon: suffix,
+          helperText: registry == null || !registryHint
               ? null
               : l10n.component_key_helper(registry),
         ),

@@ -404,24 +404,60 @@ class _ComponentEditDialogState extends State<_ComponentEditDialog> {
       onSubmit: _saving ? null : _submit,
       busy: _saving,
       maxWidth: 600,
-      content: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              '${widget.spec.category.displayName} · ${widget.spec.key}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+      // The inputs and their hints use the size of the dialog's other texts
+      // instead of the larger default of text fields.
+      content: Theme(
+        data: theme.copyWith(
+          textTheme: theme.textTheme.copyWith(
+            bodyLarge: theme.textTheme.bodyMedium,
+          ),
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  _Pill(widget.spec.category.displayName),
+                  _Pill(widget.spec.key),
+                ],
               ),
-            ),
-            verticalSpacing10,
-            SchemaField(
-              schema: widget.spec.schema,
-              value: _value,
-              onChanged: (value) => setState(() => _value = value),
-            ),
-          ],
+              verticalSpacing10,
+              SchemaField(
+                schema: widget.spec.schema,
+                value: _value,
+                onChanged: (value) => setState(() => _value = value),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A small label in the header of the edit dialog.
+class _Pill extends StatelessWidget {
+  const _Pill(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        text,
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
         ),
       ),
     );

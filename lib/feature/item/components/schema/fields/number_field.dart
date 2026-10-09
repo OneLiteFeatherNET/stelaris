@@ -13,6 +13,7 @@ class NumberField extends StatelessWidget {
     required this.parse,
     required this.onChanged,
     this.decimal = false,
+    this.suffix,
     super.key,
   });
 
@@ -23,6 +24,9 @@ class NumberField extends StatelessWidget {
   final bool decimal;
   final num? Function(String) parse;
   final ValueChanged<Object?> onChanged;
+
+  /// An action inside the input, see [SchemaField.suffix].
+  final Widget? suffix;
 
   String? _range(AppLocalizations l10n) => switch ((min, max)) {
     (null, null) => null,
@@ -41,6 +45,7 @@ class NumberField extends StatelessWidget {
         border: const OutlineInputBorder(),
         labelText: label,
         helperText: range,
+        suffixIcon: suffix,
       ),
       keyboardType: TextInputType.numberWithOptions(
         decimal: decimal,

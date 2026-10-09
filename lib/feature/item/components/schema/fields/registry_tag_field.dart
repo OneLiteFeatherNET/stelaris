@@ -43,16 +43,14 @@ class RegistryTagField extends StatelessWidget {
     final registry = schema.registry;
     return SchemaSection(
       title: label ?? l10n.component_field_entries,
+      subtitle: registry == null ? null : l10n.component_tag_helper(registry),
       trailing: mode,
       children: [
         TextFormField(
           initialValue: value,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
             hintText: '#minecraft:…',
-            helperText: registry == null
-                ? null
-                : l10n.component_tag_helper(registry),
           ),
           validator: (text) => switch (text) {
             null || '' => l10n.component_tag_required,
