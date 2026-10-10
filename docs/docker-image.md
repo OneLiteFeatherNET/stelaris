@@ -80,12 +80,9 @@ in [`docker/nginx/`](../docker/nginx) is not in the running server.
 
 ## Runtime configuration
 
-`Environment.backendURl` in `lib/env/environment.dart` is an empty `const` with
-a comment saying the pipeline should replace it — and no pipeline ever did.
-Baking it in at build time would also make the image environment-specific,
-which defeats building once and promoting between environments.
-
-Instead the app fetches `config.json` in `main()`, before anything talks to an
+Baking the backend URLs in at build time would make the image
+environment-specific, which defeats building once and promoting between
+environments. Instead the app fetches `config.json` in `main()`, before anything talks to an
 API:
 
 ```
@@ -140,14 +137,14 @@ Behaviour worth knowing:
   compiled-in defaults in place. Starting against the wrong backend beats not
   starting at all, and the failure is visible in the console and in the first
   failing API call.
-- **Field-by-field fallback.** A blank or absent field falls back to
-  `Environment`, so a half-filled configuration cannot silently point a client
-  at an empty URL.
+- **Field-by-field fallback.** A blank or absent field falls back to the
+  default in `RuntimeConfig.compiledIn`, so a half-filled configuration cannot
+  silently point a client at an empty URL.
 - **`no-store`.** A cached configuration outlives the deployment that produced
   it and then points the app at the wrong backend.
-- **`environment.dart` is untouched** — `CONTRIBUTING.md` forbids changing it.
-  It stays the source for a local `flutter run`, where nothing serves a
-  configuration.
+- **The same file locally.** A local `flutter run` serves `web/config.json`
+  (gitignored) the same way, so a developer changes URLs there instead of in
+  code.
 
 ## Behaviour the config has to preserve
 

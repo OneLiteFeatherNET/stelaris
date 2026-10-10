@@ -14,16 +14,14 @@ To ensure a smooth development process, please follow these guidelines.
 
 - Open a pull request (PR) for all changes.
 - Keep PRs focused—one feature or bug fix per PR.
-- Write meaningful commit messages.
+- Write commit messages following [Conventional Commits](https://www.conventionalcommits.org/),
+  e.g. `fix(item): keep the lore when copying`. CI checks them.
 
-## Restricted Files
+## Local Configuration
 
-🚨 **Do Not Modify `environment.dart` in Pull Requests** 🚨  
-
-Changes to `environment.dart` should not be included in pull requests. 
-This file is managed separately and should remain unchanged to maintain project integrity.
-
-If your changes require an update to this file, please discuss it in an issue before submitting a PR.
+Point the app at your backend through `web/config.json`, not by changing code.
+The file is ignored by the repository configuration, so it never ends up in a pull request. The
+[README](README.md#changing-the-backend-urls) shows how.
 
 ## Need Help?
 

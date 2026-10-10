@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:stelaris/auth/auth_config.dart';
-import 'package:stelaris/env/environment.dart';
 
 /// Settings the app reads when it starts instead of at build time.
 ///
@@ -14,9 +13,8 @@ import 'package:stelaris/env/environment.dart';
 /// Secret over the server's runtime directory) and the app adopts whatever it
 /// finds there.
 ///
-/// [Environment] stays the source for a local `flutter run`, where nothing
-/// serves a configuration: its values are the fallback for every field the
-/// served configuration leaves empty.
+/// A local `flutter run` serves it from `web/config.json`, which is gitignored.
+/// Without one, and for every field it leaves empty, [compiledIn] applies.
 @immutable
 class RuntimeConfig {
   const RuntimeConfig({
@@ -39,8 +37,8 @@ class RuntimeConfig {
   /// unauthenticated, which is also what makes a local `flutter run` work
   /// without a provider to reach.
   static const RuntimeConfig compiledIn = RuntimeConfig(
-    backendUrl: Environment.backendURl,
-    generatorUrl: Environment.generatorUrl,
+    backendUrl: 'http://localhost:8085',
+    generatorUrl: '',
   );
 
   static RuntimeConfig _current = compiledIn;
