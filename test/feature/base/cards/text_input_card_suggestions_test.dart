@@ -59,10 +59,21 @@ void main() {
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pump();
 
-      // Enter also drops focus, which submits again: the card's parent drops
-      // the repeat because the value no longer changes.
-      expect(updates, isNotEmpty);
-      expect(updates, everyElement('minecraft:diamond_sword'));
+      // Enter also drops focus, which submits again: the card reports the
+      // value only once.
+      expect(updates, ['minecraft:diamond_sword']);
+    });
+
+    testWidgets('enter on a key matching its suggestion saves it once', (
+      tester,
+    ) async {
+      await pumpCard(tester);
+
+      await type(tester, 'minecraft:diamond_sword');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+
+      expect(updates, ['minecraft:diamond_sword']);
     });
 
     testWidgets('still saves free text when focus is lost', (tester) async {

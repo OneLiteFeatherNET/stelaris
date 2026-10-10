@@ -46,10 +46,17 @@ class _TextInputCardState extends State<TextInputCard> {
   final FocusNode _focusNode = FocusNode();
   final _borderRadius = BorderRadius.circular(8);
 
+  /// The value last handed to [TextInputCard.valueUpdate], or the current
+  /// value until then. Enter, taking a suggestion and the focus loss after
+  /// either all submit the same text in one frame, before the parent has
+  /// passed it back as [TextInputCard.currentValue].
+  late String _lastSubmitted;
+
   @override
   void initState() {
     super.initState();
     _editController.text = widget.currentValue;
+    _lastSubmitted = widget.currentValue;
     _focusNode.addListener(_handleFocusChange);
   }
 
@@ -64,6 +71,7 @@ class _TextInputCardState extends State<TextInputCard> {
     super.didUpdateWidget(oldWidget);
     if (widget.currentValue != oldWidget.currentValue) {
       _editController.text = widget.currentValue;
+      _lastSubmitted = widget.currentValue;
     }
   }
 
@@ -96,13 +104,11 @@ class _TextInputCardState extends State<TextInputCard> {
                     onSelected: _handleFieldSubmitted,
                     fieldBuilder:
                         (context, controller, focusNode, onSubmitted) =>
-                            _buildField(colorScheme, outlineBorder, (value) {
-                              // Taking a suggestion rewrites the text and
-                              // submits it through onSelected already.
+                            _buildField(colorScheme, outlineBorder, (_) {
+                              // Takes the highlighted suggestion, if any,
+                              // which rewrites the text and submits it.
                               onSubmitted();
-                              if (controller.text == value) {
-                                _handleFieldSubmitted(value);
-                              }
+                              _handleFieldSubmitted(controller.text);
                             }),
                   )
                 : _buildField(
@@ -170,7 +176,10 @@ class _TextInputCardState extends State<TextInputCard> {
   /// doesn't mark the model as edited.
   void _handleFieldSubmitted(String value) {
     final String submitted = value.trim().isEmpty ? emptyString : value;
-    if (submitted == widget.currentValue) return;
+    if (submitted == widget.currentValue || submitted == _lastSubmitted) {
+      return;
+    }
+    _lastSubmitted = submitted;
     widget.valueUpdate(submitted);
   }
 }
