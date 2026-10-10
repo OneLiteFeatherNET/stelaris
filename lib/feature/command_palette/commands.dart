@@ -104,8 +104,7 @@ StelarisCommand _create(NavigationEntry entry) {
     icon: Icons.add,
     run: (context) async {
       final String projectKey =
-          StoreProvider.backdoorInheritedWidget<AppState>(context)
-              .state
+          StoreProvider.state<AppState>(context, notify: false)
               .selectedProject
               ?.key ??
           '';
@@ -141,7 +140,7 @@ StelarisCommand _deleteThis<E extends DataModel>(
         spec.selected(context.state) != null,
     run: (context) async {
       final E? model = spec.selected(
-        StoreProvider.backdoorInheritedWidget<AppState>(context).state,
+        StoreProvider.state<AppState>(context, notify: false),
       );
       if (model == null) {
         return;

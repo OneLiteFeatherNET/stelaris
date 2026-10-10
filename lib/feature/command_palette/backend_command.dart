@@ -26,9 +26,11 @@ Future<void> runBackendCommand(
   BackendOutcome Function(AppState before, AppState after)? outcome,
 }) async {
   final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-  final Store<AppState> store = StoreProvider.backdoorInheritedWidget<AppState>(
-    context,
-  );
+  // The store, not the context, has to carry the state across the await: the
+  // context may be gone by then. There is no public way to reach it.
+  final Store<AppState> store =
+      // ignore: invalid_use_of_internal_member
+      StoreProvider.backdoorInheritedWidget<AppState>(context);
   final AppState before = store.state;
 
   BackendOutcome result;

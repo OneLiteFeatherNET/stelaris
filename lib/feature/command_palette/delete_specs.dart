@@ -44,9 +44,10 @@ class DeleteSpec<E extends DataModel> {
   /// Confirms and deletes [model] through the shared flow. On [model]'s own
   /// detail page the flow ends on the list, as the page's button does.
   Future<bool> delete(BuildContext context, E model) {
-    final AppState state = StoreProvider.backdoorInheritedWidget<AppState>(
+    final AppState state = StoreProvider.state<AppState>(
       context,
-    ).state;
+      notify: false,
+    );
     final AppLocalizations l10n = context.l10n;
     final bool onOwnDetail =
         GoRouter.of(context).state.matchedLocation ==

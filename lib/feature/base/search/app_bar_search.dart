@@ -132,7 +132,9 @@ class _AppBarSearchState extends State<AppBarSearch> {
     _palette
       ?..hasEntitySearch = _entitySource != null
       ..onEntityQuery = _onEntityQuery;
+    // Only the store exposes `onChange`; there is no public way to reach it.
     final Store<AppState> store =
+        // ignore: invalid_use_of_internal_member
         StoreProvider.backdoorInheritedWidget<AppState>(context);
     if (store != _store) {
       _store = store;
@@ -178,7 +180,7 @@ class _AppBarSearchState extends State<AppBarSearch> {
     if (palette == null || _dropdown.isShowing) return;
     palette.configure(
       CommandContext(
-        state: StoreProvider.backdoorInheritedWidget<AppState>(context).state,
+        state: StoreProvider.state<AppState>(context, notify: false),
         location: GoRouter.of(context).state.matchedLocation,
       ),
       context.l10n,
