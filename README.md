@@ -1,25 +1,87 @@
 # Stelaris UI
 
-The Stelaris project is primarily aimed at facilitating the creation of various models, which are
-subsequently translated into programming code. Model creation is facilitated through a user
-interface (UI) developed using Flutter. Within this UI, a variety of widgets are available to aid in
-model creation. Each model can be customized with different data, depending on its specific context.
-Models that can be created are items, fonts, attributes and notifications. Each model has its 
-own page within the UI, where the user can create, edit, and delete models. The sides 
-may be divided into multiple parts. In the build page the user can generate the code.
+Stelaris lets you describe Minecraft content as models and turns them into
+code. This repository is its web interface, built with Flutter. Every kind of
+model has its own page to create, edit and delete entries, and the build page
+generates the code from them.
 
-## How to run the App on your computer
+The models you can create are **attributes**, **items**, **advancements**,
+**fonts** and **sounds**.
 
-To run the application on your local computer, follow these steps:
+## Running it locally
 
-- **Install Flutter** – Ensure you have Flutter installed with the latest required version (**3.47.1**).
-- **Modify the Environment Class** – Adjust the backend URL in the environment class to match your server setup.
-- **Start the Backend Server** - Start the backend server
-- **Run the App** – Start the application by pressing the **Start** button in your IDE or running:
-  ```sh  
-  flutter run  
-  ```  
-  
+Stelaris UI is a web app, so it runs in a browser.
+
+1. **Install Flutter.** The version the project is built with is the
+   `flutter-version` in [`.github/workflows/build_pr.yml`](.github/workflows/build_pr.yml).
+2. **Fetch the dependencies.** This also generates the translations:
+   ```sh
+   flutter pub get
+   ```
+3. **Start the backend** you want the app to talk to.
+4. **Run the app.**
+   ```sh
+   flutter run -d chrome
+   ```
+
+Without further setup the app expects the backend at `http://localhost:8085`.
+
+### Changing the backend URLs
+
+The app reads its URLs from a `config.json` when it starts. For a local run,
+create `web/config.json`:
+
+```json
+{
+  "backendUrl": "http://localhost:8085",
+  "generatorUrl": "http://localhost:8082"
+}
+```
+
+The file is gitignored, so your local URLs never end up in a commit. Restart
+the app after changing it. Both fields are optional. A missing or empty one
+keeps its default. A deployment provides the same file, see
+[Running it in a container](#running-it-in-a-container).
+
+### Trying the sign-in locally
+
+Without an `auth` block in `config.json` the app runs without sign-in. To try
+it against a local Keycloak, run:
+
+```sh
+tool/dev_auth.sh
+```
+
+It starts Keycloak, writes a matching `web/config.json` and runs the app.
+[docs/identity-provider.md](docs/identity-provider.md) explains how to connect
+a real identity provider.
+
+### Generated code
+
+The models use [freezed](https://pub.dev/packages/freezed). The generated files
+are committed, so you only need to regenerate them after changing a model:
+
+```sh
+dart run build_runner build --delete-conflicting-outputs
+```
+
+## Tests
+
+```sh
+flutter test
+```
+
+runs the whole suite on the Dart VM. Text input and keyboard handling behave
+differently in a browser, so the tests for them are tagged `web` and also run
+in Chrome in CI:
+
+```sh
+flutter test --platform chrome --tags web
+```
+
+Tag a test file with `@Tags(['web'])` when it drives text input or keyboard
+shortcuts.
+
 ## Running it in a container
 
 The production image builds the web bundle itself and serves it from a
@@ -33,11 +95,10 @@ docker run --rm -p 8080:8080 \
   stelaris-ui:local
 ```
 
-The image is environment-agnostic: it is built once and promoted from staging
-to production. The backend it talks to comes from `config.json`, which the app
-fetches at startup and the deployment mounts over `/etc/nginx/runtime` — a
-Secret in Kubernetes. Without a mount the image serves an empty configuration
-and the app falls back to the values compiled in from `lib/env/environment.dart`.
+The image is built once and promoted from staging to production, so it
+contains no backend URLs. They come from `config.json`, which the deployment
+mounts over `/etc/nginx/runtime`; in Kubernetes that is a Secret. Without a
+mount the app uses its defaults.
 
 ```sh
 # a local backend, without a cluster
@@ -47,8 +108,8 @@ docker run --rm -p 8080:8080 \
   stelaris-ui:local
 ```
 
-The full picture — what the nginx config turns off and why, the CSP, caching,
-health checks and how the image is published to Harbor — is in
+The full picture (what the nginx config turns off and why, the CSP, caching,
+health checks and how the image is published to Harbor) is in
 [docs/docker-image.md](docs/docker-image.md).
 
 ## Deploying it to Kubernetes
@@ -71,16 +132,8 @@ rollout. The chart's [README](charts/stelaris-ui/README.md) covers the ingress,
 narrowing the CSP to real backend origins, and what the pod is and is not
 allowed to do.
 
-## Wiki
-
-You can find the Wiki under the following [Link](https://gitlab.onelitefeather.dev/dungeon/frontend/stelaris-ui/-/wikis/pages)
-
 ## Contributing
 
-See the [CONTRIBUTING.md](CONTRIBUTING.md) file for more information.
-
-
-
-
-
-
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/),
+which CI checks; releases and the changelog are created from them. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for more.
