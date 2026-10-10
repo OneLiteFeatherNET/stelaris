@@ -38,7 +38,7 @@ create `web/config.json`:
 }
 ```
 
-The file is gitignored, so your local URLs never end up in a commit. Restart
+The file is ignored by Git, so your local URLs never end up in a commit. Restart
 the app after changing it. Both fields are optional. A missing or empty one
 keeps its default. A deployment provides the same file, see
 [Running it in a container](#running-it-in-a-container).

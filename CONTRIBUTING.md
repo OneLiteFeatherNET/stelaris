@@ -20,7 +20,7 @@ To ensure a smooth development process, please follow these guidelines.
 ## Local Configuration
 
 Point the app at your backend through `web/config.json`, not by changing code.
-The file is gitignored, so it never ends up in a pull request. The
+The file is ignored by the repository configuration, so it never ends up in a pull request. The
 [README](README.md#changing-the-backend-urls) shows how.
 
 ## Need Help?
