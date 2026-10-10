@@ -1,9 +1,11 @@
 name: Run tests
 on: [ pull_request ]
 jobs:
-  build_pr:
+  # Analyzer, VM tests and browser tests run as separate jobs, so they run in
+  # parallel and a failure says which of them broke.
+  analyze:
     if: github.repository_owner == 'OneLiteFeatherNET'
-    name: Build Pull Request Branch
+    name: Analyze
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -13,22 +15,52 @@ jobs:
         with:
           flutter-version: '3.47.7'
           channel: 'stable'
-      - name: Cache Flutter dependencies
-        uses: actions/cache@v6
-        with:
-          path: |
-            ~/.pub-cache
-            build
-          key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.yaml') }}
-          restore-keys: ${{ runner.os }}-pub-
-      - name: Enable Flutter Web
-        run: flutter config --enable-web
+          cache: true
       - name: Install dependencies
         run: flutter pub get
       - name: Run analyzer
-        run: flutter analyze || true
-      - name: Run tests (Web)
-        run: flutter test --platform chrome
+        run: flutter analyze
+
+  # The whole suite on the Dart VM: no per-file compile to JavaScript and no
+  # browser, which is what made the run take this long.
+  test:
+    if: github.repository_owner == 'OneLiteFeatherNET'
+    name: Tests (VM)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Init Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.6'
+          channel: 'stable'
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Run tests
+        run: flutter test
+
+  # Only the tests tagged `web` (see dart_test.yaml): the ones driving text
+  # input and keyboard handling, which Flutter treats differently in a
+  # browser.
+  test_web:
+    if: github.repository_owner == 'OneLiteFeatherNET'
+    name: Tests (Web)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Init Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.6'
+          channel: 'stable'
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Run tests
+        run: flutter test --platform chrome --tags web
 
   # The production Dockerfile was broken on develop for months - it copied an
   # nginx.conf that had been deleted from the tree - because nothing ever built
