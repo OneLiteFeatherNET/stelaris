@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/base/input/material_autocomplete.dart';
 import 'package:stelaris/feature/item/components/schema/fields/color_field.dart';
 import 'package:stelaris/feature/item/components/schema/fields/list_field.dart';
 import 'package:stelaris/feature/item/components/schema/fields/number_field.dart';
@@ -8,6 +9,7 @@ import 'package:stelaris/feature/item/components/schema/fields/section.dart';
 import 'package:stelaris/feature/item/components/schema/schema_shape.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/component.dart';
+import 'package:vulpes_data/material.dart';
 
 /// Renders the input for a value of the given [schema].
 ///
@@ -87,25 +89,12 @@ class SchemaField extends StatelessWidget {
         maxLines: schema is TextSchema ? null : 1,
         onChanged: onChanged,
       ),
-      KeySchema(:final registry) => TextFormField(
-        initialValue: value as String? ?? '',
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: label,
-          hintText: 'minecraft:…',
-          suffixIcon: suffix,
-          helperText: registry == null || !registryHint
-              ? null
-              : l10n.component_key_helper(registry),
-        ),
-        // Shown only when the field is required or switched on, so it always
-        // needs a key: the codecs can't read an empty one.
-        validator: (text) => switch (text) {
-          null || '' => l10n.component_key_required,
-          final key when !_keyPattern.hasMatch(key) =>
-            l10n.component_key_invalid,
-          _ => null,
-        },
+      KeySchema(:final registry) => _KeyField(
+        registry: registry,
+        label: label,
+        value: value as String? ?? '',
+        registryHint: registryHint,
+        suffix: suffix,
         onChanged: onChanged,
       ),
       EnumSchema(:final values) => DropdownButtonFormField<String>(
@@ -156,6 +145,90 @@ class SchemaField extends StatelessWidget {
         '${l10n.component_not_editable_type(javaType)}',
       ),
     };
+  }
+}
+
+/// The input for a registry key. Items and blocks suggest materials while
+/// typing; every other registry is a plain text field.
+class _KeyField extends StatelessWidget {
+  const _KeyField({
+    required this.registry,
+    required this.label,
+    required this.value,
+    required this.registryHint,
+    required this.suffix,
+    required this.onChanged,
+  });
+
+  final String? registry;
+  final String? label;
+  final String value;
+  final bool registryHint;
+  final Widget? suffix;
+  final ValueChanged<Object?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (registry) {
+      'item' => MaterialAutocomplete(
+        initialValue: value,
+        onSelected: onChanged,
+        fieldBuilder: _suggestingField,
+      ),
+      'block' => MaterialAutocomplete(
+        initialValue: value,
+        categories: const {MaterialCategory.block},
+        onSelected: onChanged,
+        fieldBuilder: _suggestingField,
+      ),
+      _ => _field(context, initialValue: value),
+    };
+  }
+
+  Widget _suggestingField(
+    BuildContext context,
+    TextEditingController controller,
+    FocusNode focusNode,
+    VoidCallback onFieldSubmitted,
+  ) => _field(
+    context,
+    controller: controller,
+    focusNode: focusNode,
+    onFieldSubmitted: (_) => onFieldSubmitted(),
+  );
+
+  Widget _field(
+    BuildContext context, {
+    String? initialValue,
+    TextEditingController? controller,
+    FocusNode? focusNode,
+    ValueChanged<String>? onFieldSubmitted,
+  }) {
+    final l10n = context.l10n;
+    final registry = this.registry;
+    return TextFormField(
+      initialValue: initialValue,
+      controller: controller,
+      focusNode: focusNode,
+      decoration: InputDecoration(
+        border: const OutlineInputBorder(),
+        labelText: label,
+        hintText: 'minecraft:…',
+        suffixIcon: suffix,
+        helperText: registry == null || !registryHint
+            ? null
+            : l10n.component_key_helper(registry),
+      ),
+      // Shown only when the field is required or switched on, so it always
+      // needs a key: the codecs can't read an empty one.
+      validator: (text) => switch (text) {
+        null || '' => l10n.component_key_required,
+        final key when !_keyPattern.hasMatch(key) => l10n.component_key_invalid,
+        _ => null,
+      },
+      onChanged: onChanged,
+      onFieldSubmitted: onFieldSubmitted,
+    );
   }
 }
 

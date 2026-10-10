@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
@@ -578,4 +579,59 @@ void main() {
     expect(find.text('Backend down'), findsOneWidget);
     expect(saved, isNull);
   });
+
+  testWidgets(
+    'the material key field keeps focus and the dialog while typing',
+    (tester) async {
+      await pumpOpener(
+        tester,
+        (context) => showComponentEditDialog(
+          context,
+          spec: _spec('stelaris:material'),
+          value: initialValue(_spec('stelaris:material').schema),
+          onSave: (_) async => null,
+        ),
+        (_) {},
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+
+      final field = find.byType(TextFormField);
+      await tester.tap(field);
+      await tester.pump();
+      const typed = 'sword';
+      final keys = {
+        's': LogicalKeyboardKey.keyS,
+        'w': LogicalKeyboardKey.keyW,
+        'o': LogicalKeyboardKey.keyO,
+        'r': LogicalKeyboardKey.keyR,
+        'd': LogicalKeyboardKey.keyD,
+      };
+      for (var i = 1; i <= typed.length; i++) {
+        await tester.sendKeyEvent(keys[typed[i - 1]]!);
+        await tester.enterText(field, typed.substring(0, i));
+        await tester.pump();
+
+        final reason = 'after typing "${typed.substring(0, i)}"';
+        expect(find.byType(Dialog), findsOneWidget, reason: 'dialog $reason');
+        expect(
+          tester
+              .widget<EditableText>(find.byType(EditableText))
+              .focusNode
+              .hasFocus,
+          isTrue,
+          reason: 'focus $reason',
+        );
+        expect(
+          tester
+              .widget<EditableText>(find.byType(EditableText))
+              .controller
+              .text,
+          typed.substring(0, i),
+          reason: 'text $reason',
+        );
+      }
+      expect(find.byType(MenuItemButton), findsAtLeastNWidgets(1));
+    },
+  );
 }
