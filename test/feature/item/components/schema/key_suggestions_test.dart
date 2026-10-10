@@ -140,6 +140,46 @@ void main() {
     });
   });
 
+  // Can Break, Can Place On and the rules of Tool take blocks as a registry
+  // tag field, whose key list holds block key fields.
+  group('block tag field', () {
+    Future<void> pumpTagField(WidgetTester tester, Object value) {
+      return tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: SchemaField(
+                schema: const RegistryTagSchema(registry: 'block'),
+                value: value,
+                onChanged: (_) {},
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    testWidgets('suggests blocks for the entries of its key list', (
+      tester,
+    ) async {
+      await pumpTagField(tester, ['']);
+
+      await type(tester, 'oak planks');
+
+      expect(find.text('minecraft:oak_planks'), findsOneWidget);
+    });
+
+    testWidgets('suggests nothing for a tag', (tester) async {
+      await pumpTagField(tester, '');
+
+      await type(tester, '#minecraft:logs');
+
+      expect(find.byType(MenuItemButton), findsNothing);
+    });
+  });
+
   group('other registries', () {
     testWidgets('show no suggestions', (tester) async {
       await pumpKeyField(tester, registry: 'sound_event', changes: []);
