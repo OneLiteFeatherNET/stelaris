@@ -243,11 +243,8 @@ void main() {
           )
           .actions;
       final before = actions();
-      final store = StoreProvider.backdoorInheritedWidget<AppState>(
+      StoreProvider.dispatch<AppState>(
         tester.element(find.byType(BasePage)),
-      );
-
-      store.dispatch(
         SelectProjectAction(
           const Project(id: 'proj_2', key: 'other', displayName: 'Other'),
         ),

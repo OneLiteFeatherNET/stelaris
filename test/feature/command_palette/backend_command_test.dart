@@ -64,11 +64,12 @@ void main() {
     tester,
   ) async {
     final context = await _pump(tester);
-    final store = StoreProvider.backdoorInheritedWidget<AppState>(context);
-
     await runBackendCommand(context, _Throws(), success: 'ok', failure: 'no');
 
-    expect(store.state.branches, ['old']);
+    expect(
+      StoreProvider.state<AppState>(context, notify: false).branches,
+      ['old'],
+    );
   });
 
   testWidgets('the outcome check turns a swallowed error into a failure', (
