@@ -1,0 +1,5 @@
+# Tests run on the Dart VM by default. Text input and keyboard handling are
+# the parts of Flutter that behave differently in a browser, so the tests that
+# drive them are tagged `web` and additionally run in Chrome in CI.
+tags:
+  web:

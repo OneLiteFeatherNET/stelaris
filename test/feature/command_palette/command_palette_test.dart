@@ -1,3 +1,6 @@
+@Tags(['web'])
+library;
+
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
