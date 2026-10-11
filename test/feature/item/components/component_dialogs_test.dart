@@ -340,7 +340,9 @@ void main() {
       '6',
     );
     await tester.pump();
-    await tester.tap(find.text('Can Always Eat (optional)'));
+    await tester.tap(
+      find.byKey(const Key('component_add_field_can_always_eat')),
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();

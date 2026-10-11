@@ -684,8 +684,9 @@
   "component_field_enabled": "Enabled",
   "component_field_color": "Color",
   "component_field_entries": "Entries",
-  "component_field_optional": "{label} (optional)",
-  "@component_field_optional": {
+  "component_field_more": "More fields",
+  "component_field_remove": "Remove {label}",
+  "@component_field_remove": {
     "placeholders": {
       "label": {
         "type": "String"
