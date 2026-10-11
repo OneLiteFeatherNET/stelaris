@@ -5,10 +5,10 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/item/item_lore_actions.dart';
 import 'package:stelaris/api/state/factory/item/item_lore_view_state.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
-import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
+import 'package:stelaris/feature/component/component_dialog.dart';
 import 'package:stelaris/feature/item/lore/lore_line_card.dart';
 import 'package:stelaris/feature/item/lore/lore_preview.dart';
-import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class LorePageView extends StatefulWidget {
@@ -164,19 +164,16 @@ class _LorePageViewState extends State<LorePageView>
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return EntryUpdateDialog(
+        return ComponentDialog(
           title: context.l10n.dialog_item_lore_edit_title,
-          formKey: GlobalKey<FormState>(),
-          valueUpdate: (value) {
+          actionLabel: context.l10n.button_save,
+          componentContext: ComponentContext.lore,
+          initialValue: dto.text,
+          onSave: (value) {
             final updatedDto = dto.copyWith(text: value);
             context.dispatch(ItemLoreUpdateAction(updatedDto));
             Navigator.pop(context, false);
           },
-          formFieldValidator: (value) {
-            final String input = value as String;
-            return checkIfEmptyAndReturnErrorString(input, context);
-          },
-          data: dto.text,
         );
       },
     );
