@@ -66,8 +66,12 @@ class LorePreview extends StatelessWidget {
 
   Widget _line(String text, ComponentContext componentContext) {
     return Text.rich(
-      withContrastHalo(
-        MiniMessageParser.parse(text, componentContext: componentContext),
+      withTextShadow(
+        MiniMessageParser.parse(
+          text,
+          componentContext: componentContext,
+          fontWeight: previewFontWeight,
+        ),
       ),
     );
   }

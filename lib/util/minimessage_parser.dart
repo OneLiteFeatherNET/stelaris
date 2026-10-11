@@ -23,6 +23,7 @@ class MiniMessageParser {
     ComponentContext componentContext = ComponentContext.notificationTitle,
     double fontSize = 14,
     String fontFamily = 'monospace',
+    FontWeight fontWeight = FontWeight.normal,
   }) {
     final defaultColor = componentContext.defaultColor;
     if (input.isEmpty) {
@@ -31,6 +32,7 @@ class MiniMessageParser {
         style: TextStyle(
           color: defaultColor,
           fontSize: fontSize,
+          fontWeight: fontWeight,
           fontFamily: fontFamily,
         ),
       );
@@ -69,6 +71,7 @@ class MiniMessageParser {
                 isUnderlined: isUnderlined,
                 isStrikethrough: isStrikethrough,
                 fontSize: fontSize,
+                fontWeight: fontWeight,
                 fontFamily: fontFamily,
               ),
             ),
@@ -89,6 +92,7 @@ class MiniMessageParser {
                 isUnderlined: isUnderlined,
                 isStrikethrough: isStrikethrough,
                 fontSize: fontSize,
+                fontWeight: fontWeight,
                 fontFamily: fontFamily,
               ),
             ),
@@ -105,6 +109,7 @@ class MiniMessageParser {
               isUnderlined: isUnderlined,
               isStrikethrough: isStrikethrough,
               fontSize: fontSize,
+              fontWeight: fontWeight,
               fontFamily: fontFamily,
             ),
           ),
@@ -202,6 +207,7 @@ class MiniMessageParser {
       style: TextStyle(
         color: defaultColor,
         fontSize: fontSize,
+        fontWeight: fontWeight,
         fontFamily: fontFamily,
       ),
       children: spans,
@@ -249,6 +255,7 @@ class MiniMessageParser {
     required bool isUnderlined,
     required bool isStrikethrough,
     required double fontSize,
+    required FontWeight fontWeight,
     required String fontFamily,
   }) {
     final decorations = <TextDecoration>[
@@ -258,7 +265,7 @@ class MiniMessageParser {
 
     return TextStyle(
       color: color,
-      fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+      fontWeight: isBold ? FontWeight.bold : fontWeight,
       fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
       decoration: decorations.isEmpty
           ? TextDecoration.none

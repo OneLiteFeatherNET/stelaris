@@ -40,6 +40,22 @@ void main() {
       expect(second.style?.color, equals(const Color(0xFFFF55FF)));
     });
 
+    test('uses the given weight, bold stays bold', () {
+      final span = MiniMessageParser.parse(
+        'Thin <b>Thick',
+        fontWeight: FontWeight.w500,
+      );
+
+      expect(
+        (span.children![0] as TextSpan).style?.fontWeight,
+        FontWeight.w500,
+      );
+      expect(
+        (span.children![1] as TextSpan).style?.fontWeight,
+        FontWeight.bold,
+      );
+    });
+
     test('parses hex colors', () {
       final span = MiniMessageParser.parse('<#ff00aa>Hex Text');
       expect(span.children?.length, equals(1));

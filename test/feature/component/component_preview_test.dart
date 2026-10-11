@@ -69,7 +69,7 @@ void main() {
 
   for (final theme in [ThemeData.light(), ThemeData.dark()]) {
     testWidgets(
-      'uses the same gray surface in ${theme.brightness.name} theme',
+      'uses the same dark surface in ${theme.brightness.name} theme',
       (tester) async {
         await pumpPreview(
           tester,
@@ -89,7 +89,7 @@ void main() {
     );
   }
 
-  group('contrast halo', () {
+  group('text shadow', () {
     List<Shadow>? shadowsOf(WidgetTester tester, String text) {
       final rich = tester.widget<RichText>(find.byType(RichText));
       List<Shadow>? found;
@@ -107,44 +107,45 @@ void main() {
       );
     }
 
-    bool isLight(Color color) => color.computeLuminance() > 0.5;
-
-    testWidgets('the default lore purple gets a light halo', (tester) async {
+    testWidgets('the default lore purple keeps its color and gets its shadow', (
+      tester,
+    ) async {
       await pumpText(tester, 'Lore');
 
-      final shadows = shadowsOf(tester, 'Lore')!;
-      expect(shadows, isNotEmpty);
-      expect(shadows.every((shadow) => isLight(shadow.color)), isTrue);
+      final shadow = shadowsOf(tester, 'Lore')!.single;
+      // #AA00AA at a quarter of its brightness.
+      expect(shadow.color.r, closeTo(0xAA / 255 / 4, 0.001));
+      expect(shadow.color.g, 0);
+      expect(shadow.color.b, closeTo(0xAA / 255 / 4, 0.001));
+      expect(shadow.offset, const Offset(1, 1));
+      expect(shadow.blurRadius, 0);
     });
 
-    testWidgets('dark blue gets a light halo', (tester) async {
-      await pumpText(tester, '<dark_blue>Deep');
-
-      final shadows = shadowsOf(tester, 'Deep')!;
-      expect(shadows, isNotEmpty);
-      expect(shadows.every((shadow) => isLight(shadow.color)), isTrue);
-    });
-
-    testWidgets('red gets a dark halo', (tester) async {
-      await pumpText(tester, '<red>Hot');
-
-      final shadows = shadowsOf(tester, 'Hot')!;
-      expect(shadows, isNotEmpty);
-      expect(shadows.every((shadow) => !isLight(shadow.color)), isTrue);
-    });
-
-    testWidgets('readable colors get no halo', (tester) async {
+    testWidgets('light colors get a shadow, not a glow', (tester) async {
       await pumpText(tester, '<yellow>Sun<white>Snow');
 
-      expect(shadowsOf(tester, 'Sun') ?? const [], isEmpty);
-      expect(shadowsOf(tester, 'Snow') ?? const [], isEmpty);
+      for (final text in ['Sun', 'Snow']) {
+        final shadow = shadowsOf(tester, text)!.single;
+        expect(shadow.blurRadius, 0, reason: text);
+        expect(shadow.offset, isNot(Offset.zero), reason: text);
+      }
     });
 
-    testWidgets('each gradient letter gets its own halo', (tester) async {
+    for (final (tag, text) in [('black', 'Night'), ('dark_blue', 'Deep')]) {
+      testWidgets('$tag gets a thin light outline instead', (tester) async {
+        await pumpText(tester, '<$tag>$text');
+
+        final shadow = shadowsOf(tester, text)!.single;
+        expect(shadow.color.computeLuminance(), greaterThan(0.5));
+        expect(shadow.offset, Offset.zero);
+      });
+    }
+
+    testWidgets('each gradient letter gets its own shadow', (tester) async {
       await pumpText(tester, '<gradient:dark_blue:yellow>ab</gradient>');
 
-      expect(shadowsOf(tester, 'a'), isNotEmpty);
-      expect(shadowsOf(tester, 'b') ?? const [], isEmpty);
+      expect(shadowsOf(tester, 'a')!.single.offset, Offset.zero);
+      expect(shadowsOf(tester, 'b')!.single.offset, const Offset(1, 1));
     });
   });
 
