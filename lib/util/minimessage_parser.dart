@@ -273,6 +273,10 @@ class MiniMessageParser {
     );
   }
 
+  /// The color a color tag sets, e.g. `gold`, `#ff0000` or `color:red`,
+  /// null for anything else.
+  static Color? colorOf(String tag) => _parseColor(tag);
+
   static Color? _parseColor(String raw) {
     var tag = raw.trim();
     if (tag.startsWith('color:') || tag.startsWith('colour:')) {
