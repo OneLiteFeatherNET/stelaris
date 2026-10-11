@@ -18,6 +18,7 @@ class LorePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final lore = item.lore;
     final remaining = lore.totalItems - lore.items.length;
 
@@ -25,25 +26,39 @@ class LorePreview extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          context.l10n.lore_preview_title,
-          style: theme.textTheme.titleSmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
+        Row(
+          children: [
+            Icon(
+              Icons.preview_outlined,
+              size: 18,
+              color: colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              context.l10n.lore_preview_title,
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 8),
         Flexible(
-          child: SingleChildScrollView(
-            child: Container(
-              key: const Key('lore_preview'),
+          child: Container(
+            key: const Key('lore_preview'),
+            decoration: BoxDecoration(
+              color: previewBackground,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: previewBorder),
+            ),
+            // Only as high as the lines, and scrolls inside once they don't
+            // fit.
+            child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: previewBackground,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: previewBorder),
-              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                // Like the gap between the lines of a tooltip in game.
+                spacing: 4,
                 children: [
                   for (final line in lore.items) _line(line.text),
                   if (remaining > 0)
