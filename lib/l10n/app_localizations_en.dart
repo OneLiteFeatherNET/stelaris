@@ -1457,4 +1457,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get component_entries_empty => 'No entries';
+
+  @override
+  String get minimessage_bold => 'Bold';
+
+  @override
+  String get minimessage_italic => 'Italic';
+
+  @override
+  String get minimessage_underline => 'Underline';
+
+  @override
+  String get minimessage_strikethrough => 'Strikethrough';
+
+  @override
+  String get minimessage_color => 'Color';
+
+  @override
+  String get minimessage_gradient => 'Gradient';
+
+  @override
+  String get minimessage_gradient_from => 'Pick the first color';
+
+  @override
+  String get minimessage_gradient_to => 'Pick the second color';
+
+  @override
+  String get minimessage_rainbow => 'Rainbow';
+
+  @override
+  String get minimessage_clear => 'Clear formatting';
 }

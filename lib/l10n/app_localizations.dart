@@ -2697,6 +2697,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No entries'**
   String get component_entries_empty;
+
+  /// No description provided for @minimessage_bold.
+  ///
+  /// In en, this message translates to:
+  /// **'Bold'**
+  String get minimessage_bold;
+
+  /// No description provided for @minimessage_italic.
+  ///
+  /// In en, this message translates to:
+  /// **'Italic'**
+  String get minimessage_italic;
+
+  /// No description provided for @minimessage_underline.
+  ///
+  /// In en, this message translates to:
+  /// **'Underline'**
+  String get minimessage_underline;
+
+  /// No description provided for @minimessage_strikethrough.
+  ///
+  /// In en, this message translates to:
+  /// **'Strikethrough'**
+  String get minimessage_strikethrough;
+
+  /// No description provided for @minimessage_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get minimessage_color;
+
+  /// No description provided for @minimessage_gradient.
+  ///
+  /// In en, this message translates to:
+  /// **'Gradient'**
+  String get minimessage_gradient;
+
+  /// No description provided for @minimessage_gradient_from.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the first color'**
+  String get minimessage_gradient_from;
+
+  /// No description provided for @minimessage_gradient_to.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the second color'**
+  String get minimessage_gradient_to;
+
+  /// No description provided for @minimessage_rainbow.
+  ///
+  /// In en, this message translates to:
+  /// **'Rainbow'**
+  String get minimessage_rainbow;
+
+  /// No description provided for @minimessage_clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear formatting'**
+  String get minimessage_clear;
 }
 
 class _AppLocalizationsDelegate

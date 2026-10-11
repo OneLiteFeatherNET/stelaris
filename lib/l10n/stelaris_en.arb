@@ -746,5 +746,15 @@
   "component_color_invalid": "Expected #RRGGBB",
   "component_entry_add": "Add entry",
   "component_entry_remove": "Remove entry",
-  "component_entries_empty": "No entries"
+  "component_entries_empty": "No entries",
+  "minimessage_bold": "Bold",
+  "minimessage_italic": "Italic",
+  "minimessage_underline": "Underline",
+  "minimessage_strikethrough": "Strikethrough",
+  "minimessage_color": "Color",
+  "minimessage_gradient": "Gradient",
+  "minimessage_gradient_from": "Pick the first color",
+  "minimessage_gradient_to": "Pick the second color",
+  "minimessage_rainbow": "Rainbow",
+  "minimessage_clear": "Clear formatting"
 }

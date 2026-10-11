@@ -62,12 +62,14 @@ class MiniMessageController extends TextEditingController {
 class MiniMessageField extends StatelessWidget {
   const MiniMessageField({
     required this.controller,
+    this.focusNode,
     this.validator,
     this.onSubmitted,
     super.key,
   });
 
   final MiniMessageController controller;
+  final FocusNode? focusNode;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onSubmitted;
 
@@ -83,6 +85,7 @@ class MiniMessageField extends StatelessWidget {
 
     return TextFormField(
       controller: controller,
+      focusNode: focusNode,
       autofocus: true,
       minLines: 1,
       maxLines: 3,
