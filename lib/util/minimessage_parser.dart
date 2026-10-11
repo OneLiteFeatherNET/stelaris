@@ -25,6 +25,50 @@ class MiniMessageParser {
     String fontFamily = 'monospace',
     FontWeight fontWeight = FontWeight.normal,
   }) {
+    return _parse(
+      input,
+      componentContext: componentContext,
+      fontSize: fontSize,
+      fontFamily: fontFamily,
+      fontWeight: fontWeight,
+    );
+  }
+
+  /// Like [parse], but keeps every character of [input], for showing the
+  /// source in an input field: the tags it understands in [tagStyle], the
+  /// ones Minecraft prints as text in the formatting around them, merged
+  /// with [unknownTagStyle].
+  static TextSpan highlight(
+    String input, {
+    required TextStyle tagStyle,
+    required TextStyle unknownTagStyle,
+    ComponentContext componentContext = ComponentContext.notificationTitle,
+    double fontSize = 14,
+    String fontFamily = 'monospace',
+    FontWeight fontWeight = FontWeight.normal,
+  }) {
+    return _parse(
+      input,
+      componentContext: componentContext,
+      fontSize: fontSize,
+      fontFamily: fontFamily,
+      fontWeight: fontWeight,
+      tagStyle: tagStyle,
+      unknownTagStyle: unknownTagStyle,
+    );
+  }
+
+  /// Leaves the tags out without [tagStyle], and prints the unknown ones as
+  /// text without [unknownTagStyle].
+  static TextSpan _parse(
+    String input, {
+    required ComponentContext componentContext,
+    required double fontSize,
+    required String fontFamily,
+    required FontWeight fontWeight,
+    TextStyle? tagStyle,
+    TextStyle? unknownTagStyle,
+  }) {
     final defaultColor = componentContext.defaultColor;
     if (input.isEmpty) {
       return TextSpan(
@@ -117,10 +161,33 @@ class MiniMessageParser {
       }
     }
 
+    // Whether the current tag is one Minecraft prints as text.
+    var literal = false;
+
+    void addLiteral(String raw) {
+      literal = true;
+      if (unknownTagStyle == null) {
+        addTextChunk(raw);
+        return;
+      }
+      final style = _createStyle(
+        color: colors.isEmpty ? defaultColor : colors.last,
+        isBold: isBold,
+        isItalic: isItalic,
+        isUnderlined: isUnderlined,
+        isStrikethrough: isStrikethrough,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        fontFamily: fontFamily,
+      );
+      spans.add(TextSpan(text: raw, style: style.merge(unknownTagStyle)));
+    }
+
     for (final match in matches) {
       if (match.start > lastIndex) {
         addTextChunk(input.substring(lastIndex, match.start));
       }
+      literal = false;
 
       final rawTag = match.group(1)!;
       final tag = rawTag.toLowerCase();
@@ -169,7 +236,7 @@ class MiniMessageParser {
         if (colors.length >= 2 && !colors.contains(null)) {
           activeGradient = _GradientConfig(colors.whereType<Color>().toList());
         } else {
-          addTextChunk(match.group(0)!);
+          addLiteral(match.group(0)!);
         }
       } else if (tag == '/gradient') {
         activeGradient = null;
@@ -185,17 +252,20 @@ class MiniMessageParser {
             closed == 'colour') {
           if (colors.isNotEmpty) colors.removeLast();
         } else {
-          addTextChunk(match.group(0)!);
+          addLiteral(match.group(0)!);
         }
       } else {
         final color = _parseColor(tag);
         if (color != null) {
           colors.add(color);
         } else {
-          addTextChunk(match.group(0)!);
+          addLiteral(match.group(0)!);
         }
       }
 
+      if (!literal && tagStyle != null) {
+        spans.add(TextSpan(text: match.group(0), style: tagStyle));
+      }
       lastIndex = match.end;
     }
 
