@@ -154,7 +154,7 @@ void main() {
       expect(find.text('Edit lore'), findsNothing);
     });
 
-    testWidgets('shows the item name and lines in the preview on wide layouts', (
+    testWidgets('shows the lines but not the item name in the preview', (
       tester,
     ) async {
       tester.view.physicalSize = const Size(1400, 900);
@@ -172,12 +172,31 @@ void main() {
       expect(preview, findsOneWidget);
       expect(
         find.descendant(of: preview, matching: find.text('item')),
-        findsOneWidget,
+        findsNothing,
       );
       expect(
         find.descendant(of: preview, matching: find.text('Second line')),
         findsOneWidget,
       );
+    });
+
+    testWidgets('the preview renders the formatting of the lines', (
+      tester,
+    ) async {
+      final view = buildView([
+        const ItemLoreDto(id: '1', text: '<yellow>Hello'),
+      ]);
+
+      await pumpLorePageView(tester, view: view, showPreview: true);
+
+      final preview = find.byKey(const Key('lore_preview'));
+      // The card shows the line as written, the preview without its tag.
+      expect(find.text('<yellow>Hello'), findsOneWidget);
+      final line = tester.widget<Text>(
+        find.descendant(of: preview, matching: find.text('Hello')),
+      );
+      final yellow = (line.textSpan! as TextSpan).children!.single as TextSpan;
+      expect(yellow.style?.color, const Color(0xFFFFFF55));
     });
 
     testWidgets('the preview counts the lines not loaded yet', (tester) async {

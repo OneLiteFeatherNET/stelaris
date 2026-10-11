@@ -90,6 +90,14 @@ void main() {
       );
     });
 
+    testWidgets('the preview box is only as high as its lines', (tester) async {
+      await pumpLorePage(tester, const Size(1400, 900));
+      expect(
+        tester.getBottomLeft(find.byKey(const Key('lore_preview'))).dy,
+        lessThan(tester.getBottomLeft(find.byType(ReorderableListView)).dy),
+      );
+    });
+
     testWidgets('the toggle opens the preview as a sheet on narrow layouts', (
       tester,
     ) async {

@@ -1,96 +1,93 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/feature/component/component_preview.dart';
+import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/minimessage_parser.dart';
 
-/// Shows the lore the way Minecraft draws an item tooltip: the item name on
-/// top, the lore lines below in the default dark purple italic. The texts are
-/// shown as they are, formatting in them isn't rendered.
+/// Shows the lore lines with their formatting, the way they appear in game,
+/// on the same background as the component previews.
+///
+/// The item name stays out, the model has no name for the game, only the one
+/// in the editor.
 class LorePreview extends StatelessWidget {
   const LorePreview({required this.item, super.key});
 
   final ItemModel item;
 
-  // The colors of the vanilla tooltip.
-  static const Color _background = Color(0xF0100010);
-  static const Color _borderTop = Color(0x505000FF);
-  static const Color _borderBottom = Color(0x5028007F);
-  static const Color _nameColor = Color(0xFFFFFFFF);
-  static const Color _loreColor = Color(0xFFAA00AA);
-  static const Color _mutedColor = Color(0xFFAAAAAA);
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final lore = item.lore;
     final remaining = lore.totalItems - lore.items.length;
-    final textStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.4);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          context.l10n.lore_preview_title,
-          style: theme.textTheme.titleSmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
+        Row(
+          children: [
+            Icon(
+              Icons.preview_outlined,
+              size: 18,
+              color: colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              context.l10n.lore_preview_title,
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 8),
         Flexible(
-          child: SingleChildScrollView(
-            // The dark box, inside it the 1px frame fading from top to
-            // bottom, inside that the dark box again.
-            child: Container(
-              key: const Key('lore_preview'),
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                color: _background,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(1),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [_borderTop, _borderBottom],
-                  ),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
-                  decoration: BoxDecoration(
-                    color: _background,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.uiName,
-                        style: textStyle?.copyWith(color: _nameColor),
+          child: Container(
+            key: const Key('lore_preview'),
+            decoration: BoxDecoration(
+              color: previewBackground,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: previewBorder),
+            ),
+            // Only as high as the lines, and scrolls inside once they don't
+            // fit.
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                // Like the gap between the lines of a tooltip in game.
+                spacing: 4,
+                children: [
+                  for (final line in lore.items) _line(line.text),
+                  if (remaining > 0)
+                    Text(
+                      context.l10n.lore_preview_more(remaining),
+                      style: const TextStyle(
+                        color: previewPlaceholderColor,
+                        fontFamily: 'monospace',
+                        fontSize: 14,
                       ),
-                      for (final line in lore.items)
-                        Text(
-                          line.text,
-                          style: textStyle?.copyWith(
-                            color: _loreColor,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      if (remaining > 0)
-                        Text(
-                          context.l10n.lore_preview_more(remaining),
-                          style: textStyle?.copyWith(color: _mutedColor),
-                        ),
-                    ],
-                  ),
-                ),
+                    ),
+                ],
               ),
             ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _line(String text) {
+    return Text.rich(
+      withTextShadow(
+        MiniMessageParser.parse(
+          text,
+          componentContext: ComponentContext.lore,
+          fontWeight: previewFontWeight,
+        ),
+      ),
     );
   }
 }
