@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:stelaris/util/minimessage_parser.dart';
+import 'package:stelaris/util/minimessage_structure.dart';
 import 'package:vulpes_data/color.dart';
 
 /// Pure text operations behind the component editor toolbar.
@@ -14,7 +15,9 @@ import 'package:vulpes_data/color.dart';
 /// A "block" is an opening tag, its content and the matching closing tag,
 /// e.g. `<gold>…</gold>` or `<gradient:red:blue>…</gradient>`. When the
 /// target range is exactly one block, or exactly the content of one, the
-/// operations change that block instead of nesting a new one.
+/// operations change that block instead of nesting a new one. Otherwise
+/// they split blocks where the range only covers part of them, so tags
+/// never cross, see [MiniMessageStructure].
 class MiniMessageEditing {
   const MiniMessageEditing._();
 
@@ -39,7 +42,7 @@ class MiniMessageEditing {
     TextEditingValue value,
     String open,
     String close,
-  ) => _wrapRange(value.text, _targetRange(value), open, close);
+  ) => MiniMessageStructure.wrap(value, open, close);
 
   /// The names MiniMessage accepts for a tag, e.g. `<bold>` for `<b>`.
   static const Map<String, Set<String>> _aliases = {
@@ -51,13 +54,13 @@ class MiniMessageEditing {
 
   static Set<String> _namesOf(String tag) => _aliases[tag] ?? {tag};
 
-  /// Adds `<tag>…</tag>` around the target range, or removes it when the
-  /// range already is such a block, its content, or lies inside one.
+  /// Removes the formatting of [tag] from the target range when all of it
+  /// has it, adds it otherwise.
   static TextEditingValue toggle(TextEditingValue value, String tag) {
-    final names = _namesOf(tag);
-    return _replaceBlock(value, names.contains, '', '') ??
-        _unwrapEnclosing(value, names) ??
-        wrap(value, '<$tag>', '</$tag>');
+    final unwrapped = _replaceBlock(value, _namesOf(tag).contains, '', '');
+    // A block of the same tag around it would keep the formatting.
+    if (unwrapped != null && !isActive(unwrapped, tag)) return unwrapped;
+    return MiniMessageStructure.toggle(value, tag);
   }
 
   /// Whether [toggle] would remove [tag], so the target range has its
@@ -68,7 +71,11 @@ class MiniMessageEditing {
     final range = _targetRange(value);
     return _surroundingBlock(text, range, names.contains) != null ||
         _blockContent(range.textInside(text), names.contains) != null ||
-        _enclosing(text, range, names) != null;
+        MiniMessageStructure.isFormatted(
+          text,
+          range,
+          MiniMessageStructure.nameOf(tag),
+        );
   }
 
   /// Wraps the target range in [color], replacing a named color block
@@ -151,69 +158,6 @@ class MiniMessageEditing {
 
   static bool _anyName(String name) => true;
 
-  /// Removes the tags of the [names] block the target range lies in, and
-  /// keeps the range selected. Null when it lies in none.
-  static TextEditingValue? _unwrapEnclosing(
-    TextEditingValue value,
-    Set<String> names,
-  ) {
-    final range = _targetRange(value);
-    final block = _enclosing(value.text, range, names);
-    if (block == null) return null;
-    final (open, close) = block;
-    // The closing tag first, so the offsets of the opening one still hold.
-    final text = value.text
-        .replaceRange(close.start, close.end, '')
-        .replaceRange(open.start, open.end, '');
-    final shift = open.end - open.start;
-    return TextEditingValue(
-      text: text,
-      selection: TextSelection(
-        baseOffset: range.start - shift,
-        extentOffset: range.end - shift,
-      ),
-    );
-  }
-
-  /// The opening and closing tag of the innermost [names] block that holds
-  /// [range]. Null when there is none, or when such a tag lies inside the
-  /// range, then it is only partly formatted.
-  static (TextRange, TextRange)? _enclosing(
-    String text,
-    TextRange range,
-    Set<String> names,
-  ) {
-    final opens = <TextRange>[];
-    var depth = 0;
-    for (final match in _tagPattern.allMatches(text)) {
-      final raw = match.group(1)!.toLowerCase();
-      final closing = raw.startsWith('/');
-      final name = (closing ? raw.substring(1) : raw).split(':').first;
-      if (!names.contains(name)) continue;
-
-      final tag = TextRange(start: match.start, end: match.end);
-      if (match.end <= range.start) {
-        if (!closing) {
-          opens.add(tag);
-        } else if (opens.isNotEmpty) {
-          opens.removeLast();
-        }
-      } else if (match.start >= range.end) {
-        if (opens.isEmpty) return null;
-        if (!closing) {
-          depth++;
-        } else if (depth > 0) {
-          depth--;
-        } else {
-          return (opens.last, tag);
-        }
-      } else {
-        return null;
-      }
-    }
-    return null;
-  }
-
   /// The selection, or the caret as an empty range; the end of the text
   /// when the field has no selection at all yet.
   static TextRange _targetRange(TextEditingValue value) {
@@ -281,7 +225,7 @@ class MiniMessageEditing {
     final close = '</$name>';
     if (!accepts(name) ||
         !text.startsWith(close, range.end) ||
-        range.textInside(text).contains(close)) {
+        !MiniMessageStructure.isBalanced(range.textInside(text))) {
       return null;
     }
     return TextRange(start: match.start, end: range.end + close.length);
@@ -296,7 +240,9 @@ class MiniMessageEditing {
     if (match == null) return null;
     final name = match.group(1)!;
     final content = match.group(2)!;
-    if (!accepts(name) || content.contains('</$name>')) return null;
+    if (!accepts(name) || !MiniMessageStructure.isBalanced(content)) {
+      return null;
+    }
     return content;
   }
 }

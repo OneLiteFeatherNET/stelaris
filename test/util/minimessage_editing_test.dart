@@ -218,12 +218,12 @@ void main() {
       expect(result.text, '<b><i>Test</i></b>');
     });
 
-    test('does not remove a tag that only covers part of the selection', () {
+    test('formats a partly formatted selection once, not twice', () {
       final result = MiniMessageEditing.toggle(
         selected('<b>Te</b>st', 0, 11),
         'b',
       );
-      expect(result.text, '<b><b>Te</b>st</b>');
+      expect(result.text, '<b>Test</b>');
     });
   });
 
@@ -370,52 +370,105 @@ void main() {
   });
 
   group('inside a block', () {
-    test('toggle removes the block the caret is in', () {
+    test('toggle ends the formatting at the caret', () {
       final result = MiniMessageEditing.toggle(caretAt('a<b>bcd</b>e', 5), 'b');
-      expect(result.text, 'abcde');
+      expect(result.text, 'a<b>b</b><b>cd</b>e');
       expect(result.selection.isCollapsed, isTrue);
-      expect(result.selection.baseOffset, 2);
+      expect(result.selection.baseOffset, 9);
+      expect(MiniMessageEditing.isActive(result, 'b'), isFalse);
     });
 
-    test('toggle removes the block around part of its content', () {
+    test('toggle splits the block around the selected part', () {
       final result = MiniMessageEditing.toggle(
         selected('<b>Sharp</b>', 4, 6),
         'b',
       );
-      expect(result.text, 'Sharp');
-      expectSelection(result, 1, 3);
+      expect(result.text, '<b>S</b>ha<b>rp</b>');
+      expect(result.selection.textInside(result.text), 'ha');
     });
 
-    test('toggle knows the long names of a tag', () {
+    test('toggle keeps the long name of a tag', () {
       final result = MiniMessageEditing.toggle(
         caretAt('<bold>ab</bold>', 7),
         'b',
       );
-      expect(result.text, 'ab');
+      expect(result.text, '<bold>a</bold><bold>b</bold>');
     });
 
-    test('toggle removes only the innermost of nested blocks', () {
+    test('toggle ends every level of nested blocks', () {
       final result = MiniMessageEditing.toggle(
         caretAt('<i>a<i>b</i>c</i>', 7),
         'i',
       );
-      expect(result.text, '<i>abc</i>');
+      expect(result.text, '<i>a</i><i><i>b</i>c</i>');
+      expect(result.selection.baseOffset, 8);
     });
 
-    test('toggle leaves other tags in the block alone', () {
+    test('the caret keeps the other formatting of the block', () {
       final result = MiniMessageEditing.toggle(
         caretAt('<b><gold>ab</gold></b>', 10),
         'b',
       );
-      expect(result.text, '<gold>ab</gold>');
+      expect(
+        result.text,
+        '<b><gold>a</gold></b><gold></gold><b><gold>b</gold></b>',
+      );
+      // Between <gold> and </gold>, so what is typed there is gold.
+      expect(result.selection.baseOffset, 27);
     });
 
-    test('toggle nests when the selection is only partly formatted', () {
+    test('toggle adds the formatting only where it is missing', () {
       final result = MiniMessageEditing.toggle(
         selected('<b>ab</b>cd', 4, 10),
         'b',
       );
-      expect(result.text, '<b>a<b>b</b>c</b>d');
+      expect(result.text, '<b>ab</b><b>c</b>d');
+      expect(MiniMessageEditing.isActive(result, 'b'), isTrue);
+    });
+
+    test('toggle closes and reopens the tags inside the block', () {
+      final result = MiniMessageEditing.toggle(
+        selected('<b><i>abc</i></b>', 7, 8),
+        'b',
+      );
+      expect(result.text, '<b><i>a</i></b><i>b</i><b><i>c</i></b>');
+      expect(result.selection.textInside(result.text), 'b');
+    });
+  });
+
+  group('across tags', () {
+    test('wrap does not cross a tag opened inside the selection', () {
+      final result = MiniMessageEditing.wrap(
+        selected('x<i>yz</i>', 0, 5),
+        '<b>',
+        '</b>',
+      );
+      expect(result.text, '<b>x</b><i><b>y</b>z</i>');
+    });
+
+    test('wrap does not cross a tag closed inside the selection', () {
+      final result = MiniMessageEditing.wrap(
+        selected('<i>xy</i>z', 4, 10),
+        '<b>',
+        '</b>',
+      );
+      expect(result.text, '<i>x<b>y</b></i><b>z</b>');
+    });
+
+    test('a color does not cross a decoration', () {
+      final result = MiniMessageEditing.applyColor(
+        selected('<b>ab</b>cd', 4, 10),
+        NamedTextColor.red,
+      );
+      expect(result.text, '<b>a<red>b</red></b><red>c</red>d');
+    });
+
+    test('toggle off across two blocks removes the tags between', () {
+      final result = MiniMessageEditing.toggle(
+        selected('<b>ab</b><b>cd</b>', 4, 13),
+        'b',
+      );
+      expect(result.text, '<b>a</b>bc<b>d</b>');
     });
   });
 

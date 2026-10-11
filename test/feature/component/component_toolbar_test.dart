@@ -58,7 +58,9 @@ void main() {
     expect(isSelected(tester, 'b'), isTrue);
   });
 
-  testWidgets('an active style button removes its formatting', (tester) async {
+  testWidgets('an active style button ends its formatting at the caret', (
+    tester,
+  ) async {
     await pumpDialog(tester, '<u>Sharp</u>');
     controllerOf(tester).selection = const TextSelection.collapsed(offset: 5);
     await tester.pump();
@@ -68,7 +70,7 @@ void main() {
     await tester.tap(find.byKey(const Key('minimessage_toggle_u')));
     await tester.pump();
 
-    expect(controllerOf(tester).text, 'Sharp');
+    expect(controllerOf(tester).text, '<u>Sh</u><u>arp</u>');
     expect(isSelected(tester, 'u'), isFalse);
   });
 
