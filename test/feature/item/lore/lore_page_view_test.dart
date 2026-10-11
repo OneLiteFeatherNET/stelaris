@@ -180,6 +180,25 @@ void main() {
       );
     });
 
+    testWidgets('the preview renders the formatting of the lines', (
+      tester,
+    ) async {
+      final view = buildView([
+        const ItemLoreDto(id: '1', text: '<yellow>Hello'),
+      ]);
+
+      await pumpLorePageView(tester, view: view, showPreview: true);
+
+      final preview = find.byKey(const Key('lore_preview'));
+      // The card shows the line as written, the preview without its tag.
+      expect(find.text('<yellow>Hello'), findsOneWidget);
+      final line = tester.widget<Text>(
+        find.descendant(of: preview, matching: find.text('Hello')),
+      );
+      final yellow = (line.textSpan! as TextSpan).children!.single as TextSpan;
+      expect(yellow.style?.color, const Color(0xFFFFFF55));
+    });
+
     testWidgets('the preview counts the lines not loaded yet', (tester) async {
       tester.view.physicalSize = const Size(1400, 900);
       tester.view.devicePixelRatio = 1;
