@@ -1487,4 +1487,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get minimessage_clear => 'Clear formatting';
+
+  @override
+  String get minimessage_guide_title => 'MiniMessage tags';
+
+  @override
+  String get minimessage_guide_color =>
+      'A named color like red or gold, or a hex color like #ff00aa.';
+
+  @override
+  String get minimessage_guide_decoration =>
+      'Bold, italic, underlined and strikethrough. Close with </b>, or turn off inside a block with <!b>.';
+
+  @override
+  String get minimessage_guide_gradient =>
+      'A gradient over two or more colors.';
+
+  @override
+  String get minimessage_guide_rainbow =>
+      'The colors of the rainbow over the text.';
+
+  @override
+  String get minimessage_guide_reset =>
+      'Ends all colors and formatting at once.';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/component/component_dialog.dart';
+import 'package:stelaris/feature/component/syntax_guide_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/component_context.dart';
 
@@ -195,5 +196,15 @@ void main() {
 
     expect(controllerOf(tester).text, '<rainbow>Party</rainbow>');
     expect(isSelected(tester, 'rainbow'), isTrue);
+  });
+
+  testWidgets('the help button opens the tag guide', (tester) async {
+    await pumpDialog(tester, '');
+
+    await tester.tap(find.byKey(const Key('minimessage_guide')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('MiniMessage tags'), findsOneWidget);
+    expect(find.byType(SyntaxGuideDialog), findsOneWidget);
   });
 }

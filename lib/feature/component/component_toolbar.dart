@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/component/color_swatch_button.dart';
 import 'package:stelaris/feature/component/minimessage_field.dart';
+import 'package:stelaris/feature/component/syntax_guide_dialog.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/minimessage_editing.dart';
 import 'package:vulpes_data/color.dart';
@@ -108,6 +109,15 @@ class ComponentToolbar extends StatelessWidget {
             icon: const Icon(Icons.format_clear),
             tooltip: l10n.minimessage_clear,
             onPressed: () => _apply(MiniMessageEditing.stripTags),
+          ),
+          IconButton(
+            key: const Key('minimessage_guide'),
+            icon: const Icon(Icons.help_outline),
+            tooltip: l10n.minimessage_guide_title,
+            onPressed: () => SyntaxGuideDialog.show(
+              context,
+              componentContext: controller.componentContext,
+            ),
           ),
         ],
       ),
