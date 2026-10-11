@@ -6,6 +6,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/item_lore_view_state.dart';
 import 'package:stelaris/feature/item/lore/lore_line_card.dart';
 import 'package:stelaris/feature/item/lore/lore_page_view.dart';
+import 'package:stelaris/feature/item/lore/lore_preview.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -38,6 +39,7 @@ void main() {
       WidgetTester tester, {
       required ItemLoreView view,
       Store<AppState>? store,
+      bool showPreview = false,
     }) async {
       final effectiveStore =
           store ??
@@ -51,7 +53,9 @@ void main() {
           child: MaterialApp(
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            home: Scaffold(body: LorePageView(view: view)),
+            home: Scaffold(
+              body: LorePageView(view: view, showPreview: showPreview),
+            ),
           ),
         ),
       );
@@ -126,6 +130,16 @@ void main() {
       );
     });
 
+    testWidgets('leaves the preview out by default', (tester) async {
+      final view = buildView([
+        const ItemLoreDto(id: '1', text: 'First line'),
+      ]);
+
+      await pumpLorePageView(tester, view: view);
+
+      expect(find.byType(LorePreview), findsNothing);
+    });
+
     testWidgets('a click on the drag handle does not open the edit dialog', (
       tester,
     ) async {
@@ -138,6 +152,58 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Edit lore'), findsNothing);
+    });
+
+    testWidgets('shows the item name and lines in the preview on wide layouts', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1400, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+
+      final view = buildView([
+        const ItemLoreDto(id: '1', text: 'First line'),
+        const ItemLoreDto(id: '2', text: 'Second line'),
+      ]);
+
+      await pumpLorePageView(tester, view: view, showPreview: true);
+
+      final preview = find.byKey(const Key('lore_preview'));
+      expect(preview, findsOneWidget);
+      expect(
+        find.descendant(of: preview, matching: find.text('item')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: preview, matching: find.text('Second line')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('the preview counts the lines not loaded yet', (tester) async {
+      tester.view.physicalSize = const Size(1400, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+
+      const item = ItemModel(
+        id: 'item-1',
+        uiName: 'item',
+        lore: PaginatedResult<ItemLoreDto>(
+          items: [ItemLoreDto(id: '1', text: 'First line')],
+          totalItems: 5,
+          totalPages: 5,
+          currentPage: 1,
+          pageSize: 1,
+        ),
+      );
+
+      await pumpLorePageView(
+        tester,
+        view: ItemLoreView(selected: item),
+        showPreview: true,
+      );
+
+      expect(find.text('and 4 more lines'), findsOneWidget);
     });
 
     testWidgets('uses onReorderItem instead of the deprecated onReorder', (

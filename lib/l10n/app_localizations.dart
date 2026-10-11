@@ -388,6 +388,18 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete this lore?'**
   String get dialog_item_lore_delete_header;
 
+  /// No description provided for @lore_preview_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get lore_preview_title;
+
+  /// No description provided for @lore_preview_more.
+  ///
+  /// In en, this message translates to:
+  /// **'and {count} more lines'**
+  String lore_preview_more(int count);
+
   /// No description provided for @tooltip_lore_drag.
   ///
   /// In en, this message translates to:

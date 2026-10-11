@@ -7,13 +7,22 @@ import 'package:stelaris/api/state/factory/item/item_lore_view_state.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/item/lore/lore_line_card.dart';
+import 'package:stelaris/feature/item/lore/lore_preview.dart';
 import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class LorePageView extends StatefulWidget {
-  const LorePageView({required this.view, super.key});
+  const LorePageView({
+    required this.view,
+    this.showPreview = false,
+    super.key,
+  });
 
   final ItemLoreView view;
+
+  /// Whether the tooltip preview sits next to the lines. The caller decides
+  /// whether there is room for it.
+  final bool showPreview;
 
   @override
   State<LorePageView> createState() => _LorePageViewState();
@@ -37,6 +46,44 @@ class _LorePageViewState extends State<LorePageView>
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // The list keeps its place in the row whether the preview shows or
+        // not, so toggling the preview doesn't build the list from scratch.
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: _buildList()),
+            // Slides and fades in from the right edge, the list gives way.
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 250),
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              transitionBuilder: (child, animation) => SizeTransition(
+                sizeFactor: animation,
+                axis: Axis.horizontal,
+                // Top, the transition fills the height and would center it.
+                alignment: AlignmentDirectional.topStart,
+                child: FadeTransition(opacity: animation, child: child),
+              ),
+              child: widget.showPreview
+                  ? Padding(
+                      key: const ValueKey('lore_preview_slot'),
+                      padding: const EdgeInsets.only(left: 16),
+                      child: SizedBox(
+                        width: (constraints.maxWidth * 0.35).clamp(280, 420),
+                        child: LorePreview(item: widget.view.selected),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildList() {
     final items = widget.view.items;
     return Scrollbar(
       controller: scrollController,

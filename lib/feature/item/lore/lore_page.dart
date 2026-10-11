@@ -11,12 +11,25 @@ import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/item/lore/lore_count_chip.dart';
 import 'package:stelaris/feature/item/lore/lore_line_card.dart';
 import 'package:stelaris/feature/item/lore/lore_page_view.dart';
+import 'package:stelaris/feature/item/lore/lore_preview.dart';
 import 'package:stelaris/feature/item/item_tab_loader.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/functions.dart';
 
-class LorePage extends StatelessWidget {
+class LorePage extends StatefulWidget {
   const LorePage({super.key});
+
+  @override
+  State<LorePage> createState() => _LorePageState();
+}
+
+class _LorePageState extends State<LorePage> {
+  /// Whether the preview is shown next to the lines. Not kept across app
+  /// starts, the app doesn't store settings locally yet.
+  bool _showPreview = true;
+
+  /// From this width on there is room for the preview next to the lines.
+  static const double _previewBreakpoint = 840;
 
   @override
   Widget build(BuildContext context) {
@@ -29,34 +42,70 @@ class LorePage extends StatelessWidget {
       builder: (context, vm) {
         return Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              PageHeader.small(
-                title: context.l10n.tab_lore,
-                actions: [
-                  LoreCountChip(currentIndex: vm.selected.lore.items.length),
-                  PageHeaderAction(
-                    icon: const Icon(Icons.add),
-                    label: context.l10n.button_add,
-                    primary: true,
-                    loading: pending,
-                    onPressed: () => _openCreateDialog(vm, context),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final wide =
+                  constraints.maxWidth >= _previewBreakpoint;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  PageHeader.small(
+                    title: context.l10n.tab_lore,
+                    actions: [
+                      LoreCountChip(
+                        currentIndex: vm.selected.lore.items.length,
+                      ),
+                      _PreviewButton(
+                        wide: wide,
+                        shown: _showPreview,
+                        onPressed: pending || !vm.selected.lore.hasItems
+                            ? null
+                            : () => wide
+                                  ? setState(() => _showPreview = !_showPreview)
+                                  : _openPreviewSheet(context),
+                      ),
+                      PageHeaderAction(
+                        icon: const Icon(Icons.add),
+                        label: context.l10n.button_add,
+                        primary: true,
+                        loading: pending,
+                        onPressed: () => _openCreateDialog(vm, context),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: switch ((pending, vm.selected.lore.hasItems)) {
+                      (true, _) => const _LoreSkeleton(),
+                      (false, false) => const EmptyDataWidget(),
+                      _ => LorePageView(
+                        view: vm,
+                        showPreview: wide && _showPreview,
+                      ),
+                    },
                   ),
                 ],
-              ),
-              const SizedBox(height: 12),
-              Expanded(
-                child: switch ((pending, vm.selected.lore.hasItems)) {
-                  (true, _) => const _LoreSkeleton(),
-                  (false, false) => const EmptyDataWidget(),
-                  _ => LorePageView(view: vm),
-                },
-              ),
-            ],
+              );
+            },
           ),
         );
       },
+    );
+  }
+
+  /// Without room next to the lines, the preview opens as a bottom sheet.
+  void _openPreviewSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (context) => StoreConnector<AppState, ItemLoreView>(
+        vm: () => ItemLoreViewFactory(),
+        builder: (context, vm) => Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          child: LorePreview(item: vm.selected),
+        ),
+      ),
     );
   }
 
@@ -78,6 +127,35 @@ class LorePage extends StatelessWidget {
           formKey: GlobalKey<FormState>(),
         );
       },
+    );
+  }
+}
+
+/// Shows and hides the preview next to the lines, or opens it as a bottom
+/// sheet when there is no room for it.
+class _PreviewButton extends StatelessWidget {
+  const _PreviewButton({
+    required this.wide,
+    required this.shown,
+    required this.onPressed,
+  });
+
+  final bool wide;
+  final bool shown;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return PageHeaderAction(
+      key: const Key('lore_preview_toggle'),
+      // The icon tells what a press does.
+      icon: Icon(
+        wide && shown
+            ? Icons.visibility_off_outlined
+            : Icons.visibility_outlined,
+      ),
+      label: context.l10n.lore_preview_title,
+      onPressed: onPressed,
     );
   }
 }
