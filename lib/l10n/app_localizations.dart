@@ -388,6 +388,12 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete this lore?'**
   String get dialog_item_lore_delete_header;
 
+  /// No description provided for @tooltip_lore_drag.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to reorder'**
+  String get tooltip_lore_drag;
+
   /// No description provided for @dialog_font_create_title.
   ///
   /// In en, this message translates to:

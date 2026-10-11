@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/item/item_lore_view_state.dart';
+import 'package:stelaris/feature/item/lore/lore_line_card.dart';
 import 'package:stelaris/feature/item/lore/lore_page_view.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -66,6 +67,77 @@ void main() {
 
       expect(find.text('First line'), findsOneWidget);
       expect(find.text('Second line'), findsOneWidget);
+    });
+
+    testWidgets('renders every lore line as a card with a drag handle', (
+      tester,
+    ) async {
+      final view = buildView([
+        const ItemLoreDto(id: '1', text: 'First line'),
+        const ItemLoreDto(id: '2', text: 'Second line'),
+      ]);
+
+      await pumpLorePageView(tester, view: view);
+
+      expect(find.byType(LoreLineCard), findsNWidgets(2));
+      expect(find.byKey(const Key('lore_drag_handle')), findsNWidgets(2));
+      expect(find.byType(ReorderableDragStartListener), findsNWidgets(2));
+      expect(
+        tester
+            .widget<ReorderableListView>(find.byType(ReorderableListView))
+            .buildDefaultDragHandles,
+        isFalse,
+      );
+    });
+
+    testWidgets('tapping a card opens the edit dialog', (tester) async {
+      final view = buildView([
+        const ItemLoreDto(id: '1', text: 'First line'),
+      ]);
+
+      await pumpLorePageView(tester, view: view);
+      await tester.tap(find.text('First line'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Edit lore'), findsOneWidget);
+    });
+
+    testWidgets('dragging a card by its handle reorders the lines', (
+      tester,
+    ) async {
+      final view = buildView([
+        const ItemLoreDto(id: '1', text: 'First line'),
+        const ItemLoreDto(id: '2', text: 'Second line'),
+      ]);
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(selectedItem: view.selected),
+      );
+
+      await pumpLorePageView(tester, view: view, store: store);
+      await tester.drag(
+        find.byKey(const Key('lore_drag_handle')).first,
+        const Offset(0, 150),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        store.state.selectedItem!.lore.items.map((line) => line.id),
+        ['2', '1'],
+      );
+    });
+
+    testWidgets('a click on the drag handle does not open the edit dialog', (
+      tester,
+    ) async {
+      final view = buildView([
+        const ItemLoreDto(id: '1', text: 'First line'),
+      ]);
+
+      await pumpLorePageView(tester, view: view);
+      await tester.tap(find.byKey(const Key('lore_drag_handle')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Edit lore'), findsNothing);
     });
 
     testWidgets('uses onReorderItem instead of the deprecated onReorder', (

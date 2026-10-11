@@ -4,10 +4,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/item/item_lore_actions.dart';
 import 'package:stelaris/api/state/factory/item/item_lore_view_state.dart';
-import 'package:stelaris/feature/base/action/entry_actions.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris/feature/item/lore/grabbed_card.dart';
+import 'package:stelaris/feature/item/lore/lore_line_card.dart';
 import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -45,24 +44,20 @@ class _LorePageViewState extends State<LorePageView>
       trackVisibility: true,
       child: ReorderableListView.builder(
         scrollController: scrollController,
-        proxyDecorator: (child, index, animation) {
-          return GrabbedCard(child: child);
-        },
-        itemBuilder: (context, index) {
-          final key = items[index];
-          return ListTile(
-            key: Key(key.id!), // Use a unique key from your data model
-            title: Text(key.text, overflow: TextOverflow.ellipsis),
-            leading: Text('${index + 1}'),
-            trailing: Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: EntryActions(
-                onEdit: () => _showDialog(key),
-                onDelete: () => _showDeleteDialog(key),
-              ),
-            ),
-          );
-        },
+        // Room for the scrollbar, so it doesn't cover the actions.
+        padding: const EdgeInsets.only(right: 16),
+        // The cards bring their own drag handle.
+        buildDefaultDragHandles: false,
+        proxyDecorator: (child, index, animation) => AnimatedBuilder(
+          animation: animation,
+          builder: (context, _) => _buildLine(
+            items[index],
+            index,
+            lift: Curves.easeOut.transform(animation.value),
+          ),
+        ),
+        itemBuilder: (context, index) =>
+            _buildLine(items[index], index, key: Key(items[index].id!)),
         itemCount: items.length,
         onReorderItem: (oldIndex, newIndex) {
           if (oldIndex == newIndex) return;
@@ -78,6 +73,25 @@ class _LorePageViewState extends State<LorePageView>
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildLine(
+    ItemLoreDto dto,
+    int index, {
+    Key? key,
+    double lift = 0,
+  }) {
+    return Padding(
+      key: key,
+      padding: const EdgeInsets.only(bottom: 8),
+      child: LoreLineCard(
+        dto: dto,
+        index: index,
+        lift: lift,
+        onEdit: () => _showDialog(dto),
+        onDelete: () => _showDeleteDialog(dto),
       ),
     );
   }

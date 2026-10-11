@@ -168,6 +168,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to delete this lore?';
 
   @override
+  String get tooltip_lore_drag => 'Drag to reorder';
+
+  @override
   String get dialog_font_create_title => 'Create new font';
 
   @override
