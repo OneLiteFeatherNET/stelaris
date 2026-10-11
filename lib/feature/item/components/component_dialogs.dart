@@ -13,9 +13,13 @@ import 'package:vulpes_data/component.dart';
 
 /// The components which are edited outside of the components tab. The item
 /// keeps them in its own storage, so the backend rejects them as components.
+///
+/// The stored enchantments of an enchanted book come from the enchantments
+/// tab too, the material decides which of the two the item gets in game.
 const Set<String> dedicatedComponents = {
   'minecraft:lore',
   'minecraft:enchantments',
+  'minecraft:stored_enchantments',
 };
 
 /// Every component the components tab knows: the Stelaris ones first, then

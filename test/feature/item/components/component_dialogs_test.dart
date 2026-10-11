@@ -95,7 +95,11 @@ void main() {
   test('dedicated and runtime components are not offered', () {
     final keys = offeredComponents.map((spec) => spec.key).toSet();
     expect(keys.intersection(dedicatedComponents), isEmpty);
-    expect(dedicatedComponents, {'minecraft:lore', 'minecraft:enchantments'});
+    expect(dedicatedComponents, {
+      'minecraft:lore',
+      'minecraft:enchantments',
+      'minecraft:stored_enchantments',
+    });
     // Plain components now, the backend accepts them.
     expect(keys, containsAll(['minecraft:custom_name', 'minecraft:item_name']));
     expect(keys, containsAll(['stelaris:material', 'stelaris:amount']));
