@@ -388,6 +388,30 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete this lore?'**
   String get dialog_item_lore_delete_header;
 
+  /// No description provided for @lore_preview_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get lore_preview_title;
+
+  /// No description provided for @lore_preview_more.
+  ///
+  /// In en, this message translates to:
+  /// **'and {count} more lines'**
+  String lore_preview_more(int count);
+
+  /// No description provided for @tooltip_lore_drag.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to reorder'**
+  String get tooltip_lore_drag;
+
+  /// No description provided for @lore_limit_reached.
+  ///
+  /// In en, this message translates to:
+  /// **'An item can have at most {count} lore lines'**
+  String lore_limit_reached(int count);
+
   /// No description provided for @dialog_font_create_title.
   ///
   /// In en, this message translates to:

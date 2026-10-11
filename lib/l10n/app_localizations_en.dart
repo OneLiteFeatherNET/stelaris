@@ -168,6 +168,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to delete this lore?';
 
   @override
+  String get lore_preview_title => 'Preview';
+
+  @override
+  String lore_preview_more(int count) {
+    return 'and $count more lines';
+  }
+
+  @override
+  String get tooltip_lore_drag => 'Drag to reorder';
+
+  @override
+  String lore_limit_reached(int count) {
+    return 'An item can have at most $count lore lines';
+  }
+
+  @override
   String get dialog_font_create_title => 'Create new font';
 
   @override

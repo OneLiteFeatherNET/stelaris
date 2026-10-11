@@ -4,17 +4,25 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/item/item_lore_actions.dart';
 import 'package:stelaris/api/state/factory/item/item_lore_view_state.dart';
-import 'package:stelaris/feature/base/action/entry_actions.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
-import 'package:stelaris/feature/item/lore/grabbed_card.dart';
+import 'package:stelaris/feature/item/lore/lore_line_card.dart';
+import 'package:stelaris/feature/item/lore/lore_preview.dart';
 import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class LorePageView extends StatefulWidget {
-  const LorePageView({required this.view, super.key});
+  const LorePageView({
+    required this.view,
+    this.showPreview = false,
+    super.key,
+  });
 
   final ItemLoreView view;
+
+  /// Whether the tooltip preview sits next to the lines. The caller decides
+  /// whether there is room for it.
+  final bool showPreview;
 
   @override
   State<LorePageView> createState() => _LorePageViewState();
@@ -38,6 +46,44 @@ class _LorePageViewState extends State<LorePageView>
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // The list keeps its place in the row whether the preview shows or
+        // not, so toggling the preview doesn't build the list from scratch.
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: _buildList()),
+            // Slides and fades in from the right edge, the list gives way.
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 250),
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              transitionBuilder: (child, animation) => SizeTransition(
+                sizeFactor: animation,
+                axis: Axis.horizontal,
+                // Top, the transition fills the height and would center it.
+                alignment: AlignmentDirectional.topStart,
+                child: FadeTransition(opacity: animation, child: child),
+              ),
+              child: widget.showPreview
+                  ? Padding(
+                      key: const ValueKey('lore_preview_slot'),
+                      padding: const EdgeInsets.only(left: 16),
+                      child: SizedBox(
+                        width: (constraints.maxWidth * 0.35).clamp(280, 420),
+                        child: LorePreview(item: widget.view.selected),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildList() {
     final items = widget.view.items;
     return Scrollbar(
       controller: scrollController,
@@ -45,24 +91,20 @@ class _LorePageViewState extends State<LorePageView>
       trackVisibility: true,
       child: ReorderableListView.builder(
         scrollController: scrollController,
-        proxyDecorator: (child, index, animation) {
-          return GrabbedCard(child: child);
-        },
-        itemBuilder: (context, index) {
-          final key = items[index];
-          return ListTile(
-            key: Key(key.id!), // Use a unique key from your data model
-            title: Text(key.text, overflow: TextOverflow.ellipsis),
-            leading: Text('${index + 1}'),
-            trailing: Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: EntryActions(
-                onEdit: () => _showDialog(key),
-                onDelete: () => _showDeleteDialog(key),
-              ),
-            ),
-          );
-        },
+        // Room for the scrollbar, so it doesn't cover the actions.
+        padding: const EdgeInsets.only(right: 16),
+        // The cards bring their own drag handle.
+        buildDefaultDragHandles: false,
+        proxyDecorator: (child, index, animation) => AnimatedBuilder(
+          animation: animation,
+          builder: (context, _) => _buildLine(
+            items[index],
+            index,
+            lift: Curves.easeOut.transform(animation.value),
+          ),
+        ),
+        itemBuilder: (context, index) =>
+            _buildLine(items[index], index, key: Key(items[index].id!)),
         itemCount: items.length,
         onReorderItem: (oldIndex, newIndex) {
           if (oldIndex == newIndex) return;
@@ -78,6 +120,25 @@ class _LorePageViewState extends State<LorePageView>
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildLine(
+    ItemLoreDto dto,
+    int index, {
+    Key? key,
+    double lift = 0,
+  }) {
+    return Padding(
+      key: key,
+      padding: const EdgeInsets.only(bottom: 8),
+      child: LoreLineCard(
+        dto: dto,
+        index: index,
+        lift: lift,
+        onEdit: () => _showDialog(dto),
+        onDelete: () => _showDeleteDialog(dto),
       ),
     );
   }
