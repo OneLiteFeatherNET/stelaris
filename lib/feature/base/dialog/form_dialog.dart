@@ -69,56 +69,67 @@ class FormDialog extends StatelessWidget {
             maxWidth: maxWidth,
             maxHeight: maxHeight,
           ),
+          // No padding on the right: the content reaches into it, so its
+          // scrollbar runs beside the fields instead of over them.
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.fromLTRB(24, 24, 0, 24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
+                _Gutter(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    IconButton(
-                      onPressed: busy ? null : () => _handleCancel(context),
-                      icon: const Icon(Icons.close),
-                      splashRadius: 20,
-                    ),
-                  ],
-                ),
-                const Divider(height: 24),
-                Flexible(child: SingleChildScrollView(child: content)),
-                if (showActions) ...[
-                  const Divider(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
+                      IconButton(
                         onPressed: busy ? null : () => _handleCancel(context),
-                        child: Text(context.l10n.button_cancel),
+                        icon: const Icon(Icons.close),
+                        splashRadius: 20,
                       ),
-                      horizontalSpacing10,
-                      actionIcon == null
-                          ? FilledButton(
-                              style: actionStyle,
-                              onPressed: onSubmit,
-                              child: Text(actionLabel),
-                            )
-                          : FilledButton.icon(
-                              style: actionStyle,
-                              onPressed: onSubmit,
-                              icon: Icon(actionIcon),
-                              label: Text(actionLabel),
-                            ),
                     ],
+                  ),
+                ),
+                const _Gutter(child: Divider(height: 24)),
+                Flexible(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(right: _gutter),
+                    child: content,
+                  ),
+                ),
+                if (showActions) ...[
+                  const _Gutter(child: Divider(height: 24)),
+                  _Gutter(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: busy ? null : () => _handleCancel(context),
+                          child: Text(context.l10n.button_cancel),
+                        ),
+                        horizontalSpacing10,
+                        actionIcon == null
+                            ? FilledButton(
+                                style: actionStyle,
+                                onPressed: onSubmit,
+                                child: Text(actionLabel),
+                              )
+                            : FilledButton.icon(
+                                style: actionStyle,
+                                onPressed: onSubmit,
+                                icon: Icon(actionIcon),
+                                label: Text(actionLabel),
+                              ),
+                      ],
+                    ),
                   ),
                 ],
               ],
@@ -126,6 +137,25 @@ class FormDialog extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The padding of the dialog on the right, which the scrolling content
+/// reaches into.
+const double _gutter = 24;
+
+/// Keeps the parts outside the content clear of the right edge.
+class _Gutter extends StatelessWidget {
+  const _Gutter({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: _gutter),
+      child: child,
     );
   }
 }
