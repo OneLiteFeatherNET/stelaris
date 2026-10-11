@@ -22,14 +22,12 @@ class MiniMessageParser {
     String input, {
     ComponentContext componentContext = ComponentContext.notificationTitle,
     double fontSize = 14,
-    String fontFamily = 'monospace',
     FontWeight fontWeight = FontWeight.normal,
   }) {
     return _parse(
       input,
       componentContext: componentContext,
       fontSize: fontSize,
-      fontFamily: fontFamily,
       fontWeight: fontWeight,
     );
   }
@@ -44,14 +42,12 @@ class MiniMessageParser {
     required TextStyle unknownTagStyle,
     ComponentContext componentContext = ComponentContext.notificationTitle,
     double fontSize = 14,
-    String fontFamily = 'monospace',
     FontWeight fontWeight = FontWeight.normal,
   }) {
     return _parse(
       input,
       componentContext: componentContext,
       fontSize: fontSize,
-      fontFamily: fontFamily,
       fontWeight: fontWeight,
       tagStyle: tagStyle,
       unknownTagStyle: unknownTagStyle,
@@ -64,7 +60,6 @@ class MiniMessageParser {
     String input, {
     required ComponentContext componentContext,
     required double fontSize,
-    required String fontFamily,
     required FontWeight fontWeight,
     TextStyle? tagStyle,
     TextStyle? unknownTagStyle,
@@ -77,7 +72,6 @@ class MiniMessageParser {
           color: defaultColor,
           fontSize: fontSize,
           fontWeight: fontWeight,
-          fontFamily: fontFamily,
         ),
       );
     }
@@ -116,7 +110,6 @@ class MiniMessageParser {
                 isStrikethrough: isStrikethrough,
                 fontSize: fontSize,
                 fontWeight: fontWeight,
-                fontFamily: fontFamily,
               ),
             ),
           );
@@ -137,7 +130,6 @@ class MiniMessageParser {
                 isStrikethrough: isStrikethrough,
                 fontSize: fontSize,
                 fontWeight: fontWeight,
-                fontFamily: fontFamily,
               ),
             ),
           );
@@ -154,7 +146,6 @@ class MiniMessageParser {
               isStrikethrough: isStrikethrough,
               fontSize: fontSize,
               fontWeight: fontWeight,
-              fontFamily: fontFamily,
             ),
           ),
         );
@@ -178,7 +169,6 @@ class MiniMessageParser {
         isStrikethrough: isStrikethrough,
         fontSize: fontSize,
         fontWeight: fontWeight,
-        fontFamily: fontFamily,
       );
       spans.add(TextSpan(text: raw, style: style.merge(unknownTagStyle)));
     }
@@ -278,7 +268,6 @@ class MiniMessageParser {
         color: defaultColor,
         fontSize: fontSize,
         fontWeight: fontWeight,
-        fontFamily: fontFamily,
       ),
       children: spans,
     );
@@ -326,7 +315,6 @@ class MiniMessageParser {
     required bool isStrikethrough,
     required double fontSize,
     required FontWeight fontWeight,
-    required String fontFamily,
   }) {
     final decorations = <TextDecoration>[
       if (isUnderlined) TextDecoration.underline,
@@ -341,7 +329,6 @@ class MiniMessageParser {
           ? TextDecoration.none
           : TextDecoration.combine(decorations),
       fontSize: fontSize,
-      fontFamily: fontFamily,
     );
   }
 }

@@ -11,7 +11,6 @@ final RegExp _lineBreaks = RegExp(r'[\r\n]+');
 const TextStyle _tagStyle = TextStyle(
   color: previewPlaceholderColor,
   fontSize: 12,
-  fontFamily: 'monospace',
   fontWeight: FontWeight.normal,
   fontStyle: FontStyle.normal,
   decoration: TextDecoration.none,
@@ -97,7 +96,7 @@ class MiniMessageField extends StatelessWidget {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: validator,
       cursorColor: Colors.white,
-      style: const TextStyle(fontFamily: 'monospace', fontSize: 14),
+      style: const TextStyle(fontSize: 14),
       decoration: InputDecoration(
         filled: true,
         fillColor: previewBackground,
