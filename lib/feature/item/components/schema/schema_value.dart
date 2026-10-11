@@ -1,5 +1,7 @@
 import 'package:stelaris/feature/item/components/schema/schema_shape.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/util/minimessage_json.dart';
+import 'package:stelaris/util/minimessage_parser.dart';
 import 'package:vulpes_data/component.dart';
 
 /// The value a component starts with when it is added: required fields get a
@@ -50,6 +52,10 @@ String summarize(
           return '${field?.label ?? e.key}: $text';
         })
         .join(', '),
+  // Only the text, the card has no room for the formatting.
+  TextSchema() when value != null && value != '' => MiniMessageParser.parse(
+    MiniMessageJson.decode(value),
+  ).toPlainText(),
   UnsupportedSchema() => l10n.component_not_editable,
   _ when value == null || value == '' => '—',
   _ => '$value',

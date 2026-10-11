@@ -6,6 +6,7 @@ import 'package:stelaris/feature/item/components/schema/fields/number_field.dart
 import 'package:stelaris/feature/item/components/schema/fields/object_field.dart';
 import 'package:stelaris/feature/item/components/schema/fields/registry_tag_field.dart';
 import 'package:stelaris/feature/item/components/schema/fields/section.dart';
+import 'package:stelaris/feature/item/components/schema/fields/text_component_field.dart';
 import 'package:stelaris/feature/item/components/schema/schema_shape.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/component.dart';
@@ -79,14 +80,19 @@ class SchemaField extends StatelessWidget {
         onChanged: onChanged,
       ),
       UnitSchema() => SchemaHint(l10n.component_no_value),
-      StringSchema() || TextSchema() => TextFormField(
+      StringSchema() => TextFormField(
         initialValue: value as String? ?? '',
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: label,
-          suffixIcon: schema is TextSchema ? null : suffix,
+          suffixIcon: suffix,
         ),
-        maxLines: schema is TextSchema ? null : 1,
+        maxLines: 1,
+        onChanged: onChanged,
+      ),
+      TextSchema() => TextComponentField(
+        label: label,
+        value: value,
         onChanged: onChanged,
       ),
       KeySchema(:final registry) => _KeyField(
