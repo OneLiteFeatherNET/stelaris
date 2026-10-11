@@ -746,5 +746,21 @@
   "component_color_invalid": "Expected #RRGGBB",
   "component_entry_add": "Add entry",
   "component_entry_remove": "Remove entry",
-  "component_entries_empty": "No entries"
+  "component_entries_empty": "No entries",
+  "minimessage_bold": "Bold",
+  "minimessage_italic": "Italic",
+  "minimessage_underline": "Underline",
+  "minimessage_strikethrough": "Strikethrough",
+  "minimessage_color": "Color",
+  "minimessage_gradient": "Gradient",
+  "minimessage_gradient_from": "Pick the first color",
+  "minimessage_gradient_to": "Pick the second color",
+  "minimessage_rainbow": "Rainbow",
+  "minimessage_clear": "Clear formatting",
+  "minimessage_guide_title": "MiniMessage tags",
+  "minimessage_guide_color": "A named color like red or gold, or a hex color like #ff00aa.",
+  "minimessage_guide_decoration": "Bold, italic, underlined and strikethrough. Close with </b>, or turn off inside a block with <!b>.",
+  "minimessage_guide_gradient": "A gradient over two or more colors.",
+  "minimessage_guide_rainbow": "The colors of the rainbow over the text.",
+  "minimessage_guide_reset": "Ends all colors and formatting at once."
 }

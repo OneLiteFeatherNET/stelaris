@@ -257,4 +257,62 @@ void main() {
       expect(span.toPlainText(), 'a < b');
     });
   });
+
+  group('MiniMessageParser.highlight', () {
+    const tagStyle = TextStyle(color: Color(0xFF808080), fontSize: 12);
+    const unknownTagStyle = TextStyle(
+      decoration: TextDecoration.underline,
+      decorationStyle: TextDecorationStyle.wavy,
+    );
+
+    TextSpan highlight(String input) => MiniMessageParser.highlight(
+      input,
+      componentContext: ComponentContext.lore,
+      tagStyle: tagStyle,
+      unknownTagStyle: unknownTagStyle,
+    );
+
+    TextSpan spanOf(TextSpan root, String text) =>
+        root.children!.cast<TextSpan>().singleWhere((s) => s.text == text);
+
+    for (final input in [
+      '',
+      'plain',
+      '<gold>Epic <b>bold</b></gold> rest',
+      '<gradient:red:blue>ab</gradient>',
+      '<rainbow>abc</rainbow><reset>x',
+      '<golld>typo',
+      '<gradient:gold:redd>y',
+      '</#zzz>w',
+      'a < b',
+    ]) {
+      test('keeps every character of "$input"', () {
+        expect(highlight(input).toPlainText(), input);
+      });
+    }
+
+    test('shows the known tags in the tag style', () {
+      final span = highlight('<gold>Epic</gold>');
+
+      expect(spanOf(span, '<gold>').style, tagStyle);
+      expect(spanOf(span, '</gold>').style, tagStyle);
+      expect(spanOf(span, 'Epic').style?.color, const Color(0xFFFFAA00));
+    });
+
+    test('marks the tags minecraft prints as text', () {
+      final span = highlight('<gold><golld>x');
+
+      final typo = spanOf(span, '<golld>');
+      expect(typo.style?.decorationStyle, TextDecorationStyle.wavy);
+      // Printed in the color around it, like in game.
+      expect(typo.style?.color, const Color(0xFFFFAA00));
+    });
+
+    test('parse still leaves the known tags out', () {
+      expect(
+        MiniMessageParser.parse('<gold>Epic</gold>').toPlainText(),
+        'Epic',
+      );
+    });
+  });
 }

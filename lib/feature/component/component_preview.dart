@@ -59,7 +59,6 @@ class ComponentPreview extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: previewPlaceholderColor,
-                fontFamily: 'monospace',
                 fontSize: 14,
               ),
             )

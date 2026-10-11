@@ -66,7 +66,6 @@ class LorePreview extends StatelessWidget {
                       context.l10n.lore_preview_more(remaining),
                       style: const TextStyle(
                         color: previewPlaceholderColor,
-                        fontFamily: 'monospace',
                         fontSize: 14,
                       ),
                     ),
