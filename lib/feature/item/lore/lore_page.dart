@@ -13,6 +13,7 @@ import 'package:stelaris/feature/item/lore/lore_line_card.dart';
 import 'package:stelaris/feature/item/lore/lore_page_view.dart';
 import 'package:stelaris/feature/item/lore/lore_preview.dart';
 import 'package:stelaris/feature/item/item_tab_loader.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/functions.dart';
 
@@ -65,11 +66,9 @@ class _LorePageState extends State<LorePage> {
                                   ? setState(() => _showPreview = !_showPreview)
                                   : _openPreviewSheet(context),
                       ),
-                      PageHeaderAction(
-                        icon: const Icon(Icons.add),
-                        label: context.l10n.button_add,
-                        primary: true,
-                        loading: pending,
+                      _AddButton(
+                        full: vm.selected.lore.totalItems >= maxLoreLines,
+                        pending: pending,
                         onPressed: () => _openCreateDialog(vm, context),
                       ),
                     ],
@@ -157,6 +156,39 @@ class _PreviewButton extends StatelessWidget {
       ),
       label: context.l10n.lore_preview_title,
       onPressed: onPressed,
+    );
+  }
+}
+
+/// Adds a line, disabled once the item has as many lines as Minecraft
+/// allows.
+class _AddButton extends StatelessWidget {
+  const _AddButton({
+    required this.full,
+    required this.pending,
+    required this.onPressed,
+  });
+
+  /// Whether the item has [maxLoreLines] lines already.
+  final bool full;
+  final bool pending;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final button = PageHeaderAction(
+      key: const Key('lore_add'),
+      icon: const Icon(Icons.add),
+      label: context.l10n.button_add,
+      primary: true,
+      loading: pending,
+      onPressed: full ? null : onPressed,
+    );
+    if (!full) return button;
+    // Says why the button is disabled.
+    return Tooltip(
+      message: context.l10n.lore_limit_reached(maxLoreLines),
+      child: button,
     );
   }
 }

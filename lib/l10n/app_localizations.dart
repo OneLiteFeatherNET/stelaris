@@ -406,6 +406,12 @@ abstract class AppLocalizations {
   /// **'Drag to reorder'**
   String get tooltip_lore_drag;
 
+  /// No description provided for @lore_limit_reached.
+  ///
+  /// In en, this message translates to:
+  /// **'An item can have at most {count} lore lines'**
+  String lore_limit_reached(int count);
+
   /// No description provided for @dialog_font_create_title.
   ///
   /// In en, this message translates to:

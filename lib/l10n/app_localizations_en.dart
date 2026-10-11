@@ -179,6 +179,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tooltip_lore_drag => 'Drag to reorder';
 
   @override
+  String lore_limit_reached(int count) {
+    return 'An item can have at most $count lore lines';
+  }
+
+  @override
   String get dialog_font_create_title => 'Create new font';
 
   @override

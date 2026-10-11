@@ -72,6 +72,14 @@
     }
   },
   "tooltip_lore_drag": "Drag to reorder",
+  "lore_limit_reached": "An item can have at most {count} lore lines",
+  "@lore_limit_reached": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
 
   "dialog_font_create_title": "Create new font",
   "dialog_font_char_add": "Add character",

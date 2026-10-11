@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/item/lore/lore_page.dart';
 import 'package:stelaris/feature/item/lore/lore_preview.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -131,6 +132,41 @@ void main() {
       await pumpLorePage(tester, const Size(1400, 900));
 
       expect(find.text('30 / 64'), findsOneWidget);
+    });
+
+    testWidgets('disables adding once the item has the most lines', (
+      tester,
+    ) async {
+      serveLore(totalItems: 64);
+      await pumpLorePage(tester, const Size(1400, 900));
+
+      expect(find.text('64 / 64'), findsOneWidget);
+      expect(
+        tester
+            .widget<PageHeaderAction>(find.byKey(const Key('lore_add')))
+            .onPressed,
+        isNull,
+      );
+      expect(
+        find.byTooltip('An item can have at most 64 lore lines'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('allows adding below the most lines', (tester) async {
+      serveLore(totalItems: 63);
+      await pumpLorePage(tester, const Size(1400, 900));
+
+      expect(
+        tester
+            .widget<PageHeaderAction>(find.byKey(const Key('lore_add')))
+            .onPressed,
+        isNotNull,
+      );
+      expect(
+        find.byTooltip('An item can have at most 64 lore lines'),
+        findsNothing,
+      );
     });
   });
 }
