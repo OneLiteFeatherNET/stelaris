@@ -97,8 +97,7 @@ class MiniMessageParser {
         final chars = text.split('');
         final colors = activeGradient.colors;
         for (int i = 0; i < chars.length; i++) {
-          final t = chars.length == 1 ? 0.0 : i / (chars.length - 1);
-          final color = _interpolateMultiColor(colors, t);
+          final color = gradientColor(colors, i, chars.length);
           spans.add(
             TextSpan(
               text: chars[i],
@@ -117,8 +116,7 @@ class MiniMessageParser {
       } else if (activeRainbow) {
         final chars = text.split('');
         for (int i = 0; i < chars.length; i++) {
-          final hue = (i / (chars.length == 1 ? 1 : chars.length)) * 360;
-          final color = HSLColor.fromAHSL(1, hue, 0.8, 0.6).toColor();
+          final color = rainbowColor(i, chars.length);
           spans.add(
             TextSpan(
               text: chars[i],
@@ -296,6 +294,17 @@ class MiniMessageParser {
     }
 
     return _namedColors[tag];
+  }
+
+  /// The color of the character at [index] of [length] in a gradient over
+  /// [colors].
+  static Color gradientColor(List<Color> colors, int index, int length) =>
+      _interpolateMultiColor(colors, length == 1 ? 0.0 : index / (length - 1));
+
+  /// The color of the character at [index] of [length] in a rainbow.
+  static Color rainbowColor(int index, int length) {
+    final hue = (index / (length == 1 ? 1 : length)) * 360;
+    return HSLColor.fromAHSL(1, hue, 0.8, 0.6).toColor();
   }
 
   static Color _interpolateMultiColor(List<Color> colors, double t) {
