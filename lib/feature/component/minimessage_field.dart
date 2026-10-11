@@ -64,6 +64,7 @@ class MiniMessageField extends StatelessWidget {
     required this.controller,
     this.focusNode,
     this.autofocus = false,
+    this.multiline = false,
     this.validator,
     this.onSubmitted,
     super.key,
@@ -72,6 +73,10 @@ class MiniMessageField extends StatelessWidget {
   final MiniMessageController controller;
   final FocusNode? focusNode;
   final bool autofocus;
+
+  /// Keeps line breaks, e.g. for book pages, and Enter starts a new line.
+  /// Off, a line break becomes a space and Enter submits.
+  final bool multiline;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onSubmitted;
 
@@ -90,13 +95,16 @@ class MiniMessageField extends StatelessWidget {
       focusNode: focusNode,
       autofocus: autofocus,
       minLines: 1,
-      maxLines: 3,
-      // A text keyboard, not a multiline one, so Enter submits.
-      keyboardType: TextInputType.text,
-      textInputAction: TextInputAction.done,
+      maxLines: multiline ? null : 3,
+      // Single line, a text keyboard makes Enter submit.
+      keyboardType: multiline ? TextInputType.multiline : TextInputType.text,
+      textInputAction: multiline
+          ? TextInputAction.newline
+          : TextInputAction.done,
       onFieldSubmitted: onSubmitted,
       inputFormatters: [
-        FilteringTextInputFormatter.deny(_lineBreaks, replacementString: ' '),
+        if (!multiline)
+          FilteringTextInputFormatter.deny(_lineBreaks, replacementString: ' '),
       ],
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: validator,

@@ -1,12 +1,9 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
-import 'package:stelaris/feature/component/component_toolbar.dart';
-import 'package:stelaris/feature/component/minimessage_field.dart';
+import 'package:stelaris/feature/component/minimessage_editor.dart';
 import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
-import 'package:stelaris/util/minimessage_editing.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 /// Edits one MiniMessage component with a formatting toolbar. Hands the
@@ -33,38 +30,12 @@ class ComponentDialog extends StatefulWidget {
 
 class _ComponentDialogState extends State<ComponentDialog> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  late final MiniMessageController _controller = MiniMessageController(
-    componentContext: widget.componentContext,
-    text: widget.initialValue,
-  );
-  final FocusNode _focusNode = FocusNode();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
+  late String _text = widget.initialValue;
 
   void _save() {
     if (!_formKey.currentState!.validate()) return;
-    widget.onSave(_controller.text);
+    widget.onSave(_text);
   }
-
-  void _toggle(String tag) {
-    _controller.value = MiniMessageEditing.toggle(_controller.value, tag);
-  }
-
-  Map<ShortcutActivator, VoidCallback> get _shortcuts => {
-    for (final (key, tag) in [
-      (LogicalKeyboardKey.keyB, 'b'),
-      (LogicalKeyboardKey.keyI, 'i'),
-      (LogicalKeyboardKey.keyU, 'u'),
-    ]) ...{
-      SingleActivator(key, control: true): () => _toggle(tag),
-      SingleActivator(key, meta: true): () => _toggle(tag),
-    },
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -76,26 +47,14 @@ class _ComponentDialogState extends State<ComponentDialog> {
       onSubmit: _save,
       content: Form(
         key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ComponentToolbar(controller: _controller, focusNode: _focusNode),
-            const SizedBox(height: 8),
-            CallbackShortcuts(
-              bindings: _shortcuts,
-              child: MiniMessageField(
-                controller: _controller,
-                focusNode: _focusNode,
-                autofocus: true,
-                validator: (value) => checkIfEmptyAndReturnErrorString(
-                  value ?? emptyString,
-                  context,
-                ),
-                onSubmitted: (_) => _save(),
-              ),
-            ),
-          ],
+        child: MiniMessageEditor(
+          value: _text,
+          onChanged: (text) => _text = text,
+          componentContext: widget.componentContext,
+          autofocus: true,
+          validator: (value) =>
+              checkIfEmptyAndReturnErrorString(value ?? emptyString, context),
+          onSubmitted: (_) => _save(),
         ),
       ),
     );
