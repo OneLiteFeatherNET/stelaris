@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/item/components/book/written_book.dart';
+import 'package:stelaris/feature/item/components/book/written_book_editor.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
 import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -634,4 +636,62 @@ void main() {
       expect(find.byType(MenuItemButton), findsAtLeastNWidgets(1));
     },
   );
+
+  testWidgets('a book opens the book editor and saves its pages', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final spec = _spec(writtenBookComponent);
+    ({Object? value})? saved;
+    await pumpOpener(
+      tester,
+      (context) => showComponentEditDialog(
+        context,
+        spec: spec,
+        value: initialValue(spec.schema),
+        onSave: (value) async {
+          saved = (value: value);
+          return null;
+        },
+      ),
+      (_) {},
+    );
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    expect(find.byType(WrittenBookEditor), findsOneWidget);
+
+    // Title and author are required.
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(saved, isNull);
+
+    await tester.enterText(find.byKey(const Key('book_title')), 'Diary');
+    await tester.enterText(find.byKey(const Key('book_author')), 'Steve');
+    await tester.tap(find.byKey(const Key('book_page_first')));
+    await tester.pump();
+    await tester.enterText(
+      find
+          .descendant(
+            of: find.byType(WrittenBookEditor),
+            matching: find.byType(TextField),
+          )
+          .at(2),
+      '<gold>Hello',
+    );
+    await tester.pump();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(saved?.value, {
+      'title': {'raw': 'Diary'},
+      'author': 'Steve',
+      'pages': [
+        {
+          'raw': {'text': 'Hello', 'color': 'gold'},
+        },
+      ],
+    });
+  });
 }
