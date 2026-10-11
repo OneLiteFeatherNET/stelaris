@@ -52,8 +52,9 @@ class _LorePageState extends State<LorePage> {
                   PageHeader.small(
                     title: context.l10n.tab_lore,
                     actions: [
+                      // All lines, not only the ones loaded so far.
                       LoreCountChip(
-                        currentIndex: vm.selected.lore.items.length,
+                        currentIndex: vm.selected.lore.totalItems,
                       ),
                       _PreviewButton(
                         wide: wide,

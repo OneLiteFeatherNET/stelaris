@@ -11,6 +11,30 @@ import 'package:stelaris_models/stelaris_models.dart';
 import '../../../support/fake_http_client_adapter.dart';
 
 void main() {
+  Future<void> pumpLorePage(WidgetTester tester, Size size) async {
+    tester.view.physicalSize = size;
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    final store = Store<AppState>(
+      initialState: const AppState().copyWith(
+        selectedItem: const ItemModel(id: 'item-1', uiName: 'item'),
+      ),
+    );
+
+    await tester.pumpWidget(
+      StoreProvider<AppState>(
+        store: store,
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: LorePage()),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+  }
+
   group('LorePage preview', () {
     setUp(() {
       ApiService().itemApi.apiClient.dio.httpClientAdapter =
@@ -26,30 +50,6 @@ void main() {
             'pageSize': 10,
           });
     });
-
-    Future<void> pumpLorePage(WidgetTester tester, Size size) async {
-      tester.view.physicalSize = size;
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.reset);
-
-      final store = Store<AppState>(
-        initialState: const AppState().copyWith(
-          selectedItem: const ItemModel(id: 'item-1', uiName: 'item'),
-        ),
-      );
-
-      await tester.pumpWidget(
-        StoreProvider<AppState>(
-          store: store,
-          child: const MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: Scaffold(body: LorePage()),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-    }
 
     final toggle = find.byKey(const Key('lore_preview_toggle'));
 
@@ -106,6 +106,31 @@ void main() {
         ),
         findsOneWidget,
       );
+    });
+  });
+
+  group('LorePage header', () {
+    /// Serves one page of two lines for an item with [totalItems] lines. It
+    /// claims to be the only page, so the list doesn't load more.
+    void serveLore({required int totalItems}) {
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json({
+            'items': [
+              {'id': '1', 'text': 'First line'},
+              {'id': '2', 'text': 'Second line'},
+            ],
+            'totalItems': totalItems,
+            'totalPages': 1,
+            'currentPage': 1,
+            'pageSize': 2,
+          });
+    }
+
+    testWidgets('counts all lines, not only the loaded ones', (tester) async {
+      serveLore(totalItems: 30);
+      await pumpLorePage(tester, const Size(1400, 900));
+
+      expect(find.text('30 / 64'), findsOneWidget);
     });
   });
 }
