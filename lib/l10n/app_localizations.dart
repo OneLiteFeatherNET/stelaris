@@ -2793,6 +2793,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ends all colors and formatting at once.'**
   String get minimessage_guide_reset;
+
+  /// No description provided for @book_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get book_title;
+
+  /// No description provided for @book_title_too_long.
+  ///
+  /// In en, this message translates to:
+  /// **'At most {count} characters'**
+  String book_title_too_long(int count);
+
+  /// No description provided for @book_author.
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get book_author;
+
+  /// No description provided for @book_generation.
+  ///
+  /// In en, this message translates to:
+  /// **'Generation'**
+  String get book_generation;
+
+  /// No description provided for @book_generation_original.
+  ///
+  /// In en, this message translates to:
+  /// **'Original'**
+  String get book_generation_original;
+
+  /// No description provided for @book_generation_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy of original'**
+  String get book_generation_copy;
+
+  /// No description provided for @book_generation_copy_of_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy of a copy'**
+  String get book_generation_copy_of_copy;
+
+  /// No description provided for @book_generation_tattered.
+  ///
+  /// In en, this message translates to:
+  /// **'Tattered'**
+  String get book_generation_tattered;
+
+  /// No description provided for @book_page_of.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {page} of {count}'**
+  String book_page_of(int page, int count);
+
+  /// No description provided for @book_page_previous.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous page'**
+  String get book_page_previous;
+
+  /// No description provided for @book_page_next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next page'**
+  String get book_page_next;
+
+  /// No description provided for @book_page_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a page after this one'**
+  String get book_page_add;
+
+  /// No description provided for @book_page_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this page'**
+  String get book_page_remove;
+
+  /// No description provided for @book_pages_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'The book has no pages yet.'**
+  String get book_pages_empty;
+
+  /// No description provided for @book_page_first.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the first page'**
+  String get book_page_first;
+
+  /// No description provided for @book_preview.
+  ///
+  /// In en, this message translates to:
+  /// **'How the page looks'**
+  String get book_preview;
+
+  /// No description provided for @book_advanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get book_advanced;
+
+  /// No description provided for @book_filtered_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Title for the chat filter'**
+  String get book_filtered_title;
+
+  /// No description provided for @book_filtered_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Page for the chat filter'**
+  String get book_filtered_page;
+
+  /// No description provided for @book_filtered_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown instead to players with the chat filter on. Empty uses the normal one.'**
+  String get book_filtered_hint;
+
+  /// No description provided for @book_resolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get book_resolved;
+
+  /// No description provided for @book_resolved_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'The text is final, the game doesn\'t fill in selectors or scores when the book is opened.'**
+  String get book_resolved_hint;
 }
 
 class _AppLocalizationsDelegate

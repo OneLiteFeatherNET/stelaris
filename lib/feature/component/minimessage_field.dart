@@ -45,7 +45,8 @@ class MiniMessageController extends TextEditingController {
         withComposing: withComposing,
       );
     }
-    return withTextShadow(
+    return shadowFor(
+      componentContext,
       MiniMessageParser.highlight(
         text,
         componentContext: componentContext,
@@ -108,12 +109,16 @@ class MiniMessageField extends StatelessWidget {
       ],
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: validator,
-      cursorColor: Colors.white,
+      // Light on the dark background, dark on paper.
+      cursorColor:
+          controller.componentContext.background.computeLuminance() < 0.5
+          ? Colors.white
+          : Colors.black,
       style: const TextStyle(fontSize: 14),
       decoration: InputDecoration(
         filled: true,
-        fillColor: previewBackground,
-        enabledBorder: border(previewBorder),
+        fillColor: controller.componentContext.background,
+        enabledBorder: border(controller.componentContext.border),
         focusedBorder: border(colorScheme.primary, 2),
         errorBorder: border(colorScheme.error),
         focusedErrorBorder: border(colorScheme.error, 2),

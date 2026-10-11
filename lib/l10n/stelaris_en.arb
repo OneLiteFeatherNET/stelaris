@@ -762,5 +762,44 @@
   "minimessage_guide_decoration": "Bold, italic, underlined and strikethrough. Close with </b>, or turn off inside a block with <!b>.",
   "minimessage_guide_gradient": "A gradient over two or more colors.",
   "minimessage_guide_rainbow": "The colors of the rainbow over the text.",
-  "minimessage_guide_reset": "Ends all colors and formatting at once."
+  "minimessage_guide_reset": "Ends all colors and formatting at once.",
+  "book_title": "Title",
+  "book_title_too_long": "At most {count} characters",
+  "@book_title_too_long": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "book_author": "Author",
+  "book_generation": "Generation",
+  "book_generation_original": "Original",
+  "book_generation_copy": "Copy of original",
+  "book_generation_copy_of_copy": "Copy of a copy",
+  "book_generation_tattered": "Tattered",
+  "book_page_of": "Page {page} of {count}",
+  "@book_page_of": {
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "book_page_previous": "Previous page",
+  "book_page_next": "Next page",
+  "book_page_add": "Add a page after this one",
+  "book_page_remove": "Remove this page",
+  "book_pages_empty": "The book has no pages yet.",
+  "book_page_first": "Add the first page",
+  "book_preview": "How the page looks",
+  "book_advanced": "Advanced",
+  "book_filtered_title": "Title for the chat filter",
+  "book_filtered_page": "Page for the chat filter",
+  "book_filtered_hint": "Shown instead to players with the chat filter on. Empty uses the normal one.",
+  "book_resolved": "Resolved",
+  "book_resolved_hint": "The text is final, the game doesn't fill in selectors or scores when the book is opened."
 }

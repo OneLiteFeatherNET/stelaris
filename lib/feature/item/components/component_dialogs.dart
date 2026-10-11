@@ -2,6 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/hide_tooltips_while_scrolling.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
+import 'package:stelaris/feature/item/components/book/written_book.dart';
+import 'package:stelaris/feature/item/components/book/written_book_editor.dart';
 import 'package:stelaris/feature/item/components/component_category_menu.dart';
 import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/feature/item/components/stelaris_components.dart';
@@ -381,6 +383,9 @@ class _ComponentEditDialogState extends State<_ComponentEditDialog> {
   late Object? _value = widget.value;
   bool _saving = false;
 
+  /// Books have too many parts for the form, they get their own editor.
+  bool get _isBook => widget.spec.key == writtenBookComponent;
+
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? true)) return;
     setState(() => _saving = true);
@@ -403,7 +408,8 @@ class _ComponentEditDialogState extends State<_ComponentEditDialog> {
       actionLabel: context.l10n.button_save,
       onSubmit: _saving ? null : _submit,
       busy: _saving,
-      maxWidth: 600,
+      // The book shows its page next to the editor.
+      maxWidth: _isBook ? 900 : 600,
       // The inputs and their hints use the size of the dialog's other texts
       // instead of the larger default of text fields.
       content: Theme(
@@ -426,11 +432,18 @@ class _ComponentEditDialogState extends State<_ComponentEditDialog> {
                 ],
               ),
               verticalSpacing10,
-              SchemaField(
-                schema: widget.spec.schema,
-                value: _value,
-                onChanged: (value) => setState(() => _value = value),
-              ),
+              if (_isBook)
+                WrittenBookEditor(
+                  value: _value,
+                  // Only kept, the editor shows its own state.
+                  onChanged: (value) => _value = value,
+                )
+              else
+                SchemaField(
+                  schema: widget.spec.schema,
+                  value: _value,
+                  onChanged: (value) => setState(() => _value = value),
+                ),
             ],
           ),
         ),

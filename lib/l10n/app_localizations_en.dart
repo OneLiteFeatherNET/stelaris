@@ -1510,4 +1510,76 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get minimessage_guide_reset =>
       'Ends all colors and formatting at once.';
+
+  @override
+  String get book_title => 'Title';
+
+  @override
+  String book_title_too_long(int count) {
+    return 'At most $count characters';
+  }
+
+  @override
+  String get book_author => 'Author';
+
+  @override
+  String get book_generation => 'Generation';
+
+  @override
+  String get book_generation_original => 'Original';
+
+  @override
+  String get book_generation_copy => 'Copy of original';
+
+  @override
+  String get book_generation_copy_of_copy => 'Copy of a copy';
+
+  @override
+  String get book_generation_tattered => 'Tattered';
+
+  @override
+  String book_page_of(int page, int count) {
+    return 'Page $page of $count';
+  }
+
+  @override
+  String get book_page_previous => 'Previous page';
+
+  @override
+  String get book_page_next => 'Next page';
+
+  @override
+  String get book_page_add => 'Add a page after this one';
+
+  @override
+  String get book_page_remove => 'Remove this page';
+
+  @override
+  String get book_pages_empty => 'The book has no pages yet.';
+
+  @override
+  String get book_page_first => 'Add the first page';
+
+  @override
+  String get book_preview => 'How the page looks';
+
+  @override
+  String get book_advanced => 'Advanced';
+
+  @override
+  String get book_filtered_title => 'Title for the chat filter';
+
+  @override
+  String get book_filtered_page => 'Page for the chat filter';
+
+  @override
+  String get book_filtered_hint =>
+      'Shown instead to players with the chat filter on. Empty uses the normal one.';
+
+  @override
+  String get book_resolved => 'Resolved';
+
+  @override
+  String get book_resolved_hint =>
+      'The text is final, the game doesn\'t fill in selectors or scores when the book is opened.';
 }

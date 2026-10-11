@@ -3,12 +3,11 @@ import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/minimessage_parser.dart';
 
-/// Background of the preview in both app themes: a dark neutral, the kind
-/// of background Minecraft draws its texts on, so their colors stay exact.
-const Color previewBackground = Color(0xFF141418);
+/// Background of most previews, see [darkTextBackground].
+const Color previewBackground = darkTextBackground;
 
 /// Thin border of the preview.
-const Color previewBorder = Color(0xFF2C2C34);
+const Color previewBorder = darkTextBorder;
 
 /// Weight of the preview text. Minecraft's pixel font has thick strokes,
 /// thin ones blend into the dark background and make every color look
@@ -48,9 +47,9 @@ class ComponentPreview extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: previewBackground,
+        color: componentContext.background,
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: previewBorder),
+        border: Border.all(color: componentContext.border),
       ),
       child: text.isEmpty
           ? Text(
@@ -63,7 +62,8 @@ class ComponentPreview extends StatelessWidget {
               ),
             )
           : Text.rich(
-              withTextShadow(
+              shadowFor(
+                componentContext,
                 MiniMessageParser.parse(
                   text,
                   componentContext: componentContext,
@@ -76,6 +76,10 @@ class ComponentPreview extends StatelessWidget {
     );
   }
 }
+
+/// [span] with the shadow Minecraft draws in [componentContext], if any.
+TextSpan shadowFor(ComponentContext componentContext, TextSpan span) =>
+    componentContext.shadow ? withTextShadow(span) : span;
 
 /// Gives every part of [span] the shadow Minecraft draws under its texts:
 /// the text color at a quarter of its brightness, a little down and right.
