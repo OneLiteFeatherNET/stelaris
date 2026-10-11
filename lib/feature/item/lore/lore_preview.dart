@@ -5,9 +5,11 @@ import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/minimessage_parser.dart';
 
-/// Shows the item name and its lore lines together with their formatting,
-/// the way they appear in game, on the same background as the component
-/// previews.
+/// Shows the lore lines with their formatting, the way they appear in game,
+/// on the same background as the component previews.
+///
+/// The item name stays out, the model has no name for the game, only the one
+/// in the editor.
 class LorePreview extends StatelessWidget {
   const LorePreview({required this.item, super.key});
 
@@ -43,9 +45,7 @@ class LorePreview extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _line(item.uiName, ComponentContext.itemName),
-                  for (final line in lore.items)
-                    _line(line.text, ComponentContext.lore),
+                  for (final line in lore.items) _line(line.text),
                   if (remaining > 0)
                     Text(
                       context.l10n.lore_preview_more(remaining),
@@ -64,12 +64,12 @@ class LorePreview extends StatelessWidget {
     );
   }
 
-  Widget _line(String text, ComponentContext componentContext) {
+  Widget _line(String text) {
     return Text.rich(
       withTextShadow(
         MiniMessageParser.parse(
           text,
-          componentContext: componentContext,
+          componentContext: ComponentContext.lore,
           fontWeight: previewFontWeight,
         ),
       ),
