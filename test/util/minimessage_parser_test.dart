@@ -315,4 +315,101 @@ void main() {
       );
     });
   });
+
+  group('rainbowColor', () {
+    String hex(Color color) =>
+        (color.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0');
+
+    test('six characters go once around the color wheel', () {
+      expect(
+        [for (var i = 0; i < 6; i++) hex(MiniMessageParser.rainbowColor(i, 6))],
+        ['ff0000', 'ffff00', '00ff00', '00ffff', '0000ff', 'ff00ff'],
+      );
+    });
+
+    test('channels are cut like in adventure, not rounded', () {
+      // Hue 1/7: 6/7 of the way to yellow, 218.57 in green.
+      expect(hex(MiniMessageParser.rainbowColor(1, 7)), 'ffda00');
+    });
+
+    test('a single character is red', () {
+      expect(hex(MiniMessageParser.rainbowColor(0, 1)), 'ff0000');
+    });
+
+    test('the preview uses it for every character, spaces too', () {
+      final span = MiniMessageParser.parse('<rainbow>a b');
+      final colors = [
+        for (final child in span.children!.cast<TextSpan>()) child.style!.color,
+      ];
+      expect(colors, [
+        for (var i = 0; i < 3; i++) MiniMessageParser.rainbowColor(i, 3),
+      ]);
+      expect(hex(colors[1]!), '00ff00');
+    });
+  });
+
+  group('like adventure', () {
+    String hex(Color? color) =>
+        (color!.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0');
+
+    List<TextSpan> letters(String input) => [
+      for (final child in MiniMessageParser.parse(input).children!)
+        if ((child as TextSpan).text != null) child,
+    ];
+
+    test('a rainbow spans the tags inside it', () {
+      final spans = letters('<rainbow>ab<b>cd</b></rainbow>');
+
+      expect(spans.map((span) => span.text), ['a', 'b', 'c', 'd']);
+      expect(spans.map((span) => span.style!.color), [
+        for (var i = 0; i < 4; i++) MiniMessageParser.rainbowColor(i, 4),
+      ]);
+      expect(spans[2].style!.fontWeight, FontWeight.bold);
+    });
+
+    test('a gradient spans the tags inside it', () {
+      final spans = letters('<gradient:red:blue>ab<u>c</u></gradient>');
+
+      expect(spans.map((span) => hex(span.style!.color)), [
+        'ff5555',
+        'aa55aa',
+        '5555ff',
+      ]);
+    });
+
+    test('a color inside keeps its color, the letter still counts', () {
+      final spans = letters('<rainbow>a<gold>b</gold>c');
+
+      expect(spans.map((span) => span.style!.color), [
+        MiniMessageParser.rainbowColor(0, 3),
+        const Color(0xFFFFAA00),
+        MiniMessageParser.rainbowColor(2, 3),
+      ]);
+    });
+
+    test('an emoji is one character', () {
+      final spans = letters('<rainbow>a\u{1F600}b');
+
+      expect(spans.map((span) => span.text), ['a', '\u{1F600}', 'b']);
+      expect(spans[2].style!.color, MiniMessageParser.rainbowColor(2, 3));
+    });
+
+    test('gradient channels are blended in floats and rounded', () {
+      const red = Color(0xFFFF5555);
+      const blue = Color(0xFF5555FF);
+      // A third of the way: 198.33 and 141.67.
+      expect(hex(MiniMessageParser.gradientColor([red, blue], 1, 4)), 'c6558e');
+    });
+
+    test('a gradient over three colors meets the middle one', () {
+      const colors = [Color(0xFFFF0000), Color(0xFF00FF00), Color(0xFF0000FF)];
+      expect(
+        [
+          for (var i = 0; i < 5; i++)
+            hex(MiniMessageParser.gradientColor(colors, i, 5)),
+        ],
+        ['ff0000', '808000', '00ff00', '008080', '0000ff'],
+      );
+    });
+  });
 }

@@ -217,6 +217,23 @@ void main() {
       );
     });
 
+    test('a rainbow over decorations is stored per character', () {
+      final json = MiniMessageJson.encode('<rainbow>ab<b>cd</b></rainbow>');
+      final extra = (json as Map)['extra'] as List;
+      expect(extra, hasLength(4));
+      expect((extra[2] as Map)['bold'], isTrue);
+      expect(extra.map((part) => (part as Map)['color']).toSet(), hasLength(4));
+    });
+
+    test('an emoji counts as one character when loading', () {
+      expect(
+        MiniMessageJson.decode(
+          MiniMessageJson.encode('<rainbow>a\u{1F600}bc</rainbow>'),
+        ),
+        '<rainbow>a\u{1F600}bc',
+      );
+    });
+
     test('random texts look the same after a round trip', () {
       const tags = [
         '<b>',
@@ -244,7 +261,7 @@ void main() {
           buffer.write(
             random.nextBool()
                 ? tags[random.nextInt(tags.length)]
-                : 'abc '[random.nextInt(4)],
+                : ['a', 'b', 'c', ' ', '\u{1F600}'][random.nextInt(5)],
           );
         }
         final input = buffer.toString();

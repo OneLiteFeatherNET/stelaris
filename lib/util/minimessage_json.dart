@@ -4,30 +4,13 @@ import 'package:stelaris/util/minimessage_parser.dart';
 /// Converts between MiniMessage and the vanilla JSON text component, the
 /// format the backend stores components in.
 ///
-/// [encode] reads MiniMessage the way [MiniMessageParser] does, so the
-/// stored text looks like the preview. JSON has no gradients or rainbows,
+/// [encode] reads MiniMessage through [MiniMessageParser.runs], so the
+/// stored text looks exactly like the preview. JSON has no gradients or rainbows,
 /// they become one hex color per character. [decode] finds those runs again
 /// and writes them as a gradient or rainbow, as long as they are three or
 /// more characters, fewer can't be told from plain hex colors.
 class MiniMessageJson {
   const MiniMessageJson._();
-
-  static final RegExp _tagPattern = RegExp(
-    r'<(/?[a-zA-Z0-9_#:.-]+|![a-zA-Z0-9_]+)>',
-  );
-
-  /// The decorations by every name MiniMessage accepts for them.
-  static const Map<String, String> _decorations = {
-    'b': 'bold',
-    'bold': 'bold',
-    'i': 'italic',
-    'italic': 'italic',
-    'em': 'italic',
-    'u': 'underlined',
-    'underlined': 'underlined',
-    'st': 'strikethrough',
-    'strikethrough': 'strikethrough',
-  };
 
   /// The short tag of each decoration, in the order they are written.
   static const Map<String, String> _shortTags = {
@@ -59,101 +42,20 @@ class MiniMessageJson {
     return _write(_segmentsOf(runs));
   }
 
-  static List<_Run> _runsOf(String input) {
-    final runs = <_Run>[];
-    final colors = <String>[];
-    final decorations = <String, bool>{};
-    List<Color>? gradient;
-    var rainbow = false;
-
-    _Style style(String? color) => _Style(
-      color: color,
-      bold: decorations['bold'],
-      italic: decorations['italic'],
-      underlined: decorations['underlined'],
-      strikethrough: decorations['strikethrough'],
-    );
-
-    void addText(String text) {
-      if (text.isEmpty) return;
-      final chars = text.split('');
-      final stops = gradient;
-      if (stops != null) {
-        for (final (index, char) in chars.indexed) {
-          final color = MiniMessageParser.gradientColor(
-            stops,
-            index,
-            chars.length,
-          );
-          runs.add(_Run(char, style(_hex(color))));
-        }
-      } else if (rainbow) {
-        for (final (index, char) in chars.indexed) {
-          final color = MiniMessageParser.rainbowColor(index, chars.length);
-          runs.add(_Run(char, style(_hex(color))));
-        }
-      } else {
-        runs.add(_Run(text, style(colors.lastOrNull)));
-      }
-    }
-
-    var last = 0;
-    for (final match in _tagPattern.allMatches(input)) {
-      addText(input.substring(last, match.start));
-      last = match.end;
-      final tag = match.group(1)!.toLowerCase();
-      final closing = tag.startsWith('/');
-      final negated = tag.startsWith('!');
-      final name = closing || negated ? tag.substring(1) : tag;
-
-      if (tag == 'reset' || tag == 'r') {
-        colors.clear();
-        decorations.clear();
-        gradient = null;
-        rainbow = false;
-      } else if (_decorations[name] case final decoration?) {
-        if (closing) {
-          decorations.remove(decoration);
-        } else {
-          decorations[decoration] = !negated;
-        }
-      } else if (name.startsWith('gradient:') && !closing && !negated) {
-        final stops = name.split(':').skip(1).map(MiniMessageParser.colorOf);
-        if (stops.length >= 2 && !stops.contains(null)) {
-          gradient = stops.whereType<Color>().toList();
-        } else {
-          addText(match.group(0)!);
-        }
-      } else if (name == 'gradient' && closing) {
-        gradient = null;
-      } else if (name == 'rainbow' && !negated) {
-        rainbow = !closing;
-      } else if (!negated && _colorToken(name) != null) {
-        if (!closing) {
-          colors.add(_colorToken(name)!);
-        } else if (colors.isNotEmpty) {
-          colors.removeLast();
-        }
-      } else if (closing && (name == 'color' || name == 'colour')) {
-        if (colors.isNotEmpty) colors.removeLast();
-      } else {
-        addText(match.group(0)!);
-      }
-    }
-    addText(input.substring(last));
-    return runs;
-  }
-
-  /// How a color tag is written in JSON: its name, or `#rrggbb`.
-  static String? _colorToken(String tag) {
-    var value = tag;
-    if (value.startsWith('color:') || value.startsWith('colour:')) {
-      value = value.substring(value.indexOf(':') + 1);
-    }
-    final color = MiniMessageParser.colorOf(value);
-    if (color == null) return null;
-    return value.startsWith('#') ? _hex(color) : value;
-  }
+  static List<_Run> _runsOf(String input) => [
+    for (final run in MiniMessageParser.runs(input))
+      if (run.kind != MiniMessageRunKind.tag)
+        _Run(
+          run.text,
+          _Style(
+            color: run.colorKey,
+            bold: run.bold,
+            italic: run.italic,
+            underlined: run.underlined,
+            strikethrough: run.strikethrough,
+          ),
+        ),
+  ];
 
   static String _hex(Color color) =>
       '#${(color.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0')}';
@@ -244,7 +146,7 @@ class MiniMessageJson {
   ) {
     var end = start;
     while (end < runs.length &&
-        runs[end].text.length == 1 &&
+        runs[end].text.runes.length == 1 &&
         (runs[end].style.color?.startsWith('#') ?? false) &&
         runs[end].style.withoutColor == runs[start].style.withoutColor) {
       end++;
