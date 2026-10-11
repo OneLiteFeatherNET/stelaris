@@ -30,68 +30,86 @@ class ComponentToolbar extends StatelessWidget {
     final l10n = context.l10n;
     // Taps in the toolbar count as taps inside the text field, so the field
     // keeps its focus and selection while a control is clicked.
-    return TextFieldTapRegion(
-      child: ListenableBuilder(
+    Widget toggle(String tag, Widget icon, String tooltip) {
+      return ListenableBuilder(
+        key: Key('minimessage_toggle_$tag'),
         listenable: controller,
-        builder: (context, _) {
-          final value = controller.value;
-          Widget toggle(String tag, Widget icon, String tooltip) {
-            return _ToggleButton(
-              key: Key('minimessage_toggle_$tag'),
-              icon: icon,
-              tooltip: tooltip,
-              selected: MiniMessageEditing.isActive(value, tag),
-              onPressed: () =>
-                  _apply((value) => MiniMessageEditing.toggle(value, tag)),
-            );
-          }
+        builder: (context, _) => _ToggleButton(
+          icon: icon,
+          tooltip: tooltip,
+          selected: MiniMessageEditing.isActive(controller.value, tag),
+          onPressed: () =>
+              _apply((value) => MiniMessageEditing.toggle(value, tag)),
+        ),
+      );
+    }
 
-          return Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              toggle('b', const Icon(Icons.format_bold), l10n.minimessage_bold),
-              toggle(
-                'i',
-                const Icon(Icons.format_italic),
-                l10n.minimessage_italic,
-              ),
-              toggle(
-                'u',
-                const Icon(Icons.format_underlined),
-                l10n.minimessage_underline,
-              ),
-              toggle(
-                'st',
-                const Icon(Icons.format_strikethrough),
-                l10n.minimessage_strikethrough,
-              ),
-              const _Separator(),
-              _ColorMenu(
-                current:
-                    MiniMessageEditing.colorAt(value) ??
+    // Taps in the toolbar count as taps inside the text field, so the field
+    // keeps its focus and selection while a control is clicked.
+    return TextFieldTapRegion(
+      child: Wrap(
+        spacing: 4,
+        runSpacing: 4,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          toggle('b', const Icon(Icons.format_bold), l10n.minimessage_bold),
+          toggle('i', const Icon(Icons.format_italic), l10n.minimessage_italic),
+          toggle(
+            'u',
+            const Icon(Icons.format_underlined),
+            l10n.minimessage_underline,
+          ),
+          toggle(
+            'st',
+            const Icon(Icons.format_strikethrough),
+            l10n.minimessage_strikethrough,
+          ),
+          const _Separator(),
+          _MenuButton(
+            key: const Key('minimessage_color'),
+            tooltip: l10n.minimessage_color,
+            icon: ListenableBuilder(
+              listenable: controller,
+              builder: (context, _) => _ColorIcon(
+                color:
+                    MiniMessageEditing.colorAt(controller.value) ??
                     controller.componentContext.defaultColor,
-                onColor: (color) => _apply(
-                  (value) => MiniMessageEditing.applyColor(value, color),
-                ),
               ),
-              _GradientMenu(
-                onGradient: (from, to) => _apply(
+            ),
+            menu: (close) => Padding(
+              padding: const EdgeInsets.all(12),
+              child: _Swatches(
+                onPick: (color) {
+                  close();
+                  _apply(
+                    (value) => MiniMessageEditing.applyColor(value, color),
+                  );
+                },
+              ),
+            ),
+          ),
+          _MenuButton(
+            key: const Key('minimessage_gradient'),
+            tooltip: l10n.minimessage_gradient,
+            icon: const Icon(Icons.gradient),
+            menu: (close) => _GradientPicker(
+              onGradient: (from, to) {
+                close();
+                _apply(
                   (value) => MiniMessageEditing.applyGradient(value, from, to),
-                ),
-              ),
-              toggle('rainbow', const _RainbowIcon(), l10n.minimessage_rainbow),
-              const _Separator(),
-              IconButton(
-                key: const Key('minimessage_clear'),
-                icon: const Icon(Icons.format_clear),
-                tooltip: l10n.minimessage_clear,
-                onPressed: () => _apply(MiniMessageEditing.stripTags),
-              ),
-            ],
-          );
-        },
+                );
+              },
+            ),
+          ),
+          toggle('rainbow', const _RainbowIcon(), l10n.minimessage_rainbow),
+          const _Separator(),
+          IconButton(
+            key: const Key('minimessage_clear'),
+            icon: const Icon(Icons.format_clear),
+            tooltip: l10n.minimessage_clear,
+            onPressed: () => _apply(MiniMessageEditing.stripTags),
+          ),
+        ],
       ),
     );
   }
@@ -104,7 +122,6 @@ class _ToggleButton extends StatelessWidget {
     required this.tooltip,
     required this.selected,
     required this.onPressed,
-    super.key,
   });
 
   final Widget icon;
@@ -226,19 +243,25 @@ class _Swatches extends StatelessWidget {
   }
 }
 
-/// Opens the colors under its button and hands the picked one over.
-class _ColorMenu extends StatefulWidget {
-  const _ColorMenu({required this.current, required this.onColor});
+/// An icon button that opens [menu] under itself and closes it again on a
+/// second click. [menu] gets a callback that closes it.
+class _MenuButton extends StatefulWidget {
+  const _MenuButton({
+    required this.icon,
+    required this.tooltip,
+    required this.menu,
+    super.key,
+  });
 
-  /// The color at the caret, shown in the button.
-  final Color current;
-  final ValueChanged<NamedTextColor> onColor;
+  final Widget icon;
+  final String tooltip;
+  final Widget Function(VoidCallback close) menu;
 
   @override
-  State<_ColorMenu> createState() => _ColorMenuState();
+  State<_MenuButton> createState() => _MenuButtonState();
 }
 
-class _ColorMenuState extends State<_ColorMenu> {
+class _MenuButtonState extends State<_MenuButton> {
   final MenuController _menu = MenuController();
 
   @override
@@ -246,60 +269,12 @@ class _ColorMenuState extends State<_ColorMenu> {
     return MenuAnchor(
       controller: _menu,
       menuChildren: [
-        TextFieldTapRegion(
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: _Swatches(
-              onPick: (color) {
-                _menu.close();
-                widget.onColor(color);
-              },
-            ),
-          ),
-        ),
+        // The menu lies in the overlay, outside the toolbar's region.
+        TextFieldTapRegion(child: widget.menu(_menu.close)),
       ],
       builder: (context, menu, _) => IconButton(
-        key: const Key('minimessage_color'),
-        icon: _ColorIcon(color: widget.current),
-        tooltip: context.l10n.minimessage_color,
-        onPressed: () => menu.isOpen ? menu.close() : menu.open(),
-      ),
-    );
-  }
-}
-
-/// Opens the colors under its button, takes the first and the second pick
-/// as the ends of a gradient and applies it right after the second.
-class _GradientMenu extends StatefulWidget {
-  const _GradientMenu({required this.onGradient});
-
-  final void Function(NamedTextColor from, NamedTextColor to) onGradient;
-
-  @override
-  State<_GradientMenu> createState() => _GradientMenuState();
-}
-
-class _GradientMenuState extends State<_GradientMenu> {
-  final MenuController _menu = MenuController();
-
-  @override
-  Widget build(BuildContext context) {
-    return MenuAnchor(
-      controller: _menu,
-      menuChildren: [
-        TextFieldTapRegion(
-          child: _GradientPicker(
-            onGradient: (from, to) {
-              _menu.close();
-              widget.onGradient(from, to);
-            },
-          ),
-        ),
-      ],
-      builder: (context, menu, _) => IconButton(
-        key: const Key('minimessage_gradient'),
-        icon: const Icon(Icons.gradient),
-        tooltip: context.l10n.minimessage_gradient,
+        icon: widget.icon,
+        tooltip: widget.tooltip,
         onPressed: () => menu.isOpen ? menu.close() : menu.open(),
       ),
     );

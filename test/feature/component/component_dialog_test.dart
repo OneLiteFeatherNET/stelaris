@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/component/component_dialog.dart';
 import 'package:stelaris/feature/component/component_preview.dart';
+import 'package:stelaris/feature/component/minimessage_field.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/component_context.dart';
 
@@ -98,5 +99,33 @@ void main() {
 
     expect(saved, isEmpty);
     expect(find.text("The value can't be empty"), findsOneWidget);
+  });
+
+  testWidgets('the dialog puts the caret into the field', (tester) async {
+    await pumpDialog(tester);
+
+    expect(
+      tester.widget<EditableText>(find.byType(EditableText)).focusNode.hasFocus,
+      isTrue,
+    );
+  });
+
+  testWidgets('the field takes no focus on its own', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: MiniMessageField(
+            controller: MiniMessageController(
+              componentContext: ComponentContext.itemName,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      tester.widget<EditableText>(find.byType(EditableText)).focusNode.hasFocus,
+      isFalse,
+    );
   });
 }

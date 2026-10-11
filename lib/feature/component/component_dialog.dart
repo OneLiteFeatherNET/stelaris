@@ -87,6 +87,7 @@ class _ComponentDialogState extends State<ComponentDialog> {
               child: MiniMessageField(
                 controller: _controller,
                 focusNode: _focusNode,
+                autofocus: true,
                 validator: (value) => checkIfEmptyAndReturnErrorString(
                   value ?? emptyString,
                   context,

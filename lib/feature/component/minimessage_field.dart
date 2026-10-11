@@ -63,6 +63,7 @@ class MiniMessageField extends StatelessWidget {
   const MiniMessageField({
     required this.controller,
     this.focusNode,
+    this.autofocus = false,
     this.validator,
     this.onSubmitted,
     super.key,
@@ -70,6 +71,7 @@ class MiniMessageField extends StatelessWidget {
 
   final MiniMessageController controller;
   final FocusNode? focusNode;
+  final bool autofocus;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onSubmitted;
 
@@ -86,7 +88,7 @@ class MiniMessageField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       focusNode: focusNode,
-      autofocus: true,
+      autofocus: autofocus,
       minLines: 1,
       maxLines: 3,
       // A text keyboard, not a multiline one, so Enter submits.
