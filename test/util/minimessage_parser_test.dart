@@ -412,4 +412,15 @@ void main() {
       );
     });
   });
+
+  test('underlines and strikethroughs are drawn thick enough to see', () {
+    final span = MiniMessageParser.parse('<gold><u>a</u><st>b</st>c');
+    final [under, strike, plain] = span.children!.cast<TextSpan>();
+
+    expect(under.style!.decoration, TextDecoration.underline);
+    expect(under.style!.decorationThickness, 2);
+    expect(under.style!.decorationColor, const Color(0xFFFFAA00));
+    expect(strike.style!.decorationThickness, 2);
+    expect(plain.style!.decorationThickness, isNull);
+  });
 }

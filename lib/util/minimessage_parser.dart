@@ -336,6 +336,10 @@ class MiniMessageParser {
     return _single[0];
   }
 
+  /// How thick underlines and strikethroughs are, as a multiple of what the
+  /// font says.
+  static const double _decorationThickness = 2;
+
   static TextStyle _createStyle({
     required Color color,
     required bool isBold,
@@ -357,6 +361,11 @@ class MiniMessageParser {
       decoration: decorations.isEmpty
           ? TextDecoration.none
           : TextDecoration.combine(decorations),
+      // The thickness of the font is often below a pixel, so the line can
+      // vanish depending on where it lands. Minecraft draws it one pixel of
+      // its eight pixel font thick, about twice as much.
+      decorationThickness: decorations.isEmpty ? null : _decorationThickness,
+      decorationColor: decorations.isEmpty ? null : color,
       fontSize: fontSize,
     );
   }
