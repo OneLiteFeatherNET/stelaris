@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/component_context.dart';
 import 'package:vulpes_data/color.dart' as vdata;
@@ -302,9 +304,34 @@ class MiniMessageParser {
       _interpolateMultiColor(colors, length == 1 ? 0.0 : index / (length - 1));
 
   /// The color of the character at [index] of [length] in a rainbow.
+  ///
+  /// Computed like Adventure, which turns the MiniMessage into the text in
+  /// game: the hue is the share of the index, at full saturation and value,
+  /// in single precision, and each channel is cut, not rounded, to 0 to 255.
   static Color rainbowColor(int index, int length) {
-    final hue = (index / (length == 1 ? 1 : length)) * 360;
-    return HSLColor.fromAHSL(1, hue, 0.8, 0.6).toColor();
+    final hue = _float(_float(index.toDouble()) / length);
+    final h = _float(hue * 6);
+    final sector = h.floor();
+    final f = _float(h - sector);
+    final q = _float(1 - f);
+    final (r, g, b) = switch (sector % 6) {
+      0 => (1.0, f, 0.0),
+      1 => (q, 1.0, 0.0),
+      2 => (0.0, 1.0, f),
+      3 => (0.0, q, 1.0),
+      4 => (f, 0.0, 1.0),
+      _ => (1.0, 0.0, q),
+    };
+    int channel(double value) => _float(value * 255).truncate();
+    return Color.fromARGB(255, channel(r), channel(g), channel(b));
+  }
+
+  static final Float32List _single = Float32List(1);
+
+  /// [value] at the precision of a Java float.
+  static double _float(double value) {
+    _single[0] = value;
+    return _single[0];
   }
 
   static Color _interpolateMultiColor(List<Color> colors, double t) {

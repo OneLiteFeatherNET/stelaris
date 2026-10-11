@@ -315,4 +315,36 @@ void main() {
       );
     });
   });
+
+  group('rainbowColor', () {
+    String hex(Color color) =>
+        (color.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0');
+
+    test('six characters go once around the color wheel', () {
+      expect(
+        [for (var i = 0; i < 6; i++) hex(MiniMessageParser.rainbowColor(i, 6))],
+        ['ff0000', 'ffff00', '00ff00', '00ffff', '0000ff', 'ff00ff'],
+      );
+    });
+
+    test('channels are cut like in adventure, not rounded', () {
+      // Hue 1/7: 6/7 of the way to yellow, 218.57 in green.
+      expect(hex(MiniMessageParser.rainbowColor(1, 7)), 'ffda00');
+    });
+
+    test('a single character is red', () {
+      expect(hex(MiniMessageParser.rainbowColor(0, 1)), 'ff0000');
+    });
+
+    test('the preview uses it for every character, spaces too', () {
+      final span = MiniMessageParser.parse('<rainbow>a b');
+      final colors = [
+        for (final child in span.children!.cast<TextSpan>()) child.style!.color,
+      ];
+      expect(colors, [
+        for (var i = 0; i < 3; i++) MiniMessageParser.rainbowColor(i, 3),
+      ]);
+      expect(hex(colors[1]!), '00ff00');
+    });
+  });
 }
