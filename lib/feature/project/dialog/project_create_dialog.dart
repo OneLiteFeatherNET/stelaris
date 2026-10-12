@@ -1,4 +1,3 @@
-import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
@@ -7,6 +6,8 @@ import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/util/dispatch_ext.dart';
+import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 
 class CreateProjectDialog extends StatefulWidget {
   const CreateProjectDialog({super.key});
@@ -137,11 +138,14 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
       labor: _labor,
     );
 
-    final status = await context.dispatchAndWait(
+    final (:ok, :error) = await context.dispatchAndCatch(
       AddProjectAction(newProject, select: true),
     );
-    if (status.isCompletedOk && mounted) {
-      Navigator.of(context).pop(newProject);
+    if (!mounted) return;
+    if (error != null) {
+      context.showErrorSnackBar(error);
+      return;
     }
+    if (ok) Navigator.of(context).pop(newProject);
   }
 }

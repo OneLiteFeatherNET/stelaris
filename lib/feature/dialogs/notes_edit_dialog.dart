@@ -4,6 +4,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/dispatch_ext.dart';
 
 /// Builds the action that saves [notes] — `null` when cleared — for the
 /// model the dialog was opened on.
@@ -49,7 +50,9 @@ class _NotesEditDialogState extends State<NotesEditDialog> {
     }
 
     setState(() => _saving = true);
-    final error = await _run(widget.saveAction(notes));
+    final (:ok, :error) = await context.dispatchAndCatch(
+      widget.saveAction(notes),
+    );
     if (!mounted) return;
     setState(() => _saving = false);
 
@@ -57,20 +60,7 @@ class _NotesEditDialogState extends State<NotesEditDialog> {
       context.showErrorSnackBar(error);
       return;
     }
-    Navigator.of(context).pop();
-  }
-
-  /// Runs [action] and resolves to its error, or null when it worked.
-  Future<Object?> _run(ReduxAction<AppState> action) async {
-    // Without a wrapError on the store, a backend error is rethrown rather
-    // than reported through the status.
-    final fallback = context.l10n.error_title;
-    try {
-      final status = await context.dispatchAndWait(action);
-      return status.isCompletedFailed ? status.originalError ?? fallback : null;
-    } catch (error) {
-      return error;
-    }
+    if (ok) Navigator.of(context).pop();
   }
 
   @override

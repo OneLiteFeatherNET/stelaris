@@ -18,6 +18,7 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/fake_http_client_adapter.dart';
+import '../../support/pump_until.dart';
 
 PaginatedResult<T> _page<T>(List<T> items) => PaginatedResult<T>(
   items: items,
@@ -155,8 +156,8 @@ void main() {
       tester,
     ) async {
       // Submitting dispatches ItemAddAction, which talks to the API; the
-      // dialog closes without waiting for it, but it still has to be
-      // stubbed so the test doesn't make a real request.
+      // dialog waits for it and closes once the item exists, so it is
+      // stubbed to answer like the backend.
       ApiService().itemApi.apiClient.dio.httpClientAdapter =
           FakeHttpClientAdapter.json(
             const ItemModel(
@@ -184,10 +185,11 @@ void main() {
       // API through Dio's real Timer-guarded internals. Those don't
       // resolve inside flutter_test's fake-async zone on web, so this runs
       // outside it, in a real async zone, the same way the app would.
-      await tester.runAsync(() async {
-        await tester.tap(find.text('Create'));
-        await tester.pumpAndSettle();
-      });
+      await pumpUntil(
+        tester,
+        action: () => tester.tap(find.text('Create')),
+        done: () => find.byType(ModelCreateDialog).evaluate().isEmpty,
+      );
 
       expect(router.state.matchedLocation, '/items');
     });

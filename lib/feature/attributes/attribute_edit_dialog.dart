@@ -6,6 +6,8 @@ import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/util/dispatch_ext.dart';
+import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 
 /// A dialog for editing an [AttributeModel]'s [AttributeModel.defaultValue]
 /// and [AttributeModel.maximumValue] — the only two fields an attribute has
@@ -59,8 +61,15 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
     );
 
     context.dispatch(SelectAttributeAction(updated));
-    await context.dispatchAndWait(AttributeDatabaseUpdate());
-    if (mounted) Navigator.of(context).pop(updated);
+    final (:ok, :error) = await context.dispatchAndCatch(
+      AttributeDatabaseUpdate(),
+    );
+    if (!mounted) return;
+    if (error != null) {
+      context.showErrorSnackBar(error);
+      return;
+    }
+    if (ok) Navigator.of(context).pop(updated);
   }
 
   @override

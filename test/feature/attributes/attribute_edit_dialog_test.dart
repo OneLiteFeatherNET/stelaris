@@ -12,6 +12,7 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/fake_http_client_adapter.dart';
+import '../../support/pump_until.dart';
 
 void main() {
   group('AttributeEditDialog', () {
@@ -102,6 +103,29 @@ void main() {
 
       expect(find.text('Edit attribute'), findsNothing);
       expect(store.state.attributes.items.first.defaultValue, 10);
+    });
+
+    testWidgets('a failed save keeps the dialog open and shows why', (
+      tester,
+    ) async {
+      await pumpDialog(tester);
+      (ApiService().attributeApi as BaseApi<AttributeModel>)
+              .apiClient
+              .dio
+              .httpClientAdapter =
+          FakeHttpClientAdapter.json(
+            {'title': 'Broken', 'status': 500},
+            statusCode: 500,
+          );
+
+      await pumpUntil(
+        tester,
+        action: () => tester.tap(find.text('Save')),
+        done: () => find.byType(SnackBar).evaluate().isNotEmpty,
+      );
+
+      expect(find.text('Edit attribute'), findsOneWidget);
+      expect(find.byType(SnackBar), findsOneWidget);
     });
 
     testWidgets('saves edited values and persists them to the store', (tester) async {

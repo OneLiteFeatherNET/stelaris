@@ -10,6 +10,9 @@ import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/util/dispatch_ext.dart';
+import 'package:stelaris/feature/base/snackbar/info_bar.dart';
+import 'package:stelaris/api/state/app_state.dart';
 
 /// Opens the create dialog for [entry]'s kind of model - the one its list's
 /// Add button shows - and adds what is submitted to [projectKey]'s project.
@@ -34,30 +37,33 @@ Future<bool> openModelCreateDialog(
           NavigationEntry.attributes => l10n.dialog_attribute_create,
         },
         projectNamespace: projectKey,
-        onSubmit: (name, key) {
-          switch (entry) {
-            case NavigationEntry.items:
-              context.dispatch(
-                ItemAddAction(ItemModel(uiName: name, key: key)),
-              );
-            case NavigationEntry.font:
-              context.dispatch(
-                FontAddAction(FontModel(uiName: name, key: key)),
-              );
-            case NavigationEntry.sound:
-              context.dispatch(
-                SoundAddAction(SoundEventModel(uiName: name, key: key)),
-              );
-            case NavigationEntry.advancements:
-              context.dispatchAndWait(
-                AdvancementAddAction(AdvancementModel(uiName: name, key: key)),
-              );
-            case NavigationEntry.attributes:
-              context.dispatchAndWait(
-                AttributeAddAction(AttributeModel(uiName: name, key: key)),
-              );
+        onSubmit: (name, key) async {
+          final ReduxAction<AppState> action = switch (entry) {
+            NavigationEntry.items => ItemAddAction(
+              ItemModel(uiName: name, key: key),
+            ),
+            NavigationEntry.font => FontAddAction(
+              FontModel(uiName: name, key: key),
+            ),
+            NavigationEntry.sound => SoundAddAction(
+              SoundEventModel(uiName: name, key: key),
+            ),
+            NavigationEntry.advancements => AdvancementAddAction(
+              AdvancementModel(uiName: name, key: key),
+            ),
+            NavigationEntry.attributes => AttributeAddAction(
+              AttributeModel(uiName: name, key: key),
+            ),
+          };
+          // Closes only once the model exists, a failure keeps what was
+          // typed and shows why.
+          final (:ok, :error) = await context.dispatchAndCatch(action);
+          if (!context.mounted) return;
+          if (error != null) {
+            context.showErrorSnackBar(error);
+            return;
           }
-          Navigator.pop(context, true);
+          if (ok) Navigator.pop(context, true);
         },
       );
     },
