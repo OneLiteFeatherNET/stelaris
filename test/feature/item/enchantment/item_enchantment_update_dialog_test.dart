@@ -75,5 +75,36 @@ void main() {
 
       expect(find.text('The maximum is $maxEnchantmentLevel'), findsOneWidget);
     });
+
+    testWidgets('does not save a level above the max level', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) => TextButton(
+              onPressed: () => showDialog<void>(
+                context: context,
+                builder: (_) => ItemEnchantmentUpdateDialog(
+                  enchantment: _FakeEnchantment(),
+                  dto: const ItemEnchantmentDto(name: 'sharpness', level: 1),
+                ),
+              ),
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextFormField), '10');
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(ItemEnchantmentUpdateDialog), findsOneWidget);
+      expect(find.text('The maximum is 5'), findsOneWidget);
+    });
   });
 }
