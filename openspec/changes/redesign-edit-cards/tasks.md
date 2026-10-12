@@ -19,7 +19,7 @@
 - [x] 2.1 Font, General tab: "Source" (provider, texture path) and "Metrics" (ascent, height).
 - [x] 2.2 Sound, General tab: "Event" (key, subtitle).
 - [x] 2.3 Advancement: the display flags as today, then "Display", "Text" and "Position".
-- [ ] 2.4 The component card as an edit card, the component's name as its main text.
+- [x] 2.4 The component card as an edit card, the component's name as its main text.
 
 ## 3. Clean up
 
