@@ -56,6 +56,9 @@ class EditCardGrid extends StatelessWidget {
                   children: [
                     for (final field in section.fields)
                       SizedBox(
+                        // Keeps each card's hover and focus when a field
+                        // comes or goes, like the background of a root.
+                        key: ValueKey(field.label),
                         // A text component takes the full row.
                         width: field is TextComponentEdit ? width : cardWidth,
                         child: _card(context, field),
