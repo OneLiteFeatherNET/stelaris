@@ -124,6 +124,28 @@ void main() {
       expect(find.byType(Dialog), findsNothing);
     });
 
+    testWidgets('many options are built lazily, the current one in view', (
+      tester,
+    ) async {
+      final options = [for (var i = 0; i < 500; i++) 'option $i'];
+      await pumpGrid(
+        tester,
+        ChoiceEdit<String>(
+          label: 'Parent',
+          icon: Icons.list,
+          value: 'option 300',
+          options: options,
+          display: (option) => option,
+          onChanged: changes.add,
+        ),
+      );
+      await open(tester);
+
+      expect(find.byType(ListTile).evaluate().length, lessThan(20));
+      expect(find.widgetWithText(ListTile, 'option 300'), findsOneWidget);
+      expect(find.widgetWithText(ListTile, 'option 0'), findsNothing);
+    });
+
     testWidgets('picking the current option changes nothing', (tester) async {
       await pumpGrid(tester, frame());
       await open(tester);

@@ -50,8 +50,17 @@ String textComponentSource(String? json) {
   }
 }
 
+/// The height of one option in the choice dialog.
+const double _optionExtent = 48;
+
+/// The most options the choice dialog shows at once, more scroll.
+const int _visibleOptions = 8;
+
 /// Lets the user pick one of [field]'s options, the current one marked. A
 /// tap picks and closes. Resolves to the pick, or null when closed.
+///
+/// The options are built lazily, a parent advancement can have hundreds,
+/// and the list starts at the current one.
 Future<T?> showChoiceEditDialog<T>(BuildContext context, ChoiceEdit<T> field) {
   return showDialog<T>(
     context: context,
@@ -65,15 +74,7 @@ Future<T?> showChoiceEditDialog<T>(BuildContext context, ChoiceEdit<T> field) {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (final option in field.options)
-            ListTile(
-              selected: option == field.value,
-              leading: option == field.value
-                  ? const Icon(Icons.check)
-                  : const SizedBox(width: 24),
-              title: Text(field.display(option)),
-              onTap: () => Navigator.of(context).pop(option),
-            ),
+          _ChoiceList<T>(field: field),
           if (field.footer case final footer?) ...[
             const SizedBox(height: 8),
             Text(
@@ -87,6 +88,64 @@ Future<T?> showChoiceEditDialog<T>(BuildContext context, ChoiceEdit<T> field) {
       ),
     ),
   );
+}
+
+/// The options of a [ChoiceEdit], at most [_visibleOptions] in view.
+class _ChoiceList<T> extends StatefulWidget {
+  const _ChoiceList({required this.field});
+
+  final ChoiceEdit<T> field;
+
+  @override
+  State<_ChoiceList<T>> createState() => _ChoiceListState<T>();
+}
+
+class _ChoiceListState<T> extends State<_ChoiceList<T>> {
+  late final List<T> _options = widget.field.options;
+  late final int _visible = _options.length.clamp(1, _visibleOptions);
+
+  /// Starts with the current option in view, as far down as the list goes.
+  late final ScrollController _controller = ScrollController(
+    initialScrollOffset:
+        (_options.indexOf(widget.field.value) - _visible ~/ 2).clamp(
+          0,
+          _options.length - _visible,
+        ) *
+        _optionExtent,
+  );
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final field = widget.field;
+    return SizedBox(
+      height: _visible * _optionExtent,
+      child: ListView.builder(
+        key: const Key('choice_edit_options'),
+        controller: _controller,
+        itemCount: _options.length,
+        itemExtent: _optionExtent,
+        itemBuilder: (context, index) {
+          final option = _options[index];
+          final current = option == field.value;
+          return ListTile(
+            dense: true,
+            selected: current,
+            leading: current
+                ? const Icon(Icons.check)
+                : const SizedBox(width: 24),
+            title: Text(field.display(option)),
+            onTap: () => Navigator.of(context).pop(option),
+          );
+        },
+      ),
+    );
+  }
 }
 
 /// Edits a [TextEdit] in one line. Opens with the value selected, so typing
