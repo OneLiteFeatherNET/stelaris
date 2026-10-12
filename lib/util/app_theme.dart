@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// Factory class for building Material 3 themes and scaling typographies.
 abstract final class AppTheme {
@@ -25,6 +26,8 @@ abstract final class AppTheme {
       brightness: Brightness.light,
       colorScheme: colorScheme,
       textTheme: scaleTextTheme(_baseLightText, settings.fontScale),
+      cardTheme: _cardTheme,
+      dialogTheme: _dialogTheme,
     );
   }
 
@@ -40,8 +43,18 @@ abstract final class AppTheme {
       brightness: Brightness.dark,
       colorScheme: colorScheme,
       textTheme: scaleTextTheme(_baseDarkText, settings.fontScale),
+      cardTheme: _cardTheme,
+      dialogTheme: _dialogTheme,
     );
   }
+
+  static final CardThemeData _cardTheme = CardThemeData(
+    shape: AppShapes.rounded(AppShapes.medium),
+  );
+
+  static final DialogThemeData _dialogTheme = DialogThemeData(
+    shape: AppShapes.rounded(AppShapes.extraLarge),
+  );
 
   /// Scales the [fontSize] of all text styles in [base] by [factor].
   static TextTheme scaleTextTheme(TextTheme base, double factor) {

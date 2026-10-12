@@ -73,7 +73,6 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
         : null;
 
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 420, maxHeight: 420),
         child: Padding(
