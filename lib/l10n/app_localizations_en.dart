@@ -303,12 +303,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tooltip_delete => 'Delete';
 
   @override
-  String get tooltip_ascent => 'Change ascent';
-
-  @override
-  String get tooltip_height => 'Change height';
-
-  @override
   String get tooltip_line_count => 'Current line count';
 
   @override

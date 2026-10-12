@@ -640,18 +640,6 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get tooltip_delete;
 
-  /// No description provided for @tooltip_ascent.
-  ///
-  /// In en, this message translates to:
-  /// **'Change ascent'**
-  String get tooltip_ascent;
-
-  /// No description provided for @tooltip_height.
-  ///
-  /// In en, this message translates to:
-  /// **'Change height'**
-  String get tooltip_height;
-
   /// No description provided for @tooltip_line_count.
   ///
   /// In en, this message translates to:

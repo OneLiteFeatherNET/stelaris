@@ -124,8 +124,6 @@
   "item_level": "Level: ",
 
   "tooltip_delete": "Delete",
-  "tooltip_ascent": "Change ascent",
-  "tooltip_height": "Change height",
   "tooltip_line_count": "Current line count",
   "tooltip_item_group": "Change the group of an item",
   "tooltip_item_enchantment_all_set": "All enchantments has been set for this group!",

@@ -23,7 +23,7 @@
 
 ## 3. Clean up
 
-- [ ] 3.1 Remove `TextInputCard`, `DropdownCard`, `BaseCard` and their tests.
-- [ ] 3.2 Remove `DetailForms` and `RegisterDetailForm`, and their call in
+- [x] 3.1 Remove `TextInputCard`, `DropdownCard`, `BaseCard` and their tests.
+- [x] 3.2 Remove `DetailForms` and `RegisterDetailForm`, and their call in
       `saveUnsavedChanges`.
-- [ ] 3.3 Remove the strings only the old cards used.
+- [x] 3.3 Remove the strings only the old cards used.
