@@ -13,6 +13,7 @@ class ListField extends StatelessWidget {
     required this.values,
     required this.onChanged,
     this.action,
+    this.trailing,
     super.key,
   });
 
@@ -23,6 +24,9 @@ class ListField extends StatelessWidget {
 
   /// Shown in the header before the add button, e.g. to switch the input.
   final Widget? action;
+
+  /// Shown in the header after the add button, e.g. to remove the list.
+  final Widget? trailing;
 
   bool get _full =>
       schema.maxLength != null && values.length >= schema.maxLength!;
@@ -51,6 +55,7 @@ class ListField extends StatelessWidget {
                 ? null
                 : () => onChanged([...values, initialValue(schema.element)]),
           ),
+          ?trailing,
         ],
       ),
       children: [

@@ -15,6 +15,7 @@ class RegistryTagField extends StatelessWidget {
     required this.schema,
     required this.value,
     required this.onChanged,
+    this.trailing,
     super.key,
   });
 
@@ -22,6 +23,9 @@ class RegistryTagField extends StatelessWidget {
   final RegistryTagSchema schema;
   final Object? value;
   final ValueChanged<Object?> onChanged;
+
+  /// Shown at the end of the header, e.g. to remove the field.
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +42,17 @@ class RegistryTagField extends StatelessWidget {
         values: (value as List?) ?? const [],
         onChanged: onChanged,
         action: mode,
+        trailing: trailing,
       );
     }
     final registry = schema.registry;
     return SchemaSection(
       title: label ?? l10n.component_field_entries,
       subtitle: registry == null ? null : l10n.component_tag_helper(registry),
-      trailing: mode,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [mode, ?trailing],
+      ),
       children: [
         TextFormField(
           initialValue: value,

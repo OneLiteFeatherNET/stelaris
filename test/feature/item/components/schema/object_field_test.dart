@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/item/components/schema/fields/section.dart';
 import 'package:stelaris/feature/item/components/schema/schema_field.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:vulpes_data/component.dart';
@@ -17,6 +18,21 @@ const _schema = ObjectSchema({
     FloatSchema(),
     optional: true,
   ),
+  'allowed_entities': ComponentField(
+    'Allowed Entities',
+    RegistryTagSchema(registry: 'entity_type'),
+    optional: true,
+  ),
+  'conditions': ComponentField(
+    'Conditions',
+    ObjectSchema({'ticks': ComponentField('Ticks', IntSchema())}),
+    optional: true,
+  ),
+  'sounds': ComponentField(
+    'Sounds',
+    ListSchema(KeySchema(registry: 'sound_event')),
+    optional: true,
+  ),
 });
 
 void main() {
@@ -30,14 +46,16 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
-          body: StatefulBuilder(
-            builder: (context, setState) => SchemaField(
-              schema: _schema,
-              value: value,
-              onChanged: (next) => setState(() {
-                changes.add(next);
-                value = next! as Map<String, Object?>;
-              }),
+          body: SingleChildScrollView(
+            child: StatefulBuilder(
+              builder: (context, setState) => SchemaField(
+                schema: _schema,
+                value: value,
+                onChanged: (next) => setState(() {
+                  changes.add(next);
+                  value = next! as Map<String, Object?>;
+                }),
+              ),
             ),
           ),
         ),
@@ -106,8 +124,48 @@ void main() {
       'equip_sound': 'minecraft:a',
       'dispensable': true,
       'damage_reduction': 1.0,
+      'allowed_entities': <Object?>[],
+      'conditions': {'ticks': 0},
+      'sounds': <Object?>[],
     });
 
     expect(find.text('More fields'), findsNothing);
+  });
+
+  for (final name in ['allowed_entities', 'conditions', 'sounds']) {
+    testWidgets('a section of $name has the remove button in its header', (
+      tester,
+    ) async {
+      await pumpObject(tester, {
+        'slot': 'head',
+        'allowed_entities': <Object?>[],
+        'conditions': {'ticks': 0},
+        'sounds': <Object?>[],
+      });
+
+      final sections = find.byType(SchemaSection);
+      expect(
+        find.descendant(of: sections, matching: remove(name)),
+        findsOneWidget,
+      );
+      // At the top of the section, level with its title.
+      final section = tester.getRect(
+        find.ancestor(of: remove(name), matching: sections).first,
+      );
+      expect(tester.getRect(remove(name)).top - section.top, lessThan(16));
+    });
+  }
+
+  testWidgets('a switch has the remove button beside it', (tester) async {
+    await pumpObject(tester, {'slot': 'head', 'dispensable': true});
+
+    expect(
+      find.descendant(
+        of: find.byType(SchemaSection),
+        matching: remove('dispensable'),
+      ),
+      findsNothing,
+    );
+    expect(remove('dispensable'), findsOneWidget);
   });
 }

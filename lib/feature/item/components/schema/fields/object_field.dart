@@ -18,6 +18,7 @@ class ObjectField extends StatelessWidget {
     required this.schema,
     required this.values,
     required this.onChanged,
+    this.trailing,
     super.key,
   });
 
@@ -25,6 +26,10 @@ class ObjectField extends StatelessWidget {
   final ObjectSchema schema;
   final Map<String, Object?> values;
   final ValueChanged<Object?> onChanged;
+
+  /// Shown at the end of the header, e.g. to remove the object. The top
+  /// level object has no header.
+  final Widget? trailing;
 
   void _set(String name, Object? value) => onChanged({...values, name: value});
 
@@ -56,7 +61,7 @@ class ObjectField extends StatelessWidget {
         children: spaced(children),
       );
     }
-    return SchemaSection(title: label, children: children);
+    return SchemaSection(title: label, trailing: trailing, children: children);
   }
 
   void _add(String name, ComponentField field) => _toggle(name, field, true);
@@ -76,8 +81,9 @@ class ObjectField extends StatelessWidget {
       tooltip: l10n.component_field_remove(field.label),
       onPressed: () => _toggle(name, field, false),
     );
-    // A single line input shows the button inside, everything else beside.
-    final inside = SchemaField.takesSuffix(field.schema);
+    // Inside a single line input or in the header of a section, beside
+    // everything else.
+    final inside = SchemaField.showsSuffix(field.schema, values[name]);
     final input = SchemaField(
       schema: field.schema,
       value: values[name],
