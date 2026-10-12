@@ -2,11 +2,12 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_dialogs.dart';
 import 'package:stelaris/feature/base/edit_card/edit_field.dart';
+import 'package:stelaris/feature/component/component_preview.dart';
 
 /// The fields of a detail page in [sections], each with its heading. In a
 /// section the cards fill as many columns as fit.
 class EditCardGrid extends StatelessWidget {
-  const EditCardGrid({required this.sections, super.key});
+  const EditCardGrid({required this.sections, this.header, super.key});
 
   /// The widest a card gets before another column fits.
   static const double _maxCardExtent = 320;
@@ -14,6 +15,10 @@ class EditCardGrid extends StatelessWidget {
   static const double _padding = 16;
 
   final List<EditSection> sections;
+
+  /// Shown above the sections and scrolled with them, e.g. toggles that
+  /// change in place.
+  final Widget? header;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +37,10 @@ class EditCardGrid extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (header case final header?) ...[
+                header,
+                const SizedBox(height: 24),
+              ],
               for (final (index, section) in sections.indexed) ...[
                 if (index > 0) const SizedBox(height: 24),
                 Text(
@@ -47,16 +56,9 @@ class EditCardGrid extends StatelessWidget {
                   children: [
                     for (final field in section.fields)
                       SizedBox(
-                        width: cardWidth,
-                        child: EditCard(
-                          icon: field.icon,
-                          label: field.label,
-                          value: switch (field) {
-                            TextEdit(:final value) => value,
-                          },
-                          footer: field.footer,
-                          onTap: () => editField(context, field),
-                        ),
+                        // A text component takes the full row.
+                        width: field is TextComponentEdit ? width : cardWidth,
+                        child: _card(context, field),
                       ),
                   ],
                 ),
@@ -65,6 +67,28 @@ class EditCardGrid extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _card(BuildContext context, EditField field) {
+    final text = switch (field) {
+      TextEdit(:final value) => value,
+      ChoiceEdit() => field.displayValue,
+      TextComponentEdit(:final value) => textComponentSource(value),
+    };
+    return EditCard(
+      icon: field.icon,
+      label: field.label,
+      value: text,
+      footer: field.footer,
+      preview: switch (field) {
+        TextComponentEdit(:final componentContext) => ComponentPreview(
+          text: text,
+          componentContext: componentContext,
+        ),
+        _ => null,
+      },
+      onTap: () => editField(context, field),
     );
   }
 }

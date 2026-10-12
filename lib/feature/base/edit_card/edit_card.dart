@@ -15,6 +15,7 @@ class EditCard extends StatefulWidget {
     required this.value,
     required this.onTap,
     this.footer,
+    this.preview,
     super.key,
   });
 
@@ -25,6 +26,10 @@ class EditCard extends StatefulWidget {
   final String value;
   final String? footer;
   final VoidCallback onTap;
+
+  /// Shown instead of the value text when the value is not empty, e.g. a
+  /// text component with its formatting.
+  final Widget? preview;
 
   @override
   State<EditCard> createState() => _EditCardState();
@@ -80,15 +85,18 @@ class _EditCardState extends State<EditCard> {
                 ],
               ),
               const SizedBox(height: 6),
-              Text(
-                empty ? context.l10n.edit_card_placeholder : widget.value,
-                key: const Key('edit_card_value'),
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: empty ? muted : null,
+              if (widget.preview case final preview? when !empty)
+                preview
+              else
+                Text(
+                  empty ? context.l10n.edit_card_placeholder : widget.value,
+                  key: const Key('edit_card_value'),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: empty ? muted : null,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
               if (footer != null) ...[
                 const SizedBox(height: 4),
                 Text(
