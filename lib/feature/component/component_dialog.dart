@@ -15,6 +15,7 @@ class ComponentDialog extends StatefulWidget {
     required this.componentContext,
     required this.onSave,
     this.initialValue = emptyString,
+    this.required = true,
     super.key,
   });
 
@@ -23,6 +24,10 @@ class ComponentDialog extends StatefulWidget {
   final ComponentContext componentContext;
   final ValueUpdate<String> onSave;
   final String initialValue;
+
+  /// Whether an empty text is refused. Off, saving an empty text clears
+  /// the component, e.g. an advancement's title.
+  final bool required;
 
   @override
   State<ComponentDialog> createState() => _ComponentDialogState();
@@ -52,8 +57,12 @@ class _ComponentDialogState extends State<ComponentDialog> {
           onChanged: (text) => _text = text,
           componentContext: widget.componentContext,
           autofocus: true,
-          validator: (value) =>
-              checkIfEmptyAndReturnErrorString(value ?? emptyString, context),
+          validator: widget.required
+              ? (value) => checkIfEmptyAndReturnErrorString(
+                  value ?? emptyString,
+                  context,
+                )
+              : null,
           onSubmitted: (_) => _save(),
         ),
       ),

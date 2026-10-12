@@ -303,12 +303,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tooltip_delete => 'Delete';
 
   @override
-  String get tooltip_ascent => 'Change ascent';
-
-  @override
-  String get tooltip_height => 'Change height';
-
-  @override
   String get tooltip_line_count => 'Current line count';
 
   @override
@@ -1585,4 +1579,60 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get book_resolved_hint =>
       'The text is final, the game doesn\'t fill in selectors or scores when the book is opened.';
+
+  @override
+  String get edit_card_placeholder => 'Not set';
+
+  @override
+  String edit_card_edit(String label) {
+    return 'Edit $label';
+  }
+
+  @override
+  String get font_section_source => 'Source';
+
+  @override
+  String get font_section_metrics => 'Metrics';
+
+  @override
+  String get font_hint_provider => 'The provider type, e.g. bitmap';
+
+  @override
+  String get font_hint_texture_path =>
+      'A namespaced path, e.g. minecraft:font/ascii.png';
+
+  @override
+  String get font_hint_ascent =>
+      'Pixels above the baseline, at most the height';
+
+  @override
+  String get font_hint_height => 'Height of a glyph in pixels, 8 by default';
+
+  @override
+  String get sound_section_general => 'Event';
+
+  @override
+  String get sound_hint_key =>
+      'A sound key, e.g. entity.player.hurt or custom:ui/click';
+
+  @override
+  String get sound_hint_subtitle =>
+      'Shown to players with subtitles on, e.g. Player hurts';
+
+  @override
+  String get advancement_section_display => 'Display';
+
+  @override
+  String get advancement_section_text => 'Text';
+
+  @override
+  String get advancement_section_position => 'Position';
+
+  @override
+  String get advancement_hint_material =>
+      'The icon, a material like minecraft:diamond';
+
+  @override
+  String get advancement_hint_frame =>
+      'Task and goal show a green description, challenge a purple one';
 }

@@ -7,10 +7,11 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/font/chars/font_char_page.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/font/font_general_page.dart';
-import 'package:stelaris/feature/base/cards/text_input_card.dart';
+import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/api/util/navigation.dart';
 
 import '../../support/fake_http_client_adapter.dart';
 
@@ -138,22 +139,22 @@ void main() {
       expect(selectedTab(tester), 0);
     });
 
-    /// The text field of the card labelled [label].
-    Finder fieldOf(String label) => find.descendant(
-      of: find.ancestor(
-        of: find.text(label),
-        matching: find.byWidgetPredicate((w) => w is TextInputCard),
-      ),
-      matching: find.byType(TextFormField),
-    );
-
-    Future<void> enterAndBlur(
+    /// Opens the card labelled [label], types [text] and saves with Enter.
+    Future<void> editCard(
       WidgetTester tester,
       String label,
       String text,
     ) async {
-      await tester.enterText(fieldOf(label), text);
-      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.tap(find.widgetWithText(EditCard, label));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.descendant(
+          of: find.byType(Dialog),
+          matching: find.byType(TextFormField),
+        ),
+        text,
+      );
+      await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
     }
 
@@ -162,20 +163,54 @@ void main() {
     ) async {
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Texture path', 'minecraft:font/ascii.png');
+      await editCard(tester, 'Texture path', 'minecraft:font/ascii.png');
 
       expect(store.state.selectedFont?.texturePath, 'minecraft:font/ascii.png');
+      expect(store.state.unsavedChanges, NavigationEntry.font);
+      expect(find.byType(Dialog), findsNothing);
     });
 
-    testWidgets('an invalid texture path shows an error', (tester) async {
+    testWidgets('an invalid texture path keeps the dialog open', (
+      tester,
+    ) async {
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Texture path', 'Not A Path');
+      await editCard(tester, 'Texture path', 'Not A Path');
 
       expect(
         find.text('Invalid texture path (e.g. "minecraft:font/ascii.png")'),
         findsOneWidget,
       );
+      expect(find.byType(Dialog), findsOneWidget);
+      expect(store.state.selectedFont?.texturePath, isNot('Not A Path'));
+    });
+
+    testWidgets('a number field takes only digits', (tester) async {
+      await pumpPage(tester);
+
+      await editCard(tester, 'Ascent', '7x');
+
+      expect(store.state.selectedFont?.ascent, 7);
+    });
+
+    testWidgets('cancel changes nothing', (tester) async {
+      await pumpPage(tester);
+      final before = store.state.selectedFont;
+
+      await tester.tap(find.widgetWithText(EditCard, 'Height'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.descendant(
+          of: find.byType(Dialog),
+          matching: find.byType(TextFormField),
+        ),
+        '99',
+      );
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+
+      expect(store.state.selectedFont, before);
+      expect(store.state.unsavedChanges, isNull);
     });
 });
 }

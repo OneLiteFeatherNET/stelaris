@@ -34,6 +34,8 @@ void main() {
 
   testWidgets('a text component gets the formatting toolbar', (tester) async {
     await pumpField(tester, value: '', changes: []);
+    // Built a frame after the field.
+    await tester.pump();
 
     expect(find.byType(ComponentToolbar), findsOneWidget);
     expect(find.text('Name'), findsOneWidget);

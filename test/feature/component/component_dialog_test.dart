@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/component/component_dialog.dart';
+import 'package:stelaris/feature/component/component_toolbar.dart';
 import 'package:stelaris/feature/component/component_preview.dart';
 import 'package:stelaris/feature/component/minimessage_field.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -127,5 +128,19 @@ void main() {
       tester.widget<EditableText>(find.byType(EditableText)).focusNode.hasFocus,
       isFalse,
     );
+  });
+
+  testWidgets('the toolbar follows a frame later without moving the field', (
+    tester,
+  ) async {
+    await pumpDialog(tester, initialValue: 'x');
+    // pumpDialog pumps once: the field is there, the toolbar not yet.
+    expect(find.byType(ComponentToolbar), findsNothing);
+    final before = tester.getTopLeft(find.byType(TextField));
+
+    await tester.pump();
+
+    expect(find.byType(ComponentToolbar), findsOneWidget);
+    expect(tester.getTopLeft(find.byType(TextField)), before);
   });
 }

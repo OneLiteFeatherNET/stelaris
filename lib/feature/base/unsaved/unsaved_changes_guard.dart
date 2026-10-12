@@ -9,7 +9,6 @@ import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
-import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/dispatch_ext.dart';
 
@@ -25,23 +24,16 @@ ReduxAction<AppState>? saveActionFor(NavigationEntry entry) => switch (entry) {
   NavigationEntry.attributes => null,
 };
 
-/// Validates the detail page's registered forms and saves [entry]'s
-/// selected model. Returns true only if it was actually persisted; errors
-/// are shown the same way the old floating save button showed them.
+/// Saves [entry]'s selected model. Returns true only if it was actually
+/// persisted; errors are shown the same way the old floating save button
+/// showed them. Its fields are already valid, their dialogs only take valid
+/// values.
 Future<bool> saveUnsavedChanges(
   BuildContext context,
   NavigationEntry entry,
 ) async {
   final action = saveActionFor(entry);
   if (action == null) return true;
-
-  // The fields commit their value on blur. Unfocus and let that commit land
-  // first, or the text still being typed wouldn't be part of the save.
-  FocusManager.instance.primaryFocus?.unfocus();
-  await WidgetsBinding.instance.endOfFrame;
-  if (!context.mounted) return false;
-
-  if (!DetailForms.validateAll()) return false;
 
   final (:ok, :error) = await context.dispatchAndCatch(action);
   if (!context.mounted) return false;

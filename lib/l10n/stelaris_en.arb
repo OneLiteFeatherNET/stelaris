@@ -124,8 +124,6 @@
   "item_level": "Level: ",
 
   "tooltip_delete": "Delete",
-  "tooltip_ascent": "Change ascent",
-  "tooltip_height": "Change height",
   "tooltip_line_count": "Current line count",
   "tooltip_item_group": "Change the group of an item",
   "tooltip_item_enchantment_all_set": "All enchantments has been set for this group!",
@@ -802,5 +800,28 @@
   "book_filtered_page": "Page for the chat filter",
   "book_filtered_hint": "Shown instead to players with the chat filter on. Empty uses the normal one.",
   "book_resolved": "Resolved",
-  "book_resolved_hint": "The text is final, the game doesn't fill in selectors or scores when the book is opened."
+  "book_resolved_hint": "The text is final, the game doesn't fill in selectors or scores when the book is opened.",
+  "edit_card_placeholder": "Not set",
+  "edit_card_edit": "Edit {label}",
+  "@edit_card_edit": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "font_section_source": "Source",
+  "font_section_metrics": "Metrics",
+  "font_hint_provider": "The provider type, e.g. bitmap",
+  "font_hint_texture_path": "A namespaced path, e.g. minecraft:font/ascii.png",
+  "font_hint_ascent": "Pixels above the baseline, at most the height",
+  "font_hint_height": "Height of a glyph in pixels, 8 by default",
+  "sound_section_general": "Event",
+  "sound_hint_key": "A sound key, e.g. entity.player.hurt or custom:ui/click",
+  "sound_hint_subtitle": "Shown to players with subtitles on, e.g. Player hurts",
+  "advancement_section_display": "Display",
+  "advancement_section_text": "Text",
+  "advancement_section_position": "Position",
+  "advancement_hint_material": "The icon, a material like minecraft:diamond",
+  "advancement_hint_frame": "Task and goal show a green description, challenge a purple one"
 }

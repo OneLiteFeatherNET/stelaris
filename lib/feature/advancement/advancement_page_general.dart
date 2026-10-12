@@ -6,17 +6,16 @@ import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/advancement/selected_advancement_state.dart';
 import 'package:stelaris/feature/advancement/advancement_display_flags.dart';
-import 'package:stelaris/feature/advancement/text_component.dart';
-import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
-import 'package:stelaris/feature/base/cards/dropdown_card.dart';
-import 'package:stelaris/feature/base/cards/text_input_card.dart';
+import 'package:stelaris/feature/base/edit_card/edit_card_grid.dart';
+import 'package:stelaris/feature/base/edit_card/edit_field.dart';
+import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:vulpes_data/advancement.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 
-/// The value of the parent dropdown for a root advancement.
+/// The value of the parent choice for a root advancement.
 const String _noParent = emptyString;
 
 /// Allows a signed decimal number while it is typed.
@@ -27,97 +26,33 @@ const TextInputType _decimalInput = TextInputType.numberWithOptions(
   decimal: true,
 );
 
-/// A widget that represents the general advancement management page.
-///
-/// The [AdvancementGeneralPage] allows users to view and edit the details
-/// of a selected advancement: how it is shown, its icon, title, description,
-/// frame type and its place in the advancement tree.
-/// The title and description are edited as plain text and stored as JSON
-/// text components.
-class AdvancementGeneralPage extends StatefulWidget {
+/// The advancement's page: how it is shown, its icon, title, description,
+/// frame and its place in the advancement tree. The display flags change in
+/// place, every other field is a card that opens a dialog. The title and
+/// description are edited as MiniMessage and stored as JSON text
+/// components.
+class AdvancementGeneralPage extends StatelessWidget {
   /// Creates an instance of [AdvancementGeneralPage].
   const AdvancementGeneralPage({super.key});
 
-  @override
-  State<AdvancementGeneralPage> createState() => _AdvancementGeneralPageState();
-}
-
-class _AdvancementGeneralPageState extends State<AdvancementGeneralPage> {
-  /// A global key for the form to manage its state and validation.
-  final _key = GlobalKey<FormState>();
-
-  /// Scroll controller for the scrollable content
-  final ScrollController _scrollController = ScrollController();
-
-  /// A list of dropdown menu items for frame types.
-  static const List<FrameType> types = FrameType.values;
-  static final List<DropdownMenuItem<FrameType>> items = List.generate(
-    types.length,
-    (index) => DropdownMenuItem(
-      value: types[index],
-      child: Text(types[index].displayName),
-    ),
-  );
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
+  /// Puts [advancement] into the store and marks the page unsaved. The
+  /// header's save sends it to the backend.
+  static void _stage(BuildContext context, AdvancementModel advancement) {
+    context
+      ..dispatch(UpdateAdvancementAction(advancement))
+      ..dispatch(MarkUnsavedChangesAction(NavigationEntry.advancements));
   }
 
-  /// Dispatches the selected advancement changed by [change], unless nothing
-  /// changed.
-  void _update(
-    BuildContext context,
-    AdvancementModel selected,
-    AdvancementModel Function(AdvancementModel model) change,
-  ) {
-    final newEntry = change(selected);
-    if (newEntry == selected) return;
-    context.dispatch(UpdateAdvancementAction(newEntry));
-  }
-
-  /// Builds the parent options: a root entry, the loaded [parents] and the
-  /// current parent, if it is not loaded yet.
-  List<DropdownMenuItem<String>> _parentItems(
-    BuildContext context,
-    SelectedAdvancementView vm,
-  ) {
+  /// The parent options: a root, the loaded advancements and the current
+  /// parent, if it is not loaded yet.
+  static List<String> _parents(SelectedAdvancementView vm) {
     final parentId = vm.selected.parentId;
-    final isLoaded =
-        parentId == null || vm.parents.any((model) => model.id == parentId);
     return [
-      DropdownMenuItem(
-        value: _noParent,
-        child: Text(context.l10n.advancement_parent_none),
-      ),
-      for (final model in vm.parents)
-        DropdownMenuItem(value: model.id!, child: Text(model.uiName)),
-      if (!isLoaded) DropdownMenuItem(value: parentId, child: Text(parentId)),
+      _noParent,
+      for (final model in vm.parents) model.id!,
+      if (parentId != null && !vm.parents.any((model) => model.id == parentId))
+        parentId,
     ];
-  }
-
-  TextInputCard<double> _positionCard(
-    BuildContext context, {
-    required String display,
-    required double value,
-    required AdvancementModel Function(double value) change,
-    required int order,
-    required SelectedAdvancementView vm,
-  }) {
-    return TextInputCard<double>(
-      display: display,
-      tooltipMessage: context.l10n.tooltip_advancement_position,
-      currentValue: value.toString(),
-      valueUpdate: (input) {
-        final parsed = double.tryParse(input) ?? 0;
-        _update(context, vm.selected, (_) => change(parsed));
-      },
-      inputType: _decimalInput,
-      formatter: [FilteringTextInputFormatter.allow(_decimalPattern)],
-      isNumber: true,
-      focusOrder: NumericFocusOrder(order.toDouble()),
-    );
   }
 
   @override
@@ -125,180 +60,133 @@ class _AdvancementGeneralPageState extends State<AdvancementGeneralPage> {
     return StoreConnector<AppState, SelectedAdvancementView>(
       vm: () => SelectedAdvancementFactory(),
       builder: (context, vm) {
+        final l10n = context.l10n;
         final selected = vm.selected;
-        return FocusScope(
-          child: FocusTraversalGroup(
-            policy: OrderedTraversalPolicy(),
-            child: Form(
-              key: _key,
-              onChanged: () => context.dispatch(
-                MarkUnsavedChangesAction(NavigationEntry.advancements),
-              ),
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Scrollbar(
-                      controller: _scrollController,
-                      thumbVisibility: true,
-                      trackVisibility: true,
-                      child: SingleChildScrollView(
-                        controller: _scrollController,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AdvancementDisplayFlags(selected: selected),
-                              const SizedBox(height: 16),
-                              Wrap(
-                                spacing: 16,
-                                runSpacing: 16,
-                                children: [
-                                  TextInputCard<String>(
-                                    display: context.l10n.card_material,
-                                    currentValue:
-                                        selected.material ?? emptyString,
-                                    hintText: defaultMaterial,
-                                    suggestsMaterials: true,
-                                    valueUpdate: (value) => _update(
-                                      context,
-                                      selected,
-                                      (model) =>
-                                          model.copyWith(material: value),
-                                    ),
-                                    formValidator: (value) {
-                                      if (value == null) return null;
-                                      if (!minecraftPattern.hasMatch(value)) {
-                                        return context
-                                            .l10n
-                                            .input_validation_material;
-                                      }
-                                      return null;
-                                    },
-                                    maxLength: 64,
-                                    focusOrder: const NumericFocusOrder(1),
-                                  ),
-                                  TextInputCard<String>(
-                                    display: context.l10n.card_title,
-                                    currentValue: plainTextOf(selected.title),
-                                    valueUpdate: (value) => _update(
-                                      context,
-                                      selected,
-                                      (model) => model.copyWith(
-                                        title: textComponentOf(
-                                          value,
-                                          previous: model.title,
-                                        ),
-                                      ),
-                                    ),
-                                    focusOrder: const NumericFocusOrder(2),
-                                  ),
-                                  TextInputCard<String>(
-                                    display: context.l10n.card_description,
-                                    currentValue: plainTextOf(
-                                      selected.description,
-                                    ),
-                                    valueUpdate: (value) => _update(
-                                      context,
-                                      selected,
-                                      (model) => model.copyWith(
-                                        description: textComponentOf(
-                                          value,
-                                          previous: model.description,
-                                        ),
-                                      ),
-                                    ),
-                                    maxLength: 120,
-                                    focusOrder: const NumericFocusOrder(3),
-                                  ),
-                                  DropdownCard<FrameType, AdvancementModel>(
-                                    display: context.l10n.card_frame_type,
-                                    currentValue: selected,
-                                    items: items,
-                                    valueUpdate: (value) => _update(
-                                      context,
-                                      selected,
-                                      (model) =>
-                                          model.copyWith(frameType: value),
-                                    ),
-                                    defaultValue: (value) => value.frameType,
-                                    matchTextInputHeight: true,
-                                    focusOrder: const NumericFocusOrder(4),
-                                  ),
-                                  DropdownCard<String, AdvancementModel>(
-                                    display:
-                                        context.l10n.card_advancement_parent,
-                                    tooltipMessage:
-                                        context.l10n.tooltip_advancement_parent,
-                                    currentValue: selected,
-                                    items: _parentItems(context, vm),
-                                    valueUpdate: (value) => _update(
-                                      context,
-                                      selected,
-                                      (model) => model.copyWith(
-                                        parentId: value == _noParent
-                                            ? null
-                                            : value,
-                                      ),
-                                    ),
-                                    defaultValue: (value) =>
-                                        value.parentId ?? _noParent,
-                                    matchTextInputHeight: true,
-                                    focusOrder: const NumericFocusOrder(5),
-                                  ),
-                                  if (selected.isRoot)
-                                    TextInputCard<String>(
-                                      display: context
-                                          .l10n
-                                          .card_advancement_background,
-                                      tooltipMessage: context
-                                          .l10n
-                                          .tooltip_advancement_background,
-                                      currentValue:
-                                          selected.background ?? emptyString,
-                                      hintText: 'minecraft:gui/advancements/backgrounds/stone',
-                                      valueUpdate: (value) => _update(
-                                        context,
-                                        selected,
-                                        (model) => model.copyWith(
-                                          background: value.isEmpty
-                                              ? null
-                                              : value,
-                                        ),
-                                      ),
-                                      maxLength: 100,
-                                      focusOrder: const NumericFocusOrder(6),
-                                    ),
-                                  _positionCard(
-                                    context,
-                                    display: context.l10n.card_advancement_x,
-                                    value: selected.x,
-                                    change: (x) => selected.copyWith(x: x),
-                                    order: 7,
-                                    vm: vm,
-                                  ),
-                                  _positionCard(
-                                    context,
-                                    display: context.l10n.card_advancement_y,
-                                    value: selected.y,
-                                    change: (y) => selected.copyWith(y: y),
-                                    order: 8,
-                                    vm: vm,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+        final names = {for (final model in vm.parents) model.id: model.uiName};
+        final decimalFormatters = [
+          FilteringTextInputFormatter.allow(_decimalPattern),
+        ];
+        TextEdit position(
+          String label,
+          double value,
+          AdvancementModel Function(double value) change,
+        ) => TextEdit(
+          label: label,
+          icon: Icons.tag,
+          value: value.toString(),
+          footer: l10n.tooltip_advancement_position,
+          keyboardType: _decimalInput,
+          formatters: decimalFormatters,
+          onChanged: (input) =>
+              _stage(context, change(double.tryParse(input) ?? 0)),
+        );
+
+        return EditCardGrid(
+          header: AdvancementDisplayFlags(selected: selected),
+          sections: [
+            EditSection(
+              title: l10n.advancement_section_display,
+              fields: [
+                TextEdit(
+                  label: l10n.card_material,
+                  icon: Icons.category_outlined,
+                  value: selected.material ?? emptyString,
+                  hintText: defaultMaterial,
+                  footer: l10n.advancement_hint_material,
+                  suggestsMaterials: true,
+                  maxLength: 64,
+                  validator: (value) =>
+                      value == null ||
+                          value.isEmpty ||
+                          minecraftPattern.hasMatch(value)
+                      ? null
+                      : l10n.input_validation_material,
+                  onChanged: (value) =>
+                      _stage(context, selected.copyWith(material: value)),
+                ),
+                ChoiceEdit<FrameType>(
+                  label: l10n.card_frame_type,
+                  icon: Icons.list,
+                  value: selected.frameType,
+                  options: FrameType.values,
+                  display: (type) => type.displayName,
+                  footer: l10n.advancement_hint_frame,
+                  onChanged: (type) =>
+                      _stage(context, selected.copyWith(frameType: type)),
+                ),
+                ChoiceEdit<String>(
+                  label: l10n.card_advancement_parent,
+                  icon: Icons.account_tree_outlined,
+                  value: selected.parentId ?? _noParent,
+                  options: _parents(vm),
+                  display: (id) => id == _noParent
+                      ? l10n.advancement_parent_none
+                      : names[id] ?? id,
+                  footer: l10n.tooltip_advancement_parent,
+                  onChanged: (id) => _stage(
+                    context,
+                    selected.copyWith(parentId: id == _noParent ? null : id),
+                  ),
+                ),
+                if (selected.isRoot)
+                  TextEdit(
+                    label: l10n.card_advancement_background,
+                    icon: Icons.image_outlined,
+                    value: selected.background ?? emptyString,
+                    hintText: 'minecraft:gui/advancements/backgrounds/stone',
+                    footer: l10n.tooltip_advancement_background,
+                    maxLength: 100,
+                    onChanged: (value) => _stage(
+                      context,
+                      selected.copyWith(
+                        background: value.isEmpty ? null : value,
                       ),
                     ),
                   ),
-                  RegisterDetailForm(formKey: _key),
-                ],
-              ),
+              ],
             ),
-          ),
+            EditSection(
+              title: l10n.advancement_section_text,
+              fields: [
+                TextComponentEdit(
+                  label: l10n.card_title,
+                  icon: Icons.text_fields,
+                  value: selected.title,
+                  componentContext: ComponentContext.notificationTitle,
+                  onChanged: (title) =>
+                      _stage(context, selected.copyWith(title: title)),
+                ),
+                TextComponentEdit(
+                  label: l10n.card_description,
+                  icon: Icons.text_fields,
+                  value: selected.description,
+                  // Minecraft draws it in the color of the frame.
+                  componentContext: selected.frameType == FrameType.challenge
+                      ? ComponentContext.challengeDescription
+                      : ComponentContext.advancementDescription,
+                  onChanged: (description) => _stage(
+                    context,
+                    selected.copyWith(description: description),
+                  ),
+                ),
+              ],
+            ),
+            EditSection(
+              title: l10n.advancement_section_position,
+              fields: [
+                position(
+                  l10n.card_advancement_x,
+                  selected.x,
+                  (x) => selected.copyWith(x: x),
+                ),
+                position(
+                  l10n.card_advancement_y,
+                  selected.y,
+                  (y) => selected.copyWith(y: y),
+                ),
+              ],
+            ),
+          ],
         );
       },
     );

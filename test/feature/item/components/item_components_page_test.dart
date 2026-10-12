@@ -54,6 +54,29 @@ void main() {
     value: 16,
   );
 
+  testWidgets(
+    'a component card is outlined like the other cards that open a dialog',
+    variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+    (tester) async {
+      await pumpPage(tester, const [food]);
+
+      final shape = tester
+          .widget<Material>(
+            find
+                .descendant(
+                  of: find.ancestor(
+                    of: find.text('Food'),
+                    matching: find.byType(Card),
+                  ),
+                  matching: find.byType(Material),
+                )
+                .first,
+          )
+          .shape! as RoundedRectangleBorder;
+      expect(shape.side.style, BorderStyle.solid);
+    },
+  );
+
   // The cards are laid out for the compact density of desktop browsers; the
   // default Android density of tests makes them 2px too tall.
   testWidgets(

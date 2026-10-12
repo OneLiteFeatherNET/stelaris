@@ -1,14 +1,18 @@
+import 'dart:convert';
+
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
-import 'package:stelaris/feature/base/cards/text_input_card.dart';
+import 'package:stelaris/feature/base/edit_card/edit_card.dart';
+import 'package:stelaris/feature/component/component_preview.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/advancement/advancement_detail_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/util/component_context.dart';
 
 void main() {
   group('AdvancementDetailPage', () {
@@ -84,22 +88,26 @@ void main() {
       expect(find.text('Advancement List'), findsOneWidget);
     });
 
-    /// The text field of the card labelled [label].
-    Finder fieldOf(String label) => find.descendant(
-      of: find.ancestor(
-        of: find.text(label),
-        matching: find.byWidgetPredicate((w) => w is TextInputCard),
-      ),
-      matching: find.byType(TextFormField),
-    );
+    /// The card labelled [label].
+    Finder cardOf(String label) => find.widgetWithText(EditCard, label);
 
+    /// Opens the card labelled [label], types [text] and saves with Enter.
     Future<void> enterAndBlur(
       WidgetTester tester,
       String label,
       String text,
     ) async {
-      await tester.enterText(fieldOf(label), text);
-      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.ensureVisible(cardOf(label));
+      await tester.tap(cardOf(label));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.descendant(
+          of: find.byType(Dialog),
+          matching: find.byType(TextFormField),
+        ),
+        text,
+      );
+      await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
     }
 
@@ -124,6 +132,89 @@ void main() {
       await enterAndBlur(tester, 'Description', 'Defeat a mob');
 
       expect(store.state.selectedAdvancement?.description, '"Defeat a mob"');
+      expect(store.state.unsavedChanges, NavigationEntry.advancements);
+    });
+
+    testWidgets('formatting in the title is stored as json', (tester) async {
+      await pumpPage(tester);
+
+      await enterAndBlur(tester, 'Title', '<gold>First <b>Kill');
+
+      expect(jsonDecode(store.state.selectedAdvancement!.title!), {
+        'text': '',
+        'extra': [
+          {'text': 'First ', 'color': 'gold'},
+          {'text': 'Kill', 'color': 'gold', 'bold': true},
+        ],
+      });
+    });
+
+    testWidgets('a stored title shows with its formatting', (tester) async {
+      await pumpPage(
+        tester,
+        initialState: AppState(
+          selectedAdvancement: selected.copyWith(
+            title: '{"text":"First Kill","color":"gold"}',
+            description: 'Plain from before',
+          ),
+        ),
+      );
+
+      final title = tester.widget<ComponentPreview>(
+        find.descendant(
+          of: cardOf('Title'),
+          matching: find.byType(ComponentPreview),
+        ),
+      );
+      expect(title.text, '<gold>First Kill');
+      // Stored as plain text before the editor, still shown as it was.
+      expect(
+        find.descendant(
+          of: cardOf('Description'),
+          matching: find.text('Plain from before', findRichText: true),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('an emptied title is removed', (tester) async {
+      await pumpPage(
+        tester,
+        initialState: AppState(
+          selectedAdvancement: selected.copyWith(title: '"Old"'),
+        ),
+      );
+
+      await enterAndBlur(tester, 'Title', '');
+
+      expect(store.state.selectedAdvancement?.title, isNull);
+    });
+
+    testWidgets('the description takes the color of the frame', (tester) async {
+      ComponentContext contextOf() => tester
+          .widget<ComponentPreview>(
+            find.descendant(
+              of: cardOf('Description'),
+              matching: find.byType(ComponentPreview),
+            ),
+          )
+          .componentContext;
+
+      await pumpPage(
+        tester,
+        initialState: AppState(
+          selectedAdvancement: selected.copyWith(description: '"Win"'),
+        ),
+      );
+      expect(contextOf(), ComponentContext.advancementDescription);
+
+      await tester.ensureVisible(cardOf('FrameType'));
+      await tester.tap(cardOf('FrameType'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ListTile, 'Challenge'));
+      await tester.pumpAndSettle();
+
+      expect(contextOf(), ComponentContext.challengeDescription);
     });
 
     testWidgets('the display segments toggle the flags', (tester) async {
@@ -181,16 +272,25 @@ void main() {
         ),
       );
 
-      final dropdown = find.byType(DropdownButtonFormField<String>);
-      await tester.ensureVisible(dropdown);
-      await tester.tap(dropdown);
+      await tester.ensureVisible(cardOf('Parent'));
+      await tester.tap(cardOf('Parent'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Root'), findsWidgets);
-      expect(find.text('Child'), findsNothing);
-      expect(find.text('Grand Child'), findsNothing);
+      final options = find.descendant(
+        of: find.byType(Dialog),
+        matching: find.byType(ListTile),
+      );
+      expect(find.widgetWithText(ListTile, 'Root'), findsOneWidget);
+      expect(
+        find.descendant(of: options, matching: find.text('Child')),
+        findsNothing,
+      );
+      expect(
+        find.descendant(of: options, matching: find.text('Grand Child')),
+        findsNothing,
+      );
 
-      await tester.tap(find.text('Root').last);
+      await tester.tap(find.widgetWithText(ListTile, 'Root'));
       await tester.pumpAndSettle();
 
       expect(store.state.selectedAdvancement?.parentId, 'root');

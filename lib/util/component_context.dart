@@ -25,6 +25,13 @@ enum ComponentContext {
   /// The title of an advancement toast: white.
   notificationTitle(Color(0xFFFFFFFF)),
 
+  /// The description of a task or goal advancement: green, the color of
+  /// its frame.
+  advancementDescription(Color(0xFF55FF55)),
+
+  /// The description of a challenge advancement: dark purple.
+  challengeDescription(Color(0xFFAA00AA)),
+
   /// A page of a written book: black on paper, without a shadow.
   bookPage(
     Color(0xFF000000),

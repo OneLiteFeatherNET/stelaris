@@ -279,10 +279,8 @@ class _SkeletonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Card.filled(
-      color: colorScheme.surfaceContainerLow,
-      child: const Padding(
+    return const Card.outlined(
+      child: Padding(
         padding: EdgeInsets.fromLTRB(16, 16, 16, 14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,10 +330,10 @@ class _ComponentCard extends StatelessWidget {
       color: colorScheme.onSurfaceVariant,
     );
 
-    // Same look as the model grid cards.
-    return Card.filled(
+    // Outlined like every card that opens a dialog, a filled card opens a
+    // page, like a model card.
+    return Card.outlined(
       clipBehavior: Clip.antiAlias,
-      color: colorScheme.surfaceContainerLow,
       child: InkWell(
         onTap: onEdit,
         child: Padding(

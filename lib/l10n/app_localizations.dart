@@ -640,18 +640,6 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get tooltip_delete;
 
-  /// No description provided for @tooltip_ascent.
-  ///
-  /// In en, this message translates to:
-  /// **'Change ascent'**
-  String get tooltip_ascent;
-
-  /// No description provided for @tooltip_height.
-  ///
-  /// In en, this message translates to:
-  /// **'Change height'**
-  String get tooltip_height;
-
   /// No description provided for @tooltip_line_count.
   ///
   /// In en, this message translates to:
@@ -2931,6 +2919,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The text is final, the game doesn\'t fill in selectors or scores when the book is opened.'**
   String get book_resolved_hint;
+
+  /// No description provided for @edit_card_placeholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get edit_card_placeholder;
+
+  /// No description provided for @edit_card_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {label}'**
+  String edit_card_edit(String label);
+
+  /// No description provided for @font_section_source.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get font_section_source;
+
+  /// No description provided for @font_section_metrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Metrics'**
+  String get font_section_metrics;
+
+  /// No description provided for @font_hint_provider.
+  ///
+  /// In en, this message translates to:
+  /// **'The provider type, e.g. bitmap'**
+  String get font_hint_provider;
+
+  /// No description provided for @font_hint_texture_path.
+  ///
+  /// In en, this message translates to:
+  /// **'A namespaced path, e.g. minecraft:font/ascii.png'**
+  String get font_hint_texture_path;
+
+  /// No description provided for @font_hint_ascent.
+  ///
+  /// In en, this message translates to:
+  /// **'Pixels above the baseline, at most the height'**
+  String get font_hint_ascent;
+
+  /// No description provided for @font_hint_height.
+  ///
+  /// In en, this message translates to:
+  /// **'Height of a glyph in pixels, 8 by default'**
+  String get font_hint_height;
+
+  /// No description provided for @sound_section_general.
+  ///
+  /// In en, this message translates to:
+  /// **'Event'**
+  String get sound_section_general;
+
+  /// No description provided for @sound_hint_key.
+  ///
+  /// In en, this message translates to:
+  /// **'A sound key, e.g. entity.player.hurt or custom:ui/click'**
+  String get sound_hint_key;
+
+  /// No description provided for @sound_hint_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown to players with subtitles on, e.g. Player hurts'**
+  String get sound_hint_subtitle;
+
+  /// No description provided for @advancement_section_display.
+  ///
+  /// In en, this message translates to:
+  /// **'Display'**
+  String get advancement_section_display;
+
+  /// No description provided for @advancement_section_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get advancement_section_text;
+
+  /// No description provided for @advancement_section_position.
+  ///
+  /// In en, this message translates to:
+  /// **'Position'**
+  String get advancement_section_position;
+
+  /// No description provided for @advancement_hint_material.
+  ///
+  /// In en, this message translates to:
+  /// **'The icon, a material like minecraft:diamond'**
+  String get advancement_hint_material;
+
+  /// No description provided for @advancement_hint_frame.
+  ///
+  /// In en, this message translates to:
+  /// **'Task and goal show a green description, challenge a purple one'**
+  String get advancement_hint_frame;
 }
 
 class _AppLocalizationsDelegate
