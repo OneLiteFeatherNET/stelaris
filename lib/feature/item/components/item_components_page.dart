@@ -18,6 +18,7 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:vulpes_data/component.dart';
 import 'package:vulpes_data/material.dart';
+import 'package:stelaris/util/dispatch_ext.dart';
 
 /// Every component of the catalog by its key, also the ones which can't be
 /// added, so stored components can always be shown.
@@ -75,16 +76,8 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
   }
 
   /// Runs [action] and resolves to its error, or null when it worked.
-  Future<Object?> _run(ReduxAction<AppState> action) async {
-    // Without a wrapError on the store, a backend error is rethrown rather
-    // than reported through the status.
-    try {
-      final status = await context.dispatchAndWait(action);
-      return status.isCompletedFailed ? status.originalError : null;
-    } catch (error) {
-      return error;
-    }
-  }
+  Future<Object?> _run(ReduxAction<AppState> action) async =>
+      (await context.dispatchAndCatch(action)).error;
 
   Future<void> _remove(String name, ItemComponentDto component) async {
     final confirmed = await showDialog<bool>(

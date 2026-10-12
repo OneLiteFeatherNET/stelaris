@@ -8,6 +8,7 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/util/dispatch_ext.dart';
 
 /// How a page's models are copied. Pages that pass one to [ModelPage] get a
 /// "Copy" entry in each card's menu.
@@ -69,20 +70,8 @@ Future<void> openCopyModelDialog<E extends DataModel>(
       initialName: name,
       initialKey: key,
       relations: copy.relations,
-      onSubmit: (result) async {
-        // Without a wrapError on the store, a backend error is rethrown
-        // rather than reported through the status.
-        try {
-          final status = await context.dispatchAndWait(
-            copy.action(model, result),
-          );
-          return status.isCompletedFailed
-              ? status.originalError ?? l10n.error_title
-              : null;
-        } catch (error) {
-          return error;
-        }
-      },
+      onSubmit: (result) async =>
+          (await context.dispatchAndCatch(copy.action(model, result))).error,
     ),
   );
   if (result == null || !context.mounted) return;
