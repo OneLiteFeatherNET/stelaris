@@ -70,15 +70,54 @@ void main() {
       ('light', AppTheme.buildLight(ThemeSettings.defaultSettings())),
       ('dark', AppTheme.buildDark(ThemeSettings.defaultSettings())),
     ]) {
-      test('the $name theme rounds dialogs and cards on the m3 scale', () {
+      test('the $name theme rounds dialogs on the m3 scale', () {
         expect(
           radiusOf(theme.dialogTheme.shape),
           BorderRadius.circular(AppShapes.extraLarge),
         );
-        expect(
-          radiusOf(theme.cardTheme.shape),
-          BorderRadius.circular(AppShapes.medium),
+        // A card shape would take the outline of outlined cards.
+        expect(theme.cardTheme.shape, isNull);
+      });
+
+      testWidgets('the $name theme draws every card variant medium round', (
+        tester,
+      ) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: const Scaffold(
+              body: Column(
+                children: [
+                  Card(key: Key('elevated')),
+                  Card.filled(key: Key('filled')),
+                  Card.outlined(key: Key('outlined')),
+                ],
+              ),
+            ),
+          ),
         );
+
+        RoundedRectangleBorder shapeOf(String key) =>
+            tester
+                    .widget<Material>(
+                      find
+                          .descendant(
+                            of: find.byKey(Key(key)),
+                            matching: find.byType(Material),
+                          )
+                          .first,
+                    )
+                    .shape!
+                as RoundedRectangleBorder;
+
+        for (final key in ['elevated', 'filled', 'outlined']) {
+          expect(
+            shapeOf(key).borderRadius,
+            BorderRadius.circular(AppShapes.medium),
+            reason: key,
+          );
+        }
+        expect(shapeOf('outlined').side.color, theme.colorScheme.outlineVariant);
       });
 
       test('the $name theme outlines every field with one radius', () {
