@@ -39,8 +39,8 @@ class SchemaField extends StatelessWidget {
   /// entries of a list, which names it once in its header.
   final bool registryHint;
 
-  /// An action inside a single line input, e.g. to remove a list entry.
-  /// Only used by the schemas in [takesSuffix].
+  /// An action inside a single line input, e.g. to remove a list entry, or
+  /// at the end of the header of a section. Only used where [showsSuffix].
   final Widget? suffix;
 
   /// Whether a [schema] renders a single line input which shows a [suffix].
@@ -48,6 +48,25 @@ class SchemaField extends StatelessWidget {
     IntSchema() || FloatSchema() || StringSchema() || KeySchema() => true,
     _ => false,
   };
+
+  /// Whether a [schema] with a [label] shows a [suffix] for [value]: inside
+  /// a single line input, or in the header of the section a list, a nested
+  /// object or a set of registry entries renders.
+  static bool showsSuffix(ComponentSchema schema, Object? value) =>
+      switch (schema) {
+        _ when takesSuffix(schema) => true,
+        ObjectSchema() || RegistryTagSchema() => true,
+        ListSchema() => switch ((value as List?) ?? const []) {
+          final entries => switch (flattened(schema, entries)) {
+            (:final name, :final field) => showsSuffix(
+              field.schema,
+              unwrap(name, entries),
+            ),
+            null => true,
+          },
+        },
+        _ => false,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -125,12 +144,14 @@ class SchemaField extends StatelessWidget {
           label: label ?? field.label,
           schema: field.schema,
           value: unwrap(name, (value as List?) ?? const []),
+          suffix: suffix,
           onChanged: (inner) => onChanged(wrap(name, inner)),
         ),
         null => ListField(
           label: label,
           schema: schema,
           values: (value as List?) ?? const [],
+          trailing: suffix,
           onChanged: onChanged,
         ),
       },
@@ -138,12 +159,14 @@ class SchemaField extends StatelessWidget {
         label: label,
         schema: schema,
         value: value,
+        trailing: suffix,
         onChanged: onChanged,
       ),
       ObjectSchema() => ObjectField(
         label: label,
         schema: schema,
         values: (value as Map?)?.cast<String, Object?>() ?? const {},
+        trailing: suffix,
         onChanged: onChanged,
       ),
       UnsupportedSchema(:final javaType) => SchemaHint(

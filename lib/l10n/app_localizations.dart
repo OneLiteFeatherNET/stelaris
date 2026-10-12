@@ -2590,11 +2590,17 @@ abstract class AppLocalizations {
   /// **'Entries'**
   String get component_field_entries;
 
-  /// No description provided for @component_field_optional.
+  /// No description provided for @component_field_more.
   ///
   /// In en, this message translates to:
-  /// **'{label} (optional)'**
-  String component_field_optional(String label);
+  /// **'More fields'**
+  String get component_field_more;
+
+  /// No description provided for @component_field_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {label}'**
+  String component_field_remove(String label);
 
   /// No description provided for @component_key_helper.
   ///

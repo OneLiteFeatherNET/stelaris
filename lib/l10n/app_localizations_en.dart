@@ -1393,8 +1393,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get component_field_entries => 'Entries';
 
   @override
-  String component_field_optional(String label) {
-    return '$label (optional)';
+  String get component_field_more => 'More fields';
+
+  @override
+  String component_field_remove(String label) {
+    return 'Remove $label';
   }
 
   @override
