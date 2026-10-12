@@ -18,6 +18,9 @@ abstract final class AppShapes {
   /// Dialogs.
   static const double extraLarge = 28;
 
+  /// Fully rounded ends, for pills like a badge.
+  static const double full = 1000;
+
   /// Text fields and dropdowns, one value for all of them. Change it here to
   /// compare, e.g. [extraSmall] against [small].
   static const double field = small;

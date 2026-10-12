@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// A foundational container widget that provides consistent visual styling
 /// for grouped content sections throughout the application.
@@ -66,7 +67,7 @@ class BaseSection extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: surfaceVariant,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppShapes.large),
       ),
       padding: padding ?? const EdgeInsets.all(20),
       child: title == null

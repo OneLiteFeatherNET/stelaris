@@ -6,6 +6,7 @@ import 'package:stelaris/feature/base/button/cancel_button.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// Picks the item's [EnchantmentGroup], which decides the enchantments it
 /// can carry. A header action on the Enchantments tab, which opens a menu
@@ -32,7 +33,7 @@ class ItemGroupSelector extends StatelessWidget {
         alignment: AlignmentDirectional.bottomEnd,
         visualDensity: VisualDensity.compact,
         shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppShapes.medium)),
         ),
         padding: const WidgetStatePropertyAll(
           EdgeInsets.symmetric(vertical: 6),

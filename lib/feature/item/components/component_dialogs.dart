@@ -10,6 +10,7 @@ import 'package:stelaris/feature/item/components/stelaris_components.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/component.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// The components which are edited outside of the components tab. The item
 /// keeps them in its own storage, so the backend rejects them as components.
@@ -301,7 +302,7 @@ class _CategoryHeader extends StatelessWidget {
       message: context.l10n.component_category_only(category.displayName),
       child: InkWell(
         key: Key('component_category_header_${category.key}'),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppShapes.small),
         onTap: onTap,
         child: header,
       ),
@@ -469,7 +470,7 @@ class _Pill extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppShapes.medium),
       ),
       child: Text(
         text,

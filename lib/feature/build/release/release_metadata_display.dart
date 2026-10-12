@@ -2,8 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/status_card.dart';
-import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 enum ReleaseDisplayType { version, status }
 
@@ -55,7 +55,7 @@ class ReleaseMetadataDisplay extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color: backgroundColor ?? theme.cardColor,
-        borderRadius: borderRadius12,
+        borderRadius: BorderRadius.circular(AppShapes.medium),
         boxShadow: [
           if (glowColor != null)
             BoxShadow(
@@ -73,7 +73,7 @@ class ReleaseMetadataDisplay extends StatelessWidget {
           key: ValueKey('${model.version}_$_type'),
           margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppShapes.medium),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

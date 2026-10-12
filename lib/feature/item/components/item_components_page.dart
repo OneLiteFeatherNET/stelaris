@@ -18,6 +18,7 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:vulpes_data/component.dart';
 import 'package:vulpes_data/material.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// Every component of the catalog by its key, also the ones which can't be
 /// added, so stored components can always be shown.
@@ -290,7 +291,7 @@ class _SkeletonCard extends StatelessWidget {
     return Card.filled(
       elevation: 0,
       color: colorScheme.surfaceContainerLow,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppShapes.medium)),
       child: const Padding(
         padding: EdgeInsets.fromLTRB(16, 16, 16, 14),
         child: Column(
@@ -346,7 +347,7 @@ class _ComponentCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       elevation: 0,
       color: colorScheme.surfaceContainerLow,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppShapes.medium)),
       child: InkWell(
         onTap: onEdit,
         child: Padding(

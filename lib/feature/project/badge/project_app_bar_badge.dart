@@ -5,6 +5,7 @@ import 'package:stelaris/feature/project/badge/project_labor_badge.dart';
 import 'package:stelaris/feature/settings/settings_dialog.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 class ProjectAppBarBadge extends StatelessWidget {
   const ProjectAppBarBadge({super.key});
@@ -24,7 +25,7 @@ class ProjectAppBarBadge extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(AppShapes.full),
               onTap: () {
                 showDialog(
                   context: context,
@@ -35,7 +36,7 @@ class ProjectAppBarBadge extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(AppShapes.full),
                   border: Border.all(
                     color: colorScheme.outlineVariant.withValues(alpha: 0.8),
                   ),

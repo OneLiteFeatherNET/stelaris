@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/item/components/schema/schema_value.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// The input of an RGB color as `#RRGGBB`, with a preview of the color.
 class ColorField extends StatelessWidget {
@@ -25,7 +26,7 @@ class ColorField extends StatelessWidget {
           height: 40,
           decoration: BoxDecoration(
             color: Color(0xFF000000 | value),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppShapes.small),
             border: Border.all(color: Theme.of(context).colorScheme.outline),
           ),
         ),

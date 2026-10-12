@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// A customizable card widget that displays a title, an optional message, and a child widget.
 class BaseCard extends StatelessWidget {
@@ -35,7 +36,7 @@ class BaseCard extends StatelessWidget {
         elevation: 2,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppShapes.medium),
           side: BorderSide(color: colorScheme.outlineVariant, width: 1),
         ),
         child: Column(

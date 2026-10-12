@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import 'project_list_tile.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 class ProjectSelectorList extends StatefulWidget {
   final List<Project> projects;
@@ -37,12 +38,12 @@ class _ProjectSelectorListState extends State<ProjectSelectorList> {
 
     return Material(
       color: colorScheme.surfaceContainerLowest,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(AppShapes.medium),
       clipBehavior: Clip.antiAlias,
       child: Container(
         constraints: const BoxConstraints(maxHeight: 280, minHeight: 80),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppShapes.medium),
           border: Border.all(
             color: colorScheme.outlineVariant.withValues(alpha: 0.6),
           ),

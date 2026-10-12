@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// A small, rounded chip that pairs an [icon] with a single line of
 /// monospaced [text].
@@ -20,7 +21,7 @@ class InfoChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(AppShapes.small),
         border: Border.all(
           color: theme.colorScheme.outlineVariant.withValues(alpha: 0.6),
         ),

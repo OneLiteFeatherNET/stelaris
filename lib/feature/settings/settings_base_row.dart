@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// The [SettingsBaseRow] is a widget implementation which defines how the structure of a settings row should look like.
 /// In detail each row consists a title, a divider and a child widget.
@@ -27,7 +28,7 @@ class SettingsBaseRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppShapes.small),
           color: theme.colorScheme.surface,
         ),
         child: Column(

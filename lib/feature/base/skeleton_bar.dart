@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// Stands in for a line of text while it loads: a rounded bar of
 /// [widthFactor] of the available width and [height].
@@ -24,7 +25,7 @@ class SkeletonBar extends StatelessWidget {
         height: height,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(AppShapes.extraSmall),
         ),
       ),
     );

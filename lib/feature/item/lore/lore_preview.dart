@@ -4,6 +4,7 @@ import 'package:stelaris/feature/component/component_preview.dart';
 import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/minimessage_parser.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// Shows the lore lines with their formatting, the way they appear in game,
 /// on the same background as the component previews.
@@ -48,7 +49,7 @@ class LorePreview extends StatelessWidget {
             key: const Key('lore_preview'),
             decoration: BoxDecoration(
               color: previewBackground,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(AppShapes.extraSmall),
               border: Border.all(color: previewBorder),
             ),
             // Only as high as the lines, and scrolls inside once they don't

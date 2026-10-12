@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 class ProjectLaborBadge extends StatelessWidget {
   final double fontSize;
@@ -17,7 +18,7 @@ class ProjectLaborBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: colorScheme.tertiaryContainer,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(AppShapes.extraSmall),
       ),
       child: Text(
         context.l10n.project_labor_badge,
