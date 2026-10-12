@@ -3,9 +3,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 
 /// Client API for interacting with project-related endpoints.
 ///
-/// Extends [BaseApi] to provide standard CRUD operations for [Project] instances
-/// and includes specific methods for project functionalities like fetching by key or ID,
-/// and deleting all projects.
+/// Extends [BaseApi] to provide standard CRUD operations for [Project] instances.
 class ProjectClientApi extends BaseApi<Project> {
   /// Creates an instance of [ProjectClientApi].
   ///
@@ -17,36 +15,4 @@ class ProjectClientApi extends BaseApi<Project> {
           fromJson: Project.fromJson,
           toJson: (p0) => p0.toJson(),
         );
-
-  /// Retrieves a project by its unique ID.
-  ///
-  /// The request is made to `/project/{id}`.
-  ///
-  /// - [id]: The unique identifier (UUID) of the project.
-  ///
-  /// Returns a [Future] that completes with the retrieved [Project].
-  Future<Project> getById(String id) async {
-    final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(
-      path: '${baseUri.path}/$endpoint/$id',
-    );
-    final result = await apiClient.dio.getUri(uri);
-    return fromJson(result.data as Map<String, dynamic>);
-  }
-
-  /// Retrieves a project by its unique key.
-  ///
-  /// The request is made to `/project/key/{key}`.
-  ///
-  /// - [key]: The unique key of the project.
-  ///
-  /// Returns a [Future] that completes with the retrieved [Project].
-  Future<Project> getByKey(String key) async {
-    final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(
-      path: '${baseUri.path}/$endpoint/key/$key',
-    );
-    final result = await apiClient.dio.getUri(uri);
-    return fromJson(result.data as Map<String, dynamic>);
-  }
 }
