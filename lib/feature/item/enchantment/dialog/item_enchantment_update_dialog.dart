@@ -75,6 +75,7 @@ class _ItemEnchantmentUpdateDialogState
     if (content.trim().isEmpty) {
       return;
     }
+    if (!_key.currentState!.validate()) return;
 
     if (content == widget.dto.level.toString()) {
       Navigator.pop(context, false);
