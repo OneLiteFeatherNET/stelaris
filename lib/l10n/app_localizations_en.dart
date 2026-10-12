@@ -1624,4 +1624,21 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sound_hint_subtitle =>
       'Shown to players with subtitles on, e.g. Player hurts';
+
+  @override
+  String get advancement_section_display => 'Display';
+
+  @override
+  String get advancement_section_text => 'Text';
+
+  @override
+  String get advancement_section_position => 'Position';
+
+  @override
+  String get advancement_hint_material =>
+      'The icon, a material like minecraft:diamond';
+
+  @override
+  String get advancement_hint_frame =>
+      'Task and goal show a green description, challenge a purple one';
 }

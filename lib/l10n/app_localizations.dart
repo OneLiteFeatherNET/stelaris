@@ -2997,6 +2997,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Shown to players with subtitles on, e.g. Player hurts'**
   String get sound_hint_subtitle;
+
+  /// No description provided for @advancement_section_display.
+  ///
+  /// In en, this message translates to:
+  /// **'Display'**
+  String get advancement_section_display;
+
+  /// No description provided for @advancement_section_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get advancement_section_text;
+
+  /// No description provided for @advancement_section_position.
+  ///
+  /// In en, this message translates to:
+  /// **'Position'**
+  String get advancement_section_position;
+
+  /// No description provided for @advancement_hint_material.
+  ///
+  /// In en, this message translates to:
+  /// **'The icon, a material like minecraft:diamond'**
+  String get advancement_hint_material;
+
+  /// No description provided for @advancement_hint_frame.
+  ///
+  /// In en, this message translates to:
+  /// **'Task and goal show a green description, challenge a purple one'**
+  String get advancement_hint_frame;
 }
 
 class _AppLocalizationsDelegate

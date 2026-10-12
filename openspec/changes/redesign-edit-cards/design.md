@@ -91,8 +91,8 @@ converted with `MiniMessageJson`, and an emptied field stores null.
 ### Fields as data
 
 A page describes its fields as a list of sections, each a heading and a list of fields. A field is
-one of a small sealed set, `TextEdit`, `NumberEdit`, `ChoiceEdit`, `MaterialEdit` and
-`TextComponentEdit`. The suffix keeps them apart from Flutter's `TextField` and the existing
+one of a small sealed set, `TextEdit`, `ChoiceEdit` and `TextComponentEdit`. Numbers are a
+`TextEdit` with a number keyboard and formatter, materials one with `suggestsMaterials`. The suffix keeps them apart from Flutter's `TextField` and the existing
 `TextComponentField`. Each carries its label, value, icon, footer, rules and what to dispatch on a
 change. The page keeps reading its model and dispatching its own update action, as on the first
 attempt. A shared `EditCardGrid` builds the sections, the cards and the dialogs.

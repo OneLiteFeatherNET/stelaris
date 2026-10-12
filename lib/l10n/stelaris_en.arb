@@ -820,5 +820,10 @@
   "font_hint_height": "Height of a glyph in pixels, 8 by default",
   "sound_section_general": "Event",
   "sound_hint_key": "A sound key, e.g. entity.player.hurt or custom:ui/click",
-  "sound_hint_subtitle": "Shown to players with subtitles on, e.g. Player hurts"
+  "sound_hint_subtitle": "Shown to players with subtitles on, e.g. Player hurts",
+  "advancement_section_display": "Display",
+  "advancement_section_text": "Text",
+  "advancement_section_position": "Position",
+  "advancement_hint_material": "The icon, a material like minecraft:diamond",
+  "advancement_hint_frame": "Task and goal show a green description, challenge a purple one"
 }

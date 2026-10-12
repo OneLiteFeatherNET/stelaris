@@ -8,16 +8,17 @@
 - [x] 1.3 `EditCardGrid`: sections with headings, cards in as many columns as fit.
 - [x] 1.4 The text dialog: value selected, Enter saves, the footer as helper text, invalid values
       keep it open.
-- [ ] 1.5 `ChoiceEdit` and its dialog, a list of the options with the current one marked.
-- [ ] 1.6 `MaterialEdit` and its dialog, a text field with the material suggestions.
-- [ ] 1.7 `TextComponentEdit`: a full row, its text shown with `ComponentPreview`, edited in
+- [x] 1.5 `ChoiceEdit` and its dialog, a list of the options with the current one marked.
+- [x] 1.6 Material fields, a `TextEdit` with `suggestsMaterials`, its dialog a text field with the
+      material suggestions.
+- [x] 1.7 `TextComponentEdit`: a full row, its text shown with `ComponentPreview`, edited in
       `ComponentDialog`, stored as JSON with `MiniMessageJson`.
 
 ## 2. Pages
 
 - [x] 2.1 Font, General tab: "Source" (provider, texture path) and "Metrics" (ascent, height).
 - [x] 2.2 Sound, General tab: "Event" (key, subtitle).
-- [ ] 2.3 Advancement: the display flags as today, then "Display", "Text" and "Position".
+- [x] 2.3 Advancement: the display flags as today, then "Display", "Text" and "Position".
 - [ ] 2.4 The component card as an edit card, the component's name as its main text.
 
 ## 3. Clean up
