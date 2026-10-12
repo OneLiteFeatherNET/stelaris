@@ -3,35 +3,27 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/sound/selected_sound_state.dart';
-import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
-import 'package:stelaris/feature/base/cards/text_input_card.dart';
+import 'package:stelaris/feature/base/edit_card/edit_card_grid.dart';
+import 'package:stelaris/feature/base/edit_card/edit_field.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/validators.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
-/// A widget that represents the general sound event management page.
-///
-/// The [SoundGeneralPage] allows users to view and edit the details
-/// of a selected sound event, including its name, material, title, description,
-/// and frame type. It provides a form for input and a save button to commit changes.
-class SoundGeneralPage extends StatefulWidget {
+/// The sound event's General tab: its key and subtitle, each a card that
+/// opens a dialog.
+class SoundGeneralPage extends StatelessWidget {
   const SoundGeneralPage({super.key});
 
-  @override
-  State<SoundGeneralPage> createState() => _SoundGeneralPageState();
-}
-
-class _SoundGeneralPageState extends State<SoundGeneralPage> {
-  final _formKey = GlobalKey<FormState>();
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
+  /// Puts [sound] into the store and marks the page unsaved. The header's
+  /// save sends it to the backend.
+  static void _stage(BuildContext context, SoundEventModel sound) {
+    context
+      ..dispatch(UpdateSoundAction(sound))
+      ..dispatch(MarkUnsavedChangesAction(NavigationEntry.sound));
   }
 
   @override
@@ -39,110 +31,47 @@ class _SoundGeneralPageState extends State<SoundGeneralPage> {
     return StoreConnector<AppState, SelectedSoundView>(
       vm: () => SelectedSoundState(),
       builder: (context, vm) {
-        final selected = vm.selected;
-        return FocusScope(
-          child: FocusTraversalGroup(
-            policy: OrderedTraversalPolicy(),
-            child: Form(
-              key: _formKey,
-              onChanged: () => context.dispatch(
-                MarkUnsavedChangesAction(NavigationEntry.sound),
-              ),
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 300),
-                      opacity: 1,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return Scrollbar(
-                        controller: _scrollController,
-                        thumbVisibility: true,
-                        trackVisibility: true,
-                        child: SingleChildScrollView(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.all(16),
-                          child: Wrap(
-                            spacing: 16,
-                            runSpacing: 16,
-                            children: [
-                              _buildTextField(
-                                label: context.l10n.sound_key,
-                                currentValue: selected.keyName,
-                                validator: (value) =>
-                                    checkIfEmptyAndReturnErrorString(
-                                      value,
-                                      context,
-                                    ) ??
-                                    // A resource location, e.g.
-                                    // `entity.player.hurt` or `custom:ui/click`.
-                                    Validators.pattern(
-                                      adventureKeyPattern,
-                                      context.l10n.validation_sound_key_invalid,
-                                    )(value as String?),
-                                onChanged: (value) {
-                                  final newEntry = selected.copyWith(
-                                    keyName: value,
-                                  );
-                                  context.dispatch(UpdateSoundAction(newEntry));
-                                },
-                                focusOrder: 1,
-                              ),
-                              _buildTextField(
-                                label: context.l10n.sound_subtitle,
-                                currentValue: selected.subTitle,
-                                validator: (value) =>
-                                    checkIfEmptyAndReturnErrorString(
-                                      value,
-                                      context,
-                                    ),
-                                onChanged: (value) {
-                                  final newEntry = selected.copyWith(
-                                    subTitle: value,
-                                  );
-                                  context.dispatch(UpdateSoundAction(newEntry));
-                                },
-                                focusOrder: 2,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+        final l10n = context.l10n;
+        final sound = vm.selected;
+        return EditCardGrid(
+          sections: [
+            EditSection(
+              title: l10n.sound_section_general,
+              fields: [
+                TextEdit(
+                  label: l10n.sound_key,
+                  icon: Icons.key,
+                  value: sound.keyName ?? emptyString,
+                  footer: l10n.sound_hint_key,
+                  validator: (value) =>
+                      checkIfEmptyAndReturnErrorString(
+                        value ?? emptyString,
+                        context,
+                      ) ??
+                      Validators.pattern(
+                        adventureKeyPattern,
+                        l10n.validation_sound_key_invalid,
+                      )(value),
+                  onChanged: (value) =>
+                      _stage(context, sound.copyWith(keyName: value)),
                 ),
-              ),
-              RegisterDetailForm(formKey: _formKey),
-            ],
-          ),
-        ),
-      ),
-    );
-  },
-);
-  }
-
-  /// The method builds a reusable text input card for updating string values.
-  /// It takes different parameters to customize different aspects of the text field.
-  Widget _buildTextField({
-    required String label,
-    required String? currentValue,
-    required void Function(String) onChanged,
-    required double focusOrder,
-    String? Function(dynamic)? validator,
-  }) {
-    return TextInputCard<String>(
-      display: label,
-      currentValue: currentValue ?? emptyString,
-      formValidator: validator,
-      valueUpdate: (value) {
-        if (value != currentValue) {
-          onChanged(value);
-        }
+                TextEdit(
+                  label: l10n.sound_subtitle,
+                  icon: Icons.subtitles_outlined,
+                  value: sound.subTitle ?? emptyString,
+                  footer: l10n.sound_hint_subtitle,
+                  validator: (value) => checkIfEmptyAndReturnErrorString(
+                    value ?? emptyString,
+                    context,
+                  ),
+                  onChanged: (value) =>
+                      _stage(context, sound.copyWith(subTitle: value)),
+                ),
+              ],
+            ),
+          ],
+        );
       },
-      focusOrder: NumericFocusOrder(focusOrder),
     );
   }
 }

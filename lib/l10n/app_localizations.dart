@@ -2979,6 +2979,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Height of a glyph in pixels, 8 by default'**
   String get font_hint_height;
+
+  /// No description provided for @sound_section_general.
+  ///
+  /// In en, this message translates to:
+  /// **'Event'**
+  String get sound_section_general;
+
+  /// No description provided for @sound_hint_key.
+  ///
+  /// In en, this message translates to:
+  /// **'A sound key, e.g. entity.player.hurt or custom:ui/click'**
+  String get sound_hint_key;
+
+  /// No description provided for @sound_hint_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown to players with subtitles on, e.g. Player hurts'**
+  String get sound_hint_subtitle;
 }
 
 class _AppLocalizationsDelegate

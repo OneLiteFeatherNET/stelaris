@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/base/cards/text_input_card.dart';
+import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/feature/sound/sound_file_entries.dart';
@@ -90,22 +90,22 @@ void main() {
       expect(find.text('Sound List'), findsOneWidget);
     });
 
-    /// The text field of the card labelled [label].
-    Finder fieldOf(String label) => find.descendant(
-      of: find.ancestor(
-        of: find.text(label),
-        matching: find.byWidgetPredicate((w) => w is TextInputCard),
-      ),
-      matching: find.byType(TextFormField),
-    );
-
+    /// Opens the card labelled [label], types [text] and saves with Enter.
     Future<void> enterAndBlur(
       WidgetTester tester,
       String label,
       String text,
     ) async {
-      await tester.enterText(fieldOf(label), text);
-      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.tap(find.widgetWithText(EditCard, label));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.descendant(
+          of: find.byType(Dialog),
+          matching: find.byType(TextFormField),
+        ),
+        text,
+      );
+      await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
     }
 

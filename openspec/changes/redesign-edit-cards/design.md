@@ -100,7 +100,7 @@ attempt. A shared `EditCardGrid` builds the sections, the cards and the dialogs.
 The sections of the three pages are these.
 
 - **Font**: "Source" (provider, texture path) and "Metrics" (ascent, height).
-- **Sound**: "General" (key, subtitle).
+- **Sound**: "Event" (key, subtitle). Not "General", that is already the tab.
 - **Advancement**: the display flags as today, then "Display" (material, frame, parent and, for a
   root, background), "Text" (title, description) and "Position" (X, Y).
 

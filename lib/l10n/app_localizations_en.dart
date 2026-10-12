@@ -1613,4 +1613,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get font_hint_height => 'Height of a glyph in pixels, 8 by default';
+
+  @override
+  String get sound_section_general => 'Event';
+
+  @override
+  String get sound_hint_key =>
+      'A sound key, e.g. entity.player.hurt or custom:ui/click';
+
+  @override
+  String get sound_hint_subtitle =>
+      'Shown to players with subtitles on, e.g. Player hurts';
 }

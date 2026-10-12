@@ -817,5 +817,8 @@
   "font_hint_provider": "The provider type, e.g. bitmap",
   "font_hint_texture_path": "A namespaced path, e.g. minecraft:font/ascii.png",
   "font_hint_ascent": "Pixels above the baseline, at most the height",
-  "font_hint_height": "Height of a glyph in pixels, 8 by default"
+  "font_hint_height": "Height of a glyph in pixels, 8 by default",
+  "sound_section_general": "Event",
+  "sound_hint_key": "A sound key, e.g. entity.player.hurt or custom:ui/click",
+  "sound_hint_subtitle": "Shown to players with subtitles on, e.g. Player hurts"
 }
