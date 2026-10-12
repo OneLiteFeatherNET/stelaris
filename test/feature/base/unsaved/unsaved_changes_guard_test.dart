@@ -9,6 +9,7 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import '../../../support/fake_http_client_adapter.dart';
+import '../../../support/pump_until.dart';
 
 void main() {
   late Store<AppState> store;
@@ -137,12 +138,11 @@ void main() {
 
     await tester.tap(find.text('leave'));
     await tester.pumpAndSettle();
-    await tester.runAsync(() async {
-      await tester.tap(find.byKey(const Key('unsaved_dialog_save')));
-      await tester.pump();
-      await Future<void>.delayed(const Duration(milliseconds: 50));
-    });
-    await tester.pumpAndSettle();
+    await pumpUntil(
+      tester,
+      action: () => tester.tap(find.byKey(const Key('unsaved_dialog_save'))),
+      done: () => find.byType(SnackBar).evaluate().isNotEmpty,
+    );
 
     expect(result, isFalse);
     expect(find.byType(SnackBar), findsOneWidget);

@@ -8,6 +8,7 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
+import '../../../support/pump_until.dart';
 
 void main() {
   testWidgets('a failed save keeps the dialog open and shows why', (
@@ -49,12 +50,11 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextFormField).first, 'New');
-    await tester.runAsync(() async {
-      await tester.tap(find.byType(FilledButton));
-      await tester.pump();
-      await Future<void>.delayed(const Duration(milliseconds: 50));
-    });
-    await tester.pumpAndSettle();
+    await pumpUntil(
+      tester,
+      action: () => tester.tap(find.byType(FilledButton)),
+      done: () => find.byType(SnackBar).evaluate().isNotEmpty,
+    );
 
     expect(find.byType(EditProjectDialog), findsOneWidget);
     expect(find.byType(SnackBar), findsOneWidget);

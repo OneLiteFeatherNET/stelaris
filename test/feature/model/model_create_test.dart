@@ -14,8 +14,10 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 
 import '../../support/fake_http_client_adapter.dart';
+import '../../support/pump_until.dart';
 
 /// Records which actions were dispatched.
 class _Recorder implements ActionObserver<AppState> {
@@ -91,13 +93,13 @@ Future<void> _submit(WidgetTester tester) async {
   // through Dio's real Timer-guarded internals. Those don't resolve inside
   // flutter_test's fake-async zone on web, so this runs outside it, in a
   // real async zone, the same way the app would.
-  await tester.runAsync(() async {
-    await tester.tap(find.text('Create'));
-    await tester.pump();
-    // Lets the fake API answer before the dialog is checked.
-    await Future<void>.delayed(const Duration(milliseconds: 50));
-  });
-  await tester.pumpAndSettle();
+  await pumpUntil(
+    tester,
+    action: () => tester.tap(find.text('Create')),
+    done: () =>
+        find.byType(ModelCreateDialog).evaluate().isEmpty ||
+        find.byType(SnackBar).evaluate().isNotEmpty,
+  );
 }
 
 void main() {

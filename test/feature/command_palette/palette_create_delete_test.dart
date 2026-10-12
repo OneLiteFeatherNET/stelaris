@@ -18,6 +18,7 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/fake_http_client_adapter.dart';
+import '../../support/pump_until.dart';
 
 PaginatedResult<T> _page<T>(List<T> items) => PaginatedResult<T>(
   items: items,
@@ -184,13 +185,11 @@ void main() {
       // API through Dio's real Timer-guarded internals. Those don't
       // resolve inside flutter_test's fake-async zone on web, so this runs
       // outside it, in a real async zone, the same way the app would.
-      await tester.runAsync(() async {
-        await tester.tap(find.text('Create'));
-        await tester.pump();
-        // Lets the fake API answer before the dialog closes.
-        await Future<void>.delayed(const Duration(milliseconds: 50));
-      });
-      await tester.pumpAndSettle();
+      await pumpUntil(
+        tester,
+        action: () => tester.tap(find.text('Create')),
+        done: () => find.byType(ModelCreateDialog).evaluate().isEmpty,
+      );
 
       expect(router.state.matchedLocation, '/items');
     });

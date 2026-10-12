@@ -7,6 +7,7 @@ import 'package:stelaris/feature/project/dialog/project_create_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
+import '../../../support/pump_until.dart';
 
 void main() {
   testWidgets('a failed create keeps the dialog open and shows why', (
@@ -44,12 +45,11 @@ void main() {
     final fields = find.byType(TextFormField);
     await tester.enterText(fields.at(0), 'My Project');
     await tester.enterText(fields.at(1), 'my_project');
-    await tester.runAsync(() async {
-      await tester.tap(find.byType(FilledButton));
-      await tester.pump();
-      await Future<void>.delayed(const Duration(milliseconds: 50));
-    });
-    await tester.pumpAndSettle();
+    await pumpUntil(
+      tester,
+      action: () => tester.tap(find.byType(FilledButton)),
+      done: () => find.byType(SnackBar).evaluate().isNotEmpty,
+    );
 
     expect(find.byType(CreateProjectDialog), findsOneWidget);
     expect(find.byType(SnackBar), findsOneWidget);
