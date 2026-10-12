@@ -2728,17 +2728,41 @@ abstract class AppLocalizations {
   /// **'Gradient'**
   String get minimessage_gradient;
 
-  /// No description provided for @minimessage_gradient_from.
+  /// No description provided for @minimessage_gradient_pick.
   ///
   /// In en, this message translates to:
-  /// **'Pick the first color'**
-  String get minimessage_gradient_from;
+  /// **'Pick color {index} of {count}'**
+  String minimessage_gradient_pick(int index, int count);
 
-  /// No description provided for @minimessage_gradient_to.
+  /// No description provided for @minimessage_gradient_colors.
   ///
   /// In en, this message translates to:
-  /// **'Pick the second color'**
-  String get minimessage_gradient_to;
+  /// **'{count} colors'**
+  String minimessage_gradient_colors(int count);
+
+  /// No description provided for @minimessage_hex_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'#ff00aa'**
+  String get minimessage_hex_hint;
+
+  /// No description provided for @minimessage_hex_apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this color'**
+  String get minimessage_hex_apply;
+
+  /// No description provided for @minimessage_hex_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'A hex color like #ff00aa'**
+  String get minimessage_hex_invalid;
+
+  /// No description provided for @minimessage_preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get minimessage_preview;
 
   /// No description provided for @minimessage_rainbow.
   ///

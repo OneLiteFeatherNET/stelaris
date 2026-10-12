@@ -1474,10 +1474,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minimessage_gradient => 'Gradient';
 
   @override
-  String get minimessage_gradient_from => 'Pick the first color';
+  String minimessage_gradient_pick(int index, int count) {
+    return 'Pick color $index of $count';
+  }
 
   @override
-  String get minimessage_gradient_to => 'Pick the second color';
+  String minimessage_gradient_colors(int count) {
+    return '$count colors';
+  }
+
+  @override
+  String get minimessage_hex_hint => '#ff00aa';
+
+  @override
+  String get minimessage_hex_apply => 'Use this color';
+
+  @override
+  String get minimessage_hex_invalid => 'A hex color like #ff00aa';
+
+  @override
+  String get minimessage_preview => 'Preview';
 
   @override
   String get minimessage_rainbow => 'Rainbow';

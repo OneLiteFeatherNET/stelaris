@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/component/component_dialog.dart';
+import 'package:stelaris/feature/component/minimessage_field.dart';
 import 'package:stelaris/feature/component/syntax_guide_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/component_context.dart';
@@ -27,8 +28,16 @@ void main() {
     await tester.pump();
   }
 
-  TextEditingController controllerOf(WidgetTester tester) =>
-      tester.widget<TextField>(find.byType(TextField)).controller!;
+  /// The controller of the MiniMessage field, not of the hex input in a
+  /// menu.
+  TextEditingController controllerOf(WidgetTester tester) => tester
+      .widget<TextField>(
+        find.descendant(
+          of: find.byType(MiniMessageField),
+          matching: find.byType(TextField),
+        ),
+      )
+      .controller!;
 
   void select(WidgetTester tester, int start, int end) {
     controllerOf(tester).selection = TextSelection(
@@ -100,18 +109,18 @@ void main() {
 
     await tester.tap(find.byKey(const Key('minimessage_gradient')));
     await tester.pumpAndSettle();
-    expect(find.text('Pick the first color'), findsOneWidget);
+    expect(find.text('Pick color 1 of 2'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Gold'));
     await tester.pumpAndSettle();
-    expect(find.text('Pick the second color'), findsOneWidget);
+    expect(find.text('Pick color 2 of 2'), findsOneWidget);
     expect(controllerOf(tester).text, 'Fire');
 
     await tester.tap(find.byTooltip('Red'));
     await tester.pumpAndSettle();
 
     expect(controllerOf(tester).text, '<gradient:gold:red>Fire</gradient>');
-    expect(find.text('Pick the second color'), findsNothing);
+    expect(find.text('Pick color 2 of 2'), findsNothing);
   });
 
   testWidgets('the gradient menu starts over when opened again', (
@@ -129,7 +138,7 @@ void main() {
     await tester.tap(button);
     await tester.pumpAndSettle();
 
-    expect(find.text('Pick the first color'), findsOneWidget);
+    expect(find.text('Pick color 1 of 2'), findsOneWidget);
   });
 
   testWidgets('clear removes all formatting', (tester) async {
@@ -208,5 +217,56 @@ void main() {
 
     expect(find.text('MiniMessage tags'), findsOneWidget);
     expect(find.byType(SyntaxGuideDialog), findsOneWidget);
+  });
+
+  testWidgets('the color menu takes a hex color', (tester) async {
+    await pumpDialog(tester, 'Night');
+    select(tester, 0, 5);
+
+    await tester.tap(find.byKey(const Key('minimessage_color')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('minimessage_hex')), 'FF00AA');
+    await tester.tap(find.byKey(const Key('minimessage_hex_apply')));
+    await tester.pumpAndSettle();
+
+    expect(controllerOf(tester).text, '<#ff00aa>Night</#ff00aa>');
+  });
+
+  testWidgets('an invalid hex color shows why and keeps the menu', (
+    tester,
+  ) async {
+    await pumpDialog(tester, 'Night');
+
+    await tester.tap(find.byKey(const Key('minimessage_color')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('minimessage_hex')), '#12');
+    await tester.tap(find.byKey(const Key('minimessage_hex_apply')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('A hex color like #ff00aa'), findsOneWidget);
+    expect(controllerOf(tester).text, 'Night');
+  });
+
+  testWidgets('a gradient over three colors, one of them hex', (tester) async {
+    await pumpDialog(tester, 'Fire');
+    select(tester, 0, 4);
+
+    await tester.tap(find.byKey(const Key('minimessage_gradient')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('3 colors'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Gold'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('minimessage_hex')), '#ff5555');
+    await tester.tap(find.byKey(const Key('minimessage_hex_apply')));
+    await tester.pumpAndSettle();
+    expect(find.text('Pick color 3 of 3'), findsOneWidget);
+    await tester.tap(find.byTooltip('Light Purple'));
+    await tester.pumpAndSettle();
+
+    expect(
+      controllerOf(tester).text,
+      '<gradient:gold:#ff5555:light_purple>Fire</gradient>',
+    );
   });
 }
