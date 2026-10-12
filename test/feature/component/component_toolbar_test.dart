@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/component/component_dialog.dart';
+import 'package:stelaris/feature/component/component_preview.dart';
 import 'package:stelaris/feature/component/minimessage_field.dart';
 import 'package:stelaris/feature/component/syntax_guide_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -267,6 +268,22 @@ void main() {
     expect(
       controllerOf(tester).text,
       '<gradient:gold:#ff5555:light_purple>Fire</gradient>',
+    );
+  });
+
+  testWidgets('the preview shows the text without its tags', (tester) async {
+    await pumpDialog(tester, '<gold>First <b>Kill');
+
+    final preview = tester.widget<ComponentPreview>(
+      find.byKey(const Key('minimessage_preview')),
+    );
+    expect(preview.text, '<gold>First <b>Kill');
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('minimessage_preview')),
+        matching: find.text('First Kill', findRichText: true),
+      ),
+      findsOneWidget,
     );
   });
 }

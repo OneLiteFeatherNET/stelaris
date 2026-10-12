@@ -4,6 +4,8 @@ import 'package:stelaris/feature/component/component_toolbar.dart';
 import 'package:stelaris/feature/component/minimessage_field.dart';
 import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/minimessage_editing.dart';
+import 'package:stelaris/feature/component/component_preview.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 /// The input for every text that is a text component: the formatting
 /// toolbar over a [MiniMessageField], with the shortcuts for bold, italic
@@ -16,6 +18,7 @@ class MiniMessageEditor extends StatefulWidget {
     this.label,
     this.autofocus = false,
     this.multiline = false,
+    this.showPreview = true,
     this.validator,
     this.onSubmitted,
     super.key,
@@ -34,6 +37,10 @@ class MiniMessageEditor extends StatefulWidget {
 
   /// See [MiniMessageField.multiline].
   final bool multiline;
+
+  /// Shows the text without its tags under the field, the way it looks in
+  /// game. Off where a preview sits next to the editor already.
+  final bool showPreview;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onSubmitted;
 
@@ -130,6 +137,24 @@ class _MiniMessageEditorState extends State<MiniMessageEditor> {
             onSubmitted: widget.onSubmitted,
           ),
         ),
+        if (widget.showPreview) ...[
+          const SizedBox(height: 12),
+          Text(
+            context.l10n.minimessage_preview,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 4),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _controller,
+            builder: (context, value, _) => ComponentPreview(
+              key: const Key('minimessage_preview'),
+              text: value.text,
+              componentContext: widget.componentContext,
+            ),
+          ),
+        ],
       ],
     );
   }

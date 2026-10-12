@@ -86,9 +86,7 @@ class _WrittenBookEditorState extends State<WrittenBookEditor> {
                 key: const Key('book_title'),
                 initialValue: _book.title,
                 maxLength: maxBookTitleLength,
-                decoration: InputDecoration(
-                  labelText: l10n.book_title,
-                ),
+                decoration: InputDecoration(labelText: l10n.book_title),
                 validator: (value) =>
                     checkIfEmptyAndReturnErrorString(value ?? '', context),
                 onChanged: (value) => _update(_book.copyWith(title: value)),
@@ -99,9 +97,7 @@ class _WrittenBookEditorState extends State<WrittenBookEditor> {
               child: TextFormField(
                 key: const Key('book_author'),
                 initialValue: _book.author,
-                decoration: InputDecoration(
-                  labelText: l10n.book_author,
-                ),
+                decoration: InputDecoration(labelText: l10n.book_author),
                 validator: (value) =>
                     checkIfEmptyAndReturnErrorString(value ?? '', context),
                 onChanged: (value) => _update(_book.copyWith(author: value)),
@@ -113,9 +109,7 @@ class _WrittenBookEditorState extends State<WrittenBookEditor> {
         DropdownButtonFormField<int>(
           key: const Key('book_generation'),
           initialValue: _book.generation ?? 0,
-          decoration: InputDecoration(
-            labelText: l10n.book_generation,
-          ),
+          decoration: InputDecoration(labelText: l10n.book_generation),
           items: [
             for (final (generation, label) in [
               (0, l10n.book_generation_original),
@@ -147,6 +141,8 @@ class _WrittenBookEditorState extends State<WrittenBookEditor> {
                 value: _book.pages[_page].raw,
                 componentContext: ComponentContext.bookPage,
                 multiline: true,
+                // The page preview sits next to it.
+                showPreview: false,
                 onChanged: (text) =>
                     _updatePage((page) => page.copyWith(raw: text)),
               );
@@ -331,9 +327,7 @@ class _Advanced extends StatelessWidget {
           key: const Key('book_filtered_title'),
           initialValue: book.filteredTitle ?? '',
           maxLength: maxBookTitleLength,
-          decoration: InputDecoration(
-            labelText: l10n.book_filtered_title,
-          ),
+          decoration: InputDecoration(labelText: l10n.book_filtered_title),
           onChanged: (value) => onBook(
             book.copyWith(filteredTitle: () => value.isEmpty ? null : value),
           ),
