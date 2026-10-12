@@ -11,6 +11,7 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/dispatch_ext.dart';
 
 enum _UnsavedChangesChoice { save, discard, cancel }
 
@@ -42,14 +43,13 @@ Future<bool> saveUnsavedChanges(
 
   if (!DetailForms.validateAll()) return false;
 
-  final status = await context.dispatchAndWait(action);
+  final (:ok, :error) = await context.dispatchAndCatch(action);
   if (!context.mounted) return false;
-  if (status.isCompletedFailed) {
-    final error = status.originalError;
-    if (error != null) context.showErrorSnackBar(error);
+  if (error != null) {
+    context.showErrorSnackBar(error);
     return false;
   }
-  return status.isCompletedOk;
+  return ok;
 }
 
 /// Asks what to do with unsaved edits before navigating away. Returns true

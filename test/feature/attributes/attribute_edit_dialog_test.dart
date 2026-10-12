@@ -104,6 +104,30 @@ void main() {
       expect(store.state.attributes.items.first.defaultValue, 10);
     });
 
+    testWidgets('a failed save keeps the dialog open and shows why', (
+      tester,
+    ) async {
+      await pumpDialog(tester);
+      (ApiService().attributeApi as BaseApi<AttributeModel>)
+              .apiClient
+              .dio
+              .httpClientAdapter =
+          FakeHttpClientAdapter.json(
+            {'title': 'Broken', 'status': 500},
+            statusCode: 500,
+          );
+
+      await tester.runAsync(() async {
+        await tester.tap(find.text('Save'));
+        await tester.pump();
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pumpAndSettle();
+
+      expect(find.text('Edit attribute'), findsOneWidget);
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
     testWidgets('saves edited values and persists them to the store', (tester) async {
       final store = await pumpDialog(tester);
 

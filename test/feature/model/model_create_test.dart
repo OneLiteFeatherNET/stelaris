@@ -40,8 +40,8 @@ Future<(_Recorder, List<bool>)> _pump(
   NavigationEntry entry,
 ) async {
   // Submitting dispatches an AddAction, which talks to the API; the dialog
-  // closes without waiting for it, but it still has to be stubbed so the
-  // test doesn't make a real request. All of ApiService's model APIs share
+  // waits for it and closes once the model exists, so it is stubbed to
+  // answer like the backend. All of ApiService's model APIs share
   // one Dio client, so one stub covers every kind under test - echoing the
   // submitted body back is valid JSON for whichever model is being added.
   ApiService().itemApi.apiClient.dio.httpClientAdapter = FakeHttpClientAdapter(
@@ -93,8 +93,11 @@ Future<void> _submit(WidgetTester tester) async {
   // real async zone, the same way the app would.
   await tester.runAsync(() async {
     await tester.tap(find.text('Create'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    // Lets the fake API answer before the dialog is checked.
+    await Future<void>.delayed(const Duration(milliseconds: 50));
   });
+  await tester.pumpAndSettle();
 }
 
 void main() {
@@ -127,6 +130,23 @@ void main() {
       expect(results, [true]);
     });
   }
+
+  testWidgets('a failed add keeps the dialog open and shows why', (
+    tester,
+  ) async {
+    final (_, results) = await _pump(tester, NavigationEntry.items);
+    ApiService().itemApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter.json(
+          {'title': 'Broken', 'status': 500},
+          statusCode: 500,
+        );
+
+    await _submit(tester);
+
+    expect(results, isEmpty);
+    expect(find.text('Ruby Sword'), findsOneWidget);
+    expect(find.byType(SnackBar), findsOneWidget);
+  });
 
   testWidgets('cancelling adds nothing and resolves to false', (tester) async {
     final (recorder, results) = await _pump(tester, NavigationEntry.items);

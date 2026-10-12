@@ -6,6 +6,9 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/unsaved/detail_forms.dart';
 import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris_models/stelaris_models.dart';
+import '../../../support/fake_http_client_adapter.dart';
 
 void main() {
   late Store<AppState> store;
@@ -114,6 +117,36 @@ void main() {
 
     expect(result, isFalse);
     expect(find.text('invalid'), findsOneWidget);
+  });
+
+  testWidgets('a failed save shows why and stays on the page', (
+    tester,
+  ) async {
+    ApiService().itemApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter.json(
+          {'title': 'Broken', 'status': 500},
+          statusCode: 500,
+        );
+    await pump(
+      tester,
+      const AppState(
+        unsavedChanges: NavigationEntry.items,
+        selectedItem: ItemModel(id: 'i1', uiName: 'Sword'),
+      ),
+    );
+
+    await tester.tap(find.text('leave'));
+    await tester.pumpAndSettle();
+    await tester.runAsync(() async {
+      await tester.tap(find.byKey(const Key('unsaved_dialog_save')));
+      await tester.pump();
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    });
+    await tester.pumpAndSettle();
+
+    expect(result, isFalse);
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(store.state.unsavedChanges, NavigationEntry.items);
   });
 
   testWidgets('RegisterDetailForm unregisters on dispose', (tester) async {

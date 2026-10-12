@@ -155,8 +155,8 @@ void main() {
       tester,
     ) async {
       // Submitting dispatches ItemAddAction, which talks to the API; the
-      // dialog closes without waiting for it, but it still has to be
-      // stubbed so the test doesn't make a real request.
+      // dialog waits for it and closes once the item exists, so it is
+      // stubbed to answer like the backend.
       ApiService().itemApi.apiClient.dio.httpClientAdapter =
           FakeHttpClientAdapter.json(
             const ItemModel(
@@ -186,8 +186,11 @@ void main() {
       // outside it, in a real async zone, the same way the app would.
       await tester.runAsync(() async {
         await tester.tap(find.text('Create'));
-        await tester.pumpAndSettle();
+        await tester.pump();
+        // Lets the fake API answer before the dialog closes.
+        await Future<void>.delayed(const Duration(milliseconds: 50));
       });
+      await tester.pumpAndSettle();
 
       expect(router.state.matchedLocation, '/items');
     });
