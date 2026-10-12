@@ -802,5 +802,20 @@
   "book_filtered_page": "Page for the chat filter",
   "book_filtered_hint": "Shown instead to players with the chat filter on. Empty uses the normal one.",
   "book_resolved": "Resolved",
-  "book_resolved_hint": "The text is final, the game doesn't fill in selectors or scores when the book is opened."
+  "book_resolved_hint": "The text is final, the game doesn't fill in selectors or scores when the book is opened.",
+  "edit_card_placeholder": "Not set",
+  "edit_card_edit": "Edit {label}",
+  "@edit_card_edit": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "font_section_source": "Source",
+  "font_section_metrics": "Metrics",
+  "font_hint_provider": "The provider type, e.g. bitmap",
+  "font_hint_texture_path": "A namespaced path, e.g. minecraft:font/ascii.png",
+  "font_hint_ascent": "Pixels above the baseline, at most the height",
+  "font_hint_height": "Height of a glyph in pixels, 8 by default"
 }

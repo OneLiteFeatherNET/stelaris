@@ -1585,4 +1585,32 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get book_resolved_hint =>
       'The text is final, the game doesn\'t fill in selectors or scores when the book is opened.';
+
+  @override
+  String get edit_card_placeholder => 'Not set';
+
+  @override
+  String edit_card_edit(String label) {
+    return 'Edit $label';
+  }
+
+  @override
+  String get font_section_source => 'Source';
+
+  @override
+  String get font_section_metrics => 'Metrics';
+
+  @override
+  String get font_hint_provider => 'The provider type, e.g. bitmap';
+
+  @override
+  String get font_hint_texture_path =>
+      'A namespaced path, e.g. minecraft:font/ascii.png';
+
+  @override
+  String get font_hint_ascent =>
+      'Pixels above the baseline, at most the height';
+
+  @override
+  String get font_hint_height => 'Height of a glyph in pixels, 8 by default';
 }
