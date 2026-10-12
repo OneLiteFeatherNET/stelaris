@@ -69,12 +69,8 @@ class ReleaseMetadataDisplay extends StatelessWidget {
         duration: const Duration(milliseconds: 300),
         child: Card.filled(
           color: Colors.transparent,
-          elevation: 0,
           key: ValueKey('${model.version}_$_type'),
           margin: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppShapes.medium),
-          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Center(child: _buildContent(context, model)),

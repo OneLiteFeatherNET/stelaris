@@ -16,7 +16,6 @@ import 'package:stelaris/feature/item/item_tab_loader.dart';
 import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
-import 'package:stelaris/util/app_shapes.dart';
 
 class LorePage extends StatefulWidget {
   const LorePage({super.key});
@@ -206,9 +205,7 @@ class _LoreSkeleton extends StatelessWidget {
       itemCount: 6,
       itemBuilder: (context, index) => Card.filled(
         margin: const EdgeInsets.only(bottom: 8),
-        elevation: 0,
         color: colorScheme.surfaceContainerLow,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppShapes.medium)),
         child: const Padding(
           // Where the number and the text of a card are, 60 high like it.
           padding: EdgeInsets.fromLTRB(44, 23, 16, 23),

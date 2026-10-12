@@ -26,7 +26,6 @@ abstract final class AppTheme {
       brightness: Brightness.light,
       colorScheme: colorScheme,
       textTheme: scaleTextTheme(_baseLightText, settings.fontScale),
-      cardTheme: _cardTheme,
       dialogTheme: _dialogTheme,
       inputDecorationTheme: _inputDecorationTheme,
     );
@@ -44,15 +43,14 @@ abstract final class AppTheme {
       brightness: Brightness.dark,
       colorScheme: colorScheme,
       textTheme: scaleTextTheme(_baseDarkText, settings.fontScale),
-      cardTheme: _cardTheme,
       dialogTheme: _dialogTheme,
       inputDecorationTheme: _inputDecorationTheme,
     );
   }
 
-  static final CardThemeData _cardTheme = CardThemeData(
-    shape: AppShapes.rounded(AppShapes.medium),
-  );
+  // Cards need no theme: Material 3 already rounds them by
+  // [AppShapes.medium]. A shape here would also replace the one of an
+  // outlined card, and with it its outline.
 
   static final DialogThemeData _dialogTheme = DialogThemeData(
     shape: AppShapes.rounded(AppShapes.extraLarge),
