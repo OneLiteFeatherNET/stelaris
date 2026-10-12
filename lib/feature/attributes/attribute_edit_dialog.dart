@@ -95,7 +95,6 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
                   IconButton(
                     onPressed: _handleCancel,
                     icon: const Icon(Icons.close),
-                    splashRadius: 20,
                   ),
                 ],
               ),

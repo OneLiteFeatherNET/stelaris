@@ -1,7 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
-import 'package:stelaris/util/app_shapes.dart';
 
 class EmptyProjectView extends StatelessWidget {
   final VoidCallback onCreateProject;
@@ -44,11 +43,9 @@ class EmptyProjectView extends StatelessWidget {
           verticalSpacing25,
           FilledButton.icon(
             onPressed: onCreateProject,
+            // Larger than usual, it is the only action on the page.
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppShapes.medium),
-              ),
             ),
             icon: const Icon(Icons.add),
             label: Text(context.l10n.dialog_project_create_button),

@@ -2,10 +2,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/sound/modal/sound_file_modal_helper.dart';
 import 'package:stelaris/util/l10n_ext.dart';
-import 'package:stelaris/util/app_shapes.dart';
 
 /// The [SoundCardButton] is a widget that displays a specific button on a sound card which triggers a dialog to view sound file details.
-/// It is styled with the theme's secondary container colors and has a rounded rectangle shape.
+/// A tonal button, in the secondary container colors of the theme.
 class SoundCardButton extends StatelessWidget {
   const SoundCardButton({required this.source, super.key});
 
@@ -13,14 +12,7 @@ class SoundCardButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: theme.colorScheme.secondaryContainer,
-        foregroundColor: theme.colorScheme.onSecondaryContainer,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppShapes.small)),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      ),
+    return FilledButton.tonal(
       onPressed: () =>
           showSoundFileModal(context: context, create: false, source: source),
       child: Text(context.l10n.button_view),
