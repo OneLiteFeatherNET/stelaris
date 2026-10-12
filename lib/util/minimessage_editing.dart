@@ -27,16 +27,25 @@ class MiniMessageEditing {
 
   /// A whole block; group 1 is the tag name, group 2 the content.
   static final RegExp _block = RegExp(
-    r'^<([a-z_]+)(?::[a-z0-9_#:]+)?>(.*)</\1>$',
+    r'^<([a-z0-9_#]+)(?::[a-z0-9_#:]+)?>(.*)</\1>$',
     dotAll: true,
   );
 
   /// An opening tag at the end of a string; group 1 is the tag name.
-  static final RegExp _openTagAtEnd = RegExp(r'<([a-z_]+)(?::[a-z0-9_#:]+)?>$');
+  static final RegExp _openTagAtEnd = RegExp(
+    r'<([a-z0-9_#]+)(?::[a-z0-9_#:]+)?>$',
+  );
 
   static final Set<String> _colorNames = {
     for (final color in NamedTextColor.values) color.key,
   };
+
+  /// A hex color as MiniMessage writes it, `#rgb` or `#rrggbb`.
+  static final RegExp _hexColor = RegExp(r'^#([0-9a-f]{3}|[0-9a-f]{6})$');
+
+  /// Whether [name] is a color tag, a named or a hex color.
+  static bool isColorTag(String name) =>
+      _colorNames.contains(name) || _hexColor.hasMatch(name);
 
   static TextEditingValue wrap(
     TextEditingValue value,
@@ -78,15 +87,19 @@ class MiniMessageEditing {
         );
   }
 
-  /// Wraps the target range in [color], replacing a named color block
-  /// instead of nesting.
+  /// Wraps the target range in [color], replacing a color block instead of
+  /// nesting.
   static TextEditingValue applyColor(
     TextEditingValue value,
     NamedTextColor color,
-  ) {
-    final open = '<${color.key}>';
-    final close = '</${color.key}>';
-    return _replaceBlock(value, _colorNames.contains, open, close) ??
+  ) => applyColorTag(value, color.key);
+
+  /// Wraps the target range in the color [tag], a name like `gold` or a hex
+  /// color like `#ff00aa`, replacing a color block instead of nesting.
+  static TextEditingValue applyColorTag(TextEditingValue value, String tag) {
+    final open = '<$tag>';
+    final close = '</$tag>';
+    return _replaceBlock(value, isColorTag, open, close) ??
         wrap(value, open, close);
   }
 
@@ -96,8 +109,17 @@ class MiniMessageEditing {
     TextEditingValue value,
     NamedTextColor from,
     NamedTextColor to,
+  ) => applyGradientStops(value, [from.key, to.key]);
+
+  /// Wraps the target range in a gradient over [stops], two or more color
+  /// tags like `gold` or `#ff00aa`, replacing an existing gradient block
+  /// instead of nesting.
+  static TextEditingValue applyGradientStops(
+    TextEditingValue value,
+    List<String> stops,
   ) {
-    final open = '<gradient:${from.key}:${to.key}>';
+    assert(stops.length >= 2, 'a gradient needs two colors at least');
+    final open = '<gradient:${stops.join(':')}>';
     const close = '</gradient>';
     return _replaceBlock(value, (name) => name == 'gradient', open, close) ??
         wrap(value, open, close);

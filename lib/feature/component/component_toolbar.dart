@@ -1,3 +1,5 @@
+import 'package:stelaris/util/minimessage_parser.dart';
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/component/color_swatch_button.dart';
 import 'package:stelaris/feature/component/minimessage_field.dart';
@@ -77,27 +79,36 @@ class ComponentToolbar extends StatelessWidget {
                     controller.componentContext.defaultColor,
               ),
             ),
-            menu: (close) => Padding(
-              padding: const EdgeInsets.all(12),
-              child: _Swatches(
-                onPick: (color) {
-                  close();
-                  _apply(
-                    (value) => MiniMessageEditing.applyColor(value, color),
-                  );
-                },
-              ),
-            ),
+            menu: (close) {
+              void pick(String tag) {
+                close();
+                _apply((value) => MiniMessageEditing.applyColorTag(value, tag));
+              }
+
+              return Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _Swatches(onPick: (color) => pick(color.key)),
+                    const SizedBox(height: 12),
+                    _HexInput(onColor: pick),
+                  ],
+                ),
+              );
+            },
           ),
           _MenuButton(
             key: const Key('minimessage_gradient'),
             tooltip: l10n.minimessage_gradient,
             icon: const Icon(Icons.gradient),
             menu: (close) => _GradientPicker(
-              onGradient: (from, to) {
+              onGradient: (stops) {
                 close();
                 _apply(
-                  (value) => MiniMessageEditing.applyGradient(value, from, to),
+                  (value) =>
+                      MiniMessageEditing.applyGradientStops(value, stops),
                 );
               },
             ),
@@ -226,10 +237,9 @@ class _Separator extends StatelessWidget {
 
 /// The 16 named colors in a grid.
 class _Swatches extends StatelessWidget {
-  const _Swatches({required this.onPick, this.selected});
+  const _Swatches({required this.onPick});
 
   final ValueChanged<NamedTextColor> onPick;
-  final NamedTextColor? selected;
 
   @override
   Widget build(BuildContext context) {
@@ -244,7 +254,6 @@ class _Swatches extends StatelessWidget {
             ColorSwatchButton(
               color: color,
               size: 28,
-              selected: color == selected,
               onTap: () => onPick(color),
             ),
         ],
@@ -291,45 +300,182 @@ class _MenuButtonState extends State<_MenuButton> {
   }
 }
 
-/// Lives as long as the menu is open, so every opening starts over.
+/// Lives as long as the menu is open, so every opening starts over. Takes
+/// two or three colors, each a named one or a hex color, and applies the
+/// gradient right after the last.
 class _GradientPicker extends StatefulWidget {
   const _GradientPicker({required this.onGradient});
 
-  final void Function(NamedTextColor from, NamedTextColor to) onGradient;
+  /// The color tags of the gradient, e.g. `gold` or `#ff00aa`.
+  final ValueChanged<List<String>> onGradient;
 
   @override
   State<_GradientPicker> createState() => _GradientPickerState();
 }
 
 class _GradientPickerState extends State<_GradientPicker> {
-  NamedTextColor? _from;
+  int _count = 2;
+  final List<String> _stops = [];
 
-  void _pick(NamedTextColor color) {
-    final from = _from;
-    if (from == null) {
-      setState(() => _from = color);
+  void _pick(String tag) {
+    final stops = [..._stops, tag];
+    if (stops.length == _count) {
+      widget.onGradient(stops);
     } else {
-      widget.onGradient(from, color);
+      setState(() => _stops.add(tag));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.all(12),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            _from == null
-                ? l10n.minimessage_gradient_from
-                : l10n.minimessage_gradient_to,
-            style: Theme.of(context).textTheme.labelMedium,
+          SegmentedButton<int>(
+            key: const Key('minimessage_gradient_count'),
+            showSelectedIcon: false,
+            segments: [
+              for (final count in [2, 3])
+                ButtonSegment(
+                  value: count,
+                  label: Text(l10n.minimessage_gradient_colors(count)),
+                ),
+            ],
+            selected: {_count},
+            // Fewer colors than picked would apply at once, start over.
+            onSelectionChanged: (counts) => setState(() {
+              _count = counts.single;
+              _stops.clear();
+            }),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Text(
+                l10n.minimessage_gradient_pick(_stops.length + 1, _count),
+                style: theme.textTheme.labelMedium,
+              ),
+              const SizedBox(width: 8),
+              // The colors picked so far.
+              for (final stop in _stops)
+                Padding(
+                  padding: const EdgeInsets.only(right: 4),
+                  child: _Dot(color: MiniMessageParser.colorOf(stop)),
+                ),
+            ],
           ),
           const SizedBox(height: 8),
-          _Swatches(selected: _from, onPick: _pick),
+          _Swatches(onPick: (color) => _pick(color.key)),
+          const SizedBox(height: 12),
+          _HexInput(onColor: _pick),
+        ],
+      ),
+    );
+  }
+}
+
+/// A small round color, outlined so black shows on a dark menu.
+class _Dot extends StatelessWidget {
+  const _Dot({required this.color});
+
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 16,
+      height: 16,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
+      ),
+    );
+  }
+}
+
+/// Takes a hex color, with or without its `#`, and hands it on as a color
+/// tag like `#ff00aa`. Shows the color while it is typed.
+class _HexInput extends StatefulWidget {
+  const _HexInput({required this.onColor});
+
+  final ValueChanged<String> onColor;
+
+  @override
+  State<_HexInput> createState() => _HexInputState();
+}
+
+class _HexInputState extends State<_HexInput> {
+  final TextEditingController _controller = TextEditingController();
+  String? _error;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  /// The tag for the typed text, null when it is no hex color.
+  String? get _tag {
+    var text = _controller.text.trim().toLowerCase();
+    if (!text.startsWith('#')) text = '#$text';
+    return MiniMessageEditing.isColorTag(text) && text.startsWith('#')
+        ? text
+        : null;
+  }
+
+  void _submit() {
+    final tag = _tag;
+    if (tag == null) {
+      setState(() => _error = context.l10n.minimessage_hex_invalid);
+      return;
+    }
+    widget.onColor(tag);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final tag = _tag;
+    return SizedBox(
+      width: 8 * 28 + 7 * 8,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 10, right: 8),
+            child: _Dot(
+              color: tag == null ? null : MiniMessageParser.colorOf(tag),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              key: const Key('minimessage_hex'),
+              controller: _controller,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp('[#0-9a-fA-F]')),
+                LengthLimitingTextInputFormatter(7),
+              ],
+              decoration: InputDecoration(
+                isDense: true,
+                hintText: l10n.minimessage_hex_hint,
+                errorText: _error,
+              ),
+              onChanged: (_) => setState(() => _error = null),
+              onSubmitted: (_) => _submit(),
+            ),
+          ),
+          IconButton(
+            key: const Key('minimessage_hex_apply'),
+            icon: const Icon(Icons.check),
+            tooltip: l10n.minimessage_hex_apply,
+            onPressed: _submit,
+          ),
         ],
       ),
     );

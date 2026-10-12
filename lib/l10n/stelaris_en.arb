@@ -752,8 +752,29 @@
   "minimessage_strikethrough": "Strikethrough",
   "minimessage_color": "Color",
   "minimessage_gradient": "Gradient",
-  "minimessage_gradient_from": "Pick the first color",
-  "minimessage_gradient_to": "Pick the second color",
+  "minimessage_gradient_pick": "Pick color {index} of {count}",
+  "@minimessage_gradient_pick": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "minimessage_gradient_colors": "{count} colors",
+  "@minimessage_gradient_colors": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "minimessage_hex_hint": "#ff00aa",
+  "minimessage_hex_apply": "Use this color",
+  "minimessage_hex_invalid": "A hex color like #ff00aa",
+  "minimessage_preview": "Preview",
   "minimessage_rainbow": "Rainbow",
   "minimessage_clear": "Clear formatting",
   "minimessage_guide_title": "MiniMessage tags",

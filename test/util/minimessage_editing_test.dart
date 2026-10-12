@@ -524,4 +524,61 @@ void main() {
       });
     }
   });
+
+  group('hex colors and longer gradients', () {
+    test('a hex color wraps the selection', () {
+      final result = MiniMessageEditing.applyColorTag(all('Epic'), '#ff00aa');
+      expect(result.text, '<#ff00aa>Epic</#ff00aa>');
+      expectSelection(result, 9, 13);
+    });
+
+    test('a hex color replaces a named one instead of nesting', () {
+      final result = MiniMessageEditing.applyColorTag(
+        all('<gold>Epic</gold>'),
+        '#ff00aa',
+      );
+      expect(result.text, '<#ff00aa>Epic</#ff00aa>');
+    });
+
+    test('a named color replaces a hex one', () {
+      final result = MiniMessageEditing.applyColor(
+        selected('<#ff00aa>Epic</#ff00aa>', 9, 13),
+        NamedTextColor.gold,
+      );
+      expect(result.text, '<gold>Epic</gold>');
+    });
+
+    test('a gradient over three colors', () {
+      final result = MiniMessageEditing.applyGradientStops(all('Fire'), [
+        'gold',
+        '#ff5555',
+        'light_purple',
+      ]);
+      expect(
+        result.text,
+        '<gradient:gold:#ff5555:light_purple>Fire</gradient>',
+      );
+    });
+
+    test('a new gradient replaces one with other stops', () {
+      final result = MiniMessageEditing.applyGradientStops(
+        all('<gradient:red:blue>Fire</gradient>'),
+        ['#000000', '#ffffff'],
+      );
+      expect(result.text, '<gradient:#000000:#ffffff>Fire</gradient>');
+    });
+
+    for (final (tag, color) in [
+      ('#ff00aa', true),
+      ('#f0a', true),
+      ('gold', true),
+      ('#ff00a', false),
+      ('b', false),
+      ('gradient', false),
+    ]) {
+      test('$tag is ${color ? '' : 'not '}a color tag', () {
+        expect(MiniMessageEditing.isColorTag(tag), color);
+      });
+    }
+  });
 }
