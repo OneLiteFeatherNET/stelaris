@@ -67,12 +67,12 @@ void main() {
   });
 
   test('a block is only replaced when its content nests', () {
-    final result = MiniMessageEditing.applyColor(
+    final result = MiniMessageEditing.applyColorTag(
       const TextEditingValue(
         text: 'ab<gold>bc<gold></gold></gold>',
         selection: TextSelection(baseOffset: 8, extentOffset: 16),
       ),
-      NamedTextColor.red,
+      NamedTextColor.red.key,
     );
     expect(crossing(result.text), isNull);
   });
@@ -97,7 +97,10 @@ void main() {
       );
       final where = '"$text" at ${value.selection}';
 
-      final colored = MiniMessageEditing.applyColor(value, NamedTextColor.red);
+      final colored = MiniMessageEditing.applyColorTag(
+        value,
+        NamedTextColor.red.key,
+      );
       expect(crossing(colored.text), isNull, reason: 'color on $where');
       expect(plain(colored.text), plain(text), reason: 'color on $where');
 

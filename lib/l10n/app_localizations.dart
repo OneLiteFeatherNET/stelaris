@@ -2818,12 +2818,6 @@ abstract class AppLocalizations {
   /// **'Title'**
   String get book_title;
 
-  /// No description provided for @book_title_too_long.
-  ///
-  /// In en, this message translates to:
-  /// **'At most {count} characters'**
-  String book_title_too_long(int count);
-
   /// No description provided for @book_author.
   ///
   /// In en, this message translates to:

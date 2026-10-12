@@ -784,14 +784,6 @@
   "minimessage_guide_rainbow": "The colors of the rainbow over the text.",
   "minimessage_guide_reset": "Ends all colors and formatting at once.",
   "book_title": "Title",
-  "book_title_too_long": "At most {count} characters",
-  "@book_title_too_long": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "book_author": "Author",
   "book_generation": "Generation",
   "book_generation_original": "Original",

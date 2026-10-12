@@ -1528,11 +1528,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get book_title => 'Title';
 
   @override
-  String book_title_too_long(int count) {
-    return 'At most $count characters';
-  }
-
-  @override
   String get book_author => 'Author';
 
   @override

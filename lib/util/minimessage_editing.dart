@@ -87,13 +87,6 @@ class MiniMessageEditing {
         );
   }
 
-  /// Wraps the target range in [color], replacing a color block instead of
-  /// nesting.
-  static TextEditingValue applyColor(
-    TextEditingValue value,
-    NamedTextColor color,
-  ) => applyColorTag(value, color.key);
-
   /// Wraps the target range in the color [tag], a name like `gold` or a hex
   /// color like `#ff00aa`, replacing a color block instead of nesting.
   static TextEditingValue applyColorTag(TextEditingValue value, String tag) {
@@ -102,14 +95,6 @@ class MiniMessageEditing {
     return _replaceBlock(value, isColorTag, open, close) ??
         wrap(value, open, close);
   }
-
-  /// Wraps the target range in a gradient, replacing an existing gradient
-  /// block instead of nesting.
-  static TextEditingValue applyGradient(
-    TextEditingValue value,
-    NamedTextColor from,
-    NamedTextColor to,
-  ) => applyGradientStops(value, [from.key, to.key]);
 
   /// Wraps the target range in a gradient over [stops], two or more color
   /// tags like `gold` or `#ff00aa`, replacing an existing gradient block
@@ -150,9 +135,6 @@ class MiniMessageEditing {
     }
     return colors.isEmpty ? null : colors.last;
   }
-
-  static TextEditingValue applyRainbow(TextEditingValue value) =>
-      toggle(value, 'rainbow');
 
   /// Removes every tag from the target range, including the blocks the
   /// range is exactly the content of (what stays selected after an action).
