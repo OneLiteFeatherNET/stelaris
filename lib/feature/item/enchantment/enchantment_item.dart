@@ -8,7 +8,7 @@ import 'package:stelaris/feature/item/enchantment/dialog/item_enchantment_update
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/enchantment.dart';
 
-class EnchantmentItem extends StatefulWidget {
+class EnchantmentItem extends StatelessWidget {
   const EnchantmentItem({
     required this.dto,
     required this.enchantment,
@@ -17,33 +17,6 @@ class EnchantmentItem extends StatefulWidget {
 
   final ItemEnchantmentDto dto;
   final Enchantment enchantment;
-
-  @override
-  State<EnchantmentItem> createState() => _EnchantmentItemState();
-}
-
-class _EnchantmentItemState extends State<EnchantmentItem> {
-  late TextEditingController _levelController;
-
-  @override
-  void initState() {
-    super.initState();
-    _levelController = TextEditingController(text: widget.dto.level.toString());
-  }
-
-  @override
-  void didUpdateWidget(EnchantmentItem oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.dto.level != widget.dto.level) {
-      _levelController.text = widget.dto.level.toString();
-    }
-  }
-
-  @override
-  void dispose() {
-    _levelController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,15 +31,15 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
             vertical: 8,
           ),
           title: Text(
-            widget.enchantment.displayName,
+            enchantment.displayName,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
-          subtitle: _getEnchantmentSubTitle(theme, widget.dto),
+          subtitle: _getEnchantmentSubTitle(context, theme),
           trailing: EntryActions(
-            onEdit: () => _showUpdateDialog(widget.enchantment, widget.dto),
-            onDelete: () => _showDeleteDialog(widget.dto),
+            onEdit: () => _showUpdateDialog(context),
+            onDelete: () => _showDeleteDialog(context),
           ),
         ),
       ),
@@ -75,9 +48,8 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
 
   /// Applies the right sub title [Widget] based on the [ItemEnchantmentDto.unsafe] flag.
   /// [theme] the current [ThemeData] to get some values from it
-  /// [dto] the [ItemEnchantmentDto] to build the widget
   /// Returns the concrete [Widget] that displays the data
-  Widget _getEnchantmentSubTitle(ThemeData theme, ItemEnchantmentDto dto) {
+  Widget _getEnchantmentSubTitle(BuildContext context, ThemeData theme) {
     final Text levelText = Text(context.l10n.item_level);
     if (dto.unsafe) {
       return Row(children: [levelText, Text(dto.level.toString())]);
@@ -85,16 +57,16 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
     return Row(
       children: [
         levelText,
-        Text(widget.dto.level.toString()),
+        Text(dto.level.toString()),
         Text(
-          ' / ${widget.enchantment.maxLevel}',
+          ' / ${enchantment.maxLevel}',
           style: theme.textTheme.bodySmall,
         ),
       ],
     );
   }
 
-  void _showUpdateDialog(Enchantment enchantment, ItemEnchantmentDto dto) {
+  void _showUpdateDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -103,7 +75,7 @@ class _EnchantmentItemState extends State<EnchantmentItem> {
     );
   }
 
-  void _showDeleteDialog(ItemEnchantmentDto dto) {
+  void _showDeleteDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
