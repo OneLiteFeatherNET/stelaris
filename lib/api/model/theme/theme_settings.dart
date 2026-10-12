@@ -34,12 +34,14 @@ abstract class ThemeSettings with _$ThemeSettings {
   static Color _colorFromJson(int value) => Color(value);
   static int _colorToJson(Color color) => color.toARGB32();
 
-  /// Returns the default theme settings used when no user preference is found.
+  /// Returns the default theme settings used when no user preference is
+  /// found. The same as the default of `AppState.themeSettings`, a test
+  /// keeps the two equal.
   static ThemeSettings defaultSettings() {
-    return ThemeSettings(
+    return const ThemeSettings(
       isDarkMode: false,
-      primaryColor: Colors.green[400] ?? Colors.green,
-      accentColor: Colors.green[200] ?? Colors.green,
+      primaryColor: Colors.blue,
+      accentColor: Colors.blueAccent,
       fontScale: 1,
       useSystemTheme: true,
     );
