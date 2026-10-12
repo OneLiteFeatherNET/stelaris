@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import 'package:stelaris/feature/build/version_group_selection.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 class VersionUpdateInput extends StatelessWidget {
   final String labelText;
@@ -36,15 +37,15 @@ class VersionUpdateInput extends StatelessWidget {
       return InputDecorator(
         decoration: InputDecoration(
           labelText: labelText,
-          border: const OutlineInputBorder(),
           enabledBorder: highlight
               ? OutlineInputBorder(
+                  borderRadius: AppShapes.fieldRadius,
                   borderSide: BorderSide(
                     color: theme.colorScheme.primary,
                     width: 2,
                   ),
                 )
-              : const OutlineInputBorder(),
+              : AppShapes.fieldBorder(),
           filled: true,
           labelStyle: highlight
               ? TextStyle(
@@ -87,15 +88,15 @@ class VersionUpdateInput extends StatelessWidget {
     return TextField(
       decoration: InputDecoration(
         labelText: labelText,
-        border: const OutlineInputBorder(),
         enabledBorder: highlight
             ? OutlineInputBorder(
+                borderRadius: AppShapes.fieldRadius,
                 borderSide: BorderSide(
                   color: theme.colorScheme.primary,
                   width: 2,
                 ),
               )
-            : const OutlineInputBorder(),
+            : AppShapes.fieldBorder(),
         filled: true,
         labelStyle: highlight
             ? TextStyle(

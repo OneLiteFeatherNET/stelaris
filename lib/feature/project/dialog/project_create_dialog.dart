@@ -54,7 +54,6 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
               decoration: InputDecoration(
                 labelText: '${context.l10n.dialog_project_display_name} *',
                 hintText: 'e.g. My Awesome Project',
-                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.title),
               ),
               validator: Validators.required(context.l10n.validation_display_name_required),
@@ -67,7 +66,6 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
               decoration: InputDecoration(
                 labelText: '${context.l10n.dialog_project_key} *',
                 hintText: 'e.g. my_project',
-                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.vpn_key_outlined),
               ),
               validator: Validators.adventureNamespace(context.l10n),
@@ -79,7 +77,6 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_description,
                 hintText: context.l10n.project_description_hint,
-                border: const OutlineInputBorder(),
                 alignLabelWithHint: true,
               ),
             ),
@@ -89,7 +86,6 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_url,
                 hintText: 'https://github.com/...',
-                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.link),
               ),
             ),
@@ -99,7 +95,6 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_docu_url,
                 hintText: 'https://docs.example.com/...',
-                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.menu_book_outlined),
               ),
             ),

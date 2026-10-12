@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 const int maxCommitLength = 10;
 
@@ -27,8 +28,8 @@ class DevBuildOption extends StatelessWidget {
         decoration: InputDecoration(
           labelText: context.l10n.download_commit_label,
           prefixIcon: const Icon(Icons.commit),
-          border: const OutlineInputBorder(),
           enabledBorder: OutlineInputBorder(
+            borderRadius: AppShapes.fieldRadius,
             borderSide: BorderSide(
               color: Theme.of(context).colorScheme.primary,
               width: 1,

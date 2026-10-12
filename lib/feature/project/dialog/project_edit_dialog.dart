@@ -69,7 +69,6 @@ class _EditProjectDialogState extends State<EditProjectDialog> {
               decoration: InputDecoration(
                 labelText: '${context.l10n.dialog_project_display_name} *',
                 hintText: 'e.g. My Awesome Project',
-                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.title),
               ),
               validator: Validators.required(context.l10n.validation_display_name_required),
@@ -81,7 +80,6 @@ class _EditProjectDialogState extends State<EditProjectDialog> {
               enabled: false,
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_key,
-                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.lock_outline),
                 helperText: context.l10n.dialog_project_key_readonly_hint,
               ),
@@ -93,7 +91,6 @@ class _EditProjectDialogState extends State<EditProjectDialog> {
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_description,
                 hintText: context.l10n.project_description_hint,
-                border: const OutlineInputBorder(),
                 alignLabelWithHint: true,
               ),
             ),
@@ -103,7 +100,6 @@ class _EditProjectDialogState extends State<EditProjectDialog> {
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_url,
                 hintText: 'https://github.com/...',
-                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.link),
               ),
             ),
@@ -113,7 +109,6 @@ class _EditProjectDialogState extends State<EditProjectDialog> {
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_docu_url,
                 hintText: 'https://docs.example.com/...',
-                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.menu_book_outlined),
               ),
             ),

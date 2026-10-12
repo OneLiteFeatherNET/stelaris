@@ -42,7 +42,6 @@ class _BaseIntegerFieldState extends State<BaseIntegerField> {
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: widget.label,
-        border: const OutlineInputBorder(),
       ),
       inputFormatters: [MinValueFormatter(widget.minValue)],
       validator: (v) {

@@ -141,7 +141,6 @@ class _CopyModelDialogState extends State<CopyModelDialog> {
               initialValue: _targetProjectId,
               decoration: InputDecoration(
                 labelText: l10n.dialog_model_copy_project_label,
-                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.folder_outlined),
               ),
               items: [
@@ -165,7 +164,6 @@ class _CopyModelDialogState extends State<CopyModelDialog> {
               decoration: InputDecoration(
                 labelText: '${l10n.dialog_model_name_label} *',
                 hintText: l10n.dialog_model_name_hint,
-                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.title),
               ),
               validator: Validators.required(l10n.validation_name_required),
@@ -178,7 +176,6 @@ class _CopyModelDialogState extends State<CopyModelDialog> {
               decoration: InputDecoration(
                 labelText: '${l10n.dialog_model_key_label} *',
                 hintText: l10n.dialog_model_key_hint,
-                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.vpn_key_outlined),
               ),
               validator: Validators.adventureKeyPart(l10n),

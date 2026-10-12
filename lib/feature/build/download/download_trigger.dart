@@ -184,7 +184,6 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
                     )
                   : DropdownButtonFormField<String>(
                       decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 8,

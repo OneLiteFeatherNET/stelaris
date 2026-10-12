@@ -130,7 +130,6 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
                       inputFormatters: numberFormatter,
                       decoration: InputDecoration(
                         labelText: context.l10n.card_attribute_default_value,
-                        border: const OutlineInputBorder(),
                       ),
                     ),
                     verticalSpacing10,
@@ -140,7 +139,6 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
                       inputFormatters: numberFormatter,
                       decoration: InputDecoration(
                         labelText: context.l10n.card_attribute_maximum_value,
-                        border: const OutlineInputBorder(),
                       ),
                     ),
                   ],

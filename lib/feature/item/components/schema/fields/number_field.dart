@@ -42,7 +42,6 @@ class NumberField extends StatelessWidget {
     return TextFormField(
       initialValue: text,
       decoration: InputDecoration(
-        border: const OutlineInputBorder(),
         labelText: label,
         helperText: range,
         suffixIcon: suffix,

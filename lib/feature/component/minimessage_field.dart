@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/component/component_preview.dart';
 import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/minimessage_parser.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// A component is a single line, any run of line breaks becomes a space.
 final RegExp _lineBreaks = RegExp(r'[\r\n]+');
@@ -86,7 +87,7 @@ class MiniMessageField extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     OutlineInputBorder border(Color color, [double width = 1]) {
       return OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: AppShapes.fieldRadius,
         borderSide: BorderSide(color: color, width: width),
       );
     }

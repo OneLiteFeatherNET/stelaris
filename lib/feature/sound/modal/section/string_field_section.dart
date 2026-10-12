@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/sound/modal/section/base_section.dart';
 import 'package:stelaris/util/typedefs.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 class StringInputSection extends StatefulWidget {
   const StringInputSection({
@@ -19,7 +20,7 @@ class StringInputSection extends StatefulWidget {
 
 class _StringInputSectionState extends State<StringInputSection> {
   late final TextEditingController _controller;
-  final _borderRadius = BorderRadius.circular(8);
+  final _borderRadius = AppShapes.fieldRadius;
 
   @override
   void initState() {

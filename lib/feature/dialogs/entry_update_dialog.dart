@@ -63,7 +63,6 @@ class _EntryUpdateDialogState extends State<EntryUpdateDialog> {
           validator: widget.formFieldValidator,
           decoration: InputDecoration(
             hintText: widget.hintText,
-            border: const OutlineInputBorder(),
             suffixIcon: _getSuffixWidget(),
           ),
         ),

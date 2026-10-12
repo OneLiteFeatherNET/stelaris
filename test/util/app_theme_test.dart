@@ -80,6 +80,15 @@ void main() {
           BorderRadius.circular(AppShapes.medium),
         );
       });
+
+      test('the $name theme outlines every field with one radius', () {
+        final border = theme.inputDecorationTheme.border;
+        expect(border, isA<OutlineInputBorder>());
+        expect(
+          (border! as OutlineInputBorder).borderRadius,
+          AppShapes.fieldRadius,
+        );
+      });
     }
 
     testWidgets('the form dialog takes its corners from the theme', (
@@ -115,5 +124,26 @@ void main() {
         BorderRadius.circular(AppShapes.extraLarge),
       );
     });
+  });
+
+  testWidgets('a field without its own border gets the outline of the theme', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.buildLight(ThemeSettings.defaultSettings()),
+        home: const Scaffold(
+          body: TextField(decoration: InputDecoration(labelText: 'Name')),
+        ),
+      ),
+    );
+
+    // The field hands the decoration on with the defaults of the theme.
+    final border = tester
+        .widget<InputDecorator>(find.byType(InputDecorator))
+        .decoration
+        .border;
+    expect(border, isA<OutlineInputBorder>());
+    expect((border! as OutlineInputBorder).borderRadius, AppShapes.fieldRadius);
   });
 }

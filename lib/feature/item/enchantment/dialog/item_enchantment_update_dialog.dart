@@ -58,7 +58,6 @@ class _ItemEnchantmentUpdateDialogState
           inputFormatters: enchantmentLevelFormatters,
           decoration: InputDecoration(
             labelText: context.l10n.label_level,
-            border: const OutlineInputBorder(),
           ),
           validator: (value) => Validators.enchantmentLevel(
             context.l10n,

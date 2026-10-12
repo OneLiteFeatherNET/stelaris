@@ -18,6 +18,19 @@ abstract final class AppShapes {
   /// Dialogs.
   static const double extraLarge = 28;
 
+  /// Text fields and dropdowns, one value for all of them. Change it here to
+  /// compare, e.g. [extraSmall] against [small].
+  static const double field = small;
+
+  static const BorderRadius fieldRadius = BorderRadius.all(
+    Radius.circular(field),
+  );
+
+  /// The outline of a field, with [side] for its color and width.
+  static OutlineInputBorder fieldBorder([
+    BorderSide side = const BorderSide(),
+  ]) => OutlineInputBorder(borderRadius: fieldRadius, borderSide: side);
+
   static RoundedRectangleBorder rounded(double radius) =>
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius));
 }

@@ -28,6 +28,7 @@ abstract final class AppTheme {
       textTheme: scaleTextTheme(_baseLightText, settings.fontScale),
       cardTheme: _cardTheme,
       dialogTheme: _dialogTheme,
+      inputDecorationTheme: _inputDecorationTheme,
     );
   }
 
@@ -45,6 +46,7 @@ abstract final class AppTheme {
       textTheme: scaleTextTheme(_baseDarkText, settings.fontScale),
       cardTheme: _cardTheme,
       dialogTheme: _dialogTheme,
+      inputDecorationTheme: _inputDecorationTheme,
     );
   }
 
@@ -55,6 +57,11 @@ abstract final class AppTheme {
   static final DialogThemeData _dialogTheme = DialogThemeData(
     shape: AppShapes.rounded(AppShapes.extraLarge),
   );
+
+  /// Every field is outlined. The states take their colors from the theme
+  /// and their corners from here.
+  static final InputDecorationThemeData _inputDecorationTheme =
+      InputDecorationThemeData(border: AppShapes.fieldBorder());
 
   /// Scales the [fontSize] of all text styles in [base] by [factor].
   static TextTheme scaleTextTheme(TextTheme base, double factor) {

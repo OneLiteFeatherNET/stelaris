@@ -44,7 +44,6 @@ class _FontCharAddDialogState extends State<FontCharAddDialog> {
           decoration: InputDecoration(
             labelText: context.l10n.font_char_label,
             hintText: 'E000',
-            border: const OutlineInputBorder(),
           ),
           onFieldSubmitted: (_) => _handleAdd(),
         ),

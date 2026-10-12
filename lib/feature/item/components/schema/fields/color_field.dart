@@ -34,7 +34,6 @@ class ColorField extends StatelessWidget {
           child: TextFormField(
             initialValue: colorHex(value),
             decoration: InputDecoration(
-              border: const OutlineInputBorder(),
               labelText: label ?? context.l10n.component_field_color,
             ),
             inputFormatters: [
