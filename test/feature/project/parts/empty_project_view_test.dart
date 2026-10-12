@@ -35,5 +35,25 @@ void main() {
 
       expect(createClicked, isTrue);
     });
+
+    testWidgets('the create button keeps the pill shape of the theme', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: EmptyProjectView(onCreateProject: () {})),
+        ),
+      );
+
+      final button = tester.widget<ButtonStyleButton>(
+        find.ancestor(
+          of: find.text('Create'),
+          matching: find.byWidgetPredicate((w) => w is ButtonStyleButton),
+        ),
+      );
+      expect(button.style?.shape, isNull);
+    });
   });
 }

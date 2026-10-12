@@ -63,15 +63,9 @@ class ProjectSelectionCard extends StatelessWidget {
                         onPressed: onCreateProject,
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppShapes.medium),
-                          ),
                         ),
                         icon: const Icon(Icons.add),
-                        label: Text(
-                          context.l10n.dialog_project_create_title,
-                          style: const TextStyle(fontSize: 16),
-                        ),
+                        label: Text(context.l10n.dialog_project_create_title),
                       ),
                     ),
                     horizontalSpacing10,
@@ -80,15 +74,9 @@ class ProjectSelectionCard extends StatelessWidget {
                         onPressed: selected == null ? null : onProceed,
                         style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppShapes.medium),
-                          ),
                         ),
                         icon: const Icon(Icons.arrow_forward),
-                        label: Text(
-                          context.l10n.project_selection_open_button,
-                          style: const TextStyle(fontSize: 16),
-                        ),
+                        label: Text(context.l10n.project_selection_open_button),
                       ),
                     ),
                   ],

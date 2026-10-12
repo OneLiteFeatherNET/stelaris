@@ -54,7 +54,6 @@ class ModelInfoDialog extends StatelessWidget {
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
                     icon: const Icon(Icons.close),
-                    splashRadius: 20,
                   ),
                 ],
               ),

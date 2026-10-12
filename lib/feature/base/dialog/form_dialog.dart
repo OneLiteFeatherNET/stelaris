@@ -92,7 +92,6 @@ class FormDialog extends StatelessWidget {
                       IconButton(
                         onPressed: busy ? null : () => _handleCancel(context),
                         icon: const Icon(Icons.close),
-                        splashRadius: 20,
                       ),
                     ],
                   ),

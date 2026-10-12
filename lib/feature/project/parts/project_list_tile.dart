@@ -76,7 +76,6 @@ class ProjectListTile extends StatelessWidget {
         trailing: IconButton(
           icon: const Icon(Icons.edit_outlined, size: 18),
           tooltip: context.l10n.project_selection_edit_tooltip,
-          splashRadius: 18,
           color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
           onPressed: onEdit,
         ),
