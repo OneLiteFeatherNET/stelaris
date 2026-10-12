@@ -48,6 +48,10 @@ class _MiniMessageEditorState extends State<MiniMessageEditor> {
   );
   final FocusNode _focusNode = FocusNode();
   late String _reported;
+  bool _toolbarReady = false;
+
+  /// The height of the toolbar's single row of buttons.
+  static const double _toolbarHeight = 48;
 
   @override
   void initState() {
@@ -55,6 +59,12 @@ class _MiniMessageEditorState extends State<MiniMessageEditor> {
     // Not lazily, the first read would already see the next widget.
     _reported = widget.value;
     _controller.addListener(_report);
+    // The toolbar is half of what the editor builds. A frame later it no
+    // longer slows down the first frame of a dialog opening, its place is
+    // kept meanwhile.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() => _toolbarReady = true);
+    });
   }
 
   @override
@@ -104,7 +114,10 @@ class _MiniMessageEditorState extends State<MiniMessageEditor> {
       children: [
         if (label != null)
           Text(label, style: Theme.of(context).textTheme.labelLarge),
-        ComponentToolbar(controller: _controller, focusNode: _focusNode),
+        if (_toolbarReady)
+          ComponentToolbar(controller: _controller, focusNode: _focusNode)
+        else
+          const SizedBox(height: _toolbarHeight),
         const SizedBox(height: 8),
         CallbackShortcuts(
           bindings: _shortcuts,

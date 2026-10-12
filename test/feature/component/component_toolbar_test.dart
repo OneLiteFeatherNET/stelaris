@@ -23,6 +23,8 @@ void main() {
         ),
       ),
     );
+    // The toolbar is built a frame after the field.
+    await tester.pump();
   }
 
   TextEditingController controllerOf(WidgetTester tester) =>
