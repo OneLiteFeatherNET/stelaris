@@ -49,16 +49,28 @@ class _NotesEditDialogState extends State<NotesEditDialog> {
     }
 
     setState(() => _saving = true);
-    final status = await context.dispatchAndWait(widget.saveAction(notes));
+    final error = await _run(widget.saveAction(notes));
     if (!mounted) return;
     setState(() => _saving = false);
 
-    if (status.isCompletedFailed) {
-      final error = status.originalError;
-      if (error != null) context.showErrorSnackBar(error);
+    if (error != null) {
+      context.showErrorSnackBar(error);
       return;
     }
     Navigator.of(context).pop();
+  }
+
+  /// Runs [action] and resolves to its error, or null when it worked.
+  Future<Object?> _run(ReduxAction<AppState> action) async {
+    // Without a wrapError on the store, a backend error is rethrown rather
+    // than reported through the status.
+    final fallback = context.l10n.error_title;
+    try {
+      final status = await context.dispatchAndWait(action);
+      return status.isCompletedFailed ? status.originalError ?? fallback : null;
+    } catch (error) {
+      return error;
+    }
   }
 
   @override
@@ -68,6 +80,8 @@ class _NotesEditDialogState extends State<NotesEditDialog> {
       actionIcon: Icons.check,
       actionLabel: context.l10n.button_save,
       onSubmit: _saving ? null : _save,
+      // A result arriving after the dialog is closed would be lost.
+      busy: _saving,
       content: TextField(
         controller: _controller,
         autofocus: true,
