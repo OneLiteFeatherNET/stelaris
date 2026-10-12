@@ -22,7 +22,6 @@ class InfoBarFactory {
       content: Text(text),
       duration: const Duration(seconds: 2),
       width: width,
-      elevation: 0,
       behavior: SnackBarBehavior.floating,
     );
   }
@@ -58,7 +57,6 @@ class InfoBarFactory {
       persist: false,
       duration: duration,
       width: width,
-      elevation: 2,
       behavior: SnackBarBehavior.floating,
     );
   }
@@ -113,7 +111,6 @@ class InfoBarFactory {
       backgroundColor: Colors.amber.shade900,
       duration: duration,
       width: width,
-      elevation: 2,
       behavior: SnackBarBehavior.floating,
     );
   }
@@ -141,7 +138,6 @@ class InfoBarFactory {
       backgroundColor: Colors.red.shade800,
       duration: duration,
       width: width,
-      elevation: 2,
       behavior: SnackBarBehavior.floating,
     );
   }

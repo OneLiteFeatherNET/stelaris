@@ -40,8 +40,6 @@ class StatusCard extends StatelessWidget {
       child: Card.filled(
         color: Colors.transparent, // Transparent to show container color/glow
         margin: EdgeInsets.zero,
-        elevation: 0, // Remove card elevation to avoid conflict with glow
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppShapes.medium)),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(

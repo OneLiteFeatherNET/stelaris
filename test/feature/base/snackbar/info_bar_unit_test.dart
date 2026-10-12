@@ -34,7 +34,8 @@ void main() {
       expect(snackBar.width, equals(snackBarWidth)); // Using the const from info_bar.dart
 
       // Check other properties
-      expect(snackBar.elevation, equals(0));
+      // No elevation of its own, the theme decides like for the others.
+      expect(snackBar.elevation, isNull);
       expect(snackBar.behavior, equals(SnackBarBehavior.floating));
     });
 
@@ -51,7 +52,8 @@ void main() {
 
       // Check other properties remain as default
       expect(snackBar.duration, equals(const Duration(seconds: 2)));
-      expect(snackBar.elevation, equals(0));
+      // No elevation of its own, the theme decides like for the others.
+      expect(snackBar.elevation, isNull);
       expect(snackBar.behavior, equals(SnackBarBehavior.floating));
     });
 
@@ -135,6 +137,20 @@ void main() {
       expect(serverSnackBar.backgroundColor, equals(Colors.red.shade800));
       final serverRow = serverSnackBar.content as Row;
       expect(serverRow.children.whereType<Icon>().first.icon, equals(Icons.error_outline));
+    });
+
+    test('every snack bar takes its elevation from the theme', () {
+      final snackBars = [
+        factory.create('a'),
+        factory.createInfo('a'),
+        factory.createSuccess('a'),
+        factory.createWarning('a'),
+        factory.createErrorText('a'),
+        factory.createError(const ProblemDetail(title: 'a', status: 500)),
+      ];
+      for (final snackBar in snackBars) {
+        expect(snackBar.elevation, isNull);
+      }
     });
   });
 }
