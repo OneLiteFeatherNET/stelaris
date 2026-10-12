@@ -49,21 +49,4 @@ class ProjectClientApi extends BaseApi<Project> {
     final result = await apiClient.dio.getUri(uri);
     return fromJson(result.data as Map<String, dynamic>);
   }
-
-  /// Deletes all projects from the database.
-  ///
-  /// The request is made to `/project/delete`.
-  ///
-  /// Returns a [Future] that completes with a [List<Project>] of deleted projects.
-  Future<List<Project>> deleteAll() async {
-    final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(
-      path: '${baseUri.path}/$endpoint/delete',
-    );
-    final result = await apiClient.dio.deleteUri(uri);
-    final rawList = result.data as List<dynamic>;
-    return rawList
-        .map((e) => fromJson(e as Map<String, dynamic>))
-        .toList();
-  }
 }
