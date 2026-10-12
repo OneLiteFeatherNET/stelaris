@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/component.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// Opens a menu to filter components by their category, null stands for
 /// all categories.
@@ -72,7 +73,7 @@ class ComponentCategoryMenu extends StatelessWidget {
         ),
         visualDensity: VisualDensity.compact,
         shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppShapes.medium)),
         ),
         padding: const WidgetStatePropertyAll(
           EdgeInsets.symmetric(vertical: 6),

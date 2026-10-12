@@ -62,7 +62,6 @@ class FormDialog extends StatelessWidget {
     return PopScope(
       canPop: !busy,
       child: Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: ConstrainedBox(
           constraints: BoxConstraints(
             minWidth: minWidth,

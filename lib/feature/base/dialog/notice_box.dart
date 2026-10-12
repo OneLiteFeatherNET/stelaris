@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// A tinted callout box used inside dialog content to highlight a preview or
 /// a warning, e.g. the resulting `namespace:key` in [ModelCreateDialog] or the
@@ -28,7 +29,7 @@ class NoticeBox extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
         color: accent.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(AppShapes.small),
         border: Border.all(color: accent.withValues(alpha: 0.4)),
       ),
       child: Row(

@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/action/entry_actions.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 class CharListItem extends StatelessWidget {
   const CharListItem({
@@ -21,7 +22,7 @@ class CharListItem extends StatelessWidget {
       child: Card(
         elevation: 1,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderRadius: BorderRadius.all(Radius.circular(AppShapes.medium)),
         ),
         child: ListTile(
           contentPadding: const EdgeInsets.symmetric(

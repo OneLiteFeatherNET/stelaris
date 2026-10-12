@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/semantics.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:vulpes_data/material.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// The most suggestions shown under a field at once.
 const int maxMaterialSuggestions = 5;
@@ -171,7 +172,7 @@ class _SuggestionListState extends State<_SuggestionList> {
       shape:
           style?.shape?.resolve({}) ??
           const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4)),
+            borderRadius: BorderRadius.all(Radius.circular(AppShapes.extraSmall)),
           ),
       clipBehavior: Clip.antiAlias,
       child: ListView.builder(

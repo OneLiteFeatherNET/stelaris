@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/action/entry_actions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// One lore line as a card in the style of the component cards: a drag
 /// handle, the line number, the text and the edit/delete actions.
@@ -38,7 +39,7 @@ class LoreLineCard extends StatelessWidget {
       elevation: 6 * lift,
       color: colorScheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppShapes.medium),
         side: BorderSide(color: colorScheme.secondary.withValues(alpha: lift)),
       ),
       child: InkWell(

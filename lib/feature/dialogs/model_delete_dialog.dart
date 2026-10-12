@@ -118,7 +118,6 @@ class _ModelDeleteDialogState<E> extends State<ModelDeleteDialog<E>> {
             controller: _controller,
             autofocus: true,
             decoration: const InputDecoration(
-              border: OutlineInputBorder(),
               isDense: true,
             ),
             onChanged: (_) => setState(() {}),

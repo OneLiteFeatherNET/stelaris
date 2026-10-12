@@ -4,6 +4,7 @@ import 'package:stelaris/feature/settings/settings_item.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/url_launcher.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 class MiscSettingsRow extends StatelessWidget {
   const MiscSettingsRow({super.key});
@@ -23,7 +24,7 @@ class MiscSettingsRow extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppShapes.small),
                 border: Border.all(color: theme.colorScheme.outlineVariant),
               ),
               child: Text(

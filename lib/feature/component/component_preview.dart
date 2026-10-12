@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/minimessage_parser.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// Background of most previews, see [darkTextBackground].
 const Color previewBackground = darkTextBackground;
@@ -48,7 +49,7 @@ class ComponentPreview extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: componentContext.background,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(AppShapes.extraSmall),
         border: Border.all(color: componentContext.border),
       ),
       child: text.isEmpty

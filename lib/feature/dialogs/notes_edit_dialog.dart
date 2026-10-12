@@ -76,7 +76,6 @@ class _NotesEditDialogState extends State<NotesEditDialog> {
         maxLines: 12,
         decoration: InputDecoration(
           hintText: context.l10n.notes_hint,
-          border: const OutlineInputBorder(),
         ),
       ),
     );

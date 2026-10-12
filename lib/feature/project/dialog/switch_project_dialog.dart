@@ -3,6 +3,7 @@ import 'package:stelaris/feature/base/button/cancel_button.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 class SwitchProjectDialog extends StatelessWidget {
   const SwitchProjectDialog({
@@ -93,7 +94,7 @@ class _ProjectChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppShapes.small),
         border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Column(

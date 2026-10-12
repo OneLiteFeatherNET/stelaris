@@ -6,6 +6,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'empty_project_view.dart';
 import 'project_selection_header.dart';
 import 'project_selector_list.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 class ProjectSelectionCard extends StatelessWidget {
   final List<Project> projects;
@@ -33,7 +34,7 @@ class ProjectSelectionCard extends StatelessWidget {
       elevation: 6,
       shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppShapes.large),
       ),
       child: SizedBox(
         width: 520,
@@ -63,7 +64,7 @@ class ProjectSelectionCard extends StatelessWidget {
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(AppShapes.medium),
                           ),
                         ),
                         icon: const Icon(Icons.add),
@@ -80,7 +81,7 @@ class ProjectSelectionCard extends StatelessWidget {
                         style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(AppShapes.medium),
                           ),
                         ),
                         icon: const Icon(Icons.arrow_forward),

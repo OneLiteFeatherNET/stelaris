@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 class StatusCard extends StatelessWidget {
   const StatusCard({
@@ -26,7 +27,7 @@ class StatusCard extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color: backgroundColor ?? Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppShapes.medium),
         boxShadow: [
           if (glowColor != null)
             BoxShadow(
@@ -40,7 +41,7 @@ class StatusCard extends StatelessWidget {
         color: Colors.transparent, // Transparent to show container color/glow
         margin: EdgeInsets.zero,
         elevation: 0, // Remove card elevation to avoid conflict with glow
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppShapes.medium)),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(

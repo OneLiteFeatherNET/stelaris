@@ -87,7 +87,6 @@ class _WrittenBookEditorState extends State<WrittenBookEditor> {
                 initialValue: _book.title,
                 maxLength: maxBookTitleLength,
                 decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
                   labelText: l10n.book_title,
                 ),
                 validator: (value) =>
@@ -101,7 +100,6 @@ class _WrittenBookEditorState extends State<WrittenBookEditor> {
                 key: const Key('book_author'),
                 initialValue: _book.author,
                 decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
                   labelText: l10n.book_author,
                 ),
                 validator: (value) =>
@@ -116,7 +114,6 @@ class _WrittenBookEditorState extends State<WrittenBookEditor> {
           key: const Key('book_generation'),
           initialValue: _book.generation ?? 0,
           decoration: InputDecoration(
-            border: const OutlineInputBorder(),
             labelText: l10n.book_generation,
           ),
           items: [
@@ -335,7 +332,6 @@ class _Advanced extends StatelessWidget {
           initialValue: book.filteredTitle ?? '',
           maxLength: maxBookTitleLength,
           decoration: InputDecoration(
-            border: const OutlineInputBorder(),
             labelText: l10n.book_filtered_title,
           ),
           onChanged: (value) => onBook(

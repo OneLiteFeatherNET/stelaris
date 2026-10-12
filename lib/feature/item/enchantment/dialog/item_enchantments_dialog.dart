@@ -9,6 +9,7 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/validators.dart';
 import 'package:vulpes_data/enchantment.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 class ItemEnchantmentAddDialog extends StatefulWidget {
   const ItemEnchantmentAddDialog({required this.view, super.key});
@@ -73,7 +74,6 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
                 items: _enchantments,
                 decoration: InputDecoration(
                   labelText: context.l10n.dialog_item_enchantment,
-                  border: const OutlineInputBorder(),
                 ),
                 onChanged: (value) {
                   _selected.value = value!;
@@ -99,7 +99,7 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: _unsafePadding,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(AppShapes.extraSmall),
                 ),
               );
             },
@@ -115,7 +115,6 @@ class _ItemEnchantmentAddDialogState extends State<ItemEnchantmentAddDialog>
               inputFormatters: enchantmentLevelFormatters,
               decoration: InputDecoration(
                 labelText: context.l10n.label_level,
-                border: const OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null) return null;

@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// A group of fields with a [title], used for lists and nested objects.
 ///
@@ -31,7 +32,7 @@ class SchemaSection extends StatelessWidget {
       decoration: BoxDecoration(
         // Translucent, so a nested group stands out from the one around it.
         color: theme.colorScheme.onSurface.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppShapes.small),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

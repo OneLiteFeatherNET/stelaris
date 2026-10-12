@@ -20,6 +20,7 @@ import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/feature/model/model_sort_option.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 List<(SortField, SortDirection, String)> _sortOptions(AppLocalizations l10n) {
   return [
@@ -469,7 +470,7 @@ class _AppBarSearchState extends State<AppBarSearch> {
             child: Material(
               key: const Key('command-palette-dropdown'),
               elevation: 6,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(AppShapes.large),
               clipBehavior: Clip.antiAlias,
               child: ConstrainedBox(
                 constraints: const BoxConstraints(

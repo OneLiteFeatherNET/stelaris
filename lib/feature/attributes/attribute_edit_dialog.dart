@@ -73,7 +73,6 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
         : null;
 
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 420, maxHeight: 420),
         child: Padding(
@@ -131,7 +130,6 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
                       inputFormatters: numberFormatter,
                       decoration: InputDecoration(
                         labelText: context.l10n.card_attribute_default_value,
-                        border: const OutlineInputBorder(),
                       ),
                     ),
                     verticalSpacing10,
@@ -141,7 +139,6 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
                       inputFormatters: numberFormatter,
                       decoration: InputDecoration(
                         labelText: context.l10n.card_attribute_maximum_value,
-                        border: const OutlineInputBorder(),
                       ),
                     ),
                   ],

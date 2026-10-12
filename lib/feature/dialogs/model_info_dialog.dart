@@ -31,7 +31,6 @@ class ModelInfoDialog extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 520),
         child: Padding(

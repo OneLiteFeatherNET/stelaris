@@ -9,6 +9,7 @@ import 'package:stelaris/feature/settings/settings_item.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 class ProjectSettingsRow extends StatelessWidget {
   const ProjectSettingsRow({super.key});
@@ -38,14 +39,14 @@ class ProjectSettingsRow extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppShapes.small),
                 border: Border.all(color: colorScheme.outlineVariant),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<Project>(
                   isDense: true,
                   value: currentSelected,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(AppShapes.small),
                   dropdownColor: colorScheme.surfaceContainerHigh,
                   elevation: 3,
                   onChanged: (p) async {

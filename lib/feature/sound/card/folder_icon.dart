@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// The [FolderIcon] is a widget that displays a folder icon in the center of a container.
 /// It is styled with padding, margin, and a background color that matches the theme's secondary container.
@@ -13,7 +14,7 @@ class FolderIcon extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: theme.colorScheme.secondaryContainer,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppShapes.small),
       ),
       child: Icon(
         Icons.folder,

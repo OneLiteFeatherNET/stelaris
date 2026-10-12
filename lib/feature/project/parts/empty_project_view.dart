@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 class EmptyProjectView extends StatelessWidget {
   final VoidCallback onCreateProject;
@@ -46,7 +47,7 @@ class EmptyProjectView extends StatelessWidget {
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppShapes.medium),
               ),
             ),
             icon: const Icon(Icons.add),

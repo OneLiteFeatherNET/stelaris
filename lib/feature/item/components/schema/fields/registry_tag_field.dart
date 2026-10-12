@@ -57,7 +57,6 @@ class RegistryTagField extends StatelessWidget {
         TextFormField(
           initialValue: value,
           decoration: const InputDecoration(
-            border: OutlineInputBorder(),
             hintText: '#minecraft:…',
           ),
           validator: (text) => switch (text) {

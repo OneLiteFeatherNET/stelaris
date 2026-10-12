@@ -1,6 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/app_theme.dart';
 
 void main() {
@@ -57,5 +60,90 @@ void main() {
       final result = AppTheme.scaleTextTheme(baseTheme, 1);
       expect(identical(result, baseTheme), isTrue);
     });
+  });
+
+  group('AppTheme shapes', () {
+    BorderRadiusGeometry? radiusOf(ShapeBorder? shape) =>
+        (shape as RoundedRectangleBorder?)?.borderRadius;
+
+    for (final (name, theme) in [
+      ('light', AppTheme.buildLight(ThemeSettings.defaultSettings())),
+      ('dark', AppTheme.buildDark(ThemeSettings.defaultSettings())),
+    ]) {
+      test('the $name theme rounds dialogs and cards on the m3 scale', () {
+        expect(
+          radiusOf(theme.dialogTheme.shape),
+          BorderRadius.circular(AppShapes.extraLarge),
+        );
+        expect(
+          radiusOf(theme.cardTheme.shape),
+          BorderRadius.circular(AppShapes.medium),
+        );
+      });
+
+      test('the $name theme outlines every field with one radius', () {
+        final border = theme.inputDecorationTheme.border;
+        expect(border, isA<OutlineInputBorder>());
+        expect(
+          (border! as OutlineInputBorder).borderRadius,
+          AppShapes.fieldRadius,
+        );
+      });
+    }
+
+    testWidgets('the form dialog takes its corners from the theme', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.buildLight(ThemeSettings.defaultSettings()),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: FormDialog(
+              title: 'Title',
+              actionLabel: 'Save',
+              onSubmit: () {},
+              content: const SizedBox(),
+            ),
+          ),
+        ),
+      );
+
+      expect(tester.widget<Dialog>(find.byType(Dialog)).shape, isNull);
+      final material = tester.widget<Material>(
+        find
+            .descendant(
+              of: find.byType(Dialog),
+              matching: find.byType(Material),
+            )
+            .first,
+      );
+      expect(
+        radiusOf(material.shape),
+        BorderRadius.circular(AppShapes.extraLarge),
+      );
+    });
+  });
+
+  testWidgets('a field without its own border gets the outline of the theme', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.buildLight(ThemeSettings.defaultSettings()),
+        home: const Scaffold(
+          body: TextField(decoration: InputDecoration(labelText: 'Name')),
+        ),
+      ),
+    );
+
+    // The field hands the decoration on with the defaults of the theme.
+    final border = tester
+        .widget<InputDecorator>(find.byType(InputDecorator))
+        .decoration
+        .border;
+    expect(border, isA<OutlineInputBorder>());
+    expect((border! as OutlineInputBorder).borderRadius, AppShapes.fieldRadius);
   });
 }

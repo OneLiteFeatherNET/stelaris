@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/base_card.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// The [DropdownCard<E, T>] is a widget that displays as [DropdownButtonFormField] with the given [Card] style of the app.
 class DropdownCard<E, T> extends StatefulWidget {
@@ -37,7 +38,7 @@ class _DropdownCardState<E, T> extends State<DropdownCard<E, T>> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final OutlineInputBorder defaultBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: AppShapes.fieldRadius,
       borderSide: BorderSide(color: colorScheme.outline),
     );
 
@@ -52,7 +53,7 @@ class _DropdownCardState<E, T> extends State<DropdownCard<E, T>> {
         border: defaultBorder,
         enabledBorder: defaultBorder,
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppShapes.fieldRadius,
           borderSide: BorderSide(color: colorScheme.primary, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

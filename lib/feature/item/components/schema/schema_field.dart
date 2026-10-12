@@ -102,7 +102,6 @@ class SchemaField extends StatelessWidget {
       StringSchema() => TextFormField(
         initialValue: value as String? ?? '',
         decoration: InputDecoration(
-          border: const OutlineInputBorder(),
           labelText: label,
           suffixIcon: suffix,
         ),
@@ -125,7 +124,6 @@ class SchemaField extends StatelessWidget {
       EnumSchema(:final values) => DropdownButtonFormField<String>(
         initialValue: value as String?,
         decoration: InputDecoration(
-          border: const OutlineInputBorder(),
           labelText: label,
         ),
         items: [
@@ -240,7 +238,6 @@ class _KeyField extends StatelessWidget {
       controller: controller,
       focusNode: focusNode,
       decoration: InputDecoration(
-        border: const OutlineInputBorder(),
         labelText: label,
         hintText: 'minecraft:…',
         suffixIcon: suffix,

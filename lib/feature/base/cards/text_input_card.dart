@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:stelaris/feature/base/base_card.dart';
 import 'package:stelaris/feature/base/input/material_autocomplete.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// A card widget that contains a text input field with validation and formatting options.
 class TextInputCard<E> extends StatefulWidget {
@@ -44,7 +45,7 @@ class TextInputCard<E> extends StatefulWidget {
 class _TextInputCardState extends State<TextInputCard> {
   final TextEditingController _editController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  final _borderRadius = BorderRadius.circular(8);
+  final _borderRadius = AppShapes.fieldRadius;
 
   /// The value last handed to [TextInputCard.valueUpdate], or the current
   /// value until then. Enter, taking a suggestion and the focus loss after

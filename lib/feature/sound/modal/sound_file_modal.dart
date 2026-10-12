@@ -117,7 +117,6 @@ class _SoundFileModalState extends State<SoundFileModal> {
                     initialValue: _type,
                     decoration: InputDecoration(
                       labelText: context.l10n.card_type,
-                      border: const OutlineInputBorder(),
                     ),
                     items: [
                       DropdownMenuItem(

@@ -12,6 +12,7 @@ import 'package:stelaris/util/typedefs.dart';
 
 import 'model_card_actions.dart';
 import 'model_page.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// A grid-friendly card for [ModelPage]: primary content in a header row,
 /// the first line of the model's [notes] below it, a
@@ -66,7 +67,7 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       elevation: 0,
       color: colorScheme.surfaceContainerLow,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppShapes.medium)),
       child: InkWell(
         key: const Key('model_grid_card_inkwell'),
         onTap: onTap,

@@ -75,7 +75,6 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
               decoration: InputDecoration(
                 labelText: '${context.l10n.dialog_model_name_label} *',
                 hintText: widget.nameHint ?? context.l10n.dialog_model_name_hint,
-                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.title),
               ),
               validator: Validators.required(context.l10n.validation_name_required),
@@ -88,7 +87,6 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
               decoration: InputDecoration(
                 labelText: '${context.l10n.dialog_model_key_label} *',
                 hintText: widget.keyHint ?? context.l10n.dialog_model_key_hint,
-                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.vpn_key_outlined),
               ),
               validator: Validators.adventureKeyPart(context.l10n),

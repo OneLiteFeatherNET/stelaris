@@ -4,6 +4,7 @@ import 'package:stelaris/feature/command_palette/command.dart';
 import 'package:stelaris/feature/command_palette/command_palette_controller.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// The command palette's results for [controller]: the notice, the list and
 /// the key hints. The field that feeds it lives with the host.
@@ -295,7 +296,7 @@ class _KeyHint extends StatelessWidget {
         DecoratedBox(
           decoration: BoxDecoration(
             border: Border.all(color: theme.colorScheme.outlineVariant),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(AppShapes.extraSmall),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
