@@ -56,9 +56,9 @@ void main() {
     });
 
     test('supports chaining because the content stays selected', () {
-      final colored = MiniMessageEditing.applyColor(
+      final colored = MiniMessageEditing.applyColorTag(
         all('Sword'),
-        NamedTextColor.gold,
+        NamedTextColor.gold.key,
       );
       final bold = MiniMessageEditing.wrap(colored, '<b>', '</b>');
       expect(bold.text, '<gold><b>Sword</b></gold>');
@@ -67,44 +67,44 @@ void main() {
 
   group('applyColor', () {
     test('wraps plain text in the color tag', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         all('Epic'),
-        NamedTextColor.gold,
+        NamedTextColor.gold.key,
       );
       expect(result.text, '<gold>Epic</gold>');
       expectSelection(result, 6, 10);
     });
 
     test('uses the Minecraft name of the color', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         all('x'),
-        NamedTextColor.darkAqua,
+        NamedTextColor.darkAqua.key,
       );
       expect(result.text, '<dark_aqua>x</dark_aqua>');
     });
 
     test('replaces a color that wraps the whole text', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         all('<gold>Epic</gold>'),
-        NamedTextColor.red,
+        NamedTextColor.red.key,
       );
       expect(result.text, '<red>Epic</red>');
       expectSelection(result, 5, 9);
     });
 
     test('replaces a color block that is exactly selected', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         selected('a <gold>b</gold> c', 2, 16),
-        NamedTextColor.red,
+        NamedTextColor.red.key,
       );
       expect(result.text, 'a <red>b</red> c');
       expectSelection(result, 7, 8);
     });
 
     test('replaces the color of an empty color block', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         caretAt('<gold></gold>', 6),
-        NamedTextColor.red,
+        NamedTextColor.red.key,
       );
       expect(result.text, '<red></red>');
       expect(result.selection.isCollapsed, isTrue);
@@ -112,62 +112,65 @@ void main() {
     });
 
     test('nests when the text holds two separate color blocks', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         all('<gold>a</gold> b <gold>c</gold>'),
-        NamedTextColor.red,
+        NamedTextColor.red.key,
       );
       expect(result.text, '<red><gold>a</gold> b <gold>c</gold></red>');
     });
 
     test('replaces the color around exactly selected content', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         selected('<gold>Test</gold>', 6, 10),
-        NamedTextColor.red,
+        NamedTextColor.red.key,
       );
       expect(result.text, '<red>Test</red>');
       expectSelection(result, 5, 9);
     });
 
     test('repeated color clicks replace instead of nesting', () {
-      var value = MiniMessageEditing.applyColor(
+      var value = MiniMessageEditing.applyColorTag(
         all('Test'),
-        NamedTextColor.green,
+        NamedTextColor.green.key,
       );
       for (var i = 0; i < 3; i++) {
-        value = MiniMessageEditing.applyColor(value, NamedTextColor.aqua);
+        value = MiniMessageEditing.applyColorTag(
+          value,
+          NamedTextColor.aqua.key,
+        );
       }
       expect(value.text, '<aqua>Test</aqua>');
       expectSelection(value, 6, 10);
     });
 
     test('replaces only the inner color of nested blocks', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         selected('<gold>a <red>b</red></gold>', 13, 14),
-        NamedTextColor.aqua,
+        NamedTextColor.aqua.key,
       );
       expect(result.text, '<gold>a <aqua>b</aqua></gold>');
     });
 
     test('nests when the surrounding color is not closed right after', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         selected('<gold>Test</gold>', 6, 8),
-        NamedTextColor.red,
+        NamedTextColor.red.key,
       );
       expect(result.text, '<gold><red>Te</red>st</gold>');
     });
 
     test('does not treat surrounding style tags as a color', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         selected('<b>Test</b>', 3, 7),
-        NamedTextColor.red,
+        NamedTextColor.red.key,
       );
       expect(result.text, '<b><red>Test</red></b>');
     });
 
     test('does not treat style tags as colors', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         all('<b>x</b>'),
-        NamedTextColor.red,
+        NamedTextColor.red.key,
       );
       expect(result.text, '<red><b>x</b></red>');
     });
@@ -229,9 +232,9 @@ void main() {
 
   group('without a selection', () {
     test('a color starts new text and leaves the old one alone', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         caretAtEnd('<green>Test</green> Neu'),
-        NamedTextColor.red,
+        NamedTextColor.red.key,
       );
       expect(result.text, '<green>Test</green> Neu<red></red>');
       expect(result.selection.isCollapsed, isTrue);
@@ -239,19 +242,22 @@ void main() {
     });
 
     test('a color right after an existing block does not replace it', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         caretAtEnd('<green>Test</green>'),
-        NamedTextColor.red,
+        NamedTextColor.red.key,
       );
       expect(result.text, '<green>Test</green><red></red>');
     });
 
     test('a second color at the same caret replaces the empty pair', () {
-      final red = MiniMessageEditing.applyColor(
+      final red = MiniMessageEditing.applyColorTag(
         caretAtEnd('Hi '),
-        NamedTextColor.red,
+        NamedTextColor.red.key,
       );
-      final gold = MiniMessageEditing.applyColor(red, NamedTextColor.gold);
+      final gold = MiniMessageEditing.applyColorTag(
+        red,
+        NamedTextColor.gold.key,
+      );
       expect(gold.text, 'Hi <gold></gold>');
       expect(gold.selection.baseOffset, 9);
     });
@@ -265,11 +271,10 @@ void main() {
     });
 
     test('a gradient is inserted at the caret', () {
-      final result = MiniMessageEditing.applyGradient(
-        caretAtEnd('Hi '),
-        NamedTextColor.gold,
-        NamedTextColor.red,
-      );
+      final result = MiniMessageEditing.applyGradientStops(caretAtEnd('Hi '), [
+        NamedTextColor.gold.key,
+        NamedTextColor.red.key,
+      ]);
       expect(result.text, 'Hi <gradient:gold:red></gradient>');
     });
 
@@ -284,40 +289,40 @@ void main() {
 
   group('gradient and rainbow', () {
     test('applyGradient wraps with both colors', () {
-      final result = MiniMessageEditing.applyGradient(
-        all('Hi'),
-        NamedTextColor.gold,
-        NamedTextColor.darkRed,
-      );
+      final result = MiniMessageEditing.applyGradientStops(all('Hi'), [
+        NamedTextColor.gold.key,
+        NamedTextColor.darkRed.key,
+      ]);
       expect(result.text, '<gradient:gold:dark_red>Hi</gradient>');
     });
 
     test('a new gradient replaces the one around the selection', () {
-      final result = MiniMessageEditing.applyGradient(
+      final result = MiniMessageEditing.applyGradientStops(
         selected('<gradient:gold:red>Hi</gradient>', 19, 21),
-        NamedTextColor.aqua,
-        NamedTextColor.blue,
+        [NamedTextColor.aqua.key, NamedTextColor.blue.key],
       );
       expect(result.text, '<gradient:aqua:blue>Hi</gradient>');
       expectSelection(result, 20, 22);
     });
 
     test('a new gradient replaces one that wraps the whole text', () {
-      final result = MiniMessageEditing.applyGradient(
+      final result = MiniMessageEditing.applyGradientStops(
         all('<gradient:gold:red>Hi</gradient>'),
-        NamedTextColor.aqua,
-        NamedTextColor.blue,
+        [NamedTextColor.aqua.key, NamedTextColor.blue.key],
       );
       expect(result.text, '<gradient:aqua:blue>Hi</gradient>');
     });
 
     test('applyRainbow twice removes the rainbow again', () {
-      final once = MiniMessageEditing.applyRainbow(all('Hi'));
-      expect(MiniMessageEditing.applyRainbow(once).text, 'Hi');
+      final once = MiniMessageEditing.toggle(all('Hi'), 'rainbow');
+      expect(MiniMessageEditing.toggle(once, 'rainbow').text, 'Hi');
     });
 
     test('applyRainbow wraps the selection', () {
-      final result = MiniMessageEditing.applyRainbow(selected('a b', 2, 3));
+      final result = MiniMessageEditing.toggle(
+        selected('a b', 2, 3),
+        'rainbow',
+      );
       expect(result.text, 'a <rainbow>b</rainbow>');
     });
   });
@@ -348,9 +353,9 @@ void main() {
     });
 
     test('clears right after an action, while its content is selected', () {
-      final colored = MiniMessageEditing.applyColor(
+      final colored = MiniMessageEditing.applyColorTag(
         all('Test'),
-        NamedTextColor.gold,
+        NamedTextColor.gold.key,
       );
       final bold = MiniMessageEditing.toggle(colored, 'b');
       expect(MiniMessageEditing.stripTags(bold).text, 'Test');
@@ -456,9 +461,9 @@ void main() {
     });
 
     test('a color does not cross a decoration', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         selected('<b>ab</b>cd', 4, 10),
-        NamedTextColor.red,
+        NamedTextColor.red.key,
       );
       expect(result.text, '<b>a<red>b</red></b><red>c</red>d');
     });
@@ -541,9 +546,9 @@ void main() {
     });
 
     test('a named color replaces a hex one', () {
-      final result = MiniMessageEditing.applyColor(
+      final result = MiniMessageEditing.applyColorTag(
         selected('<#ff00aa>Epic</#ff00aa>', 9, 13),
-        NamedTextColor.gold,
+        NamedTextColor.gold.key,
       );
       expect(result.text, '<gold>Epic</gold>');
     });

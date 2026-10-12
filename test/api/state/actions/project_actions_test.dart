@@ -233,23 +233,6 @@ void main() {
     );
   });
 
-  group('DeleteAllProjectsAction', () {
-    test('clears all projects and resets selectedProject', () async {
-      const p1 = Project(id: 'p1', displayName: 'P1', key: 'k1');
-
-      ApiService().projectApi.apiClient.dio.httpClientAdapter =
-          FakeHttpClientAdapter.json([p1.toJson()]);
-
-      final store = Store<AppState>(
-        initialState: const AppState(projects: [p1], selectedProject: p1),
-      );
-      await store.dispatchAndWait(DeleteAllProjectsAction());
-
-      expect(store.state.projects, isEmpty);
-      expect(store.state.selectedProject, isNull);
-    });
-  });
-
   group('InitProjectAction', () {
     test('fetches projects and retains matching selectedProject', () async {
       const p1 = Project(id: 'p1', displayName: 'P1 Updated', key: 'k1');

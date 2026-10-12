@@ -5,6 +5,7 @@ import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/app_theme.dart';
+import 'package:stelaris/api/state/app_state.dart';
 
 void main() {
   group('AppTheme Unit Tests', () {
@@ -184,5 +185,10 @@ void main() {
         .border;
     expect(border, isA<OutlineInputBorder>());
     expect((border! as OutlineInputBorder).borderRadius, AppShapes.fieldRadius);
+  });
+
+  test('the default settings are the ones a fresh app starts with', () {
+    expect(ThemeSettings.defaultSettings(), const AppState().themeSettings);
+    expect(ThemeSettings.defaultSettings().primaryColor, Colors.blue);
   });
 }

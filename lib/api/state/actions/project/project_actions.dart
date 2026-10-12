@@ -173,12 +173,3 @@ class RemoveProjectAction extends ReduxAction<AppState> with NonReentrant {
     );
   }
 }
-
-/// Action to delete all projects from the backend and clear local state.
-class DeleteAllProjectsAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    await ApiService().projectApi.deleteAll();
-    return state.copyWith(projects: const [], selectedProject: null);
-  }
-}
