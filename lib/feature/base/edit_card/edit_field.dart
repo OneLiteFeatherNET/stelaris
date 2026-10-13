@@ -56,10 +56,14 @@ final class ChoiceEdit<T> extends EditField {
     required this.display,
     required this.onChanged,
     super.footer,
+    this.optionTrailing,
   });
 
   final T value;
   final List<T> options;
+
+  /// A widget after an option in the list, e.g. a badge.
+  final Widget? Function(T option)? optionTrailing;
 
   /// How an option reads, on the card and in the list.
   final String Function(T option) display;

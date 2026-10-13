@@ -140,6 +140,7 @@ class _ChoiceListState<T> extends State<_ChoiceList<T>> {
                 ? const Icon(Icons.check)
                 : const SizedBox(width: 24),
             title: Text(field.display(option)),
+            trailing: field.optionTrailing?.call(option),
             onTap: () => Navigator.of(context).pop(option),
           );
         },
