@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_dialogs.dart';
 import 'package:stelaris/feature/base/edit_card/edit_field.dart';
+import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
 import 'package:stelaris/feature/component/component_preview.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -23,7 +24,6 @@ class EditCardGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth - 2 * _padding;
@@ -44,12 +44,7 @@ class EditCardGrid extends StatelessWidget {
               ],
               for (final (index, section) in sections.indexed) ...[
                 if (index > 0) const SizedBox(height: 24),
-                Text(
-                  section.title,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
+                EditSectionHeading(title: section.title),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: _spacing,

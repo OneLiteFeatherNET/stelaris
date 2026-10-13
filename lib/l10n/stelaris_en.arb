@@ -156,34 +156,51 @@
   "error_generation_submit": "Generation submitted to backend",
   "error_card_empty": "The value can't be empty",
 
-  "settings_display_title": "Display settings",
-  "settings_theme_item_title": "Use System Theme",
-  "settings_theme_item_subtitle": "Automatically match your system's theme settings",
-  "settings_item_dark_mode_title": "Dark Mode",
-  "settings_item_dark_mode_subtitle": "Update your preferred theme",
+  "settings_section_account": "Account",
+  "settings_section_appearance": "Appearance",
+  "settings_section_about": "About",
+  "settings_reset": "Reset",
+  "settings_account_signed_out": "No one is signed in.",
+
+  "settings_theme_mode_title": "Theme",
+  "settings_theme_mode_subtitle": "Follow the system or fix the brightness",
+  "settings_theme_mode_system": "System",
+  "settings_theme_mode_light": "Light",
+  "settings_theme_mode_dark": "Dark",
+  "settings_color_title": "Color",
+  "settings_color_subtitle": "The base color of the app",
+  "settings_color_blue": "Blue",
+  "settings_color_indigo": "Indigo",
+  "settings_color_teal": "Teal",
+  "settings_color_green": "Green",
+  "settings_color_amber": "Amber",
+  "settings_color_orange": "Orange",
+  "settings_color_red": "Red",
+  "settings_color_pink": "Pink",
+
   "settings_item_font_title": "Font Size",
   "settings_item_font_subtitle": "Adjust the text size throughout the app",
+  "settings_font_preview": "The quick brown fox jumps over the lazy dog.",
 
   "settings_accessibility_title": "Accessibility",
-  "settings_accessibility_header": "Need some help?",
-  "settings_accessibility_body": "For assistance, feel free to explore our wiki",
-  "settings_accessibility_button": "Wiki",
 
-  "settings_misc_title": "Misc",
-  "settings_misc_bug_header": "Found a bug?",
-  "settings_misc_bug_body": "When you encounter a bug, please report it!",
-  "settings_misc_bug_button": "Report",
-  "settings_misc_suggestion_header": "Any Suggestion?",
-  "settings_misc_suggestion_body": "Want to suggest a feature, create a ticket!",
-  "settings_misc_suggestion_button": "Suggest",
   "settings_misc_license_header": "Third-party software licenses",
   "settings_misc_license_body": "This application uses the following open-source libraries.",
-  "settings_misc_license_button": "View",
   "settings_misc_version_header": "App Version",
   "settings_misc_version_body": "Currently installed version of Stelaris",
+  "settings_about_issues_title": "Issues",
+  "settings_about_issues_body": "Report a bug or suggest a feature",
+  "settings_about_help_title": "Help",
+  "settings_about_help_body": "Explore the wiki for assistance",
 
-  "settings_end_tile_made_with": "Made with",
-  "settings_end_tile_team": "by the team",
+  "settings_end_tile_footer": "© {year} Onelitefeather • Made with ❤ by the team",
+  "@settings_end_tile_footer": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
 
   "welcome_to_stelaris": "Welcome to Stelaris",
   "project_selection_title": "Select Project",
@@ -201,6 +218,7 @@
   "settings_project_title": "Project",
   "settings_project_active_title": "Active Project",
   "settings_project_active_subtitle": "Select or switch the active project workspace",
+  "settings_project_empty": "No projects yet",
   "dialog_project_switch_title": "Switch project?",
   "dialog_project_switch_hint": "Loaded items, fonts, advancements, attributes and sound events will be reset.",
   "dialog_project_switch_confirm": "Switch project",
