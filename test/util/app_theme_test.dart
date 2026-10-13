@@ -63,6 +63,30 @@ void main() {
     });
   });
 
+  group('AppTheme color scheme', () {
+    final settings = ThemeSettings.defaultSettings().copyWith(
+      primaryColor: Colors.red,
+      accentColor: Colors.green,
+    );
+
+    test('the light scheme is derived from the seed alone', () {
+      expect(
+        AppTheme.buildLight(settings).colorScheme,
+        ColorScheme.fromSeed(seedColor: Colors.red),
+      );
+    });
+
+    test('the dark scheme is derived from the seed alone', () {
+      expect(
+        AppTheme.buildDark(settings).colorScheme,
+        ColorScheme.fromSeed(
+          seedColor: Colors.red,
+          brightness: Brightness.dark,
+        ),
+      );
+    });
+  });
+
   group('AppTheme shapes', () {
     BorderRadiusGeometry? radiusOf(ShapeBorder? shape) =>
         (shape as RoundedRectangleBorder?)?.borderRadius;

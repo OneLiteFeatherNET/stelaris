@@ -19,7 +19,6 @@ abstract final class AppTheme {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: settings.primaryColor,
       brightness: Brightness.light,
-      secondary: settings.accentColor,
     );
 
     return ThemeData(
@@ -36,7 +35,6 @@ abstract final class AppTheme {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: settings.primaryColor,
       brightness: Brightness.dark,
-      secondary: settings.accentColor,
     );
 
     return ThemeData(

@@ -6,14 +6,14 @@ with `pump` and never sleep, take the year from an injected `Clock`, and assert 
 
 ## 1. Theme state
 
-- [ ] 1.1 Test first, in `test/api/state/actions/theme_actions_test.dart` and a new
+- [x] 1.1 Test first, in `test/api/state/actions/theme_actions_test.dart` and a new
       `test/api/model/theme/theme_settings_test.dart`: `themeMode` is system, light or dark from the
       fields; `SetThemeModeAction` writes the fields as the table in design.md says and keeps
       `isDarkMode` for System; `ResetAppearanceSettingsAction` restores mode, color and accent but
       keeps `fontScale`; `ResetFontScaleAction` restores only `fontScale`.
-- [ ] 1.2 Add `ThemeSettings.themeMode`, `SetThemeModeAction`, `ResetAppearanceSettingsAction` and
+- [x] 1.2 Add `ThemeSettings.themeMode`, `SetThemeModeAction`, `ResetAppearanceSettingsAction` and
       `ResetFontScaleAction`. Remove `UpdateAccentColorAction` and its test group.
-- [ ] 1.3 Test first in `test/util/app_theme_test.dart`: the scheme is `fromSeed` of the primary
+- [x] 1.3 Test first in `test/util/app_theme_test.dart`: the scheme is `fromSeed` of the primary
       color with no `secondary` override. Then `AppTheme` drops `secondary` and `lib/app.dart` reads
       `themeMode`.
 
