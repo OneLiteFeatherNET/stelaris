@@ -42,7 +42,9 @@ class AccountSettingsRow extends StatelessWidget {
             else
               SettingsCard(
                 icon: Icons.account_circle_outlined,
-                title: l10n.settings_account_signed_out,
+                title: auth.status == AuthStatus.expired
+                    ? l10n.auth_session_expired
+                    : l10n.settings_account_signed_out,
               ),
           ],
         );

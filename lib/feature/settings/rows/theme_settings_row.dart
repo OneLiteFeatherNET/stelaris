@@ -10,15 +10,16 @@ import 'package:stelaris/util/l10n_ext.dart';
 
 /// The seed colors on offer, the Material primaries. The first is the
 /// default. A curated list cannot produce an unreadable scheme.
-final List<(MaterialColor, String Function(AppLocalizations))> _swatches = [
-  (Colors.blue, (l10n) => l10n.settings_color_blue),
-  (Colors.indigo, (l10n) => l10n.settings_color_indigo),
-  (Colors.teal, (l10n) => l10n.settings_color_teal),
-  (Colors.green, (l10n) => l10n.settings_color_green),
-  (Colors.amber, (l10n) => l10n.settings_color_amber),
-  (Colors.orange, (l10n) => l10n.settings_color_orange),
-  (Colors.red, (l10n) => l10n.settings_color_red),
-  (Colors.pink, (l10n) => l10n.settings_color_pink),
+final List<(String, MaterialColor, String Function(AppLocalizations))>
+_swatches = [
+  ('blue', Colors.blue, (l10n) => l10n.settings_color_blue),
+  ('indigo', Colors.indigo, (l10n) => l10n.settings_color_indigo),
+  ('teal', Colors.teal, (l10n) => l10n.settings_color_teal),
+  ('green', Colors.green, (l10n) => l10n.settings_color_green),
+  ('amber', Colors.amber, (l10n) => l10n.settings_color_amber),
+  ('orange', Colors.orange, (l10n) => l10n.settings_color_orange),
+  ('red', Colors.red, (l10n) => l10n.settings_color_red),
+  ('pink', Colors.pink, (l10n) => l10n.settings_color_pink),
 ];
 
 /// The Appearance section: the theme mode and the color.
@@ -82,8 +83,9 @@ class ThemeSettingsRow extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  for (final (color, name) in _swatches)
+                  for (final (id, color, name) in _swatches)
                     _Swatch(
+                      key: ValueKey('swatch-$id'),
                       color: color,
                       label: name(l10n),
                       selected:
@@ -108,6 +110,7 @@ class _Swatch extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
+    super.key,
   });
 
   final Color color;
