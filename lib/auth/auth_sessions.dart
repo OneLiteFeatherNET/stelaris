@@ -34,7 +34,10 @@ abstract final class AuthSessions {
   /// [baseHref] is the deployment's base, which the redirect URI resolves
   /// against. It comes from the document rather than from configuration, so a
   /// sub path deployment needs no extra setting.
-  static Future<void> start({required Uri baseHref, AuthConfig? config}) async {
+  static Future<void> start({
+    required Uri baseHref,
+    AuthConfig? config,
+  }) async {
     final AuthConfig? auth = config ?? RuntimeConfig.current.auth;
     if (auth == null) {
       _current = null;

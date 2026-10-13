@@ -63,10 +63,11 @@ void main() {
     testWidgets('is at most 560 wide', (tester) async {
       await openDialog(tester);
 
-      expect(
-        tester.getSize(find.byType(FormDialog)).width,
-        lessThanOrEqualTo(560),
-      );
+      expect(tester.widget<FormDialog>(find.byType(FormDialog)).maxWidth, 560);
+      final panel = find
+          .descendant(of: find.byType(Dialog), matching: find.byType(Material))
+          .first;
+      expect(tester.getSize(panel).width, lessThanOrEqualTo(560));
     });
 
     testWidgets('has a close icon and no Save or Cancel', (tester) async {

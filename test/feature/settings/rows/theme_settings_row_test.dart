@@ -5,6 +5,7 @@ import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/settings/rows/theme_settings_row.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/util/app_theme.dart';
 
 void main() {
   group('ThemeSettingsRow Widget Tests', () {
@@ -101,7 +102,7 @@ void main() {
     ) async {
       final store = await pumpRow(tester);
 
-      await tester.tap(find.byTooltip('Red'));
+      await tester.tap(find.byKey(const ValueKey('swatch-red')));
       await tester.pumpAndSettle();
 
       expect(store.state.themeSettings.primaryColor, Colors.red);
@@ -117,7 +118,7 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byTooltip('Red'),
+          of: find.byKey(const ValueKey('swatch-red')),
           matching: find.byIcon(Icons.check),
         ),
         findsOneWidget,
@@ -174,6 +175,111 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(store.state.themeSettings.fontScale, 1.4);
+    });
+
+    testWidgets('names every swatch in a tooltip', (tester) async {
+      await pumpRow(tester);
+
+      for (final name in ['Blue', 'Red', 'Pink']) {
+        expect(find.byTooltip(name), findsOneWidget, reason: name);
+      }
+    });
+  });
+
+  group('ThemeSettingsRow in an app', () {
+    /// A MaterialApp wired like StelarisApp, with the row as its home.
+    Future<Store<AppState>> pumpApp(
+      WidgetTester tester, {
+      required ThemeSettings settings,
+    }) async {
+      tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+      addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+      final store = Store<AppState>(
+        initialState: AppState(themeSettings: settings),
+      );
+
+      await tester.pumpWidget(
+        StoreProvider<AppState>(
+          store: store,
+          child: StoreConnector<AppState, ThemeSettings>(
+            converter: (store) => store.state.themeSettings,
+            builder: (context, settings) => MaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              theme: AppTheme.buildLight(settings),
+              darkTheme: AppTheme.buildDark(settings),
+              themeMode: settings.themeMode,
+              home: const Scaffold(
+                body: SingleChildScrollView(child: ThemeSettingsRow()),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      return store;
+    }
+
+    Brightness shownBrightness(WidgetTester tester) =>
+        Theme.of(tester.element(find.byType(ThemeSettingsRow))).brightness;
+
+    testWidgets('follows the dark platform when system is chosen', (
+      tester,
+    ) async {
+      await pumpApp(
+        tester,
+        settings: ThemeSettings.defaultSettings().copyWith(
+          useSystemTheme: false,
+          isDarkMode: false,
+        ),
+      );
+      expect(shownBrightness(tester), Brightness.light);
+
+      await tester.tap(find.text('System'));
+      await tester.pumpAndSettle();
+
+      expect(shownBrightness(tester), Brightness.dark);
+    });
+
+    testWidgets('shows the dark theme when dark is chosen', (tester) async {
+      await pumpApp(
+        tester,
+        settings: ThemeSettings.defaultSettings().copyWith(
+          useSystemTheme: false,
+          isDarkMode: false,
+        ),
+      );
+
+      await tester.tap(find.text('Dark'));
+      await tester.pumpAndSettle();
+
+      expect(shownBrightness(tester), Brightness.dark);
+    });
+
+    testWidgets('fixes the light theme on a dark platform', (tester) async {
+      await pumpApp(tester, settings: ThemeSettings.defaultSettings());
+      expect(shownBrightness(tester), Brightness.dark);
+
+      await tester.tap(find.text('Light'));
+      await tester.pumpAndSettle();
+
+      expect(shownBrightness(tester), Brightness.light);
+    });
+
+    testWidgets('paints the app in the chosen color', (tester) async {
+      await pumpApp(
+        tester,
+        settings: ThemeSettings.defaultSettings().copyWith(
+          useSystemTheme: false,
+        ),
+      );
+
+      await tester.tap(find.byKey(const ValueKey('swatch-red')));
+      await tester.pumpAndSettle();
+
+      final scheme = Theme.of(tester.element(find.byType(ThemeSettingsRow)))
+          .colorScheme;
+      expect(scheme, ColorScheme.fromSeed(seedColor: Colors.red));
     });
   });
 }

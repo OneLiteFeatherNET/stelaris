@@ -10,17 +10,20 @@ void main() {
       Store<AppState>(initialState: initialState ?? const AppState());
 
   group('UpdateThemeSettingsAction', () {
-    test('replaces themeSettings and leaves the rest of the state untouched', () {
-      final store = buildStore(
-        initialState: const AppState().copyWith(openNavigation: false),
-      );
-      final newSettings = store.state.themeSettings.copyWith(fontScale: 1.2);
+    test(
+      'replaces themeSettings and leaves the rest of the state untouched',
+      () {
+        final store = buildStore(
+          initialState: const AppState().copyWith(openNavigation: false),
+        );
+        final newSettings = store.state.themeSettings.copyWith(fontScale: 1.2);
 
-      store.dispatchSync(UpdateThemeSettingsAction(newSettings));
+        store.dispatchSync(UpdateThemeSettingsAction(newSettings));
 
-      expect(store.state.themeSettings, newSettings);
-      expect(store.state.openNavigation, isFalse);
-    });
+        expect(store.state.themeSettings, newSettings);
+        expect(store.state.openNavigation, isFalse);
+      },
+    );
   });
 
   group('ToggleSystemThemeAction', () {
@@ -52,26 +55,23 @@ void main() {
       expect(store.state.themeSettings.useSystemTheme, isTrue);
     });
 
-    test(
-      'seeds isDarkMode from the live system brightness so turning '
-      '"follow system" off does not snap back to a stale manual value',
-      () {
-        final store = buildStore(
-          initialState: const AppState().copyWith(
-            themeSettings: const AppState().themeSettings.copyWith(
-              useSystemTheme: true,
-              isDarkMode: false, // stale manual value
-            ),
+    test('seeds isDarkMode from the live system brightness so turning '
+        '"follow system" off does not snap back to a stale manual value', () {
+      final store = buildStore(
+        initialState: const AppState().copyWith(
+          themeSettings: const AppState().themeSettings.copyWith(
+            useSystemTheme: true,
+            isDarkMode: false, // stale manual value
           ),
-        );
+        ),
+      );
 
-        // The system is actually in dark mode while useSystemTheme is on.
-        store.dispatchSync(ToggleSystemThemeAction(true));
+      // The system is actually in dark mode while useSystemTheme is on.
+      store.dispatchSync(ToggleSystemThemeAction(true));
 
-        expect(store.state.themeSettings.useSystemTheme, isFalse);
-        expect(store.state.themeSettings.isDarkMode, isTrue);
-      },
-    );
+      expect(store.state.themeSettings.useSystemTheme, isFalse);
+      expect(store.state.themeSettings.isDarkMode, isTrue);
+    });
 
     test('also syncs isDarkMode when turning "follow system" on', () {
       final store = buildStore(

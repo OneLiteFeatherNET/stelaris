@@ -72,6 +72,21 @@ void main() {
       expect(find.text('Project A (project_a)'), findsOneWidget);
     });
 
+    testWidgets('shows the first project when the selected one is gone', (
+      tester,
+    ) async {
+      await pumpRow(
+        tester,
+        state: const AppState(
+          projects: [projectA, projectB],
+          selectedProject: Project(id: 'x', displayName: 'Gone', key: 'gone'),
+        ),
+      );
+
+      expect(find.text('Project A (project_a)'), findsOneWidget);
+      expect(find.text('Gone (gone)'), findsNothing);
+    });
+
     testWidgets('lists the projects with the labor badge in the choice', (
       tester,
     ) async {

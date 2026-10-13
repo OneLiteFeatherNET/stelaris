@@ -3,6 +3,16 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 
 void main() {
+  test('the stored shape is unchanged', () {
+    expect(ThemeSettings.defaultSettings().toJson().keys, {
+      'isDarkMode',
+      'primaryColor',
+      'accentColor',
+      'fontScale',
+      'useSystemTheme',
+    });
+  });
+
   group('ThemeSettings.themeMode', () {
     test('is system while the app follows the platform', () {
       final settings = ThemeSettings.defaultSettings().copyWith(
