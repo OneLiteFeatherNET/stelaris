@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/api/state/actions/theme_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
@@ -9,17 +10,20 @@ void main() {
       Store<AppState>(initialState: initialState ?? const AppState());
 
   group('UpdateThemeSettingsAction', () {
-    test('replaces themeSettings and leaves the rest of the state untouched', () {
-      final store = buildStore(
-        initialState: const AppState().copyWith(openNavigation: false),
-      );
-      final newSettings = store.state.themeSettings.copyWith(fontScale: 1.2);
+    test(
+      'replaces themeSettings and leaves the rest of the state untouched',
+      () {
+        final store = buildStore(
+          initialState: const AppState().copyWith(openNavigation: false),
+        );
+        final newSettings = store.state.themeSettings.copyWith(fontScale: 1.2);
 
-      store.dispatchSync(UpdateThemeSettingsAction(newSettings));
+        store.dispatchSync(UpdateThemeSettingsAction(newSettings));
 
-      expect(store.state.themeSettings, newSettings);
-      expect(store.state.openNavigation, isFalse);
-    });
+        expect(store.state.themeSettings, newSettings);
+        expect(store.state.openNavigation, isFalse);
+      },
+    );
   });
 
   group('ToggleSystemThemeAction', () {
@@ -51,26 +55,23 @@ void main() {
       expect(store.state.themeSettings.useSystemTheme, isTrue);
     });
 
-    test(
-      'seeds isDarkMode from the live system brightness so turning '
-      '"follow system" off does not snap back to a stale manual value',
-      () {
-        final store = buildStore(
-          initialState: const AppState().copyWith(
-            themeSettings: const AppState().themeSettings.copyWith(
-              useSystemTheme: true,
-              isDarkMode: false, // stale manual value
-            ),
+    test('seeds isDarkMode from the live system brightness so turning '
+        '"follow system" off does not snap back to a stale manual value', () {
+      final store = buildStore(
+        initialState: const AppState().copyWith(
+          themeSettings: const AppState().themeSettings.copyWith(
+            useSystemTheme: true,
+            isDarkMode: false, // stale manual value
           ),
-        );
+        ),
+      );
 
-        // The system is actually in dark mode while useSystemTheme is on.
-        store.dispatchSync(ToggleSystemThemeAction(true));
+      // The system is actually in dark mode while useSystemTheme is on.
+      store.dispatchSync(ToggleSystemThemeAction(true));
 
-        expect(store.state.themeSettings.useSystemTheme, isFalse);
-        expect(store.state.themeSettings.isDarkMode, isTrue);
-      },
-    );
+      expect(store.state.themeSettings.useSystemTheme, isFalse);
+      expect(store.state.themeSettings.isDarkMode, isTrue);
+    });
 
     test('also syncs isDarkMode when turning "follow system" on', () {
       final store = buildStore(
@@ -132,15 +133,130 @@ void main() {
     });
   });
 
-  group('UpdateAccentColorAction', () {
-    test('updates only the accent color', () {
-      final store = buildStore();
-      final primaryBefore = store.state.themeSettings.primaryColor;
+  group('SetThemeModeAction', () {
+    AppState stateWith({required bool useSystemTheme, required bool isDark}) =>
+        const AppState().copyWith(
+          themeSettings: const AppState().themeSettings.copyWith(
+            useSystemTheme: useSystemTheme,
+            isDarkMode: isDark,
+          ),
+        );
 
-      store.dispatchSync(UpdateAccentColorAction(Colors.orange));
+    test('dark turns system off and dark on', () {
+      final store = buildStore(
+        initialState: stateWith(useSystemTheme: true, isDark: false),
+      );
 
-      expect(store.state.themeSettings.accentColor, Colors.orange);
-      expect(store.state.themeSettings.primaryColor, primaryBefore);
+      store.dispatchSync(SetThemeModeAction(ThemeMode.dark));
+
+      expect(store.state.themeSettings.useSystemTheme, isFalse);
+      expect(store.state.themeSettings.isDarkMode, isTrue);
+    });
+
+    test('light turns system off and dark off', () {
+      final store = buildStore(
+        initialState: stateWith(useSystemTheme: true, isDark: true),
+      );
+
+      store.dispatchSync(SetThemeModeAction(ThemeMode.light));
+
+      expect(store.state.themeSettings.useSystemTheme, isFalse);
+      expect(store.state.themeSettings.isDarkMode, isFalse);
+    });
+
+    test('system turns system on and keeps the manual choice', () {
+      final store = buildStore(
+        initialState: stateWith(useSystemTheme: false, isDark: true),
+      );
+
+      store.dispatchSync(SetThemeModeAction(ThemeMode.system));
+
+      expect(store.state.themeSettings.useSystemTheme, isTrue);
+      expect(store.state.themeSettings.isDarkMode, isTrue);
+    });
+
+    test('leaves the colors and the font scale alone', () {
+      final store = buildStore(
+        initialState: const AppState().copyWith(
+          themeSettings: const AppState().themeSettings.copyWith(
+            primaryColor: Colors.red,
+            fontScale: 1.2,
+          ),
+        ),
+      );
+
+      store.dispatchSync(SetThemeModeAction(ThemeMode.dark));
+
+      expect(store.state.themeSettings.primaryColor, Colors.red);
+      expect(store.state.themeSettings.fontScale, 1.2);
+    });
+  });
+
+  group('ResetAppearanceSettingsAction', () {
+    final changed = const AppState().themeSettings.copyWith(
+      useSystemTheme: false,
+      isDarkMode: true,
+      primaryColor: Colors.red,
+      accentColor: Colors.orange,
+      fontScale: 1.4,
+    );
+
+    test('restores the mode and both colors', () {
+      final store = buildStore(
+        initialState: const AppState().copyWith(themeSettings: changed),
+      );
+
+      store.dispatchSync(ResetAppearanceSettingsAction());
+
+      final defaults = ThemeSettings.defaultSettings();
+      expect(store.state.themeSettings.useSystemTheme, defaults.useSystemTheme);
+      expect(store.state.themeSettings.isDarkMode, defaults.isDarkMode);
+      expect(store.state.themeSettings.primaryColor, defaults.primaryColor);
+      expect(store.state.themeSettings.accentColor, defaults.accentColor);
+    });
+
+    test('keeps the font scale', () {
+      final store = buildStore(
+        initialState: const AppState().copyWith(themeSettings: changed),
+      );
+
+      store.dispatchSync(ResetAppearanceSettingsAction());
+
+      expect(store.state.themeSettings.fontScale, 1.4);
+    });
+  });
+
+  group('ResetFontScaleAction', () {
+    final changed = const AppState().themeSettings.copyWith(
+      useSystemTheme: false,
+      isDarkMode: true,
+      primaryColor: Colors.red,
+      fontScale: 1.4,
+    );
+
+    test('restores the font scale', () {
+      final store = buildStore(
+        initialState: const AppState().copyWith(themeSettings: changed),
+      );
+
+      store.dispatchSync(ResetFontScaleAction());
+
+      expect(
+        store.state.themeSettings.fontScale,
+        ThemeSettings.defaultSettings().fontScale,
+      );
+    });
+
+    test('keeps the mode and the colors', () {
+      final store = buildStore(
+        initialState: const AppState().copyWith(themeSettings: changed),
+      );
+
+      store.dispatchSync(ResetFontScaleAction());
+
+      expect(store.state.themeSettings.useSystemTheme, isFalse);
+      expect(store.state.themeSettings.isDarkMode, isTrue);
+      expect(store.state.themeSettings.primaryColor, Colors.red);
     });
   });
 

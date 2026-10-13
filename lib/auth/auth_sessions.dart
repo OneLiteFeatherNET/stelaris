@@ -19,6 +19,10 @@ abstract final class AuthSessions {
   /// The session, or null in a deployment with no identity provider.
   static AuthSession? get current => _current;
 
+  /// Ends the session, if there is one. The one sign-out the account menu and
+  /// the settings share.
+  static Future<void> signOut() async => _current?.signOut();
+
   /// Brings the session up, if there is one to bring up.
   ///
   /// Reads [RuntimeConfig], so it runs after the configuration is loaded and
