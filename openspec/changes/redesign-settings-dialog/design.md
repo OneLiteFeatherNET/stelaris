@@ -34,7 +34,7 @@ See proposal.md and specs/settings/spec.md.
 - Look and behave like the other dialogs and edit cards.
 - One way to choose the theme mode, a color, and a preview for the font size.
 - Every setting can go back to its default.
-- Show the account where users look for it, without a second sign-out path.
+- Show the account where users look for it, without a second sign-out implementation.
 
 **Non-Goals**
 
@@ -134,7 +134,7 @@ Accessibility holds the font size, because that is what it is about. The theme i
 card. "Report" and "Suggest" both opened `gitUrl`, the issue tracker, so they become one "Issues"
 card ("Report a bug or suggest a feature"). The licences card keeps `showLicensePage`.
 
-The footer reads "© {year} Onelitefeather • Made with ♥ by the team". The year is
+The footer, hard-coded as `@2025 Onelitefeather` today, reads "© {year} Onelitefeather • Made with ♥ by the team". The year is
 `clock.now().year`, with `clock` a `Clock` from `package:clock` passed to `SettingsEndTile` (default
 `const Clock()`) and from `SettingsDialog`. A test passes `Clock.fixed(...)`. `clock` is added to
 `pubspec.yaml` as a direct dependency, it is already resolved in `pubspec.lock`.
@@ -147,10 +147,11 @@ The account section reads `AppState.auth` and builds on the status.
 |---|---|
 | not `isEnabled` | nothing, not even the heading |
 | `isSignedIn` | name (or "Signed in" without one), the roles line and a "Sign out" button |
+| `expired` | one card saying that the session expired (the existing `auth_session_expired` text) |
 | enabled, otherwise | one card saying that no one is signed in |
 
-Sign-out calls `AuthSessions.current?.signOut()`, the same call as `SessionIndicator`. The roles
-line (three names, then "+N more", "No roles" when empty) moves out of `SessionIndicator` into a
+Sign-out calls the new `AuthSessions.signOut()`, which `SessionIndicator` now calls too, so there is one implementation. The roles
+line (three names, then "and N more", "No roles granted" when empty, the existing `auth_roles_more` and `auth_no_roles` strings) moves out of `SessionIndicator` into a
 shared function that both use, so the two cannot drift apart. Nothing about tokens or sessions is
 duplicated. `signOut` is task 2.7 of `add-oidc-authentication` and not done yet. Until it is, this
 button does what the menu entry does. The section needs no change when it lands.
