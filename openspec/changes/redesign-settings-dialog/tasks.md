@@ -85,4 +85,4 @@ with `pump` and never sleep, take the year from an injected `Clock`, and assert 
 
 ## 9. Pull request
 
-- [ ] 9.1 Open the pull request titled `feat(settings): redesign the settings dialog`.
+- [x] 9.1 Open the pull request titled `feat(settings): redesign the settings dialog`.
