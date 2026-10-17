@@ -1086,6 +1086,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Invalid texture path (e.g. \"minecraft:font/ascii.png\")';
 
   @override
+  String get validation_background_invalid =>
+      'Invalid texture path (e.g. \"minecraft:gui/advancements/backgrounds/stone\")';
+
+  @override
   String get validation_sound_key_invalid =>
       'Invalid key (e.g. \"entity.player.hurt\" or \"custom:ui/click\")';
 

@@ -18,9 +18,8 @@ import 'package:stelaris/feature/model/model_copy.dart';
 /// The [AdvancementPage] allows users to view, search, and manage
 /// advancements through a [ModelPage]. It provides a dialog for creating
 /// new advancements and handles the state management through Redux.
-/// Tapping a advancement navigates to its dedicated detail route, since a
-/// advancement has more editable fields (material, title, comment, frame
-/// type) than would comfortably fit in a small dialog.
+/// Tapping an advancement navigates to its dedicated detail route, since an
+/// advancement has more fields than would comfortably fit in a small dialog.
 class AdvancementPage extends StatelessWidget {
   const AdvancementPage({super.key});
 
@@ -72,7 +71,7 @@ class AdvancementPage extends StatelessWidget {
     );
   }
 
-  /// Builds the primary card content for a [AdvancementModel]: its display
+  /// Builds the primary card content for an [AdvancementModel]: its display
   /// name plus its namespaced key (e.g. `manis:test`), derived client-side
   /// from the current project's key and the model's local
   /// [AdvancementModel.key].
@@ -106,6 +105,4 @@ class AdvancementPage extends StatelessWidget {
       ],
     );
   }
-
-  /// Opens a dialog for creating a new advancement.
 }

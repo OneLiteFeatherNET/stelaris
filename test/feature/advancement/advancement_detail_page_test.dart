@@ -220,6 +220,80 @@ void main() {
       );
     });
 
+    testWidgets('a whole position shows without a fraction', (tester) async {
+      await pumpPage(
+        tester,
+        initialState: AppState(
+          selectedAdvancement: selected.copyWith(x: 2, y: 1.5),
+        ),
+      );
+
+      expect(
+        find.descendant(of: cardOf('Position X'), matching: find.text('2')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: cardOf('Position Y'), matching: find.text('1.5')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('a position that is no number is not saved', (tester) async {
+      await pumpPage(
+        tester,
+        initialState: AppState(selectedAdvancement: selected.copyWith(x: 3)),
+      );
+
+      await enterAndBlur(tester, 'Position X', '-');
+
+      expect(find.text('Please enter a valid number'), findsOneWidget);
+      expect(store.state.selectedAdvancement?.x, 3);
+    });
+
+    testWidgets('an invalid background is not saved', (tester) async {
+      await pumpPage(tester);
+
+      await enterAndBlur(tester, 'Background', 'Stone Wall');
+
+      expect(
+        find.text(
+          'Invalid texture path '
+          '(e.g. "minecraft:gui/advancements/backgrounds/stone")',
+        ),
+        findsOneWidget,
+      );
+      expect(store.state.selectedAdvancement?.background, isNull);
+    });
+
+    testWidgets('choosing a parent removes the background', (tester) async {
+      const root = AdvancementModel(id: 'root', uiName: 'Root');
+      await pumpPage(
+        tester,
+        initialState: AppState(
+          selectedAdvancement: selected.copyWith(
+            background: 'minecraft:gui/advancements/backgrounds/stone',
+          ),
+          advancements: const PaginatedResult(
+            items: [root, selected],
+            totalItems: 2,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+        ),
+      );
+
+      await tester.ensureVisible(cardOf('Parent'));
+      await tester.tap(cardOf('Parent'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ListTile, 'Root'));
+      await tester.pumpAndSettle();
+
+      final advancement = store.state.selectedAdvancement!;
+      expect(advancement.parentId, 'root');
+      expect(advancement.background, isNull);
+    });
+
     testWidgets('the description takes the color of the frame', (tester) async {
       ComponentContext contextOf() => tester
           .widget<ComponentPreview>(
