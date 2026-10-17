@@ -27,6 +27,13 @@
       "automergeType": "pr"
     },
     {
+      "description": "oidc and oidc_default_store share oidc_core, so a major bump only resolves when both move together",
+      "matchManagers": ["pub"],
+      "matchPackageNames": ["oidc", "oidc_*"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "oidc"
+    },
+    {
       "description": "Dependencies whose updates shouldn't be done automatically",
       "matchPackageNames": ["intl"],
       "enabled": false
