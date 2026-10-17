@@ -29,8 +29,9 @@ class EditCard extends StatefulWidget {
   final String? footer;
   final VoidCallback onTap;
 
-  /// Shown instead of the value text when the value is not empty, e.g. a
-  /// text component with its formatting.
+  /// Shown instead of the value text, e.g. a text component with its
+  /// formatting. It shows its own placeholder, so the card keeps its height
+  /// when the value is cleared.
   final Widget? preview;
 
   @override
@@ -88,8 +89,8 @@ class _EditCardState extends State<EditCard> {
                 ],
               ),
               // The preview's frame needs more room below the pencil.
-              SizedBox(height: widget.preview != null && !empty ? 10 : 6),
-              if (widget.preview case final preview? when !empty)
+              SizedBox(height: widget.preview != null ? 10 : 6),
+              if (widget.preview case final preview?)
                 // The card's right padding is smaller for the pencil, this
                 // evens out the frame of the preview.
                 Padding(
