@@ -99,7 +99,7 @@
   "card_material": "Material",
   "card_title": "Title",
   "card_type": "Type",
-  "card_frame_type": "FrameType",
+  "card_frame_type": "Frame type",
   "card_ascent": "Ascent",
   "card_height": "Height",
   "card_attribute_default_value": "Default value",
@@ -117,7 +117,8 @@
   "advancement_parent_none": "None (root)",
   "tooltip_advancement_parent": "A root advancement opens its own tab",
   "tooltip_advancement_background": "The background texture of the tab",
-  "tooltip_advancement_position": "The position in the advancement tree",
+  "advancement_hint_x": "The horizontal position in the advancement tree",
+  "advancement_hint_y": "The vertical position in the advancement tree",
   "tooltip_advancement_hidden": "Hidden until the advancement is achieved",
 
   "label_level": "Level",

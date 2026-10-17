@@ -3,6 +3,7 @@ import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_dialogs.dart';
 import 'package:stelaris/feature/base/edit_card/edit_field.dart';
 import 'package:stelaris/feature/component/component_preview.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 /// The fields of a detail page in [sections], each with its heading. In a
 /// section the cards fill as many columns as fit.
@@ -88,6 +89,7 @@ class EditCardGrid extends StatelessWidget {
         TextComponentEdit(:final componentContext) => ComponentPreview(
           text: text,
           componentContext: componentContext,
+          placeholder: context.l10n.edit_card_placeholder,
         ),
         _ => null,
       },
