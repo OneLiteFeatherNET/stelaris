@@ -9,10 +9,10 @@ import 'package:stelaris/feature/model/model_detail_shell.dart';
 import 'package:stelaris/feature/advancement/advancement_page_general.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
-/// The detail view reached by tapping a advancement card in [AdvancementPage].
+/// The detail view reached by tapping an advancement card in [AdvancementPage].
 ///
-/// Shows the shared [ModelDetailShell] header row with its actions, with the existing
-/// [AdvancementGeneralPage] form below it unchanged.
+/// Shows the shared [ModelDetailShell] header row with its actions and the
+/// [AdvancementGeneralPage] below it.
 class AdvancementDetailPage extends StatelessWidget {
   const AdvancementDetailPage({super.key});
 

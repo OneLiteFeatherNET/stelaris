@@ -11,6 +11,7 @@ import 'package:stelaris/feature/base/edit_card/edit_field.dart';
 import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/validators.dart';
 import 'package:vulpes_data/advancement.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
@@ -25,6 +26,10 @@ const TextInputType _decimalInput = TextInputType.numberWithOptions(
   signed: true,
   decimal: true,
 );
+
+/// Shows a whole [value] without the trailing `.0`.
+String _formatPosition(double value) =>
+    value == value.truncateToDouble() ? value.toInt().toString() : '$value';
 
 /// The advancement's page: how it is shown, its icon, title, description,
 /// frame and its place in the advancement tree. The display flags change in
@@ -74,12 +79,14 @@ class AdvancementGeneralPage extends StatelessWidget {
         ) => TextEdit(
           label: label,
           icon: Icons.tag,
-          value: value.toString(),
+          value: _formatPosition(value),
           footer: footer,
           keyboardType: _decimalInput,
           formatters: decimalFormatters,
-          onChanged: (input) =>
-              _stage(context, change(double.tryParse(input) ?? 0)),
+          validator: (input) => double.tryParse(input ?? emptyString) == null
+              ? l10n.validation_number_invalid
+              : null,
+          onChanged: (input) => _stage(context, change(double.parse(input))),
         );
 
         return EditCardGrid(
@@ -124,9 +131,13 @@ class AdvancementGeneralPage extends StatelessWidget {
                       ? l10n.advancement_parent_none
                       : names[id] ?? id,
                   footer: l10n.tooltip_advancement_parent,
+                  // Only a root has a background, a child would keep it
+                  // hidden.
                   onChanged: (id) => _stage(
                     context,
-                    selected.copyWith(parentId: id == _noParent ? null : id),
+                    id == _noParent
+                        ? selected.copyWith(parentId: null)
+                        : selected.copyWith(parentId: id, background: null),
                   ),
                 ),
                 if (selected.isRoot)
@@ -137,6 +148,10 @@ class AdvancementGeneralPage extends StatelessWidget {
                     hintText: 'minecraft:gui/advancements/backgrounds/stone',
                     footer: l10n.tooltip_advancement_background,
                     maxLength: 100,
+                    validator: Validators.pattern(
+                      adventureKeyPattern,
+                      l10n.validation_background_invalid,
+                    ),
                     onChanged: (value) => _stage(
                       context,
                       selected.copyWith(
