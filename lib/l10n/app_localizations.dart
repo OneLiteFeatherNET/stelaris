@@ -505,7 +505,7 @@ abstract class AppLocalizations {
   /// No description provided for @card_frame_type.
   ///
   /// In en, this message translates to:
-  /// **'FrameType'**
+  /// **'Frame type'**
   String get card_frame_type;
 
   /// No description provided for @card_ascent.
@@ -610,11 +610,17 @@ abstract class AppLocalizations {
   /// **'The background texture of the tab'**
   String get tooltip_advancement_background;
 
-  /// No description provided for @tooltip_advancement_position.
+  /// No description provided for @advancement_hint_x.
   ///
   /// In en, this message translates to:
-  /// **'The position in the advancement tree'**
-  String get tooltip_advancement_position;
+  /// **'The horizontal position in the advancement tree'**
+  String get advancement_hint_x;
+
+  /// No description provided for @advancement_hint_y.
+  ///
+  /// In en, this message translates to:
+  /// **'The vertical position in the advancement tree'**
+  String get advancement_hint_y;
 
   /// No description provided for @tooltip_advancement_hidden.
   ///

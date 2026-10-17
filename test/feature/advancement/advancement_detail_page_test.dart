@@ -190,6 +190,36 @@ void main() {
       expect(store.state.selectedAdvancement?.title, isNull);
     });
 
+    testWidgets('an unset title shows the placeholder in its preview', (
+      tester,
+    ) async {
+      await pumpPage(tester);
+
+      expect(
+        find.descendant(
+          of: find.descendant(
+            of: cardOf('Title'),
+            matching: find.byType(ComponentPreview),
+          ),
+          matching: find.text('Not set'),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('each axis of the position has its own hint', (tester) async {
+      await pumpPage(tester);
+
+      expect(
+        find.text('The horizontal position in the advancement tree'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('The vertical position in the advancement tree'),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('the description takes the color of the frame', (tester) async {
       ComponentContext contextOf() => tester
           .widget<ComponentPreview>(
@@ -208,8 +238,8 @@ void main() {
       );
       expect(contextOf(), ComponentContext.advancementDescription);
 
-      await tester.ensureVisible(cardOf('FrameType'));
-      await tester.tap(cardOf('FrameType'));
+      await tester.ensureVisible(cardOf('Frame type'));
+      await tester.tap(cardOf('Frame type'));
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(ListTile, 'Challenge'));
       await tester.pumpAndSettle();

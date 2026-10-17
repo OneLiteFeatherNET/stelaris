@@ -230,7 +230,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get card_type => 'Type';
 
   @override
-  String get card_frame_type => 'FrameType';
+  String get card_frame_type => 'Frame type';
 
   @override
   String get card_ascent => 'Ascent';
@@ -286,8 +286,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'The background texture of the tab';
 
   @override
-  String get tooltip_advancement_position =>
-      'The position in the advancement tree';
+  String get advancement_hint_x =>
+      'The horizontal position in the advancement tree';
+
+  @override
+  String get advancement_hint_y =>
+      'The vertical position in the advancement tree';
 
   @override
   String get tooltip_advancement_hidden =>

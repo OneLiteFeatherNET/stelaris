@@ -68,13 +68,14 @@ class AdvancementGeneralPage extends StatelessWidget {
         ];
         TextEdit position(
           String label,
+          String footer,
           double value,
           AdvancementModel Function(double value) change,
         ) => TextEdit(
           label: label,
           icon: Icons.tag,
           value: value.toString(),
-          footer: l10n.tooltip_advancement_position,
+          footer: footer,
           keyboardType: _decimalInput,
           formatters: decimalFormatters,
           onChanged: (input) =>
@@ -176,11 +177,13 @@ class AdvancementGeneralPage extends StatelessWidget {
               fields: [
                 position(
                   l10n.card_advancement_x,
+                  l10n.advancement_hint_x,
                   selected.x,
                   (x) => selected.copyWith(x: x),
                 ),
                 position(
                   l10n.card_advancement_y,
+                  l10n.advancement_hint_y,
                   selected.y,
                   (y) => selected.copyWith(y: y),
                 ),
