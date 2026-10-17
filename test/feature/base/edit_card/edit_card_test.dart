@@ -53,6 +53,21 @@ void main() {
     expect(find.text('At most the height'), findsOneWidget);
   });
 
+  testWidgets('a short footer takes as much room as a long one', (
+    tester,
+  ) async {
+    await pumpCard(tester, footer: 'Short');
+    final short = tester.getSize(find.byType(EditCard)).height;
+
+    await pumpCard(
+      tester,
+      footer: 'A footer long enough to need a second line in the card',
+    );
+    final long = tester.getSize(find.byType(EditCard)).height;
+
+    expect(short, long);
+  });
+
   testWidgets('an edit card is outlined, not filled like a model card', (
     tester,
   ) async {
