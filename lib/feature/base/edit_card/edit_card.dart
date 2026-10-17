@@ -87,7 +87,8 @@ class _EditCardState extends State<EditCard> {
                   ),
                 ],
               ),
-              const SizedBox(height: 6),
+              // The preview's frame needs more room below the pencil.
+              SizedBox(height: widget.preview != null && !empty ? 10 : 6),
               if (widget.preview case final preview? when !empty)
                 // The card's right padding is smaller for the pencil, this
                 // evens out the frame of the preview.
