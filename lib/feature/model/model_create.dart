@@ -8,6 +8,7 @@ import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/dispatch_ext.dart';
@@ -43,7 +44,12 @@ Future<bool> openModelCreateDialog(
               ItemModel(uiName: name, key: key),
             ),
             NavigationEntry.font => FontAddAction(
-              FontModel(uiName: name, key: key),
+              FontModel(
+                uiName: name,
+                key: key,
+                provider: defaultFontProvider,
+                height: defaultFontHeight,
+              ),
             ),
             NavigationEntry.sound => SoundAddAction(
               SoundEventModel(uiName: name, key: key),

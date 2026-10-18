@@ -55,6 +55,14 @@ const String zeroString = '0';
 const String emptyString = '';
 const String defaultMaterial = 'minecraft:dirt';
 
+/// The glyph height of Minecraft's default bitmap font, so a new font starts
+/// out valid for the backend, which requires a positive height
+const int defaultFontHeight = 8;
+
+/// The only provider type the font model covers, its fields are those of a
+/// bitmap provider
+const String defaultFontProvider = 'bitmap';
+
 // Text
 // Button
 Icon addModelIcon = const Icon(Icons.add);
