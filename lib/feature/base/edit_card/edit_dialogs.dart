@@ -4,7 +4,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/edit_card/edit_field.dart';
 import 'package:stelaris/feature/base/input/material_autocomplete.dart';
+import 'package:stelaris/feature/base/search/dialog_search_bar.dart';
 import 'package:stelaris/feature/component/component_dialog.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/minimessage_json.dart';
 
@@ -91,6 +93,10 @@ Future<T?> showChoiceEditDialog<T>(BuildContext context, ChoiceEdit<T> field) {
 }
 
 /// The options of a [ChoiceEdit], at most [_visibleOptions] in view.
+///
+/// Once the options scroll, a search above them narrows them to the ones
+/// whose text holds every typed word; Enter picks the first of those. The
+/// list keeps its height while narrowing, so the dialog doesn't jump.
 class _ChoiceList<T> extends StatefulWidget {
   const _ChoiceList({required this.field});
 
@@ -103,6 +109,9 @@ class _ChoiceList<T> extends StatefulWidget {
 class _ChoiceListState<T> extends State<_ChoiceList<T>> {
   late final List<T> _options = widget.field.options;
   late final int _visible = _options.length.clamp(1, _visibleOptions);
+  late final bool _searchable = _options.length > _visibleOptions;
+  final TextEditingController _search = TextEditingController();
+  List<String> _words = const [];
 
   /// Starts with the current option in view, as far down as the list goes.
   late final ScrollController _controller = ScrollController(
@@ -117,40 +126,95 @@ class _ChoiceListState<T> extends State<_ChoiceList<T>> {
   @override
   void dispose() {
     _controller.dispose();
+    _search.dispose();
     super.dispose();
+  }
+
+  List<T> get _matches {
+    if (_words.isEmpty) return _options;
+    final field = widget.field;
+    return [
+      for (final option in _options)
+        if (_matchesWords(field.display(option).toLowerCase())) option,
+    ];
+  }
+
+  bool _matchesWords(String text) => _words.every(text.contains);
+
+  void _onSearch(String text) {
+    setState(() {
+      _words = text.toLowerCase().split(' ')
+        ..removeWhere((word) => word.isEmpty);
+    });
+    // The matches start at the top, not where the full list was scrolled to.
+    if (_controller.hasClients) _controller.jumpTo(0);
+  }
+
+  void _clear() {
+    _search.clear();
+    _onSearch('');
   }
 
   @override
   Widget build(BuildContext context) {
     final field = widget.field;
-    return SizedBox(
+    final matches = _matches;
+    final list = SizedBox(
       height: _visible * _optionExtent,
-      child: ListView.builder(
-        key: const Key('choice_edit_options'),
-        controller: _controller,
-        itemCount: _options.length,
-        itemExtent: _optionExtent,
-        itemBuilder: (context, index) {
-          final option = _options[index];
-          final current = option == field.value;
-          return ListTile(
-            dense: true,
-            // The options line up with the title and the divider of the
-            // dialog instead of sitting inset from them.
-            contentPadding: EdgeInsets.zero,
-            // As high as the row, or a compact density on desktop centers
-            // the text in a shorter tile at the top of it.
-            minTileHeight: _optionExtent,
-            selected: current,
-            leading: current
-                ? const Icon(Icons.check)
-                : const SizedBox(width: 24),
-            title: Text(field.display(option)),
-            trailing: field.optionTrailing?.call(option),
-            onTap: () => Navigator.of(context).pop(option),
-          );
-        },
-      ),
+      child: matches.isEmpty
+          ? Center(child: Text(context.l10n.search_no_results))
+          : ListView.builder(
+              key: const Key('choice_edit_options'),
+              controller: _controller,
+              itemCount: matches.length,
+              itemExtent: _optionExtent,
+              itemBuilder: (context, index) {
+                final option = matches[index];
+                final current = option == field.value;
+                return ListTile(
+                  dense: true,
+                  // The options line up with the title and the divider of
+                  // the dialog instead of sitting inset from them.
+                  contentPadding: EdgeInsets.zero,
+                  // As high as the row, or a compact density on desktop
+                  // centers the text in a shorter tile at the top of it.
+                  minTileHeight: _optionExtent,
+                  selected: current,
+                  leading: current
+                      ? const Icon(Icons.check)
+                      : const SizedBox(width: 24),
+                  title: Text(field.display(option)),
+                  trailing: field.optionTrailing?.call(option),
+                  onTap: () => Navigator.of(context).pop(option),
+                );
+              },
+            ),
+    );
+    if (!_searchable) return list;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        DialogSearchBar(
+          controller: _search,
+          hintText: context.l10n.choice_edit_search_hint(field.label),
+          trailing: [
+            if (_search.text.isNotEmpty)
+              IconButton(
+                tooltip: context.l10n.search_clear_tooltip,
+                icon: const Icon(Icons.close),
+                onPressed: _clear,
+              ),
+          ],
+          onChanged: _onSearch,
+          onSubmitted: (_) {
+            if (matches.isNotEmpty) Navigator.of(context).pop(matches.first);
+          },
+        ),
+        // The same gap as below the search of the component picker.
+        verticalSpacing10,
+        list,
+      ],
     );
   }
 }

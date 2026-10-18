@@ -1984,6 +1984,12 @@ abstract class AppLocalizations {
   /// **'Reset search'**
   String get search_reset;
 
+  /// No description provided for @choice_edit_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search {label}'**
+  String choice_edit_search_hint(String label);
+
   /// No description provided for @error_title.
   ///
   /// In en, this message translates to:
