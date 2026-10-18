@@ -67,6 +67,9 @@ class _FontScaleCardState extends State<_FontScaleCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Slider(
+            // Starts the track on the line of the title, like the other
+            // controls of a card.
+            padding: const EdgeInsets.symmetric(vertical: 12),
             value: _value,
             min: 0.8,
             max: 1.4,

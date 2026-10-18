@@ -3,10 +3,11 @@ import 'package:material_ui/material_ui.dart';
 /// An outlined card of the settings dialog, in the shape and padding of an
 /// edit card.
 ///
-/// It has a leading [icon], a [title] and an optional [subtitle]. The control
-/// is operated in place: a small one is the [trailing] widget, a wide one the
-/// [child] below the header. Giving [onTap] makes the whole card a button, e.g.
-/// for a link.
+/// It has an [icon] in the line of the [title] and an optional [subtitle]
+/// below the title. The control is operated in place: a small one is the
+/// [trailing] widget, centered at the right end, a wide one the [child] below
+/// the subtitle, on the line of the title. Giving [onTap] makes the whole
+/// card a button, e.g. for a link.
 class SettingsCard extends StatelessWidget {
   const SettingsCard({
     required this.icon,
@@ -36,33 +37,45 @@ class SettingsCard extends StatelessWidget {
 
     final content = Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
+      child: Row(
         children: [
-          Row(
-            children: [
-              Icon(icon, size: 18, color: muted),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // The icon belongs to the title line, so it stays beside the
+                // title however tall the subtitle and the control below are.
+                Row(
                   children: [
-                    Text(title, style: theme.textTheme.titleMedium),
-                    if (subtitle != null)
-                      Text(
-                        subtitle,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: muted,
-                        ),
-                      ),
+                    Icon(icon, size: _iconSize, color: muted),
+                    const SizedBox(width: _iconGap),
+                    Expanded(
+                      child: Text(title, style: theme.textTheme.titleMedium),
+                    ),
                   ],
                 ),
-              ),
-              if (trailing != null) ...[const SizedBox(width: 8), trailing],
-            ],
+                // The subtitle and the control start on the line of the
+                // title.
+                if (subtitle != null)
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(start: _indent),
+                    child: Text(
+                      subtitle,
+                      style: theme.textTheme.bodySmall?.copyWith(color: muted),
+                    ),
+                  ),
+                if (child != null) ...[
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(start: _indent),
+                    child: child,
+                  ),
+                ],
+              ],
+            ),
           ),
-          if (child != null) ...[const SizedBox(height: 12), child],
+          if (trailing != null) ...[const SizedBox(width: 8), trailing],
         ],
       ),
     );
@@ -76,3 +89,9 @@ class SettingsCard extends StatelessWidget {
     );
   }
 }
+
+const double _iconSize = 18;
+const double _iconGap = 8;
+
+/// Where the text after the icon starts.
+const double _indent = _iconSize + _iconGap;
