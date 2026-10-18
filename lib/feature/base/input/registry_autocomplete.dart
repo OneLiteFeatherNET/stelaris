@@ -101,9 +101,14 @@ class RegistryAutocomplete extends StatelessWidget {
     required this.fieldBuilder,
     required this.onSelected,
     this.initialValue = '',
+    this.controller,
+    this.focusNode,
     @visibleForTesting this.skipSuggestions,
     super.key,
-  });
+  }) : assert(
+         (controller == null) == (focusNode == null),
+         'controller and focusNode must be given together',
+       );
 
   final String registry;
 
@@ -116,7 +121,11 @@ class RegistryAutocomplete extends StatelessWidget {
   )
   fieldBuilder;
   final void Function(String key) onSelected;
+
+  /// Only used when no [controller] is given.
   final String initialValue;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
 
   /// See [MaterialAutocomplete.skipSuggestions].
   final bool? skipSuggestions;
@@ -127,7 +136,11 @@ class RegistryAutocomplete extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RawAutocomplete<Keyed>(
-      initialValue: TextEditingValue(text: initialValue),
+      textEditingController: controller,
+      focusNode: focusNode,
+      initialValue: controller == null
+          ? TextEditingValue(text: initialValue)
+          : null,
       displayStringForOption: (entry) => entry.key,
       optionsBuilder: (value) =>
           _skipSuggestions ? const [] : suggestRegistry(registry, value.text),
