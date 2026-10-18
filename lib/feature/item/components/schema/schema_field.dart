@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/input/material_autocomplete.dart';
+import 'package:stelaris/feature/base/input/registry_autocomplete.dart';
 import 'package:stelaris/feature/item/components/schema/fields/color_field.dart';
 import 'package:stelaris/feature/item/components/schema/fields/list_field.dart';
 import 'package:stelaris/feature/item/components/schema/fields/number_field.dart';
@@ -176,7 +177,8 @@ class SchemaField extends StatelessWidget {
 }
 
 /// The input for a registry key. Items and blocks suggest materials while
-/// typing; every other registry is a plain text field.
+/// typing, other registries their entries when they are known; the rest is a
+/// plain text field.
 class _KeyField extends StatelessWidget {
   const _KeyField({
     required this.registry,
@@ -205,6 +207,12 @@ class _KeyField extends StatelessWidget {
       'block' => MaterialAutocomplete(
         initialValue: value,
         categories: const {MaterialCategory.block},
+        onSelected: onChanged,
+        fieldBuilder: _suggestingField,
+      ),
+      final registry? when suggestsRegistry(registry) => RegistryAutocomplete(
+        registry: registry,
+        initialValue: value,
         onSelected: onChanged,
         fieldBuilder: _suggestingField,
       ),

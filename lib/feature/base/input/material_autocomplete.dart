@@ -95,7 +95,7 @@ class MaterialAutocomplete extends StatelessWidget {
       onSelected: (entry) => onSelected(entry.key),
       fieldViewBuilder: fieldBuilder,
       optionsViewBuilder: (context, onSelected, options) =>
-          _SuggestionList(options: options, onSelected: onSelected),
+          KeyedSuggestionList(options: options, onSelected: onSelected),
     );
   }
 }
@@ -106,20 +106,25 @@ const double _suggestionExtent = 56;
 /// Vertical padding of a Material 3 menu panel.
 const double _panelPadding = 8;
 
-/// The suggestions as a Material 3 menu panel. The options view is as wide as
-/// the field and as high as the space left on screen, so the list scrolls
-/// when the suggestions don't fit.
-class _SuggestionList extends StatefulWidget {
-  const _SuggestionList({required this.options, required this.onSelected});
+/// The suggestions as a Material 3 menu panel, each with its name and key.
+/// The options view is as wide as the field and as high as the space left on
+/// screen, so the list scrolls when the suggestions don't fit.
+class KeyedSuggestionList<T extends Keyed> extends StatefulWidget {
+  const KeyedSuggestionList({
+    required this.options,
+    required this.onSelected,
+    super.key,
+  });
 
-  final Iterable<MaterialSearchEntry> options;
-  final AutocompleteOnSelected<MaterialSearchEntry> onSelected;
+  final Iterable<T> options;
+  final AutocompleteOnSelected<T> onSelected;
 
   @override
-  State<_SuggestionList> createState() => _SuggestionListState();
+  State<KeyedSuggestionList<T>> createState() => _KeyedSuggestionListState<T>();
 }
 
-class _SuggestionListState extends State<_SuggestionList> {
+class _KeyedSuggestionListState<T extends Keyed>
+    extends State<KeyedSuggestionList<T>> {
   final ScrollController _controller = ScrollController();
   ValueNotifier<int>? _highlighted;
 
@@ -181,7 +186,7 @@ class _SuggestionListState extends State<_SuggestionList> {
         padding: const EdgeInsets.symmetric(vertical: _panelPadding),
         itemExtent: _suggestionExtent,
         itemCount: widget.options.length,
-        itemBuilder: (context, index) => _Suggestion(
+        itemBuilder: (context, index) => _Suggestion<T>(
           index: index,
           entry: widget.options.elementAt(index),
           onSelected: widget.onSelected,
@@ -191,7 +196,7 @@ class _SuggestionListState extends State<_SuggestionList> {
   }
 }
 
-class _Suggestion extends StatelessWidget {
+class _Suggestion<T extends Keyed> extends StatelessWidget {
   const _Suggestion({
     required this.index,
     required this.entry,
@@ -199,8 +204,8 @@ class _Suggestion extends StatelessWidget {
   });
 
   final int index;
-  final MaterialSearchEntry entry;
-  final AutocompleteOnSelected<MaterialSearchEntry> onSelected;
+  final T entry;
+  final AutocompleteOnSelected<T> onSelected;
 
   @override
   Widget build(BuildContext context) {
