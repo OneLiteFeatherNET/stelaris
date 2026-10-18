@@ -32,45 +32,47 @@ class SettingsCard extends StatelessWidget {
     final subtitle = this.subtitle;
     final trailing = this.trailing;
     final child = this.child;
+    final onTap = this.onTap;
+
+    final content = Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 18, color: muted),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: theme.textTheme.titleMedium),
+                    if (subtitle != null)
+                      Text(
+                        subtitle,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: muted,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              if (trailing != null) ...[const SizedBox(width: 8), trailing],
+            ],
+          ),
+          if (child != null) ...[const SizedBox(height: 12), child],
+        ],
+      ),
+    );
 
     return Card.outlined(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Icon(icon, size: 18, color: muted),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(title, style: theme.textTheme.titleMedium),
-                        if (subtitle != null)
-                          Text(
-                            subtitle,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: muted,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  if (trailing != null) ...[const SizedBox(width: 8), trailing],
-                ],
-              ),
-              if (child != null) ...[const SizedBox(height: 12), child],
-            ],
-          ),
-        ),
-      ),
+      // Only a card that is a button gets an ink well, so the controls in
+      // the others don't sit inside an inactive one.
+      child: onTap == null ? content : InkWell(onTap: onTap, child: content),
     );
   }
 }
