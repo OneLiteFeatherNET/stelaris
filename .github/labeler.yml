@@ -1,0 +1,107 @@
+# Type labels, derived from the branch name
+feature:
+  - head-branch: ['^feature/', '^feat/']
+
+bug:
+  - head-branch: ['^fix/', '^bugfix/', '^hotfix/']
+
+# Editor areas
+'area: item':
+  - changed-files:
+      - any-glob-to-any-file: ['lib/feature/item/**', 'test/feature/item/**']
+
+'area: advancement':
+  - changed-files:
+      - any-glob-to-any-file: ['lib/feature/advancement/**', 'test/feature/advancement/**']
+
+'area: component':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'lib/feature/component/**'
+          - 'lib/util/minimessage_*.dart'
+          - 'lib/util/component_context.dart'
+          - 'test/feature/component/**'
+          - 'test/util/minimessage_*'
+
+'area: sound':
+  - changed-files:
+      - any-glob-to-any-file: ['lib/feature/sound/**', 'test/feature/sound/**']
+
+'area: font':
+  - changed-files:
+      - any-glob-to-any-file: ['lib/feature/font/**', 'test/feature/font/**']
+
+'area: attribute':
+  - changed-files:
+      - any-glob-to-any-file: ['lib/feature/attributes/**', 'test/feature/attributes/**']
+
+'area: project':
+  - changed-files:
+      - any-glob-to-any-file: ['lib/feature/project/**', 'lib/feature/build/**', 'test/feature/project/**', 'test/feature/build/**']
+
+# Shared parts of the app
+'area: ui':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'lib/feature/base/**'
+          - 'lib/feature/dialogs/**'
+          - 'lib/feature/model/**'
+          - 'lib/feature/navigation/**'
+          - 'lib/feature/command_palette/**'
+          - 'lib/feature/settings/**'
+          - 'lib/feature/status_card.dart'
+          - 'lib/util/app_theme.dart'
+          - 'lib/util/app_shapes.dart'
+          - 'lib/util/color_scheme_ext.dart'
+          - 'lib/util/stelaris_icons.dart'
+          - 'lib/util/deferred_widget.dart'
+          - 'lib/util/routes.dart'
+          - 'test/feature/base/**'
+          - 'test/feature/dialogs/**'
+          - 'test/feature/model/**'
+          - 'test/feature/navigation/**'
+          - 'test/feature/command_palette/**'
+          - 'test/feature/settings/**'
+          - 'test/util/app_theme_test.dart'
+          - 'test/util/app_shapes_test.dart'
+          - 'test/util/routes_*'
+          - 'test/util/detail_*'
+
+'area: api':
+  - changed-files:
+      - any-glob-to-any-file: ['lib/api/**', 'test/api/**']
+
+'area: auth':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'lib/auth/**'
+          - 'lib/feature/auth/**'
+          - 'test/auth/**'
+          - 'docker/keycloak/**'
+          - 'docs/identity-provider.md'
+          - 'tool/dev_auth.sh'
+
+'area: l10n':
+  - changed-files:
+      - any-glob-to-any-file: ['lib/l10n/**', 'l10n.yaml']
+
+'area: tests':
+  - changed-files:
+      - any-glob-to-any-file: ['test/**', 'dart_test.yaml']
+
+# Infrastructure
+'area: ci':
+  - changed-files:
+      - any-glob-to-any-file: ['.github/**', 'commitlint.config.mjs', 'renovate.json']
+
+'area: deployment':
+  - changed-files:
+      - any-glob-to-any-file: ['Dockerfile', '.dockerignore', 'docker/**', 'charts/**', 'ct.yaml', 'web/**']
+
+'area: deps':
+  - changed-files:
+      - any-glob-to-any-file: ['pubspec.yaml', 'pubspec.lock']
+
+'area: docs':
+  - changed-files:
+      - any-glob-to-any-file: ['README.md', 'CONTRIBUTING.md', 'docs/**']
