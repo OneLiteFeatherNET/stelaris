@@ -637,8 +637,14 @@ abstract class AppLocalizations {
   /// No description provided for @item_level.
   ///
   /// In en, this message translates to:
-  /// **'Level: '**
-  String get item_level;
+  /// **'Level {level}'**
+  String item_level(int level);
+
+  /// No description provided for @item_level_max.
+  ///
+  /// In en, this message translates to:
+  /// **'Level {level} / {max}'**
+  String item_level_max(int level, int max);
 
   /// No description provided for @tooltip_delete.
   ///

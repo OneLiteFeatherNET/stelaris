@@ -62,6 +62,7 @@ class EnchantmentItem extends StatelessWidget {
               ),
               // A tap on the card edits, so only deleting needs a button.
               IconButton(
+                tooltip: context.l10n.tooltip_delete,
                 onPressed: () => _showDeleteDialog(context),
                 icon: const Icon(Icons.delete_forever),
               ),
@@ -77,18 +78,12 @@ class EnchantmentItem extends StatelessWidget {
   /// [theme] the current [ThemeData] to get some values from it
   /// Returns the concrete [Widget] that displays the data
   Widget _getEnchantmentSubTitle(BuildContext context, ThemeData theme) {
-    if (dto.unsafe) {
-      return Text('${context.l10n.item_level}${dto.level}');
-    }
-    return Text.rich(
-      TextSpan(
-        text: '${context.l10n.item_level}${dto.level}',
-        children: [
-          TextSpan(
-            text: ' / ${enchantment.maxLevel}',
-            style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-          ),
-        ],
+    return Text(
+      dto.unsafe
+          ? context.l10n.item_level(dto.level)
+          : context.l10n.item_level_max(dto.level, enchantment.maxLevel),
+      style: theme.textTheme.bodyMedium?.copyWith(
+        color: theme.colorScheme.onSurfaceVariant,
       ),
     );
   }

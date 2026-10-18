@@ -301,7 +301,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get label_level => 'Level';
 
   @override
-  String get item_level => 'Level: ';
+  String item_level(int level) {
+    return 'Level $level';
+  }
+
+  @override
+  String item_level_max(int level, int max) {
+    return 'Level $level / $max';
+  }
 
   @override
   String get tooltip_delete => 'Delete';

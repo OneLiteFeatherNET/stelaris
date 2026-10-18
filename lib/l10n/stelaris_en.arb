@@ -122,7 +122,25 @@
   "tooltip_advancement_hidden": "Hidden until the advancement is achieved",
 
   "label_level": "Level",
-  "item_level": "Level: ",
+  "item_level": "Level {level}",
+  "@item_level": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "item_level_max": "Level {level} / {max}",
+  "@item_level_max": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
 
   "tooltip_delete": "Delete",
   "tooltip_line_count": "Current line count",
