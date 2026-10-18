@@ -1,13 +1,14 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/dispatch_ext.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
+import 'package:stelaris/util/validators.dart';
 
 /// A dialog for editing an [AttributeModel]'s [AttributeModel.defaultValue]
 /// and [AttributeModel.maximumValue] — the only two fields an attribute has
@@ -56,8 +57,8 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
     if (!_formKey.currentState!.validate()) return;
 
     final updated = widget.model.copyWith(
-      defaultValue: double.tryParse(_defaultValueController.text) ?? 0,
-      maximumValue: double.tryParse(_maximumValueController.text) ?? 0,
+      defaultValue: double.parse(_defaultValueController.text.trim()),
+      maximumValue: double.parse(_maximumValueController.text.trim()),
     );
 
     context.dispatch(SelectAttributeAction(updated));
@@ -75,7 +76,6 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final numberFormatter = [FilteringTextInputFormatter.allow(numberPattern)];
     final key = widget.model.key;
     final namespacedKey = key != null && key.isNotEmpty
         ? '${widget.projectKey}:$key'
@@ -134,8 +134,9 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
                   children: [
                     TextFormField(
                       controller: _defaultValueController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: numberFormatter,
+                      keyboardType: decimalInput,
+                      inputFormatters: [decimalFormatter],
+                      validator: Validators.decimal(context.l10n),
                       decoration: InputDecoration(
                         labelText: context.l10n.card_attribute_default_value,
                       ),
@@ -143,8 +144,11 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
                     verticalSpacing10,
                     TextFormField(
                       controller: _maximumValueController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: numberFormatter,
+                      keyboardType: decimalInput,
+                      inputFormatters: [decimalFormatter],
+                      // Every vanilla maximum is positive and the backend
+                      // rejects anything else
+                      validator: Validators.positive(context.l10n),
                       decoration: InputDecoration(
                         labelText: context.l10n.card_attribute_maximum_value,
                       ),
