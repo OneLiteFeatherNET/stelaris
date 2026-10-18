@@ -133,7 +133,9 @@ void main() {
     });
   }
 
-  testWidgets('a new font is sent with the default height', (tester) async {
+  testWidgets('a new font is sent as a bitmap with the default height', (
+    tester,
+  ) async {
     await _pump(tester, NavigationEntry.font);
     Object? sent;
     ApiService().fontApi.apiClient.dio.httpClientAdapter =
@@ -150,7 +152,9 @@ void main() {
 
     await _submit(tester);
 
-    expect((sent! as Map<String, dynamic>)['height'], 8);
+    final body = sent! as Map<String, dynamic>;
+    expect(body['provider'], 'bitmap');
+    expect(body['height'], 8);
   });
 
   testWidgets('a failed add keeps the dialog open and shows why', (

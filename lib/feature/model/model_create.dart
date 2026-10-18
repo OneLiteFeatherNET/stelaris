@@ -44,7 +44,12 @@ Future<bool> openModelCreateDialog(
               ItemModel(uiName: name, key: key),
             ),
             NavigationEntry.font => FontAddAction(
-              FontModel(uiName: name, key: key, height: defaultFontHeight),
+              FontModel(
+                uiName: name,
+                key: key,
+                provider: defaultFontProvider,
+                height: defaultFontHeight,
+              ),
             ),
             NavigationEntry.sound => SoundAddAction(
               SoundEventModel(uiName: name, key: key),
