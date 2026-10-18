@@ -75,10 +75,13 @@ class FontGeneralPage extends StatelessWidget {
                   value: font.ascent.toString(),
                   footer: l10n.font_hint_ascent,
                   keyboardType: numberInput,
-                  formatters: numberFormatters,
+                  formatters: [
+                    FilteringTextInputFormatter.allow(signedFontNumberPattern),
+                  ],
+                  validator: Validators.integer(l10n),
                   onChanged: (value) => _stage(
                     context,
-                    font.copyWith(ascent: int.tryParse(value) ?? 0),
+                    font.copyWith(ascent: int.parse(value)),
                   ),
                 ),
                 TextEdit(
@@ -88,9 +91,10 @@ class FontGeneralPage extends StatelessWidget {
                   footer: l10n.font_hint_height,
                   keyboardType: numberInput,
                   formatters: numberFormatters,
+                  validator: Validators.minimum(l10n, 1),
                   onChanged: (value) => _stage(
                     context,
-                    font.copyWith(height: int.tryParse(value) ?? 0),
+                    font.copyWith(height: int.parse(value)),
                   ),
                 ),
               ],

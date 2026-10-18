@@ -22,6 +22,7 @@ const divider = Divider();
 /// Regs
 RegExp numberPattern = RegExp('[1-9]\\d*');
 RegExp fontNumberPattern = RegExp('^(0|[1-9][0-9]*)');
+RegExp signedFontNumberPattern = RegExp('^-?(0|[1-9][0-9]*)?');
 RegExp stringPattern = RegExp('[a-zA-Z]\\w*');
 RegExp dotPattern = RegExp('\\.');
 RegExp minecraftPattern = RegExp('minecraft:');

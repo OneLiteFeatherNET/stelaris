@@ -517,6 +517,14 @@
       }
     }
   },
+  "validation_minimum": "The minimum is {min}",
+  "@validation_minimum": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
   "validation_field_required": "Enter a {field}",
   "@validation_field_required": {
     "placeholders": {
