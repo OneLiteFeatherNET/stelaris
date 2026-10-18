@@ -1013,9 +1013,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_reset => 'Reset search';
 
   @override
-  String get button_edit => 'Edit';
-
-  @override
   String get button_view => 'View';
 
   @override
