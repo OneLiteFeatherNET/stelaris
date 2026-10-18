@@ -10,6 +10,7 @@ import 'package:stelaris/feature/item/enchantment/dialog/item_enchantments_dialo
 import 'package:stelaris/feature/item/enchantment/enchantment_list.dart';
 import 'package:stelaris/feature/item/enchantment/item_group_selector.dart';
 import 'package:stelaris/feature/item/item_tab_loader.dart';
+import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class ItemEnchantmentPage extends StatelessWidget {
@@ -86,14 +87,24 @@ class _EnchantmentSkeleton extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: 4,
-      itemBuilder: (context, index) => const Card(
-        margin: EdgeInsets.only(bottom: 8),
-        child: ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          title: SkeletonBar(widthFactor: 0.4, height: 16),
-          subtitle: Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: SkeletonBar(widthFactor: 0.2, height: 12),
+      itemBuilder: (context, index) => Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Card.filled(
+          margin: EdgeInsets.zero,
+          color: Theme.of(context).colorScheme.surfaceContainerLow,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppShapes.medium),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.fromLTRB(16, 14, 16, 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SkeletonBar(widthFactor: 0.4, height: 16),
+                SizedBox(height: 8),
+                SkeletonBar(widthFactor: 0.2, height: 12),
+              ],
+            ),
           ),
         ),
       ),

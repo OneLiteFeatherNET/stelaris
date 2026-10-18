@@ -122,7 +122,25 @@
   "tooltip_advancement_hidden": "Hidden until the advancement is achieved",
 
   "label_level": "Level",
-  "item_level": "Level: ",
+  "item_level": "Level {level}",
+  "@item_level": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "item_level_max": "Level {level} / {max}",
+  "@item_level_max": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
 
   "tooltip_delete": "Delete",
   "tooltip_line_count": "Current line count",
@@ -642,7 +660,6 @@
   },
   "component_empty_header": "No components yet",
   "component_empty_body": "Add a component to change how the item behaves, e.g. food or a tool.",
-  "component_edit_tooltip": "Edit component",
   "component_delete_tooltip": "Delete component",
   "component_delete_title": "Delete component",
   "component_delete_header": "Delete {name} from the item?",

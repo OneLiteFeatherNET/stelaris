@@ -139,8 +139,8 @@ void main() {
         findsNothing,
       );
       expect(
-        inCard('Material', find.byKey(const Key('component_card_edit'))),
-        findsOneWidget,
+        tester.widget<InkWell>(inCard('Material', find.byType(InkWell))).onTap,
+        isNotNull,
       );
       expect(
         inCard('Amount', find.byKey(const Key('component_card_remove'))),

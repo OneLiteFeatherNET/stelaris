@@ -637,8 +637,14 @@ abstract class AppLocalizations {
   /// No description provided for @item_level.
   ///
   /// In en, this message translates to:
-  /// **'Level: '**
-  String get item_level;
+  /// **'Level {level}'**
+  String item_level(int level);
+
+  /// No description provided for @item_level_max.
+  ///
+  /// In en, this message translates to:
+  /// **'Level {level} / {max}'**
+  String item_level_max(int level, int max);
 
   /// No description provided for @tooltip_delete.
   ///
@@ -2505,12 +2511,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add a component to change how the item behaves, e.g. food or a tool.'**
   String get component_empty_body;
-
-  /// No description provided for @component_edit_tooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit component'**
-  String get component_edit_tooltip;
 
   /// No description provided for @component_delete_tooltip.
   ///

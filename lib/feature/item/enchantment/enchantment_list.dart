@@ -39,10 +39,12 @@ class _EnchantmentListState extends State<EnchantmentList>
         itemCount: widget.view.activeEnchantments.length,
         itemBuilder: (context, index) {
           final enchantment = widget.view[index];
-          return EnchantmentItem(
-            dto:
-                widget.view.selectedEnchantmentMap[enchantment.key]!,
-            enchantment: enchantment,
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: EnchantmentItem(
+              dto: widget.view.selectedEnchantmentMap[enchantment.key]!,
+              enchantment: enchantment,
+            ),
           );
         },
       ),
