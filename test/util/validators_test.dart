@@ -147,4 +147,24 @@ void main() {
       expect(validator('abc'), 'Please enter a valid number');
     });
   });
+
+  group('Validators.maximum', () {
+    final validator = Validators.maximum(l10n, 8);
+
+    test('numbers at or below the maximum pass', () {
+      expect(validator('8'), isNull);
+      expect(validator('0'), isNull);
+      expect(validator('-3'), isNull);
+    });
+
+    test('numbers above the maximum are rejected', () {
+      expect(validator('9'), 'The maximum is 8');
+    });
+
+    test('empty and invalid input is rejected', () {
+      expect(validator(null), 'Please enter a valid number');
+      expect(validator('-'), 'Please enter a valid number');
+      expect(validator('abc'), 'Please enter a valid number');
+    });
+  });
 }

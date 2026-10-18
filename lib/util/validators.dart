@@ -209,6 +209,20 @@ class Validators {
     };
   }
 
+  /// Validates that a string is a whole number of at most [max].
+  static FormValidator<String> maximum(AppLocalizations l10n, int max) {
+    return (value) {
+      final number = int.tryParse(value?.trim() ?? '');
+      if (number == null) {
+        return l10n.validation_number_invalid;
+      }
+      if (number > max) {
+        return l10n.validation_maximum(max);
+      }
+      return null;
+    };
+  }
+
   /// Validates an enchantment level input against [maxLevel].
   /// When [unsafe] is true, the max-level constraint is skipped, but the level
   /// is still limited to [maxEnchantmentLevel] (the range of a short).
