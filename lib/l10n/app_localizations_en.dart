@@ -1255,12 +1255,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sound_name_hint => 'Enter your sound name';
 
   @override
-  String get sound_name_tooltip => 'The name of the sound';
-
-  @override
-  String get sound_stream => 'Stream';
-
-  @override
   String get sound_preload => 'Preload';
 
   @override
@@ -1268,9 +1262,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sound_edit => 'Edit Sound';
-
-  @override
-  String get sound_options => 'Options';
 
   @override
   String get sound_type_file => 'File';

@@ -2356,18 +2356,6 @@ abstract class AppLocalizations {
   /// **'Enter your sound name'**
   String get sound_name_hint;
 
-  /// No description provided for @sound_name_tooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'The name of the sound'**
-  String get sound_name_tooltip;
-
-  /// No description provided for @sound_stream.
-  ///
-  /// In en, this message translates to:
-  /// **'Stream'**
-  String get sound_stream;
-
   /// No description provided for @sound_preload.
   ///
   /// In en, this message translates to:
@@ -2385,12 +2373,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Sound'**
   String get sound_edit;
-
-  /// No description provided for @sound_options.
-  ///
-  /// In en, this message translates to:
-  /// **'Options'**
-  String get sound_options;
 
   /// No description provided for @sound_type_file.
   ///
