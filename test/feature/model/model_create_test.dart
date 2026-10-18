@@ -133,6 +133,26 @@ void main() {
     });
   }
 
+  testWidgets('a new font is sent with the default height', (tester) async {
+    await _pump(tester, NavigationEntry.font);
+    Object? sent;
+    ApiService().fontApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter((options) {
+          sent = options.data;
+          return ResponseBody.fromString(
+            jsonEncode(options.data),
+            200,
+            headers: {
+              Headers.contentTypeHeader: [Headers.jsonContentType],
+            },
+          );
+        });
+
+    await _submit(tester);
+
+    expect((sent! as Map<String, dynamic>)['height'], 8);
+  });
+
   testWidgets('a failed add keeps the dialog open and shows why', (
     tester,
   ) async {
