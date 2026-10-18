@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/feature/base/input/registry_autocomplete.dart';
 import 'package:stelaris/feature/sound/modal/section/base_integer_section_field.dart';
 import 'package:stelaris/feature/sound/modal/section/sound_slider.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -28,6 +29,7 @@ class SoundFileModal extends StatefulWidget {
 
 class _SoundFileModalState extends State<SoundFileModal> {
   late final TextEditingController _nameController;
+  final FocusNode _nameFocus = FocusNode();
   late double _volume;
   late double _pitch;
   late int _weight;
@@ -53,6 +55,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
   @override
   void dispose() {
     _nameController.dispose();
+    _nameFocus.dispose();
     super.dispose();
   }
 
@@ -73,17 +76,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextFormField(
-              controller: _nameController,
-              autofocus: widget.create,
-              decoration: InputDecoration(
-                labelText: l10n.sound_name,
-                hintText: l10n.sound_name_hint,
-              ),
-              validator: Validators.required(
-                l10n.validation_field_required(l10n.sound_name),
-              ),
-            ),
+            _nameField(context),
             const SizedBox(height: 16),
             SegmentedButton<String>(
               segments: [
@@ -151,6 +144,36 @@ class _SoundFileModalState extends State<SoundFileModal> {
           ],
         ),
       ),
+    );
+  }
+
+  /// The name of an event is the key of a sound event, so it suggests them;
+  /// the name of a file is a path and stays plain text. Both share the
+  /// controller, so switching the type keeps what was typed.
+  Widget _nameField(BuildContext context) {
+    final l10n = context.l10n;
+    Widget field({VoidCallback? onSubmitted}) => TextFormField(
+      controller: _nameController,
+      focusNode: _nameFocus,
+      autofocus: widget.create,
+      decoration: InputDecoration(
+        labelText: l10n.sound_name,
+        hintText: l10n.sound_name_hint,
+      ),
+      validator: Validators.required(
+        l10n.validation_field_required(l10n.sound_name),
+      ),
+      onFieldSubmitted: onSubmitted == null ? null : (_) => onSubmitted(),
+    );
+    if (_type != 'event') return field();
+    return RegistryAutocomplete(
+      registry: 'sound_event',
+      controller: _nameController,
+      focusNode: _nameFocus,
+      // A picked key is already in the controller.
+      onSelected: (_) {},
+      fieldBuilder: (context, controller, focusNode, onSubmitted) =>
+          field(onSubmitted: onSubmitted),
     );
   }
 

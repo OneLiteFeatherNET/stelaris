@@ -49,6 +49,53 @@ void main() {
       expect(saved.single.type, 'event');
     });
 
+    testWidgets('suggests sound events for the name of an event', (
+      tester,
+    ) async {
+      await pumpModal(tester);
+
+      await tester.tap(find.text('Event'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextFormField).first, 'zombie hurt');
+      await tester.pump();
+
+      expect(find.text('minecraft:entity.zombie.hurt'), findsOneWidget);
+    });
+
+    testWidgets('a picked sound event becomes the name', (tester) async {
+      await pumpModal(tester);
+
+      await tester.tap(find.text('Event'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextFormField).first, 'zombie hurt');
+      await tester.pump();
+      await tester.tap(find.text('minecraft:entity.zombie.hurt'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(saved.single.name, 'minecraft:entity.zombie.hurt');
+    });
+
+    testWidgets('the name of a file suggests nothing', (tester) async {
+      await pumpModal(tester);
+
+      await tester.enterText(find.byType(TextFormField).first, 'zombie hurt');
+      await tester.pump();
+
+      expect(find.byType(MenuItemButton), findsNothing);
+    });
+
+    testWidgets('switching the type keeps the name', (tester) async {
+      await pumpModal(tester);
+
+      await tester.enterText(find.byType(TextFormField).first, 'block/ding');
+      await tester.tap(find.text('Event'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('block/ding'), findsOneWidget);
+    });
+
     testWidgets('keeps the values of an existing file', (tester) async {
       const source = SoundFileSource(
         id: 'file-1',
