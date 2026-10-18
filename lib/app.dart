@@ -28,9 +28,7 @@ class StelarisApp extends StatelessWidget {
           supportedLocales: AppLocalizations.supportedLocales,
           theme: AppTheme.buildLight(settings),
           darkTheme: AppTheme.buildDark(settings),
-          themeMode: settings.useSystemTheme
-              ? ThemeMode.system
-              : (settings.isDarkMode ? ThemeMode.dark : ThemeMode.light),
+          themeMode: settings.themeMode,
         );
       },
     );

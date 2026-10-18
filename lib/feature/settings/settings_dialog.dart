@@ -1,48 +1,39 @@
+import 'package:clock/clock.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/feature/base/dialog/animated_dialog.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/feature/settings/rows/account_settings_row.dart';
 import 'package:stelaris/feature/settings/rows/accessibility_settings_row.dart';
 import 'package:stelaris/feature/settings/rows/misc_settings_row.dart';
 import 'package:stelaris/feature/settings/rows/project_settings_row.dart';
 import 'package:stelaris/feature/settings/rows/theme_settings_row.dart';
 import 'package:stelaris/feature/settings/settings_end_tile.dart';
-import 'package:stelaris/feature/settings/settings_header_tile.dart';
-import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
+/// The settings, in the chrome of the other dialogs. A setting applies as
+/// soon as it is changed, so there is no action row.
 class SettingsDialog extends StatelessWidget {
-  const SettingsDialog({super.key});
+  const SettingsDialog({this.clock = const Clock(), super.key});
+
+  /// Where the footer takes the year from.
+  final Clock clock;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedDialog(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+    return FormDialog(
+      title: context.l10n.settings_title,
+      actionLabel: '',
+      onSubmit: null,
+      showActions: false,
+      maxWidth: 560,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SettingsHeaderTile(text: context.l10n.settings_title),
-          verticalSpacing25,
-          const Flexible(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    heightTen,
-                    ProjectSettingsRow(),
-                    verticalSpacing25,
-                    ThemeSettingsRow(),
-                    verticalSpacing25,
-                    AccessibilitySettingsRow(),
-                    verticalSpacing25,
-                    MiscSettingsRow(),
-                    verticalSpacing25,
-                    SettingsEndTile(),
-                    heightTen,
-                  ],
-                ),
-              ),
-            ),
-          ),
+          const AccountSettingsRow(),
+          const ProjectSettingsRow(),
+          const ThemeSettingsRow(),
+          const AccessibilitySettingsRow(),
+          const MiscSettingsRow(),
+          SettingsEndTile(clock: clock),
         ],
       ),
     );

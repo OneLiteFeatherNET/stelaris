@@ -706,35 +706,125 @@ abstract class AppLocalizations {
   /// **'The value can\'t be empty'**
   String get error_card_empty;
 
-  /// No description provided for @settings_display_title.
+  /// No description provided for @settings_section_account.
   ///
   /// In en, this message translates to:
-  /// **'Display settings'**
-  String get settings_display_title;
+  /// **'Account'**
+  String get settings_section_account;
 
-  /// No description provided for @settings_theme_item_title.
+  /// No description provided for @settings_section_appearance.
   ///
   /// In en, this message translates to:
-  /// **'Use System Theme'**
-  String get settings_theme_item_title;
+  /// **'Appearance'**
+  String get settings_section_appearance;
 
-  /// No description provided for @settings_theme_item_subtitle.
+  /// No description provided for @settings_section_about.
   ///
   /// In en, this message translates to:
-  /// **'Automatically match your system\'s theme settings'**
-  String get settings_theme_item_subtitle;
+  /// **'About'**
+  String get settings_section_about;
 
-  /// No description provided for @settings_item_dark_mode_title.
+  /// No description provided for @settings_reset.
   ///
   /// In en, this message translates to:
-  /// **'Dark Mode'**
-  String get settings_item_dark_mode_title;
+  /// **'Reset'**
+  String get settings_reset;
 
-  /// No description provided for @settings_item_dark_mode_subtitle.
+  /// No description provided for @settings_account_signed_out.
   ///
   /// In en, this message translates to:
-  /// **'Update your preferred theme'**
-  String get settings_item_dark_mode_subtitle;
+  /// **'No one is signed in.'**
+  String get settings_account_signed_out;
+
+  /// No description provided for @settings_theme_mode_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settings_theme_mode_title;
+
+  /// No description provided for @settings_theme_mode_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow the system or fix the brightness'**
+  String get settings_theme_mode_subtitle;
+
+  /// No description provided for @settings_theme_mode_system.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get settings_theme_mode_system;
+
+  /// No description provided for @settings_theme_mode_light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get settings_theme_mode_light;
+
+  /// No description provided for @settings_theme_mode_dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get settings_theme_mode_dark;
+
+  /// No description provided for @settings_color_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get settings_color_title;
+
+  /// No description provided for @settings_color_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The base color of the app'**
+  String get settings_color_subtitle;
+
+  /// No description provided for @settings_color_blue.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get settings_color_blue;
+
+  /// No description provided for @settings_color_indigo.
+  ///
+  /// In en, this message translates to:
+  /// **'Indigo'**
+  String get settings_color_indigo;
+
+  /// No description provided for @settings_color_teal.
+  ///
+  /// In en, this message translates to:
+  /// **'Teal'**
+  String get settings_color_teal;
+
+  /// No description provided for @settings_color_green.
+  ///
+  /// In en, this message translates to:
+  /// **'Green'**
+  String get settings_color_green;
+
+  /// No description provided for @settings_color_amber.
+  ///
+  /// In en, this message translates to:
+  /// **'Amber'**
+  String get settings_color_amber;
+
+  /// No description provided for @settings_color_orange.
+  ///
+  /// In en, this message translates to:
+  /// **'Orange'**
+  String get settings_color_orange;
+
+  /// No description provided for @settings_color_red.
+  ///
+  /// In en, this message translates to:
+  /// **'Red'**
+  String get settings_color_red;
+
+  /// No description provided for @settings_color_pink.
+  ///
+  /// In en, this message translates to:
+  /// **'Pink'**
+  String get settings_color_pink;
 
   /// No description provided for @settings_item_font_title.
   ///
@@ -748,71 +838,17 @@ abstract class AppLocalizations {
   /// **'Adjust the text size throughout the app'**
   String get settings_item_font_subtitle;
 
+  /// No description provided for @settings_font_preview.
+  ///
+  /// In en, this message translates to:
+  /// **'The quick brown fox jumps over the lazy dog.'**
+  String get settings_font_preview;
+
   /// No description provided for @settings_accessibility_title.
   ///
   /// In en, this message translates to:
   /// **'Accessibility'**
   String get settings_accessibility_title;
-
-  /// No description provided for @settings_accessibility_header.
-  ///
-  /// In en, this message translates to:
-  /// **'Need some help?'**
-  String get settings_accessibility_header;
-
-  /// No description provided for @settings_accessibility_body.
-  ///
-  /// In en, this message translates to:
-  /// **'For assistance, feel free to explore our wiki'**
-  String get settings_accessibility_body;
-
-  /// No description provided for @settings_accessibility_button.
-  ///
-  /// In en, this message translates to:
-  /// **'Wiki'**
-  String get settings_accessibility_button;
-
-  /// No description provided for @settings_misc_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Misc'**
-  String get settings_misc_title;
-
-  /// No description provided for @settings_misc_bug_header.
-  ///
-  /// In en, this message translates to:
-  /// **'Found a bug?'**
-  String get settings_misc_bug_header;
-
-  /// No description provided for @settings_misc_bug_body.
-  ///
-  /// In en, this message translates to:
-  /// **'When you encounter a bug, please report it!'**
-  String get settings_misc_bug_body;
-
-  /// No description provided for @settings_misc_bug_button.
-  ///
-  /// In en, this message translates to:
-  /// **'Report'**
-  String get settings_misc_bug_button;
-
-  /// No description provided for @settings_misc_suggestion_header.
-  ///
-  /// In en, this message translates to:
-  /// **'Any Suggestion?'**
-  String get settings_misc_suggestion_header;
-
-  /// No description provided for @settings_misc_suggestion_body.
-  ///
-  /// In en, this message translates to:
-  /// **'Want to suggest a feature, create a ticket!'**
-  String get settings_misc_suggestion_body;
-
-  /// No description provided for @settings_misc_suggestion_button.
-  ///
-  /// In en, this message translates to:
-  /// **'Suggest'**
-  String get settings_misc_suggestion_button;
 
   /// No description provided for @settings_misc_license_header.
   ///
@@ -826,12 +862,6 @@ abstract class AppLocalizations {
   /// **'This application uses the following open-source libraries.'**
   String get settings_misc_license_body;
 
-  /// No description provided for @settings_misc_license_button.
-  ///
-  /// In en, this message translates to:
-  /// **'View'**
-  String get settings_misc_license_button;
-
   /// No description provided for @settings_misc_version_header.
   ///
   /// In en, this message translates to:
@@ -844,17 +874,35 @@ abstract class AppLocalizations {
   /// **'Currently installed version of Stelaris'**
   String get settings_misc_version_body;
 
-  /// No description provided for @settings_end_tile_made_with.
+  /// No description provided for @settings_about_issues_title.
   ///
   /// In en, this message translates to:
-  /// **'Made with'**
-  String get settings_end_tile_made_with;
+  /// **'Issues'**
+  String get settings_about_issues_title;
 
-  /// No description provided for @settings_end_tile_team.
+  /// No description provided for @settings_about_issues_body.
   ///
   /// In en, this message translates to:
-  /// **'by the team'**
-  String get settings_end_tile_team;
+  /// **'Report a bug or suggest a feature'**
+  String get settings_about_issues_body;
+
+  /// No description provided for @settings_about_help_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get settings_about_help_title;
+
+  /// No description provided for @settings_about_help_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore the wiki for assistance'**
+  String get settings_about_help_body;
+
+  /// No description provided for @settings_end_tile_footer.
+  ///
+  /// In en, this message translates to:
+  /// **'© {year} Onelitefeather • Made with ❤ by the team'**
+  String settings_end_tile_footer(String year);
 
   /// No description provided for @welcome_to_stelaris.
   ///
@@ -946,11 +994,11 @@ abstract class AppLocalizations {
   /// **'Active Project'**
   String get settings_project_active_title;
 
-  /// No description provided for @settings_project_active_subtitle.
+  /// No description provided for @settings_project_empty.
   ///
   /// In en, this message translates to:
-  /// **'Select or switch the active project workspace'**
-  String get settings_project_active_subtitle;
+  /// **'No projects yet'**
+  String get settings_project_empty;
 
   /// No description provided for @dialog_project_switch_title.
   ///

@@ -343,20 +343,65 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_card_empty => 'The value can\'t be empty';
 
   @override
-  String get settings_display_title => 'Display settings';
+  String get settings_section_account => 'Account';
 
   @override
-  String get settings_theme_item_title => 'Use System Theme';
+  String get settings_section_appearance => 'Appearance';
 
   @override
-  String get settings_theme_item_subtitle =>
-      'Automatically match your system\'s theme settings';
+  String get settings_section_about => 'About';
 
   @override
-  String get settings_item_dark_mode_title => 'Dark Mode';
+  String get settings_reset => 'Reset';
 
   @override
-  String get settings_item_dark_mode_subtitle => 'Update your preferred theme';
+  String get settings_account_signed_out => 'No one is signed in.';
+
+  @override
+  String get settings_theme_mode_title => 'Theme';
+
+  @override
+  String get settings_theme_mode_subtitle =>
+      'Follow the system or fix the brightness';
+
+  @override
+  String get settings_theme_mode_system => 'System';
+
+  @override
+  String get settings_theme_mode_light => 'Light';
+
+  @override
+  String get settings_theme_mode_dark => 'Dark';
+
+  @override
+  String get settings_color_title => 'Color';
+
+  @override
+  String get settings_color_subtitle => 'The base color of the app';
+
+  @override
+  String get settings_color_blue => 'Blue';
+
+  @override
+  String get settings_color_indigo => 'Indigo';
+
+  @override
+  String get settings_color_teal => 'Teal';
+
+  @override
+  String get settings_color_green => 'Green';
+
+  @override
+  String get settings_color_amber => 'Amber';
+
+  @override
+  String get settings_color_orange => 'Orange';
+
+  @override
+  String get settings_color_red => 'Red';
+
+  @override
+  String get settings_color_pink => 'Pink';
 
   @override
   String get settings_item_font_title => 'Font Size';
@@ -366,40 +411,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Adjust the text size throughout the app';
 
   @override
+  String get settings_font_preview =>
+      'The quick brown fox jumps over the lazy dog.';
+
+  @override
   String get settings_accessibility_title => 'Accessibility';
-
-  @override
-  String get settings_accessibility_header => 'Need some help?';
-
-  @override
-  String get settings_accessibility_body =>
-      'For assistance, feel free to explore our wiki';
-
-  @override
-  String get settings_accessibility_button => 'Wiki';
-
-  @override
-  String get settings_misc_title => 'Misc';
-
-  @override
-  String get settings_misc_bug_header => 'Found a bug?';
-
-  @override
-  String get settings_misc_bug_body =>
-      'When you encounter a bug, please report it!';
-
-  @override
-  String get settings_misc_bug_button => 'Report';
-
-  @override
-  String get settings_misc_suggestion_header => 'Any Suggestion?';
-
-  @override
-  String get settings_misc_suggestion_body =>
-      'Want to suggest a feature, create a ticket!';
-
-  @override
-  String get settings_misc_suggestion_button => 'Suggest';
 
   @override
   String get settings_misc_license_header => 'Third-party software licenses';
@@ -409,9 +425,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'This application uses the following open-source libraries.';
 
   @override
-  String get settings_misc_license_button => 'View';
-
-  @override
   String get settings_misc_version_header => 'App Version';
 
   @override
@@ -419,10 +432,21 @@ class AppLocalizationsEn extends AppLocalizations {
       'Currently installed version of Stelaris';
 
   @override
-  String get settings_end_tile_made_with => 'Made with';
+  String get settings_about_issues_title => 'Issues';
 
   @override
-  String get settings_end_tile_team => 'by the team';
+  String get settings_about_issues_body => 'Report a bug or suggest a feature';
+
+  @override
+  String get settings_about_help_title => 'Help';
+
+  @override
+  String get settings_about_help_body => 'Explore the wiki for assistance';
+
+  @override
+  String settings_end_tile_footer(String year) {
+    return '© $year Onelitefeather • Made with ❤ by the team';
+  }
 
   @override
   String get welcome_to_stelaris => 'Welcome to Stelaris';
@@ -471,8 +495,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_project_active_title => 'Active Project';
 
   @override
-  String get settings_project_active_subtitle =>
-      'Select or switch the active project workspace';
+  String get settings_project_empty => 'No projects yet';
 
   @override
   String get dialog_project_switch_title => 'Switch project?';

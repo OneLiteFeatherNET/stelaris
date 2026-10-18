@@ -146,6 +146,20 @@ void main() {
       expect(find.widgetWithText(ListTile, 'option 0'), findsNothing);
     });
 
+    testWidgets(
+      'an option is centered in its row with the compact desktop density',
+      variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+      (tester) async {
+        await pumpGrid(tester, frame());
+        await open(tester);
+
+        final row = tester.getRect(find.widgetWithText(ListTile, 'GOAL'));
+        final text = tester.getRect(find.text('GOAL'));
+
+        expect(text.center.dy, row.center.dy);
+      },
+    );
+
     testWidgets('picking the current option changes nothing', (tester) async {
       await pumpGrid(tester, frame());
       await open(tester);

@@ -21,7 +21,10 @@ void main() {
 
       // Light theme text must be dark-colored to stay readable on a light surface.
       expect(theme.textTheme.bodyMedium?.color, isNotNull);
-      expect(theme.textTheme.bodyMedium!.color!.computeLuminance(), lessThan(0.5));
+      expect(
+        theme.textTheme.bodyMedium!.color!.computeLuminance(),
+        lessThan(0.5),
+      );
     });
 
     test('buildDark creates a valid Material 3 dark ThemeData', () {
@@ -38,7 +41,10 @@ void main() {
 
       // Dark theme text must be light-colored to stay readable on a dark surface.
       expect(theme.textTheme.bodyMedium?.color, isNotNull);
-      expect(theme.textTheme.bodyMedium!.color!.computeLuminance(), greaterThan(0.5));
+      expect(
+        theme.textTheme.bodyMedium!.color!.computeLuminance(),
+        greaterThan(0.5),
+      );
     });
 
     test('scaleTextTheme scales all font sizes proportionally', () {
@@ -60,6 +66,46 @@ void main() {
           .textTheme;
       final result = AppTheme.scaleTextTheme(baseTheme, 1);
       expect(identical(result, baseTheme), isTrue);
+    });
+  });
+
+  group('AppTheme color scheme', () {
+    final settings = ThemeSettings.defaultSettings().copyWith(
+      primaryColor: Colors.red,
+      accentColor: Colors.green,
+    );
+
+    test('the light scheme is derived from the seed alone', () {
+      expect(
+        AppTheme.buildLight(settings).colorScheme,
+        ColorScheme.fromSeed(seedColor: Colors.red),
+      );
+    });
+
+    test('the secondary color ignores the stored accent color', () {
+      final light = AppTheme.buildLight(settings).colorScheme;
+
+      expect(light.secondary, isNot(Colors.green));
+      expect(
+        light.secondary,
+        ColorScheme.fromSeed(seedColor: Colors.red).secondary,
+      );
+    });
+
+    test('the default theme no longer has a blue accent as secondary', () {
+      final light = AppTheme.buildLight(ThemeSettings.defaultSettings());
+
+      expect(light.colorScheme.secondary, isNot(Colors.blueAccent));
+    });
+
+    test('the dark scheme is derived from the seed alone', () {
+      expect(
+        AppTheme.buildDark(settings).colorScheme,
+        ColorScheme.fromSeed(
+          seedColor: Colors.red,
+          brightness: Brightness.dark,
+        ),
+      );
     });
   });
 
@@ -118,7 +164,10 @@ void main() {
             reason: key,
           );
         }
-        expect(shapeOf('outlined').side.color, theme.colorScheme.outlineVariant);
+        expect(
+          shapeOf('outlined').side.color,
+          theme.colorScheme.outlineVariant,
+        );
       });
 
       test('the $name theme outlines every field with one radius', () {

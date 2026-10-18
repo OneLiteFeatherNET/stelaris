@@ -54,14 +54,53 @@ class UpdatePrimaryColorAction extends ReduxAction<AppState> {
   }
 }
 
-class UpdateAccentColorAction extends ReduxAction<AppState> {
-  UpdateAccentColorAction(this.color);
+/// Sets the theme mode through the stored fields. System keeps `isDarkMode`,
+/// so the manual choice survives a round trip.
+class SetThemeModeAction extends ReduxAction<AppState> {
+  SetThemeModeAction(this.mode);
 
-  final Color color;
+  final ThemeMode mode;
 
   @override
   AppState reduce() {
-    final newSettings = state.themeSettings.copyWith(accentColor: color);
+    final currentSettings = state.themeSettings;
+    final newSettings = switch (mode) {
+      ThemeMode.system => currentSettings.copyWith(useSystemTheme: true),
+      ThemeMode.light => currentSettings.copyWith(
+        useSystemTheme: false,
+        isDarkMode: false,
+      ),
+      ThemeMode.dark => currentSettings.copyWith(
+        useSystemTheme: false,
+        isDarkMode: true,
+      ),
+    };
+    return state.copyWith(themeSettings: newSettings);
+  }
+}
+
+/// Restores the theme mode and the colors, but not the font scale.
+class ResetAppearanceSettingsAction extends ReduxAction<AppState> {
+  @override
+  AppState reduce() {
+    final defaults = ThemeSettings.defaultSettings();
+    final newSettings = state.themeSettings.copyWith(
+      useSystemTheme: defaults.useSystemTheme,
+      isDarkMode: defaults.isDarkMode,
+      primaryColor: defaults.primaryColor,
+      accentColor: defaults.accentColor,
+    );
+    return state.copyWith(themeSettings: newSettings);
+  }
+}
+
+/// Restores the font scale and nothing else.
+class ResetFontScaleAction extends ReduxAction<AppState> {
+  @override
+  AppState reduce() {
+    final newSettings = state.themeSettings.copyWith(
+      fontScale: ThemeSettings.defaultSettings().fontScale,
+    );
     return state.copyWith(themeSettings: newSettings);
   }
 }

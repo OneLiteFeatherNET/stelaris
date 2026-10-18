@@ -135,11 +135,18 @@ class _ChoiceListState<T> extends State<_ChoiceList<T>> {
           final current = option == field.value;
           return ListTile(
             dense: true,
+            // The options line up with the title and the divider of the
+            // dialog instead of sitting inset from them.
+            contentPadding: EdgeInsets.zero,
+            // As high as the row, or a compact density on desktop centers
+            // the text in a shorter tile at the top of it.
+            minTileHeight: _optionExtent,
             selected: current,
             leading: current
                 ? const Icon(Icons.check)
                 : const SizedBox(width: 24),
             title: Text(field.display(option)),
+            trailing: field.optionTrailing?.call(option),
             onTap: () => Navigator.of(context).pop(option),
           );
         },

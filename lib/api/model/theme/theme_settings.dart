@@ -34,6 +34,13 @@ abstract class ThemeSettings with _$ThemeSettings {
   static Color _colorFromJson(int value) => Color(value);
   static int _colorToJson(Color color) => color.toARGB32();
 
+  /// The theme mode the app shows: the platform's while [useSystemTheme] is
+  /// on, otherwise the manual choice of [isDarkMode].
+  ThemeMode get themeMode {
+    if (useSystemTheme) return ThemeMode.system;
+    return isDarkMode ? ThemeMode.dark : ThemeMode.light;
+  }
+
   /// Returns the default theme settings used when no user preference is
   /// found. The same as the default of `AppState.themeSettings`, a test
   /// keeps the two equal.
