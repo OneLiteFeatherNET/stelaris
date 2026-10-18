@@ -484,7 +484,6 @@
   "search_no_results_hint": "Try another search or reset the filters.",
   "search_reset": "Reset search",
 
-  "button_view": "View",
   "error_title": "Error",
   "settings_title": "Settings",
   "empty_data_default_header": "No data available",
@@ -608,6 +607,20 @@
   "sound_options": "Options",
   "sound_type_file": "File",
   "sound_type_event": "Event",
+  "sound_file_card_subtitle": "{type} · Volume {volume} · Pitch {pitch}",
+  "@sound_file_card_subtitle": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "volume": {
+        "type": "String"
+      },
+      "pitch": {
+        "type": "String"
+      }
+    }
+  },
   "font_char_label": "Char *",
   "tab_components": "Components",
   "component_add_title": "Add component",

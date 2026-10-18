@@ -77,7 +77,12 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
           constraints: const BoxConstraints(minWidth: 220, maxWidth: 400),
           child: SoundFileCard(
             source: source,
-            onDeleteRequested: () => _confirmAndDelete(source),
+            onEdit: () => showSoundFileModal(
+              context: context,
+              create: false,
+              source: source,
+            ),
+            onDelete: () => _confirmAndDelete(source),
           ),
         );
       },
