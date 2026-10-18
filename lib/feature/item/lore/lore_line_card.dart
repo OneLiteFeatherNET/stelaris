@@ -1,11 +1,13 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
-import 'package:stelaris/feature/base/action/entry_actions.dart';
+import 'package:stelaris/auth/roles.dart';
+import 'package:stelaris/feature/auth/role_gate.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/app_shapes.dart';
 
 /// One lore line as a card in the style of the component cards: a drag
-/// handle, the line number, the text and the edit/delete actions.
+/// handle, the line number, the text and the delete action. A tap on the
+/// card edits the line.
 class LoreLineCard extends StatelessWidget {
   const LoreLineCard({
     required this.dto,
@@ -59,7 +61,15 @@ class LoreLineCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              EntryActions(onEdit: onEdit, onDelete: onDelete),
+              // A tap on the card edits, so only deleting needs a button.
+              RoleGate(
+                role: Roles.admin,
+                child: IconButton(
+                  tooltip: context.l10n.tooltip_delete,
+                  onPressed: onDelete,
+                  icon: const Icon(Icons.delete_forever),
+                ),
+              ),
             ],
           ),
         ),
