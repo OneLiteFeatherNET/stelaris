@@ -525,6 +525,7 @@
       }
     }
   },
+  "validation_positive": "Enter a number greater than 0",
   "validation_field_required": "Enter a {field}",
   "@validation_field_required": {
     "placeholders": {

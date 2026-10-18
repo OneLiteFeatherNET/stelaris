@@ -23,6 +23,7 @@ const divider = Divider();
 RegExp numberPattern = RegExp('[1-9]\\d*');
 RegExp fontNumberPattern = RegExp('^(0|[1-9][0-9]*)');
 RegExp signedFontNumberPattern = RegExp('^-?(0|[1-9][0-9]*)?');
+RegExp decimalPattern = RegExp(r'^-?\d*\.?\d*$');
 RegExp stringPattern = RegExp('[a-zA-Z]\\w*');
 RegExp dotPattern = RegExp('\\.');
 RegExp minecraftPattern = RegExp('minecraft:');
@@ -34,6 +35,10 @@ RegExp adventureKeyPartPattern = RegExp(r'^(?!.*\.\.)[a-z0-9/._-]+$');
 
 /// Formatter
 const TextInputType numberInput = TextInputType.numberWithOptions(signed: true);
+const TextInputType decimalInput = TextInputType.numberWithOptions(
+  signed: true,
+  decimal: true,
+);
 
 /// Lore page
 const int maxLoreLines = 64;
@@ -62,6 +67,10 @@ const int defaultFontHeight = 8;
 /// The only provider type the font model covers, its fields are those of a
 /// bitmap provider
 const String defaultFontProvider = 'bitmap';
+
+/// The most common maximum among the vanilla attributes, so a new attribute
+/// starts out valid for the backend, which requires a positive maximum
+const double defaultAttributeMaximum = 1024;
 
 // Text
 // Button

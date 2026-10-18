@@ -87,7 +87,7 @@ void main() {
       expect(find.text('Edit attribute'), findsOneWidget);
       expect(find.text('10.0'), findsOneWidget);
       expect(find.text('20.0'), findsOneWidget);
-    }, skip: true);
+    });
 
     testWidgets('shows the attribute name as a subtitle under the title', (tester) async {
       await pumpDialog(tester);
@@ -142,6 +142,44 @@ void main() {
       expect(store.state.attributes.items.first.defaultValue, 15);
       expect(store.state.attributes.items.first.maximumValue, 30);
       expect(store.state.selectedAttribute?.defaultValue, 15);
-    }, skip: true);
+    });
+
+    testWidgets('saves decimal and negative default values', (tester) async {
+      final store = await pumpDialog(tester);
+
+      final fields = find.byType(TextFormField);
+      await tester.enterText(fields.at(0), '-0.5');
+      await tester.enterText(fields.at(1), '0.75');
+
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Edit attribute'), findsNothing);
+      expect(store.state.attributes.items.first.defaultValue, -0.5);
+      expect(store.state.attributes.items.first.maximumValue, 0.75);
+    });
+
+    for (final maximum in ['0', '']) {
+      testWidgets('rejects the maximum "$maximum" without saving', (
+        tester,
+      ) async {
+        final store = await pumpDialog(tester);
+
+        await tester.enterText(find.byType(TextFormField).at(1), maximum);
+        await tester.tap(find.text('Save'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Edit attribute'), findsOneWidget);
+        expect(
+          find.text(
+            maximum.isEmpty
+                ? 'Please enter a valid number'
+                : 'Enter a number greater than 0',
+          ),
+          findsOneWidget,
+        );
+        expect(store.state.attributes.items.first.maximumValue, 20);
+      });
+    }
   });
 }

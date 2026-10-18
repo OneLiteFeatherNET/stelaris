@@ -2098,6 +2098,12 @@ abstract class AppLocalizations {
   /// **'The minimum is {min}'**
   String validation_minimum(int min);
 
+  /// No description provided for @validation_positive.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number greater than 0'**
+  String get validation_positive;
+
   /// No description provided for @validation_field_required.
   ///
   /// In en, this message translates to:

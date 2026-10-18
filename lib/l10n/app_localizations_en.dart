@@ -1111,6 +1111,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get validation_positive => 'Enter a number greater than 0';
+
+  @override
   String validation_field_required(String field) {
     return 'Enter a $field';
   }
