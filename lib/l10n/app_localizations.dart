@@ -2068,6 +2068,12 @@ abstract class AppLocalizations {
   /// **'Invalid texture path (e.g. \"minecraft:font/ascii.png\")'**
   String get validation_texture_path_invalid;
 
+  /// No description provided for @validation_background_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid texture path (e.g. \"minecraft:gui/advancements/backgrounds/stone\")'**
+  String get validation_background_invalid;
+
   /// No description provided for @validation_sound_key_invalid.
   ///
   /// In en, this message translates to:
