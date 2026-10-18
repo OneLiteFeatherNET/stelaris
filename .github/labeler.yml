@@ -49,9 +49,23 @@ bug:
           - 'lib/feature/navigation/**'
           - 'lib/feature/command_palette/**'
           - 'lib/feature/settings/**'
+          - 'lib/feature/status_card.dart'
           - 'lib/util/app_theme.dart'
           - 'lib/util/app_shapes.dart'
           - 'lib/util/color_scheme_ext.dart'
+          - 'lib/util/stelaris_icons.dart'
+          - 'lib/util/deferred_widget.dart'
+          - 'lib/util/routes.dart'
+          - 'test/feature/base/**'
+          - 'test/feature/dialogs/**'
+          - 'test/feature/model/**'
+          - 'test/feature/navigation/**'
+          - 'test/feature/command_palette/**'
+          - 'test/feature/settings/**'
+          - 'test/util/app_theme_test.dart'
+          - 'test/util/app_shapes_test.dart'
+          - 'test/util/routes_*'
+          - 'test/util/detail_*'
 
 'area: api':
   - changed-files:
