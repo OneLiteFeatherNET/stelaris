@@ -185,16 +185,6 @@ class Validators {
     };
   }
 
-  /// Validates that a string is a whole number, negative ones included.
-  static FormValidator<String> integer(AppLocalizations l10n) {
-    return (value) {
-      if (int.tryParse(value?.trim() ?? '') == null) {
-        return l10n.validation_number_invalid;
-      }
-      return null;
-    };
-  }
-
   /// Validates that a string is a whole number of at least [min].
   static FormValidator<String> minimum(AppLocalizations l10n, int min) {
     return (value) {
