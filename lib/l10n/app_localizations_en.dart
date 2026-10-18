@@ -1013,9 +1013,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_reset => 'Reset search';
 
   @override
-  String get button_view => 'View';
-
-  @override
   String get error_title => 'Error';
 
   @override
@@ -1280,6 +1277,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sound_type_event => 'Event';
+
+  @override
+  String sound_file_card_subtitle(String type, String volume, String pitch) {
+    return '$type · Volume $volume · Pitch $pitch';
+  }
 
   @override
   String get font_char_label => 'Char *';

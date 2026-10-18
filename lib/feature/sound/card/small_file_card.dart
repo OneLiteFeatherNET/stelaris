@@ -1,31 +1,24 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/sound/card/folder_icon.dart';
-import 'package:stelaris/feature/sound/modal/sound_file_modal_helper.dart';
 import 'package:stelaris/util/app_shapes.dart';
 
+/// The narrow form of a sound file card that shows only the folder icon. A tap
+/// on the card edits the file.
 class SmallFileCard extends StatelessWidget {
-  const SmallFileCard({required this.fileSource, super.key});
+  const SmallFileCard({required this.onEdit, super.key});
 
-  final SoundFileSource fileSource;
+  final VoidCallback onEdit;
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return Card(
-      color: theme.colorScheme.surface,
-      surfaceTintColor: theme.colorScheme.surfaceTint,
-      elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppShapes.medium)),
-      child: InkWell(
+    return Card.filled(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      clipBehavior: Clip.antiAlias,
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppShapes.medium),
-        onTap: () => showSoundFileModal(
-          context: context,
-          create: false,
-          source: fileSource,
-        ),
-        child: const FolderIcon(),
       ),
+      child: InkWell(onTap: onEdit, child: const FolderIcon()),
     );
   }
 }

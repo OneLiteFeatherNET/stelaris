@@ -1936,12 +1936,6 @@ abstract class AppLocalizations {
   /// **'Reset search'**
   String get search_reset;
 
-  /// No description provided for @button_view.
-  ///
-  /// In en, this message translates to:
-  /// **'View'**
-  String get button_view;
-
   /// No description provided for @error_title.
   ///
   /// In en, this message translates to:
@@ -2409,6 +2403,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Event'**
   String get sound_type_event;
+
+  /// No description provided for @sound_file_card_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} · Volume {volume} · Pitch {pitch}'**
+  String sound_file_card_subtitle(String type, String volume, String pitch);
 
   /// No description provided for @font_char_label.
   ///
