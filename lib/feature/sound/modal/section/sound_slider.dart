@@ -58,6 +58,12 @@ class SoundSliderRow extends StatelessWidget {
             onChangeEnd: onChangeEnd, // Pass it through
           ),
         ),
+        Text(
+          value.toStringAsFixed(valueDecimalPlaces),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontFeatures: const [FontFeature.tabularFigures()],
+          ),
+        ),
       ],
     );
   }
