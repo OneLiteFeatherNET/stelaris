@@ -193,6 +193,25 @@ void main() {
       expect(store.state.selectedFont?.ascent, 7);
     });
 
+    testWidgets('the ascent takes a negative number', (tester) async {
+      await pumpPage(tester);
+
+      await editCard(tester, 'Ascent', '-3');
+
+      expect(store.state.selectedFont?.ascent, -3);
+    });
+
+    testWidgets('a lone minus keeps the ascent dialog open', (tester) async {
+      await pumpPage(tester);
+      final before = store.state.selectedFont?.ascent;
+
+      await editCard(tester, 'Ascent', '-');
+
+      expect(find.text('Please enter a valid number'), findsOneWidget);
+      expect(find.byType(Dialog), findsOneWidget);
+      expect(store.state.selectedFont?.ascent, before);
+    });
+
     testWidgets('cancel changes nothing', (tester) async {
       await pumpPage(tester);
       final before = store.state.selectedFont;

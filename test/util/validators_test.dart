@@ -110,4 +110,41 @@ void main() {
       );
     });
   });
+
+  group('Validators.integer', () {
+    final validator = Validators.integer(l10n);
+
+    test('whole numbers pass, negative ones included', () {
+      expect(validator('0'), isNull);
+      expect(validator('7'), isNull);
+      expect(validator('-4'), isNull);
+    });
+
+    test('empty, a lone minus and invalid input are rejected', () {
+      expect(validator(null), 'Please enter a valid number');
+      expect(validator(''), 'Please enter a valid number');
+      expect(validator('-'), 'Please enter a valid number');
+      expect(validator('abc'), 'Please enter a valid number');
+    });
+  });
+
+  group('Validators.minimum', () {
+    final validator = Validators.minimum(l10n, 1);
+
+    test('numbers at or above the minimum pass', () {
+      expect(validator('1'), isNull);
+      expect(validator('16'), isNull);
+    });
+
+    test('numbers below the minimum are rejected', () {
+      expect(validator('0'), 'The minimum is 1');
+      expect(validator('-3'), 'The minimum is 1');
+    });
+
+    test('empty and invalid input is rejected', () {
+      expect(validator(null), 'Please enter a valid number');
+      expect(validator(''), 'Please enter a valid number');
+      expect(validator('abc'), 'Please enter a valid number');
+    });
+  });
 }

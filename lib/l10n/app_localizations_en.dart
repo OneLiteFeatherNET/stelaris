@@ -1106,6 +1106,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String validation_minimum(int min) {
+    return 'The minimum is $min';
+  }
+
+  @override
   String validation_field_required(String field) {
     return 'Enter a $field';
   }

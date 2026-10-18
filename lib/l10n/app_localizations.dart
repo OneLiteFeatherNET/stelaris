@@ -2092,6 +2092,12 @@ abstract class AppLocalizations {
   /// **'The maximum is {max}'**
   String validation_maximum(int max);
 
+  /// No description provided for @validation_minimum.
+  ///
+  /// In en, this message translates to:
+  /// **'The minimum is {min}'**
+  String validation_minimum(int min);
+
   /// No description provided for @validation_field_required.
   ///
   /// In en, this message translates to:
