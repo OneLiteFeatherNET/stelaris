@@ -39,11 +39,21 @@ class EnchantmentItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      enchantment.displayName,
-                      style: theme.textTheme.titleMedium,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            enchantment.displayName,
+                            style: theme.textTheme.titleMedium,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (dto.unsafe) ...[
+                          const SizedBox(width: 8),
+                          const _UnsafeLabel(),
+                        ],
+                      ],
                     ),
                     const SizedBox(height: 2),
                     _getEnchantmentSubTitle(context, theme),
@@ -115,3 +125,29 @@ class EnchantmentItem extends StatelessWidget {
   }
 }
 
+/// Marks an enchantment whose level may exceed the normal maximum.
+class _UnsafeLabel extends StatelessWidget {
+  const _UnsafeLabel();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    return Tooltip(
+      message: context.l10n.dialog_item_enchantment_unsafe_hint,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+        decoration: BoxDecoration(
+          color: colorScheme.tertiaryContainer,
+          borderRadius: BorderRadius.circular(AppShapes.extraSmall),
+        ),
+        child: Text(
+          context.l10n.dialog_item_enchantment_unsafe,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: colorScheme.onTertiaryContainer,
+          ),
+        ),
+      ),
+    );
+  }
+}
