@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
@@ -78,7 +80,7 @@ class FontGeneralPage extends StatelessWidget {
                   formatters: [
                     FilteringTextInputFormatter.allow(signedFontNumberPattern),
                   ],
-                  validator: Validators.integer(l10n),
+                  validator: Validators.maximum(l10n, font.height),
                   onChanged: (value) => _stage(
                     context,
                     font.copyWith(ascent: int.parse(value)),
@@ -91,7 +93,7 @@ class FontGeneralPage extends StatelessWidget {
                   footer: l10n.font_hint_height,
                   keyboardType: numberInput,
                   formatters: numberFormatters,
-                  validator: Validators.minimum(l10n, 1),
+                  validator: Validators.minimum(l10n, max(1, font.ascent)),
                   onChanged: (value) => _stage(
                     context,
                     font.copyWith(height: int.parse(value)),
