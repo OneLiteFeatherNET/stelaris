@@ -111,23 +111,6 @@ void main() {
     });
   });
 
-  group('Validators.integer', () {
-    final validator = Validators.integer(l10n);
-
-    test('whole numbers pass, negative ones included', () {
-      expect(validator('0'), isNull);
-      expect(validator('7'), isNull);
-      expect(validator('-4'), isNull);
-    });
-
-    test('empty, a lone minus and invalid input are rejected', () {
-      expect(validator(null), 'Please enter a valid number');
-      expect(validator(''), 'Please enter a valid number');
-      expect(validator('-'), 'Please enter a valid number');
-      expect(validator('abc'), 'Please enter a valid number');
-    });
-  });
-
   group('Validators.minimum', () {
     final validator = Validators.minimum(l10n, 1);
 
@@ -144,6 +127,26 @@ void main() {
     test('empty and invalid input is rejected', () {
       expect(validator(null), 'Please enter a valid number');
       expect(validator(''), 'Please enter a valid number');
+      expect(validator('abc'), 'Please enter a valid number');
+    });
+  });
+
+  group('Validators.maximum', () {
+    final validator = Validators.maximum(l10n, 8);
+
+    test('numbers at or below the maximum pass', () {
+      expect(validator('8'), isNull);
+      expect(validator('0'), isNull);
+      expect(validator('-3'), isNull);
+    });
+
+    test('numbers above the maximum are rejected', () {
+      expect(validator('9'), 'The maximum is 8');
+    });
+
+    test('empty and invalid input is rejected', () {
+      expect(validator(null), 'Please enter a valid number');
+      expect(validator('-'), 'Please enter a valid number');
       expect(validator('abc'), 'Please enter a valid number');
     });
   });

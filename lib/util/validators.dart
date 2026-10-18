@@ -185,16 +185,6 @@ class Validators {
     };
   }
 
-  /// Validates that a string is a whole number, negative ones included.
-  static FormValidator<String> integer(AppLocalizations l10n) {
-    return (value) {
-      if (int.tryParse(value?.trim() ?? '') == null) {
-        return l10n.validation_number_invalid;
-      }
-      return null;
-    };
-  }
-
   /// Validates that a string is a whole number of at least [min].
   static FormValidator<String> minimum(AppLocalizations l10n, int min) {
     return (value) {
@@ -204,6 +194,20 @@ class Validators {
       }
       if (number < min) {
         return l10n.validation_minimum(min);
+      }
+      return null;
+    };
+  }
+
+  /// Validates that a string is a whole number of at most [max].
+  static FormValidator<String> maximum(AppLocalizations l10n, int max) {
+    return (value) {
+      final number = int.tryParse(value?.trim() ?? '');
+      if (number == null) {
+        return l10n.validation_number_invalid;
+      }
+      if (number > max) {
+        return l10n.validation_maximum(max);
       }
       return null;
     };

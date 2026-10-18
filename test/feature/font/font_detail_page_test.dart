@@ -17,7 +17,11 @@ import '../../support/fake_http_client_adapter.dart';
 
 void main() {
   group('FontDetailPage', () {
-    const selected = FontModel(id: 'font-1', uiName: 'Roboto Mono');
+    const selected = FontModel(
+      id: 'font-1',
+      uiName: 'Roboto Mono',
+      height: 8,
+    );
 
     late Store<AppState> store;
 
@@ -210,6 +214,31 @@ void main() {
       expect(find.text('Please enter a valid number'), findsOneWidget);
       expect(find.byType(Dialog), findsOneWidget);
       expect(store.state.selectedFont?.ascent, before);
+    });
+
+    testWidgets('an ascent above the height keeps the dialog open', (
+      tester,
+    ) async {
+      await pumpPage(tester);
+
+      await editCard(tester, 'Ascent', '9');
+
+      expect(find.text('The maximum is 8'), findsOneWidget);
+      expect(find.byType(Dialog), findsOneWidget);
+      expect(store.state.selectedFont?.ascent, 0);
+    });
+
+    testWidgets('a height below the ascent keeps the dialog open', (
+      tester,
+    ) async {
+      await pumpPage(tester);
+      await editCard(tester, 'Ascent', '7');
+
+      await editCard(tester, 'Height', '6');
+
+      expect(find.text('The minimum is 7'), findsOneWidget);
+      expect(find.byType(Dialog), findsOneWidget);
+      expect(store.state.selectedFont?.height, 8);
     });
 
     testWidgets('cancel changes nothing', (tester) async {
