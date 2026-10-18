@@ -69,5 +69,24 @@ void main() {
       expect(find.text('Stream'), findsNothing);
     });
 
+    testWidgets('clamps a stored pitch to the range the client plays', (tester) async {
+      const source = SoundFileSource(
+        id: 'file-2',
+        name: 'ambient/low',
+        volume: 1,
+        pitch: 0.2,
+        weight: 1,
+        attenuationDistance: 16,
+        preload: false,
+        type: 'file',
+      );
+      await pumpModal(tester, source: source);
+
+      final pitchSlider = tester.widget<Slider>(find.byType(Slider).last);
+      expect(pitchSlider.min, minPitch);
+      expect(pitchSlider.max, maxPitch);
+      expect(pitchSlider.value, minPitch);
+      expect(find.text('0.50'), findsOneWidget);
+    });
   });
 }

@@ -6,6 +6,10 @@ import 'package:stelaris/feature/sound/modal/section/sound_slider.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
 
+/// The client clamps the pitch to this range when it plays a sound.
+const double minPitch = 0.5;
+const double maxPitch = 2;
+
 class SoundFileModal extends StatefulWidget {
   const SoundFileModal({
     required this.create,
@@ -39,7 +43,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
     final data = widget.initialData;
     _nameController = TextEditingController(text: data?.name ?? '');
     _volume = data?.volume ?? 1;
-    _pitch = data?.pitch ?? 1;
+    _pitch = (data?.pitch ?? 1).clamp(minPitch, maxPitch);
     _weight = data?.weight ?? 1;
     _attenuationDistance = data?.attenuationDistance ?? 16;
     _preload = data?.preload ?? false;
@@ -107,6 +111,9 @@ class _SoundFileModalState extends State<SoundFileModal> {
             SoundSliderRow(
               label: l10n.sound_pitch,
               value: _pitch,
+              min: minPitch,
+              max: maxPitch,
+              divisions: 30,
               onChanged: (v) => setState(() => _pitch = v),
             ),
             const SizedBox(height: 16),
