@@ -8,3 +8,10 @@ import 'package:stelaris/util/formatter/lower_case_formatter.dart';
 final TextInputFormatter stringPatternFormatter =
     FilteringTextInputFormatter.allow(stringPattern);
 const TextInputFormatter lowerCaseFormatter = LowerCaseTextFormatter();
+
+/// Keeps an input a (possibly unfinished) decimal number such as "-", "1." or
+/// "-0.5" by rejecting every edit that would leave anything else
+final TextInputFormatter decimalFormatter = TextInputFormatter.withFunction(
+  (oldValue, newValue) =>
+      decimalPattern.hasMatch(newValue.text) ? newValue : oldValue,
+);
