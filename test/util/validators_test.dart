@@ -150,4 +150,42 @@ void main() {
       expect(validator('abc'), 'Please enter a valid number');
     });
   });
+
+  group('Validators.decimal', () {
+    final validator = Validators.decimal(l10n);
+
+    test('whole, decimal and negative numbers pass', () {
+      expect(validator('0'), isNull);
+      expect(validator('0.08'), isNull);
+      expect(validator('-1024'), isNull);
+    });
+
+    test('empty and invalid input is rejected', () {
+      expect(validator(null), 'Please enter a valid number');
+      expect(validator(''), 'Please enter a valid number');
+      expect(validator('-'), 'Please enter a valid number');
+      expect(validator('abc'), 'Please enter a valid number');
+    });
+  });
+
+  group('Validators.positive', () {
+    final validator = Validators.positive(l10n);
+
+    test('numbers greater than zero pass', () {
+      expect(validator('1'), isNull);
+      expect(validator('0.5'), isNull);
+      expect(validator('1024'), isNull);
+    });
+
+    test('zero and negative numbers are rejected', () {
+      expect(validator('0'), 'Enter a number greater than 0');
+      expect(validator('-1'), 'Enter a number greater than 0');
+    });
+
+    test('empty and invalid input is rejected', () {
+      expect(validator(null), 'Please enter a valid number');
+      expect(validator(''), 'Please enter a valid number');
+      expect(validator('abc'), 'Please enter a valid number');
+    });
+  });
 }

@@ -213,6 +213,31 @@ class Validators {
     };
   }
 
+  /// Validates that a string is a number, decimal and negative ones included.
+  static FormValidator<String> decimal(AppLocalizations l10n) {
+    return (value) {
+      if (double.tryParse(value?.trim() ?? '') == null) {
+        return l10n.validation_number_invalid;
+      }
+      return null;
+    };
+  }
+
+  /// Validates that a string is a number greater than zero, decimal ones
+  /// included.
+  static FormValidator<String> positive(AppLocalizations l10n) {
+    return (value) {
+      final number = double.tryParse(value?.trim() ?? '');
+      if (number == null) {
+        return l10n.validation_number_invalid;
+      }
+      if (number <= 0) {
+        return l10n.validation_positive;
+      }
+      return null;
+    };
+  }
+
   /// Validates an enchantment level input against [maxLevel].
   /// When [unsafe] is true, the max-level constraint is skipped, but the level
   /// is still limited to [maxEnchantmentLevel] (the range of a short).
