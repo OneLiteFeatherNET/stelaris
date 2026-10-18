@@ -500,6 +500,14 @@
   "search_no_results": "No matches",
   "search_no_results_hint": "Try another search or reset the filters.",
   "search_reset": "Reset search",
+  "choice_edit_search_hint": "Search {label}",
+  "@choice_edit_search_hint": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
 
   "error_title": "Error",
   "settings_title": "Settings",

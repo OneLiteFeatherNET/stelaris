@@ -1036,6 +1036,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_reset => 'Reset search';
 
   @override
+  String choice_edit_search_hint(String label) {
+    return 'Search $label';
+  }
+
+  @override
   String get error_title => 'Error';
 
   @override

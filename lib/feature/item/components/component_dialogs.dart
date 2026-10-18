@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/hide_tooltips_while_scrolling.dart';
+import 'package:stelaris/feature/base/search/dialog_search_bar.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/components/book/written_book.dart';
 import 'package:stelaris/feature/item/components/book/written_book_editor.dart';
@@ -75,8 +76,6 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
   /// size while the user types. The list takes what the search leaves.
   static const double _contentHeight = 480;
 
-  static const double _searchHeight = 44;
-
   static const double _filterButtonSize = 32;
 
   final TextEditingController _controller = TextEditingController();
@@ -147,7 +146,6 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final rows = _rows();
     final category = _category;
     return FormDialog(
@@ -161,15 +159,13 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Styled like the app bar search, with its filter menu.
-            SearchBar(
+            // With its filter menu.
+            DialogSearchBar(
               controller: _controller,
               focusNode: _focusNode,
-              autoFocus: true,
               hintText: category == null
                   ? context.l10n.component_search_hint
                   : context.l10n.component_search_in(category.displayName),
-              leading: const Icon(Icons.search),
               trailing: [
                 ComponentCategoryMenu(
                   value: category,
@@ -191,22 +187,6 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
                   ),
                 ),
               ],
-              elevation: const WidgetStatePropertyAll(0),
-              constraints: const BoxConstraints(
-                minHeight: _searchHeight,
-                maxHeight: _searchHeight,
-              ),
-              backgroundColor: WidgetStatePropertyAll(
-                theme.colorScheme.surface,
-              ),
-              side: WidgetStateProperty.resolveWith(
-                (states) => states.contains(WidgetState.focused)
-                    ? BorderSide(color: theme.colorScheme.primary, width: 2)
-                    : BorderSide(color: theme.colorScheme.outlineVariant),
-              ),
-              padding: const WidgetStatePropertyAll(
-                EdgeInsets.only(left: 12, right: 6),
-              ),
               onChanged: (value) => setState(() => _search = value),
             ),
             verticalSpacing10,
