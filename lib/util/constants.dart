@@ -68,6 +68,10 @@ const int defaultFontHeight = 8;
 /// bitmap provider
 const String defaultFontProvider = 'bitmap';
 
+/// The most common maximum among the vanilla attributes, so a new attribute
+/// starts out valid for the backend, which requires a positive maximum
+const double defaultAttributeMaximum = 1024;
+
 // Text
 // Button
 Icon addModelIcon = const Icon(Icons.add);
