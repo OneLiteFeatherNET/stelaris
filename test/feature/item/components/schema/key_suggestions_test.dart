@@ -180,9 +180,36 @@ void main() {
     });
   });
 
+  group('registry key field', () {
+    testWidgets('suggests the entries of its registry by name and key', (
+      tester,
+    ) async {
+      await pumpKeyField(tester, registry: 'damage_type', changes: []);
+
+      await type(tester, 'arrow');
+
+      expect(find.text('Arrow'), findsOneWidget);
+      expect(find.text('minecraft:arrow'), findsOneWidget);
+    });
+
+    testWidgets('writes the key of a tapped suggestion and reports it', (
+      tester,
+    ) async {
+      final changes = <Object?>[];
+      await pumpKeyField(tester, registry: 'damage_type', changes: changes);
+
+      await type(tester, 'arrow');
+      await tester.tap(find.text('Arrow'));
+      await tester.pumpAndSettle();
+
+      expect(fieldText(tester), 'minecraft:arrow');
+      expect(changes.last, 'minecraft:arrow');
+    });
+  });
+
   group('other registries', () {
     testWidgets('show no suggestions', (tester) async {
-      await pumpKeyField(tester, registry: 'sound_event', changes: []);
+      await pumpKeyField(tester, registry: 'recipe', changes: []);
 
       await type(tester, 'diamond');
 
