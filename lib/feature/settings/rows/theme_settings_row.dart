@@ -126,10 +126,10 @@ class _Swatch extends StatelessWidget {
         : Colors.black;
     return Tooltip(
       message: label,
+      // The tooltip already names the color to a screen reader.
       child: Semantics(
         button: true,
         selected: selected,
-        label: label,
         child: InkResponse(
           onTap: onTap,
           radius: 22,
