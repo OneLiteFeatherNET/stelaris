@@ -2,9 +2,9 @@ import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/item/item_enchantment_actions.dart';
-import 'package:stelaris/feature/base/action/entry_actions.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris/feature/item/enchantment/dialog/item_enchantment_update_dialog.dart';
+import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/enchantment.dart';
 
@@ -21,25 +21,41 @@ class EnchantmentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: AnimatedSize(
-        duration: const Duration(milliseconds: 300),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-          title: Text(
-            enchantment.displayName,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          subtitle: _getEnchantmentSubTitle(context, theme),
-          trailing: EntryActions(
-            onEdit: () => _showUpdateDialog(context),
-            onDelete: () => _showDeleteDialog(context),
+    final colorScheme = theme.colorScheme;
+    return Card.filled(
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      color: colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppShapes.medium),
+      ),
+      child: InkWell(
+        onTap: () => _showUpdateDialog(context),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 8, 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      enchantment.displayName,
+                      style: theme.textTheme.titleMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    _getEnchantmentSubTitle(context, theme),
+                  ],
+                ),
+              ),
+              // A tap on the card edits, so only deleting needs a button.
+              IconButton(
+                onPressed: () => _showDeleteDialog(context),
+                icon: const Icon(Icons.delete_forever),
+              ),
+            ],
           ),
         ),
       ),
@@ -47,22 +63,23 @@ class EnchantmentItem extends StatelessWidget {
   }
 
   /// Applies the right sub title [Widget] based on the [ItemEnchantmentDto.unsafe] flag.
+  /// An unsafe level may exceed the maximum, so the maximum is left out.
   /// [theme] the current [ThemeData] to get some values from it
   /// Returns the concrete [Widget] that displays the data
   Widget _getEnchantmentSubTitle(BuildContext context, ThemeData theme) {
-    final Text levelText = Text(context.l10n.item_level);
     if (dto.unsafe) {
-      return Row(children: [levelText, Text(dto.level.toString())]);
+      return Text('${context.l10n.item_level}${dto.level}');
     }
-    return Row(
-      children: [
-        levelText,
-        Text(dto.level.toString()),
-        Text(
-          ' / ${enchantment.maxLevel}',
-          style: theme.textTheme.bodySmall,
-        ),
-      ],
+    return Text.rich(
+      TextSpan(
+        text: '${context.l10n.item_level}${dto.level}',
+        children: [
+          TextSpan(
+            text: ' / ${enchantment.maxLevel}',
+            style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+          ),
+        ],
+      ),
     );
   }
 
@@ -97,3 +114,4 @@ class EnchantmentItem extends StatelessWidget {
     );
   }
 }
+
