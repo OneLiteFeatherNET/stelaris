@@ -495,10 +495,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_project_active_title => 'Active Project';
 
   @override
-  String get settings_project_active_subtitle =>
-      'Select or switch the active project workspace';
-
-  @override
   String get settings_project_empty => 'No projects yet';
 
   @override

@@ -994,12 +994,6 @@ abstract class AppLocalizations {
   /// **'Active Project'**
   String get settings_project_active_title;
 
-  /// No description provided for @settings_project_active_subtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Select or switch the active project workspace'**
-  String get settings_project_active_subtitle;
-
   /// No description provided for @settings_project_empty.
   ///
   /// In en, this message translates to:

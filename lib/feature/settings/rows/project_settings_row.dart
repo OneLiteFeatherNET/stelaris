@@ -2,7 +2,6 @@ import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_field.dart';
 import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/feature/project/badge/project_labor_badge.dart';
@@ -45,7 +44,6 @@ class ProjectSettingsRow extends StatelessWidget {
         final field = ChoiceEdit<Project>(
           label: l10n.settings_project_active_title,
           icon: Icons.folder_outlined,
-          footer: l10n.settings_project_active_subtitle,
           value: currentSelected,
           options: projects,
           display: (project) => '${project.displayName} (${project.key})',
@@ -57,11 +55,21 @@ class ProjectSettingsRow extends StatelessWidget {
         return SettingsSection(
           title: l10n.settings_project_title,
           children: [
-            EditCard(
+            // A link to the choice, like the cards of the About section.
+            SettingsCard(
               icon: field.icon,
-              label: field.label,
-              value: field.displayValue,
-              footer: field.footer,
+              title: field.label,
+              subtitle: field.displayValue,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (currentSelected.labor) ...[
+                    const ProjectLaborBadge(fontSize: 10),
+                    const SizedBox(width: 8),
+                  ],
+                  const Icon(Icons.chevron_right),
+                ],
+              ),
               onTap: () => field.pick(context),
             ),
           ],

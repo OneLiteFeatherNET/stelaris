@@ -217,7 +217,6 @@
   "dialog_project_create_button": "Create",
   "settings_project_title": "Project",
   "settings_project_active_title": "Active Project",
-  "settings_project_active_subtitle": "Select or switch the active project workspace",
   "settings_project_empty": "No projects yet",
   "dialog_project_switch_title": "Switch project?",
   "dialog_project_switch_hint": "Loaded items, fonts, advancements, attributes and sound events will be reset.",
