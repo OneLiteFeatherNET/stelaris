@@ -70,6 +70,19 @@ void main() {
       expect(signOuts, hasLength(1));
     });
 
+    testWidgets('fits a narrow dialog with a large font', (tester) async {
+      tester.view.physicalSize = const Size(240, 600);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      tester.platformDispatcher.textScaleFactorTestValue = 1.4;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+      await pumpRow(tester, signedIn);
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Sign out'), findsOneWidget);
+    });
+
     testWidgets('explains that no one is signed in', (tester) async {
       await pumpRow(tester, const AuthState(status: AuthStatus.signedOut));
 

@@ -33,10 +33,15 @@ class AccountSettingsRow extends StatelessWidget {
                 icon: Icons.account_circle_outlined,
                 title: auth.displayName ?? l10n.auth_signed_in,
                 subtitle: rolesLine(auth.roles, l10n),
-                trailing: OutlinedButton.icon(
-                  onPressed: signOut ?? AuthSessions.signOut,
-                  icon: const Icon(Icons.logout),
-                  label: Text(l10n.auth_sign_out),
+                // Below the name rather than beside it, a long name or a
+                // large font leaves no room for it in the row.
+                child: Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: OutlinedButton.icon(
+                    onPressed: signOut ?? AuthSessions.signOut,
+                    icon: const Icon(Icons.logout),
+                    label: Text(l10n.auth_sign_out),
+                  ),
                 ),
               )
             else
