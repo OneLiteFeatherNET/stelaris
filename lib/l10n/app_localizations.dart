@@ -1936,12 +1936,6 @@ abstract class AppLocalizations {
   /// **'Reset search'**
   String get search_reset;
 
-  /// No description provided for @button_edit.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit'**
-  String get button_edit;
-
   /// No description provided for @button_view.
   ///
   /// In en, this message translates to:
