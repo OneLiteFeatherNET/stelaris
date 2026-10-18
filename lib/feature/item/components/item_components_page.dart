@@ -354,26 +354,24 @@ class _ComponentCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  // Same compact buttons as the actions of a model grid card.
-                  ModelCardActions(
-                    color: colorScheme.onSurfaceVariant,
-                    children: [
-                      if (onEdit != null)
-                        IconButton(
-                          key: const Key('component_card_edit'),
-                          tooltip: context.l10n.component_edit_tooltip,
-                          icon: const Icon(Icons.edit_outlined),
-                          onPressed: onEdit,
-                        ),
-                      if (onRemove != null)
+                  // A tap on the card edits, so only removing needs a
+                  // button, the same compact one as on a model grid card.
+                  if (onRemove != null)
+                    ModelCardActions(
+                      color: colorScheme.onSurfaceVariant,
+                      children: [
                         IconButton(
                           key: const Key('component_card_remove'),
                           tooltip: context.l10n.component_delete_tooltip,
                           icon: deleteIcon,
                           onPressed: onRemove,
                         ),
-                    ],
-                  ),
+                      ],
+                    )
+                  else
+                    // As high as the button, so the texts below stay in line
+                    // with the other cards.
+                    const SizedBox(height: 30),
                 ],
               ),
               Text(

@@ -1345,9 +1345,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add a component to change how the item behaves, e.g. food or a tool.';
 
   @override
-  String get component_edit_tooltip => 'Edit component';
-
-  @override
   String get component_delete_tooltip => 'Delete component';
 
   @override

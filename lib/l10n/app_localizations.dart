@@ -2512,12 +2512,6 @@ abstract class AppLocalizations {
   /// **'Add a component to change how the item behaves, e.g. food or a tool.'**
   String get component_empty_body;
 
-  /// No description provided for @component_edit_tooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit component'**
-  String get component_edit_tooltip;
-
   /// No description provided for @component_delete_tooltip.
   ///
   /// In en, this message translates to:
