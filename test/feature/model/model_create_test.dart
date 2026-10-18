@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/base_api.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
@@ -15,6 +16,7 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/fake_http_client_adapter.dart';
 import '../../support/pump_until.dart';
@@ -155,6 +157,30 @@ void main() {
     final body = sent! as Map<String, dynamic>;
     expect(body['provider'], 'bitmap');
     expect(body['height'], 8);
+  });
+
+  testWidgets('a new attribute is sent with a positive maximum', (
+    tester,
+  ) async {
+    await _pump(tester, NavigationEntry.attributes);
+    Object? sent;
+    (ApiService().attributeApi as BaseApi<AttributeModel>)
+        .apiClient
+        .dio
+        .httpClientAdapter = FakeHttpClientAdapter((options) {
+      sent = options.data;
+      return ResponseBody.fromString(
+        jsonEncode(options.data),
+        200,
+        headers: {
+          Headers.contentTypeHeader: [Headers.jsonContentType],
+        },
+      );
+    });
+
+    await _submit(tester);
+
+    expect((sent! as Map<String, dynamic>)['maximumValue'], 1024);
   });
 
   testWidgets('a failed add keeps the dialog open and shows why', (

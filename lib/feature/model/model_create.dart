@@ -58,7 +58,11 @@ Future<bool> openModelCreateDialog(
               AdvancementModel(uiName: name, key: key),
             ),
             NavigationEntry.attributes => AttributeAddAction(
-              AttributeModel(uiName: name, key: key),
+              AttributeModel(
+                uiName: name,
+                key: key,
+                maximumValue: defaultAttributeMaximum,
+              ),
             ),
           };
           // Closes only once the model exists, a failure keeps what was
