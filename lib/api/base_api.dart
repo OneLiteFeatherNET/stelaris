@@ -8,6 +8,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 ///
 /// For example, it expects the following endpoint structure for each model type:
 ///   - GET    `/endpoint`
+///   - GET    `/endpoint/{id}`
 ///   - POST   `/endpoint`
 ///   - GET    `/endpoint/all`
 ///   - POST   `/endpoint/update`
@@ -53,6 +54,15 @@ class BaseApi<T extends DataModel> implements ClientAPI<T> {
   Future<T> get() async {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(path: '${baseUri.path}/$endpoint');
+    final result = await apiClient.dio.getUri(uri);
+    return fromJson(result.data!);
+  }
+
+  @override
+  Future<T> getById(String id, {String? projectId}) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final path = _buildPath(projectId: projectId, suffix: id);
+    final uri = baseUri.replace(path: '${baseUri.path}/$path');
     final result = await apiClient.dio.getUri(uri);
     return fromJson(result.data!);
   }

@@ -80,6 +80,34 @@ void main() {
     });
   });
 
+  group('getById', () {
+    test('sends a GET to /project/{projectId}/{endpoint}/{id}', () async {
+      final model = TestModel(internalId: 7, name: 'Item 7');
+      final adapter = respondWith(model.toJson());
+
+      final result = await baseApi.getById('7', projectId: 'p1');
+
+      expect(adapter.lastRequest!.method, 'GET');
+      expect(
+        adapter.lastRequest!.uri.toString(),
+        'http://backend.test/api/project/p1/items/7',
+      );
+      expect(result, model);
+    });
+
+    test('sends a GET to /{endpoint}/{id} without a project', () async {
+      final model = TestModel(internalId: 7, name: 'Item 7');
+      final adapter = respondWith(model.toJson());
+
+      await baseApi.getById('7');
+
+      expect(
+        adapter.lastRequest!.uri.toString(),
+        'http://backend.test/api/items/7',
+      );
+    });
+  });
+
   group('add', () {
     test('sends a POST with the model body to the endpoint', () async {
       final model = TestModel(internalId: 2, name: 'New');

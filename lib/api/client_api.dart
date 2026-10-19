@@ -32,6 +32,12 @@ abstract class ClientAPI<T extends DataModel> {
   /// Throws an exception if the retrieval fails.
   Future<T> get();
 
+  /// Retrieves the model with [id], scoped to [projectId] when given.
+  ///
+  /// Throws an exception if the retrieval fails, e.g. when the model does not
+  /// exist or does not belong to the project.
+  Future<T> getById(String id, {String? projectId});
+
   /// Adds a new model to the data store.
   ///
   /// Takes a [model] of type [T] and persists it to the data store.
