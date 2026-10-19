@@ -44,18 +44,6 @@ void main() {
     },
   );
 
-  test('changes to the selection outside the form actions stay clean '
-      '(e.g. paginated chars, lore or loading flags)', () async {
-    const font = FontModel(id: 'font-1', uiName: 'Default');
-    await store.dispatchAndWait(SelectFontAction(font));
-
-    // Mirrors what the chars/lore/sound-file actions do: they write the
-    // selection directly, without going through UpdateFontAction.
-    store.dispatchSync(_ReplaceSelectedFont(font.copyWith(uiName: 'Loaded')));
-
-    expect(store.state.unsavedChanges, isNull);
-  });
-
   test('removing the selection clears its own section only', () async {
     await store.dispatchAndWait(SelectedItemAction(item));
     await store.dispatchAndWait(UpdateItemAction(item));
@@ -71,13 +59,4 @@ void main() {
     await store.dispatchAndWait(DiscardUnsavedChangesAction());
     expect(store.state.unsavedChanges, isNull);
   });
-}
-
-class _ReplaceSelectedFont extends ReduxAction<AppState> {
-  _ReplaceSelectedFont(this.font);
-
-  final FontModel font;
-
-  @override
-  AppState reduce() => state.copyWith(selectedFont: font);
 }

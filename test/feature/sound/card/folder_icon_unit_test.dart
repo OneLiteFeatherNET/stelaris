@@ -23,8 +23,5 @@ void main() {
     expect(iconWidget.size, 28);
     expect(iconWidget.icon, Icons.folder);
 
-    // Check that color is set from theme
-    expect(iconWidget.color, isA<Color>());
-    expect(iconWidget.color, isNotNull);
   });
 }

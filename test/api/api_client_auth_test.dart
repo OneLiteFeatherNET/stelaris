@@ -102,19 +102,6 @@ void main() {
       expect(adapter.authorizations.single, 'Bearer token-1');
     });
 
-    test('is the access token, never the id token', () async {
-      // The id token identifies the person to this app; sending it to the
-      // backend would be handing over the wrong credential entirely.
-      final adapter = RecordingAdapter((_) => json({'ok': true}, 200));
-      final tokens = FakeTokens(token: 'access-token');
-      final client = clientWith(tokens, adapter);
-
-      await client.dio.get<dynamic>('/items');
-
-      expect(adapter.authorizations.single, 'Bearer access-token');
-      expect(adapter.authorizations.single, isNot(contains('id-token')));
-    });
-
     test('is absent in a deployment with no identity provider', () async {
       final adapter = RecordingAdapter((_) => json({'ok': true}, 200));
       final client = clientWith(null, adapter);

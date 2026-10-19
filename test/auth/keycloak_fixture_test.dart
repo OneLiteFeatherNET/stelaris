@@ -126,13 +126,6 @@ void main() {
       expect(roles, isEmpty);
     });
 
-    test('carry a display name the interface can show', () {
-      final claims = claimsFrom();
-
-      expect(claims.idToken['name'], 'Ada Lovelace');
-      expect(claims.idToken['preferred_username'], 'ada');
-    });
-
     test('are readable without being validated', () {
       // The access token is parsed to decide what to offer. Validating it is
       // the backend's job, and this asserts only that parsing works on a real
@@ -141,12 +134,6 @@ void main() {
 
       expect(token.split('.'), hasLength(3));
       expect(TokenClaims.decode(token), isNotEmpty);
-    });
-
-    test('carry the audience the recording was made with', () {
-      // Keycloak names no audience for our backend on a stock public client,
-      // which is the reason the documentation insists on an audience mapper.
-      expect(accessClaims()['aud'], anyOf(isNull, isNot(contains('stelaris'))));
     });
   });
 

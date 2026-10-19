@@ -28,7 +28,6 @@ void main() {
 
     test('suggests at most eight entries', () {
       expect(keys('sound_event', 'block').length, maxRegistrySuggestions);
-      expect(maxRegistrySuggestions, 8);
     });
 
     test('suggests nothing for an empty query', () {

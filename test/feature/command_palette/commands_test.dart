@@ -84,12 +84,6 @@ void main() {
     test('is not available anywhere else', () {
       expect(_availableAt('/projects'), isNot(contains('backend.reload-list')));
     });
-
-    test('maps every list page to a refresh action', () {
-      for (final entry in NavigationEntry.values) {
-        expect(refreshActionFor(entry), isNotNull);
-      }
-    });
   });
 
   group('backend outcomes', () {

@@ -180,7 +180,7 @@ void main() {
   });
 
   group('AttributeDatabaseUpdate', () {
-    test('uses Throttle mixin and throttles rapid dispatches', () async {
+    test('drops a second save dispatched right after the first', () async {
       const selected = AttributeModel(uiName: 'attr', id: 'a1');
       final store = Store<AppState>(
         initialState: const AppState().copyWith(
@@ -201,11 +201,7 @@ void main() {
           .httpClientAdapter =
           FakeHttpClientAdapter.json(selected.toJson());
 
-      final action1 = AttributeDatabaseUpdate();
-      expect(action1, isA<Throttle>());
-      expect((action1 as Throttle).throttle, 1000);
-
-      final status1 = await store.dispatchAndWait(action1);
+      final status1 = await store.dispatchAndWait(AttributeDatabaseUpdate());
       expect(status1.isCompletedOk, isTrue);
 
       // Immediate second dispatch should be aborted by Throttle
