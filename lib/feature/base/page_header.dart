@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/base/unsaved/unsaved_indicator.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 /// The header row at the top of every list and detail page: an optional
@@ -84,21 +85,7 @@ class PageHeader extends StatelessWidget {
                                 ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                     ),
-                    if (showUnsavedIndicator) ...[
-                      const SizedBox(width: 8),
-                      Tooltip(
-                        message: context.l10n.unsaved_indicator_tooltip,
-                        child: Container(
-                          key: const Key('page_header_unsaved_indicator'),
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primary,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ),
-                    ],
+                    UnsavedIndicator(visible: showUnsavedIndicator),
                   ],
                 ),
               ),
