@@ -101,14 +101,17 @@ class ItemLoreAddAction extends ReduxAction<AppState> with NonReentrant {
       itemLoreDto,
     );
 
-    final loreLines = itemModel.lore;
+    final ItemModel? current = _stillSelected(state, itemModel);
+    if (current == null) return null;
+
+    final loreLines = current.lore;
 
     final updatedLines = loreLines.copyWith(
       items: [...loreLines.items, addedLore],
       totalItems: loreLines.totalItems + 1,
     );
 
-    final updatedModel = itemModel.copyWith(lore: updatedLines);
+    final updatedModel = current.copyWith(lore: updatedLines);
 
     return state.copyWith(selectedItem: updatedModel);
   }
@@ -127,14 +130,17 @@ class ItemLoreDeleteAction extends ReduxAction<AppState> with NonReentrant {
 
     await ApiService().itemApi.deleteLore(itemModel.id!, itemLoreDto);
 
-    final loreLines = itemModel.lore;
+    final ItemModel? current = _stillSelected(state, itemModel);
+    if (current == null) return null;
+
+    final loreLines = current.lore;
 
     final updatedLines = loreLines.copyWith(
       items: loreLines.items.where((l) => l.id != itemLoreDto.id).toList(),
       totalItems: loreLines.totalItems - 1,
     );
 
-    final updatedModel = itemModel.copyWith(lore: updatedLines);
+    final updatedModel = current.copyWith(lore: updatedLines);
 
     return state.copyWith(selectedItem: updatedModel);
   }
@@ -156,7 +162,10 @@ class ItemLoreUpdateAction extends ReduxAction<AppState> with NonReentrant {
       dto,
     );
 
-    final loreLines = itemModel.lore;
+    final ItemModel? current = _stillSelected(state, itemModel);
+    if (current == null) return null;
+
+    final loreLines = current.lore;
 
     final updatedLines = loreLines.copyWith(
       items: loreLines.items
@@ -164,7 +173,7 @@ class ItemLoreUpdateAction extends ReduxAction<AppState> with NonReentrant {
           .toList(),
     );
 
-    final updatedModel = itemModel.copyWith(lore: updatedLines);
+    final updatedModel = current.copyWith(lore: updatedLines);
 
     return state.copyWith(selectedItem: updatedModel);
   }
@@ -199,23 +208,30 @@ class ItemLoreReorderAction extends ReduxAction<AppState> with Sequential {
     final entry = loreLines.items[oldIndex];
     if (entry.id == null) return null;
 
-    final updatedItems = List<ItemLoreDto>.from(loreLines.items);
-    final movedItem = updatedItems.removeAt(oldIndex);
-    updatedItems.insert(newIndex, movedItem);
-
-    final reindexedItems = [
-      for (var i = 0; i < updatedItems.length; i++)
-        updatedItems[i].copyWith(orderIndex: i),
-    ];
-
     await ApiService().itemApi.reorderLore(
       itemModel.id!,
       entryId: entry.id!,
       newIndex: newIndex,
     );
 
-    final updatedLore = loreLines.copyWith(items: reindexedItems);
-    final updatedModel = itemModel.copyWith(lore: updatedLore);
+    final ItemModel? current = _stillSelected(state, itemModel);
+    if (current == null) return null;
+
+    // The line is moved within the lore as it is now, found by its id: more
+    // lines may have been loaded while the request ran.
+    final updatedItems = List<ItemLoreDto>.from(current.lore.items);
+    final int currentIndex = updatedItems.indexWhere((l) => l.id == entry.id);
+    if (currentIndex == -1) return null;
+    final movedItem = updatedItems.removeAt(currentIndex);
+    updatedItems.insert(newIndex.clamp(0, updatedItems.length), movedItem);
+
+    final reindexedItems = [
+      for (var i = 0; i < updatedItems.length; i++)
+        updatedItems[i].copyWith(orderIndex: i),
+    ];
+
+    final updatedLore = current.lore.copyWith(items: reindexedItems);
+    final updatedModel = current.copyWith(lore: updatedLore);
 
     return state.copyWith(selectedItem: updatedModel);
   }
@@ -236,4 +252,13 @@ class _SetIsLoadingLore extends ReduxAction<AppState> {
 
     return state.copyWith(selectedItem: updatedItem);
   }
+}
+
+/// The selected item when it is still [item], as it is now. A request made
+/// for [item] applies to it, so form edits made while the request ran are
+/// kept. Null when another item was selected meanwhile, which the response
+/// doesn't belong to.
+ItemModel? _stillSelected(AppState state, ItemModel item) {
+  final ItemModel? current = state.selectedItem;
+  return current != null && current.id == item.id ? current : null;
 }
