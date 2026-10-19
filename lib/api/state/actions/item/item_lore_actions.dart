@@ -208,23 +208,30 @@ class ItemLoreReorderAction extends ReduxAction<AppState> with Sequential {
     final entry = loreLines.items[oldIndex];
     if (entry.id == null) return null;
 
-    final updatedItems = List<ItemLoreDto>.from(loreLines.items);
-    final movedItem = updatedItems.removeAt(oldIndex);
-    updatedItems.insert(newIndex, movedItem);
-
-    final reindexedItems = [
-      for (var i = 0; i < updatedItems.length; i++)
-        updatedItems[i].copyWith(orderIndex: i),
-    ];
-
     await ApiService().itemApi.reorderLore(
       itemModel.id!,
       entryId: entry.id!,
       newIndex: newIndex,
     );
 
-    final updatedLore = loreLines.copyWith(items: reindexedItems);
-    final updatedModel = itemModel.copyWith(lore: updatedLore);
+    final ItemModel? current = _stillSelected(state, itemModel);
+    if (current == null) return null;
+
+    // The line is moved within the lore as it is now, found by its id: more
+    // lines may have been loaded while the request ran.
+    final updatedItems = List<ItemLoreDto>.from(current.lore.items);
+    final int currentIndex = updatedItems.indexWhere((l) => l.id == entry.id);
+    if (currentIndex == -1) return null;
+    final movedItem = updatedItems.removeAt(currentIndex);
+    updatedItems.insert(newIndex.clamp(0, updatedItems.length), movedItem);
+
+    final reindexedItems = [
+      for (var i = 0; i < updatedItems.length; i++)
+        updatedItems[i].copyWith(orderIndex: i),
+    ];
+
+    final updatedLore = current.lore.copyWith(items: reindexedItems);
+    final updatedModel = current.copyWith(lore: updatedLore);
 
     return state.copyWith(selectedItem: updatedModel);
   }

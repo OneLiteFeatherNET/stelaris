@@ -251,5 +251,76 @@ void main() {
         expect(store.state.selectedItem, other);
       });
     });
+
+    group('ItemLoreReorderAction', () {
+      ItemLoreReorderAction moveFirstToEnd() =>
+          ItemLoreReorderAction(oldIndex: 0, newIndex: 2);
+
+      test('moves the line and renumbers the lines', () async {
+        final store = storeWith(item);
+        ApiService().itemApi.apiClient.dio.httpClientAdapter =
+            FakeHttpClientAdapter.json(const {});
+
+        await store.dispatchAndWait(moveFirstToEnd());
+
+        expect(loreIds(store), ['l2', 'l3', 'l1']);
+        expect(store.state.selectedItem!.lore.items.map((l) => l.orderIndex), [
+          0,
+          1,
+          2,
+        ]);
+      });
+
+      test('keeps form edits made while the line is moved '
+          '(regression)', () async {
+        final store = storeWith(item);
+        respondAfterRename(store, const {});
+
+        await store.dispatchAndWait(moveFirstToEnd());
+
+        expect(store.state.selectedItem!.uiName, 'Renamed');
+        expect(loreIds(store), ['l2', 'l3', 'l1']);
+      });
+
+      test('keeps lines loaded while the line is moved (regression)', () async {
+        final store = storeWith(item);
+        ApiService().itemApi.apiClient.dio.httpClientAdapter =
+            FakeHttpClientAdapter((options) {
+              final current = store.state.selectedItem!;
+              store.dispatchSync(
+                _SelectItem(
+                  current.copyWith(
+                    lore: current.lore.copyWith(
+                      items: [
+                        ...current.lore.items,
+                        const ItemLoreDto(id: 'l4', text: 'd', orderIndex: 3),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+              return FakeHttpClientAdapter.response(const {});
+            });
+
+        await store.dispatchAndWait(moveFirstToEnd());
+
+        expect(loreIds(store), ['l2', 'l3', 'l1', 'l4']);
+        expect(store.state.selectedItem!.lore.items.map((l) => l.orderIndex), [
+          0,
+          1,
+          2,
+          3,
+        ]);
+      });
+
+      test('leaves another selected item alone (regression)', () async {
+        final store = storeWith(item);
+        respondAfterSelectingOther(store, const {});
+
+        await store.dispatchAndWait(moveFirstToEnd());
+
+        expect(store.state.selectedItem, other);
+      });
+    });
   });
 }
