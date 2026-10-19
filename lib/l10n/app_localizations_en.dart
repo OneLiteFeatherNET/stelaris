@@ -662,6 +662,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'This link points to something that no longer exists or that you can\'t access.';
 
   @override
+  String get snackbar_project_not_found =>
+      'This link points to a project that no longer exists or that you can\'t access.';
+
+  @override
   String get command_bar_search_tooltip => 'Focus search';
 
   @override

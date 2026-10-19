@@ -285,6 +285,7 @@
   "snackbar_link_copied": "Link copied to clipboard",
   "action_copy_link": "Copy link",
   "snackbar_shared_model_not_found": "This link points to something that no longer exists or that you can't access.",
+  "snackbar_project_not_found": "This link points to a project that no longer exists or that you can't access.",
 
   "command_bar_search_tooltip": "Focus search",
   "command_bar_filter_sort_tooltip": "Filter & Sort",
