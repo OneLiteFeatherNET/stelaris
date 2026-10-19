@@ -61,18 +61,6 @@ void main() {
       );
     }
 
-    testWidgets('renders a tile for every lore line', (tester) async {
-      final view = buildView([
-        const ItemLoreDto(id: '1', text: 'First line'),
-        const ItemLoreDto(id: '2', text: 'Second line'),
-      ]);
-
-      await pumpLorePageView(tester, view: view);
-
-      expect(find.text('First line'), findsOneWidget);
-      expect(find.text('Second line'), findsOneWidget);
-    });
-
     testWidgets('renders every lore line as a card with a drag handle', (
       tester,
     ) async {

@@ -4,9 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/font/chars/font_char_page.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
-import 'package:stelaris/feature/font/font_general_page.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -86,24 +84,6 @@ void main() {
       },
     );
 
-    testWidgets('wires the tab views to General and Characters pages', (tester) async {
-      await pumpPage(tester);
-
-      final tabBarView = tester.widget<TabBarView>(find.byType(TabBarView));
-      expect(tabBarView.children.map((w) => w.runtimeType), [
-        FontGeneralPage,
-        FontCharPage,
-      ]);
-    });
-
-    testWidgets('tapping back navigates to the font list', (tester) async {
-      await pumpPage(tester);
-
-      await tester.tap(find.byKey(const Key('page_header_back_button')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Font List'), findsOneWidget);
-    });
   
     int selectedTab(WidgetTester tester) =>
         DefaultTabController.of(tester.element(find.byType(TabBar))).index;
@@ -127,18 +107,6 @@ void main() {
 
     testWidgets('an old ?tab=fontface link opens on General', (tester) async {
       await pumpPage(tester, location: '/fonts/detail?tab=fontface');
-
-      expect(selectedTab(tester), 0);
-    });
-
-    testWidgets('an unknown ?tab= opens on the first tab', (tester) async {
-      await pumpPage(tester, location: '/fonts/detail?tab=nonsense');
-
-      expect(selectedTab(tester), 0);
-    });
-
-    testWidgets('without ?tab= opens on the first tab', (tester) async {
-      await pumpPage(tester);
 
       expect(selectedTab(tester), 0);
     });

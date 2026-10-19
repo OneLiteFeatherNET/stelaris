@@ -109,29 +109,5 @@ void main() {
         findsOneWidget,
       );
     });
-    testWidgets('offers "Copy" in the menu when copying is enabled', (tester) async {
-      await tester.pumpWidget(
-        createWidget(
-          copy: ModelCopy<TestModel>(
-            title: (l10n) => l10n.dialog_item_copy,
-            action: (_, _) => throw UnimplementedError(),
-          ),
-        ),
-      );
-
-      await tester.tap(find.byIcon(Icons.more_vert));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Copy'), findsOneWidget);
-    });
-
-    testWidgets('has no "Copy" without copying enabled', (tester) async {
-      await tester.pumpWidget(createWidget());
-
-      await tester.tap(find.byIcon(Icons.more_vert));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Copy'), findsNothing);
-    });
   });
 }

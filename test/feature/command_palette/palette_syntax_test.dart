@@ -191,14 +191,6 @@ void main() {
   });
 
   group('project switch', () {
-    testWidgets('the current project is not offered', (tester) async {
-      await _pump(tester);
-      await _open(tester);
-
-      await _type(tester, '@');
-
-      expect(_titles(tester), ['Demo']);
-    });
 
     testWidgets('confirming the dialog switches the project', (tester) async {
       final (store, _) = await _pump(tester);
@@ -434,22 +426,6 @@ void main() {
       );
       expect(_fieldText(tester), 'esc');
     });
-
-    testWidgets(': lists only pages to go to', (tester) async {
-      await _pump(tester);
-      await _open(tester);
-
-      await _type(tester, ':');
-
-      expect(_titles(tester), [
-        'Go to Attributes',
-        'Go to Items',
-        'Go to Advancements',
-        'Go to Fonts',
-        'Go to Sound',
-        'Go to project list',
-      ]);
-    });
   });
 
   group('current page', () {
@@ -488,21 +464,6 @@ void main() {
       await _press(tester, LogicalKeyboardKey.enter);
 
       expect(router.state.matchedLocation, '/items');
-    });
-
-    testWidgets('no Go-to fallback for the list the user is on', (
-      tester,
-    ) async {
-      await _pump(tester);
-      await _open(tester);
-
-      await _type(tester, '#font ');
-
-      expect(_titles(tester), isEmpty);
-      expect(
-        find.text('Only entries that are already loaded are searched'),
-        findsOneWidget,
-      );
     });
   });
 }

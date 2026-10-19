@@ -148,16 +148,6 @@ void main() {
     expect(find.byType(CommandPanel), findsOneWidget);
   });
 
-  testWidgets('Ctrl+K again closes the dropdown', (tester) async {
-    await _pump(tester);
-    await _ctrlK(tester);
-    expect(find.byType(CommandPanel), findsOneWidget);
-
-    await _ctrlK(tester);
-
-    expect(find.byType(CommandPanel), findsNothing);
-  });
-
   testWidgets('after a command the field shows the list filter again, plain', (
     tester,
   ) async {

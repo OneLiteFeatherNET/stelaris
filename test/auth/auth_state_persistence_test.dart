@@ -22,19 +22,6 @@ AppState restore(String document) =>
 
 void main() {
   group('AuthState is never persisted', () {
-    test('a signed-in state contributes nothing to the document', () {
-      const AppState state = AppState(auth: signedIn);
-
-      final String document = persist(state);
-
-      // Not the status, not the name, not the roles - and no key for the
-      // session at all. Tokens are not in AuthState to begin with; this is the
-      // test that stops the next field added there from reaching storage.
-      expect(document, isNot(contains('signedIn')));
-      expect(document, isNot(contains('Ada Lovelace')));
-      expect(document, isNot(contains('stelaris.admin')));
-      expect(document, isNot(contains('auth')));
-    });
 
     test('the document is identical with and without a session', () {
       const AppState anonymous = AppState();

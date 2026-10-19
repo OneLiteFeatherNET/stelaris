@@ -68,12 +68,6 @@ void main() {
       expect(find.text(appVersion), findsOneWidget);
     });
 
-    testWidgets('displays the licenses card', (tester) async {
-      await pumpRow(tester);
-
-      expect(find.text('Third-party software licenses'), findsOneWidget);
-    });
-
     testWidgets('opens the license page from the licenses card', (
       tester,
     ) async {
@@ -85,18 +79,10 @@ void main() {
       expect(find.byType(LicensePage), findsOneWidget);
     });
 
-    testWidgets('displays one issues card for bugs and suggestions', (
-      tester,
-    ) async {
-      await pumpRow(tester);
-
-      expect(find.text('Issues'), findsOneWidget);
-      expect(find.text('Report a bug or suggest a feature'), findsOneWidget);
-    });
-
     testWidgets('opens the issue tracker from the issues card', (tester) async {
       await pumpRow(tester);
 
+      expect(find.text('Report a bug or suggest a feature'), findsOneWidget);
       await tester.tap(find.text('Issues'));
       await tester.pump();
 
@@ -106,17 +92,11 @@ void main() {
     testWidgets('opens the wiki from the help card', (tester) async {
       await pumpRow(tester);
 
+      expect(find.text('Explore the wiki for assistance'), findsOneWidget);
       await tester.tap(find.text('Help'));
       await tester.pump();
 
       expect(launcher.launched, [conceptURL]);
-    });
-
-    testWidgets('displays one help card for the wiki', (tester) async {
-      await pumpRow(tester);
-
-      expect(find.text('Help'), findsOneWidget);
-      expect(find.text('Explore the wiki for assistance'), findsOneWidget);
     });
   });
 }

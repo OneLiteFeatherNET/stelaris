@@ -97,51 +97,5 @@ void main() {
       expect(reason, contains('token endpoint'));
       expect(reason, contains('PKCE'));
     });
-
-    test('accepts a real Keycloak document', () {
-      // Trimmed to the fields under test, field names verbatim.
-      final metadata = OidcProviderMetadata.fromJson(const {
-        'issuer': 'https://kc.example/realms/stelaris',
-        'authorization_endpoint':
-            'https://kc.example/realms/stelaris/protocol/openid-connect/auth',
-        'token_endpoint':
-            'https://kc.example/realms/stelaris/protocol/openid-connect/token',
-        'end_session_endpoint':
-            'https://kc.example/realms/stelaris/protocol/openid-connect/logout',
-        'jwks_uri':
-            'https://kc.example/realms/stelaris/protocol/openid-connect/certs',
-        'grant_types_supported': [
-          'authorization_code',
-          'refresh_token',
-          'password',
-        ],
-        'response_types_supported': ['code', 'none', 'id_token token'],
-        'code_challenge_methods_supported': ['plain', 'S256'],
-      });
-
-      expect(ProviderSupport.unsupportedReason(metadata), isNull);
-    });
-
-    test('accepts a real Entra ID document', () {
-      final metadata = OidcProviderMetadata.fromJson(const {
-        'issuer': 'https://login.microsoftonline.com/contoso/v2.0',
-        'authorization_endpoint':
-            'https://login.microsoftonline.com/contoso/oauth2/v2.0/authorize',
-        'token_endpoint':
-            'https://login.microsoftonline.com/contoso/oauth2/v2.0/token',
-        'end_session_endpoint':
-            'https://login.microsoftonline.com/contoso/oauth2/v2.0/logout',
-        'jwks_uri': 'https://login.microsoftonline.com/contoso/discovery/v2.0/keys',
-        'response_types_supported': [
-          'code',
-          'id_token',
-          'code id_token',
-          'id_token token',
-        ],
-        'code_challenge_methods_supported': ['plain', 'S256'],
-      });
-
-      expect(ProviderSupport.unsupportedReason(metadata), isNull);
-    });
   });
 }

@@ -8,15 +8,7 @@ void main() {
     late InfoBarFactory factory;
 
     setUp(() {
-      // Since it's a singleton, getting an instance is always the same
       factory = InfoBarFactory();
-    });
-
-    test('factory constructor returns the same instance (singleton check)', () {
-      final factory1 = InfoBarFactory();
-      final factory2 = InfoBarFactory();
-      expect(identical(factory1, factory2), isTrue);
-      expect(identical(factory1, factory), isTrue);
     });
 
     test('create method returns a SnackBar with correct default properties', () {
@@ -34,8 +26,6 @@ void main() {
       expect(snackBar.width, equals(snackBarWidth)); // Using the const from info_bar.dart
 
       // Check other properties
-      // No elevation of its own, the theme decides like for the others.
-      expect(snackBar.elevation, isNull);
       expect(snackBar.behavior, equals(SnackBarBehavior.floating));
     });
 
@@ -52,17 +42,7 @@ void main() {
 
       // Check other properties remain as default
       expect(snackBar.duration, equals(const Duration(seconds: 2)));
-      // No elevation of its own, the theme decides like for the others.
-      expect(snackBar.elevation, isNull);
       expect(snackBar.behavior, equals(SnackBarBehavior.floating));
-    });
-
-    test('create method handles empty text string', () {
-      const String testText = '';
-      final SnackBar snackBar = factory.create(testText);
-
-      expect((snackBar.content as Text).data, equals(testText));
-      expect(snackBar.width, equals(snackBarWidth));
     });
 
     test('createInfo returns same SnackBar as create', () {

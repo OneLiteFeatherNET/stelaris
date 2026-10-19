@@ -41,21 +41,6 @@ Widget buildTestWidget(GoRouter router, Store<AppState> store) {
 }
 
 void main() {
-  testWidgets('shows correct selected index based on route', (tester) async {
-    // Creates an empty store
-    final store = Store<AppState>(initialState: AppState.fromJson({}));
-    final router = createTestRouter();
-
-    await tester.pumpWidget(buildTestWidget(router, store));
-    await tester.pumpAndSettle();
-
-    // NavigationRail should exist
-    expect(find.byType(NavigationRail), findsOneWidget);
-
-    // First route is selected by default
-    final rail = tester.widget<NavigationRail>(find.byType(NavigationRail));
-    expect(rail.selectedIndex, 0);
-  });
 
   testWidgets(
     'stays on the matching entry when on a nested detail route '

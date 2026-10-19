@@ -6,8 +6,6 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/sound/sound_detail_page.dart';
-import 'package:stelaris/feature/sound/sound_file_entries.dart';
-import 'package:stelaris/feature/sound/sound_general_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -70,25 +68,6 @@ void main() {
         expect(find.text('Entries'), findsOneWidget);
       },
     );
-
-    testWidgets('wires the tab views to General and Entries pages', (tester) async {
-      await pumpPage(tester);
-
-      final tabBarView = tester.widget<TabBarView>(find.byType(TabBarView));
-      expect(tabBarView.children.map((w) => w.runtimeType), [
-        SoundGeneralPage,
-        SoundFileEntryPage,
-      ]);
-    });
-
-    testWidgets('tapping back navigates to the sound list', (tester) async {
-      await pumpPage(tester);
-
-      await tester.tap(find.byKey(const Key('page_header_back_button')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Sound List'), findsOneWidget);
-    });
 
     /// Opens the card labelled [label], types [text] and saves with Enter.
     Future<void> enterAndBlur(

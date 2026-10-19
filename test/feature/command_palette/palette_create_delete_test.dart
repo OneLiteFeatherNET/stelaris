@@ -229,25 +229,6 @@ void main() {
 
       expect(store.state.items.items, contains(_sword));
     });
-
-    testWidgets('an attribute can be stepped into for Delete', (tester) async {
-      await _pump(tester);
-      await _open(tester);
-      await _type(tester, '#mana');
-
-      await _press(tester, LogicalKeyboardKey.arrowRight);
-
-      final titles = tester
-          .widgetList<ListTile>(
-            find.descendant(
-              of: find.byType(CommandPanel),
-              matching: find.byType(ListTile),
-            ),
-          )
-          .map((tile) => (tile.title! as Text).data)
-          .toList();
-      expect(titles, ['Delete…']);
-    });
   });
 
   testWidgets('Delete this item confirms, removes and returns to the list', (

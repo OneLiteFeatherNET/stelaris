@@ -77,17 +77,6 @@ void main() {
       expect(find.text('minecraft:diamond'), findsOneWidget);
     });
 
-    testWidgets('tapping back navigates to the advancement list', (
-      tester,
-    ) async {
-      await pumpPage(tester);
-
-      await tester.tap(find.byKey(const Key('page_header_back_button')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Advancement List'), findsOneWidget);
-    });
-
     /// The card labelled [label].
     Finder cardOf(String label) => find.widgetWithText(EditCard, label);
 

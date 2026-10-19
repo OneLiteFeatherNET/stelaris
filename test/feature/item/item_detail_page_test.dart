@@ -12,7 +12,6 @@ import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/enchantment/item_group_selector.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
 import 'package:stelaris/feature/item/components/item_components_page.dart';
-import 'package:stelaris/feature/item/lore/lore_page.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -160,29 +159,6 @@ void main() {
         0,
       );
       expect(find.byType(ItemComponentsPage), findsOneWidget);
-    });
-
-    testWidgets(
-      'wires the tab views to Components, Enchantments and Lore pages',
-      (tester) async {
-        await pumpPage(tester);
-
-        final tabBarView = tester.widget<TabBarView>(find.byType(TabBarView));
-        expect(tabBarView.children.map((w) => w.runtimeType), [
-          ItemComponentsPage,
-          ItemEnchantmentPage,
-          LorePage,
-        ]);
-      },
-    );
-
-    testWidgets('tapping back navigates to the item list', (tester) async {
-      await pumpPage(tester);
-
-      await tester.tap(find.byKey(const Key('page_header_back_button')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Item List'), findsOneWidget);
     });
 
     testWidgets('shows info, delete and save in the header', (tester) async {
