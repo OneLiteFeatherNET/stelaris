@@ -9,116 +9,17 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/command_palette/command_palette.dart';
 import 'package:stelaris/feature/command_palette/command_panel.dart';
-import 'package:stelaris/feature/base/search/app_bar_search.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/feature/dialogs/model_delete_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/fake_http_client_adapter.dart';
+import '../../support/palette.dart';
 import '../../support/pump_until.dart';
 
-PaginatedResult<T> _page<T>(List<T> items) => PaginatedResult<T>(
-  items: items,
-  totalItems: items.length,
-  totalPages: 1,
-  currentPage: 1,
-  pageSize: 10,
-);
-
 const ItemModel _sword = ItemModel(uiName: 'Diamond Sword', id: 'i1');
-
-Future<(Store<AppState>, GoRouter)> _pump(
-  WidgetTester tester, {
-  String at = '/fonts',
-  ItemModel? selectedItem,
-}) async {
-  tester.view.physicalSize = const Size(1600, 900);
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.reset);
-  final store = Store<AppState>(
-    initialState: const AppState().copyWith(
-      selectedProject: const Project(
-        id: 'p1',
-        key: 'eldoria_rpg',
-        displayName: 'Eldoria RPG',
-      ),
-      items: _page(const [_sword]),
-      attributes: _page(const [AttributeModel(uiName: 'Max Mana', id: 'a1')]),
-      selectedItem: selectedItem,
-    ),
-    // Adding and removing talk to the API; the tests that need an answer
-    // fake one, the others only care what the palette does around it.
-    globalErrorObserver: (_) => SwallowGlobalErrorObserver<AppState>(),
-  );
-  final router = GoRouter(
-    initialLocation: at,
-    routes: [
-      ShellRoute(
-        builder: (context, state, child) => CommandPaletteShortcuts(
-          child: Scaffold(
-            appBar: AppBar(title: const AppBarSearch()),
-            body: child,
-          ),
-        ),
-        routes: [
-          GoRoute(path: '/fonts', builder: (_, _) => const Text('fonts page')),
-          GoRoute(
-            path: '/items',
-            builder: (_, _) => const Text('items page'),
-            routes: [
-              GoRoute(
-                path: 'detail',
-                builder: (_, _) => const Text('item detail'),
-              ),
-            ],
-          ),
-          GoRoute(
-            path: '/attributes',
-            builder: (_, _) => const Text('attributes page'),
-          ),
-        ],
-      ),
-    ],
-  );
-  await tester.pumpWidget(
-    StoreProvider<AppState>(
-      store: store,
-      child: MaterialApp.router(
-        routerConfig: router,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-      ),
-    ),
-  );
-  await tester.pumpAndSettle();
-  return (store, router);
-}
-
-Future<void> _open(WidgetTester tester) async {
-  await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
-  await tester.sendKeyEvent(LogicalKeyboardKey.keyK);
-  await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
-  await tester.pumpAndSettle();
-}
-
-Future<void> _type(WidgetTester tester, String text) async {
-  await tester.enterText(
-    find.descendant(
-      of: find.byType(AppBarSearch),
-      matching: find.byType(TextField),
-    ),
-    text,
-  );
-  await tester.pumpAndSettle();
-}
-
-Future<void> _press(WidgetTester tester, LogicalKeyboardKey key) async {
-  await tester.sendKeyEvent(key);
-  await tester.pumpAndSettle();
-}
 
 Future<void> _confirmDelete(
   WidgetTester tester,
@@ -150,6 +51,35 @@ Future<void> _confirmDelete(
   await tester.pumpAndSettle();
 }
 
+Future<(Store<AppState>, GoRouter)> _pump(
+  WidgetTester tester, {
+  String at = '/fonts',
+  ItemModel? selectedItem,
+}) async {
+  final store = Store<AppState>(
+    initialState: const AppState().copyWith(
+      selectedProject: const Project(
+        id: 'p1',
+        key: 'eldoria_rpg',
+        displayName: 'Eldoria RPG',
+      ),
+      items: pageOf(const [_sword]),
+      attributes: pageOf(const [AttributeModel(uiName: 'Max Mana', id: 'a1')]),
+      selectedItem: selectedItem,
+    ),
+    // Adding and removing talk to the API; the tests that need an answer
+    // fake one, the others only care what the palette does around it.
+    globalErrorObserver: (_) => SwallowGlobalErrorObserver<AppState>(),
+  );
+  final router = await pumpPaletteShell(
+    tester,
+    store,
+    pages: palettePages(),
+    at: at,
+  );
+  return (store, router);
+}
+
 void main() {
   group('create', () {
     testWidgets('New item opens the item dialog; submitting shows Items', (
@@ -167,9 +97,9 @@ void main() {
             ).toJson(),
           );
       final (_, router) = await _pump(tester);
-      await _open(tester);
-      await _type(tester, '>new item');
-      await _press(tester, LogicalKeyboardKey.enter);
+      await pressCtrlK(tester);
+      await typeInPalette(tester, '>new item');
+      await pressKey(tester, LogicalKeyboardKey.enter);
 
       expect(find.byType(ModelCreateDialog), findsOneWidget);
       expect(
@@ -196,9 +126,9 @@ void main() {
 
     testWidgets('cancelling stays where the user was', (tester) async {
       final (_, router) = await _pump(tester);
-      await _open(tester);
-      await _type(tester, '>new item');
-      await _press(tester, LogicalKeyboardKey.enter);
+      await pressCtrlK(tester);
+      await typeInPalette(tester, '>new item');
+      await pressKey(tester, LogicalKeyboardKey.enter);
 
       await tester.tap(find.text('Cancel'));
       await tester.pumpAndSettle();
@@ -213,12 +143,12 @@ void main() {
       tester,
     ) async {
       final (store, _) = await _pump(tester);
-      await _open(tester);
-      await _type(tester, '#sword');
-      await _press(tester, LogicalKeyboardKey.arrowRight);
-      await _type(tester, 'delete');
+      await pressCtrlK(tester);
+      await typeInPalette(tester, '#sword');
+      await pressKey(tester, LogicalKeyboardKey.arrowRight);
+      await typeInPalette(tester, 'delete');
 
-      await _press(tester, LogicalKeyboardKey.enter);
+      await pressKey(tester, LogicalKeyboardKey.enter);
 
       expect(find.byType(CommandPanel), findsNothing);
       expect(find.byType(ModelDeleteDialog<ItemModel>), findsOneWidget);
@@ -241,9 +171,9 @@ void main() {
       at: '/items/detail',
       selectedItem: _sword,
     );
-    await _open(tester);
-    await _type(tester, '>delete this');
-    await _press(tester, LogicalKeyboardKey.enter);
+    await pressCtrlK(tester);
+    await typeInPalette(tester, '>delete this');
+    await pressKey(tester, LogicalKeyboardKey.enter);
     expect(find.byType(ModelDeleteDialog<ItemModel>), findsOneWidget);
 
     await _confirmDelete(tester, store, 'Diamond Sword');

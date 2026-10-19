@@ -9,13 +9,12 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/command_palette/command.dart';
-import 'package:stelaris/feature/command_palette/command_palette.dart';
 import 'package:stelaris/feature/command_palette/command_panel.dart';
-import 'package:stelaris/feature/base/search/app_bar_search.dart';
 import 'package:stelaris/feature/command_palette/command_registry.dart';
 import 'package:stelaris/feature/command_palette/commands.dart';
 import 'package:stelaris/feature/settings/settings_dialog.dart';
-import 'package:stelaris/l10n/app_localizations.dart';
+
+import '../../support/palette.dart';
 
 final List<String> _ran = [];
 
@@ -29,63 +28,22 @@ StelarisCommand _command(String title, {CommandGroup? group}) {
   );
 }
 
-/// A page with the palette shortcut installed and a text field to focus.
-Future<void> _pump(WidgetTester tester, CommandRegistry registry) async {
-  tester.view.physicalSize = const Size(1600, 900);
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.reset);
-  final router = GoRouter(
-    initialLocation: '/items',
-    routes: [
-      GoRoute(
-        path: '/items',
-        builder: (context, state) => CommandPaletteShortcuts(
-          registry: registry,
-          child: Scaffold(
-            appBar: AppBar(title: const AppBarSearch()),
-            body: const TextField(key: Key('page-field')),
-          ),
-        ),
-      ),
-    ],
-  );
-  await tester.pumpWidget(
-    StoreProvider<AppState>(
-      store: Store<AppState>(initialState: const AppState()),
-      child: MaterialApp.router(
-        routerConfig: router,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-      ),
-    ),
-  );
-  await tester.pumpAndSettle();
-}
-
-Future<void> _pressCtrlK(WidgetTester tester) async {
-  await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
-  await tester.sendKeyEvent(LogicalKeyboardKey.keyK);
-  await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
-  await tester.pumpAndSettle();
-}
-
-Future<void> _press(WidgetTester tester, LogicalKeyboardKey key) async {
-  await tester.sendKeyEvent(key);
-  await tester.pumpAndSettle();
-}
-
 Finder get _palette => find.byType(CommandPanel);
 
-Finder get _paletteField => find.descendant(
-  of: find.byType(AppBarSearch),
-  matching: find.byType(TextField),
-);
-
-bool _highlighted(WidgetTester tester, String title) {
-  final tile = tester.widget<ListTile>(
-    find.ancestor(of: find.text(title), matching: find.byType(ListTile)),
+/// A page with the palette shortcut installed and a text field to focus.
+Future<void> _pump(WidgetTester tester, CommandRegistry registry) async {
+  await pumpPaletteShell(
+    tester,
+    Store<AppState>(initialState: const AppState()),
+    pages: [
+      GoRoute(
+        path: '/items',
+        builder: (_, _) => const TextField(key: Key('page-field')),
+      ),
+    ],
+    at: '/items',
+    registry: registry,
   );
-  return tile.selected;
 }
 
 void main() {
@@ -103,7 +61,7 @@ void main() {
       tester,
     ) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
 
       expect(_palette, findsOneWidget);
       for (final title in ['Alpha', 'Bravo', 'Charlie', 'Toggle dark mode']) {
@@ -114,9 +72,9 @@ void main() {
 
     testWidgets('typing narrows the list to matching commands', (tester) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
 
-      await tester.enterText(_paletteField, 'dark');
+      await tester.enterText(paletteField, 'dark');
       await tester.pumpAndSettle();
 
       expect(find.text('Toggle dark mode'), findsOneWidget);
@@ -132,9 +90,9 @@ void main() {
       tester,
     ) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
 
-      await tester.enterText(_paletteField, 'zzzz');
+      await tester.enterText(paletteField, 'zzzz');
       await tester.pumpAndSettle();
 
       expect(find.text('No matching commands'), findsOneWidget);
@@ -158,11 +116,11 @@ void main() {
   group('keyboard', () {
     testWidgets('Down, Down, Enter runs the third entry', (tester) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
 
-      await _press(tester, LogicalKeyboardKey.arrowDown);
-      await _press(tester, LogicalKeyboardKey.arrowDown);
-      await _press(tester, LogicalKeyboardKey.enter);
+      await pressKey(tester, LogicalKeyboardKey.arrowDown);
+      await pressKey(tester, LogicalKeyboardKey.arrowDown);
+      await pressKey(tester, LogicalKeyboardKey.enter);
 
       expect(_ran, ['Charlie']);
       expect(_palette, findsNothing);
@@ -172,23 +130,23 @@ void main() {
       tester,
     ) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
-      expect(_highlighted(tester, 'Alpha'), isTrue);
+      await pressCtrlK(tester);
+      expect(isHighlighted(tester, 'Alpha'), isTrue);
 
-      await _press(tester, LogicalKeyboardKey.arrowUp);
+      await pressKey(tester, LogicalKeyboardKey.arrowUp);
 
-      expect(_highlighted(tester, 'Toggle dark mode'), isTrue);
-      expect(_highlighted(tester, 'Alpha'), isFalse);
+      expect(isHighlighted(tester, 'Toggle dark mode'), isTrue);
+      expect(isHighlighted(tester, 'Alpha'), isFalse);
     });
 
     testWidgets('Down on the last entry wraps to the first', (tester) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
 
-      await _press(tester, LogicalKeyboardKey.arrowUp);
-      await _press(tester, LogicalKeyboardKey.arrowDown);
+      await pressKey(tester, LogicalKeyboardKey.arrowUp);
+      await pressKey(tester, LogicalKeyboardKey.arrowDown);
 
-      expect(_highlighted(tester, 'Alpha'), isTrue);
+      expect(isHighlighted(tester, 'Alpha'), isTrue);
     });
 
     testWidgets('wrapping keeps the highlighted entry in view in a list '
@@ -198,25 +156,25 @@ void main() {
           _command('Command ${i.toString().padLeft(2, '0')}'),
       ]);
       await _pump(tester, long);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
 
       // Up from the first entry wraps to the last, far below the fold.
-      await _press(tester, LogicalKeyboardKey.arrowUp);
-      expect(_highlighted(tester, 'Command 29'), isTrue);
+      await pressKey(tester, LogicalKeyboardKey.arrowUp);
+      expect(isHighlighted(tester, 'Command 29'), isTrue);
       expect(find.text('Command 29').hitTestable(), findsOneWidget);
 
       // Down from the last wraps back to the first, far above it.
-      await _press(tester, LogicalKeyboardKey.arrowDown);
-      expect(_highlighted(tester, 'Command 00'), isTrue);
+      await pressKey(tester, LogicalKeyboardKey.arrowDown);
+      expect(isHighlighted(tester, 'Command 00'), isTrue);
       expect(find.text('Command 00').hitTestable(), findsOneWidget);
     });
 
     testWidgets('changing the query resets the highlight', (tester) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
-      await _press(tester, LogicalKeyboardKey.arrowDown);
+      await pressCtrlK(tester);
+      await pressKey(tester, LogicalKeyboardKey.arrowDown);
 
-      await tester.enterText(_paletteField, 'a');
+      await tester.enterText(paletteField, 'a');
       await tester.pumpAndSettle();
 
       final first = tester.widgetList<ListTile>(find.byType(ListTile)).first;
@@ -225,9 +183,9 @@ void main() {
 
     testWidgets('Escape closes without running anything', (tester) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
 
-      await _press(tester, LogicalKeyboardKey.escape);
+      await pressKey(tester, LogicalKeyboardKey.escape);
 
       expect(_palette, findsNothing);
       expect(_ran, isEmpty);
@@ -237,7 +195,7 @@ void main() {
       tester,
     ) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
 
       await tester.tapAt(const Offset(5, 5));
       await tester.pumpAndSettle();
@@ -248,10 +206,10 @@ void main() {
 
     testWidgets('the shortcut closes an open palette', (tester) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
       expect(_palette, findsOneWidget);
 
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
 
       expect(_palette, findsNothing);
       expect(_ran, isEmpty);
@@ -272,7 +230,7 @@ void main() {
   group('running', () {
     testWidgets('clicking a command runs it', (tester) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
 
       await tester.tap(find.text('Bravo'));
       await tester.pumpAndSettle();
@@ -285,12 +243,12 @@ void main() {
       tester,
     ) async {
       await _pump(tester, CommandRegistry(pocCommands()));
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
 
       // The prefix keeps the filter entry away, so Enter runs the command.
-      await tester.enterText(_paletteField, '>open settings');
+      await tester.enterText(paletteField, '>open settings');
       await tester.pumpAndSettle();
-      await _press(tester, LogicalKeyboardKey.enter);
+      await pressKey(tester, LogicalKeyboardKey.enter);
 
       expect(_palette, findsNothing);
       expect(find.byType(SettingsDialog), findsOneWidget);
@@ -301,8 +259,8 @@ void main() {
   group('highlight and key hints', () {
     testWidgets('pointing at an entry moves the one highlight', (tester) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
-      expect(_highlighted(tester, 'Alpha'), isTrue);
+      await pressCtrlK(tester);
+      expect(isHighlighted(tester, 'Alpha'), isTrue);
 
       final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await mouse.addPointer(location: Offset.zero);
@@ -310,8 +268,8 @@ void main() {
       await mouse.moveTo(tester.getCenter(find.text('Charlie')));
       await tester.pumpAndSettle();
 
-      expect(_highlighted(tester, 'Charlie'), isTrue);
-      expect(_highlighted(tester, 'Alpha'), isFalse);
+      expect(isHighlighted(tester, 'Charlie'), isTrue);
+      expect(isHighlighted(tester, 'Alpha'), isFalse);
       final charlie = tester.widget<ListTile>(
         find.ancestor(
           of: find.text('Charlie'),
@@ -323,14 +281,14 @@ void main() {
 
     testWidgets('the key hints are shown under the list', (tester) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
       final hints = find.byKey(const Key('command-palette-key-hints'));
 
       for (final query in ['', '>', '#', '@', '/', '?', 'zzzz']) {
-        await tester.enterText(_paletteField, query);
+        await tester.enterText(paletteField, query);
         await tester.pumpAndSettle();
         expect(hints, findsOneWidget, reason: query);
-        await tester.enterText(_paletteField, '');
+        await tester.enterText(paletteField, '');
         await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
         await tester.pumpAndSettle();
       }
@@ -354,9 +312,9 @@ void main() {
           _command('Command ${i.toString().padLeft(2, '0')}'),
       ]);
       await _pump(tester, long);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
 
-      await _press(tester, LogicalKeyboardKey.arrowUp);
+      await pressKey(tester, LogicalKeyboardKey.arrowUp);
 
       final Rect last = tester.getRect(
         find.ancestor(
@@ -374,13 +332,13 @@ void main() {
   testWidgets('the search icon lines up with the text beside it and with '
       'the entries below', (tester) async {
     await _pump(tester, registry);
-    await _pressCtrlK(tester);
+    await pressCtrlK(tester);
 
     final Rect icon = tester.getRect(
       find.byKey(const Key('command-palette-search-icon')),
     );
     final Rect text = tester.getRect(
-      find.descendant(of: _paletteField, matching: find.byType(EditableText)),
+      find.descendant(of: paletteField, matching: find.byType(EditableText)),
     );
     final Finder firstTile = find
         .descendant(
@@ -402,9 +360,9 @@ void main() {
     tester,
   ) async {
     await _pump(tester, registry);
-    await _pressCtrlK(tester);
+    await pressCtrlK(tester);
 
-    await tester.enterText(_paletteField, '>');
+    await tester.enterText(paletteField, '>');
     await tester.pumpAndSettle();
 
     final Rect chip = tester.getRect(
@@ -428,9 +386,9 @@ void main() {
 
   testWidgets('the mode chip is a pill like the field', (tester) async {
     await _pump(tester, registry);
-    await _pressCtrlK(tester);
+    await pressCtrlK(tester);
 
-    await tester.enterText(_paletteField, '>');
+    await tester.enterText(paletteField, '>');
     await tester.pumpAndSettle();
 
     final InputChip chip = tester.widget<InputChip>(
@@ -446,10 +404,10 @@ void main() {
 
     testWidgets('typing keeps the rows that still match', (tester) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
       final Element before = rowOf(tester, 'Charlie');
 
-      await tester.enterText(_paletteField, 'c');
+      await tester.enterText(paletteField, 'c');
       await tester.pumpAndSettle();
 
       expect(identical(rowOf(tester, 'Charlie'), before), isTrue);
@@ -463,27 +421,27 @@ void main() {
       tester,
     ) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
-      final Widget field = tester.widget(_paletteField);
+      await pressCtrlK(tester);
+      final Widget field = tester.widget(paletteField);
 
-      await _press(tester, LogicalKeyboardKey.arrowDown);
+      await pressKey(tester, LogicalKeyboardKey.arrowDown);
 
-      expect(_highlighted(tester, 'Bravo'), isTrue);
-      expect(identical(tester.widget(_paletteField), field), isTrue);
+      expect(isHighlighted(tester, 'Bravo'), isTrue);
+      expect(identical(tester.widget(paletteField), field), isTrue);
     });
 
     testWidgets('moving the highlight leaves uninvolved rows alone', (
       tester,
     ) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
+      await pressCtrlK(tester);
       ListTile tile(String title) => tester.widget<ListTile>(
         find.ancestor(of: find.text(title), matching: find.byType(ListTile)),
       );
       final ListTile charlie = tile('Charlie');
       final ListTile alpha = tile('Alpha');
 
-      await _press(tester, LogicalKeyboardKey.arrowDown);
+      await pressKey(tester, LogicalKeyboardKey.arrowDown);
 
       // Alpha lost the highlight, Bravo gained it; Charlie was not rebuilt.
       expect(identical(tile('Charlie'), charlie), isTrue);
@@ -492,8 +450,8 @@ void main() {
 
     testWidgets('hovering leaves the search field alone', (tester) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
-      final Widget field = tester.widget(_paletteField);
+      await pressCtrlK(tester);
+      final Widget field = tester.widget(paletteField);
       final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await mouse.addPointer(location: Offset.zero);
       addTearDown(mouse.removePointer);
@@ -501,27 +459,27 @@ void main() {
       await mouse.moveTo(tester.getCenter(find.text('Charlie')));
       await tester.pumpAndSettle();
 
-      expect(_highlighted(tester, 'Charlie'), isTrue);
-      expect(identical(tester.widget(_paletteField), field), isTrue);
+      expect(isHighlighted(tester, 'Charlie'), isTrue);
+      expect(identical(tester.widget(paletteField), field), isTrue);
     });
 
     testWidgets('a resize keeps the highlight', (tester) async {
       await _pump(tester, registry);
-      await _pressCtrlK(tester);
-      await _press(tester, LogicalKeyboardKey.arrowDown);
+      await pressCtrlK(tester);
+      await pressKey(tester, LogicalKeyboardKey.arrowDown);
 
       tester.view.physicalSize = const Size(1400, 1000);
       addTearDown(tester.view.reset);
       await tester.pumpAndSettle();
 
-      expect(_highlighted(tester, 'Bravo'), isTrue);
+      expect(isHighlighted(tester, 'Bravo'), isTrue);
     });
   });
 
   testWidgets('rows paint their highlight on the clipped list, not on the '
       'dropdown, so it cannot bleed over the key hints', (tester) async {
     await _pump(tester, registry);
-    await _pressCtrlK(tester);
+    await pressCtrlK(tester);
 
     final Material inkSurface = tester.widget<Material>(
       find
