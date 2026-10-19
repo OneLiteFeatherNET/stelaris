@@ -11,6 +11,7 @@ class PageHeader extends StatelessWidget {
     this.actions = const [],
     this.onBack,
     this.showUnsavedIndicator = false,
+    this.compactBelow = compactThreshold,
     super.key,
   }) : _small = false;
 
@@ -22,11 +23,17 @@ class PageHeader extends StatelessWidget {
     super.key,
   }) : onBack = null,
        showUnsavedIndicator = false,
+       compactBelow = compactThreshold,
        _small = true;
 
   /// Below this width, [PageHeaderAction]s drop their label and render as
   /// icon-only buttons, leaving the title room to breathe.
   static const double compactThreshold = 480;
+
+  /// The width below which a detail page's header goes icon-only: a detail
+  /// page carries more actions than a list, up to about 760px with their
+  /// labels, plus the back arrow and some of the title.
+  static const double detailCompactThreshold = 960;
 
   static const double _height = 48;
 
@@ -34,6 +41,10 @@ class PageHeader extends StatelessWidget {
   final List<Widget> actions;
   final VoidCallback? onBack;
   final bool showUnsavedIndicator;
+
+  /// The width below which the actions render icon-only, see
+  /// [compactThreshold].
+  final double compactBelow;
 
   final bool _small;
 
@@ -44,7 +55,7 @@ class PageHeader extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final compact = constraints.maxWidth < compactThreshold;
+        final compact = constraints.maxWidth < compactBelow;
         return SizedBox(
           height: _height,
           child: Row(

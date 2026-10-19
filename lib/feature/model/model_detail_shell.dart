@@ -41,6 +41,7 @@ class ModelDetailShell extends StatelessWidget {
                 title: title ?? '',
                 onBack: () => context.go(entry.route),
                 showUnsavedIndicator: hasUnsavedChanges,
+                compactBelow: PageHeader.detailCompactThreshold,
                 actions: actions,
               ),
             ),

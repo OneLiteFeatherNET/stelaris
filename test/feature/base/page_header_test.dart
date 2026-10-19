@@ -96,6 +96,28 @@ void main() {
     expect(find.byTooltip('Add'), findsOneWidget);
   });
 
+  testWidgets('a header can collapse its actions earlier', (tester) async {
+    await tester.pumpWidget(
+      wrap(
+        width: 700,
+        PageHeader(
+          title: 'Sword',
+          compactBelow: 960,
+          actions: [
+            PageHeaderAction(
+              icon: const Icon(Icons.save),
+              label: 'Save',
+              onPressed: () {},
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.text('Save'), findsNothing);
+    expect(find.byTooltip('Save'), findsOneWidget);
+  });
+
   testWidgets('a loading action shows a spinner and is disabled', (
     tester,
   ) async {
