@@ -209,7 +209,7 @@ class AdvancementRemoveAction extends ReduxAction<AppState> {
     final List<AdvancementModel> updatedList = List.of(
       state.advancements.items,
       growable: true,
-    )..remove(model);
+    )..removeWhere((element) => element.id == model.id);
 
     // The selection stays: when deleting from the detail page, that page is
     // still mounted during its exit transition and reads it. The page's

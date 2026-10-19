@@ -155,7 +155,7 @@ class SoundRemoveAction extends ReduxAction<AppState> {
     final List<SoundEventModel> updatedList = List.of(
       state.soundEvents.items,
       growable: true,
-    )..remove(model);
+    )..removeWhere((element) => element.id == model.id);
 
     // The selection stays: when deleting from the detail page, that page is
     // still mounted during its exit transition and reads it. The page's

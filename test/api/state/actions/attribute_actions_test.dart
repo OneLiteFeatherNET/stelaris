@@ -19,6 +19,8 @@ void main() {
     listOf: (state) => state.attributes,
     withList: (state, list) => state.copyWith(attributes: list),
     isLoadingMore: (state) => state.isLoadingAttributesMore,
+    selectedOf: (state) => state.selectedAttribute,
+    withSelected: (state, model) => state.copyWith(selectedAttribute: model),
     init: InitAttributeAction.new,
     refresh: RefreshAttributeAction.new,
     add: AttributeAddAction.new,

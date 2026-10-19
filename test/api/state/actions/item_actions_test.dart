@@ -20,6 +20,8 @@ void main() {
     listOf: (state) => state.items,
     withList: (state, list) => state.copyWith(items: list),
     isLoadingMore: (state) => state.isLoadingMoreItems,
+    selectedOf: (state) => state.selectedItem,
+    withSelected: (state, model) => state.copyWith(selectedItem: model),
     init: InitItemAction.new,
     refresh: RefreshItemAction.new,
     add: ItemAddAction.new,
