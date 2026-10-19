@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/paginated_loading.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
@@ -108,14 +109,9 @@ class ItemEnchantmentAddAction extends ReduxAction<AppState> {
       itemEnchantmentDto,
     );
 
-    final ench = selectedItem.enchantments;
-
-    final updatedEnchantments = ench.copyWith(
-      items: [...ench.items, added], // clone & append
-      totalItems: ench.totalItems + 1,
+    final updated = selectedItem.copyWith(
+      enchantments: selectedItem.enchantments.adding(added),
     );
-
-    final updated = selectedItem.copyWith(enchantments: updatedEnchantments);
 
     return state.copyWith(selectedItem: updated);
   }
@@ -146,14 +142,11 @@ class ItemEnchantmentDeleteAction extends ReduxAction<AppState> {
       enchantmentDto,
     );
 
-    final ench = selectedItem.enchantments;
-
-    final updatedEnchantments = ench.copyWith(
-      items: ench.items.where((x) => x.id != removed.id).toList(),
-      totalItems: ench.totalItems - 1,
+    final updated = selectedItem.copyWith(
+      enchantments: selectedItem.enchantments.removingWhere(
+        (x) => x.id == removed.id,
+      ),
     );
-
-    final updated = selectedItem.copyWith(enchantments: updatedEnchantments);
 
     return state.copyWith(selectedItem: updated);
   }
@@ -184,15 +177,12 @@ class ItemEnchantmentUpdateAction extends ReduxAction<AppState> {
       itemEnchantmentDto,
     );
 
-    final ench = selectedItem.enchantments;
-
-    final updatedList = ench.items
-        .map((e) => e.id == updatedEnchantment.id ? updatedEnchantment : e)
-        .toList();
-
-    final updatedEnchantments = ench.copyWith(items: updatedList);
-
-    final updated = selectedItem.copyWith(enchantments: updatedEnchantments);
+    final updated = selectedItem.copyWith(
+      enchantments: selectedItem.enchantments.replacingWhere(
+        (e) => e.id == updatedEnchantment.id,
+        updatedEnchantment,
+      ),
+    );
 
     return state.copyWith(selectedItem: updated);
   }

@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/paginated_loading.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/service/client/sound_client_api.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -58,15 +59,10 @@ class SoundFileLinkAction extends ReduxAction<AppState> {
     final SoundEventModel? current = _stillSelected(state, soundModel);
     if (current == null) return null;
 
-    // Create a new PaginatedResult with the new list and updated counts
-    final PaginatedResult<SoundFileSource>
-    updatedSources = current.files.copyWith(
-      items: [...current.files.items, linkedFile],
-      totalItems: current.files.totalItems + 1, // Adjust counts as necessary
-      // Potentially update totalPages if this new item pushes it to a new page
-    );
     return state.copyWith(
-      selectedSoundEvent: current.copyWith(files: updatedSources),
+      selectedSoundEvent: current.copyWith(
+        files: current.files.adding(linkedFile),
+      ),
     );
   }
 }
@@ -92,19 +88,13 @@ class SoundFileUpdateAction extends ReduxAction<AppState> {
     final SoundEventModel? current = _stillSelected(state, soundModel);
     if (current == null) return null;
 
-    // Create a new list with the updated item
-    final List<SoundFileSource> list = List.of(current.files.items);
-    final int index = list.indexWhere((file) => file.id == updatedFile.id);
-    if (index != -1) {
-      list[index] = updatedFile;
-    }
-
-    // Create a new PaginatedResult with the updated list
-    final PaginatedResult<SoundFileSource> updatedSources = current.files
-        .copyWith(items: list);
-
     return state.copyWith(
-      selectedSoundEvent: current.copyWith(files: updatedSources),
+      selectedSoundEvent: current.copyWith(
+        files: current.files.replacingWhere(
+          (file) => file.id == updatedFile.id,
+          updatedFile,
+        ),
+      ),
     );
   }
 }
@@ -129,24 +119,11 @@ class SoundFileSourceDeleteAction extends ReduxAction<AppState> {
     final SoundEventModel? current = _stillSelected(state, model);
     if (current == null) return null;
 
-    final PaginatedResult<SoundFileSource> entries = current.files;
-
-    final List<SoundFileSource> updatedFiles = List.of(
-      entries.items,
-      growable: true,
-    );
-    updatedFiles.removeWhere((file) => file.id == deletedFile.id);
-
-    final updatedSoundEvent = current.copyWith(
-      files: entries.copyWith(
-        items: updatedFiles,
-        currentPage: entries.currentPage,
-        totalPages: entries.totalPages,
-        totalItems: entries.totalItems - 1,
+    return state.copyWith(
+      selectedSoundEvent: current.copyWith(
+        files: current.files.removingWhere((file) => file.id == deletedFile.id),
       ),
     );
-
-    return state.copyWith(selectedSoundEvent: updatedSoundEvent);
   }
 }
 
