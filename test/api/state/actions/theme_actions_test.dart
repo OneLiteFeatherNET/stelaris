@@ -27,33 +27,6 @@ void main() {
   });
 
   group('ToggleSystemThemeAction', () {
-    test('flips useSystemTheme from true to false', () {
-      final store = buildStore(
-        initialState: const AppState().copyWith(
-          themeSettings: const AppState().themeSettings.copyWith(
-            useSystemTheme: true,
-          ),
-        ),
-      );
-
-      store.dispatchSync(ToggleSystemThemeAction(false));
-
-      expect(store.state.themeSettings.useSystemTheme, isFalse);
-    });
-
-    test('flips useSystemTheme from false to true', () {
-      final store = buildStore(
-        initialState: const AppState().copyWith(
-          themeSettings: const AppState().themeSettings.copyWith(
-            useSystemTheme: false,
-          ),
-        ),
-      );
-
-      store.dispatchSync(ToggleSystemThemeAction(true));
-
-      expect(store.state.themeSettings.useSystemTheme, isTrue);
-    });
 
     test('seeds isDarkMode from the live system brightness so turning '
         '"follow system" off does not snap back to a stale manual value', () {

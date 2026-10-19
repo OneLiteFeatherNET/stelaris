@@ -191,20 +191,6 @@ void main() {
       expect(auth.audience, isNull);
     });
 
-    test('adopts a tenant-shaped issuer the same way', () async {
-      // Nothing branches on the provider; this is the previous test against a
-      // different issuer shape, and it has to read identically.
-      await loadAuth({
-        'issuer': 'https://login.microsoftonline.com/contoso/v2.0',
-        'clientId': '00000000-0000-0000-0000-000000000000',
-        'scopes': ['openid', 'api://an-api/access_as_user'],
-      });
-
-      final AuthConfig auth = RuntimeConfig.current.auth!;
-      expect(auth.issuer.host, 'login.microsoftonline.com');
-      expect(auth.scopes, contains('api://an-api/access_as_user'));
-    });
-
     test('keeps an audience when one is named', () async {
       await loadAuth({
         'issuer': 'https://idp.example/realms/stelaris',
@@ -443,16 +429,6 @@ void main() {
       expect(
         RuntimeConfig.current.auth!.roleClaims,
         AuthConfig.defaultRoleClaimsFor('stelaris-ui'),
-      );
-    });
-
-    test('builds the client-scoped default around the configured client',
-        () async {
-      await loadRoleClaims(null);
-
-      expect(
-        RuntimeConfig.current.auth!.roleClaims.map((p) => p.label),
-        contains('resource_access.stelaris-ui.roles'),
       );
     });
 

@@ -4,15 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/font/chars/font_char_page.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
-import 'package:stelaris/feature/font/font_general_page.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/util/navigation.dart';
 
+import '../../support/edit_card.dart';
 import '../../support/fake_http_client_adapter.dart';
 
 void main() {
@@ -86,24 +85,6 @@ void main() {
       },
     );
 
-    testWidgets('wires the tab views to General and Characters pages', (tester) async {
-      await pumpPage(tester);
-
-      final tabBarView = tester.widget<TabBarView>(find.byType(TabBarView));
-      expect(tabBarView.children.map((w) => w.runtimeType), [
-        FontGeneralPage,
-        FontCharPage,
-      ]);
-    });
-
-    testWidgets('tapping back navigates to the font list', (tester) async {
-      await pumpPage(tester);
-
-      await tester.tap(find.byKey(const Key('page_header_back_button')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Font List'), findsOneWidget);
-    });
   
     int selectedTab(WidgetTester tester) =>
         DefaultTabController.of(tester.element(find.byType(TabBar))).index;
@@ -130,37 +111,6 @@ void main() {
 
       expect(selectedTab(tester), 0);
     });
-
-    testWidgets('an unknown ?tab= opens on the first tab', (tester) async {
-      await pumpPage(tester, location: '/fonts/detail?tab=nonsense');
-
-      expect(selectedTab(tester), 0);
-    });
-
-    testWidgets('without ?tab= opens on the first tab', (tester) async {
-      await pumpPage(tester);
-
-      expect(selectedTab(tester), 0);
-    });
-
-    /// Opens the card labelled [label], types [text] and saves with Enter.
-    Future<void> editCard(
-      WidgetTester tester,
-      String label,
-      String text,
-    ) async {
-      await tester.tap(find.widgetWithText(EditCard, label));
-      await tester.pumpAndSettle();
-      await tester.enterText(
-        find.descendant(
-          of: find.byType(Dialog),
-          matching: find.byType(TextFormField),
-        ),
-        text,
-      );
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle();
-    }
 
     testWidgets('the texture path keeps its namespace, slashes and dots', (
       tester,

@@ -55,8 +55,6 @@ void main() {
   tearDown(AuthSessions.reset);
 
   group('with no identity provider configured', () {
-    setUp(AuthSessions.reset);
-
     testWidgets('nothing is guarded', (tester) async {
       // The rollout gate at the routing layer: a deployment that has not opted
       // in must reach its pages exactly as before.
@@ -72,7 +70,6 @@ void main() {
 
   group('with a provider configured and nobody signed in', () {
     setUp(() async {
-      AuthSessions.reset();
       // init() cannot reach the invalid issuer, which leaves the session
       // unavailable - and unavailable is the state the sign-in page explains
       // rather than one the guard redirects away from.
@@ -82,46 +79,20 @@ void main() {
       );
     });
 
-    testWidgets('a deep link is sent to sign in, not into the app',
+    testWidgets('a deep link is sent to sign in, carrying the route along',
         (tester) async {
+      // The provider is unreachable here, which must not degrade into a
+      // deployment without authentication: the guard still guards.
       await pumpAt(tester, '/items/detail');
       await tester.pumpAndSettle();
 
       expect(find.text('item detail'), findsNothing);
-      expect(find.textContaining('sign in'), findsOneWidget);
-    });
-
-    testWidgets('the route that was asked for is carried along',
-        (tester) async {
-      // Without this, signing in from a deep link lands on a default page and
-      // the link the person followed is simply lost.
-      await pumpAt(tester, '/items/detail');
-      await tester.pumpAndSettle();
-
-      expect(find.text('sign in from /items/detail'), findsOneWidget);
-    });
-
-    testWidgets('authentication is decided before project selection',
-        (tester) async {
-      // Order matters: the project guard would otherwise rewrite the location
-      // to /projects first, and the route the person asked for would be gone
-      // by the time sign-in remembered anything.
-      await pumpAt(tester, '/items/detail');
-      await tester.pumpAndSettle();
-
+      // Without the route, signing in from a deep link lands on a default
+      // page and the link the person followed is lost. Authentication is
+      // decided before project selection, which would otherwise rewrite the
+      // location to /projects first.
       expect(find.text('projects'), findsNothing);
       expect(find.text('sign in from /items/detail'), findsOneWidget);
-    });
-
-    testWidgets('an unreachable provider still guards, and says so on the page',
-        (tester) async {
-      // A provider that cannot be reached must not degrade into a deployment
-      // without authentication. The sign-in page explains it; the guard still
-      // guards.
-      await pumpAt(tester, '/items/detail');
-      await tester.pumpAndSettle();
-
-      expect(find.textContaining('sign in'), findsOneWidget);
     });
 
     testWidgets('the sign-in route itself is not redirected', (tester) async {

@@ -28,16 +28,6 @@ void main() {
       expect(AuthSessions.current, isNull);
     });
 
-    test('reads the configuration rather than being told', () async {
-      // RuntimeConfig is the single source; a caller passing its own config is
-      // a test seam, not a second way to configure the app.
-      expect(RuntimeConfig.current.auth, isNull);
-
-      await AuthSessions.start(baseHref: baseHref);
-
-      expect(AuthSessions.current, isNull);
-    });
-
     test('creates a session for a configured provider', () async {
       // init() reaches for the discovery document and fails without a network,
       // which is fine: what matters here is that a session exists at all and

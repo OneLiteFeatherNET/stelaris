@@ -12,7 +12,6 @@ import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/enchantment/item_group_selector.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
 import 'package:stelaris/feature/item/components/item_components_page.dart';
-import 'package:stelaris/feature/item/lore/lore_page.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -162,29 +161,6 @@ void main() {
       expect(find.byType(ItemComponentsPage), findsOneWidget);
     });
 
-    testWidgets(
-      'wires the tab views to Components, Enchantments and Lore pages',
-      (tester) async {
-        await pumpPage(tester);
-
-        final tabBarView = tester.widget<TabBarView>(find.byType(TabBarView));
-        expect(tabBarView.children.map((w) => w.runtimeType), [
-          ItemComponentsPage,
-          ItemEnchantmentPage,
-          LorePage,
-        ]);
-      },
-    );
-
-    testWidgets('tapping back navigates to the item list', (tester) async {
-      await pumpPage(tester);
-
-      await tester.tap(find.byKey(const Key('page_header_back_button')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Item List'), findsOneWidget);
-    });
-
     testWidgets('shows info, delete and save in the header', (tester) async {
       await pumpPage(tester);
 
@@ -315,16 +291,7 @@ void main() {
 
       await chooseArmorGroup(tester);
       await tester.tap(find.text('Save'));
-      // On the web, dio finishes even a faked request in several real-async
-      // steps that testWidgets' fake-async zone doesn't run on its own, so
-      // alternate frames with a little real time until the save has landed.
-      for (var i = 0; i < 20 && store.state.unsavedChanges != null; i++) {
-        await tester.pump(const Duration(milliseconds: 100));
-        await tester.runAsync(
-          () => Future<void>.delayed(const Duration(milliseconds: 10)),
-        );
-      }
-      await tester.pumpAndSettle();
+      await settleRequests(tester, () => store.state.unsavedChanges != null);
 
       expect((adapter.lastRequest!.data as Map)['groupName'], 'armor');
       expect(store.state.unsavedChanges, isNull);

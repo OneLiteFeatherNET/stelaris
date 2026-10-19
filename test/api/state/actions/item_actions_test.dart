@@ -11,102 +11,30 @@ import 'package:stelaris/util/copy_model_result.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
+import '../../../support/list_actions.dart';
 
 void main() {
-  group('InitItemAction', () {
-    test('does nothing when all pages are already loaded, instead of '
-        'resetting the list back to page 1 (regression)', () async {
-      final loadedItems = List.generate(
-        4,
-        (i) => ItemModel(uiName: 'existing-$i', id: '$i'),
-      );
-      final store = Store<AppState>(
-        initialState: const AppState().copyWith(
-          items: PaginatedResult<ItemModel>(
-            items: loadedItems,
-            totalItems: 4,
-            totalPages: 2,
-            currentPage: 2,
-            pageSize: 2,
-          ),
-        ),
-      );
-      final before = store.state;
-
-      await store.dispatchAndWait(InitItemAction());
-
-      expect(identical(store.state, before), isTrue);
-      expect(store.state.items.items, loadedItems);
-    });
-  });
-
-  group('RefreshItemAction', () {
-    test('always refetches page 1 and replaces the list, even when more '
-        'pages were already loaded', () async {
-      final staleItems = List.generate(
-        4,
-        (i) => ItemModel(uiName: 'stale-$i', id: 'stale-$i'),
-      );
-      final store = Store<AppState>(
-        initialState: const AppState().copyWith(
-          items: PaginatedResult<ItemModel>(
-            items: staleItems,
-            totalItems: 4,
-            totalPages: 2,
-            currentPage: 2,
-            pageSize: 2,
-          ),
-        ),
-      );
-
-      const fresh = ItemModel(uiName: 'fresh-0', id: 'fresh-0');
-      (ApiService().itemApi as BaseApi<ItemModel>)
-          .apiClient
-          .dio
-          .httpClientAdapter = FakeHttpClientAdapter.json({
-        'items': [fresh.toJson()],
-        'totalItems': 1,
-        'totalPages': 1,
-        'currentPage': 1,
-        'pageSize': 2,
-      });
-
-      await store.dispatchAndWait(RefreshItemAction());
-
-      expect(store.state.items.items.map((e) => e.id), ['fresh-0']);
-      expect(store.state.items.currentPage, 1);
-    });
-  });
+  listActionTests<ItemModel>(
+    model: (id, {projectId}) =>
+        ItemModel(uiName: id, id: id, projectId: projectId),
+    listOf: (state) => state.items,
+    withList: (state, list) => state.copyWith(items: list),
+    init: InitItemAction.new,
+    refresh: RefreshItemAction.new,
+    add: ItemAddAction.new,
+    remove: ItemRemoveAction.new,
+    copy: ItemCopyAction.new,
+  );
 
   group('ItemAddAction', () {
-    test('increments totalItems by one instead of falling back to the '
-        'loaded-page count', () async {
-      // Only one page (of several) is loaded locally, but the backend
-      // knows the real total across all pages.
-      final loadedPage = List.generate(
-        3,
-        (i) => ItemModel(uiName: 'existing-$i', id: '$i'),
-      );
-      final store = Store<AppState>(
-        initialState: const AppState().copyWith(
-          items: PaginatedResult<ItemModel>(
-            items: loadedPage,
-            totalItems: 30,
-            totalPages: 10,
-            currentPage: 1,
-            pageSize: 3,
-          ),
-        ),
-      );
-
+    test('selects the added item', () async {
+      final store = Store<AppState>(initialState: const AppState());
       const added = ItemModel(uiName: 'new-item', id: 'new-id');
       ApiService().itemApi.apiClient.dio.httpClientAdapter =
           FakeHttpClientAdapter.json(added.toJson());
 
       await store.dispatchAndWait(ItemAddAction(added));
 
-      expect(store.state.items.totalItems, 31);
-      expect(store.state.items.items.last.id, 'new-id');
       expect(store.state.selectedItem?.id, 'new-id');
     });
 
@@ -145,31 +73,6 @@ void main() {
 
       expect(sentBody?['projectId'], 'proj-xyz');
       expect(store.state.items.items.last.projectId, 'proj-xyz');
-    });
-  });
-
-  group('ItemRemoveAction', () {
-    test('decrements totalItems by one', () async {
-      const existing = ItemModel(uiName: 'to-remove', id: 'rm-id');
-      final store = Store<AppState>(
-        initialState: const AppState().copyWith(
-          items: const PaginatedResult<ItemModel>(
-            items: [existing],
-            totalItems: 20,
-            totalPages: 10,
-            currentPage: 1,
-            pageSize: 2,
-          ),
-        ),
-      );
-
-      ApiService().itemApi.apiClient.dio.httpClientAdapter =
-          FakeHttpClientAdapter.json(existing.toJson());
-
-      await store.dispatchAndWait(ItemRemoveAction(existing));
-
-      expect(store.state.items.totalItems, 19);
-      expect(store.state.items.items, isEmpty);
     });
   });
 
@@ -298,7 +201,6 @@ void main() {
 
   group('ItemCopyAction', () {
     const project = Project(id: 'p1', displayName: 'P1', key: 'p1');
-    const other = Project(id: 'p2', displayName: 'P2', key: 'p2');
     const source = ItemModel(
       id: 'item-1',
       uiName: 'Sword',
@@ -348,31 +250,6 @@ void main() {
         expect(store.state.selectedItem, source);
       },
     );
-
-    test('leaves the state alone for a copy into another project', () async {
-      final store = storeWith(source);
-      final before = store.state;
-      ApiService().itemApi.apiClient.dio.httpClientAdapter =
-          FakeHttpClientAdapter.json({
-            'id': 'item-2',
-            'uiName': 'Sword',
-            'key': 'sword',
-            'projectId': 'p2',
-          });
-
-      await store.dispatchAndWait(
-        ItemCopyAction(
-          source,
-          const CopyModelResult(
-            targetProject: other,
-            name: 'Sword',
-            key: 'sword',
-          ),
-        ),
-      );
-
-      expect(store.state, before);
-    });
 
     test(
       'addresses a model without projectId through the open project',

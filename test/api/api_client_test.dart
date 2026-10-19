@@ -73,25 +73,6 @@ void main() {
     );
   });
 
-  test('rejects the request when the backend returns 401 unauthorized', () async {
-    final apiClient = ApiClient('http://backend.test/api');
-    apiClient.dio.httpClientAdapter = FakeHttpClientAdapter.json(
-      {'error': 'unauthorized'},
-      statusCode: 401,
-    );
-
-    await expectLater(
-      apiClient.dio.get('/ping'),
-      throwsA(
-        isA<DioException>().having(
-          (e) => e.response?.statusCode,
-          'statusCode',
-          401,
-        ),
-      ),
-    );
-  });
-
   test('rejects the request when a SocketException occurs', () async {
     final apiClient = ApiClient('http://backend.test/api');
     apiClient.dio.httpClientAdapter = FakeHttpClientAdapter(

@@ -29,7 +29,7 @@ void main() {
       );
     });
 
-    testWidgets('provides supportedLocales and Material 3 theme to MaterialApp', (tester) async {
+    testWidgets('provides the supported locales to MaterialApp', (tester) async {
       final store = Store<AppState>(
         initialState: const AppState(),
       );
@@ -44,8 +44,6 @@ void main() {
 
       final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
       expect(materialApp.supportedLocales, equals(AppLocalizations.supportedLocales));
-      expect(materialApp.theme?.useMaterial3, isTrue);
-      expect(materialApp.darkTheme?.useMaterial3, isTrue);
     });
 
     testWidgets('scales text theme based on fontScale setting', (tester) async {

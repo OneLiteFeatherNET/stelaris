@@ -425,10 +425,6 @@ void main() {
       expect(results.notice, isNot(contains('shown')));
     });
 
-    test('an empty query lists at most 15 too', () {
-      expect(entitiesOf(resolve('#', state: withItems(40))), hasLength(15));
-    });
-
     test('Go-to entries for unloaded kinds do not count', () {
       final results = resolve('#', state: withItems(40));
       expect(entitiesOf(results), hasLength(15));

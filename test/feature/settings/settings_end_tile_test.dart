@@ -17,16 +17,9 @@ void main() {
     }
 
     testWidgets('shows the year of the clock', (tester) async {
-      await pumpTile(tester, Clock.fixed(DateTime(2031)));
-
-      expect(find.textContaining('© 2031 Onelitefeather'), findsOneWidget);
-    });
-
-    testWidgets('follows the clock into another year', (tester) async {
       await pumpTile(tester, Clock.fixed(DateTime(2042, 6, 15)));
 
-      expect(find.textContaining('2042'), findsOneWidget);
-      expect(find.textContaining('2031'), findsNothing);
+      expect(find.textContaining('© 2042 Onelitefeather'), findsOneWidget);
     });
 
     testWidgets('credits the team', (tester) async {

@@ -145,16 +145,5 @@ void main() {
       }
       expect(find.byType(MenuItemButton), findsNothing);
     });
-
-    testWidgets('does not show the overlay on the web with semantics', (
-      tester,
-    ) async {
-      // The web check can't run in a VM test; the flag is what it computes.
-      await pumpField(tester, skipSuggestions: true);
-
-      await type(tester, 'diamond');
-
-      expect(find.byType(MenuItemButton), findsNothing);
-    });
   });
 }

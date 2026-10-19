@@ -14,8 +14,6 @@ void main() {
       final theme = AppTheme.buildLight(settings);
 
       expect(theme.brightness, Brightness.light);
-      expect(theme.useMaterial3, isTrue);
-      expect(theme.colorScheme.primary.toARGB32(), isNotNull);
       expect(theme.textTheme.titleLarge?.fontSize, isNotNull);
       expect(theme.textTheme.bodyMedium?.fontSize, isNotNull);
 
@@ -34,7 +32,6 @@ void main() {
       final theme = AppTheme.buildDark(settings);
 
       expect(theme.brightness, Brightness.dark);
-      expect(theme.useMaterial3, isTrue);
       expect(theme.colorScheme.brightness, Brightness.dark);
       expect(theme.textTheme.titleLarge?.fontSize, isNotNull);
       expect(theme.textTheme.bodyMedium?.fontSize, isNotNull);

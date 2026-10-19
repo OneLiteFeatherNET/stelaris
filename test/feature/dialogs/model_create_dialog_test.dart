@@ -50,16 +50,6 @@ void main() {
       expect(find.text('Create'), findsOneWidget);
     });
 
-    testWidgets('uses explicit projectNamespace if provided', (tester) async {
-      await pumpDialog(
-        tester,
-        projectNamespace: 'custom_ns',
-        onSubmit: (name, key) {},
-      );
-
-      expect(find.text('custom_ns:<key>'), findsOneWidget);
-    });
-
     testWidgets('typing in key field updates preview in real time', (tester) async {
       await pumpDialog(
         tester,

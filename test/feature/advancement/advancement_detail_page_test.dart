@@ -14,6 +14,8 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/component_context.dart';
 
+import '../../support/edit_card.dart';
+
 void main() {
   group('AdvancementDetailPage', () {
     const selected = AdvancementModel(
@@ -77,46 +79,15 @@ void main() {
       expect(find.text('minecraft:diamond'), findsOneWidget);
     });
 
-    testWidgets('tapping back navigates to the advancement list', (
-      tester,
-    ) async {
-      await pumpPage(tester);
-
-      await tester.tap(find.byKey(const Key('page_header_back_button')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Advancement List'), findsOneWidget);
-    });
-
     /// The card labelled [label].
     Finder cardOf(String label) => find.widgetWithText(EditCard, label);
-
-    /// Opens the card labelled [label], types [text] and saves with Enter.
-    Future<void> enterAndBlur(
-      WidgetTester tester,
-      String label,
-      String text,
-    ) async {
-      await tester.ensureVisible(cardOf(label));
-      await tester.tap(cardOf(label));
-      await tester.pumpAndSettle();
-      await tester.enterText(
-        find.descendant(
-          of: find.byType(Dialog),
-          matching: find.byType(TextFormField),
-        ),
-        text,
-      );
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle();
-    }
 
     testWidgets('the title keeps digits, punctuation and umlauts', (
       tester,
     ) async {
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Title', 'Level 5 – Glückwunsch!');
+      await editCard(tester, 'Title', 'Level 5 – Glückwunsch!');
 
       expect(
         store.state.selectedAdvancement?.title,
@@ -129,7 +100,7 @@ void main() {
     ) async {
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Description', 'Defeat a mob');
+      await editCard(tester, 'Description', 'Defeat a mob');
 
       expect(store.state.selectedAdvancement?.description, '"Defeat a mob"');
       expect(store.state.unsavedChanges, NavigationEntry.advancements);
@@ -138,7 +109,7 @@ void main() {
     testWidgets('formatting in the title is stored as json', (tester) async {
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Title', '<gold>First <b>Kill');
+      await editCard(tester, 'Title', '<gold>First <b>Kill');
 
       expect(jsonDecode(store.state.selectedAdvancement!.title!), {
         'text': '',
@@ -185,7 +156,7 @@ void main() {
         ),
       );
 
-      await enterAndBlur(tester, 'Title', '');
+      await editCard(tester, 'Title', '');
 
       expect(store.state.selectedAdvancement?.title, isNull);
     });
@@ -244,7 +215,7 @@ void main() {
         initialState: AppState(selectedAdvancement: selected.copyWith(x: 3)),
       );
 
-      await enterAndBlur(tester, 'Position X', '-');
+      await editCard(tester, 'Position X', '-');
 
       expect(find.text('Please enter a valid number'), findsOneWidget);
       expect(store.state.selectedAdvancement?.x, 3);
@@ -253,7 +224,7 @@ void main() {
     testWidgets('an invalid background is not saved', (tester) async {
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Background', 'Stone Wall');
+      await editCard(tester, 'Background', 'Stone Wall');
 
       expect(
         find.text(
@@ -406,7 +377,7 @@ void main() {
       const key = 'minecraft:light_blue_glazed_terracotta';
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Material', key);
+      await editCard(tester, 'Material', key);
 
       expect(store.state.selectedAdvancement?.material, key);
     });

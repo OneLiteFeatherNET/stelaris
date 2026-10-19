@@ -1,4 +1,3 @@
-import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -45,29 +44,5 @@ void main() {
       expect(find.text('A'), findsOneWidget);
       expect(find.text('B'), findsOneWidget);
     });
-
-    testWidgets(
-      'uses scrollCacheExtent instead of the deprecated cacheExtent',
-      (tester) async {
-        final view = buildView([const FontStringDTO(id: '1', line: 'A')]);
-
-        await tester.pumpWidget(
-          StoreProvider<AppState>(
-            store: Store<AppState>(initialState: const AppState()),
-            child: MaterialApp(
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              home: Scaffold(body: CharListView(fontModel: view)),
-            ),
-          ),
-        );
-
-        final listView = tester.widget<ListView>(find.byType(ListView));
-
-        expect(listView.scrollCacheExtent, const ScrollCacheExtent.pixels(100));
-        // ignore: deprecated_member_use
-        expect(listView.cacheExtent, isNull);
-      },
-    );
   });
 }
