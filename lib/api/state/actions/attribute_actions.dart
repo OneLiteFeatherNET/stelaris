@@ -53,14 +53,7 @@ class UpdateAttributeAction extends ReduxAction<AppState> {
 class RefreshAttributeAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
-    final PaginatedResult<AttributeModel> result = await ApiService()
-        .attributeApi
-        .getPage(
-          page: 1,
-          size: state.attributes.requestSize,
-          projectId: state.selectedProject?.id,
-        );
-    return state.copyWith(attributes: result);
+    return state.copyWith(attributes: await _firstPage(state));
   }
 }
 
@@ -109,14 +102,7 @@ class InitAttributeAction extends ReduxAction<AppState> {
       }
     } else {
       // Initial load (or refresh)
-      final PaginatedResult<AttributeModel> result = await ApiService()
-          .attributeApi
-          .getPage(
-            page: 1,
-            size: state.attributes.requestSize,
-            projectId: state.selectedProject?.id,
-          );
-      return state.copyWith(attributes: result);
+      return state.copyWith(attributes: await _firstPage(state));
     }
   }
 }
@@ -334,3 +320,12 @@ class AttributeNotesUpdateAction extends ReduxAction<AppState>
     );
   }
 }
+
+/// Page 1 of the attributes of the open project, in the size of the
+/// loaded pages.
+Future<PaginatedResult<AttributeModel>> _firstPage(AppState state) =>
+    ApiService().attributeApi.getPage(
+      page: 1,
+      size: state.attributes.requestSize,
+      projectId: state.selectedProject?.id,
+    );

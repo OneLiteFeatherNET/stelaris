@@ -36,14 +36,7 @@ class RemoveSelectedSoundEvent extends ReduxAction<AppState> {
 class RefreshSoundAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
-    final PaginatedResult<SoundEventModel> result = await ApiService()
-        .soundApi
-        .getPage(
-          page: 1,
-          size: state.soundEvents.requestSize,
-          projectId: state.selectedProject?.id,
-        );
-    return state.copyWith(soundEvents: result);
+    return state.copyWith(soundEvents: await _firstPage(state));
   }
 }
 
@@ -85,14 +78,7 @@ class InitSoundAction extends ReduxAction<AppState> {
       }
     } else {
       // Initial load (or refresh)
-      final PaginatedResult<SoundEventModel> result = await ApiService()
-          .soundApi
-          .getPage(
-            page: 1,
-            size: state.soundEvents.requestSize,
-            projectId: state.selectedProject?.id,
-          );
-      return state.copyWith(soundEvents: result);
+      return state.copyWith(soundEvents: await _firstPage(state));
     }
   }
 }
@@ -298,3 +284,12 @@ AppState _updateSoundEventsInState(
     selectedSoundEvent: selectedAttribute,
   );
 }
+
+/// Page 1 of the sound events of the open project, in the size of the
+/// loaded pages.
+Future<PaginatedResult<SoundEventModel>> _firstPage(AppState state) =>
+    ApiService().soundApi.getPage(
+      page: 1,
+      size: state.soundEvents.requestSize,
+      projectId: state.selectedProject?.id,
+    );

@@ -54,13 +54,7 @@ class UpdateItemAction extends ReduxAction<AppState> {
 class RefreshItemAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
-    final PaginatedResult<ItemModel> result = await ApiService().itemApi
-        .getPage(
-          page: 1,
-          size: state.items.requestSize,
-          projectId: state.selectedProject?.id,
-        );
-    return state.copyWith(items: result);
+    return state.copyWith(items: await _firstPage(state));
   }
 }
 
@@ -97,13 +91,7 @@ class InitItemAction extends ReduxAction<AppState> {
       }
     } else {
       // Initial load (or refresh)
-      final PaginatedResult<ItemModel> result = await ApiService().itemApi
-          .getPage(
-            page: 1,
-            size: state.items.requestSize,
-            projectId: state.selectedProject?.id,
-          );
-      return state.copyWith(items: result);
+      return state.copyWith(items: await _firstPage(state));
     }
   }
 }
@@ -276,3 +264,12 @@ class ItemNotesUpdateAction extends ReduxAction<AppState> with NonReentrant {
     );
   }
 }
+
+/// Page 1 of the items of the open project, in the size of the
+/// loaded pages.
+Future<PaginatedResult<ItemModel>> _firstPage(AppState state) =>
+    ApiService().itemApi.getPage(
+      page: 1,
+      size: state.items.requestSize,
+      projectId: state.selectedProject?.id,
+    );

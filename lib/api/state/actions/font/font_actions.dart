@@ -36,13 +36,7 @@ class RemoveSelectedFont extends ReduxAction<AppState> {
 class RefreshFontAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
-    final PaginatedResult<FontModel> result = await ApiService().fontApi
-        .getPage(
-          page: 1,
-          size: state.fonts.requestSize,
-          projectId: state.selectedProject?.id,
-        );
-    return state.copyWith(fonts: result);
+    return state.copyWith(fonts: await _firstPage(state));
   }
 }
 
@@ -81,13 +75,7 @@ class InitFontAction extends ReduxAction<AppState> {
       }
     } else {
       // Initial load (or refresh)
-      final PaginatedResult<FontModel> result = await ApiService().fontApi
-          .getPage(
-            page: 1,
-            size: state.fonts.requestSize,
-            projectId: state.selectedProject?.id,
-          );
-      return state.copyWith(fonts: result);
+      return state.copyWith(fonts: await _firstPage(state));
     }
   }
 }
@@ -282,3 +270,12 @@ class FontNotesUpdateAction extends ReduxAction<AppState> with NonReentrant {
     );
   }
 }
+
+/// Page 1 of the fonts of the open project, in the size of the
+/// loaded pages.
+Future<PaginatedResult<FontModel>> _firstPage(AppState state) =>
+    ApiService().fontApi.getPage(
+      page: 1,
+      size: state.fonts.requestSize,
+      projectId: state.selectedProject?.id,
+    );

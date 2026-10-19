@@ -36,14 +36,7 @@ class RemoveSelectAdvancementAction extends ReduxAction<AppState> {
 class RefreshAdvancementAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
-    final PaginatedResult<AdvancementModel> result = await ApiService()
-        .advancementApi
-        .getPage(
-          page: 1,
-          size: state.advancements.requestSize,
-          projectId: state.selectedProject?.id,
-        );
-    return state.copyWith(advancements: result);
+    return state.copyWith(advancements: await _firstPage(state));
   }
 }
 
@@ -83,14 +76,7 @@ class InitAdvancementAction extends ReduxAction<AppState> {
       }
     } else {
       // Initial load (or refresh)
-      final PaginatedResult<AdvancementModel> result = await ApiService()
-          .advancementApi
-          .getPage(
-            page: 1,
-            size: state.advancements.requestSize,
-            projectId: state.selectedProject?.id,
-          );
-      return state.copyWith(advancements: result);
+      return state.copyWith(advancements: await _firstPage(state));
     }
   }
 
@@ -292,3 +278,12 @@ class AdvancementNotesUpdateAction extends ReduxAction<AppState>
     );
   }
 }
+
+/// Page 1 of the advancements of the open project, in the size of the
+/// loaded pages.
+Future<PaginatedResult<AdvancementModel>> _firstPage(AppState state) =>
+    ApiService().advancementApi.getPage(
+      page: 1,
+      size: state.advancements.requestSize,
+      projectId: state.selectedProject?.id,
+    );
