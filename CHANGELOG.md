@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.7.1](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.7.0...v1.7.1) (2026-10-19)
+
+
+### Bug Fixes
+
+* **advancement:** use the shared decimal format for the advancement position ([#264](https://github.com/OneLiteFeatherNET/stelaris/issues/264)) ([fafce34](https://github.com/OneLiteFeatherNET/stelaris/commit/fafce3491dd030fc9de7a589ed0756595ceed28c))
+* **advancement:** use the shared decimal format for the position ([fafce34](https://github.com/OneLiteFeatherNET/stelaris/commit/fafce3491dd030fc9de7a589ed0756595ceed28c))
+* **model:** collapse the detail header actions before they overflow ([#267](https://github.com/OneLiteFeatherNET/stelaris/issues/267)) ([b6b14d8](https://github.com/OneLiteFeatherNET/stelaris/commit/b6b14d83f1bd57b6d135732bd0e8c06589a9f406))
+* **state:** persist only when the stored settings change and keep other storage entries on delete ([#266](https://github.com/OneLiteFeatherNET/stelaris/issues/266)) ([c5f7f68](https://github.com/OneLiteFeatherNET/stelaris/commit/c5f7f68bfcc51863ae5498863d8087630cc67d22))
+
 ## [1.7.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.6.0...v1.7.0) (2026-10-18)
 
 
