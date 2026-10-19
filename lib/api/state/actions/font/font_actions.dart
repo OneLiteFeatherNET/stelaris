@@ -62,11 +62,9 @@ class InitFontAction extends ReduxAction<AppState> {
       dispatchSync(_SetLoadMoreFontModels(true));
       try {
         final current = state.fonts;
-        final nextPage = current.currentPage + 1;
-        final size = current.requestSize;
         final next = await ApiService().fontApi.getPage(
-          page: nextPage,
-          size: size,
+          page: current.currentPage + 1,
+          size: current.requestSize,
           projectId: state.selectedProject?.id,
         );
 
@@ -74,18 +72,7 @@ class InitFontAction extends ReduxAction<AppState> {
         // loaded, so the page no longer continues it.
         if (!identical(state.fonts, current)) return null;
 
-        final merged = List<FontModel>.of(current.items)..addAll(next.items);
-        final updated = current.copyWith(
-          items: merged,
-          totalItems: next.totalItems != 0
-              ? next.totalItems
-              : current.totalItems,
-          totalPages: next.totalPages != 0
-              ? next.totalPages
-              : current.totalPages,
-          currentPage: next.currentPage != 0 ? next.currentPage : nextPage,
-          pageSize: next.pageSize != 0 ? next.pageSize : size,
-        );
+        final updated = current.append(next);
         // The flag is cleared here as well: this state is applied after the
         // `finally` below and would otherwise set the flag back to true.
         return state.copyWith(fonts: updated, isLoadingMoreFonts: false);
