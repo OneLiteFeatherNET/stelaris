@@ -156,7 +156,7 @@ class _SetLoreCharModelLoad extends ReduxAction<AppState> {
   _SetLoreCharModelLoad(this.value);
 
   @override
-  Future<AppState?> reduce() async {
+  AppState? reduce() {
     if (state.selectedFont == null) return null;
 
     final font = state.selectedFont!;

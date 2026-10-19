@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/actions/font/font_string_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
+import '../../../support/fake_http_client_adapter.dart';
 import '../../../support/recording_http_client_adapter.dart';
 
 void main() {
@@ -40,6 +41,43 @@ void main() {
         expect(store.state.selectedFont, same(loadingFont));
       },
     );
+
+    const font = FontModel(
+      id: 'font-1',
+      uiName: 'font',
+      chars: PaginatedResult(
+        items: [FontStringDTO(id: 'c1', line: 'a')],
+        totalItems: 4,
+        totalPages: 2,
+        currentPage: 1,
+        pageSize: 2,
+      ),
+    );
+    const nextPage = {
+      'items': [
+        {'id': 'c2', 'line': 'b'},
+      ],
+      'totalItems': 4,
+      'totalPages': 2,
+      'currentPage': 2,
+      'pageSize': 2,
+    };
+
+    test('appends the next chars to the loaded ones (regression)', () async {
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(selectedFont: font),
+      );
+      ApiService().fontApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json(nextPage);
+
+      await store.dispatchAndWait(FontCharFetchAction());
+
+      expect(store.state.selectedFont!.chars.items.map((c) => c.id), [
+        'c1',
+        'c2',
+      ]);
+      expect(store.state.selectedFont!.isLoadingChars, isFalse);
+    });
   });
 
   group('unsaved form edits', () {
