@@ -19,6 +19,49 @@ void main() {
     expect(entryForLocation('/projects'), isNull);
   });
 
+  test('matches a project-scoped section below its project', () {
+    expect(
+      entryForLocation('/projects/p/attributes'),
+      NavigationEntry.attributes,
+    );
+    expect(
+      entryForLocation('/projects/p/attributes/a'),
+      NavigationEntry.attributes,
+    );
+  });
+
+  group('sectionLocation', () {
+    test('puts a project-scoped section below its project', () {
+      expect(
+        sectionLocation(NavigationEntry.attributes, 'p'),
+        '/projects/p/attributes',
+      );
+    });
+
+    test('is the project list for a project-scoped section without one', () {
+      expect(sectionLocation(NavigationEntry.attributes, null), '/projects');
+      expect(sectionLocation(NavigationEntry.attributes, ''), '/projects');
+    });
+
+    test('leaves the other sections at their own route', () {
+      expect(sectionLocation(NavigationEntry.items, 'p'), '/items');
+      expect(sectionLocation(NavigationEntry.items, null), '/items');
+    });
+  });
+
+  group('sectionPath', () {
+    test('drops the project a location sits below', () {
+      expect(sectionPath('/projects/p/attributes'), '/attributes');
+      expect(sectionPath('/projects/p/attributes/a'), '/attributes/a');
+    });
+
+    test('leaves other locations alone', () {
+      expect(sectionPath('/projects'), '/projects');
+      expect(sectionPath('/projects/p'), '/projects/p');
+      expect(sectionPath('/items/detail'), '/items/detail');
+    });
+  });
+
   group('icons', () {
     test('each section has distinct outline and filled icons', () {
       for (final entry in NavigationEntry.values) {
