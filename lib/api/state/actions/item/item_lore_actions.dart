@@ -42,7 +42,7 @@ class ItemLoreLoadNextPageAction extends ReduxAction<AppState> {
       return null;
     }
 
-    dispatch(_SetIsLoadingLore(true));
+    dispatchSync(_SetIsLoadingLore(true));
 
     try {
       final nextPage = lore.currentPage + 1;
@@ -53,6 +53,15 @@ class ItemLoreLoadNextPageAction extends ReduxAction<AppState> {
         size: lore.pageSize,
       );
 
+      // Another item was selected, or the lore of this one changed, while
+      // the page loaded, so the page no longer continues it.
+      final item = state.selectedItem;
+      if (item == null ||
+          item.id != selectedItem.id ||
+          !identical(item.lore, lore)) {
+        return null;
+      }
+
       final mergedItems = [...lore.items, ...nextResult.items];
 
       final updatedLore = lore.copyWith(
@@ -62,11 +71,17 @@ class ItemLoreLoadNextPageAction extends ReduxAction<AppState> {
         currentPage: nextResult.currentPage,
       );
 
-      final updatedItem = selectedItem.copyWith(lore: updatedLore);
+      // Built on the current item, so form edits made while the page loaded
+      // are kept. The flag is cleared here as well: this state is applied
+      // after the `finally` below and would otherwise set it back to true.
+      final updatedItem = item.copyWith(
+        lore: updatedLore,
+        isLoadingMoreLoreLines: false,
+      );
 
       return state.copyWith(selectedItem: updatedItem);
     } finally {
-      dispatch(_SetIsLoadingLore(false));
+      dispatchSync(_SetIsLoadingLore(false));
     }
   }
 }
