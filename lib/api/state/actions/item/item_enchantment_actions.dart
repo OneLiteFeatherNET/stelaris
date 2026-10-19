@@ -40,7 +40,7 @@ class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
       return null;
     }
 
-    dispatch(_SetMoreEnchantmentLoad(true));
+    dispatchSync(_SetMoreEnchantmentLoad(true));
     try {
       final nextPage = enchantments.currentPage + 1;
 
@@ -49,6 +49,15 @@ class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
         page: nextPage,
         size: enchantments.pageSize,
       );
+
+      // Another item was selected, or the enchantments of this one changed,
+      // while the page loaded, so the page no longer continues them.
+      final item = state.selectedItem;
+      if (item == null ||
+          item.id != selectedItem.id ||
+          !identical(item.enchantments, enchantments)) {
+        return null;
+      }
 
       final mergedItems = [...enchantments.items, ...next.items]; // safe clone
 
@@ -59,11 +68,17 @@ class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
         currentPage: next.currentPage,
       );
 
+      // Built on the current item, so form edits made while the page loaded
+      // are kept. The flag is cleared here as well: this state is applied
+      // after the `finally` below and would otherwise set it back to true.
       return state.copyWith(
-        selectedItem: selectedItem.copyWith(enchantments: updatedEnchantments),
+        selectedItem: item.copyWith(
+          enchantments: updatedEnchantments,
+          isLoadingMoreEnchantments: false,
+        ),
       );
     } finally {
-      dispatch(_SetMoreEnchantmentLoad(false));
+      dispatchSync(_SetMoreEnchantmentLoad(false));
     }
   }
 }
@@ -196,7 +211,7 @@ class _SetMoreEnchantmentLoad extends ReduxAction<AppState> {
   final bool value;
 
   @override
-  Future<AppState?> reduce() async {
+  AppState? reduce() {
     if (state.selectedItem == null) return null;
 
     final item = state.selectedItem!;
