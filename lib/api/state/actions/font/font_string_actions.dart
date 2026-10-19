@@ -30,8 +30,14 @@ class FontCharFetchAction extends ReduxAction<AppState> {
           size: size,
         );
 
+        // Another font was selected, or the chars of this one changed, while
+        // the page loaded, so the page no longer continues them.
         final font = state.selectedFont;
-        if (font == null) return null;
+        if (font == null ||
+            font.id != selected.id ||
+            !identical(font.chars, current)) {
+          return null;
+        }
 
         final merged = List<FontStringDTO>.of(current.items)
           ..addAll(next.items);

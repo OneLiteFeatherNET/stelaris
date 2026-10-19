@@ -124,6 +124,23 @@ void main() {
       ]);
       expect(store.state.selectedFont!.isLoadingChars, isFalse);
     });
+
+    test('drops the next chars when another font is selected while they '
+        'load', () async {
+      const other = FontModel(id: 'font-2', uiName: 'other');
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(selectedFont: font),
+      );
+      ApiService().fontApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            store.dispatchSync(_SelectFont(other));
+            return FakeHttpClientAdapter.response(nextPage);
+          });
+
+      await store.dispatchAndWait(FontCharFetchAction());
+
+      expect(store.state.selectedFont, other);
+    });
   });
 
   group('unsaved form edits', () {
