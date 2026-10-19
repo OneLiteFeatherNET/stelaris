@@ -3,11 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+
+import '../../support/edit_card.dart';
 
 void main() {
   group('SoundDetailPage', () {
@@ -69,32 +70,13 @@ void main() {
       },
     );
 
-    /// Opens the card labelled [label], types [text] and saves with Enter.
-    Future<void> enterAndBlur(
-      WidgetTester tester,
-      String label,
-      String text,
-    ) async {
-      await tester.tap(find.widgetWithText(EditCard, label));
-      await tester.pumpAndSettle();
-      await tester.enterText(
-        find.descendant(
-          of: find.byType(Dialog),
-          matching: find.byType(TextFormField),
-        ),
-        text,
-      );
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle();
-    }
-
     testWidgets('the key keeps its dots and the subtitle its spaces', (
       tester,
     ) async {
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Key', 'entity.player.hurt');
-      await enterAndBlur(tester, 'Subtitle', 'Player hurt');
+      await editCard(tester, 'Key', 'entity.player.hurt');
+      await editCard(tester, 'Subtitle', 'Player hurt');
 
       expect(store.state.selectedSoundEvent?.keyName, 'entity.player.hurt');
       expect(store.state.selectedSoundEvent?.subTitle, 'Player hurt');

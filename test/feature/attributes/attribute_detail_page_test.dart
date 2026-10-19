@@ -15,6 +15,7 @@ import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
+import '../../support/edit_card.dart';
 import '../../support/fake_http_client_adapter.dart';
 import '../../support/settle_requests.dart';
 
@@ -81,26 +82,6 @@ void main() {
     /// The card labelled [label].
     Finder cardOf(String label) => find.widgetWithText(EditCard, label);
 
-    /// Opens the card labelled [label], types [text] and saves with Enter.
-    Future<void> enterAndBlur(
-      WidgetTester tester,
-      String label,
-      String text,
-    ) async {
-      await tester.ensureVisible(cardOf(label));
-      await tester.tap(cardOf(label));
-      await tester.pumpAndSettle();
-      await tester.enterText(
-        find.descendant(
-          of: find.byType(Dialog),
-          matching: find.byType(TextFormField),
-        ),
-        text,
-      );
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle();
-    }
-
     testWidgets('shows a back bar with the selected attribute name', (
       tester,
     ) async {
@@ -130,8 +111,8 @@ void main() {
     testWidgets('a value in range is staged as unsaved', (tester) async {
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Minimum value', '-1');
-      await enterAndBlur(tester, 'Default value', '-0.5');
+      await editCard(tester, 'Minimum value', '-1');
+      await editCard(tester, 'Default value', '-0.5');
 
       final attribute = store.state.selectedAttribute!;
       expect(attribute.defaultValue, -0.5);
@@ -152,7 +133,7 @@ void main() {
       ) async {
         await pumpPage(tester);
 
-        await enterAndBlur(tester, label, input);
+        await editCard(tester, label, input);
 
         expect(find.text(error), findsOneWidget);
         expect(store.state.selectedAttribute, selected);
@@ -176,7 +157,7 @@ void main() {
         attribute: selected.copyWith(translationKey: 'attribute.name.health'),
       );
 
-      await enterAndBlur(tester, 'Translation key', '');
+      await editCard(tester, 'Translation key', '');
 
       expect(store.state.selectedAttribute?.translationKey, isNull);
     });
@@ -200,7 +181,7 @@ void main() {
 
       await tester.tap(find.text('Synced'));
       await tester.pumpAndSettle();
-      await enterAndBlur(tester, 'Translation key', 'attribute.name.health');
+      await editCard(tester, 'Translation key', 'attribute.name.health');
       await tester.tap(find.text('Save'));
       await settleRequests(tester, () => store.state.unsavedChanges != null);
 

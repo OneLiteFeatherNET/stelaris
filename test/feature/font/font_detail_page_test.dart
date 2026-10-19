@@ -11,6 +11,7 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/util/navigation.dart';
 
+import '../../support/edit_card.dart';
 import '../../support/fake_http_client_adapter.dart';
 
 void main() {
@@ -110,25 +111,6 @@ void main() {
 
       expect(selectedTab(tester), 0);
     });
-
-    /// Opens the card labelled [label], types [text] and saves with Enter.
-    Future<void> editCard(
-      WidgetTester tester,
-      String label,
-      String text,
-    ) async {
-      await tester.tap(find.widgetWithText(EditCard, label));
-      await tester.pumpAndSettle();
-      await tester.enterText(
-        find.descendant(
-          of: find.byType(Dialog),
-          matching: find.byType(TextFormField),
-        ),
-        text,
-      );
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle();
-    }
 
     testWidgets('the texture path keeps its namespace, slashes and dots', (
       tester,
