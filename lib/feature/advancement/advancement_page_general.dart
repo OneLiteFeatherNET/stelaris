@@ -23,11 +23,6 @@ const String _noParent = emptyString;
 /// Allows a signed decimal number while it is typed.
 final RegExp _decimalPattern = RegExp(r'^-?\d*\.?\d*');
 
-const TextInputType _decimalInput = TextInputType.numberWithOptions(
-  signed: true,
-  decimal: true,
-);
-
 /// The advancement's page: how it is shown, its icon, title, description,
 /// frame and its place in the advancement tree. The display flags change in
 /// place, every other field is a card that opens a dialog. The title and
@@ -78,7 +73,7 @@ class AdvancementGeneralPage extends StatelessWidget {
           icon: Icons.tag,
           value: formatDecimal(value),
           footer: footer,
-          keyboardType: _decimalInput,
+          keyboardType: decimalInput,
           formatters: decimalFormatters,
           validator: (input) => double.tryParse(input ?? emptyString) == null
               ? l10n.validation_number_invalid
