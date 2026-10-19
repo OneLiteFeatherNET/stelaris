@@ -1,13 +1,13 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
-import 'package:stelaris/feature/attributes/attribute_edit_dialog.dart';
 import 'package:stelaris/feature/command_palette/command.dart';
 import 'package:stelaris/feature/command_palette/command_registry.dart';
 import 'package:stelaris/feature/command_palette/delete_specs.dart';
@@ -395,20 +395,14 @@ class EntityProvider implements PaletteProvider {
           context.dispatch(SelectedAdvancementAction(model));
           context.go(detailLocation(NavigationEntry.advancements.route));
         }, children: _childrenOf(actionsFor(model, advancementDelete))),
-      // Attributes have no detail page; their card opens this dialog.
       final AttributeModel model when kind == EntityKind.attribute => _entity(
         kind,
         model.id,
         model.uiName,
-        (context) => showDialog<void>(
-          context: context,
-          builder: (_) => AttributeEditDialog(
-            model: model,
-            // As the attribute page passes it; inside a project the
-            // selection is always set.
-            projectKey: state.selectedProject?.key ?? '',
-          ),
-        ),
+        (context) async {
+          context.dispatch(SelectAttributeAction(model));
+          context.go(detailLocation(NavigationEntry.attributes.route));
+        },
         children: _childrenOf(actionsFor(model, attributeDelete)),
       ),
       _ => null,

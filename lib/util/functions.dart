@@ -27,3 +27,7 @@ List<TextSpan> createDeleteText(
       TextSpan(text: ' $relatedDataText', style: textStyle),
   ];
 }
+
+/// Shows a whole [value] without the trailing `.0`.
+String formatDecimal(double value) =>
+    value == value.truncateToDouble() ? value.toInt().toString() : '$value';

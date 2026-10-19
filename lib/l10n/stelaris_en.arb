@@ -898,5 +898,8 @@
   "advancement_section_text": "Text",
   "advancement_section_position": "Position",
   "advancement_hint_material": "The icon, a material like minecraft:diamond",
-  "advancement_hint_frame": "Task and goal show a green description, challenge a purple one"
+  "advancement_hint_frame": "Task and goal show a green description, challenge a purple one",
+  "attribute_section_values": "Values",
+  "attribute_hint_default": "The base value of the attribute",
+  "attribute_hint_maximum": "The highest value, greater than 0"
 }

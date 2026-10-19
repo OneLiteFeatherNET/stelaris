@@ -3087,6 +3087,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Task and goal show a green description, challenge a purple one'**
   String get advancement_hint_frame;
+
+  /// No description provided for @attribute_section_values.
+  ///
+  /// In en, this message translates to:
+  /// **'Values'**
+  String get attribute_section_values;
+
+  /// No description provided for @attribute_hint_default.
+  ///
+  /// In en, this message translates to:
+  /// **'The base value of the attribute'**
+  String get attribute_hint_default;
+
+  /// No description provided for @attribute_hint_maximum.
+  ///
+  /// In en, this message translates to:
+  /// **'The highest value, greater than 0'**
+  String get attribute_hint_maximum;
 }
 
 class _AppLocalizationsDelegate

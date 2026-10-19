@@ -1684,4 +1684,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get advancement_hint_frame =>
       'Task and goal show a green description, challenge a purple one';
+
+  @override
+  String get attribute_section_values => 'Values';
+
+  @override
+  String get attribute_hint_default => 'The base value of the attribute';
+
+  @override
+  String get attribute_hint_maximum => 'The highest value, greater than 0';
 }
