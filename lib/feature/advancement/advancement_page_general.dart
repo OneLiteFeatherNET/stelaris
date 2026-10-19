@@ -11,6 +11,7 @@ import 'package:stelaris/feature/base/edit_card/edit_field.dart';
 import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/validators.dart';
 import 'package:vulpes_data/advancement.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
@@ -26,10 +27,6 @@ const TextInputType _decimalInput = TextInputType.numberWithOptions(
   signed: true,
   decimal: true,
 );
-
-/// Shows a whole [value] without the trailing `.0`.
-String _formatPosition(double value) =>
-    value == value.truncateToDouble() ? value.toInt().toString() : '$value';
 
 /// The advancement's page: how it is shown, its icon, title, description,
 /// frame and its place in the advancement tree. The display flags change in
@@ -79,7 +76,7 @@ class AdvancementGeneralPage extends StatelessWidget {
         ) => TextEdit(
           label: label,
           icon: Icons.tag,
-          value: _formatPosition(value),
+          value: formatDecimal(value),
           footer: footer,
           keyboardType: _decimalInput,
           formatters: decimalFormatters,
