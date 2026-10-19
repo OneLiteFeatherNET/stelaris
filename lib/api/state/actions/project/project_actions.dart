@@ -58,6 +58,27 @@ class SelectProjectAction extends ReduxAction<AppState> {
   }
 }
 
+/// Selects the project with [projectId], as a shared link needs before it can
+/// open a model of that project.
+///
+/// Does nothing when it is selected already, takes it from the known
+/// projects when it is there, and only fetches it otherwise.
+class EnsureProjectSelectedAction extends ReduxAction<AppState> {
+  final String projectId;
+
+  EnsureProjectSelectedAction(this.projectId);
+
+  @override
+  Future<AppState?> reduce() async {
+    if (state.selectedProject?.id == projectId) return null;
+    final Project project =
+        state.projects.where((p) => p.id == projectId).firstOrNull ??
+        await ApiService().projectApi.getById(projectId);
+    dispatch(SelectProjectAction(project));
+    return null;
+  }
+}
+
 /// Action to fetch projects from the backend API.
 class InitProjectAction extends ReduxAction<AppState> {
   final int page;

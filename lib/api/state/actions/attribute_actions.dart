@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/actions/copy_model_action.dart';
+import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 
 /// Selects [model] for its detail page and drops the attribute section's
@@ -18,6 +19,31 @@ class SelectAttributeAction extends ReduxAction<AppState> {
   AppState reduce() => state
       .copyWith(selectedAttribute: model)
       .clearUnsavedChanges(NavigationEntry.attributes);
+}
+
+/// Opens the attribute a shared link points to: selects its project, then
+/// fetches and selects the attribute.
+///
+/// An attribute that is open already is left alone, so its unsaved edits
+/// survive. A failed lookup is not caught; the caller reads it from the
+/// action's status.
+class OpenSharedAttributeAction extends ReduxAction<AppState> {
+  final String projectId;
+  final String id;
+
+  OpenSharedAttributeAction(this.projectId, this.id);
+
+  @override
+  Future<AppState?> reduce() async {
+    await dispatchAndWait(EnsureProjectSelectedAction(projectId));
+    if (state.selectedAttribute?.id == id) return null;
+    final AttributeModel model = await ApiService().attributeApi.getById(
+      id,
+      projectId: projectId,
+    );
+    dispatch(SelectAttributeAction(model));
+    return null;
+  }
 }
 
 /// Clears the selection when the detail page is left.
