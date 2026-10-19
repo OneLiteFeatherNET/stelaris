@@ -268,15 +268,17 @@ void main() {
     });
 
     test('a connection failure renews nothing and reports as before', () async {
-      final client = ApiClient('http://backend.test/api', tokens: FakeTokens());
+      final tokens = FakeTokens();
+      final client = ApiClient('http://backend.test/api', tokens: tokens);
       client.dio.httpClientAdapter = _FailingAdapter();
 
       try {
         await client.dio.get<dynamic>('/items');
         fail('expected the connection failure to surface');
       } on DioException catch (error) {
-        expect(ProblemDetail.fromDioException(error), isNotNull);
+        expect(ProblemDetail.fromDioException(error).status, 503);
       }
+      expect(tokens.refreshes, 0);
     });
   });
 }

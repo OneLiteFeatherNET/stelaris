@@ -7,6 +7,7 @@ import 'package:stelaris/util/copy_model_result.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
+import '../../../support/recording_http_client_adapter.dart';
 
 void main() {
   group('InitFontAction', () {
@@ -158,11 +159,15 @@ void main() {
         id: 'rm-id',
         projectId: 'proj-99',
       );
-      ApiService().fontApi.apiClient.dio.httpClientAdapter =
-          FakeHttpClientAdapter.json(returned.toJson());
+      final adapter = RecordingHttpClientAdapter(returned.toJson());
+      ApiService().fontApi.apiClient.dio.httpClientAdapter = adapter;
 
       await store.dispatchAndWait(FontRemoveAction(existing));
 
+      expect(
+        adapter.lastRequest!.uri.path,
+        endsWith('/project/proj-99/font/delete/rm-id'),
+      );
       expect(store.state.fonts.totalItems, 0);
       expect(store.state.fonts.items, isEmpty);
     });

@@ -101,7 +101,7 @@ void main() {
       expect(adapter.lastRequest, isNull);
     });
 
-    test('executes concurrent reorder actions sequentially using Sequential mixin', () async {
+    test('runs concurrent reorders one after the other', () async {
       const line1 = ItemLoreDto(id: 'l1', text: 'First line', orderIndex: 0);
       const line2 = ItemLoreDto(id: 'l2', text: 'Second line', orderIndex: 1);
       const line3 = ItemLoreDto(id: 'l3', text: 'Third line', orderIndex: 2);
@@ -128,15 +128,17 @@ void main() {
       final action1 = ItemLoreReorderAction(oldIndex: 0, newIndex: 1);
       final action2 = ItemLoreReorderAction(oldIndex: 1, newIndex: 2);
 
-      expect(action1, isA<Sequential>());
-      expect(action2, isA<Sequential>());
-
       final f1 = store.dispatchAndWait(action1);
       final f2 = store.dispatchAndWait(action2);
 
       final results = await Future.wait([f1, f2]);
       expect(results[0].isCompletedOk, isTrue);
       expect(results[1].isCompletedOk, isTrue);
+      // The second one works on the result of the first.
+      expect(
+        store.state.selectedItem!.lore.items.map((line) => line.id),
+        ['l2', 'l3', 'l1'],
+      );
     });
   });
 
