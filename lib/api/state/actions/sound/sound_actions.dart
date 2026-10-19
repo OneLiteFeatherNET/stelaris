@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/actions/copy_model_action.dart';
+import 'package:stelaris/api/state/actions/paginated_loading.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 
 class SelectSoundAction extends ReduxAction<AppState> {
@@ -35,14 +36,7 @@ class RemoveSelectedSoundEvent extends ReduxAction<AppState> {
 class RefreshSoundAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
-    final PaginatedResult<SoundEventModel> result = await ApiService()
-        .soundApi
-        .getPage(
-          page: 1,
-          size: state.soundEvents.pageSize == 0 ? 10 : state.soundEvents.pageSize,
-          projectId: state.selectedProject?.id,
-        );
-    return state.copyWith(soundEvents: result);
+    return state.copyWith(soundEvents: await _firstPage(state));
   }
 }
 
@@ -62,11 +56,9 @@ class InitSoundAction extends ReduxAction<AppState> {
       dispatchSync(_SetLoadMoreSoundEventModels(true));
       try {
         final current = state.soundEvents;
-        final nextPage = current.currentPage + 1;
-        final size = current.pageSize == 0 ? 10 : current.pageSize;
         final next = await ApiService().soundApi.getPage(
-          page: nextPage,
-          size: size,
+          page: current.currentPage + 1,
+          size: current.requestSize,
           projectId: state.selectedProject?.id,
         );
 
@@ -74,19 +66,7 @@ class InitSoundAction extends ReduxAction<AppState> {
         // loaded, so the page no longer continues it.
         if (!identical(state.soundEvents, current)) return null;
 
-        final merged = List<SoundEventModel>.of(current.items)
-          ..addAll(next.items);
-        final updated = current.copyWith(
-          items: merged,
-          totalItems: next.totalItems != 0
-              ? next.totalItems
-              : current.totalItems,
-          totalPages: next.totalPages != 0
-              ? next.totalPages
-              : current.totalPages,
-          currentPage: next.currentPage != 0 ? next.currentPage : nextPage,
-          pageSize: next.pageSize != 0 ? next.pageSize : size,
-        );
+        final updated = current.append(next);
         // The flag is cleared here as well: this state is applied after the
         // `finally` below and would otherwise set the flag back to true.
         return state.copyWith(
@@ -98,16 +78,7 @@ class InitSoundAction extends ReduxAction<AppState> {
       }
     } else {
       // Initial load (or refresh)
-      final PaginatedResult<SoundEventModel> result = await ApiService()
-          .soundApi
-          .getPage(
-            page: 1,
-            size: state.soundEvents.pageSize == 0
-                ? 10
-                : state.soundEvents.pageSize,
-            projectId: state.selectedProject?.id,
-          );
-      return state.copyWith(soundEvents: result);
+      return state.copyWith(soundEvents: await _firstPage(state));
     }
   }
 }
@@ -313,3 +284,12 @@ AppState _updateSoundEventsInState(
     selectedSoundEvent: selectedAttribute,
   );
 }
+
+/// Page 1 of the sound events of the open project, in the size of the
+/// loaded pages.
+Future<PaginatedResult<SoundEventModel>> _firstPage(AppState state) =>
+    ApiService().soundApi.getPage(
+      page: 1,
+      size: state.soundEvents.requestSize,
+      projectId: state.selectedProject?.id,
+    );

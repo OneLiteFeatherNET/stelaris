@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/paginated_loading.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
@@ -22,12 +23,10 @@ class FontCharFetchAction extends ReduxAction<AppState> {
       dispatchSync(_SetLoreCharModelLoad(true));
       try {
         final current = selected.chars;
-        final nextPage = current.currentPage + 1;
-        final size = current.pageSize == 0 ? 10 : current.pageSize;
         final next = await ApiService().fontApi.getChars(
           selected.id!,
-          page: nextPage,
-          size: size,
+          page: current.currentPage + 1,
+          size: current.requestSize,
         );
 
         // Another font was selected, or the chars of this one changed, while
@@ -39,23 +38,11 @@ class FontCharFetchAction extends ReduxAction<AppState> {
           return null;
         }
 
-        final merged = List<FontStringDTO>.of(current.items)
-          ..addAll(next.items);
         // Built on the current font, so form edits made while the page
         // loaded are kept.
         final updated = font.copyWith(
           isLoadingChars: false,
-          chars: current.copyWith(
-            items: merged,
-            totalItems: next.totalItems != 0
-                ? next.totalItems
-                : current.totalItems,
-            totalPages: next.totalPages != 0
-                ? next.totalPages
-                : current.totalPages,
-            currentPage: next.currentPage != 0 ? next.currentPage : nextPage,
-            pageSize: next.pageSize != 0 ? next.pageSize : size,
-          ),
+          chars: current.append(next),
         );
 
         return state.copyWith(selectedFont: updated);
@@ -68,7 +55,7 @@ class FontCharFetchAction extends ReduxAction<AppState> {
           .getChars(
             selected.id!,
             page: 1,
-            size: selected.chars.pageSize == 0 ? 10 : selected.chars.pageSize,
+            size: selected.chars.requestSize,
           );
       final FontModel updated = selected.copyWith(chars: result);
       return state.copyWith(selectedFont: updated);

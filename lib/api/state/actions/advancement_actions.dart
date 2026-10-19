@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/actions/copy_model_action.dart';
+import 'package:stelaris/api/state/actions/paginated_loading.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 
 class SelectedAdvancementAction extends ReduxAction<AppState> {
@@ -35,16 +36,7 @@ class RemoveSelectAdvancementAction extends ReduxAction<AppState> {
 class RefreshAdvancementAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
-    final PaginatedResult<AdvancementModel> result = await ApiService()
-        .advancementApi
-        .getPage(
-          page: 1,
-          size: state.advancements.pageSize == 0
-              ? 10
-              : state.advancements.pageSize,
-          projectId: state.selectedProject?.id,
-        );
-    return state.copyWith(advancements: result);
+    return state.copyWith(advancements: await _firstPage(state));
   }
 }
 
@@ -62,11 +54,9 @@ class InitAdvancementAction extends ReduxAction<AppState> {
       dispatchSync(_SetAdvancementsLoadMore(true));
       try {
         final current = state.advancements;
-        final nextPage = current.currentPage + 1;
-        final size = current.pageSize == 0 ? 10 : current.pageSize;
         final next = await ApiService().advancementApi.getPage(
-          page: nextPage,
-          size: size,
+          page: current.currentPage + 1,
+          size: current.requestSize,
           projectId: state.selectedProject?.id,
         );
 
@@ -74,19 +64,7 @@ class InitAdvancementAction extends ReduxAction<AppState> {
         // loaded, so the page no longer continues it.
         if (!identical(state.advancements, current)) return null;
 
-        final merged = List<AdvancementModel>.of(current.items)
-          ..addAll(next.items);
-        final updated = current.copyWith(
-          items: merged,
-          totalItems: next.totalItems != 0
-              ? next.totalItems
-              : current.totalItems,
-          totalPages: next.totalPages != 0
-              ? next.totalPages
-              : current.totalPages,
-          currentPage: next.currentPage != 0 ? next.currentPage : nextPage,
-          pageSize: next.pageSize != 0 ? next.pageSize : size,
-        );
+        final updated = current.append(next);
         // The flag is cleared here as well: this state is applied after the
         // `finally` below and would otherwise set the flag back to true.
         return state.copyWith(
@@ -98,16 +76,7 @@ class InitAdvancementAction extends ReduxAction<AppState> {
       }
     } else {
       // Initial load (or refresh)
-      final PaginatedResult<AdvancementModel> result = await ApiService()
-          .advancementApi
-          .getPage(
-            page: 1,
-            size: state.advancements.pageSize == 0
-                ? 10
-                : state.advancements.pageSize,
-            projectId: state.selectedProject?.id,
-          );
-      return state.copyWith(advancements: result);
+      return state.copyWith(advancements: await _firstPage(state));
     }
   }
 
@@ -309,3 +278,12 @@ class AdvancementNotesUpdateAction extends ReduxAction<AppState>
     );
   }
 }
+
+/// Page 1 of the advancements of the open project, in the size of the
+/// loaded pages.
+Future<PaginatedResult<AdvancementModel>> _firstPage(AppState state) =>
+    ApiService().advancementApi.getPage(
+      page: 1,
+      size: state.advancements.requestSize,
+      projectId: state.selectedProject?.id,
+    );
