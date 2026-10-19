@@ -1,10 +1,10 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:go_router/go_router.dart';
-import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/attributes/attribute_detail_page.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/factory/attribute/attribute_vm_state.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
@@ -85,15 +85,9 @@ class AttributePage extends StatelessWidget {
           onModelTap: (model) {
             context.dispatch(SelectAttributeAction(model));
             context.go(
-              detailLocation(
-                NavigationEntry.attributes,
-                projectId:
-                    model.projectId ??
-                    StoreProvider.state<AppState>(
-                      context,
-                      notify: false,
-                    ).selectedProject?.id,
-                id: model.id,
+              AttributeDetailPage.locationOf(
+                model,
+                StoreProvider.state<AppState>(context, notify: false),
               ),
             );
           },

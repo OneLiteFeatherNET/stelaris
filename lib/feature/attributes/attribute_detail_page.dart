@@ -17,6 +17,15 @@ import 'package:stelaris/util/l10n_ext.dart';
 class AttributeDetailPage extends StatelessWidget {
   const AttributeDetailPage({super.key});
 
+  /// Where [model]'s detail page lives: below its own project, or the
+  /// selected one in [state] when the model does not name one.
+  static String locationOf(AttributeModel model, AppState state) =>
+      detailLocation(
+        NavigationEntry.attributes,
+        projectId: model.projectId ?? state.selectedProject?.id,
+        id: model.id,
+      );
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _AttributeTitleView>(
@@ -36,11 +45,7 @@ class AttributeDetailPage extends StatelessWidget {
             removeAction: AttributeRemoveAction.new,
             readNotes: (model) => model.comment,
             shareLocation: (state) => switch (state.selectedAttribute) {
-              final AttributeModel model? => detailLocation(
-                NavigationEntry.attributes,
-                projectId: model.projectId ?? state.selectedProject?.id,
-                id: model.id,
-              ),
+              final AttributeModel model? => locationOf(model, state),
               null => null,
             },
           ),

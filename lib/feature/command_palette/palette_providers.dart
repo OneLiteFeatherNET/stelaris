@@ -14,6 +14,7 @@ import 'package:stelaris/feature/command_palette/delete_specs.dart';
 import 'package:stelaris/feature/command_palette/entity_search_source.dart';
 import 'package:stelaris/feature/command_palette/command_search.dart';
 import 'package:stelaris/feature/command_palette/palette_mode.dart';
+import 'package:stelaris/feature/attributes/attribute_detail_page.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
 import 'package:stelaris/feature/model/detail_tabs.dart';
@@ -402,15 +403,9 @@ class EntityProvider implements PaletteProvider {
         (context) async {
           context.dispatch(SelectAttributeAction(model));
           context.go(
-            detailLocation(
-              NavigationEntry.attributes,
-              projectId:
-                  model.projectId ??
-                  StoreProvider.state<AppState>(
-                    context,
-                    notify: false,
-                  ).selectedProject?.id,
-              id: model.id,
+            AttributeDetailPage.locationOf(
+              model,
+              StoreProvider.state<AppState>(context, notify: false),
             ),
           );
         },

@@ -207,4 +207,28 @@ void main() {
       expect(store.state.selectedAttribute, isNull);
     });
   });
+
+  group('AttributeDetailPage.locationOf', () {
+    const selectedProject = Project(id: 'p', key: 'p', displayName: 'P');
+
+    test('names the project the attribute belongs to', () {
+      expect(
+        AttributeDetailPage.locationOf(
+          const AttributeModel(uiName: 'a', id: 'a', projectId: 'q'),
+          const AppState(selectedProject: selectedProject),
+        ),
+        '/projects/q/attributes/a',
+      );
+    });
+
+    test('falls back to the selected project', () {
+      expect(
+        AttributeDetailPage.locationOf(
+          const AttributeModel(uiName: 'a', id: 'a'),
+          const AppState(selectedProject: selectedProject),
+        ),
+        '/projects/p/attributes/a',
+      );
+    });
+  });
 }
