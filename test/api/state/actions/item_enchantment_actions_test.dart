@@ -7,6 +7,16 @@ import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
 
+/// Sets the selected item, as the form or a click on another item would.
+class _SelectItem extends ReduxAction<AppState> {
+  _SelectItem(this.item);
+
+  final ItemModel item;
+
+  @override
+  AppState reduce() => state.copyWith(selectedItem: item);
+}
+
 void main() {
   group('ItemEnchantmentLoadMoreAction', () {
     const item = ItemModel(
@@ -67,6 +77,78 @@ void main() {
       expect(store.state.selectedItem!.enchantments.items.map((e) => e.id), [
         'e1',
         'e2',
+      ]);
+    });
+
+    test('keeps form edits made while the next enchantments load '
+        '(regression)', () async {
+      final store = storeWith(item);
+      ApiService()
+          .itemApi
+          .apiClient
+          .dio
+          .httpClientAdapter = FakeHttpClientAdapter((options) {
+        store.dispatchSync(
+          _SelectItem(store.state.selectedItem!.copyWith(uiName: 'Renamed')),
+        );
+        return FakeHttpClientAdapter.response(nextPage);
+      });
+
+      await store.dispatchAndWait(ItemEnchantmentLoadMoreAction());
+
+      expect(store.state.selectedItem!.uiName, 'Renamed');
+      expect(store.state.selectedItem!.enchantments.items.map((e) => e.id), [
+        'e1',
+        'e2',
+      ]);
+      expect(store.state.selectedItem!.isLoadingMoreEnchantments, isFalse);
+    });
+
+    test('drops the next enchantments when another item is selected while '
+        'they load (regression)', () async {
+      const other = ItemModel(id: 'item-2', uiName: 'other');
+      final store = storeWith(item);
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            store.dispatchSync(_SelectItem(other));
+            return FakeHttpClientAdapter.response(nextPage);
+          });
+
+      await store.dispatchAndWait(ItemEnchantmentLoadMoreAction());
+
+      expect(store.state.selectedItem, other);
+    });
+
+    test('drops the next enchantments when the loaded ones changed while '
+        'they load', () async {
+      final store = storeWith(item);
+      ApiService()
+          .itemApi
+          .apiClient
+          .dio
+          .httpClientAdapter = FakeHttpClientAdapter((options) {
+        store.dispatchSync(
+          _SelectItem(
+            store.state.selectedItem!.copyWith(
+              enchantments: const PaginatedResult(
+                items: [
+                  ItemEnchantmentDto(id: 'fresh', name: 'mending', level: 1),
+                ],
+                totalItems: 1,
+                totalPages: 1,
+                currentPage: 1,
+                pageSize: 2,
+              ),
+            ),
+          ),
+        );
+        return FakeHttpClientAdapter.response(nextPage);
+      });
+
+      await store.dispatchAndWait(ItemEnchantmentLoadMoreAction());
+
+      expect(store.state.selectedItem!.enchantments.items.map((e) => e.id), [
+        'fresh',
       ]);
     });
   });
