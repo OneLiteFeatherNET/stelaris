@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/attributes/attribute_general_page.dart';
+import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:stelaris/feature/model/model_detail_actions.dart';
 import 'package:stelaris/feature/model/model_detail_shell.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -34,6 +35,14 @@ class AttributeDetailPage extends StatelessWidget {
             deleteTitle: context.l10n.dialog_attribute_delete_title,
             removeAction: AttributeRemoveAction.new,
             readNotes: (model) => model.comment,
+            shareLocation: (state) => switch (state.selectedAttribute) {
+              final AttributeModel model? => detailLocation(
+                NavigationEntry.attributes.route,
+                projectId: model.projectId ?? state.selectedProject?.id,
+                id: model.id,
+              ),
+              null => null,
+            },
           ),
         ],
         body: const AttributeGeneralPage(),

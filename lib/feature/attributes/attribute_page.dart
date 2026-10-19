@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:go_router/go_router.dart';
+import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
@@ -83,7 +84,13 @@ class AttributePage extends StatelessWidget {
           ),
           onModelTap: (model) {
             context.dispatch(SelectAttributeAction(model));
-            context.go('${NavigationEntry.attributes.route}/detail');
+            context.go(
+              detailLocation(
+                NavigationEntry.attributes.route,
+                projectId: model.projectId,
+                id: model.id,
+              ),
+            );
           },
           onRefresh: () => context.dispatch(RefreshAttributeAction()),
           hasMore: vm.hasNextPage,

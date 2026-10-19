@@ -282,6 +282,8 @@
   "button_close": "Close",
   "tooltip_copy_to_clipboard": "Copy to clipboard",
   "snackbar_copied_to_clipboard": "Copied to clipboard",
+  "snackbar_link_copied": "Link copied to clipboard",
+  "action_copy_link": "Copy link",
   "snackbar_shared_model_not_found": "This link points to something that no longer exists or that you can't access.",
 
   "command_bar_search_tooltip": "Focus search",

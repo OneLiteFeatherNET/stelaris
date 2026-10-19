@@ -1294,6 +1294,18 @@ abstract class AppLocalizations {
   /// **'Copied to clipboard'**
   String get snackbar_copied_to_clipboard;
 
+  /// No description provided for @snackbar_link_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied to clipboard'**
+  String get snackbar_link_copied;
+
+  /// No description provided for @action_copy_link.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get action_copy_link;
+
   /// No description provided for @snackbar_shared_model_not_found.
   ///
   /// In en, this message translates to:

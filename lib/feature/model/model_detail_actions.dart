@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
@@ -12,10 +13,12 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/notes.dart';
+import 'package:stelaris/util/share_link.dart';
 import 'package:stelaris/feature/model/model_delete.dart';
 
-/// The Notes / Info / Delete / Save actions of a detail page's [PageHeader].
-/// Notes only appear when [readNotes] is given. Opens
+/// The Notes / Link / Info / Delete / Save actions of a detail page's
+/// [PageHeader]. Notes only appear when [readNotes] is given, the link only
+/// when [shareLocation] is. Opens
 /// the same dialogs as a grid card's menu, so both places stay in sync.
 ///
 /// The model is read from the store when an action is pressed (via
@@ -31,6 +34,7 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
     required this.removeAction,
     this.deleteWarning,
     this.readNotes,
+    this.shareLocation,
     super.key,
   });
 
@@ -44,6 +48,10 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
   /// Returns the model's internal notes, shown read-only — they are edited
   /// from the overview, see [NotesViewDialog].
   final String? Function(E model)? readNotes;
+
+  /// The app route that opens the selected model, copied as a shareable link
+  /// (see [shareLink]); null when nothing is selected.
+  final String? Function(AppState state)? shareLocation;
 
   String _namespacedKey(AppState state, E model) =>
       '${state.selectedProject?.key ?? ''}:${keySelector(model)}';
@@ -62,6 +70,18 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
         modificationDate: model.modificationDate,
       ),
     );
+  }
+
+  Future<void> _copyLink(
+    BuildContext context,
+    String? Function(AppState) shareLocation,
+  ) async {
+    final location = shareLocation(StoreProvider.state<AppState>(context));
+    if (location == null) return;
+    final link = shareLink(Uri.base, location).toString();
+    await Clipboard.setData(ClipboardData(text: link));
+    if (!context.mounted) return;
+    context.showSuccessSnackBar(context.l10n.snackbar_link_copied);
   }
 
   void _openNotes(BuildContext context, String? Function(E) readNotes) {
@@ -121,6 +141,14 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
                   ? () => _openNotes(context, readNotes)
                   : null,
             ),
+          ),
+          const SizedBox(width: 8),
+        ],
+        if (shareLocation case final shareLocation?) ...[
+          PageHeaderAction(
+            icon: const Icon(Icons.link),
+            label: l10n.action_copy_link,
+            onPressed: () => _copyLink(context, shareLocation),
           ),
           const SizedBox(width: 8),
         ],

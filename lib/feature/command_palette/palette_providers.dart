@@ -401,7 +401,13 @@ class EntityProvider implements PaletteProvider {
         model.uiName,
         (context) async {
           context.dispatch(SelectAttributeAction(model));
-          context.go(detailLocation(NavigationEntry.attributes.route));
+          context.go(
+            detailLocation(
+              NavigationEntry.attributes.route,
+              projectId: model.projectId,
+              id: model.id,
+            ),
+          );
         },
         children: _childrenOf(actionsFor(model, attributeDelete)),
       ),
