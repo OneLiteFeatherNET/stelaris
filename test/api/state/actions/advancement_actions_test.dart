@@ -10,6 +10,8 @@ void main() {
     listOf: (state) => state.advancements,
     withList: (state, list) => state.copyWith(advancements: list),
     isLoadingMore: (state) => state.isLoadingMoreAdvancements,
+    selectedOf: (state) => state.selectedAdvancement,
+    withSelected: (state, model) => state.copyWith(selectedAdvancement: model),
     init: InitAdvancementAction.new,
     refresh: RefreshAdvancementAction.new,
     add: AdvancementAddAction.new,

@@ -16,6 +16,8 @@ void main() {
     listOf: (state) => state.fonts,
     withList: (state, list) => state.copyWith(fonts: list),
     isLoadingMore: (state) => state.isLoadingMoreFonts,
+    selectedOf: (state) => state.selectedFont,
+    withSelected: (state, model) => state.copyWith(selectedFont: model),
     init: InitFontAction.new,
     refresh: RefreshFontAction.new,
     add: FontAddAction.new,

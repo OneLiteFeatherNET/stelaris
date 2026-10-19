@@ -12,12 +12,15 @@ import 'fake_http_client_adapter.dart';
 /// adding to it, removing from it and copying into it.
 ///
 /// [model] builds a model of the kind, [listOf] and [withList] read and
-/// write its list in the state, [isLoadingMore] reads its load-more flag.
+/// write its list in the state, [isLoadingMore] reads its load-more flag,
+/// [selectedOf] and [withSelected] read and write its selection.
 void listActionTests<T extends DataModel>({
   required T Function(String id, {String? projectId}) model,
   required PaginatedResult<T> Function(AppState state) listOf,
   required AppState Function(AppState state, PaginatedResult<T> list) withList,
   required bool Function(AppState state) isLoadingMore,
+  required T? Function(AppState state) selectedOf,
+  required AppState Function(AppState state, T model) withSelected,
   required ReduxAction<AppState> Function() init,
   required ReduxAction<AppState> Function() refresh,
   required ReduxAction<AppState> Function(T model) add,
@@ -226,6 +229,22 @@ void listActionTests<T extends DataModel>({
       await store.dispatchAndWait(remove(model('rm-id', projectId: 'edited')));
 
       expect(listOf(store.state).items.map((m) => m.id), ['keep']);
+    });
+
+    test('keeps the selection, which the detail page still reads during '
+        'its exit transition (regression)', () async {
+      final existing = model('rm-id');
+      final store = Store<AppState>(
+        initialState: withSelected(
+          storeWith([existing]).state,
+          existing,
+        ),
+      );
+      respond(json('rm-id'));
+
+      await store.dispatchAndWait(remove(existing));
+
+      expect(selectedOf(store.state), existing);
     });
   });
 
