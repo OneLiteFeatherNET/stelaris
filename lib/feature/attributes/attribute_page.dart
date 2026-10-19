@@ -64,10 +64,8 @@ class AttributePage extends StatelessWidget {
           projectKey: vm.projectKey,
           filterOptions: [hasDefaultValueFilter, hasMaximumValueFilter],
           matchesFilter: (model, filter) => switch (filter.id) {
-            'has_default_value' =>
-              model.defaultValue != null && model.defaultValue != 0,
-            'has_maximum_value' =>
-              model.maximumValue != null && model.maximumValue != 0,
+            'has_default_value' => model.defaultValue != 0,
+            'has_maximum_value' => model.maximumValue != 0,
             _ => true,
           },
           onAdd: () => openModelCreateDialog(

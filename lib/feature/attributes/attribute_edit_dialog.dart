@@ -37,10 +37,10 @@ class _AttributeEditDialogState extends State<AttributeEditDialog> {
   void initState() {
     super.initState();
     _defaultValueController = TextEditingController(
-      text: widget.model.defaultValue?.toString() ?? zeroString,
+      text: widget.model.defaultValue.toString(),
     );
     _maximumValueController = TextEditingController(
-      text: widget.model.maximumValue?.toString() ?? zeroString,
+      text: widget.model.maximumValue.toString(),
     );
   }
 
