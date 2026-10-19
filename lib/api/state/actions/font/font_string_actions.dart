@@ -23,7 +23,7 @@ class FontCharFetchAction extends ReduxAction<AppState> {
       try {
         final current = selected.chars;
         final nextPage = current.currentPage + 1;
-        final size = 10;
+        final size = current.pageSize == 0 ? 10 : current.pageSize;
         final next = await ApiService().fontApi.getChars(
           selected.id!,
           page: nextPage,

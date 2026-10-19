@@ -78,6 +78,22 @@ void main() {
       ]);
       expect(store.state.selectedFont!.isLoadingChars, isFalse);
     });
+
+    test('loads the next chars in the size of the loaded pages', () async {
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(selectedFont: font),
+      );
+      String? size;
+      ApiService().fontApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            size = options.uri.queryParameters['size'];
+            return FakeHttpClientAdapter.response(nextPage);
+          });
+
+      await store.dispatchAndWait(FontCharFetchAction());
+
+      expect(size, '2');
+    });
   });
 
   group('unsaved form edits', () {
