@@ -72,4 +72,62 @@ void main() {
       expect(merged.pageSize, 2);
     });
   });
+
+  final loaded = page(
+    const ['a', 'b', 'c'],
+    totalItems: 7,
+    totalPages: 3,
+    currentPage: 1,
+    pageSize: 3,
+  );
+
+  /// Expects [result] to keep the paging of [loaded].
+  void expectSamePaging(PaginatedResult<String> result) {
+    expect(result.totalPages, 3);
+    expect(result.currentPage, 1);
+    expect(result.pageSize, 3);
+  }
+
+  group('adding', () {
+    test('appends the item and counts it', () {
+      final result = loaded.adding('d');
+
+      expect(result.items, ['a', 'b', 'c', 'd']);
+      expect(result.totalItems, 8);
+      expectSamePaging(result);
+    });
+  });
+
+  group('replacingWhere', () {
+    test('replaces the matching item and keeps the counts', () {
+      final result = loaded.replacingWhere((e) => e == 'b', 'B');
+
+      expect(result.items, ['a', 'B', 'c']);
+      expect(result.totalItems, 7);
+      expectSamePaging(result);
+    });
+
+    test('leaves the items alone when none matches', () {
+      final result = loaded.replacingWhere((e) => e == 'x', 'X');
+
+      expect(result.items, ['a', 'b', 'c']);
+    });
+  });
+
+  group('removingWhere', () {
+    test('removes the matching item and counts one less', () {
+      final result = loaded.removingWhere((e) => e == 'b');
+
+      expect(result.items, ['a', 'c']);
+      expect(result.totalItems, 6);
+      expectSamePaging(result);
+    });
+
+    test('counts one less even when the item was not loaded', () {
+      final result = loaded.removingWhere((e) => e == 'x');
+
+      expect(result.items, ['a', 'b', 'c']);
+      expect(result.totalItems, 6);
+    });
+  });
 }

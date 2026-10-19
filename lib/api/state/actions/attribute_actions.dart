@@ -119,30 +119,6 @@ class _SetAttributesLoadMore extends ReduxAction<AppState> {
   AppState reduce() => state.copyWith(isLoadingAttributesMore: value);
 }
 
-/// Helper method to update the attributes list in state
-///
-/// Centralizes the logic for updating the attributes list and selected attribute
-/// in the state. This reduces code duplication across multiple actions that
-/// modify the attributes collection.
-AppState _updateAttributesInState(
-  AppState state,
-  List<AttributeModel> newItems,
-  AttributeModel? selectedAttribute, {
-  int? totalItems,
-}) {
-  final updated = state.attributes.copyWith(
-    items: newItems,
-    totalItems: totalItems ?? state.attributes.totalItems,
-    totalPages: state.attributes.totalPages,
-    currentPage: state.attributes.currentPage,
-    pageSize: state.attributes.pageSize,
-  );
-  return state.copyWith(
-    attributes: updated,
-    selectedAttribute: selectedAttribute,
-  );
-}
-
 /// Adds a new attribute to both the database and application state.
 ///
 /// This action performs the following operations:
@@ -165,16 +141,9 @@ class AttributeAddAction extends ReduxAction<AppState> with NonReentrant {
     final AttributeModel databaseModel = await ApiService().attributeApi.add(
       toAdd,
     );
-    final List<AttributeModel> updatedList = List.of(
-      state.attributes.items,
-      growable: true,
-    )..add(databaseModel);
-
-    return _updateAttributesInState(
-      state,
-      updatedList,
-      databaseModel,
-      totalItems: state.attributes.totalItems + 1,
+    return state.copyWith(
+      attributes: state.attributes.adding(databaseModel),
+      selectedAttribute: databaseModel,
     );
   }
 }
@@ -199,14 +168,10 @@ class AttributeCopyAction extends ReduxAction<AppState>
       relations: result.relations,
     );
     if (!copiesIntoOpenProject) return null;
-    return _updateAttributesInState(
-      state,
-      [
-        ...state.attributes.items,
+    return state.copyWith(
+      attributes: state.attributes.adding(
         copied.copyWith(projectId: result.targetProjectId),
-      ],
-      state.selectedAttribute,
-      totalItems: state.attributes.totalItems + 1,
+      ),
     );
   }
 }
@@ -224,19 +189,13 @@ class AttributeRemoveAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     await ApiService().attributeApi.remove(model);
-    final List<AttributeModel> updatedList = List.of(
-      state.attributes.items,
-      growable: true,
-    )..removeWhere((element) => element.id == model.id);
-
     // The selection stays: when deleting from the detail page, that page is
     // still mounted during its exit transition and reads it. The page's
     // onDispose clears it.
-    return _updateAttributesInState(
-      state,
-      updatedList,
-      state.selectedAttribute,
-      totalItems: state.attributes.totalItems - 1,
+    return state.copyWith(
+      attributes: state.attributes.removingWhere(
+        (element) => element.id == model.id,
+      ),
     );
   }
 }
@@ -261,23 +220,15 @@ class AttributeDatabaseUpdate extends ReduxAction<AppState> with Throttle {
       selected,
     );
 
-    final List<AttributeModel> updatedList = List.of(
-      state.attributes.items,
-      growable: true,
-    );
-    final int index = updatedList.indexWhere(
-      (element) => element.id == selected.id,
-    );
-
-    if (index != -1) {
-      updatedList[index] = dbModel;
-    }
-
-    return _updateAttributesInState(
-      state,
-      updatedList,
-      dbModel,
-    ).clearUnsavedChanges(NavigationEntry.attributes);
+    return state
+        .copyWith(
+          attributes: state.attributes.replacingWhere(
+            (element) => element.id == selected.id,
+            dbModel,
+          ),
+          selectedAttribute: dbModel,
+        )
+        .clearUnsavedChanges(NavigationEntry.attributes);
   }
 }
 
@@ -296,19 +247,13 @@ class AttributeNotesUpdateAction extends ReduxAction<AppState>
     final AttributeModel response = await ApiService().attributeApi.update(
       model.copyWith(comment: notes),
     );
-    final List<AttributeModel> items = List.of(
-      state.attributes.items,
-      growable: true,
-    );
-    final int index = items.indexWhere((item) => item.id == response.id);
-    if (index != -1) {
-      items[index] = response;
-    }
     final selected = state.selectedAttribute;
-    return _updateAttributesInState(
-      state,
-      items,
-      selected?.id == response.id
+    return state.copyWith(
+      attributes: state.attributes.replacingWhere(
+        (item) => item.id == response.id,
+        response,
+      ),
+      selectedAttribute: selected?.id == response.id
           ? selected!.copyWith(comment: response.comment)
           : selected,
     );

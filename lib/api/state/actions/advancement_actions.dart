@@ -121,16 +121,9 @@ class AdvancementAddAction extends ReduxAction<AppState> with NonReentrant {
         : model;
     final AdvancementModel databaseModel = await ApiService().advancementApi
         .add(toAdd);
-    final List<AdvancementModel> updatedList = List.of(
-      state.advancements.items,
-      growable: true,
-    )..add(databaseModel);
-
-    return _updateAdvancementInState(
-      state,
-      updatedList,
-      databaseModel,
-      totalItems: state.advancements.totalItems + 1,
+    return state.copyWith(
+      advancements: state.advancements.adding(databaseModel),
+      selectedAdvancement: databaseModel,
     );
   }
 }
@@ -155,14 +148,10 @@ class AdvancementCopyAction extends ReduxAction<AppState>
       relations: result.relations,
     );
     if (!copiesIntoOpenProject) return null;
-    return _updateAdvancementInState(
-      state,
-      [
-        ...state.advancements.items,
+    return state.copyWith(
+      advancements: state.advancements.adding(
         copied.copyWith(projectId: result.targetProjectId),
-      ],
-      state.selectedAdvancement,
-      totalItems: state.advancements.totalItems + 1,
+      ),
     );
   }
 }
@@ -175,19 +164,13 @@ class AdvancementRemoveAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     await ApiService().advancementApi.remove(model);
-    final List<AdvancementModel> updatedList = List.of(
-      state.advancements.items,
-      growable: true,
-    )..removeWhere((element) => element.id == model.id);
-
     // The selection stays: when deleting from the detail page, that page is
     // still mounted during its exit transition and reads it. The page's
     // onDispose clears it.
-    return _updateAdvancementInState(
-      state,
-      updatedList,
-      state.selectedAdvancement,
-      totalItems: state.advancements.totalItems - 1,
+    return state.copyWith(
+      advancements: state.advancements.removingWhere(
+        (element) => element.id == model.id,
+      ),
     );
   }
 }
@@ -204,43 +187,16 @@ class AdvancementDatabaseUpdate extends ReduxAction<AppState> with Throttle {
       selected,
     );
 
-    final List<AdvancementModel> updatedList = List.of(
-      state.advancements.items,
-      growable: true,
-    );
-    final int index = updatedList.indexWhere(
-      (element) => element.id == selected.id,
-    );
-
-    if (index != -1) {
-      updatedList[index] = dbModel;
-    }
-
-    return _updateAdvancementInState(
-      state,
-      updatedList,
-      dbModel,
-    ).clearUnsavedChanges(NavigationEntry.advancements);
+    return state
+        .copyWith(
+          advancements: state.advancements.replacingWhere(
+            (element) => element.id == selected.id,
+            dbModel,
+          ),
+          selectedAdvancement: dbModel,
+        )
+        .clearUnsavedChanges(NavigationEntry.advancements);
   }
-}
-
-AppState _updateAdvancementInState(
-  AppState state,
-  List<AdvancementModel> newItems,
-  AdvancementModel? selectedItem, {
-  int? totalItems,
-}) {
-  final updated = state.advancements.copyWith(
-    items: newItems,
-    totalItems: totalItems ?? state.advancements.totalItems,
-    totalPages: state.advancements.totalPages,
-    currentPage: state.advancements.currentPage,
-    pageSize: state.advancements.pageSize,
-  );
-  return state.copyWith(
-    advancements: updated,
-    selectedAdvancement: selectedItem,
-  );
 }
 
 /// Saves new [notes] for [model] straight from the overview, without going
@@ -260,19 +216,13 @@ class AdvancementNotesUpdateAction extends ReduxAction<AppState>
     final AdvancementModel response = await ApiService().advancementApi.update(
       model.copyWith(comment: notes),
     );
-    final List<AdvancementModel> items = List.of(
-      state.advancements.items,
-      growable: true,
-    );
-    final int index = items.indexWhere((item) => item.id == response.id);
-    if (index != -1) {
-      items[index] = response;
-    }
     final selected = state.selectedAdvancement;
-    return _updateAdvancementInState(
-      state,
-      items,
-      selected?.id == response.id
+    return state.copyWith(
+      advancements: state.advancements.replacingWhere(
+        (item) => item.id == response.id,
+        response,
+      ),
+      selectedAdvancement: selected?.id == response.id
           ? selected!.copyWith(comment: response.comment)
           : selected,
     );

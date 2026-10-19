@@ -103,14 +103,10 @@ class SoundCopyAction extends ReduxAction<AppState>
       relations: result.relations,
     );
     if (!copiesIntoOpenProject) return null;
-    return _updateSoundEventsInState(
-      state,
-      [
-        ...state.soundEvents.items,
+    return state.copyWith(
+      soundEvents: state.soundEvents.adding(
         copied.copyWith(projectId: result.targetProjectId),
-      ],
-      state.selectedSoundEvent,
-      totalItems: state.soundEvents.totalItems + 1,
+      ),
     );
   }
 }
@@ -123,19 +119,13 @@ class SoundRemoveAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     await ApiService().soundApi.remove(model);
-    final List<SoundEventModel> updatedList = List.of(
-      state.soundEvents.items,
-      growable: true,
-    )..removeWhere((element) => element.id == model.id);
-
     // The selection stays: when deleting from the detail page, that page is
     // still mounted during its exit transition and reads it. The page's
     // onDispose clears it.
-    return _updateSoundEventsInState(
-      state,
-      updatedList,
-      state.selectedSoundEvent,
-      totalItems: state.soundEvents.totalItems - 1,
+    return state.copyWith(
+      soundEvents: state.soundEvents.removingWhere(
+        (element) => element.id == model.id,
+      ),
     );
   }
 }
@@ -153,16 +143,9 @@ class SoundAddAction extends ReduxAction<AppState> with NonReentrant {
     final SoundEventModel databaseModel = await ApiService().soundApi.add(
       toAdd,
     );
-    final List<SoundEventModel> updatedList = List.of(
-      state.soundEvents.items,
-      growable: true,
-    )..add(databaseModel);
-
-    return _updateSoundEventsInState(
-      state,
-      updatedList,
-      databaseModel,
-      totalItems: state.soundEvents.totalItems + 1,
+    return state.copyWith(
+      soundEvents: state.soundEvents.adding(databaseModel),
+      selectedSoundEvent: databaseModel,
     );
   }
 }
@@ -197,23 +180,15 @@ class SoundDatabaseUpdate extends ReduxAction<AppState> with Throttle {
     final dbModel = response.copyWith(
       files: (state.selectedSoundEvent ?? selected).files,
     );
-    final List<SoundEventModel> updatedList = List.of(
-      state.soundEvents.items,
-      growable: true,
-    );
-    final int index = updatedList.indexWhere(
-      (element) => element.id == selected.id,
-    );
-
-    if (index != -1) {
-      updatedList[index] = response;
-    }
-
-    return _updateSoundEventsInState(
-      state,
-      updatedList,
-      dbModel,
-    ).clearUnsavedChanges(NavigationEntry.sound);
+    return state
+        .copyWith(
+          soundEvents: state.soundEvents.replacingWhere(
+            (element) => element.id == selected.id,
+            response,
+          ),
+          selectedSoundEvent: dbModel,
+        )
+        .clearUnsavedChanges(NavigationEntry.sound);
   }
 }
 
@@ -233,19 +208,13 @@ class SoundNotesUpdateAction extends ReduxAction<AppState> with NonReentrant {
     final SoundEventModel response = await ApiService().soundApi.update(
       model.copyWith(comment: notes),
     );
-    final List<SoundEventModel> items = List.of(
-      state.soundEvents.items,
-      growable: true,
-    );
-    final int index = items.indexWhere((item) => item.id == response.id);
-    if (index != -1) {
-      items[index] = response;
-    }
     final selected = state.selectedSoundEvent;
-    return _updateSoundEventsInState(
-      state,
-      items,
-      selected?.id == response.id
+    return state.copyWith(
+      soundEvents: state.soundEvents.replacingWhere(
+        (item) => item.id == response.id,
+        response,
+      ),
+      selectedSoundEvent: selected?.id == response.id
           ? selected!.copyWith(comment: response.comment)
           : selected,
     );
@@ -264,25 +233,6 @@ class _SetLoadMoreSoundEventModels extends ReduxAction<AppState> {
 
   @override
   AppState reduce() => state.copyWith(isLoadingMoreSoundEvents: value);
-}
-
-AppState _updateSoundEventsInState(
-  AppState state,
-  List<SoundEventModel> newItems,
-  SoundEventModel? selectedAttribute, {
-  int? totalItems,
-}) {
-  final updated = state.soundEvents.copyWith(
-    items: newItems,
-    totalItems: totalItems ?? state.soundEvents.totalItems,
-    totalPages: state.soundEvents.totalPages,
-    currentPage: state.soundEvents.currentPage,
-    pageSize: state.soundEvents.pageSize,
-  );
-  return state.copyWith(
-    soundEvents: updated,
-    selectedSoundEvent: selectedAttribute,
-  );
 }
 
 /// Page 1 of the sound events of the open project, in the size of the
