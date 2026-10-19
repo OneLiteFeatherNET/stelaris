@@ -17,8 +17,16 @@ class InitSoundFileAction extends ReduxAction<AppState> {
     final PaginatedResult<SoundFileSource> files = await soundClient.getFiles(
       model.id!,
     );
+
+    // Another sound event was selected, or its files changed, while they
+    // loaded, so the page no longer belongs to them.
+    final SoundEventModel? current = _stillSelected(state, model);
+    if (current == null || !identical(current.files, model.files)) {
+      return null;
+    }
+
     return state.copyWith(
-      selectedSoundEvent: model.copyWith(
+      selectedSoundEvent: current.copyWith(
         files: model.files.copyWith(
           items: List.of(model.files.items, growable: true)
             ..addAll(files.items),
@@ -169,9 +177,17 @@ class LoadMoreSoundFiles extends ReduxAction<AppState> {
       pageToLoad,
       pageSize,
     );
+
+    // Another sound event was selected, or its files changed, while the
+    // page loaded, so the page no longer continues them.
+    final SoundEventModel? current = _stillSelected(state, model);
+    if (current == null || !identical(current.files, model.files)) {
+      return null;
+    }
+
     final PaginatedResult<SoundFileSource> entries = model.files;
 
-    final updatedSoundEvent = model.copyWith(
+    final updatedSoundEvent = current.copyWith(
       files: entries.copyWith(
         items: List.of(entries.items, growable: true)..addAll(files.items),
         currentPage: files.currentPage,

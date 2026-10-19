@@ -159,4 +159,114 @@ void main() {
       expect(store.state.selectedSoundEvent, other);
     });
   });
+
+  final nextPage = {
+    'items': [json('f2')],
+    'totalItems': 4,
+    'totalPages': 2,
+    'currentPage': 2,
+    'pageSize': 2,
+  };
+
+  group('LoadMoreSoundFiles', () {
+    LoadMoreSoundFiles loadMore() =>
+        LoadMoreSoundFiles(pageToLoad: 2, pageSize: 2);
+
+    test('appends the next files to the loaded ones', () async {
+      final store = storeWith(sound);
+      (ApiService().soundApi as SoundClientApi)
+          .apiClient
+          .dio
+          .httpClientAdapter = FakeHttpClientAdapter.json(
+        nextPage,
+      );
+
+      await store.dispatchAndWait(loadMore());
+
+      expect(fileIds(store), ['f1', 'f2']);
+      expect(store.state.selectedSoundEvent!.files.currentPage, 2);
+      expect(store.state.selectedSoundEvent!.isLoading, isFalse);
+    });
+
+    test('keeps form edits made while the next files load '
+        '(regression)', () async {
+      final store = storeWith(sound);
+      respondAfterRename(store, nextPage);
+
+      await store.dispatchAndWait(loadMore());
+
+      expect(store.state.selectedSoundEvent!.uiName, 'Renamed');
+      expect(fileIds(store), ['f1', 'f2']);
+      expect(store.state.selectedSoundEvent!.isLoading, isFalse);
+    });
+
+    test('drops the next files when another sound event is selected '
+        'while they load (regression)', () async {
+      final store = storeWith(sound);
+      respondAfterSelectingOther(store, nextPage);
+
+      await store.dispatchAndWait(loadMore());
+
+      expect(store.state.selectedSoundEvent, other);
+    });
+
+    test('drops the next files when the loaded ones changed while they '
+        'load', () async {
+      final store = storeWith(sound);
+      (ApiService().soundApi as SoundClientApi)
+          .apiClient
+          .dio
+          .httpClientAdapter = FakeHttpClientAdapter((options) {
+        store.dispatchSync(
+          _SelectSound(
+            store.state.selectedSoundEvent!.copyWith(
+              files: PaginatedResult(
+                items: [file('fresh')],
+                totalItems: 1,
+                totalPages: 1,
+                currentPage: 1,
+                pageSize: 2,
+              ),
+            ),
+          ),
+        );
+        return FakeHttpClientAdapter.response(nextPage);
+      });
+
+      await store.dispatchAndWait(loadMore());
+
+      expect(fileIds(store), ['fresh']);
+    });
+  });
+
+  group('InitSoundFileAction', () {
+    final empty = SoundEventModel(id: 'sound-1', uiName: 'sound');
+    final firstPage = {
+      'items': [json('f1')],
+      'totalItems': 1,
+      'totalPages': 1,
+      'currentPage': 1,
+      'pageSize': 20,
+    };
+
+    test('keeps form edits made while the files load (regression)', () async {
+      final store = storeWith(empty);
+      respondAfterRename(store, firstPage);
+
+      await store.dispatchAndWait(InitSoundFileAction());
+
+      expect(store.state.selectedSoundEvent!.uiName, 'Renamed');
+      expect(fileIds(store), ['f1']);
+    });
+
+    test('drops the files when another sound event is selected while they '
+        'load (regression)', () async {
+      final store = storeWith(empty);
+      respondAfterSelectingOther(store, firstPage);
+
+      await store.dispatchAndWait(InitSoundFileAction());
+
+      expect(store.state.selectedSoundEvent, other);
+    });
+  });
 }
