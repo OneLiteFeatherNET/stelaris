@@ -2,7 +2,6 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/actions/advancement_actions.dart';
@@ -53,13 +52,6 @@ final _detailCases = [
     selectAction: () =>
         SelectedAdvancementAction(const AdvancementModel(uiName: 'Test')),
   ),
-  _DetailRedirectCase(
-    name: 'attributeDetailRedirect',
-    listPath: '/attributes',
-    redirect: attributeDetailRedirect,
-    selectAction: () =>
-        SelectAttributeAction(const AttributeModel(uiName: 'Test')),
-  ),
 ];
 
 Widget _createApp(Store<AppState> store, GoRouter router) {
@@ -106,52 +98,22 @@ void main() {
   );
 
   testWidgets(
-    'projectSelectionRedirect lets a shared link through without a project',
+    'projectSelectionRedirect lets a location below a project through',
     (tester) async {
-      const shared = '/attributes/detail?project=p&id=a';
+      const location = '/projects/p/attributes/a';
       final store = Store<AppState>(initialState: const AppState());
       final router = GoRouter(
-        initialLocation: shared,
+        initialLocation: location,
         redirect: projectSelectionRedirect,
         routes: [
-          GoRoute(
-            path: '/attributes/detail',
-            builder: (context, state) => const Scaffold(body: Text('Detail')),
-          ),
           GoRoute(
             path: projectSelectionRoute,
             builder: (context, state) =>
                 const Scaffold(body: Text('Project Selection Page')),
           ),
-        ],
-      );
-
-      await tester.pumpWidget(_createApp(store, router));
-      await tester.pumpAndSettle();
-
-      expect(_currentLocation(router), shared);
-    },
-  );
-
-  testWidgets(
-    'attributeDetailRedirect keeps a shared link with nothing selected',
-    (tester) async {
-      const shared = '/attributes/detail?project=p&id=a';
-      final store = Store<AppState>(initialState: const AppState());
-      final router = GoRouter(
-        initialLocation: shared,
-        redirect: attributeDetailRedirect,
-        routes: [
           GoRoute(
-            path: '/attributes',
-            builder: (context, state) => const Scaffold(body: Text('List')),
-            routes: [
-              GoRoute(
-                path: 'detail',
-                builder: (context, state) =>
-                    const Scaffold(body: Text('Detail')),
-              ),
-            ],
+            path: '/projects/:projectId/attributes/:id',
+            builder: (context, state) => const Scaffold(body: Text('Detail')),
           ),
         ],
       );
@@ -159,7 +121,7 @@ void main() {
       await tester.pumpWidget(_createApp(store, router));
       await tester.pumpAndSettle();
 
-      expect(_currentLocation(router), shared);
+      expect(_currentLocation(router), location);
     },
   );
 

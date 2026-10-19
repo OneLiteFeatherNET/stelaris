@@ -36,7 +36,7 @@ void main() {
             .toList();
 
         expect(subPaths, contains(NavigationEntry.items.route));
-        expect(subPaths, contains(NavigationEntry.attributes.route));
+        expect(subPaths, contains('/projects/:projectId/attributes'));
         expect(subPaths, contains(NavigationEntry.advancements.route));
         expect(subPaths, contains(NavigationEntry.font.route));
         expect(subPaths, contains(NavigationEntry.sound.route));
@@ -107,5 +107,23 @@ void main() {
         expect(railUpdated.selectedIndex, equals(expectedSoundIndex));
       },
     );
+
+    test('a location below a project reaches its section, not the project '
+        'list', () {
+      final match = router.configuration.findMatch(
+        Uri.parse('/projects/p/attributes/a?tab=general'),
+      );
+
+      expect(match.isError, isFalse);
+      expect(match.pathParameters, {'projectId': 'p', 'id': 'a'});
+      expect(match.matches.last.matchedLocation, '/projects/p/attributes/a');
+    });
+
+    test('the project list still matches on its own', () {
+      final match = router.configuration.findMatch(Uri.parse('/projects'));
+
+      expect(match.isError, isFalse);
+      expect(match.matches.single.matchedLocation, projectSelectionRoute);
+    });
   });
 }

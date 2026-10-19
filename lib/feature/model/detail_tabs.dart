@@ -1,19 +1,15 @@
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 
 /// The query parameter a detail route reads its starting tab from, e.g.
 /// `/items/detail?tab=lore`.
 const String detailTabParameter = 'tab';
 
-/// The query parameter a shared detail link names its model's project by.
-const String detailProjectParameter = 'project';
-
-/// The query parameter a shared detail link names its model by.
+/// The route parameter a project-scoped detail page names its model by, as
+/// in `/projects/<projectId>/attributes/<id>`.
 const String detailIdParameter = 'id';
-
-/// The model a shared detail link points to.
-typedef SharedModelRef = ({String projectId, String id});
 
 /// One tab of a detail page.
 ///
@@ -57,34 +53,36 @@ String? requestedTab(BuildContext context) {
   return GoRouterState.of(context).uri.queryParameters[detailTabParameter];
 }
 
-/// Where the detail page under [listRoute] lives, optionally opened on [tab].
+/// Where the detail page of [entry] lives, optionally opened on [tab].
 ///
-/// With [projectId] and [id] the location names its model, so it can be
-/// shared and survives a reload (see [sharedModelRef]).
+/// A project-scoped section names the model in its path, below [projectId]
+/// (`/projects/p/attributes/a`), so the location can be shared and survives
+/// a reload; without both there is no model to open and its list is
+/// returned instead. The other sections show whatever is selected at
+/// `<route>/detail`.
 String detailLocation(
-  String listRoute, {
+  NavigationEntry entry, {
   DetailTab? tab,
   String? projectId,
   String? id,
 }) {
-  final Map<String, String> query = {
-    detailProjectParameter: ?projectId,
-    detailIdParameter: ?id,
-    detailTabParameter: ?tab?.id,
-  };
+  final String path;
+  if (!entry.projectScoped) {
+    path = '${entry.route}/detail';
+  } else if (projectId == null ||
+      projectId.isEmpty ||
+      id == null ||
+      id.isEmpty) {
+    return sectionLocation(entry, projectId);
+  } else {
+    path = '${sectionLocation(entry, projectId)}/$id';
+  }
   return Uri(
-    path: '$listRoute/detail',
-    queryParameters: query.isEmpty ? null : query,
+    path: path,
+    queryParameters: tab == null ? null : {detailTabParameter: tab.id},
   ).toString();
 }
 
-/// The model a shared detail link at [uri] points to, or null when the link
-/// does not name both its project and its id.
-SharedModelRef? sharedModelRef(Uri uri) {
-  final String? projectId = uri.queryParameters[detailProjectParameter];
-  final String? id = uri.queryParameters[detailIdParameter];
-  if (projectId == null || projectId.isEmpty || id == null || id.isEmpty) {
-    return null;
-  }
-  return (projectId: projectId, id: id);
-}
+/// Whether [location] is a detail page of [entry], whichever model it shows.
+bool isDetailLocation(NavigationEntry entry, String location) =>
+    sectionPath(location).startsWith('${entry.route}/');

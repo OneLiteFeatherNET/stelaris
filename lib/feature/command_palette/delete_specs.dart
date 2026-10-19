@@ -50,8 +50,7 @@ class DeleteSpec<E extends DataModel> {
     );
     final AppLocalizations l10n = context.l10n;
     final bool onOwnDetail =
-        GoRouter.of(context).state.matchedLocation ==
-            detailLocation(entry.route) &&
+        isDetailLocation(entry, GoRouter.of(context).state.matchedLocation) &&
         selected(state)?.id == model.id;
     return confirmAndDeleteModel<E>(
       context,

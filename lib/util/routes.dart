@@ -17,6 +17,7 @@ import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:stelaris/feature/model/shared_model_gate.dart';
 import 'package:stelaris/feature/advancement/advancement_detail_page.dart';
 import 'package:stelaris/feature/attributes/attribute_detail_page.dart';
+import 'package:stelaris/feature/project/project_gate.dart';
 import 'package:stelaris/feature/project/project_selection_page.dart';
 import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/util/deferred_widget.dart';
@@ -29,7 +30,7 @@ import 'package:stelaris/feature/advancement/advancement_page.dart'
     deferred as advancement_page;
 import 'package:stelaris/feature/sound/sound_page.dart' deferred as sound_page;
 
-const String projectSelectionRoute = '/projects';
+const String projectSelectionRoute = projectsRoute;
 
 /// Where an unauthenticated visitor is sent, and the one route the guard below
 /// lets through - otherwise signing in would redirect to itself.
@@ -40,7 +41,7 @@ const String signInRoute = '/sign-in';
 const String signInFromParameter = 'from';
 
 /// Sends anyone without a session to [signInRoute], remembering where they were
-/// headed - query included, which is where a shared link names its model.
+/// headed - query included, which is where a link names the tab to open.
 ///
 /// Returns null - meaning "no opinion" - in exactly two cases: a deployment
 /// that configured no identity provider, where the feature is switched off
@@ -93,7 +94,8 @@ String? appRedirect(BuildContext context, GoRouterState state) {
 }
 
 /// Redirects to [projectSelectionRoute] whenever no project is selected,
-/// except for a shared link, which brings its own project.
+/// except for a location below a project, which selects it itself (see
+/// [ProjectGate]).
 ///
 /// Extracted as a standalone function so it can be exercised against an
 /// isolated [GoRouter] in tests instead of the app's singleton [router].
@@ -102,10 +104,9 @@ String? projectSelectionRedirect(BuildContext context, GoRouterState state) {
     final appState = StoreProvider.state<AppState>(context);
     final hasProject = appState.selectedProject != null;
     final isAtProjects = state.matchedLocation == projectSelectionRoute;
-    // A shared link names its project, which the detail page selects itself.
-    final isSharedLink = sharedModelRef(state.uri) != null;
+    final namesProject = state.pathParameters.containsKey(projectIdParameter);
 
-    if (!hasProject && !isAtProjects && !isSharedLink) {
+    if (!hasProject && !isAtProjects && !namesProject) {
       return projectSelectionRoute;
     }
   } on StoreException catch (_) {}
@@ -124,25 +125,6 @@ String? advancementDetailRedirect(BuildContext context, GoRouterState state) {
 
     if (isAtAdvancementDetail && appState.selectedAdvancement == null) {
       return NavigationEntry.advancements.route;
-    }
-  } on StoreException catch (_) {}
-  return null;
-}
-
-/// Redirects `/attributes/detail` back to `/attributes` when nothing is
-/// selected and the location names no attribute either (see
-/// [sharedModelRef]) — reachable by an old link or a direct URL visit. A
-/// location that names one is left to [SharedModelGate] to load.
-String? attributeDetailRedirect(BuildContext context, GoRouterState state) {
-  try {
-    final appState = StoreProvider.state<AppState>(context);
-    final isAtAttributeDetail =
-        state.matchedLocation == '${NavigationEntry.attributes.route}/detail';
-
-    if (isAtAttributeDetail &&
-        appState.selectedAttribute == null &&
-        sharedModelRef(state.uri) == null) {
-      return NavigationEntry.attributes.route;
     }
   } on StoreException catch (_) {}
   return null;
@@ -273,11 +255,16 @@ final GoRouter router = GoRouter(
       builder: (context, state, child) => BasePage(child: child),
       routes: [
         GoRoute(
-          path: NavigationEntry.attributes.route,
+          path:
+              '$projectsRoute/:$projectIdParameter'
+              '${NavigationEntry.attributes.route}',
           pageBuilder: (context, state) => CustomTransitionPage(
-            child: DeferredWidget(
-              loader: attribute_page.loadLibrary,
-              builder: () => attribute_page.AttributePage(),
+            child: ProjectGate(
+              projectId: state.pathParameters[projectIdParameter]!,
+              child: DeferredWidget(
+                loader: attribute_page.loadLibrary,
+                builder: () => attribute_page.AttributePage(),
+              ),
             ),
             key: state.pageKey,
             transitionsBuilder: (
@@ -289,15 +276,18 @@ final GoRouter router = GoRouter(
           ),
           routes: [
             GoRoute(
-              path: 'detail',
-              redirect: attributeDetailRedirect,
+              path: ':$detailIdParameter',
               onExit: detailExitGuard,
               pageBuilder: (context, state) => CustomTransitionPage(
                 child: SharedModelGate(
-                  ref: sharedModelRef(state.uri),
+                  projectId: state.pathParameters[projectIdParameter]!,
+                  id: state.pathParameters[detailIdParameter]!,
                   open: OpenSharedAttributeAction.new,
                   isOpen: (state, id) => state.selectedAttribute?.id == id,
-                  listRoute: NavigationEntry.attributes.route,
+                  listLocation: sectionLocation(
+                    NavigationEntry.attributes,
+                    state.pathParameters[projectIdParameter],
+                  ),
                   child: const AttributeDetailPage(),
                 ),
                 key: state.pageKey,

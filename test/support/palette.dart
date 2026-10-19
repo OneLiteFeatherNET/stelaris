@@ -33,13 +33,10 @@ List<RouteBase> palettePages() => [
     ],
   ),
   GoRoute(
-    path: '/attributes',
+    path: '/projects/:projectId/attributes',
     builder: (_, _) => const Text('attributes page'),
     routes: [
-      GoRoute(
-        path: 'detail',
-        builder: (_, _) => const Text('attribute detail'),
-      ),
+      GoRoute(path: ':id', builder: (_, _) => const Text('attribute detail')),
     ],
   ),
 ];

@@ -21,6 +21,7 @@ import 'package:stelaris/feature/model/model_sort_option.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/app_shapes.dart';
+import 'package:stelaris/util/section_navigation_ext.dart';
 
 List<(SortField, SortDirection, String)> _sortOptions(AppLocalizations l10n) {
   return [
@@ -355,7 +356,7 @@ class _AppBarSearchState extends State<AppBarSearch> {
       final query = _controller.text;
       _syncedQuery = query;
       context.dispatch(UpdateSearchQueryAction(query));
-      context.go(entry.route);
+      context.goToSection(entry);
     } finally {
       _leavingDetail = false;
     }
@@ -367,7 +368,7 @@ class _AppBarSearchState extends State<AppBarSearch> {
     final entry = entryForLocation(location);
     if (entry == null) return const SizedBox.shrink();
     _entry = entry;
-    _onDetail = location != entry.route;
+    _onDetail = sectionPath(location) != entry.route;
 
     return StoreConnector<AppState, ModelSearchState>(
       converter: (store) => store.state.modelSearch,

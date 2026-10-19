@@ -393,7 +393,7 @@ class EntityProvider implements PaletteProvider {
       final AdvancementModel model when kind == EntityKind.advancement =>
         _entity(kind, model.id, model.uiName, (context) async {
           context.dispatch(SelectedAdvancementAction(model));
-          context.go(detailLocation(NavigationEntry.advancements.route));
+          context.go(detailLocation(NavigationEntry.advancements));
         }, children: _childrenOf(actionsFor(model, advancementDelete))),
       final AttributeModel model when kind == EntityKind.attribute => _entity(
         kind,
@@ -403,8 +403,13 @@ class EntityProvider implements PaletteProvider {
           context.dispatch(SelectAttributeAction(model));
           context.go(
             detailLocation(
-              NavigationEntry.attributes.route,
-              projectId: model.projectId,
+              NavigationEntry.attributes,
+              projectId:
+                  model.projectId ??
+                  StoreProvider.state<AppState>(
+                    context,
+                    notify: false,
+                  ).selectedProject?.id,
               id: model.id,
             ),
           );
@@ -455,14 +460,14 @@ class EntityProvider implements PaletteProvider {
     void Function(BuildContext context) select,
     List<StelarisCommand> actions,
   ) {
-    final String route = entryFor(kind).route;
+    final NavigationEntry entry = entryFor(kind);
     return _entity(
       kind,
       id,
       name,
       (context) async {
         select(context);
-        context.go(detailLocation(route));
+        context.go(detailLocation(entry));
       },
       children: () => [
         for (final DetailTab tab in tabs)
@@ -475,7 +480,7 @@ class EntityProvider implements PaletteProvider {
             modes: const {PaletteMode.entities},
             run: (context) async {
               select(context);
-              context.go(detailLocation(route, tab: tab));
+              context.go(detailLocation(entry, tab: tab));
             },
           ),
         ...actions,

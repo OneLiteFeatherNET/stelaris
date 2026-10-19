@@ -99,7 +99,7 @@ void main() {
       await pressKey(tester, LogicalKeyboardKey.enter);
 
       expect(find.byType(CommandPanel), findsNothing);
-      expect(router.state.matchedLocation, '/attributes/detail');
+      expect(router.state.matchedLocation, '/projects/p1/attributes/a1');
       expect(store.state.selectedAttribute?.uiName, 'Max Mana');
       expect(find.text('attribute detail'), findsOneWidget);
     });

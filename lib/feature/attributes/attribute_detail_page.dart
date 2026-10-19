@@ -37,7 +37,7 @@ class AttributeDetailPage extends StatelessWidget {
             readNotes: (model) => model.comment,
             shareLocation: (state) => switch (state.selectedAttribute) {
               final AttributeModel model? => detailLocation(
-                NavigationEntry.attributes.route,
+                NavigationEntry.attributes,
                 projectId: model.projectId ?? state.selectedProject?.id,
                 id: model.id,
               ),

@@ -1,10 +1,10 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/dialogs/model_delete_dialog.dart';
+import 'package:stelaris/util/section_navigation_ext.dart';
 
 /// Asks to confirm deleting [model] by typing its [name], then deletes it.
 ///
@@ -41,7 +41,7 @@ Future<bool> confirmAndDeleteModel<E>(
     ),
   );
   if (deleted == true && returnToList && context.mounted) {
-    context.go(entry.route);
+    context.goToSection(entry);
   }
   return deleted == true;
 }

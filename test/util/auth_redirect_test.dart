@@ -97,13 +97,13 @@ void main() {
 
     testWidgets('a shared link keeps its query through sign in',
         (tester) async {
-      // A shared link names the project and model in its query; dropping it
-      // would land the person on a detail page with nothing to show.
-      await pumpAt(tester, '/items/detail?project=p&id=a');
+      // A shared link names the tab to open in its query; dropping it would
+      // land the person on another tab than the one shared.
+      await pumpAt(tester, '/items/detail?tab=lore');
       await tester.pumpAndSettle();
 
       expect(
-        find.text('sign in from /items/detail?project=p&id=a'),
+        find.text('sign in from /items/detail?tab=lore'),
         findsOneWidget,
       );
     });

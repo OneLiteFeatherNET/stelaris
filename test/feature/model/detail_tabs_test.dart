@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/detail_tabs.dart';
 
 final List<DetailTab> _tabs = [
@@ -54,52 +55,60 @@ void main() {
 
   group('detailLocation', () {
     test('without a tab is the plain detail route', () {
-      expect(detailLocation('/items'), '/items/detail');
+      expect(detailLocation(NavigationEntry.items), '/items/detail');
     });
 
     test('with a tab adds its id', () {
       expect(
         detailLocation(
-          '/fonts',
+          NavigationEntry.font,
           tab: DetailTab('characters', (_) => 'Characters'),
         ),
         '/fonts/detail?tab=characters',
       );
     });
 
-    test('with a project and id carries both ahead of the tab', () {
+    test('names the model below its project in a project-scoped section', () {
       expect(
         detailLocation(
-          '/attributes',
+          NavigationEntry.attributes,
           projectId: 'p',
           id: 'a',
           tab: DetailTab('general', (_) => 'General'),
         ),
-        '/attributes/detail?project=p&id=a&tab=general',
+        '/projects/p/attributes/a?tab=general',
       );
+    });
+
+    test('is the list of a project-scoped section without a model', () {
+      expect(
+        detailLocation(NavigationEntry.attributes, projectId: 'p'),
+        '/projects/p/attributes',
+      );
+      expect(
+        detailLocation(NavigationEntry.attributes, projectId: 'p', id: ''),
+        '/projects/p/attributes',
+      );
+      expect(detailLocation(NavigationEntry.attributes, id: 'a'), '/projects');
     });
   });
 
-  group('sharedModelRef', () {
-    test('reads the project and id of a shared link', () {
-      final ref = sharedModelRef(
-        Uri.parse('/attributes/detail?project=p&id=a&tab=general'),
+  group('isDetailLocation', () {
+    test('matches the detail page of its own section only', () {
+      expect(isDetailLocation(NavigationEntry.items, '/items/detail'), isTrue);
+      expect(
+        isDetailLocation(
+          NavigationEntry.attributes,
+          '/projects/p/attributes/a',
+        ),
+        isTrue,
       );
-
-      expect(ref?.projectId, 'p');
-      expect(ref?.id, 'a');
-    });
-
-    test('is null when either part is missing or empty', () {
-      for (final String location in [
-        '/attributes/detail',
-        '/attributes/detail?id=a',
-        '/attributes/detail?project=p',
-        '/attributes/detail?project=&id=a',
-        '/attributes/detail?project=p&id=',
-      ]) {
-        expect(sharedModelRef(Uri.parse(location)), isNull, reason: location);
-      }
+      expect(isDetailLocation(NavigationEntry.items, '/items'), isFalse);
+      expect(
+        isDetailLocation(NavigationEntry.attributes, '/projects/p/attributes'),
+        isFalse,
+      );
+      expect(isDetailLocation(NavigationEntry.font, '/items/detail'), isFalse);
     });
   });
 }

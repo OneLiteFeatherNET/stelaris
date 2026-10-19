@@ -17,9 +17,9 @@ Iterable<GoRoute> _goRoutes(List<RouteBase> routes) sync* {
 
 void main() {
   test('every detail route guards leaving it', () {
-    final detailRoutes = _goRoutes(
-      router.configuration.routes,
-    ).where((route) => route.path == 'detail').toList();
+    final detailRoutes = _goRoutes(router.configuration.routes)
+        .where((route) => const {'detail', ':id'}.contains(route.path))
+        .toList();
 
     expect(detailRoutes, hasLength(5));
     for (final route in detailRoutes) {

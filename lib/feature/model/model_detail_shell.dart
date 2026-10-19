@@ -1,9 +1,9 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/page_header.dart';
+import 'package:stelaris/util/section_navigation_ext.dart';
 
 /// The shared shell for every [ModelPage] detail route: a [PageHeader]
 /// (back arrow, model name, unsaved-changes dot and the page's [actions])
@@ -39,7 +39,7 @@ class ModelDetailShell extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
               child: PageHeader(
                 title: title ?? '',
-                onBack: () => context.go(entry.route),
+                onBack: () => context.goToSection(entry),
                 showUnsavedIndicator: hasUnsavedChanges,
                 compactBelow: PageHeader.detailCompactThreshold,
                 actions: actions,

@@ -115,6 +115,6 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
 
   void _proceedWithProject(ProjectViewModel vm, Project selected) {
     vm.onSelectProject(selected);
-    context.go(NavigationEntry.attributes.route);
+    context.go(sectionLocation(NavigationEntry.attributes, selected.id));
   }
 }

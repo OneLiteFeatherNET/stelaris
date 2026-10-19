@@ -22,6 +22,7 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/routes.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/util/section_navigation_ext.dart';
 
 /// The commands the palette offers.
 ///
@@ -62,7 +63,7 @@ const Set<PaletteMode> _navigation = {
 /// The list page [location] shows, or null on a detail page or anywhere else.
 NavigationEntry? listPageAt(String location) {
   for (final NavigationEntry entry in NavigationEntry.values) {
-    if (location == entry.route) {
+    if (sectionPath(location) == entry.route) {
       return entry;
     }
   }
@@ -79,11 +80,9 @@ StelarisCommand _goTo(NavigationEntry entry) {
     icon: entry.data,
     // Marked, not hidden: the palette shows where the user is, and from a
     // detail page (which sits under the list's route) this leads back.
-    isCurrent: (context) =>
-        context.location == entry.route ||
-        context.location.startsWith('${entry.route}/'),
+    isCurrent: (context) => entryForLocation(context.location) == entry,
     currentIcon: entry.selected,
-    run: (context) async => context.go(entry.route),
+    run: (context) async => context.goToSection(entry),
   );
 }
 
@@ -116,8 +115,8 @@ StelarisCommand _create(NavigationEntry entry) {
       if (!created || !context.mounted) {
         return;
       }
-      if (GoRouter.of(context).state.matchedLocation != entry.route) {
-        context.go(entry.route);
+      if (listPageAt(GoRouter.of(context).state.matchedLocation) != entry) {
+        context.goToSection(entry);
       }
     },
   );
@@ -136,7 +135,7 @@ StelarisCommand _deleteThis<E extends DataModel>(
     group: CommandGroup.interface,
     icon: Icons.delete_outline,
     isAvailable: (context) =>
-        context.location == detailLocation(spec.entry.route) &&
+        isDetailLocation(spec.entry, context.location) &&
         spec.selected(context.state) != null,
     run: (context) async {
       final E? model = spec.selected(

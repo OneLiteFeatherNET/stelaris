@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/navigation_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/util/color_scheme_ext.dart';
+import 'package:stelaris/util/section_navigation_ext.dart';
 
 const double maxXOffset = 180;
 const List<NavigationEntry> navigationEntries = NavigationEntry.values;
@@ -52,7 +53,7 @@ class NavigationSideBar extends StatelessWidget {
   /// Handles the selection of a navigation destination. Leaving a detail
   /// page with unsaved edits is guarded by the detail route's `onExit`.
   void _onDestinationSelected(BuildContext context, int index) =>
-      context.go(navigationEntries[index].route);
+      context.goToSection(navigationEntries[index]);
 
   /// Builds the list of navigation destinations for the [NavigationRail].
   List<NavigationRailDestination> _buildNavigationView() {

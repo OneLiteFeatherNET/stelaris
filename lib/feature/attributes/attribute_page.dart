@@ -86,8 +86,13 @@ class AttributePage extends StatelessWidget {
             context.dispatch(SelectAttributeAction(model));
             context.go(
               detailLocation(
-                NavigationEntry.attributes.route,
-                projectId: model.projectId,
+                NavigationEntry.attributes,
+                projectId:
+                    model.projectId ??
+                    StoreProvider.state<AppState>(
+                      context,
+                      notify: false,
+                    ).selectedProject?.id,
                 id: model.id,
               ),
             );
