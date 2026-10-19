@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -11,11 +12,12 @@ import 'fake_http_client_adapter.dart';
 /// adding to it, removing from it and copying into it.
 ///
 /// [model] builds a model of the kind, [listOf] and [withList] read and
-/// write its list in the state.
+/// write its list in the state, [isLoadingMore] reads its load-more flag.
 void listActionTests<T extends DataModel>({
   required T Function(String id, {String? projectId}) model,
   required PaginatedResult<T> Function(AppState state) listOf,
   required AppState Function(AppState state, PaginatedResult<T> list) withList,
+  required bool Function(AppState state) isLoadingMore,
   required ReduxAction<AppState> Function() init,
   required ReduxAction<AppState> Function() refresh,
   required ReduxAction<AppState> Function(T model) add,
@@ -72,6 +74,84 @@ void listActionTests<T extends DataModel>({
 
       expect(identical(store.state, before), isTrue);
       expect(listOf(store.state).items, loaded);
+    });
+
+    /// The page [currentPage] of three pages of two.
+    Map<String, Object?> page(int currentPage) => {
+      'items': [json('page$currentPage-0'), json('page$currentPage-1')],
+      'totalItems': 6,
+      'totalPages': 3,
+      'currentPage': currentPage,
+      'pageSize': 2,
+    };
+
+    test('clears the load-more flag after loading the next page, so the '
+        'page after it loads too (regression)', () async {
+      final store = storeWith(
+        [model('page1-0'), model('page1-1')],
+        totalItems: 6,
+        totalPages: 3,
+        pageSize: 2,
+      );
+
+      respond(page(2));
+      await store.dispatchAndWait(init());
+      expect(isLoadingMore(store.state), isFalse);
+
+      respond(page(3));
+      await store.dispatchAndWait(init());
+      expect(isLoadingMore(store.state), isFalse);
+      expect(listOf(store.state).items.map((m) => m.id), [
+        'page1-0',
+        'page1-1',
+        'page2-0',
+        'page2-1',
+        'page3-0',
+        'page3-1',
+      ]);
+    });
+
+    test('loads the next page in the size of the loaded pages', () async {
+      final store = storeWith(
+        [model('page1-0'), model('page1-1')],
+        totalItems: 6,
+        totalPages: 3,
+        pageSize: 2,
+      );
+      String? size;
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            size = options.uri.queryParameters['size'];
+            return FakeHttpClientAdapter.response(page(2));
+          });
+
+      await store.dispatchAndWait(init());
+
+      expect(size, '2');
+    });
+
+    test('drops the next page when the project changes while it '
+        'loads', () async {
+      const project = Project(id: 'p1', displayName: 'P1', key: 'p1');
+      const other = Project(id: 'p2', displayName: 'P2', key: 'p2');
+      final store = storeWith(
+        [model('page1-0'), model('page1-1')],
+        totalItems: 6,
+        totalPages: 3,
+        pageSize: 2,
+        project: project,
+      );
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            store.dispatchSync(SelectProjectAction(other));
+            return FakeHttpClientAdapter.response(page(2));
+          });
+
+      await store.dispatchAndWait(init());
+
+      expect(store.state.selectedProject, other);
+      expect(listOf(store.state).items, isEmpty);
+      expect(isLoadingMore(store.state), isFalse);
     });
   });
 

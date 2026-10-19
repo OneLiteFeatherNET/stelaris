@@ -18,6 +18,7 @@ void main() {
         AttributeModel(uiName: id, id: id, projectId: projectId),
     listOf: (state) => state.attributes,
     withList: (state, list) => state.copyWith(attributes: list),
+    isLoadingMore: (state) => state.isLoadingAttributesMore,
     init: InitAttributeAction.new,
     refresh: RefreshAttributeAction.new,
     add: AttributeAddAction.new,

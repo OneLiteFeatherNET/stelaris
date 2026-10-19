@@ -14,20 +14,19 @@ class FakeHttpClientAdapter implements HttpClientAdapter {
   final ResponseBody Function(RequestOptions options) _handler;
 
   /// Responds with the given [json] payload and [statusCode] to any request.
-  factory FakeHttpClientAdapter.json(
-    Object? json, {
-    int statusCode = 200,
-  }) {
-    return FakeHttpClientAdapter(
-      (_) => ResponseBody.fromString(
+  factory FakeHttpClientAdapter.json(Object? json, {int statusCode = 200}) {
+    return FakeHttpClientAdapter((_) => response(json, statusCode: statusCode));
+  }
+
+  /// A response with the given [json] payload and [statusCode].
+  static ResponseBody response(Object? json, {int statusCode = 200}) =>
+      ResponseBody.fromString(
         jsonEncode(json),
         statusCode,
         headers: {
           Headers.contentTypeHeader: [Headers.jsonContentType],
         },
-      ),
-    );
-  }
+      );
 
   @override
   Future<ResponseBody> fetch(

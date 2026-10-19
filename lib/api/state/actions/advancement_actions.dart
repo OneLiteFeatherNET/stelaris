@@ -63,12 +63,16 @@ class InitAdvancementAction extends ReduxAction<AppState> {
       try {
         final current = state.advancements;
         final nextPage = current.currentPage + 1;
-        final size = 10;
+        final size = current.pageSize == 0 ? 10 : current.pageSize;
         final next = await ApiService().advancementApi.getPage(
           page: nextPage,
           size: size,
           projectId: state.selectedProject?.id,
         );
+
+        // A project switch or refresh replaced the list while the page
+        // loaded, so the page no longer continues it.
+        if (!identical(state.advancements, current)) return null;
 
         final merged = List<AdvancementModel>.of(current.items)
           ..addAll(next.items);
@@ -83,7 +87,12 @@ class InitAdvancementAction extends ReduxAction<AppState> {
           currentPage: next.currentPage != 0 ? next.currentPage : nextPage,
           pageSize: next.pageSize != 0 ? next.pageSize : size,
         );
-        return state.copyWith(advancements: updated);
+        // The flag is cleared here as well: this state is applied after the
+        // `finally` below and would otherwise set the flag back to true.
+        return state.copyWith(
+          advancements: updated,
+          isLoadingMoreAdvancements: false,
+        );
       } finally {
         dispatchSync(_SetAdvancementsLoadMore(false));
       }

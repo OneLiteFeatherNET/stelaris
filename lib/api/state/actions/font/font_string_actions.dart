@@ -23,16 +23,28 @@ class FontCharFetchAction extends ReduxAction<AppState> {
       try {
         final current = selected.chars;
         final nextPage = current.currentPage + 1;
-        final size = 10;
+        final size = current.pageSize == 0 ? 10 : current.pageSize;
         final next = await ApiService().fontApi.getChars(
           selected.id!,
           page: nextPage,
           size: size,
         );
 
+        // Another font was selected, or the chars of this one changed, while
+        // the page loaded, so the page no longer continues them.
+        final font = state.selectedFont;
+        if (font == null ||
+            font.id != selected.id ||
+            !identical(font.chars, current)) {
+          return null;
+        }
+
         final merged = List<FontStringDTO>.of(current.items)
           ..addAll(next.items);
-        final updated = selected.copyWith(
+        // Built on the current font, so form edits made while the page
+        // loaded are kept.
+        final updated = font.copyWith(
+          isLoadingChars: false,
           chars: current.copyWith(
             items: merged,
             totalItems: next.totalItems != 0
@@ -156,7 +168,7 @@ class _SetLoreCharModelLoad extends ReduxAction<AppState> {
   _SetLoreCharModelLoad(this.value);
 
   @override
-  Future<AppState?> reduce() async {
+  AppState? reduce() {
     if (state.selectedFont == null) return null;
 
     final font = state.selectedFont!;
