@@ -40,7 +40,7 @@ class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
       return null;
     }
 
-    dispatch(_SetMoreEnchantmentLoad(true));
+    dispatchSync(_SetMoreEnchantmentLoad(true));
     try {
       final nextPage = enchantments.currentPage + 1;
 
@@ -63,7 +63,7 @@ class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
         selectedItem: selectedItem.copyWith(enchantments: updatedEnchantments),
       );
     } finally {
-      dispatch(_SetMoreEnchantmentLoad(false));
+      dispatchSync(_SetMoreEnchantmentLoad(false));
     }
   }
 }
@@ -196,7 +196,7 @@ class _SetMoreEnchantmentLoad extends ReduxAction<AppState> {
   final bool value;
 
   @override
-  Future<AppState?> reduce() async {
+  AppState? reduce() {
     if (state.selectedItem == null) return null;
 
     final item = state.selectedItem!;
