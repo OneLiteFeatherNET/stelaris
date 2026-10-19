@@ -84,6 +84,10 @@ void main() {
       String location = '/items/detail',
       HttpClientAdapter? adapter,
     }) async {
+      // Wide enough for the header's actions to keep their labels.
+      tester.view.physicalSize = const Size(1400, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
       requests = {};
       ApiService().itemApi.apiClient.dio.httpClientAdapter = _withEmptyLists(
         adapter ?? RecordingHttpClientAdapter({}),
