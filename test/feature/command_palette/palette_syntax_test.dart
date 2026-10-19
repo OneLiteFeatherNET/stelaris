@@ -7,7 +7,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/attributes/attribute_edit_dialog.dart';
 import 'package:stelaris/feature/base/button/cancel_button.dart';
 import 'package:stelaris/feature/command_palette/command_palette.dart';
 import 'package:stelaris/feature/command_palette/command_panel.dart';
@@ -31,8 +30,7 @@ const Project _eldoria = Project(
 );
 const Project _demo = Project(id: 'p3', key: 'demo', displayName: 'Demo');
 
-/// The palette shortcut around a small shell with a list, a detail page and
-/// the attributes page, over a store with a few loaded entities.
+/// The palette shortcut around a small shell with lists and detail pages, over a store with a few loaded entities.
 Future<(Store<AppState>, GoRouter)> _pump(WidgetTester tester) async {
   tester.view.physicalSize = const Size(1600, 900);
   tester.view.devicePixelRatio = 1;
@@ -73,6 +71,12 @@ Future<(Store<AppState>, GoRouter)> _pump(WidgetTester tester) async {
           GoRoute(
             path: '/attributes',
             builder: (_, _) => const Text('attributes page'),
+            routes: [
+              GoRoute(
+                path: 'detail',
+                builder: (_, _) => const Text('attribute detail'),
+              ),
+            ],
           ),
         ],
       ),
@@ -171,8 +175,8 @@ void main() {
       expect(find.text('item detail'), findsOneWidget);
     });
 
-    testWidgets('an attribute result opens its edit dialog', (tester) async {
-      await _pump(tester);
+    testWidgets('an attribute result opens its detail page', (tester) async {
+      final (store, router) = await _pump(tester);
       await _open(tester);
 
       await _type(tester, '#attribute ');
@@ -180,7 +184,9 @@ void main() {
       await _press(tester, LogicalKeyboardKey.enter);
 
       expect(find.byType(CommandPanel), findsNothing);
-      expect(find.byType(AttributeEditDialog), findsOneWidget);
+      expect(router.state.matchedLocation, '/attributes/detail');
+      expect(store.state.selectedAttribute?.uiName, 'Max Mana');
+      expect(find.text('attribute detail'), findsOneWidget);
     });
   });
 

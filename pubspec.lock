@@ -1031,7 +1031,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "1ee014a37c4363dc24b6a6584fb9010007ffe5ce"
+      resolved-ref: "58958c988b249c81f61323730a5b081ff4b0540c"
       url: "https://github.com/OneLiteFeatherNET/stelaris-model.git"
     source: git
     version: "0.0.1"

@@ -1,11 +1,11 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/factory/attribute/attribute_vm_state.dart';
-import 'package:stelaris/feature/attributes/attribute_edit_dialog.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_create.dart';
@@ -19,9 +19,8 @@ import 'package:stelaris/feature/model/model_copy.dart';
 /// The [AttributePage] allows users to view, search, filter, and manage
 /// attributes through a [ModelPage]. It provides a dialog for creating new
 /// attributes and handles the state management through Redux. Tapping an
-/// attribute opens a dialog to edit its default/maximum value — an
-/// attribute only has those two editable fields, so a dedicated detail
-/// route/page would be overkill.
+/// attribute navigates to its dedicated detail route, as for the other
+/// models.
 class AttributePage extends StatelessWidget {
   /// Creates an instance of [AttributePage].
   const AttributePage({super.key});
@@ -39,6 +38,10 @@ class AttributePage extends StatelessWidget {
         final hasMaximumValueFilter = FilterOption(
           'has_maximum_value',
           context.l10n.filter_attribute_has_maximum_value,
+        );
+        final syncedFilter = FilterOption(
+          'synced',
+          context.l10n.filter_attribute_synced,
         );
 
         return ModelPage<AttributeModel>(
@@ -62,12 +65,15 @@ class AttributePage extends StatelessWidget {
             action: AttributeCopyAction.new,
           ),
           projectKey: vm.projectKey,
-          filterOptions: [hasDefaultValueFilter, hasMaximumValueFilter],
+          filterOptions: [
+            hasDefaultValueFilter,
+            hasMaximumValueFilter,
+            syncedFilter,
+          ],
           matchesFilter: (model, filter) => switch (filter.id) {
-            'has_default_value' =>
-              model.defaultValue != null && model.defaultValue != 0,
-            'has_maximum_value' =>
-              model.maximumValue != null && model.maximumValue != 0,
+            'has_default_value' => model.defaultValue != 0,
+            'has_maximum_value' => model.maximumValue != 0,
+            'synced' => model.synced,
             _ => true,
           },
           onAdd: () => openModelCreateDialog(
@@ -75,11 +81,10 @@ class AttributePage extends StatelessWidget {
             NavigationEntry.attributes,
             vm.projectKey,
           ),
-          onModelTap: (model) => showDialog(
-            context: context,
-            builder: (_) =>
-                AttributeEditDialog(model: model, projectKey: vm.projectKey),
-          ),
+          onModelTap: (model) {
+            context.dispatch(SelectAttributeAction(model));
+            context.go('${NavigationEntry.attributes.route}/detail');
+          },
           onRefresh: () => context.dispatch(RefreshAttributeAction()),
           hasMore: vm.hasNextPage,
           isLoadingMore: vm.isLoadingMore,

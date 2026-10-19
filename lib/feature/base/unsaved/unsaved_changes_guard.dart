@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/actions/advancement_actions.dart';
@@ -14,14 +15,13 @@ import 'package:stelaris/util/dispatch_ext.dart';
 
 enum _UnsavedChangesChoice { save, discard, cancel }
 
-/// The action that persists [entry]'s selected model, or null for sections
-/// edited in a dialog (attributes) that never have pending edits.
+/// The action that persists [entry]'s selected model.
 ReduxAction<AppState>? saveActionFor(NavigationEntry entry) => switch (entry) {
   NavigationEntry.items => ItemDatabaseUpdate(),
   NavigationEntry.advancements => AdvancementDatabaseUpdate(),
   NavigationEntry.font => FontDatabaseUpdate(),
   NavigationEntry.sound => SoundDatabaseUpdate(),
-  NavigationEntry.attributes => null,
+  NavigationEntry.attributes => AttributeDatabaseUpdate(),
 };
 
 /// Saves [entry]'s selected model. Returns true only if it was actually

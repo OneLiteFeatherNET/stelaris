@@ -13,6 +13,7 @@ import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
 import 'package:stelaris/feature/advancement/advancement_detail_page.dart';
+import 'package:stelaris/feature/attributes/attribute_detail_page.dart';
 import 'package:stelaris/feature/project/project_selection_page.dart';
 import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/util/deferred_widget.dart';
@@ -117,6 +118,23 @@ String? advancementDetailRedirect(BuildContext context, GoRouterState state) {
 
     if (isAtAdvancementDetail && appState.selectedAdvancement == null) {
       return NavigationEntry.advancements.route;
+    }
+  } on StoreException catch (_) {}
+  return null;
+}
+
+/// Redirects `/attributes/detail` back to `/attributes` when nothing is
+/// selected — reachable by a direct URL visit or a page reload, since the
+/// detail route relies entirely on the already-dispatched Redux selection
+/// rather than a route parameter.
+String? attributeDetailRedirect(BuildContext context, GoRouterState state) {
+  try {
+    final appState = StoreProvider.state<AppState>(context);
+    final isAtAttributeDetail =
+        state.matchedLocation == '${NavigationEntry.attributes.route}/detail';
+
+    if (isAtAttributeDetail && appState.selectedAttribute == null) {
+      return NavigationEntry.attributes.route;
     }
   } on StoreException catch (_) {}
   return null;
@@ -261,6 +279,18 @@ final GoRouter router = GoRouter(
               child,
             ) => FadeTransition(opacity: animation, child: child),
           ),
+          routes: [
+            GoRoute(
+              path: 'detail',
+              redirect: attributeDetailRedirect,
+              onExit: detailExitGuard,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                child: const AttributeDetailPage(),
+                key: state.pageKey,
+                transitionsBuilder: buildDetailSlideTransition,
+              ),
+            ),
+          ],
         ),
         GoRoute(
           path: NavigationEntry.items.route,

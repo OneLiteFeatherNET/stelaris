@@ -2,21 +2,47 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/actions/unsaved_actions.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/actions/copy_model_action.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 
-/// Selects a specific attribute model and updates the state.
-///
-/// This action is used to set the currently selected attribute in the application state.
-/// The selected attribute is typically used for editing, viewing details, or other operations
-/// that require a specific attribute to be active.
+/// Selects [model] for its detail page and drops the attribute section's
+/// pending edits.
 class SelectAttributeAction extends ReduxAction<AppState> {
   final AttributeModel model;
 
   SelectAttributeAction(this.model);
 
   @override
-  AppState reduce() => state.copyWith(selectedAttribute: model);
+  AppState reduce() => state
+      .copyWith(selectedAttribute: model)
+      .clearUnsavedChanges(NavigationEntry.attributes);
+}
+
+/// Clears the selection when the detail page is left.
+class RemoveSelectAttributeAction extends ReduxAction<AppState> {
+  @override
+  AppState? reduce() {
+    if (state.selectedAttribute == null) return null;
+    return state
+        .copyWith(selectedAttribute: null)
+        .clearUnsavedChanges(NavigationEntry.attributes);
+  }
+}
+
+/// Stages [newEntry] as the selection. The header's save sends it to the
+/// backend through [AttributeDatabaseUpdate].
+class UpdateAttributeAction extends ReduxAction<AppState> {
+  final AttributeModel newEntry;
+
+  UpdateAttributeAction(this.newEntry);
+
+  @override
+  AppState reduce() => state.copyWith(
+    selectedAttribute: newEntry,
+    unsavedChanges: NavigationEntry.attributes,
+  );
 }
 
 /// Always refetches page 1 and replaces the current list, regardless of
@@ -273,13 +299,17 @@ class AttributeDatabaseUpdate extends ReduxAction<AppState> with Throttle {
       updatedList[index] = dbModel;
     }
 
-    return _updateAttributesInState(state, updatedList, dbModel);
+    return _updateAttributesInState(
+      state,
+      updatedList,
+      dbModel,
+    ).clearUnsavedChanges(NavigationEntry.attributes);
   }
 }
 
 /// Saves new [notes] for [model] straight from the overview. The list entry
 /// is replaced with the server's response; a selection of the same
-/// attribute only gets the new notes, so edits in an open dialog survive.
+/// attribute only gets the new notes, so its unsaved edits survive.
 class AttributeNotesUpdateAction extends ReduxAction<AppState>
     with NonReentrant {
   final AttributeModel model;

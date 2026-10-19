@@ -245,6 +245,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get card_attribute_maximum_value => 'Maximum value';
 
   @override
+  String get card_attribute_minimum_value => 'Minimum value';
+
+  @override
+  String get card_attribute_synced => 'Synced';
+
+  @override
+  String get card_attribute_translation_key => 'Translation key';
+
+  @override
+  String get tooltip_attribute_synced => 'Sends the value to the client';
+
+  @override
   String get card_font_provider => 'Provider';
 
   @override
@@ -980,6 +992,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filter_attribute_has_maximum_value => 'Has maximum value';
 
   @override
+  String get filter_attribute_synced => 'Synced';
+
+  @override
   String get model_card_created_prefix => 'Created';
 
   @override
@@ -1131,6 +1146,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String validation_maximum(int max) {
     return 'The maximum is $max';
+  }
+
+  @override
+  String validation_decimal_maximum(String max) {
+    return 'The maximum is $max';
+  }
+
+  @override
+  String validation_decimal_minimum(String min) {
+    return 'The minimum is $min';
   }
 
   @override
@@ -1684,4 +1709,26 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get advancement_hint_frame =>
       'Task and goal show a green description, challenge a purple one';
+
+  @override
+  String get attribute_section_values => 'Values';
+
+  @override
+  String get attribute_section_client => 'Client';
+
+  @override
+  String get attribute_hint_minimum =>
+      'The lowest value, at most the default value';
+
+  @override
+  String get attribute_hint_default =>
+      'The base value, between the minimum and the maximum';
+
+  @override
+  String get attribute_hint_maximum =>
+      'The highest value, greater than 0 and at least the default value';
+
+  @override
+  String get attribute_hint_translation_key =>
+      'Translates the name, e.g. attribute.name.max_health';
 }
