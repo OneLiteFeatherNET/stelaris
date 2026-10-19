@@ -1,11 +1,11 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/edit_card/edit_field.dart';
 import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/feature/project/badge/project_labor_badge.dart';
 import 'package:stelaris/feature/project/dialog/switch_project_dialog.dart';
+import 'package:stelaris/feature/project/switch_to_project.dart';
 import 'package:stelaris/feature/settings/settings_card.dart';
 import 'package:stelaris/feature/settings/settings_section.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -93,6 +93,6 @@ class ProjectSettingsRow extends StatelessWidget {
     // Switching drops the current selection, including any unsaved edits on
     // an open detail page.
     if (!await confirmLeaveIfDirty(context) || !context.mounted) return;
-    context.dispatch(SelectProjectAction(target));
+    selectProject(context, target);
   }
 }
