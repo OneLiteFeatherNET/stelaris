@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.7.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.6.0...v1.7.0) (2026-10-18)
+
+
+### Features
+
+* **base:** search the options of long choice lists ([#259](https://github.com/OneLiteFeatherNET/stelaris/issues/259)) ([f06671d](https://github.com/OneLiteFeatherNET/stelaris/commit/f06671dbd03ad44b459cd4457deb87628e925328))
+* **component:** suggest registry entries in key fields ([#257](https://github.com/OneLiteFeatherNET/stelaris/issues/257)) ([3c1dd6b](https://github.com/OneLiteFeatherNET/stelaris/commit/3c1dd6b98c37a3e9349ac9ff83a1d236d17fb5c2))
+* **sound:** suggest sound events for the name of an event ([#260](https://github.com/OneLiteFeatherNET/stelaris/issues/260)) ([0612b64](https://github.com/OneLiteFeatherNET/stelaris/commit/0612b642fe6f8f10e217d79bf8286534a3e9c60f))
+
 ## [1.6.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.5.0...v1.6.0) (2026-10-18)
 
 
