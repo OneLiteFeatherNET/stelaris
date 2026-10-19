@@ -244,7 +244,7 @@ class AttributeCopyAction extends ReduxAction<AppState>
 ///
 /// This action performs the following operations:
 /// 1. Sends a delete request to the API for the specified attribute
-/// 2. Removes the attribute from the local attributes list
+/// 2. Removes the attribute with the same id from the local attributes list
 /// 3. Clears the selected attribute if it matches the deleted attribute
 ///
 /// The action maintains referential integrity by checking if the deleted attribute
@@ -260,7 +260,7 @@ class AttributeRemoveAction extends ReduxAction<AppState> {
     final List<AttributeModel> updatedList = List.of(
       state.attributes.items,
       growable: true,
-    )..remove(model);
+    )..removeWhere((element) => element.id == model.id);
 
     final AttributeModel? selectedModel =
         state.selectedAttribute?.id == model.id

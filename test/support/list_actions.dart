@@ -215,6 +215,18 @@ void listActionTests<T extends DataModel>({
       expect(listOf(store.state).totalItems, 19);
       expect(listOf(store.state).items, isEmpty);
     });
+
+    test('removes the entry by its id, even when the given model differs '
+        'from it (regression)', () async {
+      // The detail page passes its selection, which may hold unsaved edits
+      // or relationships the list entry lacks.
+      final store = storeWith([model('keep'), model('rm-id')]);
+      respond(json('rm-id'));
+
+      await store.dispatchAndWait(remove(model('rm-id', projectId: 'edited')));
+
+      expect(listOf(store.state).items.map((m) => m.id), ['keep']);
+    });
   });
 
   const project = Project(id: 'p1', displayName: 'P1', key: 'p1');
