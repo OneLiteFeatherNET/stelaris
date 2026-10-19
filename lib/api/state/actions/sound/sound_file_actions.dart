@@ -41,27 +41,24 @@ class SoundFileLinkAction extends ReduxAction<AppState> {
     if (state.selectedSoundEvent == null) return null;
 
     final SoundEventModel soundModel = state.selectedSoundEvent!;
-    final List<SoundFileSource> list = List.of(
-      soundModel.files.items,
-      growable: true,
-    );
     final SoundClientApi soundApi = ApiService().soundApi as SoundClientApi;
     final SoundFileSource linkedFile = await soundApi.linkFile(
       soundModel.id!,
       source,
     );
 
-    list.add(linkedFile);
+    final SoundEventModel? current = _stillSelected(state, soundModel);
+    if (current == null) return null;
 
     // Create a new PaginatedResult with the new list and updated counts
     final PaginatedResult<SoundFileSource>
-    updatedSources = soundModel.files.copyWith(
-      items: list,
-      totalItems: soundModel.files.totalItems + 1, // Adjust counts as necessary
+    updatedSources = current.files.copyWith(
+      items: [...current.files.items, linkedFile],
+      totalItems: current.files.totalItems + 1, // Adjust counts as necessary
       // Potentially update totalPages if this new item pushes it to a new page
     );
     return state.copyWith(
-      selectedSoundEvent: soundModel.copyWith(files: updatedSources),
+      selectedSoundEvent: current.copyWith(files: updatedSources),
     );
   }
 }
@@ -84,19 +81,22 @@ class SoundFileUpdateAction extends ReduxAction<AppState> {
       soundFile,
     );
 
+    final SoundEventModel? current = _stillSelected(state, soundModel);
+    if (current == null) return null;
+
     // Create a new list with the updated item
-    final List<SoundFileSource> list = List.of(soundModel.files.items);
+    final List<SoundFileSource> list = List.of(current.files.items);
     final int index = list.indexWhere((file) => file.id == updatedFile.id);
     if (index != -1) {
       list[index] = updatedFile;
     }
 
     // Create a new PaginatedResult with the updated list
-    final PaginatedResult<SoundFileSource> updatedSources = soundModel.files
+    final PaginatedResult<SoundFileSource> updatedSources = current.files
         .copyWith(items: list);
 
     return state.copyWith(
-      selectedSoundEvent: soundModel.copyWith(files: updatedSources),
+      selectedSoundEvent: current.copyWith(files: updatedSources),
     );
   }
 }
@@ -118,7 +118,10 @@ class SoundFileSourceDeleteAction extends ReduxAction<AppState> {
       soundFile,
     );
 
-    final PaginatedResult<SoundFileSource> entries = model.files;
+    final SoundEventModel? current = _stillSelected(state, model);
+    if (current == null) return null;
+
+    final PaginatedResult<SoundFileSource> entries = current.files;
 
     final List<SoundFileSource> updatedFiles = List.of(
       entries.items,
@@ -126,7 +129,7 @@ class SoundFileSourceDeleteAction extends ReduxAction<AppState> {
     );
     updatedFiles.removeWhere((file) => file.id == deletedFile.id);
 
-    final updatedSoundEvent = model.copyWith(
+    final updatedSoundEvent = current.copyWith(
       files: entries.copyWith(
         items: updatedFiles,
         currentPage: entries.currentPage,
@@ -194,4 +197,13 @@ class SetSelectedSoundLoading extends ReduxAction<AppState> {
       selectedSoundEvent: sel.copyWith(isLoading: isLoading),
     );
   }
+}
+
+/// The selected sound event when it is still [model], as it is now. A
+/// request made for [model] applies to it, so form edits made while the
+/// request ran are kept. Null when another sound event was selected
+/// meanwhile, which the response doesn't belong to.
+SoundEventModel? _stillSelected(AppState state, SoundEventModel model) {
+  final SoundEventModel? current = state.selectedSoundEvent;
+  return current != null && current.id == model.id ? current : null;
 }
