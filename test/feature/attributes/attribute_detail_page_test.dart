@@ -42,6 +42,7 @@ void main() {
       addTearDown(tester.view.reset);
       store = Store<AppState>(
         initialState: AppState(
+          selectedProject: const Project(id: 'p', key: 'p', displayName: 'P'),
           selectedAttribute: attribute,
           attributes: PaginatedResult<AttributeModel>(
             items: [attribute],
@@ -54,15 +55,15 @@ void main() {
       );
 
       final router = GoRouter(
-        initialLocation: '/attributes/detail',
+        initialLocation: '/projects/p/attributes/${attribute.id}',
         routes: [
           GoRoute(
-            path: '/attributes',
+            path: '/projects/:projectId/attributes',
             builder: (context, state) =>
                 const Scaffold(body: Text('Attribute List')),
             routes: [
               GoRoute(
-                path: 'detail',
+                path: ':id',
                 builder: (context, state) => const AttributeDetailPage(),
               ),
             ],
