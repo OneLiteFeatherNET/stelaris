@@ -119,13 +119,9 @@ class ItemAddAction extends ReduxAction<AppState> with NonReentrant {
         ? _model.copyWith(projectId: state.selectedProject!.id)
         : _model;
     final ItemModel added = await ApiService().itemApi.add(toAdd);
-    final List<ItemModel> items = List.of(state.items.items, growable: true)
-      ..add(added);
-    return _updateItemInState(
-      state,
-      items,
-      added,
-      totalItems: state.items.totalItems + 1,
+    return state.copyWith(
+      items: state.items.adding(added),
+      selectedItem: added,
     );
   }
 }
@@ -150,14 +146,10 @@ class ItemCopyAction extends ReduxAction<AppState>
       relations: result.relations,
     );
     if (!copiesIntoOpenProject) return null;
-    return _updateItemInState(
-      state,
-      [
-        ...state.items.items,
+    return state.copyWith(
+      items: state.items.adding(
         copied.copyWith(projectId: result.targetProjectId),
-      ],
-      state.selectedItem,
-      totalItems: state.items.totalItems + 1,
+      ),
     );
   }
 }
@@ -170,16 +162,13 @@ class ItemRemoveAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final ItemModel removedEntry = await ApiService().itemApi.remove(model);
-    final List<ItemModel> items = List.of(state.items.items, growable: true)
-      ..removeWhere((element) => element.id == removedEntry.id);
     // The selection stays: when deleting from the detail page, that page is
     // still mounted during its exit transition and reads it. The page's
     // onDispose clears it.
-    return _updateItemInState(
-      state,
-      items,
-      state.selectedItem,
-      totalItems: state.items.totalItems - 1,
+    return state.copyWith(
+      items: state.items.removingWhere(
+        (element) => element.id == removedEntry.id,
+      ),
     );
   }
 }
@@ -202,35 +191,16 @@ class ItemDatabaseUpdate extends ReduxAction<AppState> with Throttle {
       lore: current.lore,
       enchantments: current.enchantments,
     );
-    return updateSingleItemInState(state, response)
-        .copyWith(selectedItem: dbModel)
+    return state
+        .copyWith(
+          items: state.items.replacingWhere(
+            (item) => item.id == response.id,
+            response,
+          ),
+          selectedItem: dbModel,
+        )
         .clearUnsavedChanges(NavigationEntry.items);
   }
-}
-
-AppState updateSingleItemInState(AppState state, ItemModel updatedItem) {
-  final List<ItemModel> itemList = List.of(state.items.items);
-  final int index = itemList.indexWhere((item) => item.id == updatedItem.id);
-  if (index != -1) {
-    itemList[index] = updatedItem;
-  }
-  return _updateItemInState(state, itemList, updatedItem);
-}
-
-AppState _updateItemInState(
-  AppState state,
-  List<ItemModel> newItems,
-  ItemModel? selectedItem, {
-  int? totalItems,
-}) {
-  final updated = state.items.copyWith(
-    items: newItems,
-    totalItems: totalItems ?? state.items.totalItems,
-    totalPages: state.items.totalPages,
-    currentPage: state.items.currentPage,
-    pageSize: state.items.pageSize,
-  );
-  return state.copyWith(items: updated, selectedItem: selectedItem);
 }
 
 /// Saves new [notes] for [model] straight from the overview, without going
@@ -249,16 +219,13 @@ class ItemNotesUpdateAction extends ReduxAction<AppState> with NonReentrant {
     final ItemModel response = await ApiService().itemApi.update(
       model.copyWith(comment: notes),
     );
-    final List<ItemModel> items = List.of(state.items.items, growable: true);
-    final int index = items.indexWhere((item) => item.id == response.id);
-    if (index != -1) {
-      items[index] = response;
-    }
     final selected = state.selectedItem;
-    return _updateItemInState(
-      state,
-      items,
-      selected?.id == response.id
+    return state.copyWith(
+      items: state.items.replacingWhere(
+        (item) => item.id == response.id,
+        response,
+      ),
+      selectedItem: selected?.id == response.id
           ? selected!.copyWith(comment: response.comment)
           : selected,
     );

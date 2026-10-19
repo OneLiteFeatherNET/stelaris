@@ -100,14 +100,10 @@ class FontCopyAction extends ReduxAction<AppState>
       relations: result.relations,
     );
     if (!copiesIntoOpenProject) return null;
-    return _updateFontInState(
-      state,
-      [
-        ...state.fonts.items,
+    return state.copyWith(
+      fonts: state.fonts.adding(
         copied.copyWith(projectId: result.targetProjectId),
-      ],
-      state.selectedFont,
-      totalItems: state.fonts.totalItems + 1,
+      ),
     );
   }
 }
@@ -123,16 +119,13 @@ class FontRemoveAction extends ReduxAction<AppState> {
         ? model.copyWith(projectId: state.selectedProject!.id)
         : model;
     final FontModel removedEntry = await ApiService().fontApi.remove(toRemove);
-    final List<FontModel> items = List.of(state.fonts.items, growable: true)
-      ..removeWhere((element) => element.id == removedEntry.id);
     // The selection stays: when deleting from the detail page, that page is
     // still mounted during its exit transition and reads it. The page's
     // onDispose clears it.
-    return _updateFontInState(
-      state,
-      items,
-      state.selectedFont,
-      totalItems: state.fonts.totalItems - 1,
+    return state.copyWith(
+      fonts: state.fonts.removingWhere(
+        (element) => element.id == removedEntry.id,
+      ),
     );
   }
 }
@@ -148,13 +141,9 @@ class FontAddAction extends ReduxAction<AppState> with NonReentrant {
         ? _model.copyWith(projectId: state.selectedProject!.id)
         : _model;
     final FontModel added = await ApiService().fontApi.add(toAdd);
-    final List<FontModel> items = List.of(state.fonts.items, growable: true)
-      ..add(added);
-    return _updateFontInState(
-      state,
-      items,
-      added,
-      totalItems: state.fonts.totalItems + 1,
+    return state.copyWith(
+      fonts: state.fonts.adding(added),
+      selectedFont: added,
     );
   }
 }
@@ -191,23 +180,15 @@ class FontDatabaseUpdate extends ReduxAction<AppState> with Throttle {
       chars: (state.selectedFont ?? selected).chars,
     );
 
-    final List<FontModel> updatedList = List.of(
-      state.fonts.items,
-      growable: true,
-    );
-    final int index = updatedList.indexWhere(
-      (element) => element.id == selected.id,
-    );
-
-    if (index != -1) {
-      updatedList[index] = response;
-    }
-
-    return _updateFontInState(
-      state,
-      updatedList,
-      dbModel,
-    ).clearUnsavedChanges(NavigationEntry.font);
+    return state
+        .copyWith(
+          fonts: state.fonts.replacingWhere(
+            (element) => element.id == selected.id,
+            response,
+          ),
+          selectedFont: dbModel,
+        )
+        .clearUnsavedChanges(NavigationEntry.font);
   }
 }
 
@@ -218,22 +199,6 @@ class _SetLoadMoreFontModels extends ReduxAction<AppState> {
 
   @override
   AppState reduce() => state.copyWith(isLoadingMoreFonts: value);
-}
-
-AppState _updateFontInState(
-  AppState state,
-  List<FontModel> newItems,
-  FontModel? selectedItem, {
-  int? totalItems,
-}) {
-  final updated = state.fonts.copyWith(
-    items: newItems,
-    totalItems: totalItems ?? state.fonts.totalItems,
-    totalPages: state.fonts.totalPages,
-    currentPage: state.fonts.currentPage,
-    pageSize: state.fonts.pageSize,
-  );
-  return state.copyWith(fonts: updated, selectedFont: selectedItem);
 }
 
 /// Saves new [notes] for [model] straight from the overview, without going
@@ -255,16 +220,13 @@ class FontNotesUpdateAction extends ReduxAction<AppState> with NonReentrant {
           ? withNotes.copyWith(projectId: state.selectedProject!.id)
           : withNotes,
     );
-    final List<FontModel> items = List.of(state.fonts.items, growable: true);
-    final int index = items.indexWhere((item) => item.id == response.id);
-    if (index != -1) {
-      items[index] = response;
-    }
     final selected = state.selectedFont;
-    return _updateFontInState(
-      state,
-      items,
-      selected?.id == response.id
+    return state.copyWith(
+      fonts: state.fonts.replacingWhere(
+        (item) => item.id == response.id,
+        response,
+      ),
+      selectedFont: selected?.id == response.id
           ? selected!.copyWith(comment: response.comment)
           : selected,
     );
