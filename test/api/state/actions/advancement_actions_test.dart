@@ -9,6 +9,7 @@ void main() {
         AdvancementModel(uiName: id, id: id, projectId: projectId),
     listOf: (state) => state.advancements,
     withList: (state, list) => state.copyWith(advancements: list),
+    isLoadingMore: (state) => state.isLoadingMoreAdvancements,
     init: InitAdvancementAction.new,
     refresh: RefreshAdvancementAction.new,
     add: AdvancementAddAction.new,

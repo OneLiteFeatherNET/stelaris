@@ -19,6 +19,7 @@ void main() {
         ItemModel(uiName: id, id: id, projectId: projectId),
     listOf: (state) => state.items,
     withList: (state, list) => state.copyWith(items: list),
+    isLoadingMore: (state) => state.isLoadingMoreItems,
     init: InitItemAction.new,
     refresh: RefreshItemAction.new,
     add: ItemAddAction.new,

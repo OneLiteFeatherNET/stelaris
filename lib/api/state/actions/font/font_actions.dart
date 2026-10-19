@@ -81,7 +81,9 @@ class InitFontAction extends ReduxAction<AppState> {
           currentPage: next.currentPage != 0 ? next.currentPage : nextPage,
           pageSize: next.pageSize != 0 ? next.pageSize : size,
         );
-        return state.copyWith(fonts: updated);
+        // The flag is cleared here as well: this state is applied after the
+        // `finally` below and would otherwise set the flag back to true.
+        return state.copyWith(fonts: updated, isLoadingMoreFonts: false);
       } finally {
         dispatchSync(_SetLoadMoreFontModels(false));
       }

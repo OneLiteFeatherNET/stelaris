@@ -11,11 +11,12 @@ import 'fake_http_client_adapter.dart';
 /// adding to it, removing from it and copying into it.
 ///
 /// [model] builds a model of the kind, [listOf] and [withList] read and
-/// write its list in the state.
+/// write its list in the state, [isLoadingMore] reads its load-more flag.
 void listActionTests<T extends DataModel>({
   required T Function(String id, {String? projectId}) model,
   required PaginatedResult<T> Function(AppState state) listOf,
   required AppState Function(AppState state, PaginatedResult<T> list) withList,
+  required bool Function(AppState state) isLoadingMore,
   required ReduxAction<AppState> Function() init,
   required ReduxAction<AppState> Function() refresh,
   required ReduxAction<AppState> Function(T model) add,
@@ -72,6 +73,41 @@ void listActionTests<T extends DataModel>({
 
       expect(identical(store.state, before), isTrue);
       expect(listOf(store.state).items, loaded);
+    });
+
+    /// The page [currentPage] of three pages of two.
+    Map<String, Object?> page(int currentPage) => {
+      'items': [json('page$currentPage-0'), json('page$currentPage-1')],
+      'totalItems': 6,
+      'totalPages': 3,
+      'currentPage': currentPage,
+      'pageSize': 2,
+    };
+
+    test('clears the load-more flag after loading the next page, so the '
+        'page after it loads too (regression)', () async {
+      final store = storeWith(
+        [model('page1-0'), model('page1-1')],
+        totalItems: 6,
+        totalPages: 3,
+        pageSize: 2,
+      );
+
+      respond(page(2));
+      await store.dispatchAndWait(init());
+      expect(isLoadingMore(store.state), isFalse);
+
+      respond(page(3));
+      await store.dispatchAndWait(init());
+      expect(isLoadingMore(store.state), isFalse);
+      expect(listOf(store.state).items.map((m) => m.id), [
+        'page1-0',
+        'page1-1',
+        'page2-0',
+        'page2-1',
+        'page3-0',
+        'page3-1',
+      ]);
     });
   });
 

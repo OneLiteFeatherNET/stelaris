@@ -83,7 +83,12 @@ class InitAdvancementAction extends ReduxAction<AppState> {
           currentPage: next.currentPage != 0 ? next.currentPage : nextPage,
           pageSize: next.pageSize != 0 ? next.pageSize : size,
         );
-        return state.copyWith(advancements: updated);
+        // The flag is cleared here as well: this state is applied after the
+        // `finally` below and would otherwise set the flag back to true.
+        return state.copyWith(
+          advancements: updated,
+          isLoadingMoreAdvancements: false,
+        );
       } finally {
         dispatchSync(_SetAdvancementsLoadMore(false));
       }

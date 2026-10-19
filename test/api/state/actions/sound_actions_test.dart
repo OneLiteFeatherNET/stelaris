@@ -15,6 +15,7 @@ void main() {
         SoundEventModel(uiName: id, id: id, projectId: projectId),
     listOf: (state) => state.soundEvents,
     withList: (state, list) => state.copyWith(soundEvents: list),
+    isLoadingMore: (state) => state.isLoadingMoreSoundEvents,
     init: InitSoundAction.new,
     refresh: RefreshSoundAction.new,
     add: SoundAddAction.new,
