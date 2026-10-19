@@ -16,6 +16,7 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/fake_http_client_adapter.dart';
+import '../../support/settle_requests.dart';
 
 void main() {
   group('AttributeDetailPage', () {
@@ -201,16 +202,7 @@ void main() {
       await tester.pumpAndSettle();
       await enterAndBlur(tester, 'Translation key', 'attribute.name.health');
       await tester.tap(find.text('Save'));
-      // On the web, dio finishes even a faked request in several real-async
-      // steps that testWidgets' fake-async zone doesn't run on its own, so
-      // alternate frames with a little real time until the save has landed.
-      for (var i = 0; i < 20 && store.state.unsavedChanges != null; i++) {
-        await tester.pump(const Duration(milliseconds: 100));
-        await tester.runAsync(
-          () => Future<void>.delayed(const Duration(milliseconds: 10)),
-        );
-      }
-      await tester.pumpAndSettle();
+      await settleRequests(tester, () => store.state.unsavedChanges != null);
 
       expect(sent?['synced'], isTrue);
       expect(sent?['minimumValue'], 1);
