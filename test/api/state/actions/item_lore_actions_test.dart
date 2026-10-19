@@ -123,4 +123,133 @@ void main() {
       expect(store.state.selectedItem!.lore.items.map((l) => l.id), ['fresh']);
     });
   });
+
+  group('lore line changes', () {
+    const lines = [
+      ItemLoreDto(id: 'l1', text: 'a', orderIndex: 0),
+      ItemLoreDto(id: 'l2', text: 'b', orderIndex: 1),
+      ItemLoreDto(id: 'l3', text: 'c', orderIndex: 2),
+    ];
+    const item = ItemModel(
+      id: 'item-1',
+      uiName: 'item',
+      lore: PaginatedResult(
+        items: lines,
+        totalItems: 3,
+        totalPages: 1,
+        currentPage: 1,
+        pageSize: 10,
+      ),
+    );
+    const other = ItemModel(id: 'item-2', uiName: 'other');
+
+    Store<AppState> storeWith(ItemModel item) =>
+        Store<AppState>(initialState: AppState(selectedItem: item));
+
+    /// Answers with [json], after renaming the selection as the form would.
+    void respondAfterRename(Store<AppState> store, Object json) {
+      ApiService()
+          .itemApi
+          .apiClient
+          .dio
+          .httpClientAdapter = FakeHttpClientAdapter((options) {
+        store.dispatchSync(
+          _SelectItem(store.state.selectedItem!.copyWith(uiName: 'Renamed')),
+        );
+        return FakeHttpClientAdapter.response(json);
+      });
+    }
+
+    /// Answers with [json], after selecting [other].
+    void respondAfterSelectingOther(Store<AppState> store, Object json) {
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            store.dispatchSync(_SelectItem(other));
+            return FakeHttpClientAdapter.response(json);
+          });
+    }
+
+    List<String?> loreIds(Store<AppState> store) =>
+        store.state.selectedItem!.lore.items.map((l) => l.id).toList();
+
+    group('ItemLoreAddAction', () {
+      const added = ItemLoreDto(text: 'd');
+      const response = {'id': 'l4', 'text': 'd', 'orderIndex': 3};
+
+      test('keeps form edits made while the line is added '
+          '(regression)', () async {
+        final store = storeWith(item);
+        respondAfterRename(store, response);
+
+        await store.dispatchAndWait(ItemLoreAddAction(added));
+
+        expect(store.state.selectedItem!.uiName, 'Renamed');
+        expect(loreIds(store), ['l1', 'l2', 'l3', 'l4']);
+        expect(store.state.selectedItem!.lore.totalItems, 4);
+      });
+
+      test('leaves another selected item alone (regression)', () async {
+        final store = storeWith(item);
+        respondAfterSelectingOther(store, response);
+
+        await store.dispatchAndWait(ItemLoreAddAction(added));
+
+        expect(store.state.selectedItem, other);
+      });
+    });
+
+    group('ItemLoreUpdateAction', () {
+      const changed = ItemLoreDto(id: 'l2', text: 'B', orderIndex: 1);
+      const response = {'id': 'l2', 'text': 'B', 'orderIndex': 1};
+
+      test('keeps form edits made while the line is saved '
+          '(regression)', () async {
+        final store = storeWith(item);
+        respondAfterRename(store, response);
+
+        await store.dispatchAndWait(ItemLoreUpdateAction(changed));
+
+        expect(store.state.selectedItem!.uiName, 'Renamed');
+        expect(store.state.selectedItem!.lore.items.map((l) => l.text), [
+          'a',
+          'B',
+          'c',
+        ]);
+      });
+
+      test('leaves another selected item alone (regression)', () async {
+        final store = storeWith(item);
+        respondAfterSelectingOther(store, response);
+
+        await store.dispatchAndWait(ItemLoreUpdateAction(changed));
+
+        expect(store.state.selectedItem, other);
+      });
+    });
+
+    group('ItemLoreDeleteAction', () {
+      const response = {'id': 'l2', 'text': 'b', 'orderIndex': 1};
+
+      test('keeps form edits made while the line is deleted '
+          '(regression)', () async {
+        final store = storeWith(item);
+        respondAfterRename(store, response);
+
+        await store.dispatchAndWait(ItemLoreDeleteAction(lines[1]));
+
+        expect(store.state.selectedItem!.uiName, 'Renamed');
+        expect(loreIds(store), ['l1', 'l3']);
+        expect(store.state.selectedItem!.lore.totalItems, 2);
+      });
+
+      test('leaves another selected item alone (regression)', () async {
+        final store = storeWith(item);
+        respondAfterSelectingOther(store, response);
+
+        await store.dispatchAndWait(ItemLoreDeleteAction(lines[1]));
+
+        expect(store.state.selectedItem, other);
+      });
+    });
+  });
 }
