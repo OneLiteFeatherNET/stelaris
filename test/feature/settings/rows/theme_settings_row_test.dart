@@ -1,11 +1,12 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/app.dart';
 import 'package:stelaris/feature/settings/rows/theme_settings_row.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
-import 'package:stelaris/util/app_theme.dart';
 
 void main() {
   group('ThemeSettingsRow Widget Tests', () {
@@ -187,7 +188,7 @@ void main() {
   });
 
   group('ThemeSettingsRow in an app', () {
-    /// A MaterialApp wired like StelarisApp, with the row as its home.
+    /// The app with the row as its only page, on a dark platform.
     Future<Store<AppState>> pumpApp(
       WidgetTester tester, {
       required ThemeSettings settings,
@@ -201,17 +202,16 @@ void main() {
       await tester.pumpWidget(
         StoreProvider<AppState>(
           store: store,
-          child: StoreConnector<AppState, ThemeSettings>(
-            converter: (store) => store.state.themeSettings,
-            builder: (context, settings) => MaterialApp(
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              theme: AppTheme.buildLight(settings),
-              darkTheme: AppTheme.buildDark(settings),
-              themeMode: settings.themeMode,
-              home: const Scaffold(
-                body: SingleChildScrollView(child: ThemeSettingsRow()),
-              ),
+          child: StelarisApp(
+            routerConfig: GoRouter(
+              routes: [
+                GoRoute(
+                  path: '/',
+                  builder: (_, _) => const Scaffold(
+                    body: SingleChildScrollView(child: ThemeSettingsRow()),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
