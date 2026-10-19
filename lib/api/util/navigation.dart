@@ -70,11 +70,13 @@ String sectionLocation(NavigationEntry entry, String? projectId) {
 /// [location] without the `/projects/<projectId>` a project-scoped section
 /// sits below, so every section is told apart by its route alone:
 /// `/projects/p/attributes/a` becomes `/attributes/a`.
-String sectionPath(String location) {
-  final Match? match = RegExp('^${RegExp.escape(projectsRoute)}/[^/]+(/.+)\$')
-      .firstMatch(location);
-  return match?.group(1) ?? location;
-}
+String sectionPath(String location) =>
+    _belowProject.firstMatch(location)?.group(1) ?? location;
+
+/// `/projects/<projectId>` followed by the rest of a location.
+final RegExp _belowProject = RegExp(
+  '^${RegExp.escape(projectsRoute)}/[^/]+(/.+)\$',
+);
 
 /// The section [location] belongs to — its own route or one nested below
 /// it (e.g. `/items/detail`) — or null outside the sections.
