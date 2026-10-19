@@ -63,7 +63,7 @@ class InitAdvancementAction extends ReduxAction<AppState> {
       try {
         final current = state.advancements;
         final nextPage = current.currentPage + 1;
-        final size = 10;
+        final size = current.pageSize == 0 ? 10 : current.pageSize;
         final next = await ApiService().advancementApi.getPage(
           page: nextPage,
           size: size,

@@ -63,7 +63,7 @@ class InitSoundAction extends ReduxAction<AppState> {
       try {
         final current = state.soundEvents;
         final nextPage = current.currentPage + 1;
-        final size = 10;
+        final size = current.pageSize == 0 ? 10 : current.pageSize;
         final next = await ApiService().soundApi.getPage(
           page: nextPage,
           size: size,

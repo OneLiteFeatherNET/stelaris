@@ -109,6 +109,25 @@ void listActionTests<T extends DataModel>({
         'page3-1',
       ]);
     });
+
+    test('loads the next page in the size of the loaded pages', () async {
+      final store = storeWith(
+        [model('page1-0'), model('page1-1')],
+        totalItems: 6,
+        totalPages: 3,
+        pageSize: 2,
+      );
+      String? size;
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            size = options.uri.queryParameters['size'];
+            return FakeHttpClientAdapter.response(page(2));
+          });
+
+      await store.dispatchAndWait(init());
+
+      expect(size, '2');
+    });
   });
 
   group('${refresh().runtimeType}', () {

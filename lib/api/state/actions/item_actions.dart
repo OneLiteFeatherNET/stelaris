@@ -78,7 +78,7 @@ class InitItemAction extends ReduxAction<AppState> {
       try {
         final current = state.items;
         final nextPage = current.currentPage + 1;
-        final size = 10;
+        final size = current.pageSize == 0 ? 10 : current.pageSize;
         final next = await ApiService().itemApi.getPage(
           page: nextPage,
           size: size,
