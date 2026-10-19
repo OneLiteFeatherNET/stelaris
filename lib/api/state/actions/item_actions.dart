@@ -85,6 +85,10 @@ class InitItemAction extends ReduxAction<AppState> {
           projectId: state.selectedProject?.id,
         );
 
+        // A project switch or refresh replaced the list while the page
+        // loaded, so the page no longer continues it.
+        if (!identical(state.items, current)) return null;
+
         final merged = List<ItemModel>.of(current.items)..addAll(next.items);
         final updated = current.copyWith(
           items: merged,

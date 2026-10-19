@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -127,6 +128,30 @@ void listActionTests<T extends DataModel>({
       await store.dispatchAndWait(init());
 
       expect(size, '2');
+    });
+
+    test('drops the next page when the project changes while it '
+        'loads', () async {
+      const project = Project(id: 'p1', displayName: 'P1', key: 'p1');
+      const other = Project(id: 'p2', displayName: 'P2', key: 'p2');
+      final store = storeWith(
+        [model('page1-0'), model('page1-1')],
+        totalItems: 6,
+        totalPages: 3,
+        pageSize: 2,
+        project: project,
+      );
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            store.dispatchSync(SelectProjectAction(other));
+            return FakeHttpClientAdapter.response(page(2));
+          });
+
+      await store.dispatchAndWait(init());
+
+      expect(store.state.selectedProject, other);
+      expect(listOf(store.state).items, isEmpty);
+      expect(isLoadingMore(store.state), isFalse);
     });
   });
 
