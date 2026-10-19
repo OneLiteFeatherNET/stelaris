@@ -1,5 +1,6 @@
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/functions.dart';
 
 typedef FormValidator<T> = String? Function(T? value);
 
@@ -233,6 +234,29 @@ class Validators {
       }
       if (number <= 0) {
         return l10n.validation_positive;
+      }
+      return null;
+    };
+  }
+
+  /// Validates that a string is a number of at least [min] and at most
+  /// [max], decimal and negative ones included. A bound left out is not
+  /// checked.
+  static FormValidator<String> decimalBetween(
+    AppLocalizations l10n, {
+    double? min,
+    double? max,
+  }) {
+    return (value) {
+      final number = double.tryParse(value?.trim() ?? '');
+      if (number == null) {
+        return l10n.validation_number_invalid;
+      }
+      if (min != null && number < min) {
+        return l10n.validation_decimal_minimum(formatDecimal(min));
+      }
+      if (max != null && number > max) {
+        return l10n.validation_decimal_maximum(formatDecimal(max));
       }
       return null;
     };

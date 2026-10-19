@@ -104,6 +104,10 @@
   "card_height": "Height",
   "card_attribute_default_value": "Default value",
   "card_attribute_maximum_value": "Maximum value",
+  "card_attribute_minimum_value": "Minimum value",
+  "card_attribute_synced": "Synced",
+  "card_attribute_translation_key": "Translation key",
+  "tooltip_attribute_synced": "Sends the value to the client",
   "card_font_provider": "Provider",
   "card_font_texture_path": "Texture path",
   "card_description": "Description",
@@ -462,6 +466,7 @@
   "sort_created_oldest_first": "Created (oldest first)",
   "filter_attribute_has_default_value": "Has default value",
   "filter_attribute_has_maximum_value": "Has maximum value",
+  "filter_attribute_synced": "Synced",
 
   "model_card_created_prefix": "Created",
   "model_card_edited_prefix": "Edited",
@@ -539,6 +544,22 @@
     "placeholders": {
       "max": {
         "type": "int"
+      }
+    }
+  },
+  "validation_decimal_maximum": "The maximum is {max}",
+  "@validation_decimal_maximum": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "validation_decimal_minimum": "The minimum is {min}",
+  "@validation_decimal_minimum": {
+    "placeholders": {
+      "min": {
+        "type": "String"
       }
     }
   },
@@ -900,6 +921,9 @@
   "advancement_hint_material": "The icon, a material like minecraft:diamond",
   "advancement_hint_frame": "Task and goal show a green description, challenge a purple one",
   "attribute_section_values": "Values",
-  "attribute_hint_default": "The base value of the attribute",
-  "attribute_hint_maximum": "The highest value, greater than 0"
+  "attribute_section_client": "Client",
+  "attribute_hint_minimum": "The lowest value, at most the default value",
+  "attribute_hint_default": "The base value, between the minimum and the maximum",
+  "attribute_hint_maximum": "The highest value, greater than 0 and at least the default value",
+  "attribute_hint_translation_key": "Translates the name, e.g. attribute.name.max_health"
 }

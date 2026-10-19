@@ -532,6 +532,30 @@ abstract class AppLocalizations {
   /// **'Maximum value'**
   String get card_attribute_maximum_value;
 
+  /// No description provided for @card_attribute_minimum_value.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum value'**
+  String get card_attribute_minimum_value;
+
+  /// No description provided for @card_attribute_synced.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced'**
+  String get card_attribute_synced;
+
+  /// No description provided for @card_attribute_translation_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Translation key'**
+  String get card_attribute_translation_key;
+
+  /// No description provided for @tooltip_attribute_synced.
+  ///
+  /// In en, this message translates to:
+  /// **'Sends the value to the client'**
+  String get tooltip_attribute_synced;
+
   /// No description provided for @card_font_provider.
   ///
   /// In en, this message translates to:
@@ -1888,6 +1912,12 @@ abstract class AppLocalizations {
   /// **'Has maximum value'**
   String get filter_attribute_has_maximum_value;
 
+  /// No description provided for @filter_attribute_synced.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced'**
+  String get filter_attribute_synced;
+
   /// No description provided for @model_card_created_prefix.
   ///
   /// In en, this message translates to:
@@ -2145,6 +2175,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The maximum is {max}'**
   String validation_maximum(int max);
+
+  /// No description provided for @validation_decimal_maximum.
+  ///
+  /// In en, this message translates to:
+  /// **'The maximum is {max}'**
+  String validation_decimal_maximum(String max);
+
+  /// No description provided for @validation_decimal_minimum.
+  ///
+  /// In en, this message translates to:
+  /// **'The minimum is {min}'**
+  String validation_decimal_minimum(String min);
 
   /// No description provided for @validation_minimum.
   ///
@@ -3094,17 +3136,35 @@ abstract class AppLocalizations {
   /// **'Values'**
   String get attribute_section_values;
 
+  /// No description provided for @attribute_section_client.
+  ///
+  /// In en, this message translates to:
+  /// **'Client'**
+  String get attribute_section_client;
+
+  /// No description provided for @attribute_hint_minimum.
+  ///
+  /// In en, this message translates to:
+  /// **'The lowest value, at most the default value'**
+  String get attribute_hint_minimum;
+
   /// No description provided for @attribute_hint_default.
   ///
   /// In en, this message translates to:
-  /// **'The base value of the attribute'**
+  /// **'The base value, between the minimum and the maximum'**
   String get attribute_hint_default;
 
   /// No description provided for @attribute_hint_maximum.
   ///
   /// In en, this message translates to:
-  /// **'The highest value, greater than 0'**
+  /// **'The highest value, greater than 0 and at least the default value'**
   String get attribute_hint_maximum;
+
+  /// No description provided for @attribute_hint_translation_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Translates the name, e.g. attribute.name.max_health'**
+  String get attribute_hint_translation_key;
 }
 
 class _AppLocalizationsDelegate

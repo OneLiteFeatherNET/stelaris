@@ -24,6 +24,7 @@ void main() {
       uiName: 'Health',
       key: 'max_health',
       defaultValue: 10,
+      minimumValue: 1,
       maximumValue: 20,
     );
 
@@ -114,6 +115,7 @@ void main() {
       await pumpPage(tester, attribute: selected.copyWith(defaultValue: 2.5));
 
       for (final (label, value) in [
+        ('Minimum value', '1'),
         ('Default value', '2.5'),
         ('Maximum value', '20'),
       ]) {
@@ -127,17 +129,20 @@ void main() {
     testWidgets('a value in range is staged as unsaved', (tester) async {
       await pumpPage(tester);
 
+      await enterAndBlur(tester, 'Minimum value', '-1');
       await enterAndBlur(tester, 'Default value', '-0.5');
-      await enterAndBlur(tester, 'Maximum value', '0.75');
 
       final attribute = store.state.selectedAttribute!;
       expect(attribute.defaultValue, -0.5);
-      expect(attribute.maximumValue, 0.75);
+      expect(attribute.minimumValue, -1);
       expect(store.state.unsavedChanges, NavigationEntry.attributes);
     });
 
     for (final (label, input, error) in [
-      ('Default value', '-', 'Please enter a valid number'),
+      ('Minimum value', '11', 'The maximum is 10'),
+      ('Default value', '0', 'The minimum is 1'),
+      ('Default value', '21', 'The maximum is 20'),
+      ('Maximum value', '5', 'The minimum is 10'),
       ('Maximum value', '0', 'Enter a number greater than 0'),
       ('Maximum value', '-', 'Please enter a valid number'),
     ]) {
@@ -154,7 +159,28 @@ void main() {
       });
     }
 
-    testWidgets('saving sends the values to the backend', (tester) async {
+    testWidgets('the synced segment toggles the flag', (tester) async {
+      await pumpPage(tester);
+
+      await tester.tap(find.text('Synced'));
+      await tester.pumpAndSettle();
+
+      expect(store.state.selectedAttribute?.synced, isTrue);
+      expect(store.state.unsavedChanges, NavigationEntry.attributes);
+    });
+
+    testWidgets('an emptied translation key is removed', (tester) async {
+      await pumpPage(
+        tester,
+        attribute: selected.copyWith(translationKey: 'attribute.name.health'),
+      );
+
+      await enterAndBlur(tester, 'Translation key', '');
+
+      expect(store.state.selectedAttribute?.translationKey, isNull);
+    });
+
+    testWidgets('saving sends the new fields to the backend', (tester) async {
       Map<String, dynamic>? sent;
       (ApiService().attributeApi as BaseApi<AttributeModel>)
           .apiClient
@@ -171,7 +197,9 @@ void main() {
       });
       await pumpPage(tester);
 
-      await enterAndBlur(tester, 'Default value', '15');
+      await tester.tap(find.text('Synced'));
+      await tester.pumpAndSettle();
+      await enterAndBlur(tester, 'Translation key', 'attribute.name.health');
       await tester.tap(find.text('Save'));
       // On the web, dio finishes even a faked request in several real-async
       // steps that testWidgets' fake-async zone doesn't run on its own, so
@@ -184,10 +212,11 @@ void main() {
       }
       await tester.pumpAndSettle();
 
-      expect(sent?['defaultValue'], 15);
-      expect(sent?['maximumValue'], 20);
+      expect(sent?['synced'], isTrue);
+      expect(sent?['minimumValue'], 1);
+      expect(sent?['translationKey'], 'attribute.name.health');
       expect(store.state.unsavedChanges, isNull);
-      expect(store.state.attributes.items.first.defaultValue, 15);
+      expect(store.state.attributes.items.first.synced, isTrue);
     });
 
     testWidgets('leaving the page clears the selection', (tester) async {

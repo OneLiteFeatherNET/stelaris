@@ -39,6 +39,10 @@ class AttributePage extends StatelessWidget {
           'has_maximum_value',
           context.l10n.filter_attribute_has_maximum_value,
         );
+        final syncedFilter = FilterOption(
+          'synced',
+          context.l10n.filter_attribute_synced,
+        );
 
         return ModelPage<AttributeModel>(
           entry: NavigationEntry.attributes,
@@ -61,10 +65,15 @@ class AttributePage extends StatelessWidget {
             action: AttributeCopyAction.new,
           ),
           projectKey: vm.projectKey,
-          filterOptions: [hasDefaultValueFilter, hasMaximumValueFilter],
+          filterOptions: [
+            hasDefaultValueFilter,
+            hasMaximumValueFilter,
+            syncedFilter,
+          ],
           matchesFilter: (model, filter) => switch (filter.id) {
             'has_default_value' => model.defaultValue != 0,
             'has_maximum_value' => model.maximumValue != 0,
+            'synced' => model.synced,
             _ => true,
           },
           onAdd: () => openModelCreateDialog(
