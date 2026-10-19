@@ -95,6 +95,19 @@ void main() {
       expect(find.text('sign in from /items/detail'), findsOneWidget);
     });
 
+    testWidgets('a shared link keeps its query through sign in',
+        (tester) async {
+      // A shared link names the project and model in its query; dropping it
+      // would land the person on a detail page with nothing to show.
+      await pumpAt(tester, '/items/detail?project=p&id=a');
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('sign in from /items/detail?project=p&id=a'),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('the sign-in route itself is not redirected', (tester) async {
       await pumpAt(tester, signInRoute);
       await tester.pumpAndSettle();

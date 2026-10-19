@@ -59,9 +59,47 @@ void main() {
 
     test('with a tab adds its id', () {
       expect(
-        detailLocation('/fonts', DetailTab('characters', (_) => 'Characters')),
+        detailLocation(
+          '/fonts',
+          tab: DetailTab('characters', (_) => 'Characters'),
+        ),
         '/fonts/detail?tab=characters',
       );
+    });
+
+    test('with a project and id carries both ahead of the tab', () {
+      expect(
+        detailLocation(
+          '/attributes',
+          projectId: 'p',
+          id: 'a',
+          tab: DetailTab('general', (_) => 'General'),
+        ),
+        '/attributes/detail?project=p&id=a&tab=general',
+      );
+    });
+  });
+
+  group('sharedModelRef', () {
+    test('reads the project and id of a shared link', () {
+      final ref = sharedModelRef(
+        Uri.parse('/attributes/detail?project=p&id=a&tab=general'),
+      );
+
+      expect(ref?.projectId, 'p');
+      expect(ref?.id, 'a');
+    });
+
+    test('is null when either part is missing or empty', () {
+      for (final String location in [
+        '/attributes/detail',
+        '/attributes/detail?id=a',
+        '/attributes/detail?project=p',
+        '/attributes/detail?project=&id=a',
+        '/attributes/detail?project=p&id=',
+      ]) {
+        expect(sharedModelRef(Uri.parse(location)), isNull, reason: location);
+      }
     });
   });
 }

@@ -469,7 +469,7 @@ class EntityProvider implements PaletteProvider {
             modes: const {PaletteMode.entities},
             run: (context) async {
               select(context);
-              context.go(detailLocation(route, tab));
+              context.go(detailLocation(route, tab: tab));
             },
           ),
         ...actions,

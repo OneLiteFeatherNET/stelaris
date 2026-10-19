@@ -6,6 +6,15 @@ import 'package:stelaris/l10n/app_localizations.dart';
 /// `/items/detail?tab=lore`.
 const String detailTabParameter = 'tab';
 
+/// The query parameter a shared detail link names its model's project by.
+const String detailProjectParameter = 'project';
+
+/// The query parameter a shared detail link names its model by.
+const String detailIdParameter = 'id';
+
+/// The model a shared detail link points to.
+typedef SharedModelRef = ({String projectId, String id});
+
 /// One tab of a detail page.
 ///
 /// The [id] is what `?tab=` links and the command palette refer to, so it
@@ -49,13 +58,33 @@ String? requestedTab(BuildContext context) {
 }
 
 /// Where the detail page under [listRoute] lives, optionally opened on [tab].
-String detailLocation(String listRoute, [DetailTab? tab]) {
-  final String path = '$listRoute/detail';
-  if (tab == null) {
-    return path;
-  }
+///
+/// With [projectId] and [id] the location names its model, so it can be
+/// shared and survives a reload (see [sharedModelRef]).
+String detailLocation(
+  String listRoute, {
+  DetailTab? tab,
+  String? projectId,
+  String? id,
+}) {
+  final Map<String, String> query = {
+    detailProjectParameter: ?projectId,
+    detailIdParameter: ?id,
+    detailTabParameter: ?tab?.id,
+  };
   return Uri(
-    path: path,
-    queryParameters: {detailTabParameter: tab.id},
+    path: '$listRoute/detail',
+    queryParameters: query.isEmpty ? null : query,
   ).toString();
+}
+
+/// The model a shared detail link at [uri] points to, or null when the link
+/// does not name both its project and its id.
+SharedModelRef? sharedModelRef(Uri uri) {
+  final String? projectId = uri.queryParameters[detailProjectParameter];
+  final String? id = uri.queryParameters[detailIdParameter];
+  if (projectId == null || projectId.isEmpty || id == null || id.isEmpty) {
+    return null;
+  }
+  return (projectId: projectId, id: id);
 }

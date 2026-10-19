@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:async_redux/async_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/auth/auth_sessions.dart';
@@ -12,6 +13,8 @@ import 'package:stelaris/feature/base/base_page.dart';
 import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
+import 'package:stelaris/feature/model/detail_tabs.dart';
+import 'package:stelaris/feature/model/shared_model_gate.dart';
 import 'package:stelaris/feature/advancement/advancement_detail_page.dart';
 import 'package:stelaris/feature/attributes/attribute_detail_page.dart';
 import 'package:stelaris/feature/project/project_selection_page.dart';
@@ -37,7 +40,7 @@ const String signInRoute = '/sign-in';
 const String signInFromParameter = 'from';
 
 /// Sends anyone without a session to [signInRoute], remembering where they were
-/// headed.
+/// headed - query included, which is where a shared link names its model.
 ///
 /// Returns null - meaning "no opinion" - in exactly two cases: a deployment
 /// that configured no identity provider, where the feature is switched off
@@ -64,7 +67,7 @@ String? authRedirect(BuildContext context, GoRouterState state) {
   return Uri(
     path: signInRoute,
     queryParameters: <String, String>{
-      signInFromParameter: state.matchedLocation,
+      signInFromParameter: state.uri.toString(),
     },
   ).toString();
 }
@@ -89,7 +92,8 @@ String? appRedirect(BuildContext context, GoRouterState state) {
   return projectSelectionRedirect(context, state);
 }
 
-/// Redirects to [projectSelectionRoute] whenever no project is selected.
+/// Redirects to [projectSelectionRoute] whenever no project is selected,
+/// except for a shared link, which brings its own project.
 ///
 /// Extracted as a standalone function so it can be exercised against an
 /// isolated [GoRouter] in tests instead of the app's singleton [router].
@@ -98,8 +102,10 @@ String? projectSelectionRedirect(BuildContext context, GoRouterState state) {
     final appState = StoreProvider.state<AppState>(context);
     final hasProject = appState.selectedProject != null;
     final isAtProjects = state.matchedLocation == projectSelectionRoute;
+    // A shared link names its project, which the detail page selects itself.
+    final isSharedLink = sharedModelRef(state.uri) != null;
 
-    if (!hasProject && !isAtProjects) {
+    if (!hasProject && !isAtProjects && !isSharedLink) {
       return projectSelectionRoute;
     }
   } on StoreException catch (_) {}
@@ -124,16 +130,18 @@ String? advancementDetailRedirect(BuildContext context, GoRouterState state) {
 }
 
 /// Redirects `/attributes/detail` back to `/attributes` when nothing is
-/// selected — reachable by a direct URL visit or a page reload, since the
-/// detail route relies entirely on the already-dispatched Redux selection
-/// rather than a route parameter.
+/// selected and the location names no attribute either (see
+/// [sharedModelRef]) — reachable by an old link or a direct URL visit. A
+/// location that names one is left to [SharedModelGate] to load.
 String? attributeDetailRedirect(BuildContext context, GoRouterState state) {
   try {
     final appState = StoreProvider.state<AppState>(context);
     final isAtAttributeDetail =
         state.matchedLocation == '${NavigationEntry.attributes.route}/detail';
 
-    if (isAtAttributeDetail && appState.selectedAttribute == null) {
+    if (isAtAttributeDetail &&
+        appState.selectedAttribute == null &&
+        sharedModelRef(state.uri) == null) {
       return NavigationEntry.attributes.route;
     }
   } on StoreException catch (_) {}
@@ -285,7 +293,13 @@ final GoRouter router = GoRouter(
               redirect: attributeDetailRedirect,
               onExit: detailExitGuard,
               pageBuilder: (context, state) => CustomTransitionPage(
-                child: const AttributeDetailPage(),
+                child: SharedModelGate(
+                  ref: sharedModelRef(state.uri),
+                  open: OpenSharedAttributeAction.new,
+                  isOpen: (state, id) => state.selectedAttribute?.id == id,
+                  listRoute: NavigationEntry.attributes.route,
+                  child: const AttributeDetailPage(),
+                ),
                 key: state.pageKey,
                 transitionsBuilder: buildDetailSlideTransition,
               ),

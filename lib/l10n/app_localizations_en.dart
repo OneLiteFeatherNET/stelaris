@@ -652,6 +652,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbar_copied_to_clipboard => 'Copied to clipboard';
 
   @override
+  String get snackbar_shared_model_not_found =>
+      'This link points to something that no longer exists or that you can\'t access.';
+
+  @override
   String get command_bar_search_tooltip => 'Focus search';
 
   @override
