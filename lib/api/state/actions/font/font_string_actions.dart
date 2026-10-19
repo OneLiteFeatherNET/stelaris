@@ -30,9 +30,15 @@ class FontCharFetchAction extends ReduxAction<AppState> {
           size: size,
         );
 
+        final font = state.selectedFont;
+        if (font == null) return null;
+
         final merged = List<FontStringDTO>.of(current.items)
           ..addAll(next.items);
-        final updated = selected.copyWith(
+        // Built on the current font, so form edits made while the page
+        // loaded are kept.
+        final updated = font.copyWith(
+          isLoadingChars: false,
           chars: current.copyWith(
             items: merged,
             totalItems: next.totalItems != 0

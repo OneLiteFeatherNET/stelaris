@@ -8,6 +8,16 @@ import 'package:stelaris_models/stelaris_models.dart';
 import '../../../support/fake_http_client_adapter.dart';
 import '../../../support/recording_http_client_adapter.dart';
 
+/// Sets the selected font, as the form or a click on another font would.
+class _SelectFont extends ReduxAction<AppState> {
+  _SelectFont(this.font);
+
+  final FontModel font;
+
+  @override
+  AppState reduce() => state.copyWith(selectedFont: font);
+}
+
 void main() {
   group('FontCharFetchAction', () {
     test(
@@ -93,6 +103,26 @@ void main() {
       await store.dispatchAndWait(FontCharFetchAction());
 
       expect(size, '2');
+    });
+
+    test('keeps form edits made while the next chars load', () async {
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(selectedFont: font),
+      );
+      ApiService().fontApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            store.dispatchSync(_SelectFont(font.copyWith(uiName: 'Renamed')));
+            return FakeHttpClientAdapter.response(nextPage);
+          });
+
+      await store.dispatchAndWait(FontCharFetchAction());
+
+      expect(store.state.selectedFont!.uiName, 'Renamed');
+      expect(store.state.selectedFont!.chars.items.map((c) => c.id), [
+        'c1',
+        'c2',
+      ]);
+      expect(store.state.selectedFont!.isLoadingChars, isFalse);
     });
   });
 
