@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/actions/copy_model_action.dart';
+import 'package:stelaris/api/state/actions/paginated_loading.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 
 /// Selects [model] for its detail page and drops the attribute section's
@@ -56,7 +57,7 @@ class RefreshAttributeAction extends ReduxAction<AppState> {
         .attributeApi
         .getPage(
           page: 1,
-          size: state.attributes.pageSize == 0 ? 10 : state.attributes.pageSize,
+          size: state.attributes.requestSize,
           projectId: state.selectedProject?.id,
         );
     return state.copyWith(attributes: result);
@@ -87,7 +88,7 @@ class InitAttributeAction extends ReduxAction<AppState> {
       try {
         final current = state.attributes;
         final nextPage = current.currentPage + 1;
-        final size = current.pageSize == 0 ? 10 : current.pageSize;
+        final size = current.requestSize;
         final next = await ApiService().attributeApi.getPage(
           page: nextPage,
           size: size,
@@ -126,9 +127,7 @@ class InitAttributeAction extends ReduxAction<AppState> {
           .attributeApi
           .getPage(
             page: 1,
-            size: state.attributes.pageSize == 0
-                ? 10
-                : state.attributes.pageSize,
+            size: state.attributes.requestSize,
             projectId: state.selectedProject?.id,
           );
       return state.copyWith(attributes: result);

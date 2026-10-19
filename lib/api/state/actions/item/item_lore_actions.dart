@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/paginated_loading.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
@@ -14,9 +15,7 @@ class ItemLoreFetchAction extends ReduxAction<AppState> {
         .getLore(
           selectedItem.id!,
           page: selectedItem.lore.currentPage,
-          size: selectedItem.lore.pageSize == 0
-              ? 10
-              : selectedItem.lore.pageSize,
+          size: selectedItem.lore.requestSize,
         );
 
     // Apply to the item as it is now: it may have been changed while the

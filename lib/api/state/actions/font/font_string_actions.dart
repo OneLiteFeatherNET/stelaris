@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/paginated_loading.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
@@ -23,7 +24,7 @@ class FontCharFetchAction extends ReduxAction<AppState> {
       try {
         final current = selected.chars;
         final nextPage = current.currentPage + 1;
-        final size = current.pageSize == 0 ? 10 : current.pageSize;
+        final size = current.requestSize;
         final next = await ApiService().fontApi.getChars(
           selected.id!,
           page: nextPage,
@@ -68,7 +69,7 @@ class FontCharFetchAction extends ReduxAction<AppState> {
           .getChars(
             selected.id!,
             page: 1,
-            size: selected.chars.pageSize == 0 ? 10 : selected.chars.pageSize,
+            size: selected.chars.requestSize,
           );
       final FontModel updated = selected.copyWith(chars: result);
       return state.copyWith(selectedFont: updated);

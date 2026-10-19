@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/actions/copy_model_action.dart';
+import 'package:stelaris/api/state/actions/paginated_loading.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 
 class SelectFontAction extends ReduxAction<AppState> {
@@ -38,7 +39,7 @@ class RefreshFontAction extends ReduxAction<AppState> {
     final PaginatedResult<FontModel> result = await ApiService().fontApi
         .getPage(
           page: 1,
-          size: state.fonts.pageSize == 0 ? 10 : state.fonts.pageSize,
+          size: state.fonts.requestSize,
           projectId: state.selectedProject?.id,
         );
     return state.copyWith(fonts: result);
@@ -62,7 +63,7 @@ class InitFontAction extends ReduxAction<AppState> {
       try {
         final current = state.fonts;
         final nextPage = current.currentPage + 1;
-        final size = current.pageSize == 0 ? 10 : current.pageSize;
+        final size = current.requestSize;
         final next = await ApiService().fontApi.getPage(
           page: nextPage,
           size: size,
@@ -96,7 +97,7 @@ class InitFontAction extends ReduxAction<AppState> {
       final PaginatedResult<FontModel> result = await ApiService().fontApi
           .getPage(
             page: 1,
-            size: state.fonts.pageSize == 0 ? 10 : state.fonts.pageSize,
+            size: state.fonts.requestSize,
             projectId: state.selectedProject?.id,
           );
       return state.copyWith(fonts: result);

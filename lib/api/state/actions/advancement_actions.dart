@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/actions/copy_model_action.dart';
+import 'package:stelaris/api/state/actions/paginated_loading.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 
 class SelectedAdvancementAction extends ReduxAction<AppState> {
@@ -39,9 +40,7 @@ class RefreshAdvancementAction extends ReduxAction<AppState> {
         .advancementApi
         .getPage(
           page: 1,
-          size: state.advancements.pageSize == 0
-              ? 10
-              : state.advancements.pageSize,
+          size: state.advancements.requestSize,
           projectId: state.selectedProject?.id,
         );
     return state.copyWith(advancements: result);
@@ -63,7 +62,7 @@ class InitAdvancementAction extends ReduxAction<AppState> {
       try {
         final current = state.advancements;
         final nextPage = current.currentPage + 1;
-        final size = current.pageSize == 0 ? 10 : current.pageSize;
+        final size = current.requestSize;
         final next = await ApiService().advancementApi.getPage(
           page: nextPage,
           size: size,
@@ -102,9 +101,7 @@ class InitAdvancementAction extends ReduxAction<AppState> {
           .advancementApi
           .getPage(
             page: 1,
-            size: state.advancements.pageSize == 0
-                ? 10
-                : state.advancements.pageSize,
+            size: state.advancements.requestSize,
             projectId: state.selectedProject?.id,
           );
       return state.copyWith(advancements: result);

@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/actions/copy_model_action.dart';
+import 'package:stelaris/api/state/actions/paginated_loading.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 
 class SelectSoundAction extends ReduxAction<AppState> {
@@ -39,7 +40,7 @@ class RefreshSoundAction extends ReduxAction<AppState> {
         .soundApi
         .getPage(
           page: 1,
-          size: state.soundEvents.pageSize == 0 ? 10 : state.soundEvents.pageSize,
+          size: state.soundEvents.requestSize,
           projectId: state.selectedProject?.id,
         );
     return state.copyWith(soundEvents: result);
@@ -63,7 +64,7 @@ class InitSoundAction extends ReduxAction<AppState> {
       try {
         final current = state.soundEvents;
         final nextPage = current.currentPage + 1;
-        final size = current.pageSize == 0 ? 10 : current.pageSize;
+        final size = current.requestSize;
         final next = await ApiService().soundApi.getPage(
           page: nextPage,
           size: size,
@@ -102,9 +103,7 @@ class InitSoundAction extends ReduxAction<AppState> {
           .soundApi
           .getPage(
             page: 1,
-            size: state.soundEvents.pageSize == 0
-                ? 10
-                : state.soundEvents.pageSize,
+            size: state.soundEvents.requestSize,
             projectId: state.selectedProject?.id,
           );
       return state.copyWith(soundEvents: result);

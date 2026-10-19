@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/actions/copy_model_action.dart';
+import 'package:stelaris/api/state/actions/paginated_loading.dart';
 import 'package:stelaris/util/copy_model_result.dart';
 
 class SelectedItemAction extends ReduxAction<AppState> {
@@ -56,7 +57,7 @@ class RefreshItemAction extends ReduxAction<AppState> {
     final PaginatedResult<ItemModel> result = await ApiService().itemApi
         .getPage(
           page: 1,
-          size: state.items.pageSize == 0 ? 10 : state.items.pageSize,
+          size: state.items.requestSize,
           projectId: state.selectedProject?.id,
         );
     return state.copyWith(items: result);
@@ -78,7 +79,7 @@ class InitItemAction extends ReduxAction<AppState> {
       try {
         final current = state.items;
         final nextPage = current.currentPage + 1;
-        final size = current.pageSize == 0 ? 10 : current.pageSize;
+        final size = current.requestSize;
         final next = await ApiService().itemApi.getPage(
           page: nextPage,
           size: size,
@@ -112,7 +113,7 @@ class InitItemAction extends ReduxAction<AppState> {
       final PaginatedResult<ItemModel> result = await ApiService().itemApi
           .getPage(
             page: 1,
-            size: state.items.pageSize == 0 ? 10 : state.items.pageSize,
+            size: state.items.requestSize,
             projectId: state.selectedProject?.id,
           );
       return state.copyWith(items: result);
