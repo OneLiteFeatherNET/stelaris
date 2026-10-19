@@ -92,6 +92,73 @@ void main() {
       },
     );
 
+    test('persistDifference skips the write when only transient state changed',
+        () async {
+      const state = AppState(openNavigation: false);
+      await persistor.persistDifference(
+        lastPersistedState: null,
+        newState: state,
+      );
+      // A marker the persistor would overwrite if it wrote again.
+      localStorage.setItem(AppPersistor.appState, 'untouched');
+
+      await persistor.persistDifference(
+        lastPersistedState: state,
+        newState: state.copyWith(isLoadingMoreItems: true),
+      );
+
+      expect(localStorage.getItem(AppPersistor.appState), 'untouched');
+    });
+
+    test('persistDifference writes when a persisted field changed', () async {
+      const state = AppState(openNavigation: false);
+      await persistor.persistDifference(
+        lastPersistedState: null,
+        newState: state,
+      );
+
+      await persistor.persistDifference(
+        lastPersistedState: state,
+        newState: state.copyWith(openNavigation: true),
+      );
+
+      final loaded = await persistor.readState();
+      expect(loaded.openNavigation, isTrue);
+    });
+
+    test('persistDifference skips the write for what readState just restored',
+        () async {
+      const state = AppState(openNavigation: false);
+      await persistor.persistDifference(
+        lastPersistedState: null,
+        newState: state,
+      );
+
+      final AppPersistor fresh = AppPersistor();
+      final AppState restored = await fresh.readState();
+      localStorage.setItem(AppPersistor.appState, 'untouched');
+
+      await fresh.persistDifference(
+        lastPersistedState: null,
+        newState: restored,
+      );
+
+      expect(localStorage.getItem(AppPersistor.appState), 'untouched');
+    });
+
+    test('deleteState removes only the app state key', () async {
+      localStorage.setItem('oidc.session', 'keep me');
+      await persistor.persistDifference(
+        lastPersistedState: null,
+        newState: const AppState(openNavigation: false),
+      );
+
+      await persistor.deleteState();
+
+      expect(localStorage.getItem(AppPersistor.appState), isNull);
+      expect(localStorage.getItem('oidc.session'), 'keep me');
+    });
+
     test('readState returns default AppState on schema mismatch', () async {
       localStorage.setItem(
         AppPersistor.appState,
