@@ -63,17 +63,24 @@ class SelectProjectAction extends ReduxAction<AppState> {
 ///
 /// Does nothing when it is selected already, takes it from the known
 /// projects when it is there, and only fetches it otherwise.
+///
+/// A fetch can end after something else selected the project - a shared
+/// detail link opens it twice at once - and selecting it again would drop
+/// what was opened in it meanwhile, so the check is repeated after it.
 class EnsureProjectSelectedAction extends ReduxAction<AppState> {
   final String projectId;
 
   EnsureProjectSelectedAction(this.projectId);
 
+  bool get _isSelected => state.selectedProject?.id == projectId;
+
   @override
   Future<AppState?> reduce() async {
-    if (state.selectedProject?.id == projectId) return null;
+    if (_isSelected) return null;
     final Project project =
         state.projects.where((p) => p.id == projectId).firstOrNull ??
         await ApiService().projectApi.getById(projectId);
+    if (_isSelected) return null;
     dispatch(SelectProjectAction(project));
     return null;
   }

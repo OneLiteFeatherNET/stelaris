@@ -1,11 +1,45 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:async_redux/async_redux.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
+
+/// Answers every request with [json], but only once [release] completes, so
+/// a test can act while a lookup is still under way.
+class _HeldAdapter implements HttpClientAdapter {
+  _HeldAdapter(this.json);
+
+  final Object json;
+  final Completer<void> release = Completer<void>();
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    await release.future;
+    return ResponseBody.fromString(
+      jsonEncode(json),
+      200,
+      headers: {
+        Headers.contentTypeHeader: [Headers.jsonContentType],
+      },
+    );
+  }
+
+  @override
+  void close({bool force = false}) {}
+}
 
 void main() {
   group('SelectProjectAction', () {
@@ -260,6 +294,42 @@ void main() {
 
       expect(store.state.projects.length, 2);
       expect(store.state.selectedProject?.displayName, 'P1 Updated');
+    });
+  });
+
+  group('EnsureProjectSelectedAction', () {
+    const projectB = Project(id: 'B', displayName: 'B', key: 'B');
+
+    test('takes a known project without fetching it', () async {
+      ApiService().projectApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((_) => throw StateError('no fetch expected'));
+      final store = Store<AppState>(
+        initialState: const AppState(projects: [projectB]),
+      );
+
+      await store.dispatchAndWait(EnsureProjectSelectedAction('B'));
+
+      expect(store.state.selectedProject, projectB);
+    });
+
+    test('keeps what was opened meanwhile when its lookup ends late', () async {
+      // A shared detail link opens the project twice at once: once for the
+      // list below the detail page, once for the model. The later lookup
+      // must not select the project again, which would drop the model.
+      final adapter = _HeldAdapter(projectB.toJson());
+      ApiService().projectApi.apiClient.dio.httpClientAdapter = adapter;
+      final store = Store<AppState>(initialState: const AppState());
+      const attribute = AttributeModel(uiName: 'a', id: 'a1');
+
+      final late = store.dispatchAndWait(EnsureProjectSelectedAction('B'));
+      await Future<void>.delayed(Duration.zero);
+      store.dispatch(SelectProjectAction(projectB));
+      store.dispatch(SelectAttributeAction(attribute));
+      adapter.release.complete();
+      await late;
+
+      expect(store.state.selectedProject, projectB);
+      expect(store.state.selectedAttribute, attribute);
     });
   });
 }
