@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.8.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.7.1...v1.8.0) (2026-10-20)
+
+
+### Features
+
+* **base:** pop the unsaved-changes dot in with a single pulse ([#269](https://github.com/OneLiteFeatherNET/stelaris/issues/269)) ([6675613](https://github.com/OneLiteFeatherNET/stelaris/commit/6675613d13589bfcb202b0804801a78a44f3ded1))
+
+
+### Bug Fixes
+
+* **item:** improve enchantment loading ([#274](https://github.com/OneLiteFeatherNET/stelaris/issues/274)) ([18c9072](https://github.com/OneLiteFeatherNET/stelaris/commit/18c907264327403fdc5107b3ebc8ce8ed9840666))
+* **item:** keep form edits and the selection while lore lines change ([#276](https://github.com/OneLiteFeatherNET/stelaris/issues/276)) ([d787e88](https://github.com/OneLiteFeatherNET/stelaris/commit/d787e88e5b26355c1bde74851324fdb973325338))
+* **item:** keep form edits and the selection while more lore lines load ([#273](https://github.com/OneLiteFeatherNET/stelaris/issues/273)) ([8790f9d](https://github.com/OneLiteFeatherNET/stelaris/commit/8790f9d2802c2791ca98c5e53b9c1dead5b49474))
+* **sound:** keep form edits and the selection while sound files change ([#275](https://github.com/OneLiteFeatherNET/stelaris/issues/275)) ([3be5b76](https://github.com/OneLiteFeatherNET/stelaris/commit/3be5b76df09e42c2d5659c32ce5dc83aa427d73a))
+* **state:** keep loading further pages of a list and of a font's chars ([#268](https://github.com/OneLiteFeatherNET/stelaris/issues/268)) ([f475043](https://github.com/OneLiteFeatherNET/stelaris/commit/f475043067eb420f5e047b7b12a7b0106ee40092))
+* **state:** remove deleted models by id and keep the attribute selection ([#271](https://github.com/OneLiteFeatherNET/stelaris/issues/271)) ([ea68347](https://github.com/OneLiteFeatherNET/stelaris/commit/ea68347e50a800ec73cf31f593aafe1a519452ef))
+
 ## [1.7.1](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.7.0...v1.7.1) (2026-10-19)
 
 
