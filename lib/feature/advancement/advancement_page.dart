@@ -6,7 +6,7 @@ import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/advancement/advancement_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
-import 'package:stelaris/feature/base/chips/info_chip.dart';
+import 'package:stelaris/feature/model/model_card_content.dart';
 import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/feature/model/model_page.dart';
@@ -31,8 +31,11 @@ class AdvancementPage extends StatelessWidget {
       builder: (context, vm) {
         return ModelPage<AdvancementModel>(
           entry: NavigationEntry.advancements,
-          mapToDataModelItem: (value) =>
-              _buildCardContent(context, vm.projectKey, value),
+          mapToDataModelItem: (value) => ModelCardContent(
+            name: value.uiName,
+            modelKey: value.key,
+            projectKey: vm.projectKey,
+          ),
           deleteTitle: context.l10n.dialog_advancement_delete_title,
           mapToDeleteSuccessfully: (value) {
             context.dispatch(AdvancementRemoveAction(value));
@@ -68,41 +71,6 @@ class AdvancementPage extends StatelessWidget {
               : null,
         );
       },
-    );
-  }
-
-  /// Builds the primary card content for an [AdvancementModel]: its display
-  /// name plus its namespaced key (e.g. `manis:test`), derived client-side
-  /// from the current project's key and the model's local
-  /// [AdvancementModel.key].
-  Widget _buildCardContent(
-    BuildContext context,
-    String projectKey,
-    AdvancementModel value,
-  ) {
-    final key = value.key;
-    final namespacedKey = key != null && key.isNotEmpty
-        ? '$projectKey:$key'
-        : null;
-    final theme = Theme.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          value.uiName,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        if (namespacedKey != null) ...[
-          const SizedBox(height: 6),
-          InfoChip(icon: Icons.vpn_key_outlined, text: namespacedKey),
-        ],
-      ],
     );
   }
 }
