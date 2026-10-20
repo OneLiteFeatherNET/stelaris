@@ -6,7 +6,7 @@ import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/sound/sound_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
-import 'package:stelaris/feature/base/chips/info_chip.dart';
+import 'package:stelaris/feature/model/model_card_content.dart';
 import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/feature/model/model_page.dart';
@@ -31,8 +31,11 @@ class SoundPage extends StatelessWidget {
       builder: (context, vm) {
         return ModelPage<SoundEventModel>(
           entry: NavigationEntry.sound,
-          mapToDataModelItem: (value) =>
-              _buildCardContent(context, vm.projectKey, value),
+          mapToDataModelItem: (value) => ModelCardContent(
+            name: value.uiName,
+            modelKey: value.key,
+            projectKey: vm.projectKey,
+          ),
           deleteTitle: context.l10n.dialog_sound_delete_title,
           deleteWarning: context.l10n.delete_dialog_related_sound,
           mapToDeleteSuccessfully: (value) {
@@ -72,41 +75,4 @@ class SoundPage extends StatelessWidget {
       },
     );
   }
-
-  /// Builds the primary card content for a [SoundEventModel]: its display
-  /// name plus its namespaced key (e.g. `manis:test`), derived client-side
-  /// from the current project's key and the model's local
-  /// [SoundEventModel.key].
-  Widget _buildCardContent(
-    BuildContext context,
-    String projectKey,
-    SoundEventModel value,
-  ) {
-    final key = value.key;
-    final namespacedKey = key != null && key.isNotEmpty
-        ? '$projectKey:$key'
-        : null;
-    final theme = Theme.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          value.uiName,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        if (namespacedKey != null) ...[
-          const SizedBox(height: 6),
-          InfoChip(icon: Icons.vpn_key_outlined, text: namespacedKey),
-        ],
-      ],
-    );
-  }
-
-  /// Opens a dialog for creating a new sound event.
 }
