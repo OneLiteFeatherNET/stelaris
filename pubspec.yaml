@@ -15,7 +15,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   url_launcher: ^6.3.3
-  go_router: ^18.1.0
+  go_router: ^18.1.1
   freezed_annotation: ^3.1.0
   dio: ^5.11.1
   dio_cache_interceptor: ^4.0.7
@@ -33,7 +33,7 @@ dependencies:
     git:
       url: https://github.com/OneLiteFeatherNET/stelaris-model.git
       ref: main
-  material_ui: ^1.7.0
+  material_ui: ^1.8.0
   oidc: ^5.0.2
   oidc_default_store: ^2.0.0
 
@@ -41,9 +41,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  build_runner: ^2.16.2
+  build_runner: ^2.17.1
   freezed: ^4.0.3
-  json_serializable: ^6.14.1
+  json_serializable: ^6.15.2
   plugin_platform_interface: ^2.1.8
   url_launcher_platform_interface: ^2.3.2
 
