@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.1](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.8.0...v1.8.1) (2026-10-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency web to ^1.1.2 ([#279](https://github.com/OneLiteFeatherNET/stelaris/issues/279)) ([310d06f](https://github.com/OneLiteFeatherNET/stelaris/commit/310d06fc2f6ff7d2d339a45efd5d7ffea7a13e46))
+* **deps:** update to Flutter 3.47.8 ([7d9fb04](https://github.com/OneLiteFeatherNET/stelaris/commit/7d9fb04991e3005aef623d7a87e21be73f5cbe36))
+
 ## [1.8.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.7.1...v1.8.0) (2026-10-20)
 
 
