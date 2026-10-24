@@ -889,10 +889,10 @@ packages:
     dependency: transitive
     description:
       name: pubspec_parse
-      sha256: c38b81cbf34450b67e0265d73433569d12e34782e30ed769c9cc99c9d5f2e796
+      sha256: "9ac81c01ffd6a9cf9b2713288834fbaaf6aebde05ffdf02d380e68b8e06f27d8"
       url: "https://pub.dev"
     source: hosted
-    version: "1.6.0"
+    version: "1.7.0"
   record_use:
     dependency: transitive
     description:
@@ -921,10 +921,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: a67a1a6a62b241ad4ddd8a97f5a12bb547c445190930233b63cd28cc0a104a76
+      sha256: "593034a16e82953ca31145db6c85174286262715f9c5e6a9d8c65ffd9fcdce09"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.1"
+    version: "2.5.3"
   shared_preferences_foundation:
     dependency: transitive
     description:
@@ -1031,7 +1031,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "58958c988b249c81f61323730a5b081ff4b0540c"
+      resolved-ref: fa28616fcc6a6d5ef129f8b83a95ce2e27bb5527
       url: "https://github.com/OneLiteFeatherNET/stelaris-model.git"
     source: git
     version: "0.0.1"
@@ -1176,7 +1176,7 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: e414954bb928c5b15a106fc35ca065586d120fbb
+      resolved-ref: "97136954e33ec442f3f515a5bfa45b3a144f8a02"
       url: "https://github.com/OneLiteFeatherNET/vulpes-minecraft-dart.git"
     source: git
     version: "1.0.0"
@@ -1269,5 +1269,5 @@ packages:
     source: hosted
     version: "3.1.4"
 sdks:
-  dart: ">=3.13.3 <4.0.0"
-  flutter: ">=3.47.7 <4.0.0"
+  dart: ">=3.13.7 <4.0.0"
+  flutter: ">=3.47.8 <4.0.0"
