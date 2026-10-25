@@ -523,7 +523,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialog_project_switch_hint =>
-      'Loaded items, fonts, advancements, attributes and sound events will be reset.';
+      'Loaded items, fonts, advancements, attributes, sound events and expressions will be reset.';
 
   @override
   String get dialog_project_switch_confirm => 'Switch project';
@@ -546,6 +546,105 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialog_expression_create => 'Create new expression';
+
+  @override
+  String get expression_section_formula => 'Formula';
+
+  @override
+  String get expression_field_expression => 'Expression';
+
+  @override
+  String get expression_hint_expression =>
+      'An EvalEx formula, e.g. a * 2 + sqrt(b). Use + - * / ^ %, functions such as MAX, MIN, ROUND or IF, and the variables declared on the Variables tab.';
+
+  @override
+  String get expression_variables_empty_header => 'No variables yet';
+
+  @override
+  String get expression_variables_empty_subheader =>
+      'Add a variable for each name the expression reads.';
+
+  @override
+  String get expression_variable_add_title => 'Add variable';
+
+  @override
+  String get expression_variable_edit_title => 'Edit variable';
+
+  @override
+  String get expression_variable_delete_title => 'Delete variable';
+
+  @override
+  String get expression_variable_name_label => 'Name';
+
+  @override
+  String get expression_variable_name_hint => 'e.g. radius';
+
+  @override
+  String get expression_variable_name_invalid =>
+      'Start with a letter or underscore, then use only letters, digits and underscores';
+
+  @override
+  String expression_variable_name_duplicate(String name) {
+    return 'A variable named $name already exists';
+  }
+
+  @override
+  String get expression_variable_type_label => 'Type';
+
+  @override
+  String get expression_variable_type_number => 'Number';
+
+  @override
+  String get expression_variable_type_boolean => 'Boolean';
+
+  @override
+  String get expression_variable_type_string => 'String';
+
+  @override
+  String get expression_variable_test_value_label => 'Test value';
+
+  @override
+  String get expression_variable_test_value_hint =>
+      'Optional, used on the Test tab';
+
+  @override
+  String get expression_variable_test_value_none => 'None';
+
+  @override
+  String get expression_variable_no_test_value => 'No test value';
+
+  @override
+  String get expression_test_section_expression => 'Expression';
+
+  @override
+  String get expression_test_section_variables => 'Variables';
+
+  @override
+  String get expression_test_no_variables =>
+      'This expression reads no variables.';
+
+  @override
+  String get expression_test_evaluate => 'Evaluate';
+
+  @override
+  String get expression_test_empty_hint =>
+      'Write an expression on the General tab to evaluate it.';
+
+  @override
+  String get expression_test_result_label => 'Result';
+
+  @override
+  String expression_test_result_type(String type) {
+    return 'Type: $type';
+  }
+
+  @override
+  String get expression_test_rejected =>
+      'The expression or a variable was rejected';
+
+  @override
+  String get expression_test_error =>
+      'The expression could not be evaluated. Try again.';
 
   @override
   String get dialog_model_key_label => 'Key';
@@ -781,7 +880,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get command_palette_mode_entities_help =>
-      'Open an item, font, sound, advancement or attribute';
+      'Open an item, font, sound, advancement, attribute or expression';
 
   @override
   String get command_palette_mode_projects => 'Projects';
@@ -856,7 +955,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get command_palette_hint_entities =>
-      'Search loaded items, fonts, sounds, advancements and attributes';
+      'Search loaded items, fonts, sounds, advancements, attributes and expressions';
 
   @override
   String command_palette_hint_kind(String kind) {

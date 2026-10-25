@@ -226,7 +226,7 @@
   "settings_project_active_title": "Active Project",
   "settings_project_empty": "No projects yet",
   "dialog_project_switch_title": "Switch project?",
-  "dialog_project_switch_hint": "Loaded items, fonts, advancements, attributes and sound events will be reset.",
+  "dialog_project_switch_hint": "Loaded items, fonts, advancements, attributes, sound events and expressions will be reset.",
   "dialog_project_switch_confirm": "Switch project",
   "dialog_project_edit_title": "Edit project",
   "dialog_project_edit_button": "Save",
@@ -234,6 +234,49 @@
   "project_selection_edit_tooltip": "Edit project",
   "dialog_sound_create": "Create new sound event",
   "dialog_expression_create": "Create new expression",
+  "expression_section_formula": "Formula",
+  "expression_field_expression": "Expression",
+  "expression_hint_expression": "An EvalEx formula, e.g. a * 2 + sqrt(b). Use + - * / ^ %, functions such as MAX, MIN, ROUND or IF, and the variables declared on the Variables tab.",
+  "expression_variables_empty_header": "No variables yet",
+  "expression_variables_empty_subheader": "Add a variable for each name the expression reads.",
+  "expression_variable_add_title": "Add variable",
+  "expression_variable_edit_title": "Edit variable",
+  "expression_variable_delete_title": "Delete variable",
+  "expression_variable_name_label": "Name",
+  "expression_variable_name_hint": "e.g. radius",
+  "expression_variable_name_invalid": "Start with a letter or underscore, then use only letters, digits and underscores",
+  "expression_variable_name_duplicate": "A variable named {name} already exists",
+  "expression_variable_type_label": "Type",
+  "expression_variable_type_number": "Number",
+  "expression_variable_type_boolean": "Boolean",
+  "expression_variable_type_string": "String",
+  "expression_variable_test_value_label": "Test value",
+  "expression_variable_test_value_hint": "Optional, used on the Test tab",
+  "expression_variable_test_value_none": "None",
+  "expression_variable_no_test_value": "No test value",
+  "expression_test_section_expression": "Expression",
+  "expression_test_section_variables": "Variables",
+  "expression_test_no_variables": "This expression reads no variables.",
+  "expression_test_evaluate": "Evaluate",
+  "expression_test_empty_hint": "Write an expression on the General tab to evaluate it.",
+  "expression_test_result_label": "Result",
+  "expression_test_result_type": "Type: {type}",
+  "expression_test_rejected": "The expression or a variable was rejected",
+  "expression_test_error": "The expression could not be evaluated. Try again.",
+  "@expression_variable_name_duplicate": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@expression_test_result_type": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "dialog_model_key_label": "Key",
   "dialog_model_key_hint": "e.g. my_entry",
   "dialog_model_name_label": "Name",
@@ -332,7 +375,7 @@
   "command_palette_mode_commands": "Commands",
   "command_palette_mode_commands_help": "Run a command",
   "command_palette_mode_entities": "Entities",
-  "command_palette_mode_entities_help": "Open an item, font, sound, advancement or attribute",
+  "command_palette_mode_entities_help": "Open an item, font, sound, advancement, attribute or expression",
   "command_palette_mode_projects": "Projects",
   "command_palette_mode_projects_help": "Switch to another project",
   "command_palette_mode_settings": "Settings",
@@ -384,7 +427,7 @@
   },
   "command_palette_remove_mode": "Leave this mode",
   "command_palette_hint_commands": "Search commands",
-  "command_palette_hint_entities": "Search loaded items, fonts, sounds, advancements and attributes",
+  "command_palette_hint_entities": "Search loaded items, fonts, sounds, advancements, attributes and expressions",
   "command_palette_hint_kind": "Search loaded {kind}",
   "@command_palette_hint_kind": {
     "placeholders": {

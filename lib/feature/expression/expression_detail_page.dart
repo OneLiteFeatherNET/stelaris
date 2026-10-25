@@ -4,6 +4,9 @@ import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/expression/expression_general_page.dart';
+import 'package:stelaris/feature/expression/expression_test_page.dart';
+import 'package:stelaris/feature/expression/expression_variables_page.dart';
 import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:stelaris/feature/model/model_detail_actions.dart';
 import 'package:stelaris/feature/model/model_detail_shell.dart';
@@ -13,7 +16,9 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// The detail view reached by tapping an expression in [ExpressionPage].
 ///
 /// Shows the shared [ModelDetailShell] header with its actions, and a
-/// `TabBar`/`TabBarView` below it. The tab bodies are placeholders for now.
+/// `TabBar`/`TabBarView` below it. Each tab reads the selected expression from
+/// Redux itself, see [ExpressionGeneralPage], [ExpressionVariablesPage] and
+/// [ExpressionTestPage].
 class ExpressionDetailPage extends StatelessWidget {
   const ExpressionDetailPage({super.key});
 
@@ -62,9 +67,9 @@ class ExpressionDetailPage extends StatelessWidget {
               const Expanded(
                 child: TabBarView(
                   children: [
-                    Center(child: Text('General')),
-                    Center(child: Text('Variables')),
-                    Center(child: Text('Test')),
+                    ExpressionGeneralPage(),
+                    ExpressionVariablesPage(),
+                    ExpressionTestPage(),
                   ],
                 ),
               ),

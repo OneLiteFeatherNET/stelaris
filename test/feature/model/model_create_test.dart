@@ -91,7 +91,10 @@ Future<(_Recorder, List<bool>)> _pump(
 
 Future<void> _submit(WidgetTester tester) async {
   await tester.enterText(find.byType(TextFormField).at(0), 'Ruby Sword');
-  await tester.enterText(find.byType(TextFormField).at(1), 'ruby_sword');
+  // Expressions have no key field, so there is only the name to fill in.
+  if (find.byType(TextFormField).evaluate().length > 1) {
+    await tester.enterText(find.byType(TextFormField).at(1), 'ruby_sword');
+  }
   // Tapping "Create" fires an AddAction, which talks to the (fake) API
   // through Dio's real Timer-guarded internals. Those don't resolve inside
   // flutter_test's fake-async zone on web, so this runs outside it, in a
@@ -139,6 +142,12 @@ void main() {
       expect(results, [true]);
     });
   }
+
+  testWidgets('a new expression is created from its name alone', (tester) async {
+    await _pump(tester, NavigationEntry.expression);
+
+    expect(find.byType(TextFormField), findsOneWidget);
+  });
 
   testWidgets('a new font is sent as a bitmap with the default height', (
     tester,
