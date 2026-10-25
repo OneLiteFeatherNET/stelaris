@@ -161,4 +161,20 @@ void main() {
     expect(adapter.lastRequest!.uri.path, '/api/project/p1/expression');
     expect(created.id, 'e1');
   });
+
+  test('catalog GETs the catalog under the base URL, not a project', () async {
+    final adapter = RecordingHttpClientAdapter({
+      'evalexVersion': '3.8.0',
+      'functions': [
+        {'name': 'ROUND', 'category': 'BASIC', 'parameters': []},
+      ],
+    });
+    apiClient.dio.httpClientAdapter = adapter;
+
+    final catalog = await expressionApi.catalog();
+
+    expect(adapter.lastRequest!.method, 'GET');
+    expect(adapter.lastRequest!.uri.path, '/api/expression/catalog');
+    expect(catalog.functions.single.name, 'ROUND');
+  });
 }

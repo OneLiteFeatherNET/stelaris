@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/api/state/model_search_state.dart';
@@ -139,6 +140,10 @@ abstract class AppState with _$AppState {
     SoundEventModel? selectedSoundEvent,
     @JsonKey(includeToJson: false, includeFromJson: false)
     ExpressionModel? selectedExpression,
+    // The EvalEx catalog for the formula editor. Loaded once per session, the
+    // same for every project, and null until it has loaded or when it failed.
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    ExpressionCatalog? expressionCatalog,
     @JsonKey(includeToJson: false, includeFromJson: false)
     ReleaseModel? releaseModel,
     @JsonKey(includeToJson: false, includeFromJson: false)

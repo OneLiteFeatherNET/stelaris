@@ -34,6 +34,9 @@ class ExpressionDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ExpressionDetailView>(
       vm: () => _ExpressionDetailFactory(),
+      // The catalog feeds the formula editor on the General tab. It is loaded
+      // once, so opening another expression does not request it again.
+      onInit: (store) => store.dispatch(LoadExpressionCatalogAction()),
       onDispose: (store) =>
           store.dispatch(RemoveSelectedExpression(), notify: false),
       builder: (context, vm) => ModelDetailShell(

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:stelaris/api/base_api.dart';
+import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 
@@ -15,6 +16,16 @@ class ExpressionClientApi extends BaseApi<ExpressionModel> {
         fromJson: ExpressionModel.fromJson,
         toJson: (model) => model.toJson(),
       );
+
+  /// Loads the EvalEx catalog: the functions, operators and constants the
+  /// backend supports. It is not project scoped, so the request goes to
+  /// `expression/catalog` under the base URL.
+  Future<ExpressionCatalog> catalog() async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/catalog');
+    final result = await apiClient.dio.getUri<Map<String, dynamic>>(uri);
+    return ExpressionCatalog.fromJson(result.data!);
+  }
 
   /// Evaluates [expression] in the project [projectId] with the values of
   /// [variables], and returns what it came to.

@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
@@ -10,6 +11,21 @@ import 'package:stelaris/feature/expression/expression_general_page.dart';
 import '../../support/pump_in_app.dart';
 
 const _suggestions = ValueKey('expression_suggestions');
+const _signature = ValueKey('expression_signature');
+
+const _catalog = ExpressionCatalog(
+  functions: [
+    CatalogFunction(
+      name: 'ROUND',
+      category: CatalogFunctionCategory.basic,
+      parameters: [
+        CatalogParameter(name: 'value'),
+        CatalogParameter(name: 'precision'),
+      ],
+    ),
+  ],
+  constants: [CatalogConstant(name: 'PI', value: '3.14159')],
+);
 
 ExpressionModel _expression({
   String text = '',
@@ -28,9 +44,13 @@ ExpressionModel _expression({
 Future<Store<AppState>> _pump(
   WidgetTester tester, {
   ExpressionModel? expression,
+  ExpressionCatalog? catalog,
 }) async {
   final store = Store<AppState>(
-    initialState: AppState(selectedExpression: expression ?? _expression()),
+    initialState: AppState(
+      selectedExpression: expression ?? _expression(),
+      expressionCatalog: catalog,
+    ),
   );
   await pumpInApp(tester, store, const ExpressionGeneralPage());
   return store;
@@ -171,5 +191,63 @@ void main() {
 
     final editable = tester.state<EditableTextState>(find.byType(EditableText));
     expect(editable.widget.focusNode.hasFocus, isTrue);
+  });
+
+  testWidgets(
+    'typing a function prefix suggests the function with its signature',
+    (tester) async {
+      await _pump(tester, catalog: _catalog);
+
+      await _type(tester, 'ro');
+
+      expect(
+        find.descendant(
+          of: find.byKey(_suggestions),
+          matching: find.text('ROUND(value, precision)'),
+        ),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets(
+    'Enter on a function stages its name with an opening parenthesis',
+    (tester) async {
+      final store = await _pump(tester, catalog: _catalog);
+      await _type(tester, 'ro');
+
+      await _key(tester, LogicalKeyboardKey.enter);
+
+      expect(store.state.selectedExpression?.expression, 'ROUND(');
+    },
+  );
+
+  testWidgets('the signature highlights the parameter after the comma', (
+    tester,
+  ) async {
+    await _pump(tester, catalog: _catalog);
+
+    await _type(tester, 'ROUND(a, ');
+
+    final signature = tester.widget<Text>(
+      find.descendant(of: find.byKey(_signature), matching: find.byType(Text)),
+    );
+    final root = signature.textSpan! as TextSpan;
+    final bold = [
+      for (final span in root.children!.cast<TextSpan>())
+        if (span.style?.fontWeight == FontWeight.bold) span.text,
+    ];
+    expect(root.toPlainText(), 'ROUND(value, precision)');
+    expect(bold, ['precision']);
+  });
+
+  testWidgets('without the catalog a function prefix suggests nothing', (
+    tester,
+  ) async {
+    await _pump(tester);
+
+    await _type(tester, 'ro');
+
+    expect(find.byKey(_suggestions), findsNothing);
   });
 }

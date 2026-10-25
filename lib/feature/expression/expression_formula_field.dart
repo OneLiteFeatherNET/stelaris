@@ -1,24 +1,32 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/feature/expression/expression_completion.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
-/// The formula as a large multi-line field. Variables of the expression are
-/// suggested while an identifier is typed, and listed as chips to insert.
-/// [onChanged] gets every new text; the field keeps its own controller, so
-/// typing does not move the caret when the store rebuilds.
+/// The formula as a large multi-line field. While an identifier is typed the
+/// variables, constants and functions it starts are suggested, and a function
+/// call shows its signature with the parameter at the caret highlighted. The
+/// variables are also listed as chips to insert. [onChanged] gets every new
+/// text; the field keeps its own controller, so typing does not move the caret
+/// when the store rebuilds.
 class ExpressionFormulaField extends StatefulWidget {
   const ExpressionFormulaField({
     required this.expression,
     required this.onChanged,
+    this.catalog,
     super.key,
   });
 
   final ExpressionModel expression;
   final ValueChanged<String> onChanged;
+
+  /// The EvalEx catalog for the constants, functions and signatures. Null
+  /// while it is not loaded: only the variables are suggested then.
+  final ExpressionCatalog? catalog;
 
   @override
   State<ExpressionFormulaField> createState() => _ExpressionFormulaFieldState();
@@ -26,7 +34,11 @@ class ExpressionFormulaField extends StatefulWidget {
 
 class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
   static const int _minLines = 8;
-  static const double _suggestionsHeight = 200;
+
+  /// Rows of the suggestion list, and how many are visible before it scrolls.
+  static const double _rowHeight = 40;
+  static const int _visibleRows = 8;
+  static const double _suggestionsHeight = _rowHeight * _visibleRows + 8;
 
   late final TextEditingController _controller;
   late final FocusNode _focusNode;
@@ -72,15 +84,39 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
     _refresh();
   }
 
-  /// The variables to suggest for the identifier before the caret, empty when
-  /// the field is not focused, nothing is typed or Escape closed the list.
-  List<ExpressionVariable> _suggestions() {
-    if (!_focusNode.hasFocus || _dismissed) return const [];
+  /// The identifier before the caret, or null when the field is not focused,
+  /// the selection is a range or no identifier ends at the caret.
+  IdentifierPrefix? _prefixAtCaret() {
+    if (!_focusNode.hasFocus) return null;
     final value = _controller.value;
-    if (!value.selection.isCollapsed) return const [];
-    final prefix = identifierPrefixAt(value.text, value.selection.baseOffset);
+    if (!value.selection.isCollapsed) return null;
+    return identifierPrefixAt(value.text, value.selection.baseOffset);
+  }
+
+  /// The suggestions for the identifier before the caret, empty when the
+  /// field is not focused, nothing is typed or Escape closed the list.
+  List<FormulaSuggestion> _suggestions() {
+    if (_dismissed) return const [];
+    final prefix = _prefixAtCaret();
     if (prefix == null) return const [];
-    return variableSuggestions(widget.expression.variables, prefix.text);
+    return formulaSuggestions(
+      prefix: prefix.text,
+      variables: widget.expression.variables,
+      catalog: widget.catalog,
+    );
+  }
+
+  /// The signature of the function call the caret is in, if any. Shown while
+  /// the field has focus, also after Escape closed the suggestions.
+  SignatureHelp? _signature() {
+    if (!_focusNode.hasFocus) return null;
+    final value = _controller.value;
+    if (!value.selection.isCollapsed) return null;
+    return signatureHelpAt(
+      value.text,
+      value.selection.baseOffset,
+      widget.catalog,
+    );
   }
 
   KeyEventResult _handleKey(FocusNode node, KeyEvent event) {
@@ -115,20 +151,20 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
   }
 
   /// The highlight, kept inside [matches] when the list has shrunk.
-  int _index(List<ExpressionVariable> matches) =>
+  int _index(List<FormulaSuggestion> matches) =>
       _highlight < matches.length ? _highlight : 0;
 
-  /// Completes the identifier before the caret to [variable].
-  void _accept(ExpressionVariable variable) {
+  /// Completes the identifier before the caret to [suggestion].
+  void _accept(FormulaSuggestion suggestion) {
     final value = _controller.value;
     final prefix = identifierPrefixAt(value.text, value.selection.baseOffset);
     if (prefix == null) return;
     _apply(
-      completeVariable(
+      completeSuggestion(
         value.text,
         prefix,
         value.selection.baseOffset,
-        variable.name,
+        suggestion,
       ),
     );
   }
@@ -161,6 +197,7 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
     );
     final variables = widget.expression.variables;
     final matches = _suggestions();
+    final signature = _signature();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -180,12 +217,20 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
           ),
           onChanged: widget.onChanged,
         ),
+        if (signature != null) ...[
+          const SizedBox(height: 4),
+          _SignaturePanel(
+            key: const ValueKey('expression_signature'),
+            help: signature,
+          ),
+        ],
         if (matches.isNotEmpty) ...[
           const SizedBox(height: 4),
           _SuggestionList(
             key: const ValueKey('expression_suggestions'),
             matches: matches,
             highlight: _index(matches),
+            rowHeight: _rowHeight,
             maxHeight: _suggestionsHeight,
             onSelected: _accept,
           ),
@@ -223,22 +268,63 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
   }
 }
 
-/// The suggestions below the field: a name and its type per row, the
-/// [highlight]ed one shaded. Rows do not take focus, so the field keeps it
-/// while a row is tapped.
+/// The signature of the function the caret is in, with the parameter at the
+/// caret in bold. Its text is the signature, so it reads the same in any
+/// language.
+class _SignaturePanel extends StatelessWidget {
+  const _SignaturePanel({required this.help, super.key});
+
+  final SignatureHelp help;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final monospace = theme.textTheme.bodyMedium?.copyWith(
+      fontFamily: 'monospace',
+    );
+    final labels = help.labels;
+    final spans = <TextSpan>[TextSpan(text: '${help.function.name}(')];
+    for (var i = 0; i < labels.length; i++) {
+      if (i > 0) spans.add(const TextSpan(text: ', '));
+      spans.add(
+        TextSpan(
+          text: labels[i],
+          style: i == help.highlighted
+              ? const TextStyle(fontWeight: FontWeight.bold)
+              : null,
+        ),
+      );
+    }
+    spans.add(const TextSpan(text: ')'));
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(AppShapes.small),
+      ),
+      child: Text.rich(TextSpan(style: monospace, children: spans)),
+    );
+  }
+}
+
+/// The suggestions below the field, one row each: the name or signature, and
+/// what kind it is. The [highlight]ed row is shaded. Rows do not take focus,
+/// so the field keeps it while a row is tapped.
 class _SuggestionList extends StatelessWidget {
   const _SuggestionList({
     required this.matches,
     required this.highlight,
+    required this.rowHeight,
     required this.maxHeight,
     required this.onSelected,
     super.key,
   });
 
-  final List<ExpressionVariable> matches;
+  final List<FormulaSuggestion> matches;
   final int highlight;
+  final double rowHeight;
   final double maxHeight;
-  final ValueChanged<ExpressionVariable> onSelected;
+  final ValueChanged<FormulaSuggestion> onSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -246,6 +332,9 @@ class _SuggestionList extends StatelessWidget {
     final theme = Theme.of(context);
     final monospace = theme.textTheme.bodyMedium?.copyWith(
       fontFamily: 'monospace',
+    );
+    final kindStyle = theme.textTheme.labelMedium?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
     );
     return Material(
       elevation: 2,
@@ -259,27 +348,42 @@ class _SuggestionList extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 4),
           itemCount: matches.length,
           itemBuilder: (context, index) {
-            final variable = matches[index];
+            final suggestion = matches[index];
+            final (label, kind) = switch (suggestion) {
+              VariableSuggestion(:final variable) => (
+                variable.name,
+                expressionVariableTypeLabel(l10n, variable.type),
+              ),
+              ConstantSuggestion(:final constant) => (
+                constant.name,
+                l10n.expression_suggestion_constant(constant.value),
+              ),
+              FunctionSuggestion(:final function) => (
+                functionSignature(function),
+                l10n.expression_suggestion_function,
+              ),
+            };
             return InkWell(
               canRequestFocus: false,
-              onTap: () => onSelected(variable),
+              onTap: () => onSelected(suggestion),
               child: Container(
+                height: rowHeight,
                 color: index == highlight
                     ? theme.colorScheme.secondaryContainer
                     : null,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 10,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
-                    Expanded(child: Text(variable.name, style: monospace)),
-                    Text(
-                      expressionVariableTypeLabel(l10n, variable.type),
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
+                    Expanded(
+                      child: Text(
+                        label,
+                        style: monospace,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    const SizedBox(width: 12),
+                    Text(kind, style: kindStyle),
                   ],
                 ),
               ),
