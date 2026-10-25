@@ -177,4 +177,52 @@ void main() {
     expect(adapter.lastRequest!.uri.path, '/api/expression/catalog');
     expect(catalog.functions.single.name, 'ROUND');
   });
+
+  test(
+    'validate POSTs the expression and the declared names to the project',
+    () async {
+      final adapter = RecordingHttpClientAdapter({
+        'valid': true,
+        'errors': <Object>[],
+        'usedVariables': <Object>[],
+        'undefinedVariables': <Object>[],
+        'unusedVariables': <Object>[],
+      });
+      apiClient.dio.httpClientAdapter = adapter;
+
+      await expressionApi.validate('p1', 'radius * 2', ['radius', 'height']);
+
+      expect(adapter.lastRequest!.method, 'POST');
+      expect(
+        adapter.lastRequest!.uri.path,
+        '/api/project/p1/expression/validate',
+      );
+      expect(adapter.lastRequest!.data, {
+        'expression': 'radius * 2',
+        'variables': ['radius', 'height'],
+      });
+    },
+  );
+
+  test('validate parses every field of the answer', () async {
+    apiClient.dio.httpClientAdapter = RecordingHttpClientAdapter({
+      'valid': false,
+      'errors': [
+        {'message': 'Unexpected end of formula', 'start': 4, 'end': 9},
+      ],
+      'usedVariables': ['radius'],
+      'undefinedVariables': ['b'],
+      'unusedVariables': ['height'],
+    });
+
+    final validation = await expressionApi.validate('p1', 'x * (', ['height']);
+
+    expect(validation.valid, isFalse);
+    expect(validation.errors.single.message, 'Unexpected end of formula');
+    expect(validation.errors.single.start, 4);
+    expect(validation.errors.single.end, 9);
+    expect(validation.usedVariables, ['radius']);
+    expect(validation.undefinedVariables, ['b']);
+    expect(validation.unusedVariables, ['height']);
+  });
 }

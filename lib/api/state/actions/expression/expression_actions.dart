@@ -2,7 +2,9 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/foundation.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/expression_model.dart';
+import 'package:stelaris/api/model/expression_validation_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/expression_validation_state.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/api/state/actions/paginated_loading.dart';
@@ -15,7 +17,7 @@ class SelectExpressionAction extends ReduxAction<AppState> {
 
   @override
   AppState reduce() => state
-      .copyWith(selectedExpression: model)
+      .copyWith(selectedExpression: model, expressionValidation: null)
       .clearUnsavedChanges(NavigationEntry.expression);
 }
 
@@ -24,7 +26,7 @@ class RemoveSelectedExpression extends ReduxAction<AppState> {
   AppState? reduce() {
     if (state.selectedExpression == null) return null;
     return state
-        .copyWith(selectedExpression: null)
+        .copyWith(selectedExpression: null, expressionValidation: null)
         .clearUnsavedChanges(NavigationEntry.expression);
   }
 }
@@ -118,6 +120,7 @@ class ExpressionAddAction extends ReduxAction<AppState> with NonReentrant {
     return state.copyWith(
       expressions: state.expressions.adding(databaseModel),
       selectedExpression: databaseModel,
+      expressionValidation: null,
     );
   }
 }
@@ -182,6 +185,66 @@ class ExpressionNotesUpdateAction extends ReduxAction<AppState>
       selectedExpression: selected?.id == response.id
           ? selected!.copyWith(comment: response.comment)
           : selected,
+    );
+  }
+}
+
+/// Asks the backend whether the selected formula [expression] parses and which
+/// of the declared [variables] (their names) it reads. Typing dispatches it
+/// on every change, so [Debounce] keeps only the last dispatch of a burst.
+///
+/// The answer is stored only while the selection still has this text and these
+/// variables; an answer that arrives after either changed is dropped. A failed
+/// request clears the check without a message: the editor just shows no check.
+/// Nothing is asked without a selected project, as the endpoint is project
+/// scoped.
+class ValidateExpressionAction extends ReduxAction<AppState> with Debounce {
+  ValidateExpressionAction(
+    this.expression,
+    this.variables, {
+    this.debounceDelay = const Duration(milliseconds: 400),
+  });
+
+  final String expression;
+  final List<String> variables;
+
+  /// The pause in typing before the check is asked. Tests pass [Duration.zero]
+  /// when the debounce itself is not what they check.
+  final Duration debounceDelay;
+
+  @override
+  int get debounce => debounceDelay.inMilliseconds;
+
+  /// Whether the selection still has the text and variables this asks about.
+  bool get _current {
+    final selected = state.selectedExpression;
+    return selected != null &&
+        selected.expression == expression &&
+        listEquals(variableNames(selected), variables);
+  }
+
+  @override
+  Future<AppState?> reduce() async {
+    final projectId = state.selectedProject?.id;
+    if (projectId == null || !_current) return null;
+    final ExpressionValidation validation;
+    try {
+      validation = await ApiService().expressionApi.validate(
+        projectId,
+        expression,
+        variables,
+      );
+    } catch (_) {
+      if (!_current || state.expressionValidation == null) return null;
+      return state.copyWith(expressionValidation: null);
+    }
+    if (!_current) return null;
+    return state.copyWith(
+      expressionValidation: ExpressionValidationState(
+        expression: expression,
+        variables: variables,
+        validation: validation,
+      ),
     );
   }
 }
