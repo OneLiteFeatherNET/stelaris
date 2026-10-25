@@ -292,6 +292,12 @@ abstract class AppLocalizations {
   /// **'Delete sound event'**
   String get dialog_sound_delete_title;
 
+  /// No description provided for @dialog_expression_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete expression'**
+  String get dialog_expression_delete_title;
+
   /// No description provided for @dialog_attribute_create.
   ///
   /// In en, this message translates to:
@@ -483,6 +489,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Entries'**
   String get tab_entries;
+
+  /// No description provided for @tab_variables.
+  ///
+  /// In en, this message translates to:
+  /// **'Variables'**
+  String get tab_variables;
+
+  /// No description provided for @tab_test.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get tab_test;
 
   /// No description provided for @card_material.
   ///
@@ -1072,6 +1090,12 @@ abstract class AppLocalizations {
   /// **'Create new sound event'**
   String get dialog_sound_create;
 
+  /// No description provided for @dialog_expression_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new expression'**
+  String get dialog_expression_create;
+
   /// No description provided for @dialog_model_key_label.
   ///
   /// In en, this message translates to:
@@ -1570,6 +1594,12 @@ abstract class AppLocalizations {
   /// **'Sounds'**
   String get command_palette_kind_sounds;
 
+  /// No description provided for @command_palette_kind_expressions.
+  ///
+  /// In en, this message translates to:
+  /// **'Expressions'**
+  String get command_palette_kind_expressions;
+
   /// No description provided for @command_palette_kind_advancements.
   ///
   /// In en, this message translates to:
@@ -1804,6 +1834,12 @@ abstract class AppLocalizations {
   /// **'New sound'**
   String get command_create_sound;
 
+  /// No description provided for @command_create_expression.
+  ///
+  /// In en, this message translates to:
+  /// **'New expression'**
+  String get command_create_expression;
+
   /// No description provided for @command_create_advancement.
   ///
   /// In en, this message translates to:
@@ -1851,6 +1887,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete this sound…'**
   String get command_delete_this_sound;
+
+  /// No description provided for @command_delete_this_expression.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this expression…'**
+  String get command_delete_this_expression;
 
   /// No description provided for @command_delete_this_advancement.
   ///

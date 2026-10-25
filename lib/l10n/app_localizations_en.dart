@@ -116,6 +116,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_sound_delete_title => 'Delete sound event';
 
   @override
+  String get dialog_expression_delete_title => 'Delete expression';
+
+  @override
   String get dialog_attribute_create => 'Create attribute';
 
   @override
@@ -219,6 +222,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tab_entries => 'Entries';
+
+  @override
+  String get tab_variables => 'Variables';
+
+  @override
+  String get tab_test => 'Test';
 
   @override
   String get card_material => 'Material';
@@ -536,6 +545,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_sound_create => 'Create new sound event';
 
   @override
+  String get dialog_expression_create => 'Create new expression';
+
+  @override
   String get dialog_model_key_label => 'Key';
 
   @override
@@ -797,6 +809,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command_palette_kind_sounds => 'Sounds';
 
   @override
+  String get command_palette_kind_expressions => 'Expressions';
+
+  @override
   String get command_palette_kind_advancements => 'Advancements';
 
   @override
@@ -934,6 +949,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command_create_sound => 'New sound';
 
   @override
+  String get command_create_expression => 'New expression';
+
+  @override
   String get command_create_advancement => 'New advancement';
 
   @override
@@ -956,6 +974,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get command_delete_this_sound => 'Delete this sound…';
+
+  @override
+  String get command_delete_this_expression => 'Delete this expression…';
 
   @override
   String get command_delete_this_advancement => 'Delete this advancement…';

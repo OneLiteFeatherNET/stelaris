@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/api/state/model_search_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
@@ -70,6 +71,17 @@ abstract class AppState with _$AppState {
       ),
     )
     PaginatedResult<SoundEventModel> soundEvents,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(
+      PaginatedResult<ExpressionModel>(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+    )
+    PaginatedResult<ExpressionModel> expressions,
 
     // ── Transiente Loading-Flags ──
     @JsonKey(includeToJson: false, includeFromJson: false)
@@ -87,6 +99,9 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingMoreSoundEvents,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool isLoadingMoreExpressions,
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingRelease,
@@ -122,6 +137,8 @@ abstract class AppState with _$AppState {
     AttributeModel? selectedAttribute,
     @JsonKey(includeToJson: false, includeFromJson: false)
     SoundEventModel? selectedSoundEvent,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    ExpressionModel? selectedExpression,
     @JsonKey(includeToJson: false, includeFromJson: false)
     ReleaseModel? releaseModel,
     @JsonKey(includeToJson: false, includeFromJson: false)

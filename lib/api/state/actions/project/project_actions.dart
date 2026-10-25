@@ -48,11 +48,19 @@ class SelectProjectAction extends ReduxAction<AppState> {
         currentPage: 1,
         pageSize: 0,
       ),
+      expressions: const PaginatedResult(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
       selectedItem: null,
       selectedFont: null,
       selectedAdvancement: null,
       selectedAttribute: null,
       selectedSoundEvent: null,
+      selectedExpression: null,
       unsavedChanges: null,
     );
   }

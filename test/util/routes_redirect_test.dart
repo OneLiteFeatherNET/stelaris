@@ -5,6 +5,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/actions/advancement_actions.dart';
+import 'package:stelaris/api/model/expression_model.dart';
+import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -44,6 +46,13 @@ final _detailCases = [
     listPath: '/sound',
     redirect: soundDetailRedirect,
     selectAction: () => SelectSoundAction(SoundEventModel(uiName: 'Test')),
+  ),
+  _DetailRedirectCase(
+    name: 'expressionDetailRedirect',
+    listPath: '/expression',
+    redirect: expressionDetailRedirect,
+    selectAction: () =>
+        SelectExpressionAction(const ExpressionModel(uiName: 'Test')),
   ),
   _DetailRedirectCase(
     name: 'advancementDetailRedirect',

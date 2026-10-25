@@ -27,6 +27,12 @@ enum NavigationEntry {
     '/sound',
     StelarisIcons.noteBlockOutlined,
     StelarisIcons.noteBlock,
+  ),
+  expression(
+    'Expressions',
+    '/expression',
+    Icons.functions_outlined,
+    Icons.functions,
   );
 
   final String display;
