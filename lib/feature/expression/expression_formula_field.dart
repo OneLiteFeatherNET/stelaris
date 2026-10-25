@@ -3,16 +3,21 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/feature/expression/expression_completion.dart';
+import 'package:stelaris/feature/expression/expression_formula_controller.dart';
+import 'package:stelaris/feature/expression/expression_function_sidebar.dart';
+import 'package:stelaris/feature/expression/expression_operator_toolbar.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
-/// The formula as a large multi-line field. While an identifier is typed the
-/// variables, constants and functions it starts are suggested, and a function
-/// call shows its signature with the parameter at the caret highlighted. The
-/// variables are also listed as chips to insert. [onChanged] gets every new
-/// text; the field keeps its own controller, so typing does not move the caret
-/// when the store rebuilds.
+/// The formula as a large multi-line field, with an operator toolbar above it
+/// and, beside it on wide layouts (below it on narrow ones), the functions and
+/// constants to browse. While an identifier is typed the variables, constants
+/// and functions it starts are suggested, and a function call shows its
+/// signature with the parameter at the caret highlighted. The variables are
+/// also listed as chips to insert. The text is colored by token. [onChanged]
+/// gets every new text; the field keeps its own controller, so typing does not
+/// move the caret when the store rebuilds.
 class ExpressionFormulaField extends StatefulWidget {
   const ExpressionFormulaField({
     required this.expression,
@@ -35,12 +40,16 @@ class ExpressionFormulaField extends StatefulWidget {
 class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
   static const int _minLines = 8;
 
+  /// From this width the functions sidebar sits beside the editor.
+  static const double _wideLayoutWidth = 1000;
+  static const double _sidebarWidth = 300;
+
   /// Rows of the suggestion list, and how many are visible before it scrolls.
   static const double _rowHeight = 40;
   static const int _visibleRows = 8;
   static const double _suggestionsHeight = _rowHeight * _visibleRows + 8;
 
-  late final TextEditingController _controller;
+  late final ExpressionFormulaController _controller;
   late final FocusNode _focusNode;
 
   /// The highlighted suggestion, moved with the arrow keys.
@@ -52,8 +61,10 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.expression.expression)
-      ..addListener(_onControllerChanged);
+    _controller = ExpressionFormulaController(
+      text: widget.expression.expression,
+    )..addListener(_onControllerChanged);
+    _controller.setNames(catalog: widget.catalog, variables: _variableNames());
     // The focus node handles keys before the text field's own shortcuts do,
     // so Enter, Tab and the arrows can be taken while suggestions are open.
     _focusNode = FocusNode(onKeyEvent: _handleKey)..addListener(_refresh);
@@ -62,12 +73,36 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
   @override
   void didUpdateWidget(ExpressionFormulaField oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Another expression was selected: show its formula. Otherwise the
-    // controller keeps the text the user is editing.
+    _controller.setNames(catalog: widget.catalog, variables: _variableNames());
+    final text = widget.expression.expression;
+    // Another expression was selected, or the store's text no longer matches
+    // the field (e.g. unsaved changes were discarded). Typing stages the same
+    // text, so it never matches the store as a change and the caret stays.
     if (oldWidget.expression.id != widget.expression.id) {
-      _controller.value = TextEditingValue(text: widget.expression.expression);
+      _controller.value = TextEditingValue(text: text);
+    } else if (text != _controller.text) {
+      _replaceText(text);
     }
   }
+
+  /// Shows [text] and keeps the caret where it was, clamped to the new text.
+  void _replaceText(String text) {
+    final selection = _controller.selection;
+    final base = selection.isValid
+        ? selection.baseOffset.clamp(0, text.length)
+        : text.length;
+    final extent = selection.isValid
+        ? selection.extentOffset.clamp(0, text.length)
+        : text.length;
+    _controller.value = TextEditingValue(
+      text: text,
+      selection: TextSelection(baseOffset: base, extentOffset: extent),
+    );
+  }
+
+  List<String> _variableNames() => [
+    for (final variable in widget.expression.variables) variable.name,
+  ];
 
   @override
   void dispose() {
@@ -169,15 +204,31 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
     );
   }
 
-  /// Inserts [name] in place of the selection, or at the caret when nothing
-  /// is selected.
-  void _insert(String name) {
+  /// Edits the selection, or the caret when nothing is selected (the text end
+  /// when the caret was never placed). [build] gets the text and the range.
+  void _edit(FormulaEdit Function(String text, int start, int end) build) {
     final value = _controller.value;
     final selection = value.selection;
     final start = selection.isValid ? selection.start : value.text.length;
     final end = selection.isValid ? selection.end : value.text.length;
-    _apply(replaceFormulaRange(value.text, start, end, name));
+    _apply(build(value.text, start, end));
   }
+
+  void _insert(String name) =>
+      _edit((text, start, end) => replaceFormulaRange(text, start, end, name));
+
+  void _insertFunction(CatalogFunction function) => _edit(
+    (text, start, end) => insertFunctionCall(text, start, end, function.name),
+  );
+
+  void _insertOperator(OperatorSymbol operator) =>
+      _edit((text, start, end) => insertOperator(text, start, end, operator));
+
+  void _insertPunctuation(String symbol) => _edit(
+    (text, start, end) => symbol == ','
+        ? replaceFormulaRange(text, start, end, ',')
+        : insertParenthesis(text, start, end, open: symbol == '('),
+  );
 
   void _apply(FormulaEdit edit) {
     _controller.value = TextEditingValue(
@@ -198,10 +249,17 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
     final variables = widget.expression.variables;
     final matches = _suggestions();
     final signature = _signature();
-    return Column(
+    final editor = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        ExpressionOperatorToolbar(
+          catalog: widget.catalog,
+          onOperator: _insertOperator,
+          onPunctuation: _insertPunctuation,
+        ),
+        const SizedBox(height: 8),
         TextField(
+          key: const ValueKey('expression_formula_text'),
           controller: _controller,
           focusNode: _focusNode,
           style: monospace,
@@ -264,6 +322,29 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
             ],
           ),
       ],
+    );
+    final sidebar = ExpressionFunctionSidebar(
+      catalog: widget.catalog,
+      onFunction: _insertFunction,
+      onConstant: (constant) => _insert(constant.name),
+    );
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= _wideLayoutWidth) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: editor),
+              const SizedBox(width: 24),
+              SizedBox(width: _sidebarWidth, child: sidebar),
+            ],
+          );
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [editor, const SizedBox(height: 24), sidebar],
+        );
+      },
     );
   }
 }
