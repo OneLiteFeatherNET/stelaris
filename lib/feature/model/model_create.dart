@@ -41,6 +41,8 @@ Future<bool> openModelCreateDialog(
           NavigationEntry.attributes => l10n.dialog_attribute_create,
         },
         projectNamespace: projectKey,
+        // Expressions have no key, so the dialog asks for none.
+        askKey: entry != NavigationEntry.expression,
         onSubmit: (name, key) async {
           final ReduxAction<AppState> action = switch (entry) {
             NavigationEntry.items => ItemAddAction(
@@ -57,7 +59,6 @@ Future<bool> openModelCreateDialog(
             NavigationEntry.sound => SoundAddAction(
               SoundEventModel(uiName: name, key: key),
             ),
-            // Expressions have no key: the one the dialog takes is not kept.
             NavigationEntry.expression => ExpressionAddAction(
               ExpressionModel(uiName: name, expression: ''),
             ),

@@ -9,6 +9,7 @@ void main() {
       WidgetTester tester, {
       required void Function(String name, String key) onSubmit,
       String projectNamespace = 'my_project',
+      bool askKey = true,
     }) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -23,6 +24,7 @@ void main() {
                     title: 'Create Item',
                     projectNamespace: projectNamespace,
                     onSubmit: onSubmit,
+                    askKey: askKey,
                   ),
                 ),
                 child: const Text('Open Dialog'),
@@ -48,6 +50,40 @@ void main() {
       expect(find.text('my_project:<key>'), findsOneWidget);
       expect(find.text('Cancel'), findsOneWidget);
       expect(find.text('Create'), findsOneWidget);
+    });
+
+    testWidgets('without askKey there is no key field and no key preview', (
+      tester,
+    ) async {
+      await pumpDialog(
+        tester,
+        askKey: false,
+        onSubmit: (name, key) {},
+      );
+
+      expect(find.byType(TextFormField), findsOneWidget);
+      expect(find.text('NamespacedKey Preview'), findsNothing);
+      expect(find.text('my_project:<key>'), findsNothing);
+    });
+
+    testWidgets('without askKey submits the name with an empty key', (tester) async {
+      String? submittedName;
+      String? submittedKey;
+
+      await pumpDialog(
+        tester,
+        askKey: false,
+        onSubmit: (name, key) {
+          submittedName = name;
+          submittedKey = key;
+        },
+      );
+      await tester.enterText(find.byType(TextFormField), 'Ruby Sword');
+      await tester.tap(find.text('Create'));
+      await tester.pump();
+
+      expect(submittedName, 'Ruby Sword');
+      expect(submittedKey, '');
     });
 
     testWidgets('typing in key field updates preview in real time', (tester) async {
