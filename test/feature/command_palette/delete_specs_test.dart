@@ -5,7 +5,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/feature/command_palette/delete_specs.dart';
+import 'package:stelaris/feature/expression/expression_detail_page.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
 import 'package:stelaris/feature/model/model_detail_actions.dart';
@@ -95,6 +97,13 @@ void main() {
         selectedSoundEvent: SoundEventModel(uiName: 'Bang', id: 's1'),
       ),
       soundDelete,
+    ),
+    'expression': (
+      const ExpressionDetailPage(),
+      const AppState(
+        selectedExpression: ExpressionModel(uiName: 'Formula', id: 'x1'),
+      ),
+      expressionDelete,
     ),
     'advancement': (
       const AdvancementDetailPage(),

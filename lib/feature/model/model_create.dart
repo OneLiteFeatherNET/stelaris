@@ -1,9 +1,11 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/actions/advancement_actions.dart';
+import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
@@ -34,6 +36,7 @@ Future<bool> openModelCreateDialog(
           NavigationEntry.items => l10n.dialog_item_create,
           NavigationEntry.font => l10n.dialog_font_create_title,
           NavigationEntry.sound => l10n.dialog_sound_create,
+          NavigationEntry.expression => l10n.dialog_expression_create,
           NavigationEntry.advancements => l10n.dialog_advancement_create,
           NavigationEntry.attributes => l10n.dialog_attribute_create,
         },
@@ -53,6 +56,10 @@ Future<bool> openModelCreateDialog(
             ),
             NavigationEntry.sound => SoundAddAction(
               SoundEventModel(uiName: name, key: key),
+            ),
+            // Expressions have no key: the one the dialog takes is not kept.
+            NavigationEntry.expression => ExpressionAddAction(
+              ExpressionModel(uiName: name, expression: ''),
             ),
             NavigationEntry.advancements => AdvancementAddAction(
               AdvancementModel(uiName: name, key: key),

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/util/navigation.dart';
 
@@ -37,10 +38,19 @@ void main() {
     });
 
     test('all icons come from the StelarisIcons font', () {
-      for (final entry in NavigationEntry.values) {
+      // Expressions have no glyph in that font yet, so they use Material's
+      // function icon; the font itself is not changed for them.
+      for (final entry in NavigationEntry.values.where(
+        (entry) => entry != NavigationEntry.expression,
+      )) {
         expect(entry.data.fontFamily, 'StelarisIcons', reason: entry.name);
         expect(entry.selected.fontFamily, 'StelarisIcons', reason: entry.name);
       }
+    });
+
+    test('expressions use the Material function icon', () {
+      expect(NavigationEntry.expression.data, Icons.functions_outlined);
+      expect(NavigationEntry.expression.selected, Icons.functions);
     });
   });
 }

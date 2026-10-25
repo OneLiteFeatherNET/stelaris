@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/command_palette/command.dart';
 import 'package:stelaris/feature/command_palette/command_registry.dart';
@@ -42,6 +43,9 @@ void main() {
     ]),
     soundEvents: page([SoundEventModel(uiName: 'Stone Break', id: 's1')]),
     attributes: page(const [AttributeModel(uiName: 'Max Mana', id: 'a1')]),
+    expressions: page(const [
+      ExpressionModel(uiName: 'Damage Formula', id: 'x1'),
+    ]),
   );
 
   PaletteResults resolve(
@@ -109,6 +113,12 @@ void main() {
       expect(titles(results), isNot(contains('Stone Pickaxe')));
     });
 
+    test('#formula restricts to expressions', () {
+      final results = resolve('#formula');
+      expect(titles(results), contains('Damage Formula'));
+      expect(titles(results), isNot(contains('Stone Pickaxe')));
+    });
+
     test('a bare # lists every loaded entity with its kind', () {
       final results = resolve('#');
       expect(
@@ -166,6 +176,7 @@ void main() {
         'nav.advancements',
         'nav.font',
         'nav.sound',
+        'nav.expression',
         'nav.projects',
       ]);
     });
@@ -223,6 +234,7 @@ void main() {
         'nav.advancements',
         'nav.font',
         'nav.sound',
+        'nav.expression',
         'nav.projects',
       ]);
       final font = results.entries.firstWhere((e) => e.id == 'nav.font');
@@ -350,6 +362,12 @@ void main() {
 
     test('attributes and advancements step into Delete alone', () {
       expect(childrenOf('Max Mana', everyKind), ['Delete\u2026']);
+      expect(childrenOf('Damage Formula', everyKind), [
+        'General',
+        'Variables',
+        'Test',
+        'Delete\u2026',
+      ]);
       expect(childrenOf('Quest Done', everyKind), ['Delete\u2026']);
     });
   });
@@ -368,6 +386,7 @@ void main() {
         'create.items',
         'create.font',
         'create.sound',
+        'create.expression',
         'create.advancements',
         'create.attributes',
       ];
