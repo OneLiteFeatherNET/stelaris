@@ -565,6 +565,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'No variables yet. Declare them on the Variables tab to insert and suggest them here.';
 
   @override
+  String expression_suggestion_constant(String value) {
+    return 'Constant $value';
+  }
+
+  @override
+  String get expression_suggestion_function => 'Function';
+
+  @override
   String get expression_variables_empty_header => 'No variables yet';
 
   @override

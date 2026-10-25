@@ -1,7 +1,8 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/model/expression_catalog_model.dart';
+import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/api/state/factory/expression/selected_expression_state.dart';
 import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
 import 'package:stelaris/feature/expression/expression_formula_field.dart';
 import 'package:stelaris/feature/expression/expression_stage.dart';
@@ -15,8 +16,8 @@ class ExpressionGeneralPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, SelectedExpressionView>(
-      vm: () => SelectedExpressionState(),
+    return StoreConnector<AppState, _ExpressionGeneralView>(
+      vm: () => _ExpressionGeneralFactory(),
       builder: (context, vm) {
         final expression = vm.selected;
         return ListView(
@@ -26,6 +27,7 @@ class ExpressionGeneralPage extends StatelessWidget {
             const SizedBox(height: 8),
             ExpressionFormulaField(
               expression: expression,
+              catalog: vm.catalog,
               onChanged: (value) => stageExpression(
                 context,
                 expression.copyWith(expression: value),
@@ -36,4 +38,21 @@ class ExpressionGeneralPage extends StatelessWidget {
       },
     );
   }
+}
+
+class _ExpressionGeneralView extends Vm {
+  _ExpressionGeneralView({required this.selected, required this.catalog})
+    : super(equals: [selected, catalog]);
+
+  final ExpressionModel selected;
+  final ExpressionCatalog? catalog;
+}
+
+class _ExpressionGeneralFactory
+    extends VmFactory<AppState, ExpressionGeneralPage, _ExpressionGeneralView> {
+  @override
+  _ExpressionGeneralView fromStore() => _ExpressionGeneralView(
+    selected: state.selectedExpression!,
+    catalog: state.expressionCatalog,
+  );
 }

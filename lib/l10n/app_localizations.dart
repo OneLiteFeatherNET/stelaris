@@ -1126,6 +1126,18 @@ abstract class AppLocalizations {
   /// **'No variables yet. Declare them on the Variables tab to insert and suggest them here.'**
   String get expression_formula_variables_empty;
 
+  /// No description provided for @expression_suggestion_constant.
+  ///
+  /// In en, this message translates to:
+  /// **'Constant {value}'**
+  String expression_suggestion_constant(String value);
+
+  /// No description provided for @expression_suggestion_function.
+  ///
+  /// In en, this message translates to:
+  /// **'Function'**
+  String get expression_suggestion_function;
+
   /// No description provided for @expression_variables_empty_header.
   ///
   /// In en, this message translates to:

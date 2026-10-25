@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:flutter/foundation.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -182,6 +183,25 @@ class ExpressionNotesUpdateAction extends ReduxAction<AppState>
           ? selected!.copyWith(comment: response.comment)
           : selected,
     );
+  }
+}
+
+/// Loads the EvalEx catalog once. Dispatched when an expression opens; a
+/// catalog already loaded is kept and nothing is requested again. A failure
+/// is logged and leaves the catalog null, so the formula editor simply offers
+/// no functions or constants, without an error.
+class LoadExpressionCatalogAction extends ReduxAction<AppState>
+    with NonReentrant {
+  @override
+  Future<AppState?> reduce() async {
+    if (state.expressionCatalog != null) return null;
+    try {
+      final catalog = await ApiService().expressionApi.catalog();
+      return state.copyWith(expressionCatalog: catalog);
+    } catch (error) {
+      debugPrint('Error loading the expression catalog: $error');
+      return null;
+    }
   }
 }
 
