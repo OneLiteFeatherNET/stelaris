@@ -1114,6 +1114,18 @@ abstract class AppLocalizations {
   /// **'An EvalEx formula, e.g. a * 2 + sqrt(b). Use + - * / ^ %, comparisons, && || ! for logic (not and/or), functions such as MAX, MIN, ROUND or IF, and the variables declared on the Variables tab.'**
   String get expression_hint_expression;
 
+  /// No description provided for @expression_formula_variables_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert a variable'**
+  String get expression_formula_variables_label;
+
+  /// No description provided for @expression_formula_variables_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No variables yet. Declare them on the Variables tab to insert and suggest them here.'**
+  String get expression_formula_variables_empty;
+
   /// No description provided for @expression_variables_empty_header.
   ///
   /// In en, this message translates to:
