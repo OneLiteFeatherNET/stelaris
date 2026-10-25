@@ -236,7 +236,7 @@
   "dialog_expression_create": "Create new expression",
   "expression_section_formula": "Formula",
   "expression_field_expression": "Expression",
-  "expression_hint_expression": "An EvalEx formula, e.g. a * 2 + sqrt(b). Use + - * / ^ %, functions such as MAX, MIN, ROUND or IF, and the variables declared on the Variables tab.",
+  "expression_hint_expression": "An EvalEx formula, e.g. a * 2 + sqrt(b). Use + - * / ^ %, comparisons, && || ! for logic (not and/or), functions such as MAX, MIN, ROUND or IF, and the variables declared on the Variables tab.",
   "expression_variables_empty_header": "No variables yet",
   "expression_variables_empty_subheader": "Add a variable for each name the expression reads.",
   "expression_variable_add_title": "Add variable",

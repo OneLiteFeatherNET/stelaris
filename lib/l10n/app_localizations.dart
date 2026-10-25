@@ -1111,7 +1111,7 @@ abstract class AppLocalizations {
   /// No description provided for @expression_hint_expression.
   ///
   /// In en, this message translates to:
-  /// **'An EvalEx formula, e.g. a * 2 + sqrt(b). Use + - * / ^ %, functions such as MAX, MIN, ROUND or IF, and the variables declared on the Variables tab.'**
+  /// **'An EvalEx formula, e.g. a * 2 + sqrt(b). Use + - * / ^ %, comparisons, && || ! for logic (not and/or), functions such as MAX, MIN, ROUND or IF, and the variables declared on the Variables tab.'**
   String get expression_hint_expression;
 
   /// No description provided for @expression_variables_empty_header.
