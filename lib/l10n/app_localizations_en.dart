@@ -719,6 +719,23 @@ class AppLocalizationsEn extends AppLocalizations {
       'The expression could not be evaluated. Try again.';
 
   @override
+  String get expression_validation_valid => 'Valid formula';
+
+  @override
+  String expression_validation_undefined(String names) {
+    return 'Not declared: $names';
+  }
+
+  @override
+  String get expression_validation_declare => 'Declare';
+
+  @override
+  String get expression_validation_declare_all => 'Declare all';
+
+  @override
+  String get expression_variable_unused => 'Not used in the formula';
+
+  @override
   String get dialog_model_key_label => 'Key';
 
   @override

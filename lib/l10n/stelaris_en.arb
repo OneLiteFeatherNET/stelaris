@@ -301,6 +301,18 @@
   "expression_test_result_type": "Type: {type}",
   "expression_test_rejected": "The expression or a variable was rejected",
   "expression_test_error": "The expression could not be evaluated. Try again.",
+  "expression_validation_valid": "Valid formula",
+  "expression_validation_undefined": "Not declared: {names}",
+  "@expression_validation_undefined": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "expression_validation_declare": "Declare",
+  "expression_validation_declare_all": "Declare all",
+  "expression_variable_unused": "Not used in the formula",
   "@expression_variable_name_duplicate": {
     "placeholders": {
       "name": {

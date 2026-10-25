@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/api/model/expression_model.dart';
+import 'package:stelaris/api/model/expression_validation_model.dart';
 import 'package:stelaris/feature/expression/expression_completion.dart';
 import 'package:stelaris/feature/expression/expression_formula_controller.dart';
 import 'package:stelaris/feature/expression/expression_function_sidebar.dart';
@@ -18,11 +19,17 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// also listed as chips to insert. The text is colored by token. [onChanged]
 /// gets every new text; the field keeps its own controller, so typing does not
 /// move the caret when the store rebuilds.
+///
+/// [validation] is the backend's check of the current text, when there is one:
+/// its errors are underlined and listed, undefined variables are offered for
+/// declaration, and unused declared variables are marked on their chips.
 class ExpressionFormulaField extends StatefulWidget {
   const ExpressionFormulaField({
     required this.expression,
     required this.onChanged,
     this.catalog,
+    this.validation,
+    this.onDeclare,
     super.key,
   });
 
@@ -32,6 +39,13 @@ class ExpressionFormulaField extends StatefulWidget {
   /// The EvalEx catalog for the constants, functions and signatures. Null
   /// while it is not loaded: only the variables are suggested then.
   final ExpressionCatalog? catalog;
+
+  /// The backend's check of the current text, null when there is none.
+  final ExpressionValidation? validation;
+
+  /// Declares the given names, as written in the formula, as variables. Null
+  /// hides the declare actions.
+  final ValueChanged<List<String>>? onDeclare;
 
   @override
   State<ExpressionFormulaField> createState() => _ExpressionFormulaFieldState();
@@ -64,7 +78,7 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
     _controller = ExpressionFormulaController(
       text: widget.expression.expression,
     )..addListener(_onControllerChanged);
-    _controller.setNames(catalog: widget.catalog, variables: _variableNames());
+    _updateNames();
     // The focus node handles keys before the text field's own shortcuts do,
     // so Enter, Tab and the arrows can be taken while suggestions are open.
     _focusNode = FocusNode(onKeyEvent: _handleKey)..addListener(_refresh);
@@ -73,7 +87,7 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
   @override
   void didUpdateWidget(ExpressionFormulaField oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _controller.setNames(catalog: widget.catalog, variables: _variableNames());
+    _updateNames();
     final text = widget.expression.expression;
     // Another expression was selected, or the store's text no longer matches
     // the field (e.g. unsaved changes were discarded). Typing stages the same
@@ -100,9 +114,13 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
     );
   }
 
-  List<String> _variableNames() => [
-    for (final variable in widget.expression.variables) variable.name,
-  ];
+  void _updateNames() => _controller.setNames(
+    catalog: widget.catalog,
+    variables: [
+      for (final variable in widget.expression.variables) variable.name,
+    ],
+    validation: widget.validation,
+  );
 
   @override
   void dispose() {
@@ -247,6 +265,11 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
       fontFamily: 'monospace',
     );
     final variables = widget.expression.variables;
+    final validation = widget.validation;
+    final unused = {
+      for (final name in validation?.unusedVariables ?? const <String>[])
+        name.toLowerCase(),
+    };
     final matches = _suggestions();
     final signature = _signature();
     final editor = Column(
@@ -275,6 +298,8 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
           ),
           onChanged: widget.onChanged,
         ),
+        if (validation != null)
+          _ValidationNotes(validation: validation, onDeclare: widget.onDeclare),
         if (signature != null) ...[
           const SizedBox(height: 4),
           _SignaturePanel(
@@ -312,13 +337,28 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
             runSpacing: 8,
             children: [
               for (final variable in variables)
-                Tooltip(
-                  message: expressionVariableTypeLabel(l10n, variable.type),
-                  child: ActionChip(
-                    label: Text(variable.name, style: monospace),
-                    onPressed: () => _insert(variable.name),
+                if (unused.contains(variable.name.toLowerCase()))
+                  Tooltip(
+                    message: l10n.expression_variable_unused,
+                    child: ActionChip(
+                      key: ValueKey('expression_chip_unused_${variable.name}'),
+                      label: Text(
+                        variable.name,
+                        style: monospace?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      onPressed: () => _insert(variable.name),
+                    ),
+                  )
+                else
+                  Tooltip(
+                    message: expressionVariableTypeLabel(l10n, variable.type),
+                    child: ActionChip(
+                      label: Text(variable.name, style: monospace),
+                      onPressed: () => _insert(variable.name),
+                    ),
                   ),
-                ),
             ],
           ),
       ],
@@ -345,6 +385,98 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
           children: [editor, const SizedBox(height: 24), sidebar],
         );
       },
+    );
+  }
+}
+
+/// What the backend's check says about the formula, under the field: its
+/// errors when it does not parse, the names it reads but does not declare with
+/// a way to declare them, or a small check when it is valid.
+class _ValidationNotes extends StatelessWidget {
+  const _ValidationNotes({required this.validation, this.onDeclare});
+
+  final ExpressionValidation validation;
+
+  /// Declares the given names. Null hides the declare actions.
+  final ValueChanged<List<String>>? onDeclare;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final undefined = validation.undefinedVariables;
+    final children = <Widget>[];
+    if (!validation.valid) {
+      children.add(
+        Column(
+          key: const ValueKey('expression_errors'),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final error in validation.errors)
+              Text(
+                error.message,
+                style: theme.textTheme.bodySmall?.copyWith(color: colors.error),
+              ),
+          ],
+        ),
+      );
+    }
+    if (undefined.isNotEmpty) {
+      children.add(
+        Wrap(
+          key: const ValueKey('expression_undefined'),
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 8,
+          runSpacing: 4,
+          children: [
+            Text(
+              l10n.expression_validation_undefined(undefined.join(', ')),
+              style: theme.textTheme.bodySmall?.copyWith(color: colors.error),
+            ),
+            if (onDeclare != null) ...[
+              for (final name in undefined)
+                TextButton(
+                  key: ValueKey('expression_declare_$name'),
+                  onPressed: () => onDeclare!([name]),
+                  child: Text(l10n.expression_validation_declare),
+                ),
+              if (undefined.length > 1)
+                TextButton(
+                  key: const ValueKey('expression_declare_all'),
+                  onPressed: () => onDeclare!(undefined),
+                  child: Text(l10n.expression_validation_declare_all),
+                ),
+            ],
+          ],
+        ),
+      );
+    }
+    if (validation.valid && undefined.isEmpty) {
+      children.add(
+        Row(
+          key: const ValueKey('expression_valid'),
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.check, size: 16, color: colors.onSurfaceVariant),
+            const SizedBox(width: 4),
+            Text(
+              l10n.expression_validation_valid,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    if (children.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
     );
   }
 }

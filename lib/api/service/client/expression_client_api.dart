@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:stelaris/api/base_api.dart';
 import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/api/model/expression_model.dart';
+import 'package:stelaris/api/model/expression_validation_model.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 
 /// Client API for expressions: the CRUD endpoints every model has, plus
@@ -66,5 +67,25 @@ class ExpressionClientApi extends BaseApi<ExpressionModel> {
       }
       rethrow;
     }
+  }
+
+  /// Checks [expression] against the declared [variables] (their names) in the
+  /// project [projectId], without evaluating it. The request goes to
+  /// `project/{projectId}/expression/validate`. The backend answers every
+  /// formula, valid or not, so only a transport failure throws.
+  Future<ExpressionValidation> validate(
+    String projectId,
+    String expression,
+    List<String> variables,
+  ) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/project/$projectId/$endpoint/validate',
+    );
+    final result = await apiClient.dio.postUri<Map<String, dynamic>>(
+      uri,
+      data: {'expression': expression, 'variables': variables},
+    );
+    return ExpressionValidation.fromJson(result.data!);
   }
 }

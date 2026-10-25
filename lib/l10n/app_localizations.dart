@@ -1396,6 +1396,36 @@ abstract class AppLocalizations {
   /// **'The expression could not be evaluated. Try again.'**
   String get expression_test_error;
 
+  /// No description provided for @expression_validation_valid.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid formula'**
+  String get expression_validation_valid;
+
+  /// No description provided for @expression_validation_undefined.
+  ///
+  /// In en, this message translates to:
+  /// **'Not declared: {names}'**
+  String expression_validation_undefined(String names);
+
+  /// No description provided for @expression_validation_declare.
+  ///
+  /// In en, this message translates to:
+  /// **'Declare'**
+  String get expression_validation_declare;
+
+  /// No description provided for @expression_validation_declare_all.
+  ///
+  /// In en, this message translates to:
+  /// **'Declare all'**
+  String get expression_validation_declare_all;
+
+  /// No description provided for @expression_variable_unused.
+  ///
+  /// In en, this message translates to:
+  /// **'Not used in the formula'**
+  String get expression_variable_unused;
+
   /// No description provided for @dialog_model_key_label.
   ///
   /// In en, this message translates to:

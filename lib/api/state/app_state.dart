@@ -4,6 +4,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
+import 'package:stelaris/api/state/expression_validation_state.dart';
 import 'package:stelaris/api/state/model_search_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/command_palette/entity_search_state.dart';
@@ -144,6 +145,10 @@ abstract class AppState with _$AppState {
     // same for every project, and null until it has loaded or when it failed.
     @JsonKey(includeToJson: false, includeFromJson: false)
     ExpressionCatalog? expressionCatalog,
+    // The backend's check of the selected formula while it is typed. Null
+    // until a check has answered, and when the last one failed.
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    ExpressionValidationState? expressionValidation,
     @JsonKey(includeToJson: false, includeFromJson: false)
     ReleaseModel? releaseModel,
     @JsonKey(includeToJson: false, includeFromJson: false)
