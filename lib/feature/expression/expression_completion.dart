@@ -1,5 +1,6 @@
 import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/api/model/expression_model.dart';
+import 'package:stelaris/feature/expression/expression_tokens.dart';
 
 /// The identifier being typed left of a caret in a formula: its start offset
 /// and the characters from there to the caret.
@@ -303,4 +304,119 @@ int? _highlightedParameter(CatalogFunction function, int index) {
   if (parameters.isEmpty) return null;
   if (index < parameters.length) return index;
   return parameters.last.varArg ? parameters.length - 1 : null;
+}
+
+/// An operator the toolbar inserts. [precedence] is null for the fallback
+/// operators, which are shown without the catalog's precedence.
+class OperatorSymbol {
+  const OperatorSymbol({
+    required this.symbol,
+    required this.kind,
+    this.precedence,
+  });
+
+  final String symbol;
+  final CatalogOperatorKind kind;
+  final int? precedence;
+}
+
+/// The operators the toolbar offers: one per distinct symbol of the catalog.
+/// An infix definition wins over a prefix one with the same symbol, so `-`
+/// is listed as infix. Infix come first, then each kind by ascending
+/// precedence, then by symbol. Without a [catalog] (or one with no operators)
+/// a fixed set is offered.
+List<OperatorSymbol> operatorSymbols(ExpressionCatalog? catalog) {
+  if (catalog == null || catalog.operators.isEmpty) {
+    return [
+      for (final symbol in fallbackOperatorSymbols)
+        OperatorSymbol(
+          symbol: symbol,
+          kind: symbol == '!'
+              ? CatalogOperatorKind.prefix
+              : CatalogOperatorKind.infix,
+        ),
+    ];
+  }
+  int kindRank(CatalogOperatorKind kind) => switch (kind) {
+    CatalogOperatorKind.infix => 0,
+    CatalogOperatorKind.prefix => 1,
+    CatalogOperatorKind.postfix => 2,
+    CatalogOperatorKind.other => 3,
+  };
+  final sorted = [...catalog.operators]
+    ..sort((a, b) {
+      final byKind = kindRank(a.kind).compareTo(kindRank(b.kind));
+      if (byKind != 0) return byKind;
+      final byPrecedence = a.precedence.compareTo(b.precedence);
+      return byPrecedence != 0 ? byPrecedence : a.symbol.compareTo(b.symbol);
+    });
+  final seen = <String>{};
+  return [
+    for (final operator in sorted)
+      if (seen.add(operator.symbol))
+        OperatorSymbol(
+          symbol: operator.symbol,
+          kind: operator.kind,
+          precedence: operator.precedence,
+        ),
+  ];
+}
+
+/// Inserts [operator] in place of [start] to [end]. An infix operator gets a
+/// space on each side, the others are inserted as they are.
+FormulaEdit insertOperator(
+  String text,
+  int start,
+  int end,
+  OperatorSymbol operator,
+) {
+  final insert = operator.kind == CatalogOperatorKind.infix
+      ? ' ${operator.symbol} '
+      : operator.symbol;
+  return replaceFormulaRange(text, start, end, insert);
+}
+
+/// Wraps the text from [start] to [end] in [open] and [close], with the caret
+/// after the wrapped text (before [close]).
+FormulaEdit wrapFormulaRange(
+  String text,
+  int start,
+  int end,
+  String open,
+  String close,
+) {
+  final selected = text.substring(start, end);
+  return FormulaEdit(
+    text:
+        text.substring(0, start) +
+        open +
+        selected +
+        close +
+        text.substring(end),
+    caret: start + open.length + selected.length,
+  );
+}
+
+/// Inserts a call of [name] for a function. Without a selection the text is
+/// `NAME(` with the caret after the parenthesis; a selection becomes the
+/// argument of the call, `NAME(selection)`.
+FormulaEdit insertFunctionCall(String text, int start, int end, String name) {
+  if (start == end) {
+    return replaceFormulaRange(text, start, end, '$name(');
+  }
+  return wrapFormulaRange(text, start, end, '$name(', ')');
+}
+
+/// Inserts the parenthesis [open] or its closing one. A selection is wrapped
+/// in `(` and `)` instead, so the pair surrounds it.
+FormulaEdit insertParenthesis(
+  String text,
+  int start,
+  int end, {
+  required bool open,
+}) {
+  if (start == end) {
+    return replaceFormulaRange(text, start, end, open ? '(' : ')');
+  }
+  return wrapFormulaRange(text, start, end, '(', ')');
 }

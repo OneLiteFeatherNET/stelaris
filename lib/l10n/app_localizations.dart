@@ -1126,6 +1126,108 @@ abstract class AppLocalizations {
   /// **'No variables yet. Declare them on the Variables tab to insert and suggest them here.'**
   String get expression_formula_variables_empty;
 
+  /// No description provided for @expression_toolbar_parenthesis.
+  ///
+  /// In en, this message translates to:
+  /// **'Parenthesis, wraps the selection'**
+  String get expression_toolbar_parenthesis;
+
+  /// No description provided for @expression_toolbar_comma.
+  ///
+  /// In en, this message translates to:
+  /// **'Separates the arguments of a function'**
+  String get expression_toolbar_comma;
+
+  /// No description provided for @expression_operator_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'{kind}, precedence {precedence}'**
+  String expression_operator_tooltip(String kind, int precedence);
+
+  /// No description provided for @expression_operator_kind_infix.
+  ///
+  /// In en, this message translates to:
+  /// **'Infix'**
+  String get expression_operator_kind_infix;
+
+  /// No description provided for @expression_operator_kind_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefix'**
+  String get expression_operator_kind_prefix;
+
+  /// No description provided for @expression_operator_kind_postfix.
+  ///
+  /// In en, this message translates to:
+  /// **'Postfix'**
+  String get expression_operator_kind_postfix;
+
+  /// No description provided for @expression_operator_kind_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Operator'**
+  String get expression_operator_kind_other;
+
+  /// No description provided for @expression_functions_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Functions and constants'**
+  String get expression_functions_title;
+
+  /// No description provided for @expression_functions_search_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Search functions and constants'**
+  String get expression_functions_search_label;
+
+  /// No description provided for @expression_functions_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Functions and constants load from the backend. They are unavailable right now, the formula can still be typed.'**
+  String get expression_functions_unavailable;
+
+  /// No description provided for @expression_functions_empty_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches the search.'**
+  String get expression_functions_empty_search;
+
+  /// No description provided for @expression_functions_group_basic.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic'**
+  String get expression_functions_group_basic;
+
+  /// No description provided for @expression_functions_group_string.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get expression_functions_group_string;
+
+  /// No description provided for @expression_functions_group_date_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Date and time'**
+  String get expression_functions_group_date_time;
+
+  /// No description provided for @expression_functions_group_trigonometric.
+  ///
+  /// In en, this message translates to:
+  /// **'Trigonometric'**
+  String get expression_functions_group_trigonometric;
+
+  /// No description provided for @expression_functions_group_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get expression_functions_group_other;
+
+  /// No description provided for @expression_functions_group_constants.
+  ///
+  /// In en, this message translates to:
+  /// **'Constants'**
+  String get expression_functions_group_constants;
+
   /// No description provided for @expression_suggestion_constant.
   ///
   /// In en, this message translates to:

@@ -239,6 +239,33 @@
   "expression_hint_expression": "An EvalEx formula, e.g. a * 2 + sqrt(b). Use + - * / ^ %, comparisons, && || ! for logic (not and/or), functions such as MAX, MIN, ROUND or IF, and the variables declared on the Variables tab.",
   "expression_formula_variables_label": "Insert a variable",
   "expression_formula_variables_empty": "No variables yet. Declare them on the Variables tab to insert and suggest them here.",
+  "expression_toolbar_parenthesis": "Parenthesis, wraps the selection",
+  "expression_toolbar_comma": "Separates the arguments of a function",
+  "expression_operator_tooltip": "{kind}, precedence {precedence}",
+  "@expression_operator_tooltip": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      },
+      "precedence": {
+        "type": "int"
+      }
+    }
+  },
+  "expression_operator_kind_infix": "Infix",
+  "expression_operator_kind_prefix": "Prefix",
+  "expression_operator_kind_postfix": "Postfix",
+  "expression_operator_kind_other": "Operator",
+  "expression_functions_title": "Functions and constants",
+  "expression_functions_search_label": "Search functions and constants",
+  "expression_functions_unavailable": "Functions and constants load from the backend. They are unavailable right now, the formula can still be typed.",
+  "expression_functions_empty_search": "Nothing matches the search.",
+  "expression_functions_group_basic": "Basic",
+  "expression_functions_group_string": "Text",
+  "expression_functions_group_date_time": "Date and time",
+  "expression_functions_group_trigonometric": "Trigonometric",
+  "expression_functions_group_other": "Other",
+  "expression_functions_group_constants": "Constants",
   "expression_suggestion_constant": "Constant {value}",
   "@expression_suggestion_constant": {
     "placeholders": {

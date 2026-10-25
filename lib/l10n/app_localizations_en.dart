@@ -565,6 +565,63 @@ class AppLocalizationsEn extends AppLocalizations {
       'No variables yet. Declare them on the Variables tab to insert and suggest them here.';
 
   @override
+  String get expression_toolbar_parenthesis =>
+      'Parenthesis, wraps the selection';
+
+  @override
+  String get expression_toolbar_comma =>
+      'Separates the arguments of a function';
+
+  @override
+  String expression_operator_tooltip(String kind, int precedence) {
+    return '$kind, precedence $precedence';
+  }
+
+  @override
+  String get expression_operator_kind_infix => 'Infix';
+
+  @override
+  String get expression_operator_kind_prefix => 'Prefix';
+
+  @override
+  String get expression_operator_kind_postfix => 'Postfix';
+
+  @override
+  String get expression_operator_kind_other => 'Operator';
+
+  @override
+  String get expression_functions_title => 'Functions and constants';
+
+  @override
+  String get expression_functions_search_label =>
+      'Search functions and constants';
+
+  @override
+  String get expression_functions_unavailable =>
+      'Functions and constants load from the backend. They are unavailable right now, the formula can still be typed.';
+
+  @override
+  String get expression_functions_empty_search => 'Nothing matches the search.';
+
+  @override
+  String get expression_functions_group_basic => 'Basic';
+
+  @override
+  String get expression_functions_group_string => 'Text';
+
+  @override
+  String get expression_functions_group_date_time => 'Date and time';
+
+  @override
+  String get expression_functions_group_trigonometric => 'Trigonometric';
+
+  @override
+  String get expression_functions_group_other => 'Other';
+
+  @override
+  String get expression_functions_group_constants => 'Constants';
+
+  @override
   String expression_suggestion_constant(String value) {
     return 'Constant $value';
   }

@@ -298,4 +298,135 @@ void main() {
       expect(signatureHelpAt('ROUND(a, ', 9, null), isNull);
     });
   });
+
+  group('operatorSymbols', () {
+    test('lists infix operators first, by precedence, then symbol', () {
+      const catalog = ExpressionCatalog(
+        operators: [
+          CatalogOperator(
+            symbol: '!',
+            kind: CatalogOperatorKind.prefix,
+            precedence: 50,
+          ),
+          CatalogOperator(
+            symbol: '*',
+            kind: CatalogOperatorKind.infix,
+            precedence: 20,
+          ),
+          CatalogOperator(
+            symbol: '||',
+            kind: CatalogOperatorKind.infix,
+            precedence: 5,
+          ),
+        ],
+      );
+
+      expect(operatorSymbols(catalog).map((o) => o.symbol), ['||', '*', '!']);
+    });
+
+    test(
+      'merges a prefix and an infix operator with one symbol into infix',
+      () {
+        const catalog = ExpressionCatalog(
+          operators: [
+            CatalogOperator(
+              symbol: '-',
+              kind: CatalogOperatorKind.prefix,
+              precedence: 50,
+            ),
+            CatalogOperator(
+              symbol: '-',
+              kind: CatalogOperatorKind.infix,
+              precedence: 10,
+            ),
+          ],
+        );
+
+        final operators = operatorSymbols(catalog);
+
+        expect(operators, hasLength(1));
+        expect(operators.single.kind, CatalogOperatorKind.infix);
+        expect(operators.single.precedence, 10);
+      },
+    );
+
+    test('without the catalog the fixed set is offered, with ! as prefix', () {
+      final operators = operatorSymbols(null);
+
+      expect(operators.map((o) => o.symbol), contains('&&'));
+      expect(
+        operators.singleWhere((o) => o.symbol == '!').kind,
+        CatalogOperatorKind.prefix,
+      );
+    });
+  });
+
+  group('insertOperator', () {
+    test('an infix operator gets a space on each side', () {
+      final edit = insertOperator(
+        'a',
+        1,
+        1,
+        const OperatorSymbol(symbol: '+', kind: CatalogOperatorKind.infix),
+      );
+
+      expect(edit.text, 'a + ');
+      expect(edit.caret, 4);
+    });
+
+    test('a prefix operator is inserted without spaces', () {
+      final edit = insertOperator(
+        '',
+        0,
+        0,
+        const OperatorSymbol(symbol: '!', kind: CatalogOperatorKind.prefix),
+      );
+
+      expect(edit.text, '!');
+      expect(edit.caret, 1);
+    });
+
+    test('an infix operator replaces the selection', () {
+      final edit = insertOperator(
+        'a*b',
+        2,
+        3,
+        const OperatorSymbol(symbol: '-', kind: CatalogOperatorKind.infix),
+      );
+
+      expect(edit.text, 'a* - ');
+    });
+  });
+
+  group('insertFunctionCall', () {
+    test('without a selection the call opens and the caret waits in it', () {
+      final edit = insertFunctionCall('', 0, 0, 'ROUND');
+
+      expect(edit.text, 'ROUND(');
+      expect(edit.caret, 6);
+    });
+
+    test('a selection is wrapped as the argument, the caret after it', () {
+      final edit = insertFunctionCall('a+b', 2, 3, 'SQRT');
+
+      expect(edit.text, 'a+SQRT(b)');
+      expect(edit.caret, 8);
+    });
+  });
+
+  group('insertParenthesis', () {
+    test('a selection is wrapped in the pair, the caret after it', () {
+      final edit = insertParenthesis('a+b', 2, 3, open: true);
+
+      expect(edit.text, 'a+(b)');
+      expect(edit.caret, 4);
+    });
+
+    test('without a selection the closing parenthesis is inserted alone', () {
+      final edit = insertParenthesis('a', 1, 1, open: false);
+
+      expect(edit.text, 'a)');
+      expect(edit.caret, 2);
+    });
+  });
 }
