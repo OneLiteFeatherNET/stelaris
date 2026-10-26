@@ -178,10 +178,17 @@ function mount(element, scene) {
     element.appendChild(canvas);
 
     const threeScene = new THREE.Scene();
-    threeScene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    // Lights for the dark preview surface. The hemisphere light lifts every face
+    // (sky from above, grey from below), the key light models the form from the
+    // front, and the weaker fill from the opposite side keeps shadowed faces
+    // readable. Textures keep their nearest filtering, so pixel art stays sharp.
+    threeScene.add(new THREE.HemisphereLight(0xffffff, 0x9a9a9a, 1.5));
     const sun = new THREE.DirectionalLight(0xffffff, 1.0);
     sun.position.set(1, 2, 1.5);
     threeScene.add(sun);
+    const fill = new THREE.DirectionalLight(0xffffff, 0.5);
+    fill.position.set(-1, 0.5, -1.2);
+    threeScene.add(fill);
 
     const camera = new THREE.PerspectiveCamera(FOV_DEGREES, 1, 0.1, 1000);
     const controls = new OrbitControls(camera, canvas);
