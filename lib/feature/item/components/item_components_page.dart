@@ -1,10 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
-import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/asset/item_model_asset_preview.dart';
-import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/page_header.dart';
@@ -12,6 +9,7 @@ import 'package:stelaris/feature/base/skeleton_bar.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/components/component_category_menu.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
+import 'package:stelaris/feature/item/components/item_model_preview_slot.dart';
 import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/feature/item/components/stelaris_components.dart';
 import 'package:stelaris/feature/item/item_tab_loader.dart';
@@ -46,19 +44,11 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
   static const double _cardHeight = 112;
   static const double _spacing = 12;
 
-  /// From this width on there is room for the model preview next to the cards.
-  static const double _previewBreakpoint = 840;
-
   /// Shows only the components of this category, null shows all.
   ComponentCategory? _category;
 
-  /// Whether the model preview is shown next to the cards. Not kept across
-  /// app starts, the app doesn't store settings locally yet.
-  bool _showPreview = true;
-
-  /// The model lookup of the last item model key, so rebuilds don't look it
-  /// up again.
-  ({String projectId, String key, Future<AssetModel?> model})? _lookup;
+  /// The model preview next to the cards, see [ItemModelPreviewSlot].
+  final _preview = ItemModelPreviewController();
 
   Future<void> _add(_ComponentsView vm) async {
     final spec = await showComponentPickerDialog(
@@ -160,214 +150,100 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
                   if (_specsByKey[component.componentKey]?.category == category)
                     component,
               ];
-        final projectId = vm.project?.id;
-        final lookup = _lookupModel(vm.project, _itemModelKey(all));
+        final itemModelKey = itemModelKeyOf(all);
 
-        return FutureBuilder<AssetModel?>(
-          future: lookup,
-          builder: (context, snapshot) {
-            // Without a project there is no model to show, whatever the key.
-            final asset = projectId == null ? null : snapshot.data;
-            return Padding(
-              padding: const EdgeInsets.all(16),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final wide = constraints.maxWidth >= _previewBreakpoint;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      PageHeader.small(
-                        title: context.l10n.component_page_title(all.length),
-                        actions: [
-                          _PreviewButton(
-                            wide: wide,
-                            shown: _showPreview,
-                            // Only offered while there is a model to show.
-                            onPressed: asset == null
-                                ? null
-                                : () => wide
-                                      ? setState(
-                                          () => _showPreview = !_showPreview,
-                                        )
-                                      : _openPreviewSheet(
-                                          context,
-                                          projectId!,
-                                          asset,
-                                        ),
-                          ),
-                          if (counts.isNotEmpty)
-                            ComponentCategoryMenu(
-                              value: category,
-                              counts: counts,
-                              onChanged: (value) =>
-                                  setState(() => _category = value),
-                              builder: (context, toggle) => PageHeaderAction(
-                                key: const Key('component_category_filter'),
-                                icon: const Icon(Icons.filter_list),
-                                label:
-                                    category?.displayName ??
-                                    context.l10n.component_all_categories,
-                                onPressed: toggle,
-                              ),
-                            ),
-                          PageHeaderAction(
-                            icon: const Icon(Icons.add),
-                            label: context.l10n.button_add,
-                            primary: true,
-                            loading: pending,
-                            onPressed: () => _add(vm),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: switch ((pending, components.isEmpty)) {
-                                (true, _) => _grid(
-                                  key: const Key('component_skeleton'),
-                                  itemCount: (columns) => columns * 2,
-                                  itemBuilder: (context, index) =>
-                                      const _SkeletonCard(),
-                                ),
-                                (false, true) => EmptyDataWidget.full(
-                                  header: context.l10n.component_empty_header,
-                                  subHeader: context.l10n.component_empty_body,
-                                ),
-                                _ => _grid(
-                                  itemCount: (_) => components.length,
-                                  itemBuilder: (context, index) {
-                                    final component = components[index];
-                                    final spec =
-                                        _specsByKey[component.componentKey];
-                                    final editable =
-                                        spec != null &&
-                                        spec.editable &&
-                                        !dedicatedComponents.contains(spec.key);
-                                    return _ComponentCard(
-                                      key: ValueKey(component.id),
-                                      componentKey: component.componentKey,
-                                      spec: spec,
-                                      value: component.value,
-                                      overridesDefault: defaults.contains(
-                                        component.componentKey,
-                                      ),
-                                      onEdit: editable
-                                          ? () => _edit(
-                                              spec,
-                                              component,
-                                              vm.project,
-                                            )
-                                          : null,
-                                      // Every item has its required components.
-                                      onRemove: spec != null && spec.isRequired
-                                          ? null
-                                          : () => _remove(
-                                              spec?.displayName ??
-                                                  component.componentKey,
-                                              component,
-                                            ),
-                                    );
-                                  },
-                                ),
-                              },
-                            ),
-                            // Slides and fades in from the right edge, the
-                            // cards give way.
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 250),
-                              switchInCurve: Curves.easeOutCubic,
-                              switchOutCurve: Curves.easeInCubic,
-                              transitionBuilder: (child, animation) =>
-                                  SizeTransition(
-                                    sizeFactor: animation,
-                                    axis: Axis.horizontal,
-                                    // Top, the transition fills the height and
-                                    // would center it.
-                                    alignment: AlignmentDirectional.topStart,
-                                    child: FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    ),
-                                  ),
-                              child: wide && _showPreview && asset != null
-                                  ? Padding(
-                                      key: const ValueKey(
-                                        'item_model_preview_slot',
-                                      ),
-                                      padding: const EdgeInsets.only(left: 16),
-                                      child: SizedBox(
-                                        width: (constraints.maxWidth * 0.35)
-                                            .clamp(280, 420),
-                                        child: ItemModelPreview(
-                                          projectId: projectId!,
-                                          asset: asset,
-                                        ),
-                                      ),
-                                    )
-                                  : const SizedBox.shrink(),
-                            ),
-                          ],
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              LayoutBuilder(
+                builder: (context, constraints) => PageHeader.small(
+                  title: context.l10n.component_page_title(all.length),
+                  actions: [
+                    ItemModelPreviewToggle(
+                      controller: _preview,
+                      project: vm.project,
+                      itemModelKey: itemModelKey,
+                      wide: constraints.maxWidth >= itemModelPreviewBreakpoint,
+                      onToggle: () => setState(_preview.toggle),
+                    ),
+                    if (counts.isNotEmpty)
+                      ComponentCategoryMenu(
+                        value: category,
+                        counts: counts,
+                        onChanged: (value) => setState(() => _category = value),
+                        builder: (context, toggle) => PageHeaderAction(
+                          key: const Key('component_category_filter'),
+                          icon: const Icon(Icons.filter_list),
+                          label:
+                              category?.displayName ??
+                              context.l10n.component_all_categories,
+                          onPressed: toggle,
                         ),
                       ),
-                    ],
-                  );
+                    PageHeaderAction(
+                      icon: const Icon(Icons.add),
+                      label: context.l10n.button_add,
+                      primary: true,
+                      loading: pending,
+                      onPressed: () => _add(vm),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              ItemModelPreviewSlot(
+                controller: _preview,
+                project: vm.project,
+                itemModelKey: itemModelKey,
+                child: switch ((pending, components.isEmpty)) {
+                  (true, _) => _grid(
+                    key: const Key('component_skeleton'),
+                    itemCount: (columns) => columns * 2,
+                    itemBuilder: (context, index) => const _SkeletonCard(),
+                  ),
+                  (false, true) => EmptyDataWidget.full(
+                    header: context.l10n.component_empty_header,
+                    subHeader: context.l10n.component_empty_body,
+                  ),
+                  _ => _grid(
+                    itemCount: (_) => components.length,
+                    itemBuilder: (context, index) {
+                      final component = components[index];
+                      final spec = _specsByKey[component.componentKey];
+                      final editable =
+                          spec != null &&
+                          spec.editable &&
+                          !dedicatedComponents.contains(spec.key);
+                      return _ComponentCard(
+                        key: ValueKey(component.id),
+                        componentKey: component.componentKey,
+                        spec: spec,
+                        value: component.value,
+                        overridesDefault: defaults.contains(
+                          component.componentKey,
+                        ),
+                        onEdit: editable
+                            ? () => _edit(spec, component, vm.project)
+                            : null,
+                        // Every item has its required components.
+                        onRemove: spec != null && spec.isRequired
+                            ? null
+                            : () => _remove(
+                                spec?.displayName ?? component.componentKey,
+                                component,
+                              ),
+                      );
+                    },
+                  ),
                 },
               ),
-            );
-          },
+            ],
+          ),
         );
       },
     );
-  }
-
-  /// Without room next to the cards, the model preview opens as a bottom
-  /// sheet.
-  void _openPreviewSheet(
-    BuildContext context,
-    String projectId,
-    AssetModel asset,
-  ) {
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (context) => SizedBox(
-        height: 420,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-          child: ItemModelPreview(projectId: projectId, asset: asset),
-        ),
-      ),
-    );
-  }
-
-  /// The model the item model key names in the project, null without a key
-  /// or a project. The same lookup is kept while the key stays.
-  Future<AssetModel?>? _lookupModel(ComponentProject? project, String? key) {
-    if (project == null || key == null) return null;
-    final last = _lookup;
-    if (last == null || last.projectId != project.id || last.key != key) {
-      _lookup = (
-        projectId: project.id,
-        key: key,
-        model: AssetLibrary.shared.findModelByKey(project.id, key),
-      );
-    }
-    return _lookup!.model;
-  }
-
-  /// The value of the item model component, null when the item has none.
-  static String? _itemModelKey(List<ItemComponentDto> components) {
-    for (final component in components) {
-      final value = component.value;
-      if (component.componentKey == itemModelComponent && value is String) {
-        return value;
-      }
-    }
-    return null;
   }
 
   /// The card grid, with as many columns of cards as fit. [itemCount]
@@ -563,35 +439,6 @@ class _ComponentCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// Shows and hides the model preview next to the cards, or opens it as a
-/// bottom sheet when there is no room for it.
-class _PreviewButton extends StatelessWidget {
-  const _PreviewButton({
-    required this.wide,
-    required this.shown,
-    required this.onPressed,
-  });
-
-  final bool wide;
-  final bool shown;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return PageHeaderAction(
-      key: const Key('item_model_preview_toggle'),
-      // The icon tells what a press does.
-      icon: Icon(
-        wide && shown
-            ? Icons.visibility_off_outlined
-            : Icons.visibility_outlined,
-      ),
-      label: context.l10n.item_model_preview_title,
-      onPressed: onPressed,
     );
   }
 }
