@@ -68,7 +68,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   - its card shows `AssetPreview` when `findModelByKey` finds the value, and text otherwise.
 
   Verify with widget tests on `item_components_page`. Keep the generic schema widgets unchanged.
-- [ ] 4.4 Review feedback: the item model card keeps the size of the other cards (the grid as on
+- [x] 4.4 Review feedback: the item model card keeps the size of the other cards (the grid as on
   develop) and shows its value as text; when `findModelByKey` finds the value, a preview button
   opens the model in a dialog. Verify with widget tests: same card height as other cards, button only
   for a found model (not for a texture with the same key), button opens the 3D preview.
