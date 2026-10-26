@@ -3213,6 +3213,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The 3D preview is not available on this platform.'**
   String get asset_preview_unavailable;
+
+  /// No description provided for @asset_picker_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a model'**
+  String get asset_picker_title;
+
+  /// No description provided for @asset_picker_choose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose'**
+  String get asset_picker_choose;
+
+  /// No description provided for @asset_picker_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'This project has no models yet. Upload one below.'**
+  String get asset_picker_empty;
+
+  /// No description provided for @asset_picker_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The models could not be loaded.'**
+  String get asset_picker_load_failed;
+
+  /// No description provided for @asset_picker_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get asset_picker_retry;
+
+  /// No description provided for @asset_picker_upload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a file'**
+  String get asset_picker_upload;
+
+  /// No description provided for @asset_picker_upload_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get asset_picker_upload_action;
+
+  /// No description provided for @asset_picker_file.
+  ///
+  /// In en, this message translates to:
+  /// **'File: {name}'**
+  String asset_picker_file(String name);
+
+  /// No description provided for @asset_picker_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Key'**
+  String get asset_picker_key;
+
+  /// No description provided for @asset_picker_texture_uploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded the texture {key}. Only models can be chosen for an item.'**
+  String asset_picker_texture_uploaded(String key);
+
+  /// No description provided for @asset_picker_kind_model.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get asset_picker_kind_model;
+
+  /// No description provided for @asset_picker_kind_bbmodel.
+  ///
+  /// In en, this message translates to:
+  /// **'Blockbench model'**
+  String get asset_picker_kind_bbmodel;
 }
 
 class _AppLocalizationsDelegate

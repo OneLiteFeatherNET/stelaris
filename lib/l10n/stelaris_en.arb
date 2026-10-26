@@ -940,5 +940,31 @@
       }
     }
   },
-  "asset_preview_unavailable": "The 3D preview is not available on this platform."
+  "asset_preview_unavailable": "The 3D preview is not available on this platform.",
+  "asset_picker_title": "Choose a model",
+  "asset_picker_choose": "Choose",
+  "asset_picker_empty": "This project has no models yet. Upload one below.",
+  "asset_picker_load_failed": "The models could not be loaded.",
+  "asset_picker_retry": "Try again",
+  "asset_picker_upload": "Upload a file",
+  "asset_picker_upload_action": "Upload",
+  "asset_picker_file": "File: {name}",
+  "@asset_picker_file": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_picker_key": "Key",
+  "asset_picker_texture_uploaded": "Uploaded the texture {key}. Only models can be chosen for an item.",
+  "@asset_picker_texture_uploaded": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_picker_kind_model": "Model",
+  "asset_picker_kind_bbmodel": "Blockbench model"
 }

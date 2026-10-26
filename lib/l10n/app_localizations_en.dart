@@ -1758,4 +1758,45 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get asset_preview_unavailable =>
       'The 3D preview is not available on this platform.';
+
+  @override
+  String get asset_picker_title => 'Choose a model';
+
+  @override
+  String get asset_picker_choose => 'Choose';
+
+  @override
+  String get asset_picker_empty =>
+      'This project has no models yet. Upload one below.';
+
+  @override
+  String get asset_picker_load_failed => 'The models could not be loaded.';
+
+  @override
+  String get asset_picker_retry => 'Try again';
+
+  @override
+  String get asset_picker_upload => 'Upload a file';
+
+  @override
+  String get asset_picker_upload_action => 'Upload';
+
+  @override
+  String asset_picker_file(String name) {
+    return 'File: $name';
+  }
+
+  @override
+  String get asset_picker_key => 'Key';
+
+  @override
+  String asset_picker_texture_uploaded(String key) {
+    return 'Uploaded the texture $key. Only models can be chosen for an item.';
+  }
+
+  @override
+  String get asset_picker_kind_model => 'Model';
+
+  @override
+  String get asset_picker_kind_bbmodel => 'Blockbench model';
 }
