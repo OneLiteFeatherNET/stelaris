@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/feature/asset/preview/asset_preview.dart';
 import 'package:stelaris/feature/asset/preview/asset_preview_controller.dart';
