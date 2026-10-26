@@ -942,7 +942,7 @@
   },
   "asset_preview_unavailable": "The 3D preview is not available on this platform.",
   "asset_preview_failed": "The model could not be shown.",
-  "item_model_preview_button": "Preview in 3D",
+  "item_model_preview_title": "Preview",
   "asset_picker_title": "Choose a model",
   "asset_pick_model_tooltip": "Choose a model from the project",
   "asset_picker_choose": "Choose",

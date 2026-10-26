@@ -10,6 +10,7 @@ import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/preview/asset_preview_placeholder.dart';
+import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/item/components/item_components_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -26,9 +27,10 @@ void main() {
     WidgetTester tester,
     List<ItemComponentDto> components, {
     Project? project,
+    Size size = const Size(1400, 1000),
     bool settle = true,
   }) async {
-    tester.view.physicalSize = const Size(1400, 1000);
+    tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     // Without a selected item the fetch does nothing, so the components
@@ -381,24 +383,37 @@ void main() {
     },
   );
 
-  group('item model card', () {
+  group('item model preview', () {
     const vulpes = Project(id: 'p-1', displayName: 'Vulpes', key: 'vulpes');
     const itemModel = ItemComponentDto(
       id: 'c7',
       componentKey: 'minecraft:item_model',
       value: 'vulpes:item/ruby',
     );
+    const narrow = Size(800, 1000);
 
-    Finder previewButton() =>
-        find.byKey(const Key('item_model_preview_button'));
-    Finder preview() => find.byType(AssetPreviewPlaceholder);
+    Finder toggle() => find.byKey(const Key('item_model_preview_toggle'));
+    Finder panel() => find.byKey(const Key('item_model_preview'));
+    Finder placeholder() => find.descendant(
+      of: panel(),
+      matching: find.byType(AssetPreviewPlaceholder),
+    );
     Finder card(String name) =>
         find.ancestor(of: find.text(name), matching: find.byType(Card));
 
-    setUp(() => AssetLibrary.shared.invalidate());
+    bool toggleEnabled(WidgetTester tester) =>
+        tester.widget<PageHeaderAction>(toggle()).onPressed != null;
+
+    /// Waits until the preview has loaded its scene, a spinner would keep
+    /// the frames from settling.
+    Future<void> pumpUntilPanel(WidgetTester tester) => pumpUntil(
+      tester,
+      action: () async {},
+      done: () => placeholder().evaluate().isNotEmpty,
+    );
 
     testWidgets(
-      'is as tall as the other cards while it offers a preview',
+      'shows the model next to the cards when the window is wide',
       variant: TargetPlatformVariant.only(TargetPlatform.macOS),
       (tester) async {
         serveAssets([
@@ -410,21 +425,19 @@ void main() {
           project: vulpes,
           settle: false,
         );
-        await pumpUntil(
-          tester,
-          action: () async {},
-          done: () => previewButton().evaluate().isNotEmpty,
-        );
+        await pumpUntilPanel(tester);
 
+        expect(placeholder(), findsOneWidget);
         expect(
-          tester.getSize(card('Item Model')),
-          tester.getSize(card('Food')),
+          find.descendant(of: panel(), matching: find.text('vulpes:item/ruby')),
+          findsOneWidget,
         );
+        expect(find.byType(BottomSheet), findsNothing);
       },
     );
 
     testWidgets(
-      'offers a preview when a model has the key of the value',
+      'keeps the cards as tall as on develop while the preview shows',
       variant: TargetPlatformVariant.only(TargetPlatform.macOS),
       (tester) async {
         serveAssets([
@@ -432,23 +445,19 @@ void main() {
         ]);
         await pumpPage(
           tester,
-          const [itemModel],
+          const [food, itemModel],
           project: vulpes,
           settle: false,
         );
-        await pumpUntil(
-          tester,
-          action: () async {},
-          done: () => previewButton().evaluate().isNotEmpty,
-        );
+        await pumpUntilPanel(tester);
 
-        expect(previewButton(), findsOneWidget);
-        expect(find.text('vulpes:item/ruby'), findsOneWidget);
+        expect(tester.getSize(card('Item Model')).height, 112);
+        expect(tester.getSize(card('Food')).height, 112);
       },
     );
 
     testWidgets(
-      'opens the model in a dialog when the preview button is tapped',
+      'hides the model when the toggle is pressed',
       variant: TargetPlatformVariant.only(TargetPlatform.macOS),
       (tester) async {
         serveAssets([
@@ -456,84 +465,110 @@ void main() {
         ]);
         await pumpPage(
           tester,
-          const [itemModel],
+          const [food, itemModel],
           project: vulpes,
+          settle: false,
+        );
+        await pumpUntilPanel(tester);
+
+        await tester.tap(toggle());
+        await tester.pumpAndSettle();
+
+        expect(panel(), findsNothing);
+        expect(card('Food'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'opens the model in a bottom sheet when the window is narrow',
+      variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+      (tester) async {
+        serveAssets([
+          assetJson(id: 'm-1', key: 'vulpes:item/ruby', kind: 'MODEL'),
+        ]);
+        await pumpPage(
+          tester,
+          const [food, itemModel],
+          project: vulpes,
+          size: narrow,
           settle: false,
         );
         await pumpUntil(
           tester,
           action: () async {},
-          done: () => previewButton().evaluate().isNotEmpty,
+          done: () => toggleEnabled(tester),
         );
+        // No room next to the cards, so nothing is shown inline.
+        expect(panel(), findsNothing);
 
-        await tester.tap(previewButton());
-        await pumpUntil(
-          tester,
-          action: () async {},
-          done: () => preview().evaluate().isNotEmpty,
-        );
+        await tester.tap(toggle());
+        await pumpUntilPanel(tester);
 
-        expect(find.byType(AlertDialog), findsOneWidget);
         expect(
           find.descendant(
-            of: find.byType(AlertDialog),
-            matching: find.byType(AssetPreviewPlaceholder),
+            of: find.byType(BottomSheet),
+            matching: placeholder(),
           ),
           findsOneWidget,
         );
-        expect(
-          find.descendant(
-            of: find.byType(AlertDialog),
-            matching: find.text('vulpes:item/ruby'),
-          ),
-          findsNWidgets(2),
-        );
       },
     );
 
     testWidgets(
-      'offers no preview when no model has its key',
+      'the toggle is disabled without an item model',
+      variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+      (tester) async {
+        await pumpPage(tester, const [food], project: vulpes);
+
+        expect(toggleEnabled(tester), isFalse);
+        expect(panel(), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'the toggle is disabled without a project',
+      variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+      (tester) async {
+        await pumpPage(tester, const [itemModel]);
+
+        expect(toggleEnabled(tester), isFalse);
+        expect(panel(), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'the toggle is disabled when no model has the key',
       variant: TargetPlatformVariant.only(TargetPlatform.macOS),
       (tester) async {
         serveAssets([
           assetJson(id: 'm-2', key: 'vulpes:item/sapphire', kind: 'MODEL'),
         ]);
-        await pumpPage(
-          tester,
-          const [itemModel],
-          project: vulpes,
-          settle: false,
-        );
+        // The lookup is done before the page, so the page only reads it.
         await tester.runAsync(
           () => AssetLibrary.shared.findModelByKey('p-1', 'vulpes:item/ruby'),
         );
-        await tester.pumpAndSettle();
+        await pumpPage(tester, const [itemModel], project: vulpes);
 
-        expect(previewButton(), findsNothing);
-        expect(find.text('vulpes:item/ruby'), findsOneWidget);
+        expect(toggleEnabled(tester), isFalse);
+        expect(panel(), findsNothing);
       },
     );
 
     testWidgets(
-      'a texture with the key of the item model is not offered as the model',
+      'a texture with the key of the item model is not previewed as the model',
       variant: TargetPlatformVariant.only(TargetPlatform.macOS),
       (tester) async {
         serveAssets([
           assetJson(id: 't-1', key: 'vulpes:item/ruby', kind: 'TEXTURE'),
         ]);
-        await pumpPage(
-          tester,
-          const [itemModel],
-          project: vulpes,
-          settle: false,
-        );
+        // The lookup is done before the page, so the page only reads it.
         await tester.runAsync(
           () => AssetLibrary.shared.findModelByKey('p-1', 'vulpes:item/ruby'),
         );
-        await tester.pumpAndSettle();
+        await pumpPage(tester, const [itemModel], project: vulpes);
 
-        expect(previewButton(), findsNothing);
-        expect(find.text('vulpes:item/ruby'), findsOneWidget);
+        expect(toggleEnabled(tester), isFalse);
+        expect(panel(), findsNothing);
       },
     );
   });

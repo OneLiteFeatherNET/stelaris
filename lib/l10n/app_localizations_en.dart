@@ -1763,7 +1763,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_preview_failed => 'The model could not be shown.';
 
   @override
-  String get item_model_preview_button => 'Preview in 3D';
+  String get item_model_preview_title => 'Preview';
 
   @override
   String get asset_picker_title => 'Choose a model';

@@ -1,80 +1,63 @@
-import 'dart:math' as math;
-
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/asset_model.dart';
-import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/preview/asset_scene_view.dart';
+import 'package:stelaris/feature/component/component_preview.dart';
+import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
-/// Offers the 3D preview of the project model whose key is [assetKey].
+/// Shows the 3D preview of the item model [asset] on the lore preview's
+/// surface, next to the component cards or in a bottom sheet.
 ///
-/// Shows nothing while the lookup runs and when the project has no model with
-/// that key, a texture with the same key doesn't count. Tapping the button
-/// opens the model in a dialog.
-class ItemModelPreviewButton extends StatefulWidget {
-  const ItemModelPreviewButton({
+/// Fills the height it is given. The caller finds the asset and decides
+/// whether there is room for the panel.
+class ItemModelPreview extends StatelessWidget {
+  const ItemModelPreview({
     required this.projectId,
-    required this.assetKey,
+    required this.asset,
     super.key,
   });
 
   final String projectId;
-  final String assetKey;
-
-  @override
-  State<ItemModelPreviewButton> createState() => _ItemModelPreviewButtonState();
-}
-
-class _ItemModelPreviewButtonState extends State<ItemModelPreviewButton> {
-  late Future<AssetModel?> _model = _find();
-
-  Future<AssetModel?> _find() =>
-      AssetLibrary.shared.findModelByKey(widget.projectId, widget.assetKey);
-
-  @override
-  void didUpdateWidget(ItemModelPreviewButton oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.projectId != widget.projectId ||
-        oldWidget.assetKey != widget.assetKey) {
-      _model = _find();
-    }
-  }
+  final AssetModel asset;
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<AssetModel?>(
-      future: _model,
-      builder: (context, snapshot) {
-        final asset = snapshot.data;
-        if (asset == null) return const SizedBox.shrink();
-        return IconButton(
-          key: const Key('item_model_preview_button'),
-          tooltip: context.l10n.item_model_preview_button,
-          icon: const Icon(Icons.view_in_ar),
-          onPressed: () => _open(context, asset),
-        );
-      },
-    );
-  }
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
-  void _open(BuildContext context, AssetModel asset) {
-    final size = MediaQuery.sizeOf(context);
-    showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(asset.key),
-        content: SizedBox(
-          width: math.min(560, size.width - 96),
-          height: math.min(520, size.height - 200),
-          child: AssetSceneView(projectId: widget.projectId, asset: asset),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.preview_outlined,
+              size: 18,
+              color: colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              context.l10n.item_model_preview_title,
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(context.l10n.button_close),
+        const SizedBox(height: 8),
+        Expanded(
+          child: Container(
+            key: const Key('item_model_preview'),
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: previewBackground,
+              borderRadius: BorderRadius.circular(AppShapes.extraSmall),
+              border: Border.all(color: previewBorder),
+            ),
+            child: AssetSceneView(projectId: projectId, asset: asset),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
