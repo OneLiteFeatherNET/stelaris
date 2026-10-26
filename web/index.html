@@ -97,6 +97,12 @@
             } catch (e) {}
         })();
     </script>
+
+    <!-- three.js 0.186.1 for the asset preview; see web/vendor/three/LICENSE. -->
+    <script type="importmap">
+        {"imports": {"three": "./vendor/three/three.module.js"}}
+    </script>
+    <script type="module" src="asset_viewer.js"></script>
 </head>
 <body>
 <div id="loading-screen">
