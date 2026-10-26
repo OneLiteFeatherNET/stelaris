@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
@@ -44,9 +42,6 @@ class ItemComponentsPage extends StatefulWidget {
 class _ItemComponentsPageState extends State<ItemComponentsPage> {
   static const double _maxCardExtent = 320;
   static const double _cardHeight = 112;
-
-  /// The item model card also holds the 3D preview of the model.
-  static const double _modelCardHeight = 560;
   static const double _spacing = 12;
 
   /// Shows only the components of this category, null shows all.
@@ -190,7 +185,6 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
                   (true, _) => _grid(
                     key: const Key('component_skeleton'),
                     itemCount: (columns) => columns * 2,
-                    heightOf: (_) => _cardHeight,
                     itemBuilder: (context, index) => const _SkeletonCard(),
                   ),
                   (false, true) => EmptyDataWidget.full(
@@ -199,8 +193,6 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
                   ),
                   _ => _grid(
                     itemCount: (_) => components.length,
-                    heightOf: (index) =>
-                        _heightOf(components[index], vm.project),
                     itemBuilder: (context, index) {
                       final component = components[index];
                       final spec = _specsByKey[component.componentKey];
@@ -240,11 +232,9 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
   }
 
   /// The card grid, with as many columns of cards as fit. [itemCount]
-  /// gets the number of columns. Each row is as tall as its tallest card,
-  /// so a card with a 3D preview doesn't need a grid of its own.
+  /// gets the number of columns.
   Widget _grid({
     required int Function(int columns) itemCount,
-    required double Function(int index) heightOf,
     required NullableIndexedWidgetBuilder itemBuilder,
     Key? key,
   }) {
@@ -255,50 +245,19 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
             ((constraints.maxWidth + _spacing) / (_maxCardExtent + _spacing))
                 .floor()
                 .clamp(1, 4);
-        final count = itemCount(columns);
-        return ListView.builder(
-          itemCount: (count + columns - 1) ~/ columns,
-          itemBuilder: (context, row) {
-            final start = row * columns;
-            final end = math.min(start + columns, count);
-            final height = [
-              for (var index = start; index < end; index++) heightOf(index),
-            ].reduce(math.max);
-            return Padding(
-              padding: EdgeInsets.only(bottom: row == 0 ? 0 : _spacing),
-              child: SizedBox(
-                height: height,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (var column = 0; column < columns; column++) ...[
-                      if (column > 0) const SizedBox(width: _spacing),
-                      Expanded(
-                        child: start + column < end
-                            ? SizedBox(
-                                height: heightOf(start + column),
-                                child:
-                                    itemBuilder(context, start + column) ??
-                                    const SizedBox.shrink(),
-                              )
-                            : const SizedBox.shrink(),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            );
-          },
+        return GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+            mainAxisExtent: _cardHeight,
+            crossAxisSpacing: _spacing,
+            mainAxisSpacing: _spacing,
+          ),
+          itemCount: itemCount(columns),
+          itemBuilder: itemBuilder,
         );
       },
     );
   }
-
-  /// The height of the card of [component], the item model card is taller.
-  double _heightOf(ItemComponentDto component, ComponentProject? project) =>
-      _showsModel(component.componentKey, component.value, project)
-      ? _modelCardHeight
-      : _cardHeight;
 
   /// Sorts by category like the picker, unknown components come last.
   static int _sortIndex(ItemComponentDto component) =>
@@ -333,9 +292,9 @@ class _ComponentsFactory
   );
 }
 
-/// Whether the card of a component shows the 3D preview of the model its
-/// value names, instead of the value as text.
-bool _showsModel(
+/// Whether the card of a component offers the 3D preview of the model its
+/// value names.
+bool _hasModelPreview(
   String componentKey,
   Object? value,
   ComponentProject? project,
@@ -385,7 +344,7 @@ class _ComponentCard extends StatelessWidget {
   final ComponentSpec? spec;
   final Object? value;
 
-  /// The project whose models the item model card previews.
+  /// The project whose models the item model card can preview.
   final ComponentProject? project;
   final bool overridesDefault;
 
@@ -403,15 +362,7 @@ class _ComponentCard extends StatelessWidget {
       color: colorScheme.onSurfaceVariant,
     );
 
-    final valueText = Text(
-      switch (spec) {
-        null => context.l10n.component_not_in_catalog(componentKey),
-        final spec => summarize(context.l10n, spec.schema, value),
-      },
-      style: theme.textTheme.bodyMedium,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-    );
+    final previewable = _hasModelPreview(componentKey, value, project);
 
     // Outlined like every card that opens a dialog, a filled card opens a
     // page, like a model card.
@@ -439,16 +390,22 @@ class _ComponentCard extends StatelessWidget {
                   ),
                   // A tap on the card edits, so only removing needs a
                   // button, the same compact one as on a model grid card.
-                  if (onRemove != null)
+                  if (onRemove != null || previewable)
                     ModelCardActions(
                       color: colorScheme.onSurfaceVariant,
                       children: [
-                        IconButton(
-                          key: const Key('component_card_remove'),
-                          tooltip: context.l10n.component_delete_tooltip,
-                          icon: deleteIcon,
-                          onPressed: onRemove,
-                        ),
+                        if (previewable)
+                          ItemModelPreviewButton(
+                            projectId: project!.id,
+                            assetKey: value! as String,
+                          ),
+                        if (onRemove != null)
+                          IconButton(
+                            key: const Key('component_card_remove'),
+                            tooltip: context.l10n.component_delete_tooltip,
+                            icon: deleteIcon,
+                            onPressed: onRemove,
+                          ),
                       ],
                     )
                   else
@@ -473,22 +430,16 @@ class _ComponentCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              if (_showsModel(componentKey, value, project)) ...[
-                const SizedBox(height: 8),
-                Expanded(
-                  child: ItemModelAssetPreview(
-                    projectId: project!.id,
-                    assetKey: value! as String,
-                    fallback: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: valueText,
-                    ),
-                  ),
-                ),
-              ] else ...[
-                const Spacer(),
-                valueText,
-              ],
+              const Spacer(),
+              Text(
+                switch (spec) {
+                  null => context.l10n.component_not_in_catalog(componentKey),
+                  final spec => summarize(context.l10n, spec.schema, value),
+                },
+                style: theme.textTheme.bodyMedium,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ],
           ),
         ),

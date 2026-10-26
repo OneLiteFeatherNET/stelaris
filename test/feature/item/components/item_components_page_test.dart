@@ -69,19 +69,21 @@ void main() {
     (tester) async {
       await pumpPage(tester, const [food]);
 
-      final shape = tester
-          .widget<Material>(
-            find
-                .descendant(
-                  of: find.ancestor(
-                    of: find.text('Food'),
-                    matching: find.byType(Card),
-                  ),
-                  matching: find.byType(Material),
-                )
-                .first,
-          )
-          .shape! as RoundedRectangleBorder;
+      final shape =
+          tester
+                  .widget<Material>(
+                    find
+                        .descendant(
+                          of: find.ancestor(
+                            of: find.text('Food'),
+                            matching: find.byType(Card),
+                          ),
+                          matching: find.byType(Material),
+                        )
+                        .first,
+                  )
+                  .shape!
+              as RoundedRectangleBorder;
       expect(shape.side.style, BorderStyle.solid);
     },
   );
@@ -387,10 +389,42 @@ void main() {
       value: 'vulpes:item/ruby',
     );
 
+    Finder previewButton() =>
+        find.byKey(const Key('item_model_preview_button'));
     Finder preview() => find.byType(AssetPreviewPlaceholder);
+    Finder card(String name) =>
+        find.ancestor(of: find.text(name), matching: find.byType(Card));
+
+    setUp(() => AssetLibrary.shared.invalidate());
 
     testWidgets(
-      'shows the 3D preview of the model its value names',
+      'is as tall as the other cards while it offers a preview',
+      variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+      (tester) async {
+        serveAssets([
+          assetJson(id: 'm-1', key: 'vulpes:item/ruby', kind: 'MODEL'),
+        ]);
+        await pumpPage(
+          tester,
+          const [food, itemModel],
+          project: vulpes,
+          settle: false,
+        );
+        await pumpUntil(
+          tester,
+          action: () async {},
+          done: () => previewButton().evaluate().isNotEmpty,
+        );
+
+        expect(
+          tester.getSize(card('Item Model')),
+          tester.getSize(card('Food')),
+        );
+      },
+    );
+
+    testWidgets(
+      'offers a preview when a model has the key of the value',
       variant: TargetPlatformVariant.only(TargetPlatform.macOS),
       (tester) async {
         serveAssets([
@@ -405,16 +439,60 @@ void main() {
         await pumpUntil(
           tester,
           action: () async {},
-          done: () => preview().evaluate().isNotEmpty,
+          done: () => previewButton().evaluate().isNotEmpty,
         );
 
-        expect(preview(), findsOneWidget);
-        expect(find.text('Item Model'), findsOneWidget);
+        expect(previewButton(), findsOneWidget);
+        expect(find.text('vulpes:item/ruby'), findsOneWidget);
       },
     );
 
     testWidgets(
-      'keeps the value as text when no model has its key',
+      'opens the model in a dialog when the preview button is tapped',
+      variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+      (tester) async {
+        serveAssets([
+          assetJson(id: 'm-1', key: 'vulpes:item/ruby', kind: 'MODEL'),
+        ]);
+        await pumpPage(
+          tester,
+          const [itemModel],
+          project: vulpes,
+          settle: false,
+        );
+        await pumpUntil(
+          tester,
+          action: () async {},
+          done: () => previewButton().evaluate().isNotEmpty,
+        );
+
+        await tester.tap(previewButton());
+        await pumpUntil(
+          tester,
+          action: () async {},
+          done: () => preview().evaluate().isNotEmpty,
+        );
+
+        expect(find.byType(AlertDialog), findsOneWidget);
+        expect(
+          find.descendant(
+            of: find.byType(AlertDialog),
+            matching: find.byType(AssetPreviewPlaceholder),
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.descendant(
+            of: find.byType(AlertDialog),
+            matching: find.text('vulpes:item/ruby'),
+          ),
+          findsNWidgets(2),
+        );
+      },
+    );
+
+    testWidgets(
+      'offers no preview when no model has its key',
       variant: TargetPlatformVariant.only(TargetPlatform.macOS),
       (tester) async {
         serveAssets([
@@ -426,19 +504,18 @@ void main() {
           project: vulpes,
           settle: false,
         );
-        await pumpUntil(
-          tester,
-          action: () async {},
-          done: () => find.text('vulpes:item/ruby').evaluate().isNotEmpty,
+        await tester.runAsync(
+          () => AssetLibrary.shared.findModelByKey('p-1', 'vulpes:item/ruby'),
         );
+        await tester.pumpAndSettle();
 
-        expect(preview(), findsNothing);
+        expect(previewButton(), findsNothing);
         expect(find.text('vulpes:item/ruby'), findsOneWidget);
       },
     );
 
     testWidgets(
-      'a texture with the key of the item model is not shown as the model',
+      'a texture with the key of the item model is not offered as the model',
       variant: TargetPlatformVariant.only(TargetPlatform.macOS),
       (tester) async {
         serveAssets([
@@ -450,13 +527,12 @@ void main() {
           project: vulpes,
           settle: false,
         );
-        await pumpUntil(
-          tester,
-          action: () async {},
-          done: () => find.text('vulpes:item/ruby').evaluate().isNotEmpty,
+        await tester.runAsync(
+          () => AssetLibrary.shared.findModelByKey('p-1', 'vulpes:item/ruby'),
         );
+        await tester.pumpAndSettle();
 
-        expect(preview(), findsNothing);
+        expect(previewButton(), findsNothing);
         expect(find.text('vulpes:item/ruby'), findsOneWidget);
       },
     );

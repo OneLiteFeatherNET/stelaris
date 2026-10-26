@@ -3220,6 +3220,12 @@ abstract class AppLocalizations {
   /// **'The model could not be shown.'**
   String get asset_preview_failed;
 
+  /// No description provided for @item_model_preview_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview in 3D'**
+  String get item_model_preview_button;
+
   /// No description provided for @asset_picker_title.
   ///
   /// In en, this message translates to:
