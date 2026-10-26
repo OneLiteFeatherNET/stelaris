@@ -59,7 +59,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   upload with a suggested key that stays open on a rejected upload and shows the message at `key` or
   `file`. Add l10n keys. Verify with widget tests using `FakeHttpClientAdapter`: list, choose, upload
   success and key conflict.
-- [ ] 4.2 Add `findModelByKey(projectId, key)` with a per-session cache of lookups and contents
+- [x] 4.2 Add `findModelByKey(projectId, key)` with a per-session cache of lookups and contents
   (MODEL and BBMODEL only, exact key). Verify with tests against a fake adapter: found on a later
   page, not found, a texture with the same key ignored, and a second call served from the cache.
 - [ ] 4.3 Wire it into the components UI:
