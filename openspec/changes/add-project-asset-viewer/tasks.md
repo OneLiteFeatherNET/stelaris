@@ -54,7 +54,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 4. Item model component
 
-- [ ] 4.1 Add `pickAssetFile()` (web: hidden file input; elsewhere `null`) and the asset picker
+- [x] 4.1 Add `pickAssetFile()` (web: hidden file input; elsewhere `null`) and the asset picker
   dialog. The dialog lists MODEL and BBMODEL assets with a preview of the selection, and offers an
   upload with a suggested key that stays open on a rejected upload and shows the message at `key` or
   `file`. Add l10n keys. Verify with widget tests using `FakeHttpClientAdapter`: list, choose, upload
