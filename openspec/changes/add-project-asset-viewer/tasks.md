@@ -40,7 +40,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   `web/vendor/three/`, and add an import map and the `asset_viewer.js` module script to
   `web/index.html`. Verify that `flutter build web --release` copies the files.
 - [x] 3.2 Write `web/asset_viewer.js`:
-  - `mount(element, scene)` builds merged geometry per texture and level, `THREE.LOD` at 0/48/96,
+  - `mount(element, scene)` builds merged geometry per texture and level, `THREE.LOD` at 0, 1.5 and 3 times the framing distance,
     `OrbitControls` with damping, a checker texture for `null` slots, the average colour for the box
     level, `NearestFilter`, a `ResizeObserver`, `touch-action: none` and wheel `stopPropagation`;
   - the handle exposes `setDetail`, `setAutoRotate`, `resetView` and `dispose`.

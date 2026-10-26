@@ -99,7 +99,7 @@ browser check covers.
 - **Box.** One box over the bounds of all boxes. Its faces carry the average colour, which the bridge computes from the
   texture pixels. The Dart side marks the face as `averageColor: true`.
 
-The bridge builds a `THREE.LOD` with the levels at distances 0, 48 and 96 units. When the user pins a level, the LOD is
+The bridge builds a `THREE.LOD` with the levels at 0, 1.5 and 3 times the distance that frames the model, so large models open in full detail. When the user pins a level, the LOD is
 replaced by that one level. Unit tests check the level selection.
 
 ### Drawing details (bridge)

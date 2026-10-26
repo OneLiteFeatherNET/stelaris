@@ -11,7 +11,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from './vendor/three/OrbitControls.js';
 
-const LOD_DISTANCES = [0, 48, 96];
+const LOD_DISTANCES = [0, 1.5, 3];
 const CHECKER = 'checker';
 const FOV_DEGREES = 40;
 const GREY = 0x808080;
@@ -235,15 +235,17 @@ function mount(element, scene) {
     const size = bounds.getSize(new THREE.Vector3());
     const offset = centre.toArray();
 
-    const lod = new THREE.LOD();
-    quadsByLevel.forEach((quads, i) => {
-        lod.addLevel(buildLevel(quads, offset, materialFor), LOD_DISTANCES[i]);
-    });
-    threeScene.add(lod);
-
     // Frame the bounds: the distance at which the bounding sphere fits the view.
     const radius = Math.max(size.length() / 2, 1);
     const distance = (radius / Math.sin((FOV_DEGREES * Math.PI) / 360)) * 1.1;
+
+    // Level distances are multiples of the framing distance, so a large model
+    // still opens in full detail.
+    const lod = new THREE.LOD();
+    quadsByLevel.forEach((quads, i) => {
+        lod.addLevel(buildLevel(quads, offset, materialFor), LOD_DISTANCES[i] * distance);
+    });
+    threeScene.add(lod);
     const homeOffset = new THREE.Vector3(0.7, 0.5, 1).normalize().multiplyScalar(distance);
     camera.far = Math.max(1000, distance * 10);
     controls.minDistance = radius * 0.5;
