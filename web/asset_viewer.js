@@ -172,10 +172,9 @@ function mount(element, scene) {
     canvas.style.width = '100%';
     canvas.style.height = '100%';
     canvas.style.touchAction = 'none';
-    // Keep wheel and pointer gestures inside the preview, so the page does not scroll.
-    for (const type of ['wheel', 'pointerdown', 'pointermove', 'pointerup', 'pointercancel']) {
-        canvas.addEventListener(type, (e) => e.stopPropagation());
-    }
+    // Keep the wheel inside the preview, so the page does not scroll. Pointer
+    // events must reach Flutter, or it misses the release and drops the next click.
+    canvas.addEventListener('wheel', (e) => e.stopPropagation());
     element.appendChild(canvas);
 
     const threeScene = new THREE.Scene();
