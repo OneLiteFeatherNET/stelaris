@@ -7,15 +7,18 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// Loads the model [asset] of [projectId] and shows it in an [AssetPreview].
 ///
 /// The scene is loaded once per widget; a failed load shows a short error.
+/// [viewportFrame] is forwarded to [AssetPreview] and wraps only the viewport.
 class AssetSceneView extends StatefulWidget {
   const AssetSceneView({
     required this.projectId,
     required this.asset,
+    this.viewportFrame,
     super.key,
   });
 
   final String projectId;
   final AssetModel asset;
+  final Widget Function(Widget viewport)? viewportFrame;
 
   @override
   State<AssetSceneView> createState() => _AssetSceneViewState();
@@ -57,6 +60,7 @@ class _AssetSceneViewState extends State<AssetSceneView> {
           scene: data.scene,
           assetKey: widget.asset.key,
           unsupported: data.unsupported,
+          viewportFrame: widget.viewportFrame,
         );
       },
     );

@@ -46,18 +46,25 @@ class ItemModelPreview extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Expanded(
-          child: Container(
-            key: const Key('item_model_preview'),
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              color: previewBackground,
-              borderRadius: BorderRadius.circular(AppShapes.extraSmall),
-              border: Border.all(color: previewBorder),
-            ),
-            child: AssetSceneView(projectId: projectId, asset: asset),
+          child: AssetSceneView(
+            projectId: projectId,
+            asset: asset,
+            viewportFrame: _darkSurface,
           ),
         ),
       ],
     );
   }
+
+  /// Puts the viewport on the dark preview surface; the controls stay on the page.
+  Widget _darkSurface(Widget viewport) => Container(
+    key: const Key('item_model_preview'),
+    clipBehavior: Clip.antiAlias,
+    decoration: BoxDecoration(
+      color: previewBackground,
+      borderRadius: BorderRadius.circular(AppShapes.extraSmall),
+      border: Border.all(color: previewBorder),
+    ),
+    child: viewport,
+  );
 }

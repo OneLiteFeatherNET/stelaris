@@ -9,12 +9,15 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// [scene] is the JSON the viewer draws (see `web/asset_viewer.js`). [unsupported]
 /// names the parts that are not drawn; they are listed under the preview.
 /// Pass a [controller] to read or drive the controls; otherwise the preview keeps its own.
+/// [viewportFrame] wraps only the 3D viewport, so a caller can put a surface behind
+/// the viewport while the controls keep the page's theme.
 class AssetPreview extends StatefulWidget {
   const AssetPreview({
     required this.scene,
     required this.assetKey,
     this.unsupported = const [],
     this.controller,
+    this.viewportFrame,
     super.key,
   });
 
@@ -22,6 +25,7 @@ class AssetPreview extends StatefulWidget {
   final String assetKey;
   final List<String> unsupported;
   final AssetPreviewController? controller;
+  final Widget Function(Widget viewport)? viewportFrame;
 
   @override
   State<AssetPreview> createState() => _AssetPreviewState();
@@ -51,10 +55,12 @@ class _AssetPreviewState extends State<AssetPreview> {
           children: [
             SizedBox(
               height: 320,
-              child: AssetPreviewViewport(
-                scene: widget.scene,
-                assetKey: widget.assetKey,
-                controller: controller,
+              child: _frame(
+                AssetPreviewViewport(
+                  scene: widget.scene,
+                  assetKey: widget.assetKey,
+                  controller: controller,
+                ),
               ),
             ),
             Wrap(
@@ -95,6 +101,8 @@ class _AssetPreviewState extends State<AssetPreview> {
       },
     );
   }
+
+  Widget _frame(Widget viewport) => widget.viewportFrame?.call(viewport) ?? viewport;
 
   String _detailLabel(AppLocalizations l10n, AssetDetail detail) => switch (detail) {
     AssetDetail.automatic => l10n.asset_preview_detail_auto,

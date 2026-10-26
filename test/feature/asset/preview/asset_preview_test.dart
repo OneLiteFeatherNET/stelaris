@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/feature/asset/preview/asset_preview.dart';
 import 'package:stelaris/feature/asset/preview/asset_preview_controller.dart';
+import 'package:stelaris/feature/asset/preview/asset_preview_placeholder.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 
 // These tests run on the VM, so AssetPreview uses the placeholder viewport.
@@ -14,6 +15,7 @@ Future<void> _pump(
   WidgetTester tester, {
   List<String> unsupported = const [],
   AssetPreviewController? controller,
+  Widget Function(Widget viewport)? viewportFrame,
 }) {
   return tester.pumpWidget(
     MaterialApp(
@@ -25,6 +27,7 @@ Future<void> _pump(
           assetKey: _key,
           unsupported: unsupported,
           controller: controller,
+          viewportFrame: viewportFrame,
         ),
       ),
     ),
@@ -111,5 +114,43 @@ void main() {
     await tester.pump();
 
     expect(controller.resetRequests, 1);
+  });
+
+  testWidgets('viewport frame wraps the viewport placeholder', (tester) async {
+    await _pump(
+      tester,
+      viewportFrame: (viewport) => Container(key: const Key('frame'), child: viewport),
+    );
+
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('frame')),
+        matching: find.byType(AssetPreviewPlaceholder),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('viewport frame leaves the controls outside', (tester) async {
+    await _pump(
+      tester,
+      unsupported: ['mesh: Sword blade'],
+      viewportFrame: (viewport) => Container(key: const Key('frame'), child: viewport),
+    );
+
+    final frame = find.byKey(const Key('frame'));
+    expect(find.descendant(of: frame, matching: find.byType(IconButton)), findsNothing);
+    expect(
+      find.descendant(of: frame, matching: find.byType(SegmentedButton<AssetDetail>)),
+      findsNothing,
+    );
+    expect(
+      find.descendant(
+        of: frame,
+        matching: find.text(_en.asset_preview_unsupported('mesh: Sword blade')),
+      ),
+      findsNothing,
+    );
+    expect(find.byType(IconButton), findsNWidgets(2));
   });
 }
