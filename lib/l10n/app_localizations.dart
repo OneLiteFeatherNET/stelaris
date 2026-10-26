@@ -214,6 +214,18 @@ abstract class AppLocalizations {
   /// **'The identity provider could not be reached. Check the deployment configuration, then try again.'**
   String get auth_provider_unavailable;
 
+  /// No description provided for @deferred_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'This page could not be loaded. Check your connection, then try again.'**
+  String get deferred_load_failed;
+
+  /// No description provided for @deferred_load_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get deferred_load_retry;
+
   /// No description provided for @delete_dialog_first_line.
   ///
   /// In en, this message translates to:
