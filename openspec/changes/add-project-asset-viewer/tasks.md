@@ -75,7 +75,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 5. Integration check
 
-- [ ] 5.1 Run Vulpes-Backend `themeinerlp/poc/project-assets` locally together with the release web build.
+- [x] 5.1 Run Vulpes-Backend `themeinerlp/poc/project-assets` locally together with the release web build.
   - Upload a Minecraft model JSON plus its texture, and a `.bbmodel`.
   - Choose each one for an item and reopen the item.
   - Rotate, zoom, reset and auto-rotate, then pin each level.
