@@ -1731,4 +1731,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get attribute_hint_translation_key =>
       'Translates the name, e.g. attribute.name.max_health';
+
+  @override
+  String get asset_preview_reset_view => 'Reset view';
+
+  @override
+  String get asset_preview_auto_rotate => 'Auto-rotate';
+
+  @override
+  String get asset_preview_detail_auto => 'Auto';
+
+  @override
+  String get asset_preview_detail_full => 'Full';
+
+  @override
+  String get asset_preview_detail_reduced => 'Reduced';
+
+  @override
+  String get asset_preview_detail_box => 'Box';
+
+  @override
+  String asset_preview_unsupported(String parts) {
+    return 'Not shown: $parts';
+  }
+
+  @override
+  String get asset_preview_unavailable =>
+      'The 3D preview is not available on this platform.';
 }

@@ -3165,6 +3165,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Translates the name, e.g. attribute.name.max_health'**
   String get attribute_hint_translation_key;
+
+  /// No description provided for @asset_preview_reset_view.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset view'**
+  String get asset_preview_reset_view;
+
+  /// No description provided for @asset_preview_auto_rotate.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-rotate'**
+  String get asset_preview_auto_rotate;
+
+  /// No description provided for @asset_preview_detail_auto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get asset_preview_detail_auto;
+
+  /// No description provided for @asset_preview_detail_full.
+  ///
+  /// In en, this message translates to:
+  /// **'Full'**
+  String get asset_preview_detail_full;
+
+  /// No description provided for @asset_preview_detail_reduced.
+  ///
+  /// In en, this message translates to:
+  /// **'Reduced'**
+  String get asset_preview_detail_reduced;
+
+  /// No description provided for @asset_preview_detail_box.
+  ///
+  /// In en, this message translates to:
+  /// **'Box'**
+  String get asset_preview_detail_box;
+
+  /// No description provided for @asset_preview_unsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Not shown: {parts}'**
+  String asset_preview_unsupported(String parts);
+
+  /// No description provided for @asset_preview_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The 3D preview is not available on this platform.'**
+  String get asset_preview_unavailable;
 }
 
 class _AppLocalizationsDelegate

@@ -925,5 +925,20 @@
   "attribute_hint_minimum": "The lowest value, at most the default value",
   "attribute_hint_default": "The base value, between the minimum and the maximum",
   "attribute_hint_maximum": "The highest value, greater than 0 and at least the default value",
-  "attribute_hint_translation_key": "Translates the name, e.g. attribute.name.max_health"
+  "attribute_hint_translation_key": "Translates the name, e.g. attribute.name.max_health",
+  "asset_preview_reset_view": "Reset view",
+  "asset_preview_auto_rotate": "Auto-rotate",
+  "asset_preview_detail_auto": "Auto",
+  "asset_preview_detail_full": "Full",
+  "asset_preview_detail_reduced": "Reduced",
+  "asset_preview_detail_box": "Box",
+  "asset_preview_unsupported": "Not shown: {parts}",
+  "@asset_preview_unsupported": {
+    "placeholders": {
+      "parts": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_preview_unavailable": "The 3D preview is not available on this platform."
 }
