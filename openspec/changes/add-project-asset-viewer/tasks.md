@@ -62,7 +62,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 - [x] 4.2 Add `findModelByKey(projectId, key)` with a per-session cache of lookups and contents
   (MODEL and BBMODEL only, exact key). Verify with tests against a fake adapter: found on a later
   page, not found, a texture with the same key ignored, and a second call served from the cache.
-- [ ] 4.3 Wire it into the components UI:
+- [x] 4.3 Wire it into the components UI:
   - the `minecraft:item_model` edit dialog gets the asset button next to the key field, and the
     chosen key goes into the value;
   - its card shows `AssetPreview` when `findModelByKey` finds the value, and text otherwise.
