@@ -36,17 +36,17 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 3. Web viewer
 
-- [ ] 3.1 Vendor three.js 0.186.1 (`three.module.min.js`, `OrbitControls.js`, license) under
+- [x] 3.1 Vendor three.js 0.186.1 (`three.module.min.js`, `OrbitControls.js`, license) under
   `web/vendor/three/`, and add an import map and the `asset_viewer.js` module script to
   `web/index.html`. Verify that `flutter build web --release` copies the files.
-- [ ] 3.2 Write `web/asset_viewer.js`:
+- [x] 3.2 Write `web/asset_viewer.js`:
   - `mount(element, scene)` builds merged geometry per texture and level, `THREE.LOD` at 0/48/96,
     `OrbitControls` with damping, a checker texture for `null` slots, the average colour for the box
     level, `NearestFilter`, a `ResizeObserver`, `touch-action: none` and wheel `stopPropagation`;
   - the handle exposes `setDetail`, `setAutoRotate`, `resetView` and `dispose`.
 
   Verify by hand in the browser in 5.1.
-- [ ] 3.3 Add the Dart `AssetPreview` widget. On the web it uses `HtmlElementView.fromTagName` with a
+- [x] 3.3 Add the Dart `AssetPreview` widget. On the web it uses `HtmlElementView.fromTagName` with a
   `dart:js_interop` binding, mounts on creation and disposes with the widget. It has controls for
   reset, auto-rotate and pinning the level, and a line naming unsupported parts. Elsewhere a
   conditional import gives a placeholder with the asset key. Verify with a widget test of the
