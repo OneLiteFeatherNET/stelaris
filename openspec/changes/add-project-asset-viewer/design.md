@@ -111,7 +111,7 @@ replaced by that one level. Unit tests check the level selection.
 - `ResizeObserver` keeps the renderer at the element size.
 - The canvas has `touch-action: none` and stops wheel propagation, so the page does not scroll.
 - `dispose()` frees geometries, textures, the renderer and the observer.
-- Each preview has its own WebGL context. The picker and the preview dialog are the only ones on screen, which stays well under the
+- Each preview has its own WebGL context. The picker and the components preview are the only ones on screen, which stays well under the
   browser limit.
 
 ### File picking and upload
@@ -130,8 +130,10 @@ replaced by that one level. Unit tests check the level selection.
   - The dialog puts its key into the value field. Saving is the existing component update.
 - The card for `minecraft:item_model` on the Components tab resolves its value with `findModelByKey(projectId, key)`.
   - It pages through MODEL and BBMODEL assets and matches the key exactly. A TEXTURE with the same key is ignored.
-  - The card keeps today's size and text, so the grid stays symmetric (review feedback). When found it adds a
-    preview button that opens `AssetPreview` in a dialog; otherwise nothing changes.
+  - The cards stay as they are, so the grid stays symmetric (review feedback). Like the lore tab
+    (`LorePage`/`LorePageView`), the tab header gets a preview toggle; from 840 px the preview slides in next to
+    the grid (35 % of the width, 280–420 px), below that it opens as a bottom sheet. The preview panel has the lore
+    preview's title row and surface. The toggle is disabled while no model is found.
   - Lookups and downloaded contents are cached per session by key and sha1, so reopening an item does not refetch.
   - A key lookup endpoint in the backend would replace the paging later.
   - It reaches the card through the existing per-key special case point, next to `_isBook`, and does not touch the generic
@@ -144,7 +146,7 @@ replaced by that one level. Unit tests check the level selection.
   - Mitigation: `touch-action: none`, `stopPropagation` on wheel, and a browser check in the final task.
 - **WebGL context limit (about 16).**
   - Risk: many cards would open many contexts.
-  - Mitigation: only the picker and the preview dialog draw. A list of thumbnails is out of scope.
+  - Mitigation: only the picker and the components preview draw. A list of thumbnails is out of scope.
 - **Vendored JS is outside `flutter analyze` and the unit tests.**
   - Mitigation: keep the bridge under about 300 lines, and verify it in the browser.
 - **`item_model` meaning.**

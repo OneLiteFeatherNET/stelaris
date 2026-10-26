@@ -41,14 +41,25 @@ only through that value.
 
 ### Requirement: Show the referenced model again
 
-The item model component's card SHALL keep the size of the other component cards and show its value
-as text. When the value is the key of a project model, the card SHALL offer a preview that opens the
-model in 3D each time the item is opened. A texture with the same key SHALL NOT count as the model.
+The components tab SHALL offer a preview, like the lore preview: shown next to the cards where there is
+room and toggled from the tab header, otherwise opened as a bottom sheet. It SHALL show in 3D the
+project model whose key equals the item model value. A texture with the same key SHALL NOT count.
+The item model card SHALL keep the size of the other cards and show its value as text.
 
 #### Scenario: Reopen the item
 
-- **WHEN** the user opens an item whose item model value is the key of a project model and opens the preview
-- **THEN** the model is shown in 3D
+- **WHEN** the user opens a wide components tab of an item whose item model value is the key of a project model
+- **THEN** the model is shown in 3D next to the cards
+
+#### Scenario: Hide the preview
+
+- **WHEN** the user toggles the preview in the tab header
+- **THEN** the preview hides and the cards take the full width
+
+#### Scenario: Narrow window
+
+- **WHEN** the components tab is too narrow for the preview and the user presses the preview action
+- **THEN** the preview opens as a bottom sheet
 
 #### Scenario: Cards stay aligned
 
@@ -58,7 +69,7 @@ model in 3D each time the item is opened. A texture with the same key SHALL NOT 
 #### Scenario: No such model
 
 - **WHEN** the item model value names no model of the project
-- **THEN** the card shows the value as text and offers no preview
+- **THEN** the card shows the value as text and the preview action is disabled
 
 ### Requirement: Rotate and zoom the preview
 

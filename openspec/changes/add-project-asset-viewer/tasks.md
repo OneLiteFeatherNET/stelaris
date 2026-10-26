@@ -68,10 +68,16 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   - its card shows `AssetPreview` when `findModelByKey` finds the value, and text otherwise.
 
   Verify with widget tests on `item_components_page`. Keep the generic schema widgets unchanged.
-- [x] 4.4 Review feedback: the item model card keeps the size of the other cards (the grid as on
+- [x] ~~4.4 Review feedback: the item model card keeps the size of the other cards (the grid as on
   develop) and shows its value as text; when `findModelByKey` finds the value, a preview button
   opens the model in a dialog. Verify with widget tests: same card height as other cards, button only
-  for a found model (not for a texture with the same key), button opens the 3D preview.
+  for a found model (not for a texture with the same key), button opens the 3D preview.~~ replaced by 4.5
+- [ ] 4.5 Review feedback: preview like the lore preview. Remove the card button and dialog of 4.4
+  (cards as on develop). The components tab header gets a preview toggle; at >= 840 px the 3D preview
+  of the item model slides in next to the grid with the lore preview's title row and surface, below
+  that the toggle opens it as a bottom sheet; disabled while no model is found. Verify with widget
+  tests: panel shown when wide and a model is found, toggle hides it, narrow opens a bottom sheet,
+  toggle disabled without a model or with only a texture of that key, card heights unchanged.
 
 ## 5. Integration check
 
