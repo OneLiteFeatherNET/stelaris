@@ -10,12 +10,7 @@ import 'package:stelaris/auth/auth_state.dart';
 import 'package:stelaris/feature/auth/sign_in_page.dart';
 import 'package:stelaris/feature/base/base_page.dart';
 import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
-import 'package:stelaris/feature/font/font_detail_page.dart';
-import 'package:stelaris/feature/item/item_detail_page.dart';
-import 'package:stelaris/feature/advancement/advancement_detail_page.dart';
-import 'package:stelaris/feature/attributes/attribute_detail_page.dart';
 import 'package:stelaris/feature/project/project_selection_page.dart';
-import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/util/deferred_widget.dart';
 
 import 'package:stelaris/feature/attributes/attribute_page.dart'
@@ -25,6 +20,16 @@ import 'package:stelaris/feature/item/item_page.dart' deferred as item_page;
 import 'package:stelaris/feature/advancement/advancement_page.dart'
     deferred as advancement_page;
 import 'package:stelaris/feature/sound/sound_page.dart' deferred as sound_page;
+import 'package:stelaris/feature/attributes/attribute_detail_page.dart'
+    deferred as attribute_detail_page;
+import 'package:stelaris/feature/font/font_detail_page.dart'
+    deferred as font_detail_page;
+import 'package:stelaris/feature/item/item_detail_page.dart'
+    deferred as item_detail_page;
+import 'package:stelaris/feature/advancement/advancement_detail_page.dart'
+    deferred as advancement_detail_page;
+import 'package:stelaris/feature/sound/sound_detail_page.dart'
+    deferred as sound_detail_page;
 
 const String projectSelectionRoute = '/projects';
 
@@ -285,7 +290,10 @@ final GoRouter router = GoRouter(
               redirect: attributeDetailRedirect,
               onExit: detailExitGuard,
               pageBuilder: (context, state) => CustomTransitionPage(
-                child: const AttributeDetailPage(),
+                child: DeferredWidget(
+                  loader: attribute_detail_page.loadLibrary,
+                  builder: () => attribute_detail_page.AttributeDetailPage(),
+                ),
                 key: state.pageKey,
                 transitionsBuilder: buildDetailSlideTransition,
               ),
@@ -313,7 +321,10 @@ final GoRouter router = GoRouter(
               redirect: itemDetailRedirect,
               onExit: detailExitGuard,
               pageBuilder: (context, state) => CustomTransitionPage(
-                child: const ItemDetailPage(),
+                child: DeferredWidget(
+                  loader: item_detail_page.loadLibrary,
+                  builder: () => item_detail_page.ItemDetailPage(),
+                ),
                 key: state.pageKey,
                 transitionsBuilder: buildDetailSlideTransition,
               ),
@@ -341,7 +352,10 @@ final GoRouter router = GoRouter(
               redirect: advancementDetailRedirect,
               onExit: detailExitGuard,
               pageBuilder: (context, state) => CustomTransitionPage(
-                child: const AdvancementDetailPage(),
+                child: DeferredWidget(
+                  loader: advancement_detail_page.loadLibrary,
+                  builder: () => advancement_detail_page.AdvancementDetailPage(),
+                ),
                 key: state.pageKey,
                 transitionsBuilder: buildDetailSlideTransition,
               ),
@@ -369,7 +383,10 @@ final GoRouter router = GoRouter(
               redirect: fontDetailRedirect,
               onExit: detailExitGuard,
               pageBuilder: (context, state) => CustomTransitionPage(
-                child: const FontDetailPage(),
+                child: DeferredWidget(
+                  loader: font_detail_page.loadLibrary,
+                  builder: () => font_detail_page.FontDetailPage(),
+                ),
                 key: state.pageKey,
                 transitionsBuilder: buildDetailSlideTransition,
               ),
@@ -397,7 +414,10 @@ final GoRouter router = GoRouter(
               redirect: soundDetailRedirect,
               onExit: detailExitGuard,
               pageBuilder: (context, state) => CustomTransitionPage(
-                child: const SoundDetailPage(),
+                child: DeferredWidget(
+                  loader: sound_detail_page.loadLibrary,
+                  builder: () => sound_detail_page.SoundDetailPage(),
+                ),
                 key: state.pageKey,
                 transitionsBuilder: buildDetailSlideTransition,
               ),
