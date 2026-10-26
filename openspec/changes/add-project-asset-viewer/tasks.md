@@ -72,7 +72,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   develop) and shows its value as text; when `findModelByKey` finds the value, a preview button
   opens the model in a dialog. Verify with widget tests: same card height as other cards, button only
   for a found model (not for a texture with the same key), button opens the 3D preview.~~ replaced by 4.5
-- [ ] 4.5 Review feedback: preview like the lore preview. Remove the card button and dialog of 4.4
+- [x] 4.5 Review feedback: preview like the lore preview. Remove the card button and dialog of 4.4
   (cards as on develop). The components tab header gets a preview toggle; at >= 840 px the 3D preview
   of the item model slides in next to the grid with the lore preview's title row and surface, below
   that the toggle opens it as a bottom sheet; disabled while no model is found. Verify with widget
