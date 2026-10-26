@@ -269,13 +269,18 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
               child: SizedBox(
                 height: height,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     for (var column = 0; column < columns; column++) ...[
                       if (column > 0) const SizedBox(width: _spacing),
                       Expanded(
                         child: start + column < end
-                            ? itemBuilder(context, start + column) ??
-                                  const SizedBox.shrink()
+                            ? SizedBox(
+                                height: heightOf(start + column),
+                                child:
+                                    itemBuilder(context, start + column) ??
+                                    const SizedBox.shrink(),
+                              )
                             : const SizedBox.shrink(),
                       ),
                     ],
