@@ -10,7 +10,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 - A `.bbmodel` UV is in `resolution` pixels while Minecraft JSON uses 0..16 (2.2).
 - `#var` texture chains (`#all` → `#side` → key) and keys without a namespace (2.1).
-- A texture and a model with the same key: the card shows the model, never the texture (4.2).
+- A texture and a model with the same key: the preview shows the model, never the texture (4.2).
 - The reduced level never ends up empty (2.3).
 
 ## 1. Contract
@@ -68,6 +68,10 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   - its card shows `AssetPreview` when `findModelByKey` finds the value, and text otherwise.
 
   Verify with widget tests on `item_components_page`. Keep the generic schema widgets unchanged.
+- [ ] 4.4 Review feedback: the item model card keeps the size of the other cards (the grid as on
+  develop) and shows its value as text; when `findModelByKey` finds the value, a preview button
+  opens the model in a dialog. Verify with widget tests: same card height as other cards, button only
+  for a found model (not for a texture with the same key), button opens the 3D preview.
 
 ## 5. Integration check
 
@@ -77,7 +81,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   - Rotate, zoom, reset and auto-rotate, then pin each level.
   - Confirm the page does not scroll while dragging or zooming.
   - Record the result with a screenshot.
-- [ ] 5.2 Run `flutter analyze` and the full `flutter test`, and check that both pass.
+- [x] 5.2 Run `flutter analyze` and the full `flutter test`, and check that both pass.
 
 ## Workflow follow-up
 

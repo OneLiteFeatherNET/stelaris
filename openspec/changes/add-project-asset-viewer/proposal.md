@@ -32,8 +32,8 @@ can be rotated and zoomed, every time the item is opened.
   turn on its own. Other platforms show a placeholder.
 - **Data component `minecraft:item_model`**: its edit dialog gets an asset button that opens a picker
   with the project's models and an upload. Choosing or uploading a model sets the component value to
-  the asset key. The component's card on the Components tab shows the model whose key equals the
-  value in 3D.
+  the asset key. The component's card on the Components tab keeps its size and offers a preview
+  that opens the model whose key equals the value in 3D.
 
 ## Capabilities
 

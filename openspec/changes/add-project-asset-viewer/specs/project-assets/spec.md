@@ -41,19 +41,24 @@ only through that value.
 
 ### Requirement: Show the referenced model again
 
-The item model component's card SHALL show the project model whose key equals the component value as
-a 3D preview each time the item is opened. A texture with the same key SHALL NOT count as the model.
-A value without such a model SHALL be shown as text only.
+The item model component's card SHALL keep the size of the other component cards and show its value
+as text. When the value is the key of a project model, the card SHALL offer a preview that opens the
+model in 3D each time the item is opened. A texture with the same key SHALL NOT count as the model.
 
 #### Scenario: Reopen the item
 
-- **WHEN** the user opens an item whose item model value is the key of a project model
-- **THEN** the card shows that model in 3D
+- **WHEN** the user opens an item whose item model value is the key of a project model and opens the preview
+- **THEN** the model is shown in 3D
+
+#### Scenario: Cards stay aligned
+
+- **WHEN** the components tab shows the item model card next to other components
+- **THEN** all cards have the same size
 
 #### Scenario: No such model
 
 - **WHEN** the item model value names no model of the project
-- **THEN** the card shows the value as text
+- **THEN** the card shows the value as text and offers no preview
 
 ### Requirement: Rotate and zoom the preview
 
@@ -110,5 +115,5 @@ failing.
 
 #### Scenario: Desktop build
 
-- **WHEN** the item model card is shown on a non-web platform
+- **WHEN** the item model preview is opened on a non-web platform
 - **THEN** a placeholder with the asset key is shown
