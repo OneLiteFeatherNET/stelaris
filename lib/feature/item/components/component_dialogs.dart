@@ -1,4 +1,7 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/asset/loading/asset_library.dart';
+import 'package:stelaris/feature/asset/picker/asset_picker_dialog.dart';
+import 'package:stelaris/feature/asset/preview/asset_scene_view.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/hide_tooltips_while_scrolling.dart';
 import 'package:stelaris/feature/base/search/dialog_search_bar.dart';
@@ -23,6 +26,13 @@ const Set<String> dedicatedComponents = {
   'minecraft:enchantments',
   'minecraft:stored_enchantments',
 };
+
+/// The key of the component whose value names a model of the project.
+const String itemModelComponent = 'minecraft:item_model';
+
+/// The project a component belongs to, with the id the assets are stored
+/// under and the key their namespace comes from.
+typedef ComponentProject = ({String id, String key});
 
 /// Every component the components tab knows: the Stelaris ones first, then
 /// the vanilla catalog.
@@ -334,16 +344,23 @@ typedef ComponentSave = Future<Object?> Function(Object? value);
 ///
 /// Submitting waits for [onSave]: on an error the dialog stays open and
 /// shows it, otherwise it closes. Resolves to whether the value was saved.
+///
+/// The item model also gets a button to choose a model of the [project].
 Future<bool> showComponentEditDialog(
   BuildContext context, {
   required ComponentSpec spec,
   required Object? value,
   required ComponentSave onSave,
+  ComponentProject? project,
 }) async {
   final saved = await showDialog<bool>(
     context: context,
-    builder: (_) =>
-        _ComponentEditDialog(spec: spec, value: value, onSave: onSave),
+    builder: (_) => _ComponentEditDialog(
+      spec: spec,
+      value: value,
+      onSave: onSave,
+      project: project,
+    ),
   );
   return saved ?? false;
 }
@@ -353,11 +370,13 @@ class _ComponentEditDialog extends StatefulWidget {
     required this.spec,
     required this.value,
     required this.onSave,
+    required this.project,
   });
 
   final ComponentSpec spec;
   final Object? value;
   final ComponentSave onSave;
+  final ComponentProject? project;
 
   @override
   State<_ComponentEditDialog> createState() => _ComponentEditDialogState();
@@ -368,8 +387,35 @@ class _ComponentEditDialogState extends State<_ComponentEditDialog> {
   late Object? _value = widget.value;
   bool _saving = false;
 
+  /// Changes whenever a model is chosen, so the key field shows the new key.
+  int _fieldEpoch = 0;
+
   /// Books have too many parts for the form, they get their own editor.
   bool get _isBook => widget.spec.key == writtenBookComponent;
+
+  /// Only the item model names a project asset, and only in a project.
+  bool get _isItemModel =>
+      widget.spec.key == itemModelComponent && widget.project != null;
+
+  Future<void> _chooseModel() async {
+    final project = widget.project;
+    if (project == null) return;
+    final current = _value;
+    final asset = await showAssetPickerDialog(
+      context,
+      projectId: project.id,
+      namespace: project.key,
+      selectedKey: current is String ? current : null,
+      previewBuilder: (asset) =>
+          AssetSceneView(projectId: project.id, asset: asset),
+    );
+    if (asset == null || !mounted) return;
+    AssetLibrary.shared.remember(asset);
+    setState(() {
+      _value = asset.key;
+      _fieldEpoch++;
+    });
+  }
 
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? true)) return;
@@ -425,9 +471,18 @@ class _ComponentEditDialogState extends State<_ComponentEditDialog> {
                 )
               else
                 SchemaField(
+                  key: ValueKey(_fieldEpoch),
                   schema: widget.spec.schema,
                   value: _value,
                   onChanged: (value) => setState(() => _value = value),
+                  suffix: _isItemModel
+                      ? IconButton(
+                          key: const Key('item_model_choose_asset'),
+                          tooltip: context.l10n.asset_pick_model_tooltip,
+                          icon: const Icon(Icons.view_in_ar),
+                          onPressed: _chooseModel,
+                        )
+                      : null,
                 ),
             ],
           ),

@@ -3214,11 +3214,23 @@ abstract class AppLocalizations {
   /// **'The 3D preview is not available on this platform.'**
   String get asset_preview_unavailable;
 
+  /// No description provided for @asset_preview_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The model could not be shown.'**
+  String get asset_preview_failed;
+
   /// No description provided for @asset_picker_title.
   ///
   /// In en, this message translates to:
   /// **'Choose a model'**
   String get asset_picker_title;
+
+  /// No description provided for @asset_pick_model_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a model from the project'**
+  String get asset_pick_model_tooltip;
 
   /// No description provided for @asset_picker_choose.
   ///

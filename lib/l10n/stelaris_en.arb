@@ -941,7 +941,9 @@
     }
   },
   "asset_preview_unavailable": "The 3D preview is not available on this platform.",
+  "asset_preview_failed": "The model could not be shown.",
   "asset_picker_title": "Choose a model",
+  "asset_pick_model_tooltip": "Choose a model from the project",
   "asset_picker_choose": "Choose",
   "asset_picker_empty": "This project has no models yet. Upload one below.",
   "asset_picker_load_failed": "The models could not be loaded.",

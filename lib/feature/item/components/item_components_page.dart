@@ -1,7 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/asset/item_model_asset_preview.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/page_header.dart';
@@ -41,6 +44,9 @@ class ItemComponentsPage extends StatefulWidget {
 class _ItemComponentsPageState extends State<ItemComponentsPage> {
   static const double _maxCardExtent = 320;
   static const double _cardHeight = 112;
+
+  /// The item model card also holds the 3D preview of the model.
+  static const double _modelCardHeight = 560;
   static const double _spacing = 12;
 
   /// Shows only the components of this category, null shows all.
@@ -57,6 +63,7 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
       context,
       spec: spec,
       value: initialValue(spec.schema),
+      project: vm.project,
       onSave: (value) => _run(
         ItemComponentAddAction(
           ItemComponentDto(componentKey: spec.key, value: value),
@@ -65,11 +72,16 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
     );
   }
 
-  Future<void> _edit(ComponentSpec spec, ItemComponentDto component) async {
+  Future<void> _edit(
+    ComponentSpec spec,
+    ItemComponentDto component,
+    ComponentProject? project,
+  ) async {
     await showComponentEditDialog(
       context,
       spec: spec,
       value: component.value,
+      project: project,
       onSave: (value) =>
           _run(ItemComponentUpdateAction(component.copyWith(value: value))),
     );
@@ -178,6 +190,7 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
                   (true, _) => _grid(
                     key: const Key('component_skeleton'),
                     itemCount: (columns) => columns * 2,
+                    heightOf: (_) => _cardHeight,
                     itemBuilder: (context, index) => const _SkeletonCard(),
                   ),
                   (false, true) => EmptyDataWidget.full(
@@ -186,6 +199,8 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
                   ),
                   _ => _grid(
                     itemCount: (_) => components.length,
+                    heightOf: (index) =>
+                        _heightOf(components[index], vm.project),
                     itemBuilder: (context, index) {
                       final component = components[index];
                       final spec = _specsByKey[component.componentKey];
@@ -198,10 +213,13 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
                         componentKey: component.componentKey,
                         spec: spec,
                         value: component.value,
+                        project: vm.project,
                         overridesDefault: defaults.contains(
                           component.componentKey,
                         ),
-                        onEdit: editable ? () => _edit(spec, component) : null,
+                        onEdit: editable
+                            ? () => _edit(spec, component, vm.project)
+                            : null,
                         // Every item has its required components.
                         onRemove: spec != null && spec.isRequired
                             ? null
@@ -222,9 +240,11 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
   }
 
   /// The card grid, with as many columns of cards as fit. [itemCount]
-  /// gets the number of columns.
+  /// gets the number of columns. Each row is as tall as its tallest card,
+  /// so a card with a 3D preview doesn't need a grid of its own.
   Widget _grid({
     required int Function(int columns) itemCount,
+    required double Function(int index) heightOf,
     required NullableIndexedWidgetBuilder itemBuilder,
     Key? key,
   }) {
@@ -235,19 +255,45 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
             ((constraints.maxWidth + _spacing) / (_maxCardExtent + _spacing))
                 .floor()
                 .clamp(1, 4);
-        return GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: columns,
-            mainAxisExtent: _cardHeight,
-            crossAxisSpacing: _spacing,
-            mainAxisSpacing: _spacing,
-          ),
-          itemCount: itemCount(columns),
-          itemBuilder: itemBuilder,
+        final count = itemCount(columns);
+        return ListView.builder(
+          itemCount: (count + columns - 1) ~/ columns,
+          itemBuilder: (context, row) {
+            final start = row * columns;
+            final end = math.min(start + columns, count);
+            final height = [
+              for (var index = start; index < end; index++) heightOf(index),
+            ].reduce(math.max);
+            return Padding(
+              padding: EdgeInsets.only(bottom: row == 0 ? 0 : _spacing),
+              child: SizedBox(
+                height: height,
+                child: Row(
+                  children: [
+                    for (var column = 0; column < columns; column++) ...[
+                      if (column > 0) const SizedBox(width: _spacing),
+                      Expanded(
+                        child: start + column < end
+                            ? itemBuilder(context, start + column) ??
+                                  const SizedBox.shrink()
+                            : const SizedBox.shrink(),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
   }
+
+  /// The height of the card of [component], the item model card is taller.
+  double _heightOf(ItemComponentDto component, ComponentProject? project) =>
+      _showsModel(component.componentKey, component.value, project)
+      ? _modelCardHeight
+      : _cardHeight;
 
   /// Sorts by category like the picker, unknown components come last.
   static int _sortIndex(ItemComponentDto component) =>
@@ -256,11 +302,17 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
 }
 
 class _ComponentsView extends Vm {
-  _ComponentsView({required this.material, required this.components})
-    : super(equals: [material, components]);
+  _ComponentsView({
+    required this.material,
+    required this.components,
+    required this.project,
+  }) : super(equals: [material, components, project]);
 
   final String material;
   final List<ItemComponentDto> components;
+
+  /// The project the item belongs to, null without an id to store assets under.
+  final ComponentProject? project;
 }
 
 class _ComponentsFactory
@@ -269,8 +321,20 @@ class _ComponentsFactory
   _ComponentsView fromStore() => _ComponentsView(
     material: materialOf(state.selectedItemComponents),
     components: state.selectedItemComponents,
+    project: switch (state.selectedProject) {
+      Project(id: final id?, :final key) => (id: id, key: key),
+      _ => null,
+    },
   );
 }
+
+/// Whether the card of a component shows the 3D preview of the model its
+/// value names, instead of the value as text.
+bool _showsModel(
+  String componentKey,
+  Object? value,
+  ComponentProject? project,
+) => componentKey == itemModelComponent && project != null && value is String;
 
 /// Stands in for a [_ComponentCard] while the components load: the same
 /// card, with bars where its texts go.
@@ -302,6 +366,7 @@ class _ComponentCard extends StatelessWidget {
     required this.componentKey,
     required this.spec,
     required this.value,
+    required this.project,
     required this.overridesDefault,
     required this.onEdit,
     required this.onRemove,
@@ -314,6 +379,9 @@ class _ComponentCard extends StatelessWidget {
   /// more), e.g. after a Minecraft update removed it.
   final ComponentSpec? spec;
   final Object? value;
+
+  /// The project whose models the item model card previews.
+  final ComponentProject? project;
   final bool overridesDefault;
 
   /// Opens the edit dialog, null when the component can't be edited.
@@ -328,6 +396,16 @@ class _ComponentCard extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final mutedStyle = theme.textTheme.bodySmall?.copyWith(
       color: colorScheme.onSurfaceVariant,
+    );
+
+    final valueText = Text(
+      switch (spec) {
+        null => context.l10n.component_not_in_catalog(componentKey),
+        final spec => summarize(context.l10n, spec.schema, value),
+      },
+      style: theme.textTheme.bodyMedium,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
 
     // Outlined like every card that opens a dialog, a filled card opens a
@@ -390,16 +468,22 @@ class _ComponentCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const Spacer(),
-              Text(
-                switch (spec) {
-                  null => context.l10n.component_not_in_catalog(componentKey),
-                  final spec => summarize(context.l10n, spec.schema, value),
-                },
-                style: theme.textTheme.bodyMedium,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              if (_showsModel(componentKey, value, project)) ...[
+                const SizedBox(height: 8),
+                Expanded(
+                  child: ItemModelAssetPreview(
+                    projectId: project!.id,
+                    assetKey: value! as String,
+                    fallback: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: valueText,
+                    ),
+                  ),
+                ),
+              ] else ...[
+                const Spacer(),
+                valueText,
+              ],
             ],
           ),
         ),

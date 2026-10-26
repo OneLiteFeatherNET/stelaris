@@ -8,18 +8,26 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/asset/loading/asset_library.dart';
+import 'package:stelaris/feature/asset/preview/asset_preview_placeholder.dart';
 import 'package:stelaris/feature/item/components/item_components_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
+import '../../../support/fake_asset_api.dart';
 import '../../../support/fake_http_client_adapter.dart';
+import '../../../support/pump_until.dart';
 import '../../../support/settle_requests.dart';
 
 void main() {
+  setUp(() => AssetLibrary.shared.invalidate());
+
   Future<void> pumpPage(
     WidgetTester tester,
-    List<ItemComponentDto> components,
-  ) async {
+    List<ItemComponentDto> components, {
+    Project? project,
+    bool settle = true,
+  }) async {
     tester.view.physicalSize = const Size(1400, 1000);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -28,6 +36,7 @@ void main() {
     final store = Store<AppState>(
       initialState: const AppState().copyWith(
         selectedItemComponents: components,
+        selectedProject: project,
       ),
     );
     await tester.pumpWidget(
@@ -40,7 +49,7 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    if (settle) await tester.pumpAndSettle();
   }
 
   const food = ItemComponentDto(
@@ -369,4 +378,87 @@ void main() {
       expect(find.byKey(const Key('component_skeleton')), findsNothing);
     },
   );
+
+  group('item model card', () {
+    const vulpes = Project(id: 'p-1', displayName: 'Vulpes', key: 'vulpes');
+    const itemModel = ItemComponentDto(
+      id: 'c7',
+      componentKey: 'minecraft:item_model',
+      value: 'vulpes:item/ruby',
+    );
+
+    Finder preview() => find.byType(AssetPreviewPlaceholder);
+
+    testWidgets(
+      'shows the 3D preview of the model its value names',
+      variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+      (tester) async {
+        serveAssets([
+          assetJson(id: 'm-1', key: 'vulpes:item/ruby', kind: 'MODEL'),
+        ]);
+        await pumpPage(
+          tester,
+          const [itemModel],
+          project: vulpes,
+          settle: false,
+        );
+        await pumpUntil(
+          tester,
+          action: () async {},
+          done: () => preview().evaluate().isNotEmpty,
+        );
+
+        expect(preview(), findsOneWidget);
+        expect(find.text('Item Model'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'keeps the value as text when no model has its key',
+      variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+      (tester) async {
+        serveAssets([
+          assetJson(id: 'm-2', key: 'vulpes:item/sapphire', kind: 'MODEL'),
+        ]);
+        await pumpPage(
+          tester,
+          const [itemModel],
+          project: vulpes,
+          settle: false,
+        );
+        await pumpUntil(
+          tester,
+          action: () async {},
+          done: () => find.text('vulpes:item/ruby').evaluate().isNotEmpty,
+        );
+
+        expect(preview(), findsNothing);
+        expect(find.text('vulpes:item/ruby'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'a texture with the key of the item model is not shown as the model',
+      variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+      (tester) async {
+        serveAssets([
+          assetJson(id: 't-1', key: 'vulpes:item/ruby', kind: 'TEXTURE'),
+        ]);
+        await pumpPage(
+          tester,
+          const [itemModel],
+          project: vulpes,
+          settle: false,
+        );
+        await pumpUntil(
+          tester,
+          action: () async {},
+          done: () => find.text('vulpes:item/ruby').evaluate().isNotEmpty,
+        );
+
+        expect(preview(), findsNothing);
+        expect(find.text('vulpes:item/ruby'), findsOneWidget);
+      },
+    );
+  });
 }

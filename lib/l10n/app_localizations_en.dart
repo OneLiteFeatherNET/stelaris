@@ -1760,7 +1760,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'The 3D preview is not available on this platform.';
 
   @override
+  String get asset_preview_failed => 'The model could not be shown.';
+
+  @override
   String get asset_picker_title => 'Choose a model';
+
+  @override
+  String get asset_pick_model_tooltip => 'Choose a model from the project';
 
   @override
   String get asset_picker_choose => 'Choose';

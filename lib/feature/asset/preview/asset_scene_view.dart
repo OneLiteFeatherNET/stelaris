@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+import 'package:stelaris/api/model/asset_model.dart';
+import 'package:stelaris/feature/asset/loading/asset_library.dart';
+import 'package:stelaris/feature/asset/preview/asset_preview.dart';
+import 'package:stelaris/util/l10n_ext.dart';
+
+/// Loads the model [asset] of [projectId] and shows it in an [AssetPreview].
+///
+/// The scene is loaded once per widget; a failed load shows a short error.
+class AssetSceneView extends StatefulWidget {
+  const AssetSceneView({
+    required this.projectId,
+    required this.asset,
+    super.key,
+  });
+
+  final String projectId;
+  final AssetModel asset;
+
+  @override
+  State<AssetSceneView> createState() => _AssetSceneViewState();
+}
+
+class _AssetSceneViewState extends State<AssetSceneView> {
+  late Future<AssetSceneData> _scene = _load();
+
+  Future<AssetSceneData> _load() =>
+      AssetLibrary.shared.loadScene(widget.projectId, widget.asset);
+
+  @override
+  void didUpdateWidget(AssetSceneView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.asset.id != widget.asset.id ||
+        oldWidget.projectId != widget.projectId) {
+      _scene = _load();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<AssetSceneData>(
+      future: _scene,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return _ErrorText(context.l10n.asset_preview_failed);
+        }
+        final data = snapshot.data;
+        if (data == null) {
+          return const Center(
+            child: SizedBox.square(
+              dimension: 24,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          );
+        }
+        return AssetPreview(
+          scene: data.scene,
+          assetKey: widget.asset.key,
+          unsupported: data.unsupported,
+        );
+      },
+    );
+  }
+}
+
+class _ErrorText extends StatelessWidget {
+  const _ErrorText(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
+    );
+  }
+}
