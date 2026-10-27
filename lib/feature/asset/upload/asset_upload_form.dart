@@ -126,10 +126,16 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
       controller: controller.keyController,
       focusNode: _keyFocus,
       enabled: !controller.uploading,
+      readOnly: controller.fixedKey != null,
       autocorrect: false,
       decoration: InputDecoration(
         labelText: l10n.asset_picker_key,
-        helperText: l10n.asset_upload_key_helper('$namespace:item/ruby'),
+        helperText: controller.fixedKey != null
+            ? l10n.asset_upload_key_fixed
+            : l10n.asset_upload_key_helper('$namespace:item/ruby'),
+        suffixIcon: controller.fixedKey != null
+            ? const Icon(Icons.lock_outline, size: 18)
+            : null,
         errorText:
             controller.keyError ??
             switch (controller.keyProblem) {

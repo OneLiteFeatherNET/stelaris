@@ -21,12 +21,14 @@ Future<AssetUploadController> _pump(
   WidgetTester tester, {
   List<PickedAssetFile?> picks = const [],
   Set<AssetKind> kinds = const {...AssetKind.values},
+  String? fixedKey,
 }) async {
   final queue = [...picks];
   final controller = AssetUploadController(
     projectId: 'p-1',
     namespace: 'vulpes',
     kinds: kinds,
+    fixedKey: fixedKey,
     pickFile: () async =>
         queue.removeAt(0) ?? (throw StateError('the file was not readable')),
   );
@@ -144,6 +146,21 @@ void main() {
       findsOneWidget,
     );
     expect(controller.canUpload, isFalse);
+  });
+
+  testWidgets('a fixed key stays and can not be edited', (tester) async {
+    final controller = await _pump(
+      tester,
+      kinds: {AssetKind.TEXTURE},
+      fixedKey: 'vulpes:item/ruby_glow',
+      picks: [_file('glow.png')],
+    );
+
+    await _choose(tester);
+
+    expect(_keyField(tester).controller!.text, 'vulpes:item/ruby_glow');
+    expect(_keyField(tester).readOnly, isTrue);
+    expect(controller.canUpload, isTrue);
   });
 
   testWidgets('a file that can not be read says so', (tester) async {

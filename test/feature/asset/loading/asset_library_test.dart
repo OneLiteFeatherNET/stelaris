@@ -200,10 +200,12 @@ void main() {
       final backend = _FakeBackend(
         assets: const [],
         contents: {
-          'm-ruby': _utf8(_json({
-            'parent': 'item/generated',
-            'textures': {'layer0': 'vulpes:item/ruby'},
-          })),
+          'm-ruby': _utf8(
+            _json({
+              'parent': 'item/generated',
+              'textures': {'layer0': 'vulpes:item/ruby'},
+            }),
+          ),
         },
       );
       final library = _library(backend);

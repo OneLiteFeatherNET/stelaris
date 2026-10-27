@@ -210,4 +210,56 @@ void main() {
     expect(selections, ['m2']);
     expect(find.text('vulpes:item/sword'), findsWidgets);
   });
+
+  testWidgets('an uploaded missing texture turns present', (tester) async {
+    final assets = [_ruby];
+    final selections = await _pump(
+      tester,
+      library: _Library(assets, {
+        'm1': {'vulpes:item/glow'},
+      }),
+      selectedId: 'm1',
+      pickFile: () async =>
+          PickedAssetFile(name: 'whatever.png', bytes: Uint8List(3)),
+    );
+    await _settlePreview(tester);
+    expect(find.byKey(const ValueKey('model_missing_m1')), findsOneWidget);
+    final glow = _asset('t9', 'vulpes:item/glow', AssetKind.TEXTURE);
+    final uploadedKeys = <Object?>[];
+    ApiService().assetApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter((RequestOptions options) {
+          if (options.method == 'POST') {
+            final form = options.data as FormData;
+            uploadedKeys.addAll([
+              for (final field in form.fields)
+                if (field.key == 'key') field.value,
+            ]);
+            assets.add(glow);
+            return FakeHttpClientAdapter.response(glow.toJson());
+          }
+          return FakeHttpClientAdapter.response({'elements': <Object?>[]});
+        });
+
+    final upload = find.byKey(
+      const ValueKey('model_texture_upload_vulpes:item/glow'),
+    );
+    await tester.ensureVisible(upload);
+    await tester.tap(upload);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Choose a file'));
+    await tester.pumpAndSettle();
+    await pumpUntil(
+      tester,
+      action: () async {
+        await tester.tap(find.text('Upload').last);
+      },
+      done: () =>
+          find.byKey(const ValueKey('model_missing_m1')).evaluate().isEmpty &&
+          find.byType(CircularProgressIndicator).evaluate().isEmpty,
+    );
+
+    expect(uploadedKeys, ['vulpes:item/glow']);
+    expect(find.text('Missing'), findsNothing);
+    expect(selections, isEmpty);
+  });
 }

@@ -71,12 +71,18 @@ void main() {
 
     test('rejects an empty or invalid namespace', () {
       expect(checkAssetKey(':item/ruby'), AssetKeyProblem.invalidNamespace);
-      expect(checkAssetKey('Vulpes:item/ruby'), AssetKeyProblem.invalidNamespace);
+      expect(
+        checkAssetKey('Vulpes:item/ruby'),
+        AssetKeyProblem.invalidNamespace,
+      );
     });
 
     test('rejects an empty or invalid path', () {
       expect(checkAssetKey('vulpes:'), AssetKeyProblem.invalidPath);
-      expect(checkAssetKey('vulpes:item/Ruby Gem'), AssetKeyProblem.invalidPath);
+      expect(
+        checkAssetKey('vulpes:item/Ruby Gem'),
+        AssetKeyProblem.invalidPath,
+      );
       expect(checkAssetKey('vulpes:item:ruby'), AssetKeyProblem.invalidPath);
     });
 

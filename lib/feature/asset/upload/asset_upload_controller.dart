@@ -15,7 +15,12 @@ class AssetUploadController extends ChangeNotifier {
     required this.pickFile,
     this.namespace,
     this.kinds = const {...AssetKind.values},
+    this.fixedKey,
   }) {
+    if (fixedKey case final key?) {
+      keyController.text = key;
+      _lastKey = key;
+    }
     keyController.addListener(_onKeyChanged);
   }
 
@@ -26,6 +31,10 @@ class AssetUploadController extends ChangeNotifier {
 
   /// The kinds this upload takes, a file of another kind can't be uploaded.
   final Set<AssetKind> kinds;
+
+  /// The key the file must be stored under, e.g. the one a model refers to.
+  /// A chosen file keeps it instead of suggesting one from its name.
+  final String? fixedKey;
 
   /// Opens the file dialog, injectable for tests.
   final Future<PickedAssetFile?> Function() pickFile;
@@ -103,6 +112,10 @@ class AssetUploadController extends ChangeNotifier {
     if (picked != null) {
       _file = picked;
       _clearProblems();
+      if (fixedKey != null) {
+        notifyListeners();
+        return;
+      }
       final key = suggestAssetKey(picked.name, namespace: namespace);
       _lastKey = key;
       keyController.value = TextEditingValue(

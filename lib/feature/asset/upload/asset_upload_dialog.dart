@@ -16,6 +16,7 @@ class AssetUploadDialog extends StatefulWidget {
     required this.title,
     required this.pickFile,
     this.kinds = const {...AssetKind.values},
+    this.fixedKey,
     super.key,
   });
 
@@ -27,6 +28,9 @@ class AssetUploadDialog extends StatefulWidget {
   final Future<PickedAssetFile?> Function() pickFile;
   final Set<AssetKind> kinds;
 
+  /// The key the file is stored under, which the user can't change.
+  final String? fixedKey;
+
   @override
   State<AssetUploadDialog> createState() => _AssetUploadDialogState();
 }
@@ -37,6 +41,7 @@ class _AssetUploadDialogState extends State<AssetUploadDialog> {
     namespace: widget.namespace,
     pickFile: widget.pickFile,
     kinds: widget.kinds,
+    fixedKey: widget.fixedKey,
   );
 
   @override
