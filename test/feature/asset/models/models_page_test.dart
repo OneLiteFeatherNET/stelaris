@@ -9,6 +9,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/models/models_page.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
+import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -111,8 +112,8 @@ void main() {
     await _pump(tester, library: _Library([_sword, _gem, _axe, _ruby], {}));
 
     final keys = tester
-        .widgetList<ListTile>(find.byType(ListTile))
-        .map((tile) => ((tile.title! as Text).data));
+        .widgetList<InfoChip>(find.byType(InfoChip))
+        .map((chip) => chip.text);
     expect(keys, ['vulpes:item/axe', 'vulpes:item/ruby', 'vulpes:item/sword']);
   });
 
