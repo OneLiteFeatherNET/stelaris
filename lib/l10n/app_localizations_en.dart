@@ -1921,4 +1921,53 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get asset_model_copy_key => 'Copy the key';
+
+  @override
+  String asset_model_key_copied(String key) {
+    return 'Copied $key';
+  }
+
+  @override
+  String get asset_model_info => 'General';
+
+  @override
+  String get asset_model_kind => 'Kind';
+
+  @override
+  String get asset_model_file => 'File';
+
+  @override
+  String get asset_model_size => 'Size';
+
+  @override
+  String get asset_model_changed => 'Last change';
+
+  @override
+  String get asset_model_used_by => 'Used by';
+
+  @override
+  String get asset_model_used_by_none => 'No item uses this model yet.';
+
+  @override
+  String get asset_model_used_by_failed => 'The items could not be loaded.';
+
+  @override
+  String get asset_model_textures => 'Textures';
+
+  @override
+  String get asset_model_textures_none => 'This model refers to no textures.';
+
+  @override
+  String get asset_model_texture_missing => 'Missing';
+
+  @override
+  String get asset_model_texture_embedded => 'Embedded in the Blockbench model';
+
+  @override
+  String asset_model_texture_also_in(String models) {
+    return 'Also in: $models';
+  }
 }

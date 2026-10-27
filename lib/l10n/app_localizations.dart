@@ -3471,6 +3471,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 texture of this model is missing} other{{count} textures of this model are missing}}'**
   String asset_models_missing_tooltip(int count);
+
+  /// No description provided for @asset_model_copy_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the key'**
+  String get asset_model_copy_key;
+
+  /// No description provided for @asset_model_key_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied {key}'**
+  String asset_model_key_copied(String key);
+
+  /// No description provided for @asset_model_info.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get asset_model_info;
+
+  /// No description provided for @asset_model_kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind'**
+  String get asset_model_kind;
+
+  /// No description provided for @asset_model_file.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get asset_model_file;
+
+  /// No description provided for @asset_model_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get asset_model_size;
+
+  /// No description provided for @asset_model_changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Last change'**
+  String get asset_model_changed;
+
+  /// No description provided for @asset_model_used_by.
+  ///
+  /// In en, this message translates to:
+  /// **'Used by'**
+  String get asset_model_used_by;
+
+  /// No description provided for @asset_model_used_by_none.
+  ///
+  /// In en, this message translates to:
+  /// **'No item uses this model yet.'**
+  String get asset_model_used_by_none;
+
+  /// No description provided for @asset_model_used_by_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The items could not be loaded.'**
+  String get asset_model_used_by_failed;
+
+  /// No description provided for @asset_model_textures.
+  ///
+  /// In en, this message translates to:
+  /// **'Textures'**
+  String get asset_model_textures;
+
+  /// No description provided for @asset_model_textures_none.
+  ///
+  /// In en, this message translates to:
+  /// **'This model refers to no textures.'**
+  String get asset_model_textures_none;
+
+  /// No description provided for @asset_model_texture_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing'**
+  String get asset_model_texture_missing;
+
+  /// No description provided for @asset_model_texture_embedded.
+  ///
+  /// In en, this message translates to:
+  /// **'Embedded in the Blockbench model'**
+  String get asset_model_texture_embedded;
+
+  /// No description provided for @asset_model_texture_also_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Also in: {models}'**
+  String asset_model_texture_also_in(String models);
 }
 
 class _AppLocalizationsDelegate

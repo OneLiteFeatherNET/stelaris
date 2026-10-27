@@ -38,7 +38,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   with their number, recomputed on load and when the tab regains focus. Verify with widget tests
   using the fake asset API: list, select, narrow back, upload selects, badge count, no badge when
   complete.
-- [ ] 2.2 Add the detail: title with key and copy, 3D preview, info card (kind, file, size, last
+- [x] 2.2 Add the detail: title with key and copy, 3D preview, info card (kind, file, size, last
   change, used by with links) and the texture list from 1.1. Verify with widget tests: present and
   missing slots, "also in", `.bbmodel` read-only, used by.
 - [ ] 2.3 Slot upload: `.png` only, key locked to the slot. On success the slot turns present and the

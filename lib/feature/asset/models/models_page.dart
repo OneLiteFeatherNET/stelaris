@@ -1,17 +1,23 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:go_router/go_router.dart';
+import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
+import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/asset_kind_label.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/models/model_detail.dart';
 import 'package:stelaris/feature/asset/models/model_textures.dart';
+import 'package:stelaris/feature/asset/models/model_usage.dart';
 import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_dialog.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
+import 'package:stelaris/feature/model/detail_tabs.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -30,6 +36,7 @@ class ModelsPage extends StatelessWidget {
     this.onSelected,
     this.library,
     this.pickFile = pickAssetFile,
+    this.loadUsages = _loadUsages,
     super.key,
   });
 
@@ -39,6 +46,16 @@ class ModelsPage extends StatelessWidget {
   /// The asset library to load from, [AssetLibrary.shared] when null.
   final AssetLibrary? library;
   final Future<PickedAssetFile?> Function() pickFile;
+
+  /// Loads the items of a project with their components, for "used by".
+  final Future<Map<ItemModel, List<ItemComponentDto>>> Function(
+    String projectId,
+  )
+  loadUsages;
+
+  static Future<Map<ItemModel, List<ItemComponentDto>>> _loadUsages(
+    String projectId,
+  ) => loadItemComponents(ApiService().itemApi, projectId);
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +87,7 @@ class ModelsPage extends StatelessWidget {
           onSelected: onSelected,
           library: library ?? AssetLibrary.shared,
           pickFile: pickFile,
+          loadUsages: loadUsages,
         );
       },
     );
@@ -101,6 +119,7 @@ class _ModelsBody extends StatefulWidget {
     required this.onSelected,
     required this.library,
     required this.pickFile,
+    required this.loadUsages,
     super.key,
   });
 
@@ -110,6 +129,10 @@ class _ModelsBody extends StatefulWidget {
   final ValueChanged<String?>? onSelected;
   final AssetLibrary library;
   final Future<PickedAssetFile?> Function() pickFile;
+  final Future<Map<ItemModel, List<ItemComponentDto>>> Function(
+    String projectId,
+  )
+  loadUsages;
 
   @override
   State<_ModelsBody> createState() => _ModelsBodyState();
@@ -122,6 +145,12 @@ class _ModelsBodyState extends State<_ModelsBody> {
   /// The texture keys of every model JSON read so far. Filled after the list
   /// is shown, so the badges come in a moment later.
   Map<AssetModel, Set<String>> _references = const {};
+
+  /// The items with their components, loaded once a detail asks for them.
+  Future<Map<ItemModel, List<ItemComponentDto>>>? _usages;
+
+  /// The items using each model key, so a rebuild keeps the same future.
+  final Map<String, Future<List<ItemModel>>> _usedBy = {};
 
   late String? _selectedId = widget.selectedId;
   bool _loading = true;
@@ -160,6 +189,8 @@ class _ModelsBodyState extends State<_ModelsBody> {
 
   Future<void> _load() async {
     final loadId = ++_loadId;
+    _usages = null;
+    _usedBy.clear();
     final library = widget.library;
     final projectId = widget.projectId;
     if (!_listed) {
@@ -215,6 +246,17 @@ class _ModelsBodyState extends State<_ModelsBody> {
 
   ModelTextures _texturesOf(AssetModel model) =>
       modelTextures(model, references: _references, textures: _textures);
+
+  Future<List<ItemModel>> _usedByOf(AssetModel model) =>
+      _usedBy.putIfAbsent(model.key, () async {
+        final usages = _usages ??= widget.loadUsages(widget.projectId);
+        return usedBy(model.key, await usages);
+      });
+
+  void _openItem(ItemModel item) {
+    context.dispatch(SelectedItemAction(item));
+    context.go(detailLocation(NavigationEntry.items.route));
+  }
 
   void _select(String? id) {
     setState(() => _selectedId = id);
@@ -314,6 +356,8 @@ class _ModelsBodyState extends State<_ModelsBody> {
       projectId: widget.projectId,
       model: model,
       textures: _texturesOf(model),
+      usedBy: _usedByOf(model),
+      onOpenItem: _openItem,
     ),
   );
 
