@@ -945,5 +945,47 @@
   },
   "asset_preview_unavailable": "The 3D preview is not available on this platform.",
   "asset_preview_failed": "The model could not be shown.",
-  "item_model_preview_title": "Preview"
+  "item_model_preview_title": "Preview",
+  "asset_picker_key": "Key",
+  "asset_picker_kind_model": "Model",
+  "asset_picker_kind_bbmodel": "Blockbench model",
+  "asset_library_kind_texture": "Texture",
+  "asset_upload_drop": "Drag a file here",
+  "asset_upload_drop_now": "Drop to add the file",
+  "asset_upload_formats": "PNG textures, model JSON or Blockbench models (.bbmodel)",
+  "asset_upload_choose": "Choose a file",
+  "asset_upload_change": "Choose another file",
+  "asset_upload_remove": "Remove the file",
+  "asset_upload_file_details": "{kind} · {size}",
+  "@asset_upload_file_details": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_upload_unsupported_file": "Only .png, .json and .bbmodel files can be uploaded.",
+  "asset_upload_read_failed": "The file could not be read.",
+  "asset_upload_key_helper": "The path in the resource pack, e.g. {example}",
+  "@asset_upload_key_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_upload_key_empty": "Enter a key.",
+  "asset_upload_key_no_namespace": "Start the key with a namespace, e.g. {namespace}:",
+  "@asset_upload_key_no_namespace": {
+    "placeholders": {
+      "namespace": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_upload_key_bad_namespace": "The namespace may only contain a-z, 0-9, _, . and -.",
+  "asset_upload_key_bad_path": "The path after the colon may only contain a-z, 0-9, _, ., - and /."
 }

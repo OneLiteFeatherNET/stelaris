@@ -1,0 +1,195 @@
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
+import 'package:stelaris/feature/asset/upload/asset_upload_controller.dart';
+import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
+import 'package:stelaris/l10n/app_localizations.dart';
+
+import '../../../support/fake_http_client_adapter.dart';
+
+PickedAssetFile _file(String name, [int size = 3]) =>
+    PickedAssetFile(name: name, bytes: Uint8List(size));
+
+/// Shows the form of a controller whose file dialog answers with the next of
+/// [picks], or fails for a pick that is null.
+Future<AssetUploadController> _pump(
+  WidgetTester tester, {
+  List<PickedAssetFile?> picks = const [],
+}) async {
+  final queue = [...picks];
+  final controller = AssetUploadController(
+    projectId: 'p-1',
+    namespace: 'vulpes',
+    pickFile: () async =>
+        queue.removeAt(0) ?? (throw StateError('the file was not readable')),
+  );
+  addTearDown(controller.dispose);
+  await tester.pumpWidget(
+    MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: AssetUploadForm(controller: controller)),
+    ),
+  );
+  return controller;
+}
+
+Future<void> _choose(WidgetTester tester) async {
+  await tester.tap(find.text('Choose a file'));
+  await tester.pumpAndSettle();
+}
+
+TextField _keyField(WidgetTester tester) =>
+    tester.widget<TextField>(find.byKey(const Key('asset_upload_key')));
+
+void main() {
+  testWidgets('asks for a file until one is chosen', (tester) async {
+    await _pump(tester);
+
+    expect(find.byKey(const Key('asset_upload_drop_zone')), findsOneWidget);
+    expect(find.text('Drag a file here'), findsOneWidget);
+    expect(find.byKey(const Key('asset_upload_key')), findsNothing);
+  });
+
+  testWidgets('a chosen file shows its kind and size and suggests the key', (
+    tester,
+  ) async {
+    final controller = await _pump(
+      tester,
+      picks: [_file('Ruby Gem.bbmodel', 2048)],
+    );
+
+    await _choose(tester);
+
+    expect(find.text('Ruby Gem.bbmodel'), findsOneWidget);
+    expect(find.text('Blockbench model · 2.0 KB'), findsOneWidget);
+    expect(_keyField(tester).controller!.text, 'vulpes:item/ruby_gem');
+    expect(
+      _keyField(tester).focusNode!.hasFocus,
+      isTrue,
+      reason: 'the suggested key is what the user checks next',
+    );
+    expect(controller.canUpload, isTrue);
+  });
+
+  testWidgets('another file replaces the chosen one and its key', (
+    tester,
+  ) async {
+    await _pump(tester, picks: [_file('ruby.json'), _file('gem.png')]);
+    await _choose(tester);
+
+    await tester.tap(find.byTooltip('Choose another file'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('ruby.json'), findsNothing);
+    expect(find.text('Texture · 3 B'), findsOneWidget);
+    expect(_keyField(tester).controller!.text, 'vulpes:item/gem');
+  });
+
+  testWidgets('removing the file asks for one again', (tester) async {
+    final controller = await _pump(tester, picks: [_file('ruby.json')]);
+    await _choose(tester);
+
+    await tester.tap(find.byTooltip('Remove the file'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('asset_upload_drop_zone')), findsOneWidget);
+    expect(controller.file, isNull);
+  });
+
+  testWidgets('a dropped file is taken like a chosen one', (tester) async {
+    final controller = await _pump(tester);
+
+    await controller.drop(Future.value(_file('ruby.json')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('ruby.json'), findsOneWidget);
+    expect(_keyField(tester).controller!.text, 'vulpes:item/ruby');
+  });
+
+  testWidgets('a file of another type can not be uploaded', (tester) async {
+    final controller = await _pump(tester, picks: [_file('notes.txt')]);
+
+    await _choose(tester);
+
+    expect(
+      find.text('Only .png, .json and .bbmodel files can be uploaded.'),
+      findsOneWidget,
+    );
+    expect(controller.canUpload, isFalse);
+  });
+
+  testWidgets('a file that can not be read says so', (tester) async {
+    final controller = await _pump(tester, picks: [null]);
+
+    await _choose(tester);
+
+    expect(find.text('The file could not be read.'), findsOneWidget);
+    expect(controller.file, isNull);
+  });
+
+  testWidgets('a key without a namespace is explained and blocks the upload', (
+    tester,
+  ) async {
+    final controller = await _pump(tester, picks: [_file('ruby.json')]);
+    await _choose(tester);
+
+    await tester.enterText(
+      find.byKey(const Key('asset_upload_key')),
+      'item/ruby',
+    );
+    await tester.pump();
+
+    expect(
+      find.text('Start the key with a namespace, e.g. vulpes:'),
+      findsOneWidget,
+    );
+    expect(controller.canUpload, isFalse);
+
+    await tester.enterText(
+      find.byKey(const Key('asset_upload_key')),
+      'vulpes:item/ruby',
+    );
+    await tester.pump();
+
+    expect(find.textContaining('Start the key'), findsNothing);
+    expect(controller.canUpload, isTrue);
+  });
+
+  testWidgets('the reason of the backend against the key goes on an edit', (
+    tester,
+  ) async {
+    ApiService().assetApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter(
+          (RequestOptions _) => FakeHttpClientAdapter.response({
+            'title': 'Conflict',
+            'status': 409,
+            'detail': 'The key is already in use.',
+          }, statusCode: 409),
+        );
+    final controller = await _pump(tester, picks: [_file('ruby.json')]);
+    await _choose(tester);
+
+    expect(await tester.runAsync(controller.upload), isNull);
+    await tester.pump();
+    expect(find.text('The key is already in use.'), findsOneWidget);
+
+    await tester.enterText(
+      find.byKey(const Key('asset_upload_key')),
+      'vulpes:item/ruby_2',
+    );
+    await tester.pump();
+
+    expect(find.text('The key is already in use.'), findsNothing);
+  });
+
+  test('formats file sizes in B, KB and MB', () {
+    expect(formatFileSize(512), '512 B');
+    expect(formatFileSize(1536), '1.5 KB');
+    expect(formatFileSize(3 * 1024 * 1024), '3.0 MB');
+  });
+}
