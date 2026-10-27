@@ -98,23 +98,34 @@ class AssetLibrary {
     }
   }
 
-  Future<Map<String, AssetModel>> _textureIndex(String projectId) async {
-    final index = <String, AssetModel>{};
+  /// Every asset of [kind] in [projectId], read page by page.
+  Future<List<AssetModel>> assetsOf(String projectId, AssetKind kind) async {
+    final assets = <AssetModel>[];
     var page = 0;
     while (true) {
-      final result = await _assets.getPage(
-        projectId,
-        kind: AssetKind.TEXTURE,
-        page: page,
-      );
-      for (final asset in result.items) {
-        index.putIfAbsent(asset.key, () => asset);
-      }
+      final result = await _assets.getPage(projectId, kind: kind, page: page);
+      assets.addAll(result.items);
       page++;
       if (result.items.isEmpty || page >= result.totalPages) {
-        return index;
+        return assets;
       }
     }
+  }
+
+  /// The texture keys the model JSON [asset] refers to.
+  ///
+  /// Throws a [FormatException] when the stored file is not a JSON object.
+  Future<Set<String>> textureKeysOf(String projectId, AssetModel asset) async =>
+      referencedTextureKeys(
+        _decodeModel(asset, await _bytes(projectId, asset)),
+      );
+
+  Future<Map<String, AssetModel>> _textureIndex(String projectId) async {
+    final index = <String, AssetModel>{};
+    for (final asset in await assetsOf(projectId, AssetKind.TEXTURE)) {
+      index.putIfAbsent(asset.key, () => asset);
+    }
+    return index;
   }
 
   /// Loads the texture assets that [json] refers to, keyed by their namespaced key.
