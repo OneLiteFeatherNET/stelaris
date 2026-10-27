@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/asset/asset_kind_label.dart';
 import 'package:stelaris/feature/asset/picker/asset_key.dart';
@@ -84,6 +85,7 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
             children: [
               if (file == null)
                 _DropZone(
+                  formats: _formats(context.l10n, controller.kinds),
                   dragging: dragging,
                   reading: controller.reading,
                   onChoose: controller.choose,
@@ -147,9 +149,28 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
     final controller = widget.controller;
     if (controller.readFailed) return l10n.asset_upload_read_failed;
     if (controller.file != null && controller.fileKind == null) {
-      return l10n.asset_upload_unsupported_file;
+      return _unsupported(l10n, controller.kinds);
     }
     return controller.fileError;
+  }
+
+  static const _texture = {AssetKind.TEXTURE};
+  static const _models = {AssetKind.MODEL, AssetKind.BBMODEL};
+
+  /// The file types [kinds] take, as the drop zone names them.
+  static String _formats(AppLocalizations l10n, Set<AssetKind> kinds) {
+    if (setEquals(kinds, _texture)) return l10n.asset_upload_formats_texture;
+    if (setEquals(kinds, _models)) return l10n.asset_upload_formats_models;
+    return l10n.asset_upload_formats;
+  }
+
+  /// Why a file of another kind than [kinds] can't be uploaded.
+  static String _unsupported(AppLocalizations l10n, Set<AssetKind> kinds) {
+    if (setEquals(kinds, _texture)) {
+      return l10n.asset_upload_unsupported_texture;
+    }
+    if (setEquals(kinds, _models)) return l10n.asset_upload_unsupported_models;
+    return l10n.asset_upload_unsupported_file;
   }
 
   static String _keyProblemText(
@@ -169,11 +190,14 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
 /// Asks for a file: dropped on the page or chosen in the file dialog.
 class _DropZone extends StatelessWidget {
   const _DropZone({
+    required this.formats,
     required this.dragging,
     required this.reading,
     required this.onChoose,
   });
 
+  /// The file types the upload takes.
+  final String formats;
   final bool dragging;
   final bool reading;
   final VoidCallback onChoose;
@@ -215,7 +239,7 @@ class _DropZone extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            l10n.asset_upload_formats,
+            formats,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,

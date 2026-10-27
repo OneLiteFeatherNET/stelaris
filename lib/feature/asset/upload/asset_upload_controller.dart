@@ -14,6 +14,7 @@ class AssetUploadController extends ChangeNotifier {
     required this.projectId,
     required this.pickFile,
     this.namespace,
+    this.kinds = const {...AssetKind.values},
   }) {
     keyController.addListener(_onKeyChanged);
   }
@@ -22,6 +23,9 @@ class AssetUploadController extends ChangeNotifier {
 
   /// The project key, which the suggested keys start with.
   final String? namespace;
+
+  /// The kinds this upload takes, a file of another kind can't be uploaded.
+  final Set<AssetKind> kinds;
 
   /// Opens the file dialog, injectable for tests.
   final Future<PickedAssetFile?> Function() pickFile;
@@ -43,9 +47,11 @@ class AssetUploadController extends ChangeNotifier {
   /// The file waiting for upload, null before one is chosen.
   PickedAssetFile? get file => _file;
 
-  /// What [file] is stored as, null when it can't be uploaded.
-  AssetKind? get fileKind =>
-      _file == null ? null : assetKindOfFileName(_file!.name);
+  /// What [file] is stored as, null when it can't be uploaded here.
+  AssetKind? get fileKind {
+    final kind = _file == null ? null : assetKindOfFileName(_file!.name);
+    return kinds.contains(kind) ? kind : null;
+  }
 
   bool get reading => _reading;
 

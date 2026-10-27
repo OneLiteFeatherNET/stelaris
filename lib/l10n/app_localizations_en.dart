@@ -1813,6 +1813,21 @@ class AppLocalizationsEn extends AppLocalizations {
       'Only .png, .json and .bbmodel files can be uploaded.';
 
   @override
+  String get asset_upload_formats_models =>
+      'Model JSON or Blockbench models (.bbmodel)';
+
+  @override
+  String get asset_upload_formats_texture => 'PNG textures';
+
+  @override
+  String get asset_upload_unsupported_models =>
+      'Only .json and .bbmodel files can be uploaded here.';
+
+  @override
+  String get asset_upload_unsupported_texture =>
+      'Only .png files can be uploaded here.';
+
+  @override
   String get asset_upload_read_failed => 'The file could not be read.';
 
   @override

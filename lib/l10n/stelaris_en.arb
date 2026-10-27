@@ -968,6 +968,10 @@
     }
   },
   "asset_upload_unsupported_file": "Only .png, .json and .bbmodel files can be uploaded.",
+  "asset_upload_formats_models": "Model JSON or Blockbench models (.bbmodel)",
+  "asset_upload_formats_texture": "PNG textures",
+  "asset_upload_unsupported_models": "Only .json and .bbmodel files can be uploaded here.",
+  "asset_upload_unsupported_texture": "Only .png files can be uploaded here.",
   "asset_upload_read_failed": "The file could not be read.",
   "asset_upload_key_helper": "The path in the resource pack, e.g. {example}",
   "@asset_upload_key_helper": {
