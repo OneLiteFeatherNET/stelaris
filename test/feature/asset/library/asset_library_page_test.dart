@@ -6,7 +6,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/item_model_asset_preview.dart';
 import 'package:stelaris/feature/asset/library/asset_library_page.dart';

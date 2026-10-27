@@ -4,10 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/feature/asset/picker/asset_picker_dialog.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
 import '../../../support/pump_until.dart';
