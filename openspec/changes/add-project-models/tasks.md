@@ -32,7 +32,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 2. Models page
 
-- [ ] 2.1 Add `ModelsPage` with the list of MODEL and BBMODEL assets and the selection in the route
+- [x] 2.1 Add `ModelsPage` with the list of MODEL and BBMODEL assets and the selection in the route
   (`?id=`). Wide: list and detail side by side; narrow: detail as a full view with back. Upload of
   `.json`/`.bbmodel` in the header selects the new model. Models with missing textures carry a badge
   with their number, recomputed on load and when the tab regains focus. Verify with widget tests

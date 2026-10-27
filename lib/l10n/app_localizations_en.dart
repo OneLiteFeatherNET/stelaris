@@ -1877,4 +1877,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String asset_picker_texture_uploaded(String key) {
     return 'Uploaded the texture $key. Only models can be chosen for an item.';
   }
+
+  @override
+  String get asset_models_title => 'Models';
+
+  @override
+  String get asset_models_no_project => 'Choose a project to see its models.';
+
+  @override
+  String get asset_models_empty =>
+      'This project has no models yet. Upload one to get started.';
+
+  @override
+  String get asset_models_load_failed => 'The models could not be loaded.';
+
+  @override
+  String get asset_models_select => 'Choose a model to see its details.';
+
+  @override
+  String get asset_models_back => 'Back to the list';
+
+  @override
+  String get asset_models_upload_title => 'Upload a model';
+
+  @override
+  String asset_models_missing(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count missing',
+      one: '1 missing',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String asset_models_missing_tooltip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count textures of this model are missing',
+      one: '1 texture of this model is missing',
+    );
+    return '$_temp0';
+  }
 }
