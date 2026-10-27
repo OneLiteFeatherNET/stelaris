@@ -26,7 +26,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   MODEL: one slot per referenced key with the TEXTURE asset or null, plus the other models using the
   key. BBMODEL: the textures whose `sourceAssetId` is the model, read-only. Verify with unit tests per
   case and the review focus above.
-- [ ] 1.2 Add `usedBy(key, components)` over the items' components, and a loader that reads all
+- [x] 1.2 Add `usedBy(key, components)` over the items' components, and a loader that reads all
   items of the project with their components through `ItemApi`. Verify with unit tests: match, no
   match, an item without the component.
 
