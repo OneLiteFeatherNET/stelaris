@@ -5,7 +5,7 @@ one-liners under `refactor(model)`, without attribution, with a minimal diff.
 
 ## 1. Extract
 
-- [ ] 1.1 Add `ModelCardFrame` with the slots of the design and move the look of `ModelGridCard`
+- [x] 1.1 Add `ModelCardFrame` with the slots of the design and move the look of `ModelGridCard`
   into it. Verify with widget tests of the frame alone: content and trailing, summary, footer only
   with text, tap. The tests of `ModelGridCard` stay unchanged and pass.
 - [ ] 1.2 Add `ModelGrid<T>` with columns, card height, spacing, the load-more footer and the

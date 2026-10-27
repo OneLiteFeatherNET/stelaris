@@ -11,11 +11,12 @@ import 'package:stelaris/util/relative_time.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 import 'model_card_actions.dart';
+import 'model_card_frame.dart';
 import 'model_page.dart';
 
-/// A grid-friendly card for [ModelPage]: primary content in a header row,
-/// the first line of the model's [notes] below it, a
-/// divider, and a "last edited" footer row (from
+/// A grid-friendly card for [ModelPage], drawn by [ModelCardFrame]: primary
+/// content in a header row, the first line of the model's [notes] below it,
+/// a divider, and a "last edited" footer row (from
 /// [DataModel.modificationDate]) below it. The info/delete actions sit in
 /// the header's corner.
 class ModelGridCard<E extends DataModel> extends StatelessWidget {
@@ -53,112 +54,56 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final timestamp = _TimestampInfo.of(context, rawModel);
     final notes = this.notes;
     final currentNotes = notes?.read(rawModel);
-    final summary = notesSummary(currentNotes);
 
-    // Fill only, no outline — the content sheet behind it already provides
-    // the framing, so fill + border on top of that read as nested boxes.
-    return Card.filled(
-      clipBehavior: Clip.antiAlias,
-      color: colorScheme.surfaceContainerLow,
-      child: InkWell(
-        key: const Key('model_grid_card_inkwell'),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 8, 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: mapToDataModelItem(rawModel)),
-                  ModelCardActions(
-                    color: colorScheme.onSurfaceVariant,
-                    children: [
-                      ModelActionsMenu<E>(
-                        value: rawModel,
-                        nameSelector: nameSelector,
-                        keySelector: keySelector,
-                        projectKey: projectKey,
-                        onCopy: copy == null
-                            ? null
-                            : () => openCopyModelDialog<E>(
-                                context,
-                                model: rawModel,
-                                copy: copy!,
-                                name: nameSelector(rawModel),
-                                key: keySelector(rawModel),
-                              ),
-                        onEditNotes: notes == null
-                            ? null
-                            : () => showDialog<void>(
-                                context: context,
-                                builder: (_) => NotesEditDialog(
-                                  name: nameSelector(rawModel),
-                                  notes: currentNotes,
-                                  saveAction: (value) =>
-                                      notes.update(rawModel, value),
-                                ),
-                              ),
-                      ),
-                      DeleteModelButton<E>(
-                        value: rawModel,
-                        deleteTitle: deleteTitle,
-                        deleteWarning: deleteWarning,
-                        name: nameSelector(rawModel),
-                        mapToDeleteSuccessfully: mapToDeleteSuccessfully,
-                        namespacedKey: _namespacedKey,
-                      ),
-                    ],
+    return ModelCardFrame(
+      content: mapToDataModelItem(rawModel),
+      trailing: ModelCardActions(
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+        children: [
+          ModelActionsMenu<E>(
+            value: rawModel,
+            nameSelector: nameSelector,
+            keySelector: keySelector,
+            projectKey: projectKey,
+            onCopy: copy == null
+                ? null
+                : () => openCopyModelDialog<E>(
+                    context,
+                    model: rawModel,
+                    copy: copy!,
+                    name: nameSelector(rawModel),
+                    key: keySelector(rawModel),
                   ),
-                ],
-              ),
-              if (summary != null) ...[
-                const SizedBox(height: 6),
-                Text(
-                  summary,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+            onEditNotes: notes == null
+                ? null
+                : () => showDialog<void>(
+                    context: context,
+                    builder: (_) => NotesEditDialog(
+                      name: nameSelector(rawModel),
+                      notes: currentNotes,
+                      saveAction: (value) => notes.update(rawModel, value),
+                    ),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-              if (timestamp != null) ...[
-                const SizedBox(height: 8),
-                Divider(height: 1, color: colorScheme.outlineVariant),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(
-                      timestamp.icon,
-                      size: 14,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                    const SizedBox(width: 4),
-                    Flexible(
-                      child: Text(
-                        '${timestamp.label} ${relativeTime(context, timestamp.date)}',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ],
           ),
-        ),
+          DeleteModelButton<E>(
+            value: rawModel,
+            deleteTitle: deleteTitle,
+            deleteWarning: deleteWarning,
+            name: nameSelector(rawModel),
+            mapToDeleteSuccessfully: mapToDeleteSuccessfully,
+            namespacedKey: _namespacedKey,
+          ),
+        ],
       ),
+      summary: notesSummary(currentNotes),
+      footerIcon: timestamp?.icon,
+      footerText: timestamp == null
+          ? null
+          : '${timestamp.label} ${relativeTime(context, timestamp.date)}',
+      onTap: onTap,
     );
   }
 }
