@@ -7,9 +7,9 @@ import 'package:stelaris/api/state/model_search_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
-import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_filter.dart';
+import 'package:stelaris/feature/model/model_grid.dart';
 import 'package:stelaris/feature/model/model_grid_card.dart';
 import 'package:stelaris/feature/model/model_copy.dart';
 import 'package:stelaris/feature/model/model_notes.dart';
@@ -115,16 +115,11 @@ class ModelPage<E extends DataModel> extends StatefulWidget {
   State<ModelPage<E>> createState() => _ModelPageState<E>();
 }
 
-class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
-    with InfiniteScrollMixin<ModelPage<E>> {
+class _ModelPageState<E extends DataModel> extends State<ModelPage<E>> {
   // Single source of truth for the page's horizontal margin — applied once
   // below instead of separately on the header and the grid, so the
   // two can't drift out of alignment with each other.
   static const double _horizontalPagePadding = 16;
-  static const double _gridMaxCardExtent = 320;
-  static const double _gridCardHeight = 148;
-  static const double _gridSpacing = 12;
-  static const int _gridMaxColumns = 4;
 
   @override
   void initState() {
@@ -140,15 +135,6 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
       );
     });
   }
-
-  @override
-  bool canLoadMore() => widget.hasMore;
-
-  @override
-  bool isLoadingMore() => widget.isLoadingMore;
-
-  @override
-  void onLoadMore() => widget.onLoadMore?.call();
 
   List<E> _filteredModels(ModelSearchState search) {
     final filtered = filterModels(
@@ -239,43 +225,12 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
       );
     }
 
-    final hasFooter =
-        widget.onLoadMore != null && (widget.isLoadingMore || widget.hasMore);
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Same column-width target as before (_gridMaxCardExtent), but
-        // capped at _gridMaxColumns so wide screens don't stretch the grid
-        // to 5+ columns.
-        final rawColumns =
-            (constraints.maxWidth + _gridSpacing) /
-            (_gridMaxCardExtent + _gridSpacing);
-        final columns = rawColumns.floor().clamp(1, _gridMaxColumns);
-
-        return CustomScrollView(
-          controller: scrollController,
-          slivers: [
-            SliverPadding(
-              // Horizontal inset already comes from the page-level Padding
-              // in build() — only vertical spacing is this sliver's own.
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              sliver: SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: columns,
-                  mainAxisExtent: _gridCardHeight,
-                  crossAxisSpacing: _gridSpacing,
-                  mainAxisSpacing: _gridSpacing,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => _buildGridItem(context, models[index]),
-                  childCount: models.length,
-                ),
-              ),
-            ),
-            if (hasFooter) SliverToBoxAdapter(child: _buildFooter()),
-          ],
-        );
-      },
+    return ModelGrid<E>(
+      items: models,
+      itemBuilder: _buildGridItem,
+      onLoadMore: widget.onLoadMore,
+      hasMore: widget.hasMore,
+      isLoadingMore: widget.isLoadingMore,
     );
   }
 
@@ -296,21 +251,6 @@ class _ModelPageState<E extends DataModel> extends State<ModelPage<E>>
       copy: widget.copy,
       projectKey: widget.projectKey,
       onTap: () => widget.onModelTap(model),
-    );
-  }
-
-  Widget _buildFooter() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Center(
-        child: widget.isLoadingMore
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : const SizedBox.shrink(),
-      ),
     );
   }
 }
