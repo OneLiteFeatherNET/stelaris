@@ -58,7 +58,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 - [ ] 4.1 Against Vulpes-Backend `themeinerlp/poc/project-assets` with the release web build: upload a
   model JSON without textures, upload the missing ones from the slots, create a model from a PNG,
   open a `.bbmodel`, follow a "used by" link. Light and dark, wide and narrow. Record a screenshot.
-- [ ] 4.2 Run `flutter analyze` and the full `flutter test`, and check that both pass.
+- [x] 4.2 Run `flutter analyze` and the full `flutter test`, and check that both pass.
 
 ## Workflow follow-up
 
