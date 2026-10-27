@@ -1977,4 +1977,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asset_model_texture_upload_title => 'Upload the missing texture';
+
+  @override
+  String get asset_models_from_texture => 'New from texture';
+
+  @override
+  String get asset_models_from_texture_title => 'New model from a texture';
 }

@@ -3573,6 +3573,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Upload the missing texture'**
   String get asset_model_texture_upload_title;
+
+  /// No description provided for @asset_models_from_texture.
+  ///
+  /// In en, this message translates to:
+  /// **'New from texture'**
+  String get asset_models_from_texture;
+
+  /// No description provided for @asset_models_from_texture_title.
+  ///
+  /// In en, this message translates to:
+  /// **'New model from a texture'**
+  String get asset_models_from_texture_title;
 }
 
 class _AppLocalizationsDelegate
