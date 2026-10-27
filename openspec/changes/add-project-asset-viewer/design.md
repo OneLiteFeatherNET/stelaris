@@ -134,7 +134,10 @@ replaced by that one level. Unit tests check the level selection.
     (`LorePage`/`LorePageView`), the tab header gets a preview toggle; from 840 px the preview slides in next to
     the grid (35 % of the width, 280–420 px), below that it opens as a bottom sheet. The preview panel has the lore
     preview's title row and surface. The toggle is disabled while no model is found.
-  - Lookups and downloaded contents are cached per session by key and sha1, so reopening an item does not refetch.
+  - Only downloaded contents are cached, by sha1: a sha1 names one content, so the cache can never
+    show an old file. Key lookups and the texture index are fetched again whenever a preview opens
+    and when the browser tab regains focus, so a model saved elsewhere (e.g. from Blockbench) shows
+    up without reloading the app. A model replaced under the same id has a new sha1 and is loaded again.
   - A key lookup endpoint in the backend would replace the paging later.
   - It reaches the card through the existing per-key special case point, next to `_isBook`, and does not touch the generic
     schema widgets.

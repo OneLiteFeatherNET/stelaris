@@ -61,6 +61,12 @@ The item model card SHALL keep the size of the other cards and show its value as
 - **WHEN** the components tab is too narrow for the preview and the user presses the preview action
 - **THEN** the preview opens as a bottom sheet
 
+#### Scenario: Model changed in the backend
+
+- **WHEN** the model or one of its textures is saved again in the backend, e.g. from Blockbench, and
+  the user returns to the tab or opens the item again
+- **THEN** the preview shows the saved version without reloading the app
+
 #### Scenario: Cards stay aligned
 
 - **WHEN** the components tab shows the item model card next to other components
