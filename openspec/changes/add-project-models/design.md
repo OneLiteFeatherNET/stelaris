@@ -36,9 +36,9 @@
 ## Decisions
 
 ### One page with a grid and a detail, not two pages
-`ModelsPage` replaces `AssetLibraryPage(kinds)`. It shows MODEL and BBMODEL assets as a grid of
-filled cards with the columns of `ModelPage` (cards up to 320 px, at most four columns), so it reads
-like the other list pages. A card shows the name, the key as an `InfoChip`, the missing badge and a
+`ModelsPage` replaces `AssetLibraryPage(kinds)`. It shows MODEL and BBMODEL assets in `ModelGrid`
+with `ModelCardFrame` cards (from `extract-model-grid`), so it reads like the other list pages with no
+copied layout. The cards are 132 px high, as they have no notes line. A card shows the name, the key as an `InfoChip`, the missing badge and a
 footer with kind and last change. Selecting a model shows its detail in place of the grid with a back
 button. The detail uses edit cards under section headings like the other detail pages. The selected id is part of the route
 (`/assets/models?id=…`), so a reload keeps the selection.
