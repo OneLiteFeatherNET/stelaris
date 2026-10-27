@@ -11,18 +11,19 @@ missing ones under the right key, and create a flat item model from a texture al
 
 The sidebar SHALL show, below the existing sections, the heading "Assets" with the entry Models. The
 heading SHALL stay visible when the sidebar is collapsed and SHALL NOT be selectable. The Models page
-SHALL list the project's Minecraft model JSON and Blockbench models. Selecting a model SHALL show its
-detail next to the list where there is room, otherwise as a full view with a way back.
+SHALL show the project's Minecraft model JSON and Blockbench models as a grid of cards like the other
+list pages. Selecting a model SHALL show its detail in place of the grid, with a way back.
 
 #### Scenario: Open a model
 
-- **WHEN** the user selects `vulpes:item/ruby` in the list on a wide window
-- **THEN** its detail is shown next to the list and the selection survives a reload
+- **WHEN** the user selects `vulpes:item/ruby` in the grid
+- **THEN** its detail replaces the grid, a back action returns to it, and the selection survives a
+  reload
 
 #### Scenario: Narrow window
 
-- **WHEN** the user selects a model on a narrow window
-- **THEN** the detail fills the page and a back action returns to the list
+- **WHEN** the window is too narrow for two cards side by side
+- **THEN** the grid shows the cards in one column
 
 #### Scenario: Upload a model
 

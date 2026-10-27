@@ -35,10 +35,12 @@
 
 ## Decisions
 
-### One page with list and detail, not two pages
-`ModelsPage` replaces `AssetLibraryPage(kinds)`. It lists MODEL and BBMODEL assets. From 840 px the
-detail sits next to the list (list 320 px), below that selecting a model pushes the detail as a
-full-width view with a back button. The selected id is part of the route
+### One page with a grid and a detail, not two pages
+`ModelsPage` replaces `AssetLibraryPage(kinds)`. It shows MODEL and BBMODEL assets as a grid of
+filled cards with the columns of `ModelPage` (cards up to 320 px, at most four columns), so it reads
+like the other list pages. A card shows the name, the key as an `InfoChip`, the missing badge and a
+footer with kind and last change. Selecting a model shows its detail in place of the grid with a back
+button. The detail uses edit cards under section headings like the other detail pages. The selected id is part of the route
 (`/assets/models?id=…`), so a reload keeps the selection.
 
 The sidebar keeps the "Assets" heading of the first prototype with one entry. `AssetNavigationEntry`
