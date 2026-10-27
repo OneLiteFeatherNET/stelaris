@@ -4,6 +4,9 @@ import 'package:stelaris/feature/asset/asset_kind_label.dart';
 import 'package:stelaris/feature/asset/models/model_textures.dart';
 import 'package:stelaris/feature/asset/preview/asset_scene_view.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
+import 'package:stelaris/feature/base/edit_card/edit_card.dart';
+import 'package:stelaris/feature/base/edit_card/edit_card_grid.dart';
+import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/component/component_preview.dart';
 import 'package:stelaris/util/app_shapes.dart';
@@ -73,47 +76,117 @@ class ModelDetail extends StatelessWidget {
           asset: model,
           viewportFrame: _darkSurface,
         ),
-        const SizedBox(height: 16),
-        _Section(
-          title: l10n.asset_model_info,
-          children: [
-            _InfoRow(
-              label: l10n.asset_model_kind,
-              child: Text(assetKindLabel(l10n, model.kind)),
-            ),
-            _InfoRow(label: l10n.asset_model_file, child: Text(model.fileName)),
-            _InfoRow(
-              label: l10n.asset_model_size,
-              child: Text(formatFileSize(model.size)),
-            ),
-            if (model.modificationDate ?? model.creationDate case final date?)
-              _InfoRow(
-                label: l10n.asset_model_changed,
-                child: Text(relativeTime(context, date)),
-              ),
-            _InfoRow(
-              label: l10n.asset_model_used_by,
-              child: _UsedBy(usedBy: usedBy, onOpenItem: onOpenItem),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        _Section(
-          title: l10n.asset_model_textures,
-          children: [
-            if (textures.slots.isEmpty) Text(l10n.asset_model_textures_none),
-            for (final slot in textures.slots)
-              _TextureRow(
-                key: ValueKey('model_texture_${slot.key}'),
-                slot: slot,
-                embedded: textures.readOnly,
-                onUpload: textures.readOnly || onUploadTexture == null
-                    ? null
-                    : () => onUploadTexture!(slot),
-              ),
-          ],
+        const SizedBox(height: 24),
+        LayoutBuilder(
+          builder: (context, constraints) => _buildSections(
+            context,
+            EditCardGrid.cardWidthIn(constraints.maxWidth),
+          ),
         ),
       ],
+    );
+  }
+
+  /// The general facts and the textures, as cards under headings like the
+  /// fields of the other detail pages. Each card is [cardWidth] wide.
+  Widget _buildSections(BuildContext context, double cardWidth) {
+    final l10n = context.l10n;
+    Widget card(Widget child) => SizedBox(width: cardWidth, child: child);
+    final date = model.modificationDate ?? model.creationDate;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        EditSectionHeading(title: l10n.asset_model_info),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: EditCardGrid.spacing,
+          runSpacing: EditCardGrid.spacing,
+          children: [
+            card(
+              EditCard(
+                icon: assetKindIcon(model.kind),
+                label: l10n.asset_model_kind,
+                value: assetKindLabel(l10n, model.kind),
+              ),
+            ),
+            card(
+              EditCard(
+                icon: Icons.insert_drive_file_outlined,
+                label: l10n.asset_model_file,
+                value: model.fileName,
+              ),
+            ),
+            card(
+              EditCard(
+                icon: Icons.data_usage,
+                label: l10n.asset_model_size,
+                value: formatFileSize(model.size),
+              ),
+            ),
+            if (date != null)
+              card(
+                EditCard(
+                  icon: Icons.schedule,
+                  label: l10n.asset_model_changed,
+                  value: relativeTime(context, date),
+                ),
+              ),
+            card(
+              EditCard(
+                icon: Icons.inventory_2_outlined,
+                label: l10n.asset_model_used_by,
+                value: '',
+                preview: _UsedBy(usedBy: usedBy, onOpenItem: onOpenItem),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        EditSectionHeading(title: l10n.asset_model_textures),
+        const SizedBox(height: 8),
+        if (textures.slots.isEmpty)
+          Text(l10n.asset_model_textures_none)
+        else
+          Wrap(
+            spacing: EditCardGrid.spacing,
+            runSpacing: EditCardGrid.spacing,
+            children: [
+              for (final slot in textures.slots)
+                card(_textureCard(context, slot)),
+            ],
+          ),
+      ],
+    );
+  }
+
+  /// One texture: present, embedded or missing, with the other models using
+  /// it. A tap on a missing texture uploads it.
+  Widget _textureCard(BuildContext context, TextureSlot slot) {
+    final l10n = context.l10n;
+    final upload = onUploadTexture;
+    final canUpload = slot.missing && !textures.readOnly && upload != null;
+    final footer = [
+      if (canUpload) l10n.asset_model_texture_upload_hint,
+      if (slot.alsoIn.isNotEmpty)
+        l10n.asset_model_texture_also_in(
+          slot.alsoIn.map((model) => model.key).join(', '),
+        ),
+    ].join(' · ');
+    return EditCard(
+      key: ValueKey(
+        canUpload
+            ? 'model_texture_upload_${slot.key}'
+            : 'model_texture_${slot.key}',
+      ),
+      icon: slot.missing ? Icons.cancel_outlined : Icons.check_circle_outline,
+      label: slot.missing
+          ? l10n.asset_model_texture_missing
+          : textures.readOnly
+          ? l10n.asset_model_texture_embedded
+          : l10n.asset_model_texture_present,
+      value: slot.key,
+      footer: footer.isEmpty ? null : footer,
+      onTap: canUpload ? () => upload(slot) : null,
     );
   }
 
@@ -136,62 +209,7 @@ class ModelDetail extends StatelessWidget {
   );
 }
 
-/// An outlined card with a title over [children].
-class _Section extends StatelessWidget {
-  const _Section({required this.title, required this.children});
-
-  final String title;
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card.outlined(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(title, style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            ...children,
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// A [label] in a fixed column and its value as [child].
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.label, required this.child});
-
-  final String label;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-            ),
-          ),
-          Expanded(child: child),
-        ],
-      ),
-    );
-  }
-}
-
-/// The items using the model, each opening that item.
+/// The items using the model as chips, each opening that item.
 class _UsedBy extends StatelessWidget {
   const _UsedBy({required this.usedBy, required this.onOpenItem});
 
@@ -201,10 +219,13 @@ class _UsedBy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final textStyle = Theme.of(context).textTheme.titleMedium;
     return FutureBuilder<List<ItemModel>>(
       future: usedBy,
       builder: (context, snapshot) {
-        if (snapshot.hasError) return Text(l10n.asset_model_used_by_failed);
+        if (snapshot.hasError) {
+          return Text(l10n.asset_model_used_by_failed, style: textStyle);
+        }
         final items = snapshot.data;
         if (items == null) {
           return const Align(
@@ -215,7 +236,9 @@ class _UsedBy extends StatelessWidget {
             ),
           );
         }
-        if (items.isEmpty) return Text(l10n.asset_model_used_by_none);
+        if (items.isEmpty) {
+          return Text(l10n.asset_model_used_by_none, style: textStyle);
+        }
         return Wrap(
           spacing: 8,
           runSpacing: 8,
@@ -230,53 +253,6 @@ class _UsedBy extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-/// One texture of the model: present or missing, the other models using it,
-/// and an upload when it is missing.
-class _TextureRow extends StatelessWidget {
-  const _TextureRow({
-    required this.slot,
-    required this.embedded,
-    required this.onUpload,
-    super.key,
-  });
-
-  final TextureSlot slot;
-
-  /// Whether the texture comes from a Blockbench model.
-  final bool embedded;
-  final VoidCallback? onUpload;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final colorScheme = Theme.of(context).colorScheme;
-    final subtitle = [
-      if (slot.missing) l10n.asset_model_texture_missing,
-      if (embedded) l10n.asset_model_texture_embedded,
-      if (slot.alsoIn.isNotEmpty)
-        l10n.asset_model_texture_also_in(
-          slot.alsoIn.map((model) => model.key).join(', '),
-        ),
-    ].join(' · ');
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: slot.missing
-          ? Icon(Icons.cancel_outlined, color: colorScheme.error)
-          : Icon(Icons.check_circle_outline, color: colorScheme.primary),
-      title: Text(slot.key),
-      subtitle: subtitle.isEmpty ? null : Text(subtitle),
-      trailing: slot.missing && onUpload != null
-          ? FilledButton.tonalIcon(
-              key: ValueKey('model_texture_upload_${slot.key}'),
-              onPressed: onUpload,
-              icon: const Icon(Icons.upload),
-              label: Text(l10n.asset_picker_upload_action),
-            )
-          : null,
     );
   }
 }
