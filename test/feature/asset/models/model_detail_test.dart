@@ -96,6 +96,7 @@ void main() {
 
     expect(find.text('Also in: vulpes:item/sword'), findsOneWidget);
     expect(find.text('Missing'), findsOneWidget);
+    expect(find.text('Click to upload it'), findsOneWidget);
     expect(
       find.byKey(const ValueKey('model_texture_upload_vulpes:block/gem')),
       findsNothing,
@@ -122,7 +123,11 @@ void main() {
     );
 
     expect(find.text('Embedded in the Blockbench model'), findsOneWidget);
-    expect(find.byType(FilledButton), findsNothing);
+    expect(
+      find.byKey(const ValueKey('model_texture_upload_vulpes:item/axe_0')),
+      findsNothing,
+    );
+    expect(find.byIcon(Icons.edit_outlined), findsNothing);
   });
 
   testWidgets('lists the items using the model and opens one', (tester) async {

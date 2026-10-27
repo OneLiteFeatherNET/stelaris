@@ -3585,6 +3585,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New model from a texture'**
   String get asset_models_from_texture_title;
+
+  /// No description provided for @asset_model_texture_present.
+  ///
+  /// In en, this message translates to:
+  /// **'Texture'**
+  String get asset_model_texture_present;
+
+  /// No description provided for @asset_model_texture_upload_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Click to upload it'**
+  String get asset_model_texture_upload_hint;
 }
 
 class _AppLocalizationsDelegate

@@ -1983,4 +1983,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asset_models_from_texture_title => 'New model from a texture';
+
+  @override
+  String get asset_model_texture_present => 'Texture';
+
+  @override
+  String get asset_model_texture_upload_hint => 'Click to upload it';
 }
