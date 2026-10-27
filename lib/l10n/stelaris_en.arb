@@ -1013,14 +1013,6 @@
   "asset_models_load_failed": "The models could not be loaded.",
   "asset_models_back": "Back to the list",
   "asset_models_upload_title": "Upload a model",
-  "asset_models_missing": "{count, plural, =1{1 missing} other{{count} missing}}",
-  "@asset_models_missing": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "asset_models_missing_tooltip": "{count, plural, =1{1 texture of this model is missing} other{{count} textures of this model are missing}}",
   "@asset_models_missing_tooltip": {
     "placeholders": {

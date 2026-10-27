@@ -129,11 +129,9 @@ void main() {
       ),
     );
 
+    expect(find.byKey(const ValueKey('model_missing_m1')), findsOneWidget);
     expect(
-      find.descendant(
-        of: find.byKey(const ValueKey('model_missing_m1')),
-        matching: find.text('2 missing'),
-      ),
+      find.byTooltip('2 textures of this model are missing'),
       findsOneWidget,
     );
     expect(find.byKey(const ValueKey('model_missing_m2')), findsNothing);
