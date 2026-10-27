@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.2](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.8.1...v1.8.2) (2026-10-27)
+
+
+### Bug Fixes
+
+* **deferred:** recover from failed chunk loads and defer the detail pages ([#283](https://github.com/OneLiteFeatherNET/stelaris/issues/283)) ([91c2141](https://github.com/OneLiteFeatherNET/stelaris/commit/91c21412af11140a843661fd5dd120b832a274f1))
+* **navigation:** keep the rail icons in one column while it collapses and expands ([#281](https://github.com/OneLiteFeatherNET/stelaris/issues/281)) ([6abd7ad](https://github.com/OneLiteFeatherNET/stelaris/commit/6abd7ad2eb6f4938a2d7554d02400aced7797510))
+
 ## [1.8.1](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.8.0...v1.8.1) (2026-10-24)
 
 
