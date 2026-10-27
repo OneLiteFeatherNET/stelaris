@@ -83,6 +83,7 @@ Future<List<String?>> _pump(
             selectedId: selectedId,
             onSelected: selections.add,
             pickFile: pickFile ?? () async => null,
+            loadUsages: (_) async => {},
           ),
         ),
       ),
@@ -101,6 +102,9 @@ Future<void> _settlePreview(WidgetTester tester) => pumpUntil(
 );
 
 void main() {
+  // A content cached by another test would never resolve in this one.
+  setUp(AssetLibrary.shared.clearContents);
+
   testWidgets('lists the models sorted by key without textures', (
     tester,
   ) async {

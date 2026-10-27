@@ -1029,5 +1029,34 @@
         "type": "int"
       }
     }
+  },
+  "asset_model_copy_key": "Copy the key",
+  "asset_model_key_copied": "Copied {key}",
+  "@asset_model_key_copied": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_model_info": "General",
+  "asset_model_kind": "Kind",
+  "asset_model_file": "File",
+  "asset_model_size": "Size",
+  "asset_model_changed": "Last change",
+  "asset_model_used_by": "Used by",
+  "asset_model_used_by_none": "No item uses this model yet.",
+  "asset_model_used_by_failed": "The items could not be loaded.",
+  "asset_model_textures": "Textures",
+  "asset_model_textures_none": "This model refers to no textures.",
+  "asset_model_texture_missing": "Missing",
+  "asset_model_texture_embedded": "Embedded in the Blockbench model",
+  "asset_model_texture_also_in": "Also in: {models}",
+  "@asset_model_texture_also_in": {
+    "placeholders": {
+      "models": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -372,7 +372,6 @@ class _ErrorText extends StatelessWidget {
 }
 
 /// [bytes] in B, KB or MB, with one decimal from KB on.
-@visibleForTesting
 String formatFileSize(int bytes) {
   if (bytes < 1024) return '$bytes B';
   final kilobytes = bytes / 1024;
