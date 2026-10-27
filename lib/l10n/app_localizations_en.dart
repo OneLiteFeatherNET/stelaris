@@ -1970,4 +1970,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String asset_model_texture_also_in(String models) {
     return 'Also in: $models';
   }
+
+  @override
+  String get asset_upload_key_fixed =>
+      'The model refers to this key, so the texture is stored under it.';
+
+  @override
+  String get asset_model_texture_upload_title => 'Upload the missing texture';
 }

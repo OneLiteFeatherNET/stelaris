@@ -3561,6 +3561,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Also in: {models}'**
   String asset_model_texture_also_in(String models);
+
+  /// No description provided for @asset_upload_key_fixed.
+  ///
+  /// In en, this message translates to:
+  /// **'The model refers to this key, so the texture is stored under it.'**
+  String get asset_upload_key_fixed;
+
+  /// No description provided for @asset_model_texture_upload_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload the missing texture'**
+  String get asset_model_texture_upload_title;
 }
 
 class _AppLocalizationsDelegate

@@ -280,6 +280,23 @@ class _ModelsBodyState extends State<_ModelsBody> {
     _select(asset.id);
   }
 
+  /// Uploads the missing texture of [slot] under the key the model refers to.
+  Future<void> _uploadTexture(TextureSlot slot) async {
+    final asset = await showDialog<AssetModel>(
+      context: context,
+      builder: (context) => AssetUploadDialog(
+        projectId: widget.projectId,
+        namespace: widget.namespace,
+        title: context.l10n.asset_model_texture_upload_title,
+        pickFile: widget.pickFile,
+        kinds: const {AssetKind.TEXTURE},
+        fixedKey: slot.key,
+      ),
+    );
+    if (asset == null || !mounted) return;
+    await _load();
+  }
+
   AssetModel? get _selected {
     for (final model in _models) {
       if (model.id == _selectedId) return model;
@@ -358,6 +375,7 @@ class _ModelsBodyState extends State<_ModelsBody> {
       textures: _texturesOf(model),
       usedBy: _usedByOf(model),
       onOpenItem: _openItem,
+      onUploadTexture: _uploadTexture,
     ),
   );
 

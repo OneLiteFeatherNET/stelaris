@@ -7,7 +7,10 @@ import 'package:stelaris/l10n/app_localizations.dart';
 
 // These tests run on the VM, so AssetPreview uses the placeholder viewport.
 const _key = 'vulpes:item/ruby';
-const _scene = <String, Object?>{'textures': <Object?>[], 'levels': <Object?>[]};
+const _scene = <String, Object?>{
+  'textures': <Object?>[],
+  'levels': <Object?>[],
+};
 
 final _en = lookupAppLocalizations(const Locale('en'));
 
@@ -44,17 +47,26 @@ void main() {
     expect(find.text(_key), findsOneWidget);
   });
 
-  testWidgets('no unsupported line when nothing is unsupported', (tester) async {
+  testWidgets('no unsupported line when nothing is unsupported', (
+    tester,
+  ) async {
     await _pump(tester);
 
     expect(find.textContaining('Not shown'), findsNothing);
   });
 
   testWidgets('lists the unsupported parts under the preview', (tester) async {
-    await _pump(tester, unsupported: ['mesh: Sword blade', 'parent: block/cube_all']);
+    await _pump(
+      tester,
+      unsupported: ['mesh: Sword blade', 'parent: block/cube_all'],
+    );
 
     expect(
-      find.text(_en.asset_preview_unsupported('mesh: Sword blade, parent: block/cube_all')),
+      find.text(
+        _en.asset_preview_unsupported(
+          'mesh: Sword blade, parent: block/cube_all',
+        ),
+      ),
       findsOneWidget,
     );
   });
@@ -68,7 +80,9 @@ void main() {
     expect(_detailButton(tester).selected, {AssetDetail.automatic});
   });
 
-  testWidgets('tapping a detail segment selects it on the controller', (tester) async {
+  testWidgets('tapping a detail segment selects it on the controller', (
+    tester,
+  ) async {
     final controller = AssetPreviewController();
     addTearDown(controller.dispose);
     await _pump(tester, controller: controller);
@@ -119,7 +133,8 @@ void main() {
   testWidgets('viewport frame wraps the viewport placeholder', (tester) async {
     await _pump(
       tester,
-      viewportFrame: (viewport) => Container(key: const Key('frame'), child: viewport),
+      viewportFrame: (viewport) =>
+          Container(key: const Key('frame'), child: viewport),
     );
 
     expect(
@@ -135,13 +150,20 @@ void main() {
     await _pump(
       tester,
       unsupported: ['mesh: Sword blade'],
-      viewportFrame: (viewport) => Container(key: const Key('frame'), child: viewport),
+      viewportFrame: (viewport) =>
+          Container(key: const Key('frame'), child: viewport),
     );
 
     final frame = find.byKey(const Key('frame'));
-    expect(find.descendant(of: frame, matching: find.byType(IconButton)), findsNothing);
     expect(
-      find.descendant(of: frame, matching: find.byType(SegmentedButton<AssetDetail>)),
+      find.descendant(of: frame, matching: find.byType(IconButton)),
+      findsNothing,
+    );
+    expect(
+      find.descendant(
+        of: frame,
+        matching: find.byType(SegmentedButton<AssetDetail>),
+      ),
       findsNothing,
     );
     expect(

@@ -62,7 +62,13 @@ class ModelDetail extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         AssetSceneView(
-          key: ValueKey(model.sha1),
+          // Loads again when the model or one of its textures changes.
+          key: ValueKey(
+            [
+              model.sha1,
+              for (final slot in textures.slots) slot.texture?.sha1,
+            ].join('|'),
+          ),
           projectId: projectId,
           asset: model,
           viewportFrame: _darkSurface,
