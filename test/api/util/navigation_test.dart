@@ -19,6 +19,35 @@ void main() {
     expect(entryForLocation('/projects'), isNull);
   });
 
+  group('asset entries', () {
+    test('matches an asset route exactly', () {
+      expect(
+        assetEntryForLocation('/assets/textures'),
+        AssetNavigationEntry.textures,
+      );
+      expect(
+        assetEntryForLocation('/assets/models'),
+        AssetNavigationEntry.models,
+      );
+    });
+
+    test('matches nested routes of an asset page', () {
+      expect(
+        assetEntryForLocation('/assets/models/detail'),
+        AssetNavigationEntry.models,
+      );
+    });
+
+    test('does not match the parent or a mere prefix of another word', () {
+      expect(assetEntryForLocation('/assets'), isNull);
+      expect(assetEntryForLocation('/assets/modelsfoo'), isNull);
+    });
+
+    test('returns null for a section route', () {
+      expect(assetEntryForLocation('/items'), isNull);
+    });
+  });
+
   group('icons', () {
     test('each section has distinct outline and filled icons', () {
       for (final entry in NavigationEntry.values) {

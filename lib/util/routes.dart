@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:async_redux/async_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/auth/auth_sessions.dart';
@@ -25,6 +26,8 @@ import 'package:stelaris/feature/item/item_page.dart' deferred as item_page;
 import 'package:stelaris/feature/advancement/advancement_page.dart'
     deferred as advancement_page;
 import 'package:stelaris/feature/sound/sound_page.dart' deferred as sound_page;
+import 'package:stelaris/feature/asset/library/asset_library_page.dart'
+    deferred as asset_library_page;
 
 const String projectSelectionRoute = '/projects';
 
@@ -403,6 +406,44 @@ final GoRouter router = GoRouter(
               ),
             ),
           ],
+        ),
+        GoRoute(
+          path: AssetNavigationEntry.models.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: asset_library_page.loadLibrary,
+              builder: () => asset_library_page.AssetLibraryPage(
+                kinds: {AssetKind.MODEL, AssetKind.BBMODEL},
+                title: 'Models',
+              ),
+            ),
+            key: state.pageKey,
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
+          ),
+        ),
+        GoRoute(
+          path: AssetNavigationEntry.textures.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: asset_library_page.loadLibrary,
+              builder: () => asset_library_page.AssetLibraryPage(
+                kinds: {AssetKind.TEXTURE},
+                title: 'Textures',
+              ),
+            ),
+            key: state.pageKey,
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
+          ),
         ),
       ],
     ),
