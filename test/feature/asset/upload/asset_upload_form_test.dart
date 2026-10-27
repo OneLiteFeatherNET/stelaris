@@ -8,6 +8,7 @@ import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_controller.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
 
@@ -19,11 +20,13 @@ PickedAssetFile _file(String name, [int size = 3]) =>
 Future<AssetUploadController> _pump(
   WidgetTester tester, {
   List<PickedAssetFile?> picks = const [],
+  Set<AssetKind> kinds = const {...AssetKind.values},
 }) async {
   final queue = [...picks];
   final controller = AssetUploadController(
     projectId: 'p-1',
     namespace: 'vulpes',
+    kinds: kinds,
     pickFile: () async =>
         queue.removeAt(0) ?? (throw StateError('the file was not readable')),
   );
@@ -118,6 +121,26 @@ void main() {
 
     expect(
       find.text('Only .png, .json and .bbmodel files can be uploaded.'),
+      findsOneWidget,
+    );
+    expect(controller.canUpload, isFalse);
+  });
+
+  testWidgets('an upload of models names only model files', (tester) async {
+    final controller = await _pump(
+      tester,
+      kinds: {AssetKind.MODEL, AssetKind.BBMODEL},
+      picks: [_file('ruby.png')],
+    );
+
+    expect(
+      find.text('Model JSON or Blockbench models (.bbmodel)'),
+      findsOneWidget,
+    );
+    await _choose(tester);
+
+    expect(
+      find.text('Only .json and .bbmodel files can be uploaded here.'),
       findsOneWidget,
     );
     expect(controller.canUpload, isFalse);

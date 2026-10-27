@@ -3310,6 +3310,30 @@ abstract class AppLocalizations {
   /// **'Only .png, .json and .bbmodel files can be uploaded.'**
   String get asset_upload_unsupported_file;
 
+  /// No description provided for @asset_upload_formats_models.
+  ///
+  /// In en, this message translates to:
+  /// **'Model JSON or Blockbench models (.bbmodel)'**
+  String get asset_upload_formats_models;
+
+  /// No description provided for @asset_upload_formats_texture.
+  ///
+  /// In en, this message translates to:
+  /// **'PNG textures'**
+  String get asset_upload_formats_texture;
+
+  /// No description provided for @asset_upload_unsupported_models.
+  ///
+  /// In en, this message translates to:
+  /// **'Only .json and .bbmodel files can be uploaded here.'**
+  String get asset_upload_unsupported_models;
+
+  /// No description provided for @asset_upload_unsupported_texture.
+  ///
+  /// In en, this message translates to:
+  /// **'Only .png files can be uploaded here.'**
+  String get asset_upload_unsupported_texture;
+
   /// No description provided for @asset_upload_read_failed.
   ///
   /// In en, this message translates to:
