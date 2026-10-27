@@ -36,7 +36,7 @@
 - Keep the diff small, and add no new pub dependency.
 
 **Non-Goals:**
-- An asset library page.
+- Deleting, replacing or renaming assets.
 - Blockbench meshes and animations.
 - General `parent` resolution.
 - Item model definitions.
@@ -138,6 +138,21 @@ replaced by that one level. Unit tests check the level selection.
   - A key lookup endpoint in the backend would replace the paging later.
   - It reaches the card through the existing per-key special case point, next to `_isBook`, and does not touch the generic
     schema widgets.
+
+### Sidebar group "Assets"
+- The asset entries do not join `NavigationEntry`. That enum stands for model sections with
+  create, search, save and refresh, and the command palette and the unsaved-changes guard switch
+  over it exhaustively. A small enum `AssetNavigationEntry { models, textures }` with display,
+  route and icons sits next to it instead.
+- `NavigationRail` has no groups. The sidebar appends one disabled destination as the heading (a
+  divider and the word "Assets", drawn in the icon column so it stays visible when collapsed),
+  then the asset entries. The index mapping skips the heading; it can never be selected.
+- Routes `/assets/models` and `/assets/textures` live in the same `ShellRoute` as the sections and
+  open `AssetLibraryPage(kinds: ...)`: `{MODEL, BBMODEL}` or `{TEXTURE}`.
+- The page lists the project's assets of those kinds through `AssetClientApi.getPage`, offers an
+  upload in its header (file picker, suggested key, errors shown at the field like the picker
+  dialog) and shows the selected asset in a Lore-style side panel (bottom sheet when narrow):
+  models through the existing 3D preview, textures as a pixel-sharp image.
 
 ## Risks / Trade-offs
 

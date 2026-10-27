@@ -34,6 +34,10 @@ can be rotated and zoomed, every time the item is opened.
   with the project's models and an upload. Choosing or uploading a model sets the component value to
   the asset key. The Components tab gets a preview like the lore preview, next to the cards or as a
   bottom sheet, that shows the model whose key equals the value in 3D.
+- **Assets in the sidebar**: below the existing sections, a separate group headed "Assets" (the
+  heading stays visible when the rail is collapsed) with two entries, Models and Textures. Each
+  opens a page listing the project's assets of that kind, with an upload and a preview of the
+  selected asset (3D for models, the image for textures) in the lore preview's layout.
 
 ## Capabilities
 
@@ -57,7 +61,7 @@ can be rotated and zoomed, every time the item is opened.
 - No new pub dependency: file picking and the viewer use `package:web` and `dart:js_interop`, which
   the app already has.
 
-Out of scope for the prototype: a project-wide asset library page, Blockbench free-form meshes and
+Out of scope for the prototype: deleting, replacing or renaming assets, Blockbench free-form meshes and
 animations, Minecraft `parent` inheritance beyond `item/generated` and `item/handheld`, item model
 definitions (`assets/<ns>/items/*.json`) as a separate layer, the resource pack build, and the
 desktop renderer.

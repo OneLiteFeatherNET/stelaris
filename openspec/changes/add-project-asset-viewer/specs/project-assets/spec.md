@@ -71,6 +71,34 @@ The item model card SHALL keep the size of the other cards and show its value as
 - **WHEN** the item model value names no model of the project
 - **THEN** the card shows the value as text and the preview action is disabled
 
+### Requirement: Browse assets from the sidebar
+
+The sidebar SHALL show, separated from the existing sections, a group headed "Assets" with the
+entries Models and Textures. The heading SHALL stay visible when the sidebar is collapsed and SHALL
+NOT be selectable. Each entry SHALL open a page listing the project's assets of that kind (Models:
+Minecraft model JSON and Blockbench models; Textures: PNG textures), offering an upload and a
+preview of the selected asset.
+
+#### Scenario: Open the models page
+
+- **WHEN** the user selects Models in the Assets group
+- **THEN** the project's models are listed and the Models entry is highlighted
+
+#### Scenario: Preview a texture
+
+- **WHEN** the user selects a texture on the textures page
+- **THEN** the texture is shown pixel-sharp in the preview
+
+#### Scenario: Upload from the page
+
+- **WHEN** the user uploads a file on the models page
+- **THEN** the new model appears in the list and is selected
+
+#### Scenario: Collapsed sidebar
+
+- **WHEN** the sidebar is collapsed
+- **THEN** the "Assets" heading is still shown above the asset entries
+
 ### Requirement: Rotate and zoom the preview
 
 The 3D preview SHALL let the user rotate the model by dragging, zoom with the wheel, reset the view,
