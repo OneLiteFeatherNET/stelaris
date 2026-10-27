@@ -1,9 +1,9 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/feature/asset/preview/asset_scene_view.dart';
 import 'package:stelaris/feature/component/component_preview.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// Shows the 3D preview of the item model [asset] on the lore preview's
 /// surface, next to the component cards or in a bottom sheet.

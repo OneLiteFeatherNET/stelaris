@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/preview/asset_preview.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// Loads the model [asset] of [projectId] and shows it in an [AssetPreview].
 ///

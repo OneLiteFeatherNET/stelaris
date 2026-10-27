@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:stelaris/api/api_client.dart';
-import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// Client API for the files a project stores as assets.

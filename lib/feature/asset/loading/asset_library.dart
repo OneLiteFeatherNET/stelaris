@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/api/service/client/asset_client_api.dart';
 import 'package:stelaris/feature/asset/scene/asset_scene.dart';
 import 'package:stelaris/feature/asset/scene/blockbench_model_reader.dart';
 import 'package:stelaris/feature/asset/scene/detail_levels.dart';
 import 'package:stelaris/feature/asset/scene/minecraft_model_reader.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The drawable scene of one model asset, ready for the JS bridge, and the parts it leaves out.
 class AssetSceneData {

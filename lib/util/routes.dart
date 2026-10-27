@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:async_redux/async_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/auth/auth_sessions.dart';
@@ -28,6 +27,7 @@ import 'package:stelaris/feature/advancement/advancement_page.dart'
 import 'package:stelaris/feature/sound/sound_page.dart' deferred as sound_page;
 import 'package:stelaris/feature/asset/library/asset_library_page.dart'
     deferred as asset_library_page;
+import 'package:stelaris_models/stelaris_models.dart';
 
 const String projectSelectionRoute = '/projects';
 

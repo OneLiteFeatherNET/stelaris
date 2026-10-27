@@ -1,5 +1,4 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/feature/asset/item_model_asset_preview.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/base/page_header.dart';

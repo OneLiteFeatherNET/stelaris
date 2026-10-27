@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/feature/asset/picker/asset_key.dart';
 import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
@@ -9,6 +8,7 @@ import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The kinds the picker lists: the models an item can refer to.
 const _pickableKinds = [AssetKind.MODEL, AssetKind.BBMODEL];
