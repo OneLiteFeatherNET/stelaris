@@ -3417,6 +3417,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Uploaded the texture {key}. Only models can be chosen for an item.'**
   String asset_picker_texture_uploaded(String key);
+
+  /// No description provided for @asset_models_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Models'**
+  String get asset_models_title;
+
+  /// No description provided for @asset_models_no_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a project to see its models.'**
+  String get asset_models_no_project;
+
+  /// No description provided for @asset_models_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'This project has no models yet. Upload one to get started.'**
+  String get asset_models_empty;
+
+  /// No description provided for @asset_models_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The models could not be loaded.'**
+  String get asset_models_load_failed;
+
+  /// No description provided for @asset_models_select.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a model to see its details.'**
+  String get asset_models_select;
+
+  /// No description provided for @asset_models_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the list'**
+  String get asset_models_back;
+
+  /// No description provided for @asset_models_upload_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a model'**
+  String get asset_models_upload_title;
+
+  /// No description provided for @asset_models_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 missing} other{{count} missing}}'**
+  String asset_models_missing(int count);
+
+  /// No description provided for @asset_models_missing_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 texture of this model is missing} other{{count} textures of this model are missing}}'**
+  String asset_models_missing_tooltip(int count);
 }
 
 class _AppLocalizationsDelegate
