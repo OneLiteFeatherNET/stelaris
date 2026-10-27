@@ -139,7 +139,29 @@ void main() {
     expect(find.byKey(const ValueKey('model_missing_m2')), findsNothing);
   });
 
-  testWidgets('selecting a model shows its detail next to the list', (
+  testWidgets('a wide page lays the cards out in columns', (tester) async {
+    await _pump(tester, library: _Library([_ruby, _sword, _axe], {}));
+
+    final first = tester.getTopLeft(find.byKey(const ValueKey('model_b1')));
+    final second = tester.getTopLeft(find.byKey(const ValueKey('model_m1')));
+    expect(second.dy, first.dy);
+    expect(second.dx, greaterThan(first.dx));
+  });
+
+  testWidgets('a narrow page stacks the cards in one column', (tester) async {
+    await _pump(
+      tester,
+      library: _Library([_ruby, _sword], {}),
+      size: const Size(400, 900),
+    );
+
+    final first = tester.getTopLeft(find.byKey(const ValueKey('model_m1')));
+    final second = tester.getTopLeft(find.byKey(const ValueKey('model_m2')));
+    expect(second.dx, first.dx);
+    expect(second.dy, greaterThan(first.dy));
+  });
+
+  testWidgets('a model opens in place of the grid with a way back', (
     tester,
   ) async {
     final selections = await _pump(
@@ -155,28 +177,13 @@ void main() {
       tester.widget<Text>(find.byKey(const Key('model_detail_title'))).data,
       'vulpes:item/sword',
     );
-    expect(find.byKey(const Key('models_list')), findsOneWidget);
-  });
-
-  testWidgets('a narrow page shows the detail alone with a way back', (
-    tester,
-  ) async {
-    final selections = await _pump(
-      tester,
-      library: _Library([_ruby], {}),
-      selectedId: 'm1',
-      size: const Size(600, 900),
-    );
-    await _settlePreview(tester);
-
-    expect(find.byKey(const Key('models_list')), findsNothing);
-    expect(find.byKey(const Key('model_detail_title')), findsOneWidget);
+    expect(find.byKey(const Key('models_grid')), findsNothing);
 
     await tester.tap(find.byKey(const Key('models_back')));
     await tester.pump();
 
-    expect(selections, [null]);
-    expect(find.byKey(const Key('models_list')), findsOneWidget);
+    expect(selections, ['m2', null]);
+    expect(find.byKey(const Key('models_grid')), findsOneWidget);
   });
 
   testWidgets('an uploaded model is listed and selected', (tester) async {
@@ -224,7 +231,7 @@ void main() {
           PickedAssetFile(name: 'whatever.png', bytes: Uint8List(3)),
     );
     await _settlePreview(tester);
-    expect(find.byKey(const ValueKey('model_missing_m1')), findsOneWidget);
+    expect(find.text('Missing'), findsOneWidget);
     final glow = _asset('t9', 'vulpes:item/glow', AssetKind.TEXTURE);
     final uploadedKeys = <Object?>[];
     ApiService().assetApi.apiClient.dio.httpClientAdapter =
@@ -255,7 +262,7 @@ void main() {
         await tester.tap(find.text('Upload').last);
       },
       done: () =>
-          find.byKey(const ValueKey('model_missing_m1')).evaluate().isEmpty &&
+          find.text('Missing').evaluate().isEmpty &&
           find.byType(CircularProgressIndicator).evaluate().isEmpty,
     );
 

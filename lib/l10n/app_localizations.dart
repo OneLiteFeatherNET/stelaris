@@ -3442,12 +3442,6 @@ abstract class AppLocalizations {
   /// **'The models could not be loaded.'**
   String get asset_models_load_failed;
 
-  /// No description provided for @asset_models_select.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose a model to see its details.'**
-  String get asset_models_select;
-
   /// No description provided for @asset_models_back.
   ///
   /// In en, this message translates to:

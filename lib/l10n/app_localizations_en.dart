@@ -1892,9 +1892,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_models_load_failed => 'The models could not be loaded.';
 
   @override
-  String get asset_models_select => 'Choose a model to see its details.';
-
-  @override
   String get asset_models_back => 'Back to the list';
 
   @override

@@ -24,11 +24,9 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/relative_time.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
-/// From this width on the detail sits next to the list.
-const double modelsDetailBreakpoint = 840;
-
-/// Lists the models of the selected project with how many of their textures
-/// are missing, and shows the selected model's detail.
+/// Shows the models of the selected project as a grid of cards with how many
+/// of their textures are missing, and the selected model's detail in place
+/// of the grid.
 ///
 /// The selection is [selectedId]; the page reports a new one through
 /// [onSelected], so the route can keep it. [pickFile] opens the file dialog
@@ -351,24 +349,12 @@ class _ModelsBodyState extends State<_ModelsBody> {
     final selected = _selected;
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final wide = constraints.maxWidth >= modelsDetailBreakpoint;
+      child: Builder(
+        builder: (context) {
+          // Like the other list pages: a grid of cards, and a model opens
+          // in place of it.
           final Widget body;
-          if (wide) {
-            body = Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(width: 320, child: _buildList()),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: selected == null
-                      ? Center(child: Text(context.l10n.asset_models_select))
-                      : _buildDetail(selected),
-                ),
-              ],
-            );
-          } else if (selected != null) {
+          if (selected != null) {
             body = Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -383,7 +369,7 @@ class _ModelsBodyState extends State<_ModelsBody> {
               ],
             );
           } else {
-            body = _buildList();
+            body = _buildGrid();
           }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -427,7 +413,12 @@ class _ModelsBodyState extends State<_ModelsBody> {
     ),
   );
 
-  Widget _buildList() {
+  static const double _gridMaxCardExtent = 320;
+  static const double _gridCardHeight = 132;
+  static const double _gridSpacing = 12;
+  static const int _gridMaxColumns = 4;
+
+  Widget _buildGrid() {
     final l10n = context.l10n;
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
@@ -449,39 +440,51 @@ class _ModelsBodyState extends State<_ModelsBody> {
         child: Text(l10n.asset_models_empty, textAlign: TextAlign.center),
       );
     }
-    return ListView.separated(
-      key: const Key('models_list'),
-      itemCount: _models.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 12),
-      itemBuilder: (context, index) {
-        final model = _models[index];
-        return _ModelCard(
-          key: ValueKey('model_${model.id}'),
-          model: model,
-          missing: _texturesOf(model).missingCount,
-          selected: model.id == _selectedId,
-          onTap: () => _select(model.id),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // The columns of the model grids on the other list pages.
+        final columns =
+            ((constraints.maxWidth + _gridSpacing) /
+                    (_gridMaxCardExtent + _gridSpacing))
+                .floor()
+                .clamp(1, _gridMaxColumns);
+        return GridView.builder(
+          key: const Key('models_grid'),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+            mainAxisExtent: _gridCardHeight,
+            crossAxisSpacing: _gridSpacing,
+            mainAxisSpacing: _gridSpacing,
+          ),
+          itemCount: _models.length,
+          itemBuilder: (context, index) {
+            final model = _models[index];
+            return _ModelCard(
+              key: ValueKey('model_${model.id}'),
+              model: model,
+              missing: _texturesOf(model).missingCount,
+              onTap: () => _select(model.id),
+            );
+          },
         );
       },
     );
   }
 }
 
-/// One model of the list, styled like the model cards of the other list
+/// One model of the grid, styled like the model cards of the other list
 /// pages: its name and key, how many textures it misses, and a footer with
 /// its kind and last change.
 class _ModelCard extends StatelessWidget {
   const _ModelCard({
     required this.model,
     required this.missing,
-    required this.selected,
     required this.onTap,
     super.key,
   });
 
   final AssetModel model;
   final int missing;
-  final bool selected;
   final VoidCallback onTap;
 
   /// The last part of the key, e.g. `ruby` for `vulpes:item/ruby`.
@@ -499,9 +502,8 @@ class _ModelCard extends StatelessWidget {
     return Card.filled(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
-      color: selected
-          ? colorScheme.secondaryContainer
-          : colorScheme.surfaceContainerLow,
+      // Fill only, like the model cards of the other list pages.
+      color: colorScheme.surfaceContainerLow,
       child: InkWell(
         onTap: onTap,
         child: Padding(
