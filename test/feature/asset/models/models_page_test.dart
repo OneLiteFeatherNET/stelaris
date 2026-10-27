@@ -177,7 +177,7 @@ void main() {
     );
     expect(find.byKey(const Key('models_grid')), findsNothing);
 
-    await tester.tap(find.byKey(const Key('models_back')));
+    await tester.tap(find.byKey(const Key('page_header_back_button')));
     await tester.pump();
 
     expect(selections, ['m2', null]);

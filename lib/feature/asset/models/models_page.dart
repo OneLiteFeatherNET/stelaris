@@ -354,24 +354,20 @@ class _ModelsBodyState extends State<_ModelsBody> {
       child: Builder(
         builder: (context) {
           // Like the other list pages: a grid of cards, and a model opens
-          // in place of it.
-          final Widget body;
+          // in place of it under a detail page's header.
           if (selected != null) {
-            body = Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TextButton.icon(
-                  key: const Key('models_back'),
-                  onPressed: () => _select(null),
-                  icon: const Icon(Icons.arrow_back),
-                  label: Text(context.l10n.asset_models_back),
+                PageHeader(
+                  title: _modelName(selected),
+                  onBack: () => _select(null),
+                  compactBelow: PageHeader.detailCompactThreshold,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 Expanded(child: _buildDetail(selected)),
               ],
             );
-          } else {
-            body = _buildGrid();
           }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -395,7 +391,7 @@ class _ModelsBodyState extends State<_ModelsBody> {
                 ],
               ),
               const SizedBox(height: 12),
-              Expanded(child: body),
+              Expanded(child: _buildGrid()),
             ],
           );
         },
@@ -454,6 +450,9 @@ class _ModelsBodyState extends State<_ModelsBody> {
   }
 }
 
+/// The last part of a model's key, e.g. `ruby` for `vulpes:item/ruby`.
+String _modelName(AssetModel model) => model.key.split(RegExp('[:/]')).last;
+
 /// One model of the grid in the frame of the other list pages' cards: its
 /// name and key, a warning when it misses textures, and a footer with its
 /// kind and last change.
@@ -469,9 +468,6 @@ class _ModelCard extends StatelessWidget {
   final int missing;
   final VoidCallback onTap;
 
-  /// The last part of the key, e.g. `ruby` for `vulpes:item/ruby`.
-  String get _name => model.key.split(RegExp('[:/]')).last;
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -484,7 +480,7 @@ class _ModelCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            _name,
+            _modelName(model),
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
             ),
