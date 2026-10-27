@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/api/service/client/asset_client_api.dart';
@@ -142,6 +143,11 @@ class AssetLibrary {
     }
     return textures;
   }
+
+  /// Drops every downloaded content, so a test does not see the contents of
+  /// another test through [shared].
+  @visibleForTesting
+  void clearContents() => _contents.clear();
 
   Future<List<int>> _bytes(String projectId, AssetModel asset) =>
       _memo(_contents, asset.sha1, () => _assets.content(projectId, asset.id));

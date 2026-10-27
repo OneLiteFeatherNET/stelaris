@@ -9,6 +9,7 @@ import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/item_model_asset_preview.dart';
+import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/preview/asset_preview_placeholder.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/item/components/item_components_page.dart';
@@ -21,6 +22,8 @@ import '../../../support/pump_until.dart';
 import '../../../support/settle_requests.dart';
 
 void main() {
+  setUp(() => AssetLibrary.shared.clearContents());
+
   Future<void> pumpPage(
     WidgetTester tester,
     List<ItemComponentDto> components, {
@@ -410,6 +413,21 @@ void main() {
     bool toggleEnabled(WidgetTester tester) =>
         tester.widget<PageHeaderAction>(toggle()).onPressed != null;
 
+    /// Waits until the lookup is over and the page has its answer: either
+    /// both model kinds were answered (no model), or a model was found and its
+    /// content was answered (the page then shows it).
+    Future<void> pumpUntilLookedUp(WidgetTester tester, ServedAssets served) =>
+        pumpUntil(
+          tester,
+          action: () async {},
+          done: () {
+            final idle = served.answeredKinds.length == served.requests.length;
+            return idle &&
+                (served.answeredKinds.contains('BBMODEL') ||
+                    served.answeredKinds.contains('content'));
+          },
+        );
+
     /// Waits until the preview has loaded its scene, a spinner would keep
     /// the frames from settling.
     Future<void> pumpUntilPanel(WidgetTester tester) => pumpUntil(
@@ -579,10 +597,16 @@ void main() {
       'the toggle is disabled when no model has the key',
       variant: TargetPlatformVariant.only(TargetPlatform.macOS),
       (tester) async {
-        serveAssets([
+        final served = serveAssets([
           assetJson(id: 'm-2', key: 'vulpes:item/sapphire', kind: 'MODEL'),
         ]);
-        await pumpPage(tester, const [itemModel], project: vulpes);
+        await pumpPage(
+          tester,
+          const [itemModel],
+          project: vulpes,
+          settle: false,
+        );
+        await pumpUntilLookedUp(tester, served);
 
         expect(toggleEnabled(tester), isFalse);
         expect(panel(), findsNothing);
@@ -593,10 +617,16 @@ void main() {
       'a texture with the key of the item model is not previewed as the model',
       variant: TargetPlatformVariant.only(TargetPlatform.macOS),
       (tester) async {
-        serveAssets([
+        final served = serveAssets([
           assetJson(id: 't-1', key: 'vulpes:item/ruby', kind: 'TEXTURE'),
         ]);
-        await pumpPage(tester, const [itemModel], project: vulpes);
+        await pumpPage(
+          tester,
+          const [itemModel],
+          project: vulpes,
+          settle: false,
+        );
+        await pumpUntilLookedUp(tester, served);
 
         expect(toggleEnabled(tester), isFalse);
         expect(panel(), findsNothing);

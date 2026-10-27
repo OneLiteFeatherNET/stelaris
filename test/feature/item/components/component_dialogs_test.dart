@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/preview/asset_preview_placeholder.dart';
 import 'package:stelaris/feature/item/components/book/written_book.dart';
 import 'package:stelaris/feature/item/components/book/written_book_editor.dart';
@@ -36,6 +37,8 @@ const _tagPredicates = ComponentSpec(
 );
 
 void main() {
+  setUp(() => AssetLibrary.shared.clearContents());
+
   Future<void> pumpOpener(
     WidgetTester tester,
     Future<Object?> Function(BuildContext context) open,

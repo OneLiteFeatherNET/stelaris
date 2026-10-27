@@ -10,6 +10,7 @@ import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/item_model_asset_preview.dart';
 import 'package:stelaris/feature/asset/library/asset_library_page.dart';
+import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -207,6 +208,8 @@ Map<String, Object?> _gem() => _assetJson(
 );
 
 void main() {
+  setUp(() => AssetLibrary.shared.clearContents());
+
   testWidgets(
     'the models page lists models and Blockbench models, not textures',
     (tester) async {
