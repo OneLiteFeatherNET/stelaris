@@ -1808,4 +1808,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asset_picker_kind_bbmodel => 'Blockbench model';
+
+  @override
+  String get asset_library_no_project => 'Open a project to see its assets.';
+
+  @override
+  String get asset_library_empty =>
+      'No assets of this kind yet. Upload a file to add one.';
+
+  @override
+  String get asset_library_load_failed => 'The assets could not be loaded.';
+
+  @override
+  String get asset_library_kind_texture => 'Texture';
+
+  @override
+  String get asset_library_upload_title => 'Upload an asset';
+
+  @override
+  String asset_library_uploaded_elsewhere(String key) {
+    return 'Uploaded $key. It is listed on its own page.';
+  }
 }

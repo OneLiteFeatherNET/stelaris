@@ -3303,6 +3303,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Blockbench model'**
   String get asset_picker_kind_bbmodel;
+
+  /// No description provided for @asset_library_no_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Open a project to see its assets.'**
+  String get asset_library_no_project;
+
+  /// No description provided for @asset_library_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No assets of this kind yet. Upload a file to add one.'**
+  String get asset_library_empty;
+
+  /// No description provided for @asset_library_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The assets could not be loaded.'**
+  String get asset_library_load_failed;
+
+  /// No description provided for @asset_library_kind_texture.
+  ///
+  /// In en, this message translates to:
+  /// **'Texture'**
+  String get asset_library_kind_texture;
+
+  /// No description provided for @asset_library_upload_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload an asset'**
+  String get asset_library_upload_title;
+
+  /// No description provided for @asset_library_uploaded_elsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded {key}. It is listed on its own page.'**
+  String asset_library_uploaded_elsewhere(String key);
 }
 
 class _AppLocalizationsDelegate

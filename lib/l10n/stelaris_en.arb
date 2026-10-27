@@ -969,5 +969,18 @@
     }
   },
   "asset_picker_kind_model": "Model",
-  "asset_picker_kind_bbmodel": "Blockbench model"
+  "asset_picker_kind_bbmodel": "Blockbench model",
+  "asset_library_no_project": "Open a project to see its assets.",
+  "asset_library_empty": "No assets of this kind yet. Upload a file to add one.",
+  "asset_library_load_failed": "The assets could not be loaded.",
+  "asset_library_kind_texture": "Texture",
+  "asset_library_upload_title": "Upload an asset",
+  "asset_library_uploaded_elsewhere": "Uploaded {key}. It is listed on its own page.",
+  "@asset_library_uploaded_elsewhere": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  }
 }
