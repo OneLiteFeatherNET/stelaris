@@ -10,6 +10,7 @@ void main() {
     String value = '7',
     String? footer,
     VoidCallback? onTap,
+    bool readOnly = false,
   }) {
     return tester.pumpWidget(
       MaterialApp(
@@ -24,7 +25,7 @@ void main() {
                 label: 'Ascent',
                 value: value,
                 footer: footer,
-                onTap: onTap ?? () {},
+                onTap: readOnly ? null : onTap ?? () {},
               ),
             ),
           ),
@@ -110,5 +111,29 @@ void main() {
     await tester.tap(find.byType(EditCard));
 
     expect(tapped, isTrue);
+  });
+
+  testWidgets('a card without a tap has no pencil and no ink', (tester) async {
+    await pumpCard(tester, readOnly: true);
+
+    expect(find.byIcon(Icons.edit_outlined), findsNothing);
+    expect(
+      find.descendant(
+        of: find.byType(EditCard),
+        matching: find.byType(InkWell),
+      ),
+      findsNothing,
+    );
+  });
+
+  testWidgets('a card without a tap is as high as one with it', (
+    tester,
+  ) async {
+    await pumpCard(tester);
+    final height = tester.getSize(find.byType(EditCard)).height;
+
+    await pumpCard(tester, readOnly: true);
+
+    expect(tester.getSize(find.byType(EditCard)).height, height);
   });
 }
