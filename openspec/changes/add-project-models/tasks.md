@@ -43,7 +43,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
   missing slots, "also in", `.bbmodel` read-only, used by.
 - [x] 2.3 Slot upload: `.png` only, key locked to the slot. On success the slot turns present and the
   preview reloads. Verify with widget tests: key locked, success, rejected upload.
-- [ ] 2.4 "New from texture": upload PNG, then the generated `item/generated` JSON under the same key;
+- [x] 2.4 "New from texture": upload PNG, then the generated `item/generated` JSON under the same key;
   the new model is selected. Verify with tests: both uploads with the right key and JSON, model
   upload fails and the texture stays.
 

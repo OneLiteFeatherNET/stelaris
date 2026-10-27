@@ -8,6 +8,7 @@ import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/asset_kind_label.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
+import 'package:stelaris/feature/asset/models/flat_item_model.dart';
 import 'package:stelaris/feature/asset/models/model_detail.dart';
 import 'package:stelaris/feature/asset/models/model_textures.dart';
 import 'package:stelaris/feature/asset/models/model_usage.dart';
@@ -280,6 +281,45 @@ class _ModelsBodyState extends State<_ModelsBody> {
     _select(asset.id);
   }
 
+  /// Uploads a texture and the flat item model drawing it, under one key.
+  ///
+  /// When the model can't be stored the texture stays, so a retry only needs
+  /// the model.
+  Future<void> _newFromTexture() async {
+    final texture = await showDialog<AssetModel>(
+      context: context,
+      builder: (context) => AssetUploadDialog(
+        projectId: widget.projectId,
+        namespace: widget.namespace,
+        title: context.l10n.asset_models_from_texture_title,
+        pickFile: widget.pickFile,
+        kinds: const {AssetKind.TEXTURE},
+      ),
+    );
+    if (texture == null || !mounted) return;
+    final file = flatItemModel(texture.key);
+    final AssetModel model;
+    try {
+      model = await ApiService().assetApi.upload(
+        widget.projectId,
+        key: texture.key,
+        fileName: file.fileName,
+        bytes: file.bytes,
+      );
+    } on DioException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        InfoBarFactory().createError(ProblemDetail.fromDioException(error)),
+      );
+      await _load();
+      return;
+    }
+    if (!mounted) return;
+    await _load();
+    if (!mounted) return;
+    _select(model.id);
+  }
+
   /// Uploads the missing texture of [slot] under the key the model refers to.
   Future<void> _uploadTexture(TextureSlot slot) async {
     final asset = await showDialog<AssetModel>(
@@ -349,6 +389,12 @@ class _ModelsBodyState extends State<_ModelsBody> {
               PageHeader.small(
                 title: context.l10n.asset_models_title,
                 actions: [
+                  PageHeaderAction(
+                    key: const Key('models_from_texture'),
+                    icon: const Icon(Icons.add_photo_alternate_outlined),
+                    label: context.l10n.asset_models_from_texture,
+                    onPressed: _newFromTexture,
+                  ),
                   PageHeaderAction(
                     key: const Key('models_upload'),
                     icon: const Icon(Icons.upload_file),

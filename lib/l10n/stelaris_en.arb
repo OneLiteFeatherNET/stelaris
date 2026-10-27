@@ -1060,5 +1060,7 @@
     }
   },
   "asset_upload_key_fixed": "The model refers to this key, so the texture is stored under it.",
-  "asset_model_texture_upload_title": "Upload the missing texture"
+  "asset_model_texture_upload_title": "Upload the missing texture",
+  "asset_models_from_texture": "New from texture",
+  "asset_models_from_texture_title": "New model from a texture"
 }

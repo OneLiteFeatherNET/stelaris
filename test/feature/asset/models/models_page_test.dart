@@ -262,4 +262,110 @@ void main() {
     expect(find.text('Missing'), findsNothing);
     expect(selections, isEmpty);
   });
+
+  group('new from texture', () {
+    final sapphireTexture = _asset(
+      't5',
+      'vulpes:item/sapphire',
+      AssetKind.TEXTURE,
+    );
+    final sapphireModel = _asset('m5', 'vulpes:item/sapphire', AssetKind.MODEL);
+
+    /// Starts "new from texture" with `sapphire.png`; the backend answers
+    /// the model upload with [modelStatus]. Returns the uploads as
+    /// `key fileName`.
+    Future<List<String>> run(
+      WidgetTester tester, {
+      required List<AssetModel> assets,
+      required List<String?> selections,
+      int modelStatus = 201,
+    }) async {
+      final uploads = <String>[];
+      ApiService().assetApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((RequestOptions options) {
+            if (options.method != 'POST') {
+              return FakeHttpClientAdapter.response({'elements': <Object?>[]});
+            }
+            final form = options.data as FormData;
+            final key = form.fields.firstWhere((f) => f.key == 'key').value;
+            final fileName = form.files.single.value.filename!;
+            uploads.add('$key $fileName');
+            if (fileName.endsWith('.png')) {
+              assets.add(sapphireTexture);
+              return FakeHttpClientAdapter.response(sapphireTexture.toJson());
+            }
+            if (modelStatus != 201) {
+              return FakeHttpClientAdapter.response({
+                'title': 'Server error',
+                'status': modelStatus,
+                'detail': 'The store is down.',
+              }, statusCode: modelStatus);
+            }
+            assets.add(sapphireModel);
+            return FakeHttpClientAdapter.response(sapphireModel.toJson());
+          });
+
+      await tester.tap(find.byKey(const Key('models_from_texture')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Choose a file'));
+      await tester.pumpAndSettle();
+      await pumpUntil(
+        tester,
+        action: () async {
+          await tester.tap(find.text('Upload').last);
+        },
+        done: () =>
+            uploads.length == 2 &&
+            find.byType(Dialog).evaluate().isEmpty &&
+            find.byType(CircularProgressIndicator).evaluate().isEmpty &&
+            (modelStatus == 201
+                ? selections.isNotEmpty
+                : find.byType(SnackBar).evaluate().isNotEmpty),
+      );
+      return uploads;
+    }
+
+    testWidgets('uploads the texture and its model and selects it', (
+      tester,
+    ) async {
+      final assets = [_ruby];
+      final selections = await _pump(
+        tester,
+        library: _Library(assets, {}),
+        pickFile: () async =>
+            PickedAssetFile(name: 'sapphire.png', bytes: Uint8List(3)),
+      );
+
+      final uploads = await run(tester, assets: assets, selections: selections);
+
+      expect(uploads, [
+        'vulpes:item/sapphire sapphire.png',
+        'vulpes:item/sapphire sapphire.json',
+      ]);
+      expect(selections, ['m5']);
+    });
+
+    testWidgets('keeps the texture when the model can not be stored', (
+      tester,
+    ) async {
+      final assets = [_ruby];
+      final selections = await _pump(
+        tester,
+        library: _Library(assets, {}),
+        pickFile: () async =>
+            PickedAssetFile(name: 'sapphire.png', bytes: Uint8List(3)),
+      );
+
+      await run(
+        tester,
+        assets: assets,
+        selections: selections,
+        modelStatus: 500,
+      );
+
+      expect(assets, contains(sapphireTexture));
+      expect(find.text('The store is down.'), findsOneWidget);
+      expect(selections, isEmpty);
+    });
+  });
 }
