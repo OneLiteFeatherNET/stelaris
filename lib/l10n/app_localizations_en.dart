@@ -1835,4 +1835,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get asset_upload_key_bad_path =>
       'The path after the colon may only contain a-z, 0-9, _, ., - and /.';
+
+  @override
+  String get asset_picker_title => 'Choose a model';
+
+  @override
+  String get asset_pick_model_tooltip => 'Choose a model from the project';
+
+  @override
+  String get asset_picker_choose => 'Choose';
+
+  @override
+  String get asset_picker_empty =>
+      'This project has no models yet. Upload one below.';
+
+  @override
+  String get asset_picker_load_failed => 'The models could not be loaded.';
+
+  @override
+  String get asset_picker_retry => 'Try again';
+
+  @override
+  String get asset_picker_upload_action => 'Upload';
+
+  @override
+  String asset_picker_texture_uploaded(String key) {
+    return 'Uploaded the texture $key. Only models can be chosen for an item.';
+  }
 }

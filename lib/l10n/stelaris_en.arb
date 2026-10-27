@@ -987,5 +987,20 @@
     }
   },
   "asset_upload_key_bad_namespace": "The namespace may only contain a-z, 0-9, _, . and -.",
-  "asset_upload_key_bad_path": "The path after the colon may only contain a-z, 0-9, _, ., - and /."
+  "asset_upload_key_bad_path": "The path after the colon may only contain a-z, 0-9, _, ., - and /.",
+  "asset_picker_title": "Choose a model",
+  "asset_pick_model_tooltip": "Choose a model from the project",
+  "asset_picker_choose": "Choose",
+  "asset_picker_empty": "This project has no models yet. Upload one below.",
+  "asset_picker_load_failed": "The models could not be loaded.",
+  "asset_picker_retry": "Try again",
+  "asset_picker_upload_action": "Upload",
+  "asset_picker_texture_uploaded": "Uploaded the texture {key}. Only models can be chosen for an item.",
+  "@asset_picker_texture_uploaded": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  }
 }

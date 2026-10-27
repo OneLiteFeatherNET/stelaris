@@ -3345,6 +3345,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The path after the colon may only contain a-z, 0-9, _, ., - and /.'**
   String get asset_upload_key_bad_path;
+
+  /// No description provided for @asset_picker_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a model'**
+  String get asset_picker_title;
+
+  /// No description provided for @asset_pick_model_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a model from the project'**
+  String get asset_pick_model_tooltip;
+
+  /// No description provided for @asset_picker_choose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose'**
+  String get asset_picker_choose;
+
+  /// No description provided for @asset_picker_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'This project has no models yet. Upload one below.'**
+  String get asset_picker_empty;
+
+  /// No description provided for @asset_picker_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The models could not be loaded.'**
+  String get asset_picker_load_failed;
+
+  /// No description provided for @asset_picker_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get asset_picker_retry;
+
+  /// No description provided for @asset_picker_upload_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get asset_picker_upload_action;
+
+  /// No description provided for @asset_picker_texture_uploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded the texture {key}. Only models can be chosen for an item.'**
+  String asset_picker_texture_uploaded(String key);
 }
 
 class _AppLocalizationsDelegate
