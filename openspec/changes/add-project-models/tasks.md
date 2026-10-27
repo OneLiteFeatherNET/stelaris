@@ -22,7 +22,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 1. Texture status (pure Dart)
 
-- [ ] 1.1 Add `ModelTextures`/`TextureSlot` and `modelTextures(model, json, textures, otherModels)`.
+- [x] 1.1 Add `ModelTextures`/`TextureSlot` and `modelTextures(model, json, textures, otherModels)`.
   MODEL: one slot per referenced key with the TEXTURE asset or null, plus the other models using the
   key. BBMODEL: the textures whose `sourceAssetId` is the model, read-only. Verify with unit tests per
   case and the review focus above.
