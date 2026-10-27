@@ -104,7 +104,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 7. Fresh models after a change in the backend
 
-- [ ] 7.1 Cache only contents by sha1; look keys and the texture index up again per preview, drop
+- [x] 7.1 Cache only contents by sha1; look keys and the texture index up again per preview, drop
   `remember`/`invalidate`. Reload a scene when the asset's sha1 changes, not only its id. Look the
   item model and the asset list up again when the app resumes (tab regains focus). Verify with
   tests first: a model replaced in the backend (same key, new sha1) is shown on the next lookup; a
