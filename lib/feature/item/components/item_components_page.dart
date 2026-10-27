@@ -50,6 +50,24 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
   /// The model preview next to the cards, see [ItemModelPreviewSlot].
   final _preview = ItemModelPreviewController();
 
+  /// Looks the model up again when the app resumes, e.g. when the browser tab
+  /// regains focus, so a model saved elsewhere shows up.
+  late final AppLifecycleListener _lifecycle;
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycle = AppLifecycleListener(
+      onResume: () => setState(_preview.refresh),
+    );
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
   Future<void> _add(_ComponentsView vm) async {
     final spec = await showComponentPickerDialog(
       context,

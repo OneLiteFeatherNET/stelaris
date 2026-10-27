@@ -8,8 +8,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/asset/item_model_asset_preview.dart';
 import 'package:stelaris/feature/asset/library/asset_library_page.dart';
-import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -35,6 +35,7 @@ Map<String, Object?> _assetJson({
   required String key,
   required String kind,
   String? fileName,
+  String sha1 = 'bbbb',
 }) => {
   'id': id,
   'projectId': 'p-1',
@@ -43,7 +44,7 @@ Map<String, Object?> _assetJson({
   'fileName': fileName ?? '$id.json',
   'contentType': 'application/json',
   'size': 512,
-  'sha1': 'bbbb',
+  'sha1': sha1,
   'derivedAssetIds': <String>[],
 };
 
@@ -96,6 +97,9 @@ class _Backend {
     });
   }
 
+  int requestsTo(String pathSuffix) =>
+      requests.where((r) => r.uri.path.endsWith(pathSuffix)).length;
+
   List<String?> get queriedKinds => [
     for (final request in requests)
       if (request.method == 'GET' &&
@@ -113,7 +117,6 @@ Future<void> _pump(
   bool withProject = true,
   Future<PickedAssetFile?> Function()? pickFile,
 }) async {
-  AssetLibrary.shared.invalidate();
   // Wide enough for the side panel, which opens from 840 logical pixels on.
   tester.view.physicalSize = const Size(1200, 800);
   tester.view.devicePixelRatio = 1;
@@ -175,6 +178,13 @@ bool _modelPreviewSettled() =>
     find.text(_unavailable).evaluate().isNotEmpty ||
     find.text(_previewFailed).evaluate().isNotEmpty;
 
+/// The sha1 of the model the preview shows, null when no model is shown.
+String? _shownSha1(WidgetTester tester) {
+  final previews = find.byType(ItemModelPreview);
+  if (previews.evaluate().isEmpty) return null;
+  return tester.widget<ItemModelPreview>(previews).asset.sha1;
+}
+
 Map<String, Object?> _ruby() => _assetJson(
   id: 'm-1',
   key: _rubyModel,
@@ -197,8 +207,6 @@ Map<String, Object?> _gem() => _assetJson(
 );
 
 void main() {
-  setUp(() => AssetLibrary.shared.invalidate());
-
   testWidgets(
     'the models page lists models and Blockbench models, not textures',
     (tester) async {
@@ -385,6 +393,61 @@ void main() {
         find.text(_rubyGemModel),
         findsNothing,
         reason: 'nothing was added',
+      );
+    },
+  );
+
+  testWidgets(
+    'a resumed app lists the models again and previews the model saved last',
+    (tester) async {
+      // Own sha1s: the downloaded contents are cached by sha1 for the run.
+      final backend = _Backend(
+        assets: [
+          _assetJson(
+            id: 'm-1',
+            key: _rubyModel,
+            kind: 'MODEL',
+            fileName: 'ruby.json',
+            sha1: 'sha-resume-old',
+          ),
+        ],
+      );
+      await _pump(tester, backend: backend);
+      await _waitFor(tester, find.text(_rubyModel));
+      await _tap(tester, find.text(_rubyModel));
+      await pumpUntil(tester, action: () async {}, done: _modelPreviewSettled);
+      final listsBefore = backend.queriedKinds.where((k) => k == 'MODEL');
+      final contentBefore = backend.requestsTo('/m-1/content');
+
+      // Saved again in Blockbench under the same key: a new sha1.
+      backend.assets[0] = _assetJson(
+        id: 'm-1',
+        key: _rubyModel,
+        kind: 'MODEL',
+        fileName: 'ruby.json',
+        sha1: 'sha-resume-new',
+      );
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await pumpUntil(
+        tester,
+        action: () async {},
+        done: () =>
+            backend.queriedKinds.where((k) => k == 'MODEL').length >
+                listsBefore.length &&
+            _shownSha1(tester) == 'sha-resume-new' &&
+            backend.requestsTo('/m-1/content') > contentBefore,
+      );
+
+      expect(
+        backend.requestsTo('/m-1/content'),
+        contentBefore + 1,
+        reason: 'the preview loads the model saved last',
+      );
+      expect(
+        find.byKey(const Key('item_model_preview')),
+        findsOneWidget,
+        reason: 'the selection is kept',
       );
     },
   );

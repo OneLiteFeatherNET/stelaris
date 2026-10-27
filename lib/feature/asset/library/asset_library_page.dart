@@ -8,7 +8,6 @@ import 'package:stelaris/api/model/asset_model.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/item_model_asset_preview.dart';
-import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/picker/asset_key.dart';
 import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
@@ -133,10 +132,21 @@ class _AssetLibraryBodyState extends State<_AssetLibraryBody> {
   /// ignored.
   int _loadId = 0;
 
+  /// Reloads the list when the app resumes, e.g. when the browser tab regains
+  /// focus, so an asset saved elsewhere shows up.
+  late final AppLifecycleListener _lifecycle;
+
   @override
   void initState() {
     super.initState();
+    _lifecycle = AppLifecycleListener(onResume: _load);
     _load();
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
   }
 
   @override
@@ -193,10 +203,12 @@ class _AssetLibraryBodyState extends State<_AssetLibraryBody> {
     }
   }
 
+  /// The listed asset with the key and kind of [asset], so the selection
+  /// follows a reload, null when the asset is gone.
   static AssetModel? _sameAsset(List<AssetModel> assets, AssetModel? asset) {
     if (asset == null) return null;
     for (final listed in assets) {
-      if (listed.id == asset.id) return listed;
+      if (listed.key == asset.key && listed.kind == asset.kind) return listed;
     }
     return null;
   }
@@ -211,7 +223,6 @@ class _AssetLibraryBodyState extends State<_AssetLibraryBody> {
       ),
     );
     if (asset == null || !mounted) return;
-    AssetLibrary.shared.remember(asset);
     if (!widget.kinds.contains(asset.kind)) {
       // Textures uploaded here are listed on the other page.
       ScaffoldMessenger.of(context).showSnackBar(

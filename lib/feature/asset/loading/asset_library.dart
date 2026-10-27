@@ -21,8 +21,10 @@ class AssetSceneData {
 
 /// Finds the model assets of a project by key and loads them as scenes.
 ///
-/// Lookups, texture indexes and downloaded contents are cached in memory for the lifetime of
-/// the instance. Contents are cached by the asset's sha1. [invalidate] drops everything.
+/// Lookups and texture indexes are read from the backend on every call, so a model saved again
+/// under the same key is seen at once. Downloaded contents are cached in memory for the lifetime
+/// of the instance, by the asset's sha1: a sha1 names one content, so a cached content is never
+/// stale.
 class AssetLibrary {
   AssetLibrary(this._assets);
 
@@ -33,15 +35,24 @@ class AssetLibrary {
 
   final AssetClientApi _assets;
 
-  final Map<(String, String), Future<AssetModel?>> _lookups = {};
-  final Map<String, Future<Map<String, AssetModel>>> _textureIndexes = {};
   final Map<String, Future<List<int>>> _contents = {};
 
   /// Returns the MODEL or BBMODEL asset of [projectId] whose key equals [key] exactly, or null.
   ///
   /// A TEXTURE with the same key does not count.
-  Future<AssetModel?> findModelByKey(String projectId, String key) =>
-      _memo(_lookups, (projectId, key), () => _findModel(projectId, key));
+  Future<AssetModel?> findModelByKey(String projectId, String key) async {
+    for (final kind in const [AssetKind.MODEL, AssetKind.BBMODEL]) {
+      final match = await _firstOnPages(
+        projectId,
+        kind: kind,
+        where: (asset) => asset.key == key,
+      );
+      if (match != null) {
+        return match;
+      }
+    }
+    return null;
+  }
 
   /// Loads the model [asset] of [projectId] as a scene.
   ///
@@ -65,44 +76,6 @@ class AssetLibrary {
     }
   }
 
-  /// Records [asset] as the current state of its key, e.g. after an upload.
-  ///
-  /// A model replaces the cached lookup of its key; a texture is added to the texture index of
-  /// its project if that index is already loaded.
-  void remember(AssetModel asset) {
-    switch (asset.kind) {
-      case AssetKind.MODEL:
-      case AssetKind.BBMODEL:
-        _lookups[(asset.projectId, asset.key)] = Future.value(asset);
-      case AssetKind.TEXTURE:
-        _textureIndexes[asset.projectId]?.then(
-          (index) => index[asset.key] = asset,
-          onError: (Object _) {},
-        );
-    }
-  }
-
-  /// Drops every cached lookup, texture index and content.
-  void invalidate() {
-    _lookups.clear();
-    _textureIndexes.clear();
-    _contents.clear();
-  }
-
-  Future<AssetModel?> _findModel(String projectId, String key) async {
-    for (final kind in const [AssetKind.MODEL, AssetKind.BBMODEL]) {
-      final match = await _firstOnPages(
-        projectId,
-        kind: kind,
-        where: (asset) => asset.key == key,
-      );
-      if (match != null) {
-        return match;
-      }
-    }
-    return null;
-  }
-
   /// Walks the pages of [kind] until [where] matches or the last page has been read.
   Future<AssetModel?> _firstOnPages(
     String projectId, {
@@ -124,25 +97,24 @@ class AssetLibrary {
     }
   }
 
-  Future<Map<String, AssetModel>> _textureIndex(String projectId) =>
-      _memo(_textureIndexes, projectId, () async {
-        final index = <String, AssetModel>{};
-        var page = 0;
-        while (true) {
-          final result = await _assets.getPage(
-            projectId,
-            kind: AssetKind.TEXTURE,
-            page: page,
-          );
-          for (final asset in result.items) {
-            index.putIfAbsent(asset.key, () => asset);
-          }
-          page++;
-          if (result.items.isEmpty || page >= result.totalPages) {
-            return index;
-          }
-        }
-      });
+  Future<Map<String, AssetModel>> _textureIndex(String projectId) async {
+    final index = <String, AssetModel>{};
+    var page = 0;
+    while (true) {
+      final result = await _assets.getPage(
+        projectId,
+        kind: AssetKind.TEXTURE,
+        page: page,
+      );
+      for (final asset in result.items) {
+        index.putIfAbsent(asset.key, () => asset);
+      }
+      page++;
+      if (result.items.isEmpty || page >= result.totalPages) {
+        return index;
+      }
+    }
+  }
 
   /// Loads the texture assets that [json] refers to, keyed by their namespaced key.
   Future<Map<String, SceneTexture>> _modelTextures(

@@ -148,38 +148,32 @@ void main() {
       expect(found, isNull);
     });
 
-    test('serves a second lookup of the same key from the cache', () async {
-      final backend = _FakeBackend(
-        assets: [_asset(id: 'm-ruby', key: 'vulpes:item/ruby', kind: 'MODEL')],
-      );
+    test('asks the backend again and returns a replaced model', () async {
+      final assets = [
+        _asset(
+          id: 'm-ruby',
+          key: 'vulpes:item/ruby',
+          kind: 'MODEL',
+          sha1: 'sha-old',
+        ),
+      ];
+      final backend = _FakeBackend(assets: assets);
       final library = _library(backend);
 
-      final first = await library.findModelByKey(
-        _projectId,
-        'vulpes:item/ruby',
+      await library.findModelByKey(_projectId, 'vulpes:item/ruby');
+      assets[0] = _asset(
+        id: 'm-ruby',
+        key: 'vulpes:item/ruby',
+        kind: 'MODEL',
+        sha1: 'sha-new',
       );
-      final requestsAfterFirst = backend.requests.length;
       final second = await library.findModelByKey(
         _projectId,
         'vulpes:item/ruby',
       );
 
-      expect(second?.id, first?.id);
-      expect(backend.requests.length, requestsAfterFirst);
-    });
-
-    test('uses a remembered model without fetching', () async {
-      final backend = _FakeBackend(assets: const []);
-      final library = _library(backend);
-      final uploaded = AssetModel.fromJson(
-        _asset(id: 'm-new', key: 'vulpes:item/new', kind: 'MODEL'),
-      );
-
-      library.remember(uploaded);
-      final found = await library.findModelByKey(_projectId, 'vulpes:item/new');
-
-      expect(found?.id, 'm-new');
-      expect(backend.requests, isEmpty);
+      expect(second?.sha1, 'sha-new');
+      expect(backend.requestsTo('/asset/'), 2);
     });
   });
 
@@ -254,6 +248,58 @@ void main() {
       );
       expect(texture['width'], 32);
       expect(texture['height'], 32);
+    });
+
+    test('uses a texture that was replaced in the backend', () async {
+      final model = {
+        'parent': 'minecraft:item/generated',
+        'textures': {'layer0': 'vulpes:item/ruby'},
+      };
+      final assets = [
+        _asset(
+          id: 'm-ruby',
+          key: 'vulpes:item/ruby',
+          kind: 'MODEL',
+          sha1: 'sha-model',
+        ),
+        _asset(
+          id: 't-ruby',
+          key: 'vulpes:item/ruby',
+          kind: 'TEXTURE',
+          sha1: 'sha-texture-old',
+        ),
+      ];
+      final backend = _FakeBackend(
+        assets: assets,
+        contents: {'m-ruby': _utf8(_json(model)), 't-ruby': _bytesOfTexture},
+      );
+      final library = _library(backend);
+      final asset = AssetModel.fromJson(
+        _asset(
+          id: 'm-ruby',
+          key: 'vulpes:item/ruby',
+          kind: 'MODEL',
+          sha1: 'sha-model',
+        ),
+      );
+      await library.loadScene(_projectId, asset);
+
+      assets[1] = _asset(
+        id: 't-ruby',
+        key: 'vulpes:item/ruby',
+        kind: 'TEXTURE',
+        sha1: 'sha-texture-new',
+      );
+      backend.contents['t-ruby'] = [9, 8, 7];
+      final data = await library.loadScene(_projectId, asset);
+
+      final texture =
+          (data.scene['textures'] as List).single as Map<String, Object?>;
+      expect(
+        texture['dataUri'],
+        'data:image/png;base64,${base64Encode([9, 8, 7])}',
+        reason: 'the texture saved in the backend last is shown',
+      );
     });
 
     test('leaves a texture that is not in the project null', () async {

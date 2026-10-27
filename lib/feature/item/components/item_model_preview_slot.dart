@@ -22,6 +22,9 @@ class ItemModelPreviewController {
 
   void toggle() => shown = !shown;
 
+  /// Drops the lookup, so the next [modelOf] asks the backend again.
+  void refresh() => _lookup = null;
+
   /// The model the item model key names in the project, null without a key
   /// or a project. The same lookup is kept while the key stays.
   Future<AssetModel?>? modelOf(ComponentProject? project, String? key) {

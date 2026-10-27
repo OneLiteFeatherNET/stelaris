@@ -1,5 +1,4 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/picker/asset_picker_dialog.dart';
 import 'package:stelaris/feature/asset/preview/asset_scene_view.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
@@ -410,7 +409,6 @@ class _ComponentEditDialogState extends State<_ComponentEditDialog> {
           AssetSceneView(projectId: project.id, asset: asset),
     );
     if (asset == null || !mounted) return;
-    AssetLibrary.shared.remember(asset);
     setState(() {
       _value = asset.key;
       _fieldEpoch++;

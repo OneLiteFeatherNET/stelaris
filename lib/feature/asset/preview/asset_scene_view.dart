@@ -34,6 +34,7 @@ class _AssetSceneViewState extends State<AssetSceneView> {
   void didUpdateWidget(AssetSceneView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.asset.id != widget.asset.id ||
+        oldWidget.asset.sha1 != widget.asset.sha1 ||
         oldWidget.projectId != widget.projectId) {
       _scene = _load();
     }

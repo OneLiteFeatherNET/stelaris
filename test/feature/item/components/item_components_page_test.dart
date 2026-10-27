@@ -8,7 +8,7 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/asset/loading/asset_library.dart';
+import 'package:stelaris/feature/asset/item_model_asset_preview.dart';
 import 'package:stelaris/feature/asset/preview/asset_preview_placeholder.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/item/components/item_components_page.dart';
@@ -21,8 +21,6 @@ import '../../../support/pump_until.dart';
 import '../../../support/settle_requests.dart';
 
 void main() {
-  setUp(() => AssetLibrary.shared.invalidate());
-
   Future<void> pumpPage(
     WidgetTester tester,
     List<ItemComponentDto> components, {
@@ -398,6 +396,14 @@ void main() {
       of: panel(),
       matching: find.byType(AssetPreviewPlaceholder),
     );
+
+    /// The sha1 of the model the preview shows, null when none is shown.
+    String? shownSha1(WidgetTester tester) {
+      final previews = find.byType(ItemModelPreview);
+      if (previews.evaluate().isEmpty) return null;
+      return tester.widget<ItemModelPreview>(previews).asset.sha1;
+    }
+
     Finder card(String name) =>
         find.ancestor(of: find.text(name), matching: find.byType(Card));
 
@@ -515,6 +521,39 @@ void main() {
     );
 
     testWidgets(
+      'a resumed app looks the item model up again and shows the model saved last',
+      variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+      (tester) async {
+        final assets = [
+          assetJson(id: 'm-1', key: 'vulpes:item/ruby', kind: 'MODEL'),
+        ];
+        serveAssets(assets);
+        await pumpPage(
+          tester,
+          const [food, itemModel],
+          project: vulpes,
+          settle: false,
+        );
+        await pumpUntilPanel(tester);
+        expect(shownSha1(tester), 'sha-m-1');
+
+        // Saved again in Blockbench under the same key: a new sha1.
+        assets[0] = {...assets[0], 'sha1': 'sha-m-1-saved'};
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.inactive,
+        );
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+        await pumpUntil(
+          tester,
+          action: () async {},
+          done: () => shownSha1(tester) == 'sha-m-1-saved',
+        );
+      },
+    );
+
+    testWidgets(
       'the toggle is disabled without an item model',
       variant: TargetPlatformVariant.only(TargetPlatform.macOS),
       (tester) async {
@@ -543,10 +582,6 @@ void main() {
         serveAssets([
           assetJson(id: 'm-2', key: 'vulpes:item/sapphire', kind: 'MODEL'),
         ]);
-        // The lookup is done before the page, so the page only reads it.
-        await tester.runAsync(
-          () => AssetLibrary.shared.findModelByKey('p-1', 'vulpes:item/ruby'),
-        );
         await pumpPage(tester, const [itemModel], project: vulpes);
 
         expect(toggleEnabled(tester), isFalse);
@@ -561,10 +596,6 @@ void main() {
         serveAssets([
           assetJson(id: 't-1', key: 'vulpes:item/ruby', kind: 'TEXTURE'),
         ]);
-        // The lookup is done before the page, so the page only reads it.
-        await tester.runAsync(
-          () => AssetLibrary.shared.findModelByKey('p-1', 'vulpes:item/ruby'),
-        );
         await pumpPage(tester, const [itemModel], project: vulpes);
 
         expect(toggleEnabled(tester), isFalse);
