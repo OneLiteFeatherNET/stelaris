@@ -49,7 +49,7 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 3. Sidebar and route
 
-- [ ] 3.1 Add `AssetNavigationEntry { models }`, the "Assets" heading (disabled, visible collapsed and
+- [x] 3.1 Add `AssetNavigationEntry { models }`, the "Assets" heading (disabled, visible collapsed and
   extended) and the route `/assets/models`. Verify with widget tests: heading not selectable, entry
   highlighted on its route, existing entries keep their indices.
 

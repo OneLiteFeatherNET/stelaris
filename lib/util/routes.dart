@@ -20,6 +20,8 @@ import 'package:stelaris/feature/item/item_page.dart' deferred as item_page;
 import 'package:stelaris/feature/advancement/advancement_page.dart'
     deferred as advancement_page;
 import 'package:stelaris/feature/sound/sound_page.dart' deferred as sound_page;
+import 'package:stelaris/feature/asset/models/models_page.dart'
+    deferred as models_page;
 import 'package:stelaris/feature/attributes/attribute_detail_page.dart'
     deferred as attribute_detail_page;
 import 'package:stelaris/feature/font/font_detail_page.dart'
@@ -423,6 +425,31 @@ final GoRouter router = GoRouter(
               ),
             ),
           ],
+        ),
+        GoRoute(
+          path: AssetNavigationEntry.models.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: models_page.loadLibrary,
+              builder: () => models_page.ModelsPage(
+                // The selection is in the URL, so a reload keeps it.
+                selectedId: state.uri.queryParameters['id'],
+                onSelected: (id) => context.go(
+                  Uri(
+                    path: AssetNavigationEntry.models.route,
+                    queryParameters: id == null ? null : {'id': id},
+                  ).toString(),
+                ),
+              ),
+            ),
+            key: state.pageKey,
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
+          ),
         ),
       ],
     ),
