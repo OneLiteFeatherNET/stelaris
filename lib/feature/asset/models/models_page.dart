@@ -455,8 +455,8 @@ class _ModelsBodyState extends State<_ModelsBody> {
 }
 
 /// One model of the grid in the frame of the other list pages' cards: its
-/// name and key, how many textures it misses, and a footer with its kind and
-/// last change.
+/// name and key, a warning when it misses textures, and a footer with its
+/// kind and last change.
 class _ModelCard extends StatelessWidget {
   const _ModelCard({
     required this.model,
@@ -500,19 +500,10 @@ class _ModelCard extends StatelessWidget {
           ? null
           : Tooltip(
               message: l10n.asset_models_missing_tooltip(missing),
-              child: Chip(
+              child: Icon(
+                Icons.warning_amber_rounded,
                 key: ValueKey('model_missing_${model.id}'),
-                avatar: Icon(
-                  Icons.warning_amber_rounded,
-                  size: 16,
-                  color: colorScheme.onErrorContainer,
-                ),
-                label: Text(l10n.asset_models_missing(missing)),
-                labelStyle: TextStyle(color: colorScheme.onErrorContainer),
-                backgroundColor: colorScheme.errorContainer,
-                side: BorderSide.none,
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                color: colorScheme.error,
               ),
             ),
       footerIcon: assetKindIcon(model.kind),
