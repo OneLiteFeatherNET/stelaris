@@ -15,11 +15,13 @@ import 'package:stelaris/feature/asset/models/model_usage.dart';
 import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_dialog.dart';
+import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/relative_time.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// From this width on the detail sits next to the list.
@@ -447,12 +449,13 @@ class _ModelsBodyState extends State<_ModelsBody> {
         child: Text(l10n.asset_models_empty, textAlign: TextAlign.center),
       );
     }
-    return ListView.builder(
+    return ListView.separated(
       key: const Key('models_list'),
       itemCount: _models.length,
+      separatorBuilder: (_, _) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final model = _models[index];
-        return _ModelTile(
+        return _ModelCard(
           key: ValueKey('model_${model.id}'),
           model: model,
           missing: _texturesOf(model).missingCount,
@@ -464,9 +467,11 @@ class _ModelsBodyState extends State<_ModelsBody> {
   }
 }
 
-/// One model of the list: its key, its kind and how many textures it misses.
-class _ModelTile extends StatelessWidget {
-  const _ModelTile({
+/// One model of the list, styled like the model cards of the other list
+/// pages: its name and key, how many textures it misses, and a footer with
+/// its kind and last change.
+class _ModelCard extends StatelessWidget {
+  const _ModelCard({
     required this.model,
     required this.missing,
     required this.selected,
@@ -479,35 +484,97 @@ class _ModelTile extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
+  /// The last part of the key, e.g. `ruby` for `vulpes:item/ruby`.
+  String get _name => model.key.split(RegExp('[:/]')).last;
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final colorScheme = Theme.of(context).colorScheme;
-    return ListTile(
-      selected: selected,
-      selectedTileColor: colorScheme.secondaryContainer,
-      leading: Icon(assetKindIcon(model.kind)),
-      title: Text(model.key, maxLines: 1, overflow: TextOverflow.ellipsis),
-      subtitle: Text(assetKindLabel(l10n, model.kind)),
-      trailing: missing == 0
-          ? null
-          : Tooltip(
-              message: l10n.asset_models_missing_tooltip(missing),
-              child: Chip(
-                key: ValueKey('model_missing_${model.id}'),
-                avatar: Icon(
-                  Icons.warning_amber_rounded,
-                  size: 16,
-                  color: colorScheme.onErrorContainer,
-                ),
-                label: Text(l10n.asset_models_missing(missing)),
-                labelStyle: TextStyle(color: colorScheme.onErrorContainer),
-                backgroundColor: colorScheme.errorContainer,
-                side: BorderSide.none,
-                visualDensity: VisualDensity.compact,
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final muted = theme.textTheme.bodySmall?.copyWith(
+      color: colorScheme.onSurfaceVariant,
+    );
+    final date = model.modificationDate ?? model.creationDate;
+    return Card.filled(
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      color: selected
+          ? colorScheme.secondaryContainer
+          : colorScheme.surfaceContainerLow,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 12, 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      _name,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  if (missing > 0)
+                    Tooltip(
+                      message: l10n.asset_models_missing_tooltip(missing),
+                      child: Chip(
+                        key: ValueKey('model_missing_${model.id}'),
+                        avatar: Icon(
+                          Icons.warning_amber_rounded,
+                          size: 16,
+                          color: colorScheme.onErrorContainer,
+                        ),
+                        label: Text(l10n.asset_models_missing(missing)),
+                        labelStyle: TextStyle(
+                          color: colorScheme.onErrorContainer,
+                        ),
+                        backgroundColor: colorScheme.errorContainer,
+                        side: BorderSide.none,
+                        visualDensity: VisualDensity.compact,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
+                ],
               ),
-            ),
-      onTap: onTap,
+              const SizedBox(height: 6),
+              InfoChip(icon: Icons.vpn_key_outlined, text: model.key),
+              const SizedBox(height: 8),
+              Divider(height: 1, color: colorScheme.outlineVariant),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(
+                    assetKindIcon(model.kind),
+                    size: 14,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 4),
+                  Flexible(
+                    child: Text(
+                      [
+                        assetKindLabel(l10n, model.kind),
+                        if (date != null) relativeTime(context, date),
+                      ].join(' · '),
+                      style: muted,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
