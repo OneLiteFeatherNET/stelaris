@@ -1771,4 +1771,68 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get item_model_preview_title => 'Preview';
+
+  @override
+  String get asset_picker_key => 'Key';
+
+  @override
+  String get asset_picker_kind_model => 'Model';
+
+  @override
+  String get asset_picker_kind_bbmodel => 'Blockbench model';
+
+  @override
+  String get asset_library_kind_texture => 'Texture';
+
+  @override
+  String get asset_upload_drop => 'Drag a file here';
+
+  @override
+  String get asset_upload_drop_now => 'Drop to add the file';
+
+  @override
+  String get asset_upload_formats =>
+      'PNG textures, model JSON or Blockbench models (.bbmodel)';
+
+  @override
+  String get asset_upload_choose => 'Choose a file';
+
+  @override
+  String get asset_upload_change => 'Choose another file';
+
+  @override
+  String get asset_upload_remove => 'Remove the file';
+
+  @override
+  String asset_upload_file_details(String kind, String size) {
+    return '$kind · $size';
+  }
+
+  @override
+  String get asset_upload_unsupported_file =>
+      'Only .png, .json and .bbmodel files can be uploaded.';
+
+  @override
+  String get asset_upload_read_failed => 'The file could not be read.';
+
+  @override
+  String asset_upload_key_helper(String example) {
+    return 'The path in the resource pack, e.g. $example';
+  }
+
+  @override
+  String get asset_upload_key_empty => 'Enter a key.';
+
+  @override
+  String asset_upload_key_no_namespace(String namespace) {
+    return 'Start the key with a namespace, e.g. $namespace:';
+  }
+
+  @override
+  String get asset_upload_key_bad_namespace =>
+      'The namespace may only contain a-z, 0-9, _, . and -.';
+
+  @override
+  String get asset_upload_key_bad_path =>
+      'The path after the colon may only contain a-z, 0-9, _, ., - and /.';
 }

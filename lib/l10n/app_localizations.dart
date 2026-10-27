@@ -3237,6 +3237,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Preview'**
   String get item_model_preview_title;
+
+  /// No description provided for @asset_picker_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Key'**
+  String get asset_picker_key;
+
+  /// No description provided for @asset_picker_kind_model.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get asset_picker_kind_model;
+
+  /// No description provided for @asset_picker_kind_bbmodel.
+  ///
+  /// In en, this message translates to:
+  /// **'Blockbench model'**
+  String get asset_picker_kind_bbmodel;
+
+  /// No description provided for @asset_library_kind_texture.
+  ///
+  /// In en, this message translates to:
+  /// **'Texture'**
+  String get asset_library_kind_texture;
+
+  /// No description provided for @asset_upload_drop.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag a file here'**
+  String get asset_upload_drop;
+
+  /// No description provided for @asset_upload_drop_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop to add the file'**
+  String get asset_upload_drop_now;
+
+  /// No description provided for @asset_upload_formats.
+  ///
+  /// In en, this message translates to:
+  /// **'PNG textures, model JSON or Blockbench models (.bbmodel)'**
+  String get asset_upload_formats;
+
+  /// No description provided for @asset_upload_choose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a file'**
+  String get asset_upload_choose;
+
+  /// No description provided for @asset_upload_change.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose another file'**
+  String get asset_upload_change;
+
+  /// No description provided for @asset_upload_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the file'**
+  String get asset_upload_remove;
+
+  /// No description provided for @asset_upload_file_details.
+  ///
+  /// In en, this message translates to:
+  /// **'{kind} · {size}'**
+  String asset_upload_file_details(String kind, String size);
+
+  /// No description provided for @asset_upload_unsupported_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Only .png, .json and .bbmodel files can be uploaded.'**
+  String get asset_upload_unsupported_file;
+
+  /// No description provided for @asset_upload_read_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The file could not be read.'**
+  String get asset_upload_read_failed;
+
+  /// No description provided for @asset_upload_key_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'The path in the resource pack, e.g. {example}'**
+  String asset_upload_key_helper(String example);
+
+  /// No description provided for @asset_upload_key_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a key.'**
+  String get asset_upload_key_empty;
+
+  /// No description provided for @asset_upload_key_no_namespace.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the key with a namespace, e.g. {namespace}:'**
+  String asset_upload_key_no_namespace(String namespace);
+
+  /// No description provided for @asset_upload_key_bad_namespace.
+  ///
+  /// In en, this message translates to:
+  /// **'The namespace may only contain a-z, 0-9, _, . and -.'**
+  String get asset_upload_key_bad_namespace;
+
+  /// No description provided for @asset_upload_key_bad_path.
+  ///
+  /// In en, this message translates to:
+  /// **'The path after the colon may only contain a-z, 0-9, _, ., - and /.'**
+  String get asset_upload_key_bad_path;
 }
 
 class _AppLocalizationsDelegate
