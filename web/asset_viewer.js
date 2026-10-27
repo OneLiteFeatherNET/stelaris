@@ -9,7 +9,7 @@
 // wraps the levels in a THREE.LOD.
 
 import * as THREE from 'three';
-import { OrbitControls } from './vendor/three/OrbitControls.js';
+import { OrbitControls } from './vendor/three/OrbitControls.min.js';
 
 const LOD_DISTANCES = [0, 1.5, 3];
 const CHECKER = 'checker';
