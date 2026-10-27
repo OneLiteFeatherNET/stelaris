@@ -177,6 +177,49 @@ void main() {
     });
   });
 
+  group('assetsOf', () {
+    test('reads every page of the kind', () async {
+      final backend = _FakeBackend(
+        pageSize: 1,
+        assets: [
+          _asset(id: 't-1', key: 'vulpes:item/a', kind: 'TEXTURE'),
+          _asset(id: 'm-1', key: 'vulpes:item/b', kind: 'MODEL'),
+          _asset(id: 't-2', key: 'vulpes:item/c', kind: 'TEXTURE'),
+        ],
+      );
+
+      final textures = await _library(backend)
+          .assetsOf(_projectId, AssetKind.TEXTURE);
+
+      expect(textures.map((asset) => asset.id), ['t-1', 't-2']);
+    });
+  });
+
+  group('textureKeysOf', () {
+    test('reads the keys from the content cached by sha1', () async {
+      final backend = _FakeBackend(
+        assets: const [],
+        contents: {
+          'm-ruby': _utf8(_json({
+            'parent': 'item/generated',
+            'textures': {'layer0': 'vulpes:item/ruby'},
+          })),
+        },
+      );
+      final library = _library(backend);
+      final model = AssetModel.fromJson(
+        _asset(id: 'm-ruby', key: 'vulpes:item/ruby', kind: 'MODEL'),
+      );
+
+      final first = await library.textureKeysOf(_projectId, model);
+      final second = await library.textureKeysOf(_projectId, model);
+
+      expect(first, {'vulpes:item/ruby'});
+      expect(second, first);
+      expect(backend.requestsTo('/content'), 1);
+    });
+  });
+
   group('loadScene', () {
     test('loads a Blockbench model with its three detail levels', () async {
       final bbmodel = {
