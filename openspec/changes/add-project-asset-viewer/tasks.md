@@ -91,16 +91,16 @@ Inputs the spec implies but doesn't spell out, each pinned by a test in the task
 
 ## 6. Assets in the sidebar
 
-- [ ] 6.1 Add `AssetLibraryPage(kinds)`: lists the project's assets of those kinds, upload in the
+- [x] 6.1 Add `AssetLibraryPage(kinds)`: lists the project's assets of those kinds, upload in the
   page header (picker, suggested key, rejected upload keeps the dialog open with the message at
   the field), selected asset previewed in a Lore-style side panel (>= 840 px) or bottom sheet:
   models in 3D, textures as a pixel-sharp image. Verify with widget tests using
   `FakeHttpClientAdapter`: list per kind, select shows preview, upload adds and selects, conflict.
-- [ ] 6.2 Add `AssetNavigationEntry { models, textures }`, the "Assets" heading as a disabled rail
+- [x] 6.2 Add `AssetNavigationEntry { models, textures }`, the "Assets" heading as a disabled rail
   destination visible collapsed and extended, and routes `/assets/models` and `/assets/textures`.
   Verify with widget tests: heading shown collapsed and extended, heading not selectable, entry
   highlighted on its route, tapping an entry navigates, existing entries keep their indices.
-- [ ] 6.3 Check the sidebar and both pages in the browser against the local backend, light and dark.
+- [x] 6.3 Check the sidebar and both pages in the browser against the local backend, light and dark.
 
 ## Workflow follow-up
 
