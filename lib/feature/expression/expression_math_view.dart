@@ -6,7 +6,7 @@ import 'package:material_ui/material_ui.dart';
 /// and continues on the next line, so it stays inside the width it is given.
 /// A single part wider than that scrolls sideways. Without [tex], or when the
 /// LaTeX does not render, the [formula] text is shown in monospace instead.
-class ExpressionMathView extends StatelessWidget {
+class ExpressionMathView extends StatefulWidget {
   const ExpressionMathView({
     required this.formula,
     required this.tex,
@@ -24,14 +24,44 @@ class ExpressionMathView extends StatelessWidget {
   final double fontSize;
 
   @override
+  State<ExpressionMathView> createState() => _ExpressionMathViewState();
+}
+
+class _ExpressionMathViewState extends State<ExpressionMathView> {
+  /// The inputs the typeset widget was built for, and that widget. Breaking
+  /// the math into parts is the costly part, so it is kept while the inputs
+  /// stay the same.
+  ({String formula, String? tex, double fontSize, Color color})? _inputs;
+  Widget? _typeset;
+
+  @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final textStyle = TextStyle(color: colors.onSurface, fontSize: fontSize);
+    final color = Theme.of(context).colorScheme.onSurface;
+    final inputs = (
+      formula: widget.formula,
+      tex: widget.tex,
+      fontSize: widget.fontSize,
+      color: color,
+    );
+    if (inputs != _inputs) {
+      _inputs = inputs;
+      _typeset = _typesetWith(inputs);
+    }
+    return _typeset!;
+  }
 
-    Widget raw() =>
-        Text(formula, style: textStyle.copyWith(fontFamily: 'monospace'));
+  /// The formula drawn as [inputs] say: the math in parts, or the text.
+  static Widget _typesetWith(
+    ({String formula, String? tex, double fontSize, Color color}) inputs,
+  ) {
+    final textStyle = TextStyle(color: inputs.color, fontSize: inputs.fontSize);
 
-    final source = tex;
+    Widget raw() => Text(
+      inputs.formula,
+      style: textStyle.copyWith(fontFamily: 'monospace'),
+    );
+
+    final source = inputs.tex;
     if (source == null) return raw();
     final math = Math.tex(
       source,

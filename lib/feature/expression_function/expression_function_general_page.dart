@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -175,17 +176,9 @@ class ExpressionFunctionGeneralPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    ExpressionMathView(
-                      formula: _signatureText(function),
-                      tex: functionToTex(
-                        function.name,
-                        [
-                          for (final parameter in function.parameters)
-                            parameter.name,
-                        ],
-                        function.body ?? '',
-                        functionNames: catalogFunctionNames(vm.catalog),
-                      ),
+                    _FunctionMath(
+                      function: function,
+                      catalog: vm.catalog,
                       fontSize: 16,
                     ),
                     const SizedBox(height: 12),
@@ -272,4 +265,67 @@ class _ExpressionFunctionGeneralFactory
     catalog: state.expressionCatalog,
     problem: state.expressionFunctionProblem,
   );
+}
+
+/// The function's signature and body typeset as math. Its LaTeX is made again
+/// only when the name, the parameters, the body or the catalog changes, not on
+/// every rebuild of the page while the body is typed.
+class _FunctionMath extends StatefulWidget {
+  const _FunctionMath({
+    required this.function,
+    required this.catalog,
+    required this.fontSize,
+  });
+
+  final ExpressionFunctionModel function;
+  final ExpressionCatalog? catalog;
+  final double fontSize;
+
+  @override
+  State<_FunctionMath> createState() => _FunctionMathState();
+}
+
+class _FunctionMathState extends State<_FunctionMath> {
+  ({
+    String name,
+    List<String> parameters,
+    String body,
+    ExpressionCatalog? catalog,
+    String? tex,
+  })?
+  _memo;
+
+  @override
+  Widget build(BuildContext context) {
+    final function = widget.function;
+    final catalog = widget.catalog;
+    final parameters = [
+      for (final parameter in function.parameters) parameter.name,
+    ];
+    final body = function.body ?? '';
+    final memo = _memo;
+    if (memo == null ||
+        memo.name != function.name ||
+        !listEquals(memo.parameters, parameters) ||
+        memo.body != body ||
+        !identical(memo.catalog, catalog)) {
+      _memo = (
+        name: function.name,
+        parameters: parameters,
+        body: body,
+        catalog: catalog,
+        tex: functionToTex(
+          function.name,
+          parameters,
+          body,
+          functionNames: catalogFunctionNames(catalog),
+        ),
+      );
+    }
+    return ExpressionMathView(
+      formula: ExpressionFunctionGeneralPage._signatureText(function),
+      tex: _memo!.tex,
+      fontSize: widget.fontSize,
+    );
+  }
 }
