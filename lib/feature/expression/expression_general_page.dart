@@ -67,12 +67,9 @@ class ExpressionGeneralPage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            ExpressionMathView(
+                            _FormulaMath(
                               formula: expression.expression,
-                              tex: expressionToTex(
-                                expression.expression,
-                                functionNames: catalogFunctionNames(vm.catalog),
-                              ),
+                              catalog: vm.catalog,
                               fontSize: 16,
                             ),
                             const SizedBox(height: 12),
@@ -170,6 +167,51 @@ class _ExpressionGeneralFactory
         state.expressionValidation,
         selected,
       ),
+    );
+  }
+}
+
+/// The formula typeset as math. Its LaTeX is made again only when the formula
+/// or the catalog changes, not on every rebuild of the page while it is typed.
+class _FormulaMath extends StatefulWidget {
+  const _FormulaMath({
+    required this.formula,
+    required this.catalog,
+    required this.fontSize,
+  });
+
+  final String formula;
+  final ExpressionCatalog? catalog;
+  final double fontSize;
+
+  @override
+  State<_FormulaMath> createState() => _FormulaMathState();
+}
+
+class _FormulaMathState extends State<_FormulaMath> {
+  ({String formula, ExpressionCatalog? catalog, String? tex})? _memo;
+
+  @override
+  Widget build(BuildContext context) {
+    final catalog = widget.catalog;
+    final formula = widget.formula;
+    final memo = _memo;
+    if (memo == null ||
+        memo.formula != formula ||
+        !identical(memo.catalog, catalog)) {
+      _memo = (
+        formula: formula,
+        catalog: catalog,
+        tex: expressionToTex(
+          formula,
+          functionNames: catalogFunctionNames(catalog),
+        ),
+      );
+    }
+    return ExpressionMathView(
+      formula: formula,
+      tex: _memo!.tex,
+      fontSize: widget.fontSize,
     );
   }
 }

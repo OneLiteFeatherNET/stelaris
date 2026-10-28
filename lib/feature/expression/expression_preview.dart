@@ -115,6 +115,9 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
   bool _running = false;
   ExpressionResult? _result;
 
+  /// The formula last typeset by [_tex], with the catalog it was named by.
+  ({String formula, ExpressionCatalog? catalog, String? tex})? _texMemo;
+
   /// The backend rejected the formula or a variable, with its violations.
   ProblemDetail? _rejection;
   bool _failed = false;
@@ -194,6 +197,9 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final request = widget.request;
+    final tex = request.expression.trim().isEmpty
+        ? null
+        : _tex(request.expression);
     // The panel is its own surface, one step above the section cards beside
     // it. Its sections are separated by dividers.
     return DecoratedBox(
@@ -231,10 +237,10 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
                   style: theme.textTheme.bodySmall,
                 )
               else ...[
-                _formula(request.expression),
+                _formula(request.expression, tex),
                 // The raw text is only shown under a typeset formula: without one,
                 // the math view already shows it.
-                if (_tex(request.expression) != null) ...[
+                if (tex != null) ...[
                   const SizedBox(height: 6),
                   Text(
                     request.expression,
@@ -263,14 +269,27 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
     );
   }
 
-  /// The LaTeX of [formula], null when it does not convert.
-  String? _tex(String formula) => expressionToTex(
-    formula,
-    functionNames: catalogFunctionNames(widget.catalog),
-  );
+  /// The LaTeX of [formula], null when it does not convert. The last one is
+  /// kept while the formula and the catalog stay the same, since the preview
+  /// rebuilds whenever an evaluation changes.
+  String? _tex(String formula) {
+    final catalog = widget.catalog;
+    final memo = _texMemo;
+    if (memo != null &&
+        memo.formula == formula &&
+        identical(memo.catalog, catalog)) {
+      return memo.tex;
+    }
+    final tex = expressionToTex(
+      formula,
+      functionNames: catalogFunctionNames(catalog),
+    );
+    _texMemo = (formula: formula, catalog: catalog, tex: tex);
+    return tex;
+  }
 
-  Widget _formula(String formula) =>
-      ExpressionMathView(formula: formula, tex: _tex(formula), fontSize: 22);
+  Widget _formula(String formula, String? tex) =>
+      ExpressionMathView(formula: formula, tex: tex, fontSize: 22);
 
   Widget _outcome(BuildContext context, _PreviewRequest request) {
     final l10n = context.l10n;

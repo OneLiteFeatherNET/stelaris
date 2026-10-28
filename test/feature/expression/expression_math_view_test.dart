@@ -161,4 +161,32 @@ void main() {
     );
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('the same formula keeps the typeset math between rebuilds', (
+    tester,
+  ) async {
+    await _pump(tester, formula: 'a / b', tex: r'\frac{a}{b}');
+    final first = tester.widget<Math>(find.byType(Math));
+
+    await _pump(tester, formula: 'a / b', tex: r'\frac{a}{b}');
+
+    expect(
+      identical(tester.widget<Math>(find.byType(Math)), first),
+      isTrue,
+      reason: 'an unchanged formula is not typeset again',
+    );
+  });
+
+  testWidgets('a changed LaTeX is typeset again', (tester) async {
+    await _pump(tester, formula: 'a / b', tex: r'\frac{a}{b}');
+    final first = tester.widget<Math>(find.byType(Math));
+
+    await _pump(tester, formula: 'a / c', tex: r'\frac{a}{c}');
+
+    expect(
+      identical(tester.widget<Math>(find.byType(Math)), first),
+      isFalse,
+      reason: 'a new LaTeX is drawn as a new formula',
+    );
+  });
 }
