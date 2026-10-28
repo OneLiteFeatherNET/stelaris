@@ -6,7 +6,7 @@ import 'package:stelaris/api/state/factory/navigation_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/util/color_scheme_ext.dart';
 
-const double maxXOffset = 180;
+const double maxXOffset = 208;
 const List<NavigationEntry> navigationEntries = NavigationEntry.values;
 const TextStyle navigationEntryTextStyle = TextStyle(fontSize: 16);
 
@@ -61,7 +61,28 @@ class NavigationSideBar extends StatelessWidget {
       return NavigationRailDestination(
         selectedIcon: Icon(navigationValue.selected),
         icon: Icon(navigationValue.data),
-        label: Text(navigationValue.display, style: navigationEntryTextStyle),
+        // The rail's icon column is 80 wide and adds 8 after the label, so the
+        // label box makes every row exactly maxXOffset wide when extended.
+        // A wider label would widen only its own row and shift the icons of
+        // the other rows (NavigationRail centers the rows).
+        // Labels are invisible while the rail expands from collapsed and fade
+        // out in the first half of collapsing, so the mid-word clipping of the
+        // rail's width animation is never shown.
+        label: Builder(
+          builder: (context) => FadeTransition(
+            opacity: NavigationRail.extendedAnimation(context)
+                .drive(CurveTween(curve: const Interval(0.5, 1))),
+            child: SizedBox(
+              width: maxXOffset - 88,
+              child: Text(
+                navigationValue.display,
+                style: navigationEntryTextStyle,
+                softWrap: false,
+                overflow: TextOverflow.fade,
+              ),
+            ),
+          ),
+        ),
       );
     });
   }

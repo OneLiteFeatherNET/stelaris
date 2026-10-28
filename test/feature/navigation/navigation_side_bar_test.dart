@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:stelaris/api/state/actions/app_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/navigation/navigation_side_bar.dart';
@@ -89,4 +90,142 @@ void main() {
       expect(rail.selectedIndex, itemsIndex);
     },
   );
+
+  group('icon column', () {
+    // Width >= 1000 is required for the rail to be allowed to extend.
+    const railTestWidth = 1200.0;
+    const railTestHeight = 800.0;
+
+    List<double> iconCentersX(WidgetTester tester) {
+      return [
+        for (final icon in tester.widgetList<Icon>(
+          find.descendant(
+            of: find.byType(NavigationRail),
+            matching: find.byType(Icon),
+          ),
+        ))
+          tester.getCenter(find.byWidget(icon)).dx,
+      ];
+    }
+
+    testWidgets(
+      'keeps all destination icons in one column when extended, collapsed and mid-animation',
+      (tester) async {
+        tester.view.physicalSize = const Size(railTestWidth, railTestHeight);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        final store = Store<AppState>(initialState: AppState.fromJson({}));
+        await tester.pumpWidget(buildTestWidget(createTestRouter(), store));
+        await tester.pumpAndSettle();
+
+        final extendedCenters = iconCentersX(tester);
+        expect(
+          extendedCenters,
+          hasLength(navigationEntries.length),
+          reason: 'expected one icon per navigation entry',
+        );
+        final extendedColumn = extendedCenters.first;
+        for (final (index, dx) in extendedCenters.indexed) {
+          expect(
+            dx,
+            closeTo(extendedColumn, 0.5),
+            reason:
+                'extended: icon of ${navigationEntries[index].display} is at x=$dx '
+                'but the first icon is at x=$extendedColumn',
+          );
+        }
+
+        const duration = kThemeAnimationDuration;
+        await tester.runAsync(
+          () async => store.dispatch(UpdateNavigationAction()),
+        );
+        await tester.pump();
+        await tester.pump(duration ~/ 2);
+        expect(
+          tester.takeException(),
+          isNull,
+          reason: 'no layout error (e.g. RenderFlex overflow) mid-animation',
+        );
+        final midCenters = iconCentersX(tester);
+        for (final (index, dx) in midCenters.indexed) {
+          expect(
+            dx,
+            closeTo(extendedColumn, 0.5),
+            reason:
+                'mid-animation: icon of ${navigationEntries[index].display} moved to x=$dx '
+                'instead of staying in the column at x=$extendedColumn',
+          );
+        }
+
+        await tester.pumpAndSettle();
+        expect(
+          tester.takeException(),
+          isNull,
+          reason: 'no layout error (e.g. RenderFlex overflow) when collapsed',
+        );
+        final collapsedCenters = iconCentersX(tester);
+        for (final (index, dx) in collapsedCenters.indexed) {
+          expect(
+            dx,
+            closeTo(extendedColumn, 0.5),
+            reason:
+                'collapsed: icon of ${navigationEntries[index].display} is at x=$dx '
+                'but the extended column is at x=$extendedColumn',
+          );
+        }
+      },
+    );
+
+    testWidgets(
+      'label is transparent a quarter into expanding and fully opaque when extended',
+      (tester) async {
+        tester.view.physicalSize = const Size(railTestWidth, railTestHeight);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        double labelOpacity() {
+          final fade = tester.widget<FadeTransition>(
+            find
+                .ancestor(
+                  of: find.text('Items'),
+                  matching: find.byType(FadeTransition),
+                )
+                .first,
+          );
+          return fade.opacity.value;
+        }
+
+        final store = Store<AppState>(initialState: AppState.fromJson({}));
+        await tester.pumpWidget(buildTestWidget(createTestRouter(), store));
+        await tester.pumpAndSettle();
+
+        await tester.runAsync(
+          () async => store.dispatch(UpdateNavigationAction()),
+        );
+        await tester.pumpAndSettle();
+
+        const duration = kThemeAnimationDuration;
+        await tester.runAsync(
+          () async => store.dispatch(UpdateNavigationAction()),
+        );
+        await tester.pump();
+        await tester.pump(duration ~/ 4);
+        expect(
+          labelOpacity(),
+          0,
+          reason: 'label must be invisible a quarter into expanding',
+        );
+
+        await tester.pumpAndSettle();
+        expect(
+          labelOpacity(),
+          1,
+          reason: 'label must be fully opaque when the rail is extended',
+        );
+      },
+    );
+  });
 }
