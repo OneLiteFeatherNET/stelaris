@@ -1,12 +1,33 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:stelaris/api/model/expression_function_model.dart';
+import 'package:stelaris/api/model/expression_model.dart';
 
 part 'expression_catalog_model.freezed.dart';
 
 part 'expression_catalog_model.g.dart';
 
-/// The EvalEx functions, operators and constants the backend supports. It is
-/// the same for every project, so it is loaded once and only read by the
-/// formula editor.
+/// Reads a wire name as one of [values], or null when it names none. The
+/// catalog is read tolerantly, so a value this app does not know must not
+/// fail the whole catalog.
+T? _enumOrNull<T extends Enum>(List<T> values, Object? name) {
+  for (final value in values) {
+    if (value.name == name) return value;
+  }
+  return null;
+}
+
+ExpressionFunctionKind? _functionKindFromJson(Object? name) =>
+    _enumOrNull(ExpressionFunctionKind.values, name);
+
+ExpressionFunctionReturnType? _functionReturnTypeFromJson(Object? name) =>
+    _enumOrNull(ExpressionFunctionReturnType.values, name);
+
+ExpressionVariableType? _parameterTypeFromJson(Object? name) =>
+    _enumOrNull(ExpressionVariableType.values, name);
+
+/// The EvalEx functions, operators and constants the backend supports, and the
+/// functions the project defines. The project's functions differ per project,
+/// so the catalog is loaded per project and only read by the formula editor.
 @freezed
 abstract class ExpressionCatalog with _$ExpressionCatalog {
   const factory ExpressionCatalog({
@@ -32,9 +53,15 @@ enum CatalogFunctionCategory {
   trigonometric,
   @JsonValue('OTHER')
   other,
+
+  /// A function the project defines, see [ExpressionFunctionModel].
+  @JsonValue('PROJECT')
+  project,
 }
 
-/// An EvalEx function with the parameters it takes, in call order.
+/// An EvalEx function, or a function the project defines, with the parameters
+/// it takes, in call order. A project function also has a [description], its
+/// [kind] and its [returnType].
 @freezed
 abstract class CatalogFunction with _$CatalogFunction {
   const factory CatalogFunction({
@@ -43,6 +70,10 @@ abstract class CatalogFunction with _$CatalogFunction {
     @Default(CatalogFunctionCategory.other)
     CatalogFunctionCategory category,
     @Default([]) List<CatalogParameter> parameters,
+    String? description,
+    @JsonKey(fromJson: _functionKindFromJson) ExpressionFunctionKind? kind,
+    @JsonKey(fromJson: _functionReturnTypeFromJson)
+    ExpressionFunctionReturnType? returnType,
   }) = _CatalogFunction;
 
   factory CatalogFunction.fromJson(Map<String, dynamic> json) =>
@@ -50,11 +81,13 @@ abstract class CatalogFunction with _$CatalogFunction {
 }
 
 /// A parameter of a [CatalogFunction]. A vararg parameter takes all the
-/// arguments from its position on, so it is always the last one.
+/// arguments from its position on, so it is always the last one. A project
+/// function's parameter has a [type]; EvalEx parameters have none.
 @freezed
 abstract class CatalogParameter with _$CatalogParameter {
   const factory CatalogParameter({
     required String name,
+    @JsonKey(fromJson: _parameterTypeFromJson) ExpressionVariableType? type,
     @Default(false) bool varArg,
     @Default(false) bool lazy,
     @Default(false) bool nonZero,

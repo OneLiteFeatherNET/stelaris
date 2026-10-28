@@ -554,6 +554,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expression_field_expression => 'Expression';
 
   @override
+  String get expression_rendered_formula_label => 'Rendered formula';
+
+  @override
   String get expression_hint_expression =>
       'An EvalEx formula, e.g. a * 2 + sqrt(b). Use + - * / ^ %, comparisons, && || ! for logic (not and/or), functions such as MAX, MIN, ROUND or IF, and the variables declared on the Variables tab.';
 
@@ -591,6 +594,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get expression_functions_title => 'Functions and constants';
+
+  @override
+  String get expression_insert_function => 'Insert function';
 
   @override
   String get expression_functions_search_label =>
@@ -731,6 +737,168 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get expression_validation_declare_all => 'Declare all';
+
+  @override
+  String get dialog_expression_function_delete_title => 'Delete function';
+
+  @override
+  String get dialog_expression_function_create => 'Create new function';
+
+  @override
+  String get tab_parameters => 'Parameters';
+
+  @override
+  String get tab_interface => 'Interface';
+
+  @override
+  String get expression_function_command_create => 'New function';
+
+  @override
+  String get expression_function_palette_kind => 'Functions';
+
+  @override
+  String get expression_function_group_project => 'Project';
+
+  @override
+  String get expression_function_section_signature => 'Signature';
+
+  @override
+  String get expression_function_section_body => 'Formula';
+
+  @override
+  String get expression_function_section_stub => 'Test stub (optional)';
+
+  @override
+  String get expression_function_stub_hint =>
+      'An interface is implemented by the game runtime. The stub is only evaluated on the Test tab in Stelaris and is not part of the generated interface.';
+
+  @override
+  String get expression_function_field_ui_name => 'Name';
+
+  @override
+  String get expression_function_field_name => 'Identifier';
+
+  @override
+  String get expression_function_field_name_hint =>
+      'The name formulas call the function by';
+
+  @override
+  String get expression_function_name_invalid =>
+      'Start with a letter or underscore, then use only letters, digits and underscores';
+
+  @override
+  String get expression_function_field_kind => 'Kind';
+
+  @override
+  String get expression_function_kind_formula => 'Formula';
+
+  @override
+  String get expression_function_kind_interface => 'Interface';
+
+  @override
+  String get expression_function_kind_formula_hint =>
+      'The body is an EvalEx formula over the parameters. It may call built-in functions and other functions of the project.';
+
+  @override
+  String get expression_function_kind_interface_hint =>
+      'The game runtime implements this function. Only its signature is used, and a Java interface is generated from it.';
+
+  @override
+  String get expression_function_field_return_type => 'Return type';
+
+  @override
+  String get expression_function_return_number => 'Number';
+
+  @override
+  String get expression_function_return_boolean => 'Boolean';
+
+  @override
+  String get expression_function_return_string => 'String';
+
+  @override
+  String get expression_function_field_comment => 'Comment';
+
+  @override
+  String get expression_function_parameter_add_title => 'Add parameter';
+
+  @override
+  String get expression_function_parameter_edit_title => 'Edit parameter';
+
+  @override
+  String get expression_function_parameter_delete_title => 'Delete parameter';
+
+  @override
+  String get expression_function_parameters_empty_header => 'No parameters yet';
+
+  @override
+  String get expression_function_parameters_empty_subheader =>
+      'Add a parameter for each value the function takes.';
+
+  @override
+  String get expression_function_test_section_body => 'Body';
+
+  @override
+  String get expression_function_test_no_body =>
+      'This function has no body to evaluate.';
+
+  @override
+  String get expression_function_test_section_parameters => 'Parameters';
+
+  @override
+  String get expression_function_test_no_parameters =>
+      'This function takes no parameters.';
+
+  @override
+  String get expression_function_test_evaluate => 'Evaluate';
+
+  @override
+  String get expression_function_test_empty_hint =>
+      'Write a formula on the General tab to evaluate it.';
+
+  @override
+  String get expression_function_test_interface_hint =>
+      'The game runtime implements this function. A test stub on the General tab lets it be evaluated here.';
+
+  @override
+  String get expression_function_test_result_label => 'Result';
+
+  @override
+  String get expression_function_test_rejected =>
+      'The function or an argument was rejected';
+
+  @override
+  String get expression_function_test_error =>
+      'The function could not be evaluated. Try again.';
+
+  @override
+  String get expression_function_interface_formula_header =>
+      'Formulas have no interface';
+
+  @override
+  String get expression_function_interface_formula_subheader =>
+      'Only an interface function appears in the generated Java source. A formula is evaluated by the backend.';
+
+  @override
+  String get expression_function_interface_no_project =>
+      'Select a project to see its generated interface.';
+
+  @override
+  String get expression_function_interface_title => 'Generated Java interface';
+
+  @override
+  String get expression_function_interface_copy => 'Copy source';
+
+  @override
+  String get expression_function_interface_error =>
+      'The interface could not be loaded.';
+
+  @override
+  String get expression_function_interface_retry => 'Try again';
+
+  @override
+  String expression_function_test_result_type(String type) {
+    return 'Type: $type';
+  }
 
   @override
   String get expression_variable_unused => 'Not used in the formula';
@@ -1940,4 +2108,22 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get attribute_hint_translation_key =>
       'Translates the name, e.g. attribute.name.max_health';
+
+  @override
+  String get navigation_group_runtime => 'Runtime';
+
+  @override
+  String get expression_preview_title => 'Preview';
+
+  @override
+  String get expression_preview_column_name => 'Name';
+
+  @override
+  String get expression_preview_no_project =>
+      'Select a project to see the result.';
+
+  @override
+  String expression_preview_missing_values(String names) {
+    return 'Give a test value to $names to see the result.';
+  }
 }

@@ -21,7 +21,7 @@ void main() {
       router.configuration.routes,
     ).where((route) => route.path == 'detail').toList();
 
-    expect(detailRoutes, hasLength(6));
+    expect(detailRoutes, hasLength(7));
     for (final route in detailRoutes) {
       expect(route.onExit, same(detailExitGuard));
     }

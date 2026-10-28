@@ -177,6 +177,7 @@ void main() {
         'nav.font',
         'nav.sound',
         'nav.expression',
+        'nav.function',
         'nav.projects',
       ]);
     });
@@ -235,6 +236,7 @@ void main() {
         'nav.font',
         'nav.sound',
         'nav.expression',
+        'nav.function',
         'nav.projects',
       ]);
       final font = results.entries.firstWhere((e) => e.id == 'nav.font');

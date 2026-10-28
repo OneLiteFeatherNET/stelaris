@@ -5,13 +5,15 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 /// One compact button per operator above the formula field, then the
-/// parentheses and the argument separator. Taps count as taps inside the
-/// field, so the field keeps its focus and selection.
+/// parentheses and the argument separator, and last the button that opens the
+/// function picker. Taps count as taps inside the field, so the field keeps its
+/// focus and selection.
 class ExpressionOperatorToolbar extends StatelessWidget {
   const ExpressionOperatorToolbar({
     required this.catalog,
     required this.onOperator,
     required this.onPunctuation,
+    required this.onInsertFunction,
     super.key,
   });
 
@@ -21,6 +23,9 @@ class ExpressionOperatorToolbar extends StatelessWidget {
 
   /// Called with `(`, `)` or `,`.
   final ValueChanged<String> onPunctuation;
+
+  /// Opens the picker of the functions and constants.
+  final VoidCallback onInsertFunction;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +61,13 @@ class ExpressionOperatorToolbar extends StatelessWidget {
                 onPressed: () => onPunctuation(symbol),
               ),
             ),
+          const SizedBox(width: 8),
+          FilledButton.tonalIcon(
+            key: const ValueKey('expression_insert_function'),
+            onPressed: onInsertFunction,
+            icon: const Icon(Icons.functions),
+            label: Text(l10n.expression_insert_function),
+          ),
         ],
       ),
     );

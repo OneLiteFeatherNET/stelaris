@@ -1108,6 +1108,12 @@ abstract class AppLocalizations {
   /// **'Expression'**
   String get expression_field_expression;
 
+  /// No description provided for @expression_rendered_formula_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Rendered formula'**
+  String get expression_rendered_formula_label;
+
   /// No description provided for @expression_hint_expression.
   ///
   /// In en, this message translates to:
@@ -1173,6 +1179,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Functions and constants'**
   String get expression_functions_title;
+
+  /// No description provided for @expression_insert_function.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert function'**
+  String get expression_insert_function;
 
   /// No description provided for @expression_functions_search_label.
   ///
@@ -1419,6 +1431,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Declare all'**
   String get expression_validation_declare_all;
+
+  /// No description provided for @dialog_expression_function_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete function'**
+  String get dialog_expression_function_delete_title;
+
+  /// No description provided for @dialog_expression_function_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new function'**
+  String get dialog_expression_function_create;
+
+  /// No description provided for @tab_parameters.
+  ///
+  /// In en, this message translates to:
+  /// **'Parameters'**
+  String get tab_parameters;
+
+  /// No description provided for @tab_interface.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface'**
+  String get tab_interface;
+
+  /// No description provided for @expression_function_command_create.
+  ///
+  /// In en, this message translates to:
+  /// **'New function'**
+  String get expression_function_command_create;
+
+  /// No description provided for @expression_function_palette_kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Functions'**
+  String get expression_function_palette_kind;
+
+  /// No description provided for @expression_function_group_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get expression_function_group_project;
+
+  /// No description provided for @expression_function_section_signature.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature'**
+  String get expression_function_section_signature;
+
+  /// No description provided for @expression_function_section_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Formula'**
+  String get expression_function_section_body;
+
+  /// No description provided for @expression_function_section_stub.
+  ///
+  /// In en, this message translates to:
+  /// **'Test stub (optional)'**
+  String get expression_function_section_stub;
+
+  /// No description provided for @expression_function_stub_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'An interface is implemented by the game runtime. The stub is only evaluated on the Test tab in Stelaris and is not part of the generated interface.'**
+  String get expression_function_stub_hint;
+
+  /// No description provided for @expression_function_field_ui_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get expression_function_field_ui_name;
+
+  /// No description provided for @expression_function_field_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Identifier'**
+  String get expression_function_field_name;
+
+  /// No description provided for @expression_function_field_name_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'The name formulas call the function by'**
+  String get expression_function_field_name_hint;
+
+  /// No description provided for @expression_function_name_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with a letter or underscore, then use only letters, digits and underscores'**
+  String get expression_function_name_invalid;
+
+  /// No description provided for @expression_function_field_kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind'**
+  String get expression_function_field_kind;
+
+  /// No description provided for @expression_function_kind_formula.
+  ///
+  /// In en, this message translates to:
+  /// **'Formula'**
+  String get expression_function_kind_formula;
+
+  /// No description provided for @expression_function_kind_interface.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface'**
+  String get expression_function_kind_interface;
+
+  /// No description provided for @expression_function_kind_formula_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'The body is an EvalEx formula over the parameters. It may call built-in functions and other functions of the project.'**
+  String get expression_function_kind_formula_hint;
+
+  /// No description provided for @expression_function_kind_interface_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'The game runtime implements this function. Only its signature is used, and a Java interface is generated from it.'**
+  String get expression_function_kind_interface_hint;
+
+  /// No description provided for @expression_function_field_return_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Return type'**
+  String get expression_function_field_return_type;
+
+  /// No description provided for @expression_function_return_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Number'**
+  String get expression_function_return_number;
+
+  /// No description provided for @expression_function_return_boolean.
+  ///
+  /// In en, this message translates to:
+  /// **'Boolean'**
+  String get expression_function_return_boolean;
+
+  /// No description provided for @expression_function_return_string.
+  ///
+  /// In en, this message translates to:
+  /// **'String'**
+  String get expression_function_return_string;
+
+  /// No description provided for @expression_function_field_comment.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment'**
+  String get expression_function_field_comment;
+
+  /// No description provided for @expression_function_parameter_add_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Add parameter'**
+  String get expression_function_parameter_add_title;
+
+  /// No description provided for @expression_function_parameter_edit_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit parameter'**
+  String get expression_function_parameter_edit_title;
+
+  /// No description provided for @expression_function_parameter_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete parameter'**
+  String get expression_function_parameter_delete_title;
+
+  /// No description provided for @expression_function_parameters_empty_header.
+  ///
+  /// In en, this message translates to:
+  /// **'No parameters yet'**
+  String get expression_function_parameters_empty_header;
+
+  /// No description provided for @expression_function_parameters_empty_subheader.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a parameter for each value the function takes.'**
+  String get expression_function_parameters_empty_subheader;
+
+  /// No description provided for @expression_function_test_section_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Body'**
+  String get expression_function_test_section_body;
+
+  /// No description provided for @expression_function_test_no_body.
+  ///
+  /// In en, this message translates to:
+  /// **'This function has no body to evaluate.'**
+  String get expression_function_test_no_body;
+
+  /// No description provided for @expression_function_test_section_parameters.
+  ///
+  /// In en, this message translates to:
+  /// **'Parameters'**
+  String get expression_function_test_section_parameters;
+
+  /// No description provided for @expression_function_test_no_parameters.
+  ///
+  /// In en, this message translates to:
+  /// **'This function takes no parameters.'**
+  String get expression_function_test_no_parameters;
+
+  /// No description provided for @expression_function_test_evaluate.
+  ///
+  /// In en, this message translates to:
+  /// **'Evaluate'**
+  String get expression_function_test_evaluate;
+
+  /// No description provided for @expression_function_test_empty_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a formula on the General tab to evaluate it.'**
+  String get expression_function_test_empty_hint;
+
+  /// No description provided for @expression_function_test_interface_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'The game runtime implements this function. A test stub on the General tab lets it be evaluated here.'**
+  String get expression_function_test_interface_hint;
+
+  /// No description provided for @expression_function_test_result_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Result'**
+  String get expression_function_test_result_label;
+
+  /// No description provided for @expression_function_test_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'The function or an argument was rejected'**
+  String get expression_function_test_rejected;
+
+  /// No description provided for @expression_function_test_error.
+  ///
+  /// In en, this message translates to:
+  /// **'The function could not be evaluated. Try again.'**
+  String get expression_function_test_error;
+
+  /// No description provided for @expression_function_interface_formula_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Formulas have no interface'**
+  String get expression_function_interface_formula_header;
+
+  /// No description provided for @expression_function_interface_formula_subheader.
+  ///
+  /// In en, this message translates to:
+  /// **'Only an interface function appears in the generated Java source. A formula is evaluated by the backend.'**
+  String get expression_function_interface_formula_subheader;
+
+  /// No description provided for @expression_function_interface_no_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a project to see its generated interface.'**
+  String get expression_function_interface_no_project;
+
+  /// No description provided for @expression_function_interface_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated Java interface'**
+  String get expression_function_interface_title;
+
+  /// No description provided for @expression_function_interface_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy source'**
+  String get expression_function_interface_copy;
+
+  /// No description provided for @expression_function_interface_error.
+  ///
+  /// In en, this message translates to:
+  /// **'The interface could not be loaded.'**
+  String get expression_function_interface_error;
+
+  /// No description provided for @expression_function_interface_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get expression_function_interface_retry;
+
+  /// No description provided for @expression_function_test_result_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type: {type}'**
+  String expression_function_test_result_type(String type);
 
   /// No description provided for @expression_variable_unused.
   ///
@@ -3537,6 +3837,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Translates the name, e.g. attribute.name.max_health'**
   String get attribute_hint_translation_key;
+
+  /// No description provided for @navigation_group_runtime.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime'**
+  String get navigation_group_runtime;
+
+  /// No description provided for @expression_preview_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get expression_preview_title;
+
+  /// No description provided for @expression_preview_column_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get expression_preview_column_name;
+
+  /// No description provided for @expression_preview_no_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a project to see the result.'**
+  String get expression_preview_no_project;
+
+  /// No description provided for @expression_preview_missing_values.
+  ///
+  /// In en, this message translates to:
+  /// **'Give a test value to {names} to see the result.'**
+  String expression_preview_missing_values(String names);
 }
 
 class _AppLocalizationsDelegate

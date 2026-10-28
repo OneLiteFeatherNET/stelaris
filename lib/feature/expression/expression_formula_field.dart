@@ -5,20 +5,20 @@ import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/model/expression_validation_model.dart';
 import 'package:stelaris/feature/expression/expression_completion.dart';
 import 'package:stelaris/feature/expression/expression_formula_controller.dart';
-import 'package:stelaris/feature/expression/expression_function_sidebar.dart';
+import 'package:stelaris/feature/expression/expression_function_picker.dart';
 import 'package:stelaris/feature/expression/expression_operator_toolbar.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
-/// The formula as a large multi-line field, with an operator toolbar above it
-/// and, beside it on wide layouts (below it on narrow ones), the functions and
-/// constants to browse. While an identifier is typed the variables, constants
-/// and functions it starts are suggested, and a function call shows its
-/// signature with the parameter at the caret highlighted. The variables are
-/// also listed as chips to insert. The text is colored by token. [onChanged]
-/// gets every new text; the field keeps its own controller, so typing does not
-/// move the caret when the store rebuilds.
+/// The formula as a large multi-line field, with an operator toolbar above it.
+/// The toolbar's button opens the picker of the functions and constants. While
+/// an identifier is typed the variables, constants and functions it starts are
+/// suggested, and a function call shows its signature with the parameter at
+/// the caret highlighted. The variables are also listed as chips to insert.
+/// The text is colored by token. [onChanged] gets every new text; the field
+/// keeps its own controller, so typing does not move the caret when the store
+/// rebuilds.
 ///
 /// [validation] is the backend's check of the current text, when there is one:
 /// its errors are underlined and listed, undefined variables are offered for
@@ -30,6 +30,7 @@ class ExpressionFormulaField extends StatefulWidget {
     this.catalog,
     this.validation,
     this.onDeclare,
+    this.sections,
     super.key,
   });
 
@@ -47,16 +48,16 @@ class ExpressionFormulaField extends StatefulWidget {
   /// hides the declare actions.
   final ValueChanged<List<String>>? onDeclare;
 
+  /// Places the editor and the variable chips, each as its own section, so a
+  /// page can give each one a surface. Null puts them one below the other.
+  final Widget Function(Widget editor, Widget variables)? sections;
+
   @override
   State<ExpressionFormulaField> createState() => _ExpressionFormulaFieldState();
 }
 
 class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
   static const int _minLines = 8;
-
-  /// From this width the functions sidebar sits beside the editor.
-  static const double _wideLayoutWidth = 1000;
-  static const double _sidebarWidth = 300;
 
   /// Rows of the suggestion list, and how many are visible before it scrolls.
   static const double _rowHeight = 40;
@@ -248,6 +249,15 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
         : insertParenthesis(text, start, end, open: symbol == '('),
   );
 
+  /// Opens the function picker. A tap there inserts at the caret, which the
+  /// field keeps while the picker is open.
+  void _openFunctionPicker() => showExpressionFunctionPicker(
+    context,
+    catalog: widget.catalog,
+    onFunction: _insertFunction,
+    onConstant: (constant) => _insert(constant.name),
+  );
+
   void _apply(FormulaEdit edit) {
     _controller.value = TextEditingValue(
       text: edit.text,
@@ -279,6 +289,7 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
           catalog: widget.catalog,
           onOperator: _insertOperator,
           onPunctuation: _insertPunctuation,
+          onInsertFunction: _openFunctionPicker,
         ),
         const SizedBox(height: 8),
         TextField(
@@ -318,7 +329,11 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
             onSelected: _accept,
           ),
         ],
-        const SizedBox(height: 16),
+      ],
+    );
+    final variableChips = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
         Text(
           l10n.expression_formula_variables_label,
           style: theme.textTheme.titleSmall?.copyWith(
@@ -363,28 +378,11 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
           ),
       ],
     );
-    final sidebar = ExpressionFunctionSidebar(
-      catalog: widget.catalog,
-      onFunction: _insertFunction,
-      onConstant: (constant) => _insert(constant.name),
-    );
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth >= _wideLayoutWidth) {
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: editor),
-              const SizedBox(width: 24),
-              SizedBox(width: _sidebarWidth, child: sidebar),
-            ],
-          );
-        }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [editor, const SizedBox(height: 24), sidebar],
-        );
-      },
+    final sections = widget.sections;
+    if (sections != null) return sections(editor, variableChips);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [editor, const SizedBox(height: 16), variableChips],
     );
   }
 }

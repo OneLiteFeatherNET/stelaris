@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/model/expression_catalog_model.dart';
+import 'package:stelaris/api/model/expression_function_model.dart';
+import 'package:stelaris/api/model/expression_model.dart';
 
 void main() {
   const json = {
@@ -106,5 +108,64 @@ void main() {
     expect(catalog.functions, isEmpty);
     expect(catalog.operators, isEmpty);
     expect(catalog.constants, isEmpty);
+  });
+
+  test(
+    'reads a project function with its kind, return type and parameter types',
+    () {
+      final function = CatalogFunction.fromJson(const {
+        'name': 'damage_bonus',
+        'category': 'PROJECT',
+        'description': 'Bonus damage for a hit',
+        'kind': 'FORMULA',
+        'returnType': 'NUMBER',
+        'parameters': [
+          {'name': 'base', 'type': 'NUMBER'},
+          {'name': 'crit', 'type': 'BOOLEAN'},
+        ],
+      });
+
+      expect(function.category, CatalogFunctionCategory.project);
+      expect(function.description, 'Bonus damage for a hit');
+      expect(function.kind, ExpressionFunctionKind.FORMULA);
+      expect(function.returnType, ExpressionFunctionReturnType.NUMBER);
+      expect(function.parameters.map((p) => p.type), [
+        ExpressionVariableType.NUMBER,
+        ExpressionVariableType.BOOLEAN,
+      ]);
+    },
+  );
+
+  test('an interface project function reads its kind', () {
+    final function = CatalogFunction.fromJson(const {
+      'name': 'hit',
+      'category': 'PROJECT',
+      'kind': 'INTERFACE',
+    });
+
+    expect(function.kind, ExpressionFunctionKind.INTERFACE);
+    expect(function.description, isNull);
+  });
+
+  test('a project function with an unknown kind reads the kind as absent', () {
+    final function = CatalogFunction.fromJson(const {
+      'name': 'hit',
+      'category': 'PROJECT',
+      'kind': 'MACRO',
+    });
+
+    expect(function.kind, isNull);
+  });
+
+  test('a built-in parameter has no type', () {
+    final function = CatalogFunction.fromJson(const {
+      'name': 'ROUND',
+      'category': 'BASIC',
+      'parameters': [
+        {'name': 'value'},
+      ],
+    });
+
+    expect(function.parameters.single.type, isNull);
   });
 }

@@ -1,6 +1,7 @@
 import 'package:stelaris/api/api_client.dart';
 import 'package:stelaris/api/base_api.dart';
 import 'package:stelaris/api/service/client/expression_client_api.dart';
+import 'package:stelaris/api/service/client/expression_function_client_api.dart';
 import 'package:stelaris/api/service/client/project_client_api.dart';
 import 'package:stelaris/api/service/client/sound_client_api.dart';
 import 'package:stelaris/api/client_api.dart';
@@ -50,6 +51,9 @@ class ApiService {
   late final ExpressionClientApi expressionApi = ExpressionClientApi(
     apiClient: _apiClient,
   );
+
+  late final ExpressionFunctionClientApi expressionFunctionApi =
+      ExpressionFunctionClientApi(apiClient: _apiClient);
 
   late final ProjectClientApi projectApi = ProjectClientApi(
     apiClient: _apiClient,

@@ -130,8 +130,10 @@ class PageHeaderScope extends InheritedWidget {
 }
 
 /// A button in a [PageHeader]'s action row. [primary] marks the page's main
-/// action (add, save) with a filled style; the rest are tonal. Collapses to
-/// an icon button with [label] as its tooltip when the header is compact.
+/// action (add, save) with a filled style; the rest are tonal. A toggle gives
+/// its [selected] state: selected it stays tonal, unselected it is outlined.
+/// Collapses to an icon button with [label] as its tooltip when the header is
+/// compact.
 class PageHeaderAction extends StatelessWidget {
   const PageHeaderAction({
     required this.icon,
@@ -139,6 +141,7 @@ class PageHeaderAction extends StatelessWidget {
     required this.onPressed,
     this.primary = false,
     this.loading = false,
+    this.selected,
     super.key,
   });
 
@@ -147,6 +150,9 @@ class PageHeaderAction extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool primary;
   final bool loading;
+
+  /// Whether the action is a toggle that is on. Null for a plain action.
+  final bool? selected;
 
   @override
   Widget build(BuildContext context) {
@@ -159,9 +165,17 @@ class PageHeaderAction extends StatelessWidget {
         : icon;
     final onPressed = loading ? null : this.onPressed;
 
+    final off = this.selected == false;
+    final Widget button;
     if (PageHeaderScope.compactOf(context)) {
-      return primary
+      button = primary
           ? IconButton.filled(
+              tooltip: label,
+              onPressed: onPressed,
+              icon: effectiveIcon,
+            )
+          : off
+          ? IconButton.outlined(
               tooltip: label,
               onPressed: onPressed,
               icon: effectiveIcon,
@@ -171,17 +185,27 @@ class PageHeaderAction extends StatelessWidget {
               onPressed: onPressed,
               icon: effectiveIcon,
             );
+    } else {
+      button = primary
+          ? FilledButton.icon(
+              onPressed: onPressed,
+              icon: effectiveIcon,
+              label: Text(label),
+            )
+          : off
+          ? OutlinedButton.icon(
+              onPressed: onPressed,
+              icon: effectiveIcon,
+              label: Text(label),
+            )
+          : FilledButton.tonalIcon(
+              onPressed: onPressed,
+              icon: effectiveIcon,
+              label: Text(label),
+            );
     }
-    return primary
-        ? FilledButton.icon(
-            onPressed: onPressed,
-            icon: effectiveIcon,
-            label: Text(label),
-          )
-        : FilledButton.tonalIcon(
-            onPressed: onPressed,
-            icon: effectiveIcon,
-            label: Text(label),
-          );
+    final selected = this.selected;
+    if (selected == null) return button;
+    return Semantics(toggled: selected, child: button);
   }
 }

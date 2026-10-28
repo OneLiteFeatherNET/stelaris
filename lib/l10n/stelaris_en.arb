@@ -236,6 +236,7 @@
   "dialog_expression_create": "Create new expression",
   "expression_section_formula": "Formula",
   "expression_field_expression": "Expression",
+  "expression_rendered_formula_label": "Rendered formula",
   "expression_hint_expression": "An EvalEx formula, e.g. a * 2 + sqrt(b). Use + - * / ^ %, comparisons, && || ! for logic (not and/or), functions such as MAX, MIN, ROUND or IF, and the variables declared on the Variables tab.",
   "expression_formula_variables_label": "Insert a variable",
   "expression_formula_variables_empty": "No variables yet. Declare them on the Variables tab to insert and suggest them here.",
@@ -257,6 +258,7 @@
   "expression_operator_kind_postfix": "Postfix",
   "expression_operator_kind_other": "Operator",
   "expression_functions_title": "Functions and constants",
+  "expression_insert_function": "Insert function",
   "expression_functions_search_label": "Search functions and constants",
   "expression_functions_unavailable": "Functions and constants load from the backend. They are unavailable right now, the formula can still be typed.",
   "expression_functions_empty_search": "Nothing matches the search.",
@@ -312,6 +314,61 @@
   },
   "expression_validation_declare": "Declare",
   "expression_validation_declare_all": "Declare all",
+  "dialog_expression_function_delete_title": "Delete function",
+  "dialog_expression_function_create": "Create new function",
+  "tab_parameters": "Parameters",
+  "tab_interface": "Interface",
+  "expression_function_command_create": "New function",
+  "expression_function_palette_kind": "Functions",
+  "expression_function_group_project": "Project",
+  "expression_function_section_signature": "Signature",
+  "expression_function_section_body": "Formula",
+  "expression_function_section_stub": "Test stub (optional)",
+  "expression_function_stub_hint": "An interface is implemented by the game runtime. The stub is only evaluated on the Test tab in Stelaris and is not part of the generated interface.",
+  "expression_function_field_ui_name": "Name",
+  "expression_function_field_name": "Identifier",
+  "expression_function_field_name_hint": "The name formulas call the function by",
+  "expression_function_name_invalid": "Start with a letter or underscore, then use only letters, digits and underscores",
+  "expression_function_field_kind": "Kind",
+  "expression_function_kind_formula": "Formula",
+  "expression_function_kind_interface": "Interface",
+  "expression_function_kind_formula_hint": "The body is an EvalEx formula over the parameters. It may call built-in functions and other functions of the project.",
+  "expression_function_kind_interface_hint": "The game runtime implements this function. Only its signature is used, and a Java interface is generated from it.",
+  "expression_function_field_return_type": "Return type",
+  "expression_function_return_number": "Number",
+  "expression_function_return_boolean": "Boolean",
+  "expression_function_return_string": "String",
+  "expression_function_field_comment": "Comment",
+  "expression_function_parameter_add_title": "Add parameter",
+  "expression_function_parameter_edit_title": "Edit parameter",
+  "expression_function_parameter_delete_title": "Delete parameter",
+  "expression_function_parameters_empty_header": "No parameters yet",
+  "expression_function_parameters_empty_subheader": "Add a parameter for each value the function takes.",
+  "expression_function_test_section_body": "Body",
+  "expression_function_test_no_body": "This function has no body to evaluate.",
+  "expression_function_test_section_parameters": "Parameters",
+  "expression_function_test_no_parameters": "This function takes no parameters.",
+  "expression_function_test_evaluate": "Evaluate",
+  "expression_function_test_empty_hint": "Write a formula on the General tab to evaluate it.",
+  "expression_function_test_interface_hint": "The game runtime implements this function. A test stub on the General tab lets it be evaluated here.",
+  "expression_function_test_result_label": "Result",
+  "expression_function_test_rejected": "The function or an argument was rejected",
+  "expression_function_test_error": "The function could not be evaluated. Try again.",
+  "expression_function_interface_formula_header": "Formulas have no interface",
+  "expression_function_interface_formula_subheader": "Only an interface function appears in the generated Java source. A formula is evaluated by the backend.",
+  "expression_function_interface_no_project": "Select a project to see its generated interface.",
+  "expression_function_interface_title": "Generated Java interface",
+  "expression_function_interface_copy": "Copy source",
+  "expression_function_interface_error": "The interface could not be loaded.",
+  "expression_function_interface_retry": "Try again",
+  "expression_function_test_result_type": "Type: {type}",
+  "@expression_function_test_result_type": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "expression_variable_unused": "Not used in the formula",
   "@expression_variable_name_duplicate": {
     "placeholders": {
@@ -1025,5 +1082,17 @@
   "attribute_hint_minimum": "The lowest value, at most the default value",
   "attribute_hint_default": "The base value, between the minimum and the maximum",
   "attribute_hint_maximum": "The highest value, greater than 0 and at least the default value",
-  "attribute_hint_translation_key": "Translates the name, e.g. attribute.name.max_health"
+  "attribute_hint_translation_key": "Translates the name, e.g. attribute.name.max_health",
+  "navigation_group_runtime": "Runtime",
+  "expression_preview_title": "Preview",
+  "expression_preview_column_name": "Name",
+  "expression_preview_no_project": "Select a project to see the result.",
+  "expression_preview_missing_values": "Give a test value to {names} to see the result.",
+  "@expression_preview_missing_values": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  }
 }

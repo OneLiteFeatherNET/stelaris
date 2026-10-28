@@ -73,7 +73,7 @@ Future<(Store<AppState>, _AnsweringAdapter)> _pump(
   required Map<String, Object?> answer,
   ExpressionModel? expression,
 }) async {
-  // A wide surface: the functions sidebar sits beside the editor.
+  // A wide surface.
   tester.view
     ..physicalSize = const Size(1400, 1600)
     ..devicePixelRatio = 1;
