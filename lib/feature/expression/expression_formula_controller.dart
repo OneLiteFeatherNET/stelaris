@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/expression/expression_tokens.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -17,6 +18,14 @@ class ExpressionFormulaController extends TextEditingController {
   List<String> _variables = const [];
   List<ExpressionValidationError> _errors = const [];
   Set<String> _undefined = const {};
+
+  /// The tokens of [_tokenSource], cut with [_tokenCatalog] and
+  /// [_tokenVariables]. A move of the caret builds the text again, so the
+  /// tokens are kept until the text or the names they depend on change.
+  List<ExpressionToken>? _tokens;
+  String _tokenSource = '';
+  ExpressionCatalog? _tokenCatalog;
+  List<String> _tokenVariables = const [];
 
   /// Gives the catalog, the declared variables and the backend's check to the
   /// highlighting. A null [validation] means there is no check for the text.
@@ -53,11 +62,7 @@ class ExpressionFormulaController extends TextEditingController {
     }
     final colors = Theme.of(context).colorScheme;
     final source = text;
-    final tokens = tokenizeFormula(
-      source,
-      catalog: _catalog,
-      variables: _variables,
-    );
+    final tokens = _tokensOf(source);
     final ranges = _fittingErrors(source.length);
     final cuts = <int>{0, source.length};
     for (final token in tokens) {
@@ -72,12 +77,16 @@ class ExpressionFormulaController extends TextEditingController {
     }
     final sorted = cuts.toList()..sort();
     final children = <TextSpan>[];
+    // The tokens cover the text in order, and so do the cuts, so the token of
+    // each segment is at or after the one of the segment before it.
+    var t = 0;
     for (var i = 0; i + 1 < sorted.length; i++) {
       final from = sorted[i];
       final to = sorted[i + 1];
-      final token = tokens.firstWhere(
-        (token) => token.start <= from && from < token.end,
-      );
+      while (tokens[t].end <= from) {
+        t++;
+      }
+      final token = tokens[t];
       var segmentStyle = _styleOf(_kindFor(token, source), colors);
       if (ranges.any((range) => range.start <= from && from < range.end)) {
         segmentStyle = (segmentStyle ?? const TextStyle()).copyWith(
@@ -91,6 +100,25 @@ class ExpressionFormulaController extends TextEditingController {
       );
     }
     return TextSpan(style: style, children: children);
+  }
+
+  /// The tokens of [source], see [tokenizeFormula]. They are cut again only
+  /// when the text, the catalog or the declared variables change.
+  List<ExpressionToken> _tokensOf(String source) {
+    if (_tokens == null ||
+        source != _tokenSource ||
+        !identical(_catalog, _tokenCatalog) ||
+        !listEquals(_variables, _tokenVariables)) {
+      _tokenSource = source;
+      _tokenCatalog = _catalog;
+      _tokenVariables = _variables;
+      _tokens = tokenizeFormula(
+        source,
+        catalog: _catalog,
+        variables: _variables,
+      );
+    }
+    return _tokens!;
   }
 
   /// The errors that lie inside [length] characters and cover some text. The

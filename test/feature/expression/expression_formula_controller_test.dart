@@ -199,4 +199,39 @@ void main() {
       );
     },
   );
+
+  testWidgets('a move of the caret keeps the highlighting of the text', (
+    tester,
+  ) async {
+    final controller = ExpressionFormulaController(text: 'PI * x')
+      ..setNames(catalog: _catalog, variables: const ['x']);
+    final before = _leaves(await _spans(tester, controller));
+
+    controller.selection = const TextSelection.collapsed(offset: 2);
+    final after = _leaves(await _spans(tester, controller));
+
+    expect(
+      after,
+      before,
+      reason:
+          'the text and its colours stay the same when only the caret moves',
+    );
+  });
+
+  testWidgets('declaring a variable recolours its name in the same text', (
+    tester,
+  ) async {
+    final controller = ExpressionFormulaController(text: 'x + 1')
+      ..setNames(catalog: _catalog, variables: const []);
+    final undeclared = _leaves(await _spans(tester, controller));
+
+    controller.setNames(catalog: _catalog, variables: const ['x']);
+    final declared = _leaves(await _spans(tester, controller));
+
+    expect(
+      declared.firstWhere((leaf) => leaf.$1 == 'x').$2?.color,
+      isNot(undeclared.firstWhere((leaf) => leaf.$1 == 'x').$2?.color),
+      reason: 'a variable that is declared is drawn in its own colour',
+    );
+  });
 }
