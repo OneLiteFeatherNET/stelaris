@@ -24,16 +24,22 @@ String expressionVariableTypeLabel(
 
 /// Opens the dialog that adds a variable when [variable] is null, and edits
 /// it otherwise. [taken] are the names of the other variables of the
-/// expression, which the name may not repeat. Resolves to the variable
-/// submitted, or null when closed.
+/// expression, which the name may not repeat. [parameter] words the dialog for
+/// a parameter of a function instead. Resolves to the variable submitted, or
+/// null when closed.
 Future<ExpressionVariable?> showExpressionVariableDialog(
   BuildContext context, {
   required List<String> taken,
   ExpressionVariable? variable,
+  bool parameter = false,
 }) {
   return showDialog<ExpressionVariable>(
     context: context,
-    builder: (_) => ExpressionVariableDialog(taken: taken, variable: variable),
+    builder: (_) => ExpressionVariableDialog(
+      taken: taken,
+      variable: variable,
+      parameter: parameter,
+    ),
   );
 }
 
@@ -42,11 +48,15 @@ class ExpressionVariableDialog extends StatefulWidget {
   const ExpressionVariableDialog({
     required this.taken,
     this.variable,
+    this.parameter = false,
     super.key,
   });
 
   final ExpressionVariable? variable;
   final List<String> taken;
+
+  /// Whether this is a parameter of a function, which only changes the words.
+  final bool parameter;
 
   @override
   State<ExpressionVariableDialog> createState() =>
@@ -132,9 +142,13 @@ class _ExpressionVariableDialogState extends State<ExpressionVariableDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return FormDialog(
-      title: widget.variable == null
-          ? l10n.expression_variable_add_title
-          : l10n.expression_variable_edit_title,
+      title: widget.parameter
+          ? (widget.variable == null
+                ? l10n.expression_function_parameter_add_title
+                : l10n.expression_function_parameter_edit_title)
+          : (widget.variable == null
+                ? l10n.expression_variable_add_title
+                : l10n.expression_variable_edit_title),
       actionIcon: Icons.check,
       actionLabel: l10n.button_save,
       maxWidth: 440,

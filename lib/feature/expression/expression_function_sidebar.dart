@@ -6,6 +6,7 @@ import 'package:stelaris/util/l10n_ext.dart';
 
 /// The categories functions are grouped under, in the order they are listed.
 const List<CatalogFunctionCategory> _groupOrder = [
+  CatalogFunctionCategory.project,
   CatalogFunctionCategory.basic,
   CatalogFunctionCategory.string,
   CatalogFunctionCategory.dateTime,
@@ -13,10 +14,10 @@ const List<CatalogFunctionCategory> _groupOrder = [
   CatalogFunctionCategory.other,
 ];
 
-/// The catalog's functions and constants to browse and insert. A search
-/// filters both by name ignoring case, and expands every group while it is
-/// not empty. Taps count as taps inside the formula field, so the field keeps
-/// its focus; the caller inserts the tapped entry.
+/// The catalog's functions and constants to browse and insert, shown in the
+/// function picker. A search filters both by name ignoring case, and expands
+/// every group while it is not empty. The search stays at the top, the groups
+/// scroll below it. The caller inserts the tapped entry.
 class ExpressionFunctionSidebar extends StatefulWidget {
   const ExpressionFunctionSidebar({
     required this.catalog,
@@ -75,6 +76,15 @@ class _ExpressionFunctionSidebarState extends State<ExpressionFunctionSidebar> {
                     style: monospace,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  subtitle:
+                      function.description == null ||
+                          function.description!.isEmpty
+                      ? null
+                      : Text(
+                          function.description!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                   onTap: () => widget.onFunction(function),
                 ),
             ],
@@ -120,37 +130,28 @@ class _ExpressionFunctionSidebarState extends State<ExpressionFunctionSidebar> {
       note = null;
     }
 
-    return TextFieldTapRegion(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            l10n.expression_functions_title,
-            style: theme.textTheme.titleSmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextField(
+          key: const ValueKey('expression_function_search'),
+          autofocus: true,
+          onChanged: (value) => setState(() => _query = value),
+          decoration: InputDecoration(
+            labelText: l10n.expression_functions_search_label,
+            prefixIcon: const Icon(Icons.search),
+            isDense: true,
+            border: const OutlineInputBorder(),
           ),
-          const SizedBox(height: 8),
-          TextField(
-            key: const ValueKey('expression_function_search'),
-            onChanged: (value) => setState(() => _query = value),
-            decoration: InputDecoration(
-              labelText: l10n.expression_functions_search_label,
-              prefixIcon: const Icon(Icons.search),
-              isDense: true,
-              border: const OutlineInputBorder(),
-            ),
+        ),
+        const SizedBox(height: 8),
+        if (note != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(note, style: theme.textTheme.bodySmall),
           ),
-          const SizedBox(height: 8),
-          if (note != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Text(note, style: theme.textTheme.bodySmall),
-            ),
-          ...groups,
-        ],
-      ),
+        Expanded(child: ListView(children: groups)),
+      ],
     );
   }
 
@@ -165,6 +166,7 @@ class _ExpressionFunctionSidebarState extends State<ExpressionFunctionSidebar> {
     CatalogFunctionCategory.trigonometric =>
       l10n.expression_functions_group_trigonometric,
     CatalogFunctionCategory.other => l10n.expression_functions_group_other,
+    CatalogFunctionCategory.project => l10n.expression_function_group_project,
   };
 }
 

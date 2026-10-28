@@ -6,9 +6,13 @@ import 'package:stelaris/api/model/expression_validation_model.dart';
 import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/expression_validation_state.dart';
+import 'package:stelaris/feature/base/edit_card/edit_section_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
 import 'package:stelaris/feature/expression/expression_formula_field.dart';
+import 'package:stelaris/feature/expression/expression_math_view.dart';
+import 'package:stelaris/feature/expression/expression_preview_scope.dart';
 import 'package:stelaris/feature/expression/expression_stage.dart';
+import 'package:stelaris/feature/expression/expression_tex.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 /// The expression's General tab: its formula, edited in place with variable
@@ -30,20 +34,62 @@ class ExpressionGeneralPage extends StatelessWidget {
       },
       builder: (context, vm) {
         final expression = vm.selected;
-        return ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            EditSectionHeading(title: context.l10n.expression_section_formula),
-            const SizedBox(height: 8),
-            ExpressionFormulaField(
-              expression: expression,
-              catalog: vm.catalog,
-              validation: vm.validation,
-              onChanged: (value) =>
-                  _stage(context, vm, expression.copyWith(expression: value)),
-              onDeclare: (names) => _declare(context, vm, names),
-            ),
-          ],
+        final l10n = context.l10n;
+        final theme = Theme.of(context);
+        return ExpressionPreviewBeside(
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              ExpressionFormulaField(
+                key: const ValueKey('expression_formula_field'),
+                expression: expression,
+                catalog: vm.catalog,
+                validation: vm.validation,
+                onChanged: (value) =>
+                    _stage(context, vm, expression.copyWith(expression: value)),
+                onDeclare: (names) => _declare(context, vm, names),
+                // The formula and the variables are each a section on a
+                // surface of their own.
+                sections: (editor, variables) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    EditSectionCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          EditSectionHeading(
+                            title: l10n.expression_section_formula,
+                          ),
+                          const SizedBox(height: 8),
+                          if (expression.expression.trim().isNotEmpty) ...[
+                            Text(
+                              l10n.expression_rendered_formula_label,
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            ExpressionMathView(
+                              formula: expression.expression,
+                              tex: expressionToTex(
+                                expression.expression,
+                                functionNames: catalogFunctionNames(vm.catalog),
+                              ),
+                              fontSize: 16,
+                            ),
+                            const SizedBox(height: 12),
+                          ],
+                          editor,
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    EditSectionCard(child: variables),
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

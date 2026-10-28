@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/foundation.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/model/expression_validation_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -249,22 +250,55 @@ class ValidateExpressionAction extends ReduxAction<AppState> with Debounce {
   }
 }
 
-/// Loads the EvalEx catalog once. Dispatched when an expression opens; a
-/// catalog already loaded is kept and nothing is requested again. A failure
-/// is logged and leaves the catalog null, so the formula editor simply offers
-/// no functions or constants, without an error.
+/// Loads the catalog of the selected project: the EvalEx functions and the
+/// project's own. A catalog already loaded for the project is kept and nothing
+/// is requested again. A failure is logged and leaves the catalog null, so the
+/// formula editor simply offers no functions or constants, without an error.
+/// Nothing is asked without a selected project, as the catalog is project
+/// scoped.
 class LoadExpressionCatalogAction extends ReduxAction<AppState>
     with NonReentrant {
   @override
   Future<AppState?> reduce() async {
-    if (state.expressionCatalog != null) return null;
-    try {
-      final catalog = await ApiService().expressionApi.catalog();
-      return state.copyWith(expressionCatalog: catalog);
-    } catch (error) {
-      debugPrint('Error loading the expression catalog: $error');
+    final projectId = state.selectedProject?.id;
+    if (projectId == null) return null;
+    if (state.expressionCatalog != null &&
+        state.expressionCatalogProjectId == projectId) {
       return null;
     }
+    final catalog = await _fetchCatalog(projectId);
+    if (catalog == null) return null;
+    return state.copyWith(
+      expressionCatalog: catalog,
+      expressionCatalogProjectId: projectId,
+    );
+  }
+}
+
+/// Loads the catalog of the selected project again, whatever was loaded
+/// before. Dispatched when a project function is saved or deleted, as the
+/// project's functions in the catalog change with it.
+class ReloadExpressionCatalogAction extends ReduxAction<AppState> {
+  @override
+  Future<AppState?> reduce() async {
+    final projectId = state.selectedProject?.id;
+    if (projectId == null) return null;
+    final catalog = await _fetchCatalog(projectId);
+    if (catalog == null) return null;
+    return state.copyWith(
+      expressionCatalog: catalog,
+      expressionCatalogProjectId: projectId,
+    );
+  }
+}
+
+/// The catalog of [projectId], or null when the request failed.
+Future<ExpressionCatalog?> _fetchCatalog(String projectId) async {
+  try {
+    return await ApiService().expressionApi.catalog(projectId);
+  } catch (error) {
+    debugPrint('Error loading the expression catalog: $error');
+    return null;
   }
 }
 

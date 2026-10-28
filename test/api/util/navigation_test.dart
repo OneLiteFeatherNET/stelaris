@@ -38,10 +38,12 @@ void main() {
     });
 
     test('all icons come from the StelarisIcons font', () {
-      // Expressions have no glyph in that font yet, so they use Material's
-      // function icon; the font itself is not changed for them.
+      // Expressions and functions have no glyph in that font yet, so they use
+      // Material's icons; the font itself is not changed for them.
       for (final entry in NavigationEntry.values.where(
-        (entry) => entry != NavigationEntry.expression,
+        (entry) =>
+            entry != NavigationEntry.expression &&
+            entry != NavigationEntry.function,
       )) {
         expect(entry.data.fontFamily, 'StelarisIcons', reason: entry.name);
         expect(entry.selected.fontFamily, 'StelarisIcons', reason: entry.name);
@@ -51,6 +53,11 @@ void main() {
     test('expressions use the Material function icon', () {
       expect(NavigationEntry.expression.data, Icons.functions_outlined);
       expect(NavigationEntry.expression.selected, Icons.functions);
+    });
+
+    test('functions use the Material data object icon', () {
+      expect(NavigationEntry.function.data, Icons.data_object_outlined);
+      expect(NavigationEntry.function.selected, Icons.data_object);
     });
   });
 }

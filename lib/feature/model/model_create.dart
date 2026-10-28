@@ -1,11 +1,13 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/model/expression_function_model.dart';
 import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
+import 'package:stelaris/api/state/actions/expression/expression_function_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
@@ -37,12 +39,15 @@ Future<bool> openModelCreateDialog(
           NavigationEntry.font => l10n.dialog_font_create_title,
           NavigationEntry.sound => l10n.dialog_sound_create,
           NavigationEntry.expression => l10n.dialog_expression_create,
+          NavigationEntry.function => l10n.dialog_expression_function_create,
           NavigationEntry.advancements => l10n.dialog_advancement_create,
           NavigationEntry.attributes => l10n.dialog_attribute_create,
         },
         projectNamespace: projectKey,
-        // Expressions have no key, so the dialog asks for none.
-        askKey: entry != NavigationEntry.expression,
+        // Expressions and functions have no key, so the dialog asks for none.
+        askKey:
+            entry != NavigationEntry.expression &&
+            entry != NavigationEntry.function,
         onSubmit: (name, key) async {
           final ReduxAction<AppState> action = switch (entry) {
             NavigationEntry.items => ItemAddAction(
@@ -61,6 +66,12 @@ Future<bool> openModelCreateDialog(
             ),
             NavigationEntry.expression => ExpressionAddAction(
               ExpressionModel(uiName: name, expression: ''),
+            ),
+            NavigationEntry.function => ExpressionFunctionAddAction(
+              ExpressionFunctionModel(
+                uiName: name,
+                name: functionIdentifierFor(name),
+              ),
             ),
             NavigationEntry.advancements => AdvancementAddAction(
               AdvancementModel(uiName: name, key: key),

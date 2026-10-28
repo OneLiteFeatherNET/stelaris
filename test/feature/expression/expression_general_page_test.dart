@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/expression_catalog_model.dart';
@@ -7,6 +8,7 @@ import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/base/edit_card/edit_section_card.dart';
 import 'package:stelaris/feature/expression/expression_formula_controller.dart';
 import 'package:stelaris/feature/expression/expression_general_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -54,10 +56,10 @@ Future<Store<AppState>> _pump(
   WidgetTester tester, {
   ExpressionModel? expression,
   ExpressionCatalog? catalog,
+  Size size = const Size(1400, 1600),
 }) async {
-  // A wide surface: the functions sidebar sits beside the editor.
   tester.view
-    ..physicalSize = const Size(1400, 1600)
+    ..physicalSize = size
     ..devicePixelRatio = 1;
   addTearDown(tester.view.resetPhysicalSize);
   final store = Store<AppState>(
@@ -68,6 +70,21 @@ Future<Store<AppState>> _pump(
   );
   await pumpInApp(tester, store, const ExpressionGeneralPage());
   return store;
+}
+
+/// Opens the function picker with the button of the operator toolbar.
+Future<void> _openPicker(WidgetTester tester) async {
+  await tester.tap(find.byKey(const ValueKey('expression_insert_function')));
+  await tester.pumpAndSettle();
+}
+
+/// Types [query] into the picker's search field.
+Future<void> _search(WidgetTester tester, String query) async {
+  await tester.enterText(
+    find.byKey(const ValueKey('expression_function_search')),
+    query,
+  );
+  await tester.pumpAndSettle();
 }
 
 /// Taps the formula field, types [text] and leaves the caret at its end.
@@ -84,6 +101,40 @@ Future<void> _key(WidgetTester tester, LogicalKeyboardKey key) async {
 }
 
 void main() {
+  testWidgets('the formula is shown typeset above the editor', (tester) async {
+    await _pump(tester, expression: _expression(text: 'a * 2'));
+
+    final l10n = lookupAppLocalizations(const Locale('en'));
+    expect(find.text(l10n.expression_rendered_formula_label), findsOneWidget);
+    expect(
+      find.byType(Math),
+      findsWidgets,
+      reason: 'the rendered line is drawn as math',
+    );
+  });
+
+  testWidgets('the formula and the variables are each in a section card', (
+    tester,
+  ) async {
+    await _pump(tester, expression: _expression(text: 'a * 2'));
+
+    final cards = find.byType(EditSectionCard);
+    expect(cards, findsNWidgets(2));
+    expect(
+      find.descendant(of: cards.first, matching: _formula),
+      findsOneWidget,
+      reason: 'the editor is in the Formula card',
+    );
+    expect(
+      find.descendant(
+        of: cards.last,
+        matching: find.widgetWithText(ActionChip, 'radius'),
+      ),
+      findsOneWidget,
+      reason: 'the variable chips are in the Insert a variable card',
+    );
+  });
+
   testWidgets('typing the formula stages it in the store as unsaved', (
     tester,
   ) async {
@@ -265,58 +316,39 @@ void main() {
     expect(find.byKey(_suggestions), findsNothing);
   });
 
-  testWidgets(
-    'clicking a function in the sidebar inserts its call at the caret',
-    (tester) async {
-      final store = await _pump(tester, catalog: _catalog);
-      await _type(tester, 'a');
-      await tester.enterText(
-        find.byKey(const ValueKey('expression_function_search')),
-        'round',
-      );
-      await tester.pumpAndSettle();
-
-      await tester.ensureVisible(
-        find.byKey(const ValueKey('expression_function_ROUND')),
-      );
-      await tester.tap(find.byKey(const ValueKey('expression_function_ROUND')));
-      await tester.pumpAndSettle();
-
-      expect(store.state.selectedExpression?.expression, 'aROUND(');
-      expect(store.state.unsavedChanges, NavigationEntry.expression);
-    },
-  );
-
-  testWidgets('clicking a constant in the sidebar inserts its name', (
-    tester,
-  ) async {
-    final store = await _pump(tester, catalog: _catalog);
-    await _type(tester, '2 * ');
-    await tester.enterText(
-      find.byKey(const ValueKey('expression_function_search')),
-      'pi',
-    );
-    await tester.pumpAndSettle();
-
-    await tester.ensureVisible(
-      find.byKey(const ValueKey('expression_constant_PI')),
-    );
-    await tester.tap(find.byKey(const ValueKey('expression_constant_PI')));
-    await tester.pumpAndSettle();
-
-    expect(store.state.selectedExpression?.expression, '2 * PI');
-  });
-
-  testWidgets('the sidebar search hides functions whose name does not match', (
+  testWidgets('the catalog is not listed inline below the editor', (
     tester,
   ) async {
     await _pump(tester, catalog: _catalog);
 
-    await tester.enterText(
+    expect(
       find.byKey(const ValueKey('expression_function_search')),
-      'PI',
+      findsNothing,
+      reason: 'the functions are reached through the picker, not scrolling',
     );
-    await tester.pumpAndSettle();
+  });
+
+  testWidgets('the Insert function button opens the picker with a search', (
+    tester,
+  ) async {
+    await _pump(tester, catalog: _catalog);
+
+    await _openPicker(tester);
+
+    expect(find.byType(Dialog), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('expression_function_search')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('the picker search hides functions whose name does not match', (
+    tester,
+  ) async {
+    await _pump(tester, catalog: _catalog);
+    await _openPicker(tester);
+
+    await _search(tester, 'PI');
 
     expect(
       find.byKey(const ValueKey('expression_function_ROUND')),
@@ -328,10 +360,68 @@ void main() {
     );
   });
 
+  testWidgets(
+    'clicking a function in the picker inserts its call at the caret',
+    (tester) async {
+      final store = await _pump(tester, catalog: _catalog);
+      await _type(tester, 'a');
+      await _openPicker(tester);
+      await _search(tester, 'round');
+
+      await tester.tap(find.byKey(const ValueKey('expression_function_ROUND')));
+      await tester.pumpAndSettle();
+
+      expect(store.state.selectedExpression?.expression, 'aROUND(');
+      expect(store.state.unsavedChanges, NavigationEntry.expression);
+    },
+  );
+
+  testWidgets('a tap in the picker closes it', (tester) async {
+    await _pump(tester, catalog: _catalog);
+    await _type(tester, 'a');
+    await _openPicker(tester);
+    await _search(tester, 'round');
+
+    await tester.tap(find.byKey(const ValueKey('expression_function_ROUND')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Dialog), findsNothing);
+  });
+
+  testWidgets('the formula field has the focus again after a picker insert', (
+    tester,
+  ) async {
+    await _pump(tester, catalog: _catalog);
+    await _type(tester, 'a');
+    await _openPicker(tester);
+    await _search(tester, 'round');
+
+    await tester.tap(find.byKey(const ValueKey('expression_function_ROUND')));
+    await tester.pumpAndSettle();
+
+    final editable = tester.state<EditableTextState>(_formulaEditable);
+    expect(editable.widget.focusNode.hasFocus, isTrue);
+  });
+
+  testWidgets('clicking a constant in the picker inserts its name', (
+    tester,
+  ) async {
+    final store = await _pump(tester, catalog: _catalog);
+    await _type(tester, '2 * ');
+    await _openPicker(tester);
+    await _search(tester, 'pi');
+
+    await tester.tap(find.byKey(const ValueKey('expression_constant_PI')));
+    await tester.pumpAndSettle();
+
+    expect(store.state.selectedExpression?.expression, '2 * PI');
+  });
+
   testWidgets('a group header expands its functions when no search is active', (
     tester,
   ) async {
     await _pump(tester, catalog: _catalog);
+    await _openPicker(tester);
     final entry = find.byKey(const ValueKey('expression_function_ROUND'));
     expect(entry, findsNothing);
 
@@ -342,9 +432,11 @@ void main() {
   });
 
   testWidgets(
-    'without the catalog the sidebar says the functions are unavailable',
+    'without the catalog the picker says the functions are unavailable',
     (tester) async {
       await _pump(tester);
+
+      await _openPicker(tester);
 
       final l10n = AppLocalizations.of(
         tester.element(find.byType(ExpressionGeneralPage)),
@@ -352,6 +444,31 @@ void main() {
       expect(find.text(l10n.expression_functions_unavailable), findsOneWidget);
     },
   );
+
+  testWidgets('on a narrow screen the picker fills the screen', (tester) async {
+    await _pump(tester, catalog: _catalog, size: const Size(420, 900));
+
+    await _openPicker(tester);
+
+    expect(
+      find.descendant(of: find.byType(Dialog), matching: find.byType(AppBar)),
+      findsOneWidget,
+      reason: 'a full-screen picker has an app bar with a close button',
+    );
+  });
+
+  testWidgets('on a wide screen the picker floats over the page', (
+    tester,
+  ) async {
+    await _pump(tester, catalog: _catalog);
+
+    await _openPicker(tester);
+
+    expect(
+      find.descendant(of: find.byType(Dialog), matching: find.byType(AppBar)),
+      findsNothing,
+    );
+  });
 
   testWidgets('the + button inserts the operator with spaces at the caret', (
     tester,

@@ -5,9 +5,21 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/navigation_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/util/color_scheme_ext.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 
 const double maxXOffset = 208;
-const List<NavigationEntry> navigationEntries = NavigationEntry.values;
+
+/// The sections of the rail, in order: every entry that is not runtime data.
+final List<NavigationEntry> sectionEntries = [
+  for (final entry in NavigationEntry.values)
+    if (!entry.isRuntime) entry,
+];
+
+/// The runtime entries, listed below the "Runtime" heading in this order.
+final List<NavigationEntry> runtimeNavigationEntries = [
+  for (final entry in NavigationEntry.values)
+    if (entry.isRuntime) entry,
+];
 const TextStyle navigationEntryTextStyle = TextStyle(fontSize: 16);
 
 /// A widget that represents a navigation sidebar for the application.
@@ -48,7 +60,13 @@ class NavigationSideBar extends StatelessWidget {
   /// [AssetNavigationEntry.values]. One slot after the sections is the
   /// "Assets" heading.
   static int _assetRailIndex(int assetIndex) =>
-      navigationEntries.length + 1 + assetIndex;
+      sectionEntries.length + 1 + assetIndex;
+
+  /// The rail index of the runtime entry at [runtimeIndex] in
+  /// [runtimeNavigationEntries]. After the asset pages is the "Runtime"
+  /// heading.
+  static int _runtimeRailIndex(int runtimeIndex) =>
+      _assetRailIndex(AssetNavigationEntry.values.length) + 1 + runtimeIndex;
 
   /// The rail index of the destination showing [location], or -1 if none does.
   /// Nested routes (e.g. a model's `/detail` route) share the parent entry's
@@ -56,7 +74,12 @@ class NavigationSideBar extends StatelessWidget {
   int _indexForLocation(String location) {
     final currentEntry = entryForLocation(location);
     if (currentEntry != null) {
-      return navigationEntries.indexOf(currentEntry);
+      if (currentEntry.isRuntime) {
+        return _runtimeRailIndex(
+          runtimeNavigationEntries.indexOf(currentEntry),
+        );
+      }
+      return sectionEntries.indexOf(currentEntry);
     }
     final currentAssetEntry = assetEntryForLocation(location);
     if (currentAssetEntry != null) {
@@ -68,33 +91,46 @@ class NavigationSideBar extends StatelessWidget {
   /// Handles the selection of a navigation destination. Leaving a detail
   /// page with unsaved edits is guarded by the detail route's `onExit`.
   void _onDestinationSelected(BuildContext context, int index) {
-    if (index < navigationEntries.length) {
-      context.go(navigationEntries[index].route);
+    if (index < sectionEntries.length) {
+      context.go(sectionEntries[index].route);
       return;
     }
-    // The heading itself is disabled and never reaches here.
+    // The headings themselves are disabled and never reach here.
     final assetIndex = index - _assetRailIndex(0);
     if (assetIndex >= 0 && assetIndex < AssetNavigationEntry.values.length) {
       context.go(AssetNavigationEntry.values[assetIndex].route);
+      return;
+    }
+    final runtimeIndex = index - _runtimeRailIndex(0);
+    if (runtimeIndex >= 0 && runtimeIndex < runtimeNavigationEntries.length) {
+      context.go(runtimeNavigationEntries[runtimeIndex].route);
     }
   }
 
   /// Builds the list of navigation destinations for the [NavigationRail]: the
-  /// sections, the disabled "Assets" heading, then the asset pages.
+  /// sections, the disabled "Assets" heading, the asset pages, the disabled
+  /// "Runtime" heading, then the runtime entries.
   List<NavigationRailDestination> _buildNavigationView(BuildContext context) {
     return [
-      for (final navigationValue in navigationEntries)
+      for (final navigationValue in sectionEntries)
         _destination(
           display: navigationValue.display,
           icon: navigationValue.data,
           selectedIcon: navigationValue.selected,
         ),
-      _assetHeading(context),
+      _groupHeading(context, context.l10n.navigation_group_assets),
       for (final assetValue in AssetNavigationEntry.values)
         _destination(
           display: assetValue.display,
           icon: assetValue.data,
           selectedIcon: assetValue.selected,
+        ),
+      _groupHeading(context, context.l10n.navigation_group_runtime),
+      for (final runtimeValue in runtimeNavigationEntries)
+        _destination(
+          display: runtimeValue.display,
+          icon: runtimeValue.data,
+          selectedIcon: runtimeValue.selected,
         ),
     ];
   }
@@ -134,11 +170,12 @@ class NavigationSideBar extends StatelessWidget {
     );
   }
 
-  /// The disabled "Assets" heading between the sections and the asset pages.
-  /// Its icon is a short divider over the word, so the heading stays visible
-  /// when the rail is collapsed; its label is an empty box of the same width
-  /// as the other labels, so the extended rows keep their width.
-  NavigationRailDestination _assetHeading(BuildContext context) {
+  /// A disabled heading above a group of pages, such as the asset pages or the
+  /// runtime entries. Its icon is a short divider over the [title], so the
+  /// heading stays visible when the rail is collapsed; its label is an empty
+  /// box of the same width as the other labels, so the extended rows keep
+  /// their width.
+  NavigationRailDestination _groupHeading(BuildContext context, String title) {
     final headingStyle = Theme.of(context).textTheme.labelSmall
         ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
     return NavigationRailDestination(
@@ -150,7 +187,7 @@ class NavigationSideBar extends StatelessWidget {
           children: [
             const SizedBox(width: 32, child: Divider(height: 1)),
             const SizedBox(height: 4),
-            Text('Assets', style: headingStyle, softWrap: false),
+            Text(title, style: headingStyle, softWrap: false),
           ],
         ),
       ),

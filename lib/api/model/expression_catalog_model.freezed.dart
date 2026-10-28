@@ -313,7 +313,7 @@ as List<CatalogConstant>,
 /// @nodoc
 mixin _$CatalogFunction {
 
- String get name;@JsonKey(unknownEnumValue: CatalogFunctionCategory.other) CatalogFunctionCategory get category; List<CatalogParameter> get parameters;
+ String get name;@JsonKey(unknownEnumValue: CatalogFunctionCategory.other) CatalogFunctionCategory get category; List<CatalogParameter> get parameters; String? get description;@JsonKey(fromJson: _functionKindFromJson) ExpressionFunctionKind? get kind;@JsonKey(fromJson: _functionReturnTypeFromJson) ExpressionFunctionReturnType? get returnType;
 /// Create a copy of CatalogFunction
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -327,20 +327,20 @@ $CatalogFunctionCopyWith<CatalogFunction> get copyWith => _$CatalogFunctionCopyW
 @override
 bool operator ==(Object other) {
   final _this = this as CatalogFunction;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CatalogFunction&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.category, _this.category) || other.category == _this.category)&&const DeepCollectionEquality().equals(other.parameters, _this.parameters));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CatalogFunction&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.category, _this.category) || other.category == _this.category)&&const DeepCollectionEquality().equals(other.parameters, _this.parameters)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.returnType, _this.returnType) || other.returnType == _this.returnType));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as CatalogFunction;
-  return Object.hash(runtimeType,_this.name,_this.category,const DeepCollectionEquality().hash(_this.parameters));
+  return Object.hash(runtimeType,_this.name,_this.category,const DeepCollectionEquality().hash(_this.parameters),_this.description,_this.kind,_this.returnType);
 }
 
 @override
 String toString() {
   final _this = this as CatalogFunction;
-  return 'CatalogFunction(name: ${_this.name}, category: ${_this.category}, parameters: ${_this.parameters})';
+  return 'CatalogFunction(name: ${_this.name}, category: ${_this.category}, parameters: ${_this.parameters}, description: ${_this.description}, kind: ${_this.kind}, returnType: ${_this.returnType})';
 }
 
 
@@ -351,7 +351,7 @@ abstract mixin class $CatalogFunctionCopyWith<$Res>  {
   factory $CatalogFunctionCopyWith(CatalogFunction value, $Res Function(CatalogFunction) _then) = _$CatalogFunctionCopyWithImpl;
 @useResult
 $Res call({
- String name,@JsonKey(unknownEnumValue: CatalogFunctionCategory.other) CatalogFunctionCategory category, List<CatalogParameter> parameters
+ String name,@JsonKey(unknownEnumValue: CatalogFunctionCategory.other) CatalogFunctionCategory category, List<CatalogParameter> parameters, String? description,@JsonKey(fromJson: _functionKindFromJson) ExpressionFunctionKind? kind,@JsonKey(fromJson: _functionReturnTypeFromJson) ExpressionFunctionReturnType? returnType
 });
 
 
@@ -368,12 +368,15 @@ class _$CatalogFunctionCopyWithImpl<$Res>
 
 /// Create a copy of CatalogFunction
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? category = null,Object? parameters = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? category = null,Object? parameters = null,Object? description = freezed,Object? kind = freezed,Object? returnType = freezed,}) {
   return _then(CatalogFunction(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as CatalogFunctionCategory,parameters: null == parameters ? _self.parameters : parameters // ignore: cast_nullable_to_non_nullable
-as List<CatalogParameter>,
+as List<CatalogParameter>,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,kind: freezed == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
+as ExpressionFunctionKind?,returnType: freezed == returnType ? _self.returnType : returnType // ignore: cast_nullable_to_non_nullable
+as ExpressionFunctionReturnType?,
   ));
 }
 
@@ -458,10 +461,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name, @JsonKey(unknownEnumValue: CatalogFunctionCategory.other)  CatalogFunctionCategory category,  List<CatalogParameter> parameters)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name, @JsonKey(unknownEnumValue: CatalogFunctionCategory.other)  CatalogFunctionCategory category,  List<CatalogParameter> parameters,  String? description, @JsonKey(fromJson: _functionKindFromJson)  ExpressionFunctionKind? kind, @JsonKey(fromJson: _functionReturnTypeFromJson)  ExpressionFunctionReturnType? returnType)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CatalogFunction() when $default != null:
-return $default(_that.name,_that.category,_that.parameters);case _:
+return $default(_that.name,_that.category,_that.parameters,_that.description,_that.kind,_that.returnType);case _:
   return orElse();
 
 }
@@ -479,10 +482,10 @@ return $default(_that.name,_that.category,_that.parameters);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name, @JsonKey(unknownEnumValue: CatalogFunctionCategory.other)  CatalogFunctionCategory category,  List<CatalogParameter> parameters)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name, @JsonKey(unknownEnumValue: CatalogFunctionCategory.other)  CatalogFunctionCategory category,  List<CatalogParameter> parameters,  String? description, @JsonKey(fromJson: _functionKindFromJson)  ExpressionFunctionKind? kind, @JsonKey(fromJson: _functionReturnTypeFromJson)  ExpressionFunctionReturnType? returnType)  $default,) {final _that = this;
 switch (_that) {
 case _CatalogFunction():
-return $default(_that.name,_that.category,_that.parameters);case _:
+return $default(_that.name,_that.category,_that.parameters,_that.description,_that.kind,_that.returnType);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -499,10 +502,10 @@ return $default(_that.name,_that.category,_that.parameters);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name, @JsonKey(unknownEnumValue: CatalogFunctionCategory.other)  CatalogFunctionCategory category,  List<CatalogParameter> parameters)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name, @JsonKey(unknownEnumValue: CatalogFunctionCategory.other)  CatalogFunctionCategory category,  List<CatalogParameter> parameters,  String? description, @JsonKey(fromJson: _functionKindFromJson)  ExpressionFunctionKind? kind, @JsonKey(fromJson: _functionReturnTypeFromJson)  ExpressionFunctionReturnType? returnType)?  $default,) {final _that = this;
 switch (_that) {
 case _CatalogFunction() when $default != null:
-return $default(_that.name,_that.category,_that.parameters);case _:
+return $default(_that.name,_that.category,_that.parameters,_that.description,_that.kind,_that.returnType);case _:
   return null;
 
 }
@@ -514,7 +517,7 @@ return $default(_that.name,_that.category,_that.parameters);case _:
 @JsonSerializable()
 
 class _CatalogFunction implements CatalogFunction {
-  const _CatalogFunction({required this.name, @JsonKey(unknownEnumValue: CatalogFunctionCategory.other) this.category = CatalogFunctionCategory.other,  List<CatalogParameter> parameters = const []}): _parameters = parameters;
+  const _CatalogFunction({required this.name, @JsonKey(unknownEnumValue: CatalogFunctionCategory.other) this.category = CatalogFunctionCategory.other,  List<CatalogParameter> parameters = const [], this.description, @JsonKey(fromJson: _functionKindFromJson) this.kind, @JsonKey(fromJson: _functionReturnTypeFromJson) this.returnType}): _parameters = parameters;
   factory _CatalogFunction.fromJson(Map<String, dynamic> json) => _$CatalogFunctionFromJson(json);
 
 @override final  String name;
@@ -526,6 +529,9 @@ class _CatalogFunction implements CatalogFunction {
   return EqualUnmodifiableListView(_parameters);
 }
 
+@override final  String? description;
+@override@JsonKey(fromJson: _functionKindFromJson) final  ExpressionFunctionKind? kind;
+@override@JsonKey(fromJson: _functionReturnTypeFromJson) final  ExpressionFunctionReturnType? returnType;
 
 /// Create a copy of CatalogFunction
 /// with the given fields replaced by the non-null parameter values.
@@ -540,18 +546,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CatalogFunction&&(identical(other.name, name) || other.name == name)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.parameters, _parameters));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CatalogFunction&&(identical(other.name, name) || other.name == name)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.parameters, _parameters)&&(identical(other.description, description) || other.description == description)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.returnType, returnType) || other.returnType == returnType));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,name,category,const DeepCollectionEquality().hash(_parameters));
+    return Object.hash(runtimeType,name,category,const DeepCollectionEquality().hash(_parameters),description,kind,returnType);
 }
 
 @override
 String toString() {
-    return 'CatalogFunction(name: $name, category: $category, parameters: $parameters)';
+    return 'CatalogFunction(name: $name, category: $category, parameters: $parameters, description: $description, kind: $kind, returnType: $returnType)';
 }
 
 
@@ -562,7 +568,7 @@ abstract mixin class _$CatalogFunctionCopyWith<$Res> implements $CatalogFunction
   factory _$CatalogFunctionCopyWith(_CatalogFunction value, $Res Function(_CatalogFunction) _then) = __$CatalogFunctionCopyWithImpl;
 @override @useResult
 $Res call({
- String name,@JsonKey(unknownEnumValue: CatalogFunctionCategory.other) CatalogFunctionCategory category, List<CatalogParameter> parameters
+ String name,@JsonKey(unknownEnumValue: CatalogFunctionCategory.other) CatalogFunctionCategory category, List<CatalogParameter> parameters, String? description,@JsonKey(fromJson: _functionKindFromJson) ExpressionFunctionKind? kind,@JsonKey(fromJson: _functionReturnTypeFromJson) ExpressionFunctionReturnType? returnType
 });
 
 
@@ -579,12 +585,15 @@ class __$CatalogFunctionCopyWithImpl<$Res>
 
 /// Create a copy of CatalogFunction
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? category = null,Object? parameters = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? category = null,Object? parameters = null,Object? description = freezed,Object? kind = freezed,Object? returnType = freezed,}) {
   return _then(_CatalogFunction(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as CatalogFunctionCategory,parameters: null == parameters ? _self._parameters : parameters // ignore: cast_nullable_to_non_nullable
-as List<CatalogParameter>,
+as List<CatalogParameter>,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,kind: freezed == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
+as ExpressionFunctionKind?,returnType: freezed == returnType ? _self.returnType : returnType // ignore: cast_nullable_to_non_nullable
+as ExpressionFunctionReturnType?,
   ));
 }
 
@@ -595,7 +604,7 @@ as List<CatalogParameter>,
 /// @nodoc
 mixin _$CatalogParameter {
 
- String get name; bool get varArg; bool get lazy; bool get nonZero; bool get nonNegative;
+ String get name;@JsonKey(fromJson: _parameterTypeFromJson) ExpressionVariableType? get type; bool get varArg; bool get lazy; bool get nonZero; bool get nonNegative;
 /// Create a copy of CatalogParameter
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -609,20 +618,20 @@ $CatalogParameterCopyWith<CatalogParameter> get copyWith => _$CatalogParameterCo
 @override
 bool operator ==(Object other) {
   final _this = this as CatalogParameter;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CatalogParameter&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.varArg, _this.varArg) || other.varArg == _this.varArg)&&(identical(other.lazy, _this.lazy) || other.lazy == _this.lazy)&&(identical(other.nonZero, _this.nonZero) || other.nonZero == _this.nonZero)&&(identical(other.nonNegative, _this.nonNegative) || other.nonNegative == _this.nonNegative));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CatalogParameter&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.varArg, _this.varArg) || other.varArg == _this.varArg)&&(identical(other.lazy, _this.lazy) || other.lazy == _this.lazy)&&(identical(other.nonZero, _this.nonZero) || other.nonZero == _this.nonZero)&&(identical(other.nonNegative, _this.nonNegative) || other.nonNegative == _this.nonNegative));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as CatalogParameter;
-  return Object.hash(runtimeType,_this.name,_this.varArg,_this.lazy,_this.nonZero,_this.nonNegative);
+  return Object.hash(runtimeType,_this.name,_this.type,_this.varArg,_this.lazy,_this.nonZero,_this.nonNegative);
 }
 
 @override
 String toString() {
   final _this = this as CatalogParameter;
-  return 'CatalogParameter(name: ${_this.name}, varArg: ${_this.varArg}, lazy: ${_this.lazy}, nonZero: ${_this.nonZero}, nonNegative: ${_this.nonNegative})';
+  return 'CatalogParameter(name: ${_this.name}, type: ${_this.type}, varArg: ${_this.varArg}, lazy: ${_this.lazy}, nonZero: ${_this.nonZero}, nonNegative: ${_this.nonNegative})';
 }
 
 
@@ -633,7 +642,7 @@ abstract mixin class $CatalogParameterCopyWith<$Res>  {
   factory $CatalogParameterCopyWith(CatalogParameter value, $Res Function(CatalogParameter) _then) = _$CatalogParameterCopyWithImpl;
 @useResult
 $Res call({
- String name, bool varArg, bool lazy, bool nonZero, bool nonNegative
+ String name,@JsonKey(fromJson: _parameterTypeFromJson) ExpressionVariableType? type, bool varArg, bool lazy, bool nonZero, bool nonNegative
 });
 
 
@@ -650,10 +659,11 @@ class _$CatalogParameterCopyWithImpl<$Res>
 
 /// Create a copy of CatalogParameter
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? varArg = null,Object? lazy = null,Object? nonZero = null,Object? nonNegative = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? type = freezed,Object? varArg = null,Object? lazy = null,Object? nonZero = null,Object? nonNegative = null,}) {
   return _then(CatalogParameter(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,varArg: null == varArg ? _self.varArg : varArg // ignore: cast_nullable_to_non_nullable
+as String,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as ExpressionVariableType?,varArg: null == varArg ? _self.varArg : varArg // ignore: cast_nullable_to_non_nullable
 as bool,lazy: null == lazy ? _self.lazy : lazy // ignore: cast_nullable_to_non_nullable
 as bool,nonZero: null == nonZero ? _self.nonZero : nonZero // ignore: cast_nullable_to_non_nullable
 as bool,nonNegative: null == nonNegative ? _self.nonNegative : nonNegative // ignore: cast_nullable_to_non_nullable
@@ -742,10 +752,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  bool varArg,  bool lazy,  bool nonZero,  bool nonNegative)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name, @JsonKey(fromJson: _parameterTypeFromJson)  ExpressionVariableType? type,  bool varArg,  bool lazy,  bool nonZero,  bool nonNegative)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CatalogParameter() when $default != null:
-return $default(_that.name,_that.varArg,_that.lazy,_that.nonZero,_that.nonNegative);case _:
+return $default(_that.name,_that.type,_that.varArg,_that.lazy,_that.nonZero,_that.nonNegative);case _:
   return orElse();
 
 }
@@ -763,10 +773,10 @@ return $default(_that.name,_that.varArg,_that.lazy,_that.nonZero,_that.nonNegati
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  bool varArg,  bool lazy,  bool nonZero,  bool nonNegative)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name, @JsonKey(fromJson: _parameterTypeFromJson)  ExpressionVariableType? type,  bool varArg,  bool lazy,  bool nonZero,  bool nonNegative)  $default,) {final _that = this;
 switch (_that) {
 case _CatalogParameter():
-return $default(_that.name,_that.varArg,_that.lazy,_that.nonZero,_that.nonNegative);case _:
+return $default(_that.name,_that.type,_that.varArg,_that.lazy,_that.nonZero,_that.nonNegative);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -783,10 +793,10 @@ return $default(_that.name,_that.varArg,_that.lazy,_that.nonZero,_that.nonNegati
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  bool varArg,  bool lazy,  bool nonZero,  bool nonNegative)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name, @JsonKey(fromJson: _parameterTypeFromJson)  ExpressionVariableType? type,  bool varArg,  bool lazy,  bool nonZero,  bool nonNegative)?  $default,) {final _that = this;
 switch (_that) {
 case _CatalogParameter() when $default != null:
-return $default(_that.name,_that.varArg,_that.lazy,_that.nonZero,_that.nonNegative);case _:
+return $default(_that.name,_that.type,_that.varArg,_that.lazy,_that.nonZero,_that.nonNegative);case _:
   return null;
 
 }
@@ -798,10 +808,11 @@ return $default(_that.name,_that.varArg,_that.lazy,_that.nonZero,_that.nonNegati
 @JsonSerializable()
 
 class _CatalogParameter implements CatalogParameter {
-  const _CatalogParameter({required this.name, this.varArg = false, this.lazy = false, this.nonZero = false, this.nonNegative = false});
+  const _CatalogParameter({required this.name, @JsonKey(fromJson: _parameterTypeFromJson) this.type, this.varArg = false, this.lazy = false, this.nonZero = false, this.nonNegative = false});
   factory _CatalogParameter.fromJson(Map<String, dynamic> json) => _$CatalogParameterFromJson(json);
 
 @override final  String name;
+@override@JsonKey(fromJson: _parameterTypeFromJson) final  ExpressionVariableType? type;
 @override@JsonKey() final  bool varArg;
 @override@JsonKey() final  bool lazy;
 @override@JsonKey() final  bool nonZero;
@@ -820,18 +831,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CatalogParameter&&(identical(other.name, name) || other.name == name)&&(identical(other.varArg, varArg) || other.varArg == varArg)&&(identical(other.lazy, lazy) || other.lazy == lazy)&&(identical(other.nonZero, nonZero) || other.nonZero == nonZero)&&(identical(other.nonNegative, nonNegative) || other.nonNegative == nonNegative));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CatalogParameter&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.varArg, varArg) || other.varArg == varArg)&&(identical(other.lazy, lazy) || other.lazy == lazy)&&(identical(other.nonZero, nonZero) || other.nonZero == nonZero)&&(identical(other.nonNegative, nonNegative) || other.nonNegative == nonNegative));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,name,varArg,lazy,nonZero,nonNegative);
+    return Object.hash(runtimeType,name,type,varArg,lazy,nonZero,nonNegative);
 }
 
 @override
 String toString() {
-    return 'CatalogParameter(name: $name, varArg: $varArg, lazy: $lazy, nonZero: $nonZero, nonNegative: $nonNegative)';
+    return 'CatalogParameter(name: $name, type: $type, varArg: $varArg, lazy: $lazy, nonZero: $nonZero, nonNegative: $nonNegative)';
 }
 
 
@@ -842,7 +853,7 @@ abstract mixin class _$CatalogParameterCopyWith<$Res> implements $CatalogParamet
   factory _$CatalogParameterCopyWith(_CatalogParameter value, $Res Function(_CatalogParameter) _then) = __$CatalogParameterCopyWithImpl;
 @override @useResult
 $Res call({
- String name, bool varArg, bool lazy, bool nonZero, bool nonNegative
+ String name,@JsonKey(fromJson: _parameterTypeFromJson) ExpressionVariableType? type, bool varArg, bool lazy, bool nonZero, bool nonNegative
 });
 
 
@@ -859,10 +870,11 @@ class __$CatalogParameterCopyWithImpl<$Res>
 
 /// Create a copy of CatalogParameter
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? varArg = null,Object? lazy = null,Object? nonZero = null,Object? nonNegative = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? type = freezed,Object? varArg = null,Object? lazy = null,Object? nonZero = null,Object? nonNegative = null,}) {
   return _then(_CatalogParameter(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,varArg: null == varArg ? _self.varArg : varArg // ignore: cast_nullable_to_non_nullable
+as String,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as ExpressionVariableType?,varArg: null == varArg ? _self.varArg : varArg // ignore: cast_nullable_to_non_nullable
 as bool,lazy: null == lazy ? _self.lazy : lazy // ignore: cast_nullable_to_non_nullable
 as bool,nonZero: null == nonZero ? _self.nonZero : nonZero // ignore: cast_nullable_to_non_nullable
 as bool,nonNegative: null == nonNegative ? _self.nonNegative : nonNegative // ignore: cast_nullable_to_non_nullable

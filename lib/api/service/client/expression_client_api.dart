@@ -18,12 +18,14 @@ class ExpressionClientApi extends BaseApi<ExpressionModel> {
         toJson: (model) => model.toJson(),
       );
 
-  /// Loads the EvalEx catalog: the functions, operators and constants the
-  /// backend supports. It is not project scoped, so the request goes to
-  /// `expression/catalog` under the base URL.
-  Future<ExpressionCatalog> catalog() async {
+  /// Loads the catalog of [projectId]: the functions, operators and constants
+  /// the backend supports, and the functions the project defines. The request
+  /// goes to `project/{projectId}/expression-catalog`.
+  Future<ExpressionCatalog> catalog(String projectId) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
-    final uri = baseUri.replace(path: '${baseUri.path}/$endpoint/catalog');
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/project/$projectId/expression-catalog',
+    );
     final result = await apiClient.dio.getUri<Map<String, dynamic>>(uri);
     return ExpressionCatalog.fromJson(result.data!);
   }

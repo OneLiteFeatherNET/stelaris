@@ -5,6 +5,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/expression/selected_expression_state.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
+import 'package:stelaris/feature/expression/expression_preview_scope.dart';
 import 'package:stelaris/feature/expression/expression_stage.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
 import 'package:stelaris/util/app_shapes.dart';
@@ -22,40 +23,42 @@ class ExpressionVariablesPage extends StatelessWidget {
       builder: (context, vm) {
         final expression = vm.selected;
         final variables = expression.variables;
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Align(
-                child: ActionChip(
-                  avatar: const Icon(Icons.add),
-                  label: Text(context.l10n.button_add),
-                  onPressed: () => _add(context, expression),
-                ),
-              ),
-              const SizedBox(height: 16),
-              if (variables.isEmpty)
-                Expanded(
-                  child: EmptyDataWidget.full(
-                    header: context.l10n.expression_variables_empty_header,
-                    subHeader:
-                        context.l10n.expression_variables_empty_subheader,
-                    icon: Icons.data_object,
+        return ExpressionPreviewBeside(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  child: ActionChip(
+                    avatar: const Icon(Icons.add),
+                    label: Text(context.l10n.button_add),
+                    onPressed: () => _add(context, expression),
                   ),
-                )
-              else
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: variables.length,
-                    itemBuilder: (context, index) => _VariableCard(
-                      variable: variables[index],
-                      onEdit: () => _edit(context, expression, index),
-                      onDelete: () => _delete(context, expression, index),
+                ),
+                const SizedBox(height: 16),
+                if (variables.isEmpty)
+                  Expanded(
+                    child: EmptyDataWidget.full(
+                      header: context.l10n.expression_variables_empty_header,
+                      subHeader:
+                          context.l10n.expression_variables_empty_subheader,
+                      icon: Icons.data_object,
+                    ),
+                  )
+                else
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: variables.length,
+                      itemBuilder: (context, index) => _VariableCard(
+                        variable: variables[index],
+                        onEdit: () => _edit(context, expression, index),
+                        onDelete: () => _delete(context, expression, index),
+                      ),
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         );
       },

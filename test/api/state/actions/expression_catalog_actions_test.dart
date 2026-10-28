@@ -4,10 +4,14 @@ import 'package:async_redux/async_redux.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
+
+const Project _project = Project(id: 'p1', displayName: 'P1', key: 'p1');
 
 const _catalogJson = {
   'evalexVersion': '3.8.0',
@@ -41,7 +45,9 @@ class _CountingAdapter implements HttpClientAdapter {
 
 void main() {
   test('loading the catalog stores it in the state', () async {
-    final store = Store<AppState>(initialState: const AppState());
+    final store = Store<AppState>(
+      initialState: const AppState(selectedProject: _project),
+    );
     ApiService().expressionApi.apiClient.dio.httpClientAdapter =
         FakeHttpClientAdapter.json(_catalogJson);
 
@@ -51,7 +57,9 @@ void main() {
   });
 
   test('a second load makes no request once the catalog is loaded', () async {
-    final store = Store<AppState>(initialState: const AppState());
+    final store = Store<AppState>(
+      initialState: const AppState(selectedProject: _project),
+    );
     final adapter = _CountingAdapter(
       (_) => FakeHttpClientAdapter.response(_catalogJson),
     );
@@ -65,12 +73,82 @@ void main() {
   });
 
   test('a failed load leaves the catalog null and does not throw', () async {
-    final store = Store<AppState>(initialState: const AppState());
+    final store = Store<AppState>(
+      initialState: const AppState(selectedProject: _project),
+    );
     ApiService().expressionApi.apiClient.dio.httpClientAdapter =
         FakeHttpClientAdapter.json({'title': 'Boom'}, statusCode: 500);
 
     await store.dispatchAndWait(LoadExpressionCatalogAction());
 
     expect(store.state.expressionCatalog, isNull);
+  });
+
+  test('loading the catalog asks for the project it is loaded for', () async {
+    final store = Store<AppState>(
+      initialState: const AppState(selectedProject: _project),
+    );
+    final adapter = _CountingAdapter(
+      (_) => FakeHttpClientAdapter.response(_catalogJson),
+    );
+    ApiService().expressionApi.apiClient.dio.httpClientAdapter = adapter;
+
+    await store.dispatchAndWait(LoadExpressionCatalogAction());
+
+    expect(store.state.expressionCatalogProjectId, 'p1');
+  });
+
+  test('loading the catalog of another project requests it again', () async {
+    final store = Store<AppState>(
+      initialState: const AppState(
+        selectedProject: _project,
+        expressionCatalog: ExpressionCatalog(),
+        expressionCatalogProjectId: 'p2',
+      ),
+    );
+    final adapter = _CountingAdapter(
+      (_) => FakeHttpClientAdapter.response(_catalogJson),
+    );
+    ApiService().expressionApi.apiClient.dio.httpClientAdapter = adapter;
+
+    await store.dispatchAndWait(LoadExpressionCatalogAction());
+
+    expect(adapter.requests, 1);
+    expect(store.state.expressionCatalogProjectId, 'p1');
+  });
+
+  test(
+    'loading the catalog without a selected project makes no request',
+    () async {
+      final store = Store<AppState>(initialState: const AppState());
+      final adapter = _CountingAdapter(
+        (_) => FakeHttpClientAdapter.response(_catalogJson),
+      );
+      ApiService().expressionApi.apiClient.dio.httpClientAdapter = adapter;
+
+      await store.dispatchAndWait(LoadExpressionCatalogAction());
+
+      expect(adapter.requests, 0);
+      expect(store.state.expressionCatalog, isNull);
+    },
+  );
+
+  test('reloading the catalog requests it even when it is loaded', () async {
+    final store = Store<AppState>(
+      initialState: const AppState(
+        selectedProject: _project,
+        expressionCatalog: ExpressionCatalog(),
+        expressionCatalogProjectId: 'p1',
+      ),
+    );
+    final adapter = _CountingAdapter(
+      (_) => FakeHttpClientAdapter.response(_catalogJson),
+    );
+    ApiService().expressionApi.apiClient.dio.httpClientAdapter = adapter;
+
+    await store.dispatchAndWait(ReloadExpressionCatalogAction());
+
+    expect(adapter.requests, 1);
+    expect(store.state.expressionCatalog?.functions.single.name, 'ROUND');
   });
 }
