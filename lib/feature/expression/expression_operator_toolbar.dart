@@ -8,7 +8,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// parentheses and the argument separator, and last the button that opens the
 /// function picker. Taps count as taps inside the field, so the field keeps its
 /// focus and selection.
-class ExpressionOperatorToolbar extends StatelessWidget {
+class ExpressionOperatorToolbar extends StatefulWidget {
   const ExpressionOperatorToolbar({
     required this.catalog,
     required this.onOperator,
@@ -28,50 +28,8 @@ class ExpressionOperatorToolbar extends StatelessWidget {
   final VoidCallback onInsertFunction;
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final monospace = Theme.of(context).textTheme.labelLarge
-        ?.copyWith(fontFamily: 'monospace');
-    return TextFieldTapRegion(
-      child: Wrap(
-        spacing: 4,
-        runSpacing: 4,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          for (final operator in operatorSymbols(catalog))
-            Tooltip(
-              message: _tooltip(l10n, operator),
-              child: _ToolbarButton(
-                key: ValueKey('expression_operator_${operator.symbol}'),
-                label: operator.symbol,
-                style: monospace,
-                onPressed: () => onOperator(operator),
-              ),
-            ),
-          const SizedBox(width: 8),
-          for (final symbol in const ['(', ')', ','])
-            Tooltip(
-              message: symbol == ','
-                  ? l10n.expression_toolbar_comma
-                  : l10n.expression_toolbar_parenthesis,
-              child: _ToolbarButton(
-                key: ValueKey('expression_punctuation_$symbol'),
-                label: symbol,
-                style: monospace,
-                onPressed: () => onPunctuation(symbol),
-              ),
-            ),
-          const SizedBox(width: 8),
-          FilledButton.tonalIcon(
-            key: const ValueKey('expression_insert_function'),
-            onPressed: onInsertFunction,
-            icon: const Icon(Icons.functions),
-            label: Text(l10n.expression_insert_function),
-          ),
-        ],
-      ),
-    );
-  }
+  State<ExpressionOperatorToolbar> createState() =>
+      _ExpressionOperatorToolbarState();
 
   /// The kind of [operator], with its precedence when the catalog gives one.
   static String _tooltip(AppLocalizations l10n, OperatorSymbol operator) {
@@ -85,6 +43,69 @@ class ExpressionOperatorToolbar extends StatelessWidget {
     return precedence == null
         ? kind
         : l10n.expression_operator_tooltip(kind, precedence);
+  }
+}
+
+class _ExpressionOperatorToolbarState extends State<ExpressionOperatorToolbar> {
+  /// The catalog [_operators] was listed for. The list is sorted and cleaned
+  /// again only when the catalog changes.
+  ExpressionCatalog? _catalog;
+  List<OperatorSymbol>? _operators;
+
+  /// The operators of the current catalog, see [operatorSymbols].
+  List<OperatorSymbol> _operatorsOf(ExpressionCatalog? catalog) {
+    final cached = _operators;
+    if (cached == null || !identical(catalog, _catalog)) {
+      _catalog = catalog;
+      _operators = operatorSymbols(catalog);
+    }
+    return _operators!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final monospace = Theme.of(context).textTheme.labelLarge
+        ?.copyWith(fontFamily: 'monospace');
+    return TextFieldTapRegion(
+      child: Wrap(
+        spacing: 4,
+        runSpacing: 4,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          for (final operator in _operatorsOf(widget.catalog))
+            Tooltip(
+              message: ExpressionOperatorToolbar._tooltip(l10n, operator),
+              child: _ToolbarButton(
+                key: ValueKey('expression_operator_${operator.symbol}'),
+                label: operator.symbol,
+                style: monospace,
+                onPressed: () => widget.onOperator(operator),
+              ),
+            ),
+          const SizedBox(width: 8),
+          for (final symbol in const ['(', ')', ','])
+            Tooltip(
+              message: symbol == ','
+                  ? l10n.expression_toolbar_comma
+                  : l10n.expression_toolbar_parenthesis,
+              child: _ToolbarButton(
+                key: ValueKey('expression_punctuation_$symbol'),
+                label: symbol,
+                style: monospace,
+                onPressed: () => widget.onPunctuation(symbol),
+              ),
+            ),
+          const SizedBox(width: 8),
+          FilledButton.tonalIcon(
+            key: const ValueKey('expression_insert_function'),
+            onPressed: widget.onInsertFunction,
+            icon: const Icon(Icons.functions),
+            label: Text(l10n.expression_insert_function),
+          ),
+        ],
+      ),
+    );
   }
 }
 
