@@ -1,8 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/expression_catalog_model.dart';
-import 'package:stelaris/api/model/expression_function_model.dart';
-import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/edit_card/edit_section_card.dart';
@@ -14,6 +11,7 @@ import 'package:stelaris/feature/expression/expression_tex.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
 import 'package:stelaris/feature/expression_function/expression_function_stage.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The function's General tab: its name and signature, and its body. A
 /// formula's body is edited in place with the parameters suggested; an

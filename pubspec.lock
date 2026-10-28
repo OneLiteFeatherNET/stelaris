@@ -1070,8 +1070,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: main
-      resolved-ref: "e9314127717cce4b8da4efd0df6bdcf5d904571f"
+      ref: "themeinerlp/poc/evalex-expressions"
+      resolved-ref: "920c10d162960d473d0e0dd9c54aefb4c649c7c9"
       url: "https://github.com/OneLiteFeatherNET/stelaris-model.git"
     source: git
     version: "0.0.1"

@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/feature/expression/expression_completion.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The categories functions are grouped under, in the order they are listed.
 const List<CatalogFunctionCategory> _groupOrder = [

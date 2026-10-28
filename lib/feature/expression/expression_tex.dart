@@ -1,5 +1,5 @@
-import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/feature/expression/expression_tokens.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The LaTeX of the EvalEx [formula], for display only: the formula is still
 /// stored and evaluated as text. Returns null when the formula does not parse,

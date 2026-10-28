@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/expression/expression_detail_page.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The [SelectedExpressionState] is a factory class that creates a view model for the currently selected expression.
 /// It extends [VmFactory] and is shared by the tabs of the expression detail page.

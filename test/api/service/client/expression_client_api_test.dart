@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_client.dart';
-import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/service/client/expression_client_api.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/recording_http_client_adapter.dart';
 

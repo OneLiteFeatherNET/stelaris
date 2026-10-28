@@ -1,8 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/expression_catalog_model.dart';
-import 'package:stelaris/api/model/expression_model.dart';
-import 'package:stelaris/api/model/expression_validation_model.dart';
 import 'package:stelaris/feature/expression/expression_completion.dart';
 import 'package:stelaris/feature/expression/expression_formula_controller.dart';
 import 'package:stelaris/feature/expression/expression_function_picker.dart';
@@ -10,6 +7,7 @@ import 'package:stelaris/feature/expression/expression_operator_toolbar.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The formula as a large multi-line field, with an operator toolbar above it.
 /// The toolbar's button opens the picker of the functions and constants. While

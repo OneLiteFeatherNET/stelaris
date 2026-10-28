@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:stelaris/api/model/expression_model.dart';
-import 'package:stelaris/api/model/expression_validation_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The backend's answer for the formula [expression] and the declared
 /// [variables] (their names) it was asked about. Transient, like the other

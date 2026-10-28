@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:stelaris/api/model/expression_function_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/expression_function/expression_function_page.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The list page's view of the project's functions, with their paging state.
 class ExpressionFunctionVmFactory

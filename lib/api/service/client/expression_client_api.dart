@@ -1,9 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:stelaris/api/base_api.dart';
-import 'package:stelaris/api/model/expression_catalog_model.dart';
-import 'package:stelaris/api/model/expression_model.dart';
-import 'package:stelaris/api/model/expression_validation_model.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// Client API for expressions: the CRUD endpoints every model has, plus
 /// `evaluate`, which runs an expression against test values.

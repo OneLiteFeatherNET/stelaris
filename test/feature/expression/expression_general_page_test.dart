@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/expression_catalog_model.dart';
-import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
@@ -12,6 +10,7 @@ import 'package:stelaris/feature/base/edit_card/edit_section_card.dart';
 import 'package:stelaris/feature/expression/expression_formula_controller.dart';
 import 'package:stelaris/feature/expression/expression_general_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/pump_in_app.dart';
 

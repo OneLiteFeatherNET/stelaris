@@ -4,8 +4,6 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/expression_catalog_model.dart';
-import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/expression/selected_expression_state.dart';
@@ -15,6 +13,7 @@ import 'package:stelaris/feature/expression/expression_tex.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The pause after the last change before the result is asked for again.
 const Duration expressionPreviewDebounce = Duration(milliseconds: 400);

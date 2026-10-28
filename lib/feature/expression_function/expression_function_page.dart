@@ -1,7 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/expression_function_model.dart';
 import 'package:stelaris/api/state/actions/expression/expression_function_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/expression_function/expression_function_vm_state.dart';
@@ -9,6 +8,7 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/model_create.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The project's functions: lists them through a [ModelPage], creates and
 /// deletes them. Tapping one opens its detail route.

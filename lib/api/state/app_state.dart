@@ -1,9 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_models/stelaris_models.dart';
-import 'package:stelaris/api/model/expression_catalog_model.dart';
-import 'package:stelaris/api/model/expression_function_model.dart';
-import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/api/state/expression_validation_state.dart';

@@ -1,8 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/expression_catalog_model.dart';
-import 'package:stelaris/api/model/expression_model.dart';
-import 'package:stelaris/api/model/expression_validation_model.dart';
 import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/expression_validation_state.dart';
@@ -14,6 +11,7 @@ import 'package:stelaris/feature/expression/expression_preview_scope.dart';
 import 'package:stelaris/feature/expression/expression_stage.dart';
 import 'package:stelaris/feature/expression/expression_tex.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The expression's General tab: its formula, edited in place with variable
 /// suggestions. While the formula is typed the backend checks it, and the

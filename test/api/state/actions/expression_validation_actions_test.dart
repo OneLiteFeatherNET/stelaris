@@ -6,8 +6,6 @@ import 'package:dio/dio.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/expression_model.dart';
-import 'package:stelaris/api/model/expression_validation_model.dart';
 import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/expression_validation_state.dart';

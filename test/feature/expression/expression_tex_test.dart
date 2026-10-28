@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/feature/expression/expression_tex.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The project functions of the catalog the examples call.
 const _project = {'attribute_value', 'crit_multiplier', 'armor_reduction'};

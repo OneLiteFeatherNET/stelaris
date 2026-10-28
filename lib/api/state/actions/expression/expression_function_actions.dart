@@ -1,7 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:dio/dio.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/model/expression_function_model.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/state/actions/paginated_loading.dart';

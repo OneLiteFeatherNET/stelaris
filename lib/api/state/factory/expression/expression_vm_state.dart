@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/expression/expression_page.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 class ExpressionVmFactory
     extends VmFactory<AppState, ExpressionPage, ExpressionViewModel> {
