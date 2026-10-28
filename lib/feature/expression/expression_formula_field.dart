@@ -71,16 +71,32 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
   /// Set by Escape, cleared when the text changes again.
   bool _dismissed = false;
 
+  /// The text the field was last rebuilt for, to tell a change of the text
+  /// from a move of the caret.
+  late String _lastText;
+
+  /// The keys the suggestions take: the arrows move the highlight, Enter and
+  /// Tab accept it and Escape closes the list.
+  static final Set<LogicalKeyboardKey> _suggestionKeys = {
+    LogicalKeyboardKey.arrowDown,
+    LogicalKeyboardKey.arrowUp,
+    LogicalKeyboardKey.enter,
+    LogicalKeyboardKey.numpadEnter,
+    LogicalKeyboardKey.tab,
+    LogicalKeyboardKey.escape,
+  };
+
   @override
   void initState() {
     super.initState();
     _controller = ExpressionFormulaController(
       text: widget.expression.expression,
     )..addListener(_onControllerChanged);
+    _lastText = _controller.text;
     _updateNames();
     // The focus node handles keys before the text field's own shortcuts do,
     // so Enter, Tab and the arrows can be taken while suggestions are open.
-    _focusNode = FocusNode(onKeyEvent: _handleKey)..addListener(_refresh);
+    _focusNode = FocusNode(onKeyEvent: _handleKey);
   }
 
   @override
@@ -133,6 +149,10 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
   void _onControllerChanged() {
     _highlight = 0;
     _dismissed = false;
+    // A move of the caret only changes the suggestions and the signature,
+    // which listen to the controller themselves, so the field is not rebuilt.
+    if (_controller.text == _lastText) return;
+    _lastText = _controller.text;
     _refresh();
   }
 
@@ -171,13 +191,45 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
     );
   }
 
+  /// The signature and the suggestions under the field. They follow the caret
+  /// and the focus, so they are built on their own, see [build].
+  Widget _caretPanels() {
+    final matches = _suggestions();
+    final signature = _signature();
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (signature != null) ...[
+          const SizedBox(height: 4),
+          _SignaturePanel(
+            key: const ValueKey('expression_signature'),
+            help: signature,
+          ),
+        ],
+        if (matches.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          _SuggestionList(
+            key: const ValueKey('expression_suggestions'),
+            matches: matches,
+            highlight: _index(matches),
+            rowHeight: _rowHeight,
+            maxHeight: _suggestionsHeight,
+            onSelected: _accept,
+          ),
+        ],
+      ],
+    );
+  }
+
   KeyEventResult _handleKey(FocusNode node, KeyEvent event) {
     if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
       return KeyEventResult.ignored;
     }
+    final key = event.logicalKey;
+    if (!_suggestionKeys.contains(key)) return KeyEventResult.ignored;
     final matches = _suggestions();
     if (matches.isEmpty) return KeyEventResult.ignored;
-    final key = event.logicalKey;
     if (key == LogicalKeyboardKey.arrowDown) {
       setState(() => _highlight = (_index(matches) + 1) % matches.length);
       return KeyEventResult.handled;
@@ -278,8 +330,6 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
       for (final name in validation?.unusedVariables ?? const <String>[])
         name.toLowerCase(),
     };
-    final matches = _suggestions();
-    final signature = _signature();
     final editor = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -309,24 +359,10 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
         ),
         if (validation != null)
           _ValidationNotes(validation: validation, onDeclare: widget.onDeclare),
-        if (signature != null) ...[
-          const SizedBox(height: 4),
-          _SignaturePanel(
-            key: const ValueKey('expression_signature'),
-            help: signature,
-          ),
-        ],
-        if (matches.isNotEmpty) ...[
-          const SizedBox(height: 4),
-          _SuggestionList(
-            key: const ValueKey('expression_suggestions'),
-            matches: matches,
-            highlight: _index(matches),
-            rowHeight: _rowHeight,
-            maxHeight: _suggestionsHeight,
-            onSelected: _accept,
-          ),
-        ],
+        ListenableBuilder(
+          listenable: Listenable.merge([_controller, _focusNode]),
+          builder: (context, _) => _caretPanels(),
+        ),
       ],
     );
     final variableChips = Column(
