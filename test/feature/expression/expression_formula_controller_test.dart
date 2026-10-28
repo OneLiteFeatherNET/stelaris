@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/api/model/expression_validation_model.dart';
+import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/feature/expression/expression_formula_controller.dart';
+import 'package:stelaris/util/app_theme.dart';
 
 const _catalog = ExpressionCatalog(
   constants: [CatalogConstant(name: 'PI', value: '3.14159')],
@@ -23,14 +25,19 @@ List<(String, TextStyle?)> _leaves(TextSpan span) {
   return leaves;
 }
 
-/// The spans [controller] draws, built inside a real theme.
+/// The spans [controller] draws, built inside a real theme: the light one
+/// unless [theme] is given.
 Future<TextSpan> _spans(
   WidgetTester tester,
-  ExpressionFormulaController controller,
-) async {
+  ExpressionFormulaController controller, {
+  ThemeData? theme,
+}) async {
   late TextSpan span;
   await tester.pumpWidget(
     MaterialApp(
+      // A fresh app per call, so the builder runs again under this theme.
+      key: UniqueKey(),
+      theme: theme,
       home: Builder(
         builder: (context) {
           span = controller.buildTextSpan(
@@ -153,4 +160,44 @@ void main() {
 
     expect(pi.$2?.color, _errorColor(tester));
   });
+
+  testWidgets(
+    'operators, numbers and punctuation use the dark scheme under the dark theme',
+    (tester) async {
+      final darkTheme = AppTheme.buildDark(ThemeSettings.defaultSettings());
+      final lightTheme = AppTheme.buildLight(ThemeSettings.defaultSettings());
+      final controller = ExpressionFormulaController(text: 'a * 2 ^ (b)')
+        ..setNames(catalog: null, variables: const ['a', 'b']);
+
+      final darkSpan = await _spans(tester, controller, theme: darkTheme);
+      final dark = _leaves(darkSpan);
+      final darkColors = darkTheme.colorScheme;
+
+      Color? colorOf(List<(String, TextStyle?)> leaves, String text) =>
+          leaves.firstWhere((leaf) => leaf.$1 == text).$2?.color;
+
+      expect(
+        colorOf(dark, '*'),
+        darkColors.onSurface,
+        reason: 'the operator * must use the dark onSurface colour',
+      );
+      expect(
+        colorOf(dark, '2'),
+        darkColors.tertiary,
+        reason: 'the number 2 must use the dark tertiary colour',
+      );
+      expect(
+        colorOf(dark, '('),
+        darkColors.onSurfaceVariant,
+        reason: 'the punctuation ( must use the dark onSurfaceVariant colour',
+      );
+
+      final lightSpan = await _spans(tester, controller, theme: lightTheme);
+      expect(
+        colorOf(_leaves(lightSpan), '*'),
+        isNot(darkColors.onSurface),
+        reason: 'the light and dark operator colours must differ',
+      );
+    },
+  );
 }
