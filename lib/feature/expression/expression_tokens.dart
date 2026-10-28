@@ -1,4 +1,4 @@
-import 'package:stelaris/api/model/expression_catalog_model.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// What a run of formula text is, for the syntax highlighting.
 enum ExpressionTokenKind {

@@ -1,10 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stelaris/api/model/expression_catalog_model.dart';
-import 'package:stelaris/api/model/expression_validation_model.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/feature/expression/expression_formula_controller.dart';
 import 'package:stelaris/util/app_theme.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 const _catalog = ExpressionCatalog(
   constants: [CatalogConstant(name: 'PI', value: '3.14159')],

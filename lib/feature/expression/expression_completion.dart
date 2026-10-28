@@ -1,6 +1,5 @@
-import 'package:stelaris/api/model/expression_catalog_model.dart';
-import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/feature/expression/expression_tokens.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The identifier being typed left of a caret in a formula: its start offset
 /// and the characters from there to the caret.

@@ -1,7 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/expression_function_model.dart';
-import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/expression_function/selected_expression_function_state.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
@@ -10,6 +8,7 @@ import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
 import 'package:stelaris/feature/expression_function/expression_function_stage.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The parameters of the function, each a card that edits it in a dialog. A
 /// formula's body suggests them, and the Test tab takes a value for each.

@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/expression/selected_expression_state.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
@@ -10,6 +9,7 @@ import 'package:stelaris/feature/expression/expression_stage.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The variables of the expression, each a card that edits it in a dialog.
 /// Every change is staged on the expression; saving is up to the header.

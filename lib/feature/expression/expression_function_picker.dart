@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/expression_catalog_model.dart';
 import 'package:stelaris/feature/expression/expression_function_sidebar.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// Below this width the picker fills the screen instead of floating over it.
 const double expressionFunctionPickerFullScreenWidth = 600;

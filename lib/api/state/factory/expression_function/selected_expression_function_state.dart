@@ -1,8 +1,8 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:stelaris/api/model/expression_function_model.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/expression_function/expression_function_detail_page.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The view of the selected function that the detail page's tabs share: the
 /// function, which may hold unsaved edits, the project it runs in and the

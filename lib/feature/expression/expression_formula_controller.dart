@@ -1,7 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/expression_catalog_model.dart';
-import 'package:stelaris/api/model/expression_validation_model.dart';
 import 'package:stelaris/feature/expression/expression_tokens.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// The formula text, colored by token: functions, variables and constants
 /// stand out from the numbers, strings and operators. The colors come from the

@@ -1,10 +1,10 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/api/model/expression_model.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 /// A variable name as EvalEx reads it: a letter or underscore, then letters,
 /// digits and underscores.
