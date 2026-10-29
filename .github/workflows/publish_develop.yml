@@ -52,7 +52,7 @@ jobs:
     name: Publish the image
     needs: tag
     if: github.repository_owner == 'OneLiteFeatherNET'
-    uses: OneLiteFeatherNET/workflows/.github/workflows/docker-publish.yml@v2.9.0
+    uses: OneLiteFeatherNET/workflows/.github/workflows/docker-publish.yml@v2.9.1
     with:
       image-name: "onelitefeather/stelaris"
       version: ${{ needs.tag.outputs.version }}

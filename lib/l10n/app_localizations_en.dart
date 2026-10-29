@@ -74,6 +74,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'The identity provider could not be reached. Check the deployment configuration, then try again.';
 
   @override
+  String get deferred_load_failed =>
+      'This page could not be loaded. Check your connection, then try again.';
+
+  @override
+  String get deferred_load_retry => 'Try again';
+
+  @override
   String get delete_dialog_first_line => 'Are you sure you want to delete ';
 
   @override

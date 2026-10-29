@@ -28,6 +28,9 @@
   "auth_session_expired": "Your session expired. Sign in again to continue.",
   "auth_provider_unavailable": "The identity provider could not be reached. Check the deployment configuration, then try again.",
 
+  "deferred_load_failed": "This page could not be loaded. Check your connection, then try again.",
+  "deferred_load_retry": "Try again",
+
 
   "delete_dialog_first_line": "Are you sure you want to delete ",
   "delete_dialog_entry": "?",
