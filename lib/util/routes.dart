@@ -20,6 +20,10 @@ import 'package:stelaris/feature/item/item_page.dart' deferred as item_page;
 import 'package:stelaris/feature/advancement/advancement_page.dart'
     deferred as advancement_page;
 import 'package:stelaris/feature/sound/sound_page.dart' deferred as sound_page;
+import 'package:stelaris/feature/expression/expression_page.dart'
+    deferred as expression_page;
+import 'package:stelaris/feature/expression_function/expression_function_page.dart'
+    deferred as expression_function_page;
 import 'package:stelaris/feature/attributes/attribute_detail_page.dart'
     deferred as attribute_detail_page;
 import 'package:stelaris/feature/font/font_detail_page.dart'
@@ -30,6 +34,10 @@ import 'package:stelaris/feature/advancement/advancement_detail_page.dart'
     deferred as advancement_detail_page;
 import 'package:stelaris/feature/sound/sound_detail_page.dart'
     deferred as sound_detail_page;
+import 'package:stelaris/feature/expression/expression_detail_page.dart'
+    deferred as expression_detail_page;
+import 'package:stelaris/feature/expression_function/expression_function_detail_page.dart'
+    deferred as expression_function_detail_page;
 
 const String projectSelectionRoute = '/projects';
 
@@ -174,6 +182,41 @@ String? soundDetailRedirect(BuildContext context, GoRouterState state) {
 
     if (isAtSoundDetail && appState.selectedSoundEvent == null) {
       return NavigationEntry.sound.route;
+    }
+  } on StoreException catch (_) {}
+  return null;
+}
+
+/// Redirects `/expression/detail` back to `/expression` when nothing is
+/// selected — reachable by a direct URL visit or a page reload, since the
+/// detail route relies entirely on the already-dispatched Redux selection
+/// rather than a route parameter.
+String? expressionDetailRedirect(BuildContext context, GoRouterState state) {
+  try {
+    final appState = StoreProvider.state<AppState>(context);
+    final isAtExpressionDetail =
+        state.matchedLocation == '${NavigationEntry.expression.route}/detail';
+
+    if (isAtExpressionDetail && appState.selectedExpression == null) {
+      return NavigationEntry.expression.route;
+    }
+  } on StoreException catch (_) {}
+  return null;
+}
+
+/// Redirects `/expression-function/detail` back to `/expression-function` when
+/// nothing is selected, as [expressionDetailRedirect] does for expressions.
+String? expressionFunctionDetailRedirect(
+  BuildContext context,
+  GoRouterState state,
+) {
+  try {
+    final appState = StoreProvider.state<AppState>(context);
+    final isAtFunctionDetail =
+        state.matchedLocation == '${NavigationEntry.function.route}/detail';
+
+    if (isAtFunctionDetail && appState.selectedExpressionFunction == null) {
+      return NavigationEntry.function.route;
     }
   } on StoreException catch (_) {}
   return null;
@@ -417,6 +460,69 @@ final GoRouter router = GoRouter(
                 child: DeferredWidget(
                   loader: sound_detail_page.loadLibrary,
                   builder: () => sound_detail_page.SoundDetailPage(),
+                ),
+                key: state.pageKey,
+                transitionsBuilder: buildDetailSlideTransition,
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: NavigationEntry.expression.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: expression_page.loadLibrary,
+              builder: () => expression_page.ExpressionPage(),
+            ),
+            key: state.pageKey,
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
+          ),
+          routes: [
+            GoRoute(
+              path: 'detail',
+              redirect: expressionDetailRedirect,
+              onExit: detailExitGuard,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                child: DeferredWidget(
+                  loader: expression_detail_page.loadLibrary,
+                  builder: () => expression_detail_page.ExpressionDetailPage(),
+                ),
+                key: state.pageKey,
+                transitionsBuilder: buildDetailSlideTransition,
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: NavigationEntry.function.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: expression_function_page.loadLibrary,
+              builder: () => expression_function_page.ExpressionFunctionPage(),
+            ),
+            key: state.pageKey,
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
+          ),
+          routes: [
+            GoRoute(
+              path: 'detail',
+              redirect: expressionFunctionDetailRedirect,
+              onExit: detailExitGuard,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                child: DeferredWidget(
+                  loader: expression_function_detail_page.loadLibrary,
+                  builder: () =>
+                      expression_function_detail_page.ExpressionFunctionDetailPage(),
                 ),
                 key: state.pageKey,
                 transitionsBuilder: buildDetailSlideTransition,

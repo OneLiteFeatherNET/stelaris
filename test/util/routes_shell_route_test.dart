@@ -40,6 +40,7 @@ void main() {
         expect(subPaths, contains(NavigationEntry.advancements.route));
         expect(subPaths, contains(NavigationEntry.font.route));
         expect(subPaths, contains(NavigationEntry.sound.route));
+        expect(subPaths, contains(NavigationEntry.expression.route));
 
         // Create an isolated GoRouter configured with ShellRoute for widget testing
         final testRouter = GoRouter(

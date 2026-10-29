@@ -5,6 +5,8 @@ import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/actions/advancement_actions.dart';
+import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
+import 'package:stelaris/api/state/actions/expression/expression_function_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -21,6 +23,8 @@ ReduxAction<AppState>? saveActionFor(NavigationEntry entry) => switch (entry) {
   NavigationEntry.advancements => AdvancementDatabaseUpdate(),
   NavigationEntry.font => FontDatabaseUpdate(),
   NavigationEntry.sound => SoundDatabaseUpdate(),
+  NavigationEntry.expression => ExpressionDatabaseUpdate(),
+  NavigationEntry.function => ExpressionFunctionDatabaseUpdate(),
   NavigationEntry.attributes => AttributeDatabaseUpdate(),
 };
 

@@ -1,7 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
+import 'package:stelaris/api/state/expression_validation_state.dart';
 import 'package:stelaris/api/state/model_search_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/command_palette/entity_search_state.dart';
@@ -70,6 +72,28 @@ abstract class AppState with _$AppState {
       ),
     )
     PaginatedResult<SoundEventModel> soundEvents,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(
+      PaginatedResult<ExpressionModel>(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+    )
+    PaginatedResult<ExpressionModel> expressions,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(
+      PaginatedResult<ExpressionFunctionModel>(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+    )
+    PaginatedResult<ExpressionFunctionModel> expressionFunctions,
 
     // ── Transiente Loading-Flags ──
     @JsonKey(includeToJson: false, includeFromJson: false)
@@ -87,6 +111,12 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingMoreSoundEvents,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool isLoadingMoreExpressions,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool isLoadingMoreExpressionFunctions,
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingRelease,
@@ -122,6 +152,24 @@ abstract class AppState with _$AppState {
     AttributeModel? selectedAttribute,
     @JsonKey(includeToJson: false, includeFromJson: false)
     SoundEventModel? selectedSoundEvent,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    ExpressionModel? selectedExpression,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    ExpressionFunctionModel? selectedExpressionFunction,
+    // The rejection of the selected function's last save, with the field
+    // violations to show at the fields. Null when the save was accepted.
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    ProblemDetail? expressionFunctionProblem,
+    // The EvalEx catalog for the formula editor, with the functions of the
+    // project it was loaded for. Null until it has loaded or when it failed.
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    ExpressionCatalog? expressionCatalog,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    String? expressionCatalogProjectId,
+    // The backend's check of the selected formula while it is typed. Null
+    // until a check has answered, and when the last one failed.
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    ExpressionValidationState? expressionValidation,
     @JsonKey(includeToJson: false, includeFromJson: false)
     ReleaseModel? releaseModel,
     @JsonKey(includeToJson: false, includeFromJson: false)

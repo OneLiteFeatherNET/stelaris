@@ -5,6 +5,8 @@ import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/actions/advancement_actions.dart';
+import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
+import 'package:stelaris/api/state/actions/expression/expression_function_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
@@ -14,6 +16,8 @@ import 'package:stelaris/feature/command_palette/delete_specs.dart';
 import 'package:stelaris/feature/command_palette/entity_search_source.dart';
 import 'package:stelaris/feature/command_palette/command_search.dart';
 import 'package:stelaris/feature/command_palette/palette_mode.dart';
+import 'package:stelaris/feature/expression/expression_detail_page.dart';
+import 'package:stelaris/feature/expression_function/expression_function_detail_page.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
 import 'package:stelaris/feature/model/detail_tabs.dart';
@@ -197,6 +201,8 @@ NavigationEntry entryFor(EntityKind kind) {
     EntityKind.sound => NavigationEntry.sound,
     EntityKind.advancement => NavigationEntry.advancements,
     EntityKind.attribute => NavigationEntry.attributes,
+    EntityKind.expression => NavigationEntry.expression,
+    EntityKind.function => NavigationEntry.function,
   };
 }
 
@@ -342,6 +348,13 @@ class EntityProvider implements PaletteProvider {
       EntityKind.attribute => [
         for (final AttributeModel m in state.attributes.items) (m, m.uiName),
       ],
+      EntityKind.expression => [
+        for (final ExpressionModel m in state.expressions.items) (m, m.uiName),
+      ],
+      EntityKind.function => [
+        for (final ExpressionFunctionModel m in state.expressionFunctions.items)
+          (m, m.uiName),
+      ],
     };
   }
 
@@ -354,6 +367,8 @@ class EntityProvider implements PaletteProvider {
       (EntityKind.sound, final SoundEventModel m) => m.uiName,
       (EntityKind.advancement, final AdvancementModel m) => m.uiName,
       (EntityKind.attribute, final AttributeModel m) => m.uiName,
+      (EntityKind.expression, final ExpressionModel m) => m.uiName,
+      (EntityKind.function, final ExpressionFunctionModel m) => m.uiName,
       _ => null,
     };
   }
@@ -395,6 +410,24 @@ class EntityProvider implements PaletteProvider {
           context.dispatch(SelectedAdvancementAction(model));
           context.go(detailLocation(NavigationEntry.advancements.route));
         }, children: _childrenOf(actionsFor(model, advancementDelete))),
+      final ExpressionModel model when kind == EntityKind.expression =>
+        _withTabs(
+          kind,
+          model.id,
+          model.uiName,
+          ExpressionDetailPage.tabs,
+          (context) => context.dispatch(SelectExpressionAction(model)),
+          actionsFor(model, expressionDelete),
+        ),
+      final ExpressionFunctionModel model when kind == EntityKind.function =>
+        _withTabs(
+          kind,
+          model.id,
+          model.uiName,
+          ExpressionFunctionDetailPage.tabs,
+          (context) => context.dispatch(SelectExpressionFunctionAction(model)),
+          actionsFor(model, expressionFunctionDelete),
+        ),
       final AttributeModel model when kind == EntityKind.attribute => _entity(
         kind,
         model.id,

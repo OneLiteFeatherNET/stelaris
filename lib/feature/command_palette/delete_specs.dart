@@ -5,6 +5,8 @@ import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/actions/advancement_actions.dart';
+import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
+import 'package:stelaris/api/state/actions/expression/expression_function_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
@@ -96,6 +98,26 @@ final DeleteSpec<SoundEventModel> soundDelete = DeleteSpec<SoundEventModel>(
   key: (model) => model.key,
   name: (model) => model.uiName,
 );
+
+final DeleteSpec<ExpressionModel> expressionDelete =
+    DeleteSpec<ExpressionModel>(
+      entry: NavigationEntry.expression,
+      title: (l10n) => l10n.dialog_expression_delete_title,
+      removeAction: ExpressionRemoveAction.new,
+      selected: (state) => state.selectedExpression,
+      key: (model) => null,
+      name: (model) => model.uiName,
+    );
+
+final DeleteSpec<ExpressionFunctionModel> expressionFunctionDelete =
+    DeleteSpec<ExpressionFunctionModel>(
+      entry: NavigationEntry.function,
+      title: (l10n) => l10n.dialog_expression_function_delete_title,
+      removeAction: ExpressionFunctionRemoveAction.new,
+      selected: (state) => state.selectedExpressionFunction,
+      key: (model) => null,
+      name: (model) => model.uiName,
+    );
 
 final DeleteSpec<AdvancementModel> advancementDelete =
     DeleteSpec<AdvancementModel>(

@@ -6,6 +6,8 @@ import 'package:stelaris/api/state/actions/build/build_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/actions/advancement_actions.dart';
+import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
+import 'package:stelaris/api/state/actions/expression/expression_function_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/actions/theme_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
@@ -41,6 +43,7 @@ List<StelarisCommand> pocCommands() => [
   _deleteThis(itemDelete, (l10n) => l10n.command_delete_this_item),
   _deleteThis(fontDelete, (l10n) => l10n.command_delete_this_font),
   _deleteThis(soundDelete, (l10n) => l10n.command_delete_this_sound),
+  _deleteThis(expressionDelete, (l10n) => l10n.command_delete_this_expression),
   _deleteThis(
     advancementDelete,
     (l10n) => l10n.command_delete_this_advancement,
@@ -96,17 +99,20 @@ StelarisCommand _create(NavigationEntry entry) {
       NavigationEntry.items => l10n.command_create_item,
       NavigationEntry.font => l10n.command_create_font,
       NavigationEntry.sound => l10n.command_create_sound,
+      NavigationEntry.expression => l10n.command_create_expression,
       NavigationEntry.advancements => l10n.command_create_advancement,
       NavigationEntry.attributes => l10n.command_create_attribute,
+      NavigationEntry.function => l10n.expression_function_command_create,
     },
     keywords: (l10n) => _split(l10n.command_create_keywords),
     group: CommandGroup.create,
     icon: Icons.add,
     run: (context) async {
       final String projectKey =
-          StoreProvider.state<AppState>(context, notify: false)
-              .selectedProject
-              ?.key ??
+          StoreProvider.state<AppState>(
+            context,
+            notify: false,
+          ).selectedProject?.key ??
           '';
       final bool created = await openModelCreateDialog(
         context,
@@ -217,6 +223,8 @@ ReduxAction<AppState> refreshActionFor(NavigationEntry entry) {
     NavigationEntry.advancements => RefreshAdvancementAction(),
     NavigationEntry.font => RefreshFontAction(),
     NavigationEntry.sound => RefreshSoundAction(),
+    NavigationEntry.expression => RefreshExpressionAction(),
+    NavigationEntry.function => RefreshExpressionFunctionAction(),
   };
 }
 
