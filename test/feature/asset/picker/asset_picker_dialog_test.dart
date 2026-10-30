@@ -19,11 +19,13 @@ Map<String, Object?> _assetJson({
   required String id,
   required String key,
   required String kind,
+  String? displayName,
   String? fileName,
 }) => {
   'id': id,
   'projectId': 'p-1',
   'key': key,
+  'displayName': displayName ?? key,
   'kind': kind,
   'fileName': fileName ?? '$id.json',
   'contentType': 'application/json',
@@ -131,6 +133,9 @@ Future<void> _waitFor(WidgetTester tester, Finder finder) => pumpUntil(
 );
 
 Future<void> _tap(WidgetTester tester, String text) async {
+  // The upload form can push its buttons below the dialog's fold.
+  await tester.ensureVisible(find.text(text));
+  await tester.pumpAndSettle();
   await tester.tap(find.text(text));
   await tester.pumpAndSettle();
 }
@@ -165,6 +170,27 @@ void main() {
     expect(backend.queriedKinds, unorderedEquals(['MODEL', 'BBMODEL']));
     expect(find.text(_rubyModel), findsOneWidget);
     expect(find.text('vulpes:item/sapphire'), findsOneWidget);
+  });
+
+  testWidgets('names each asset by its name over its key and kind', (
+    tester,
+  ) async {
+    final backend = _Backend(
+      models: [
+        _assetJson(
+          id: 'm-1',
+          key: _rubyModel,
+          kind: 'MODEL',
+          displayName: 'Red Ruby',
+        ),
+      ],
+    );
+    final outcome = _Outcome();
+
+    await _open(tester, backend: backend, outcome: outcome);
+    await _waitFor(tester, find.text('Red Ruby'));
+
+    expect(find.text('$_rubyModel · Model'), findsOneWidget);
   });
 
   testWidgets('choosing a model and confirming returns that model', (
@@ -259,7 +285,10 @@ void main() {
 
       await _tap(tester, 'Choose a file');
       expect(
-        tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        tester
+            .widget<TextField>(find.byKey(const Key('asset_upload_key')))
+            .controller!
+            .text,
         'minecraft:item/ruby_gem',
       );
 

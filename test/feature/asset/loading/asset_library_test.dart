@@ -83,6 +83,7 @@ Map<String, Object?> _asset({
   'id': id,
   'projectId': _projectId,
   'key': key,
+  'displayName': 'Name of $id',
   'kind': kind,
   'fileName': '$id.file',
   'contentType': 'application/octet-stream',

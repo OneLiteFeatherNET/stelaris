@@ -39,12 +39,14 @@ class AssetClientApi {
     );
   }
 
-  /// Uploads [bytes] as a new asset of [projectId] under [key].
+  /// Uploads [bytes] as a new asset of [projectId] under [key], shown as
+  /// [displayName].
   ///
   /// The backend derives the kind from [fileName]'s extension and the content.
   Future<AssetModel> upload(
     String projectId, {
     required String key,
+    required String displayName,
     required String fileName,
     required List<int> bytes,
   }) async {
@@ -54,6 +56,7 @@ class AssetClientApi {
     );
     final form = FormData.fromMap({
       'key': key,
+      'displayName': displayName,
       'file': MultipartFile.fromBytes(bytes, filename: fileName),
     });
     final result = await apiClient.dio.postUri(uri, data: form);

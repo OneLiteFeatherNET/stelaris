@@ -10,6 +10,7 @@ AssetModel _asset(
 }) => AssetModel(
   id: id,
   projectId: 'p-1',
+  displayName: 'Name of $id',
   key: key,
   kind: kind,
   fileName: '$id.bin',

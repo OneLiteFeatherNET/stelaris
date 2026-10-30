@@ -248,9 +248,9 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
             dense: true,
             selected: asset.id == _selected?.id,
             leading: Icon(assetKindIcon(asset.kind)),
-            title: Text(asset.key),
+            title: Text(asset.displayName),
             subtitle: Text(
-              '${assetKindLabel(l10n, asset.kind)} · ${asset.fileName}',
+              '${asset.key} · ${assetKindLabel(l10n, asset.kind)}',
             ),
             trailing: asset.id == _selected?.id
                 ? const Icon(Icons.check)

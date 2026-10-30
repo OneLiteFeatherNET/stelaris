@@ -758,7 +758,12 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       serveAssets([
-        assetJson(id: 'm-1', key: 'vulpes:item/ruby', kind: 'MODEL'),
+        assetJson(
+          id: 'm-1',
+          key: 'vulpes:item/ruby',
+          kind: 'MODEL',
+          displayName: 'Ruby',
+        ),
       ]);
       ({Object? value})? saved;
       await pumpOpener(
@@ -782,9 +787,9 @@ void main() {
       await pumpUntil(
         tester,
         action: () async {},
-        done: () => find.text('vulpes:item/ruby').evaluate().isNotEmpty,
+        done: () => find.text('Ruby').evaluate().isNotEmpty,
       );
-      await tester.tap(find.text('vulpes:item/ruby'));
+      await tester.tap(find.text('Ruby'));
       await pumpUntil(
         tester,
         action: () async {},

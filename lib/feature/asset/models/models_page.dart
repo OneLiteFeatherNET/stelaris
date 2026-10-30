@@ -283,7 +283,8 @@ class _ModelsBodyState extends State<_ModelsBody> {
     _select(asset.id);
   }
 
-  /// Uploads a texture and the flat item model drawing it, under one key.
+  /// Uploads a texture and the flat item model drawing it, under one key and
+  /// one name.
   ///
   /// When the model can't be stored the texture stays, so a retry only needs
   /// the model.
@@ -305,6 +306,7 @@ class _ModelsBodyState extends State<_ModelsBody> {
       model = await ApiService().assetApi.upload(
         widget.projectId,
         key: texture.key,
+        displayName: texture.displayName,
         fileName: file.fileName,
         bytes: file.bytes,
       );
@@ -360,7 +362,7 @@ class _ModelsBodyState extends State<_ModelsBody> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 PageHeader(
-                  title: _modelName(selected),
+                  title: selected.displayName,
                   onBack: () => _select(null),
                   compactBelow: PageHeader.detailCompactThreshold,
                 ),
@@ -450,9 +452,6 @@ class _ModelsBodyState extends State<_ModelsBody> {
   }
 }
 
-/// The last part of a model's key, e.g. `ruby` for `vulpes:item/ruby`.
-String _modelName(AssetModel model) => model.key.split(RegExp('[:/]')).last;
-
 /// One model of the grid in the frame of the other list pages' cards: its
 /// name and key, a warning when it misses textures, and a footer with its
 /// kind and last change.
@@ -480,7 +479,7 @@ class _ModelCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            _modelName(model),
+            model.displayName,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
             ),

@@ -12,6 +12,7 @@ import '../../../support/pump_until.dart';
 AssetModel _asset(String id, String key, AssetKind kind) => AssetModel(
   id: id,
   projectId: 'p-1',
+  displayName: 'Name of $id',
   key: key,
   kind: kind,
   fileName: '$id.json',
