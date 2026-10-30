@@ -3370,6 +3370,24 @@ abstract class AppLocalizations {
   /// **'The path after the colon may only contain a-z, 0-9, _, ., - and /.'**
   String get asset_upload_key_bad_path;
 
+  /// No description provided for @asset_upload_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get asset_upload_name;
+
+  /// No description provided for @asset_upload_name_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'How the asset is shown in Stelaris'**
+  String get asset_upload_name_helper;
+
+  /// No description provided for @asset_upload_name_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name.'**
+  String get asset_upload_name_empty;
+
   /// No description provided for @asset_picker_title.
   ///
   /// In en, this message translates to:
@@ -3442,23 +3460,11 @@ abstract class AppLocalizations {
   /// **'The models could not be loaded.'**
   String get asset_models_load_failed;
 
-  /// No description provided for @asset_models_back.
-  ///
-  /// In en, this message translates to:
-  /// **'Back to the list'**
-  String get asset_models_back;
-
   /// No description provided for @asset_models_upload_title.
   ///
   /// In en, this message translates to:
   /// **'Upload a model'**
   String get asset_models_upload_title;
-
-  /// No description provided for @asset_models_missing.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 missing} other{{count} missing}}'**
-  String asset_models_missing(int count);
 
   /// No description provided for @asset_models_missing_tooltip.
   ///

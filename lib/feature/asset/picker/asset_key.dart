@@ -3,6 +3,20 @@ import 'package:stelaris_models/stelaris_models.dart';
 final RegExp _namespacePattern = RegExp(r'^[a-z0-9_.-]+$');
 final RegExp _pathPattern = RegExp(r'^[a-z0-9_./-]+$');
 final RegExp _pathInvalidChars = RegExp(r'[^a-z0-9_./-]');
+final RegExp _nameSeparators = RegExp(r'[\s_-]+');
+
+/// Suggests the display name of an uploaded [fileName]: the file name without
+/// its extension, its words split at `_`, `-` and spaces and capitalized,
+/// e.g. `Red Ruby` for `red_ruby.png`.
+String suggestAssetName(String fileName) {
+  final dot = fileName.lastIndexOf('.');
+  final baseName = dot > 0 ? fileName.substring(0, dot) : fileName;
+  return baseName
+      .split(_nameSeparators)
+      .where((word) => word.isNotEmpty)
+      .map((word) => word[0].toUpperCase() + word.substring(1))
+      .join(' ');
+}
 
 /// Suggests the resource key of an uploaded [fileName] as `namespace:item/name`.
 ///

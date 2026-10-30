@@ -14,6 +14,7 @@ Map<String, dynamic> _assetJson({String id = 'a-1', String kind = 'MODEL'}) => {
   'id': id,
   'projectId': 'p-1',
   'key': 'vulpes:item/ruby',
+  'displayName': 'Ruby',
   'kind': kind,
   'fileName': 'ruby.json',
   'contentType': 'application/json',
@@ -79,13 +80,14 @@ void main() {
   });
 
   group('upload', () {
-    test('POSTs a multipart form with the key and the named file', () async {
+    test('POSTs a multipart form with the key, the name and the named file', () async {
       final adapter = RecordingHttpClientAdapter(_assetJson(id: 'new'));
       apiClient.dio.httpClientAdapter = adapter;
 
       final result = await assetApi.upload(
         'p-1',
         key: 'vulpes:item/ruby',
+        displayName: 'Ruby',
         fileName: 'ruby.json',
         bytes: '{}'.codeUnits,
       );
@@ -93,8 +95,10 @@ void main() {
       expect(adapter.lastRequest!.method, 'POST');
       expect(adapter.lastRequest!.uri.path, '/api/project/p-1/asset');
       final form = adapter.lastRequest!.data as FormData;
-      expect(form.fields.single.key, 'key');
-      expect(form.fields.single.value, 'vulpes:item/ruby');
+      expect(Map.fromEntries(form.fields), {
+        'key': 'vulpes:item/ruby',
+        'displayName': 'Ruby',
+      });
       final file = form.files.single;
       expect(file.key, 'file');
       expect(file.value.filename, 'ruby.json');
@@ -154,6 +158,7 @@ void main() {
         await assetApi.upload(
           'p-1',
           key: 'vulpes:item/ruby',
+          displayName: 'Ruby',
           fileName: 'ruby.json',
           bytes: const [1],
         );

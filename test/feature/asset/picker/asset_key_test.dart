@@ -3,6 +3,20 @@ import 'package:stelaris/feature/asset/picker/asset_key.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 void main() {
+  group('suggestAssetName', () {
+    test('capitalizes the file name without its extension', () {
+      expect(suggestAssetName('ruby.png'), 'Ruby');
+    });
+
+    test('turns underscores and dashes into spaces between words', () {
+      expect(suggestAssetName('red_ruby-sword.bbmodel'), 'Red Ruby Sword');
+    });
+
+    test('keeps a file name without extension and drops extra spaces', () {
+      expect(suggestAssetName('  ruby__gem '), 'Ruby Gem');
+    });
+  });
+
   group('suggestAssetKey', () {
     test('uses the minecraft namespace when none is given', () {
       expect(suggestAssetKey('ruby.bbmodel'), 'minecraft:item/ruby');

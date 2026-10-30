@@ -1852,6 +1852,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'The path after the colon may only contain a-z, 0-9, _, ., - and /.';
 
   @override
+  String get asset_upload_name => 'Name';
+
+  @override
+  String get asset_upload_name_helper => 'How the asset is shown in Stelaris';
+
+  @override
+  String get asset_upload_name_empty => 'Enter a name.';
+
+  @override
   String get asset_picker_title => 'Choose a model';
 
   @override
@@ -1892,21 +1901,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_models_load_failed => 'The models could not be loaded.';
 
   @override
-  String get asset_models_back => 'Back to the list';
-
-  @override
   String get asset_models_upload_title => 'Upload a model';
-
-  @override
-  String asset_models_missing(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count missing',
-      one: '1 missing',
-    );
-    return '$_temp0';
-  }
 
   @override
   String asset_models_missing_tooltip(int count) {

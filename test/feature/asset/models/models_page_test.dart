@@ -20,6 +20,7 @@ import '../../../support/pump_until.dart';
 AssetModel _asset(String id, String key, AssetKind kind) => AssetModel(
   id: id,
   projectId: 'p-1',
+  displayName: 'Name of $id',
   key: key,
   kind: kind,
   fileName: '$id.json',
@@ -279,7 +280,7 @@ void main() {
 
     /// Starts "new from texture" with `sapphire.png`; the backend answers
     /// the model upload with [modelStatus]. Returns the uploads as
-    /// `key fileName`.
+    /// `key "displayName" fileName`.
     Future<List<String>> run(
       WidgetTester tester, {
       required List<AssetModel> assets,
@@ -287,29 +288,32 @@ void main() {
       int modelStatus = 201,
     }) async {
       final uploads = <String>[];
-      ApiService().assetApi.apiClient.dio.httpClientAdapter =
-          FakeHttpClientAdapter((RequestOptions options) {
-            if (options.method != 'POST') {
-              return FakeHttpClientAdapter.response({'elements': <Object?>[]});
-            }
-            final form = options.data as FormData;
-            final key = form.fields.firstWhere((f) => f.key == 'key').value;
-            final fileName = form.files.single.value.filename!;
-            uploads.add('$key $fileName');
-            if (fileName.endsWith('.png')) {
-              assets.add(sapphireTexture);
-              return FakeHttpClientAdapter.response(sapphireTexture.toJson());
-            }
-            if (modelStatus != 201) {
-              return FakeHttpClientAdapter.response({
-                'title': 'Server error',
-                'status': modelStatus,
-                'detail': 'The store is down.',
-              }, statusCode: modelStatus);
-            }
-            assets.add(sapphireModel);
-            return FakeHttpClientAdapter.response(sapphireModel.toJson());
-          });
+      ApiService()
+          .assetApi
+          .apiClient
+          .dio
+          .httpClientAdapter = FakeHttpClientAdapter((RequestOptions options) {
+        if (options.method != 'POST') {
+          return FakeHttpClientAdapter.response({'elements': <Object?>[]});
+        }
+        final form = options.data as FormData;
+        final fields = Map.fromEntries(form.fields);
+        final fileName = form.files.single.value.filename!;
+        uploads.add('${fields['key']} "${fields['displayName']}" $fileName');
+        if (fileName.endsWith('.png')) {
+          assets.add(sapphireTexture);
+          return FakeHttpClientAdapter.response(sapphireTexture.toJson());
+        }
+        if (modelStatus != 201) {
+          return FakeHttpClientAdapter.response({
+            'title': 'Server error',
+            'status': modelStatus,
+            'detail': 'The store is down.',
+          }, statusCode: modelStatus);
+        }
+        assets.add(sapphireModel);
+        return FakeHttpClientAdapter.response(sapphireModel.toJson());
+      });
 
       await tester.tap(find.byKey(const Key('models_from_texture')));
       await tester.pumpAndSettle();
@@ -344,9 +348,10 @@ void main() {
 
       final uploads = await run(tester, assets: assets, selections: selections);
 
+      // The model takes the name the backend stored for the texture.
       expect(uploads, [
-        'vulpes:item/sapphire sapphire.png',
-        'vulpes:item/sapphire sapphire.json',
+        'vulpes:item/sapphire "Sapphire" sapphire.png',
+        'vulpes:item/sapphire "${sapphireTexture.displayName}" sapphire.json',
       ]);
       expect(selections, ['m5']);
     });

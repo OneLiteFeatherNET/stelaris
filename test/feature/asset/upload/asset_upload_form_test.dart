@@ -51,6 +51,9 @@ Future<void> _choose(WidgetTester tester) async {
 TextField _keyField(WidgetTester tester) =>
     tester.widget<TextField>(find.byKey(const Key('asset_upload_key')));
 
+TextField _nameField(WidgetTester tester) =>
+    tester.widget<TextField>(find.byKey(const Key('asset_upload_name')));
+
 void main() {
   testWidgets('asks for a file until one is chosen', (tester) async {
     await _pump(tester);
@@ -60,26 +63,28 @@ void main() {
     expect(find.byKey(const Key('asset_upload_key')), findsNothing);
   });
 
-  testWidgets('a chosen file shows its kind and size and suggests the key', (
-    tester,
-  ) async {
-    final controller = await _pump(
-      tester,
-      picks: [_file('Ruby Gem.bbmodel', 2048)],
-    );
+  testWidgets(
+    'a chosen file shows its kind and size and suggests name and key',
+    (tester) async {
+      final controller = await _pump(
+        tester,
+        picks: [_file('Ruby Gem.bbmodel', 2048)],
+      );
 
-    await _choose(tester);
+      await _choose(tester);
 
-    expect(find.text('Ruby Gem.bbmodel'), findsOneWidget);
-    expect(find.text('Blockbench model · 2.0 KB'), findsOneWidget);
-    expect(_keyField(tester).controller!.text, 'vulpes:item/ruby_gem');
-    expect(
-      _keyField(tester).focusNode!.hasFocus,
-      isTrue,
-      reason: 'the suggested key is what the user checks next',
-    );
-    expect(controller.canUpload, isTrue);
-  });
+      expect(find.text('Ruby Gem.bbmodel'), findsOneWidget);
+      expect(find.text('Blockbench model · 2.0 KB'), findsOneWidget);
+      expect(_nameField(tester).controller!.text, 'Ruby Gem');
+      expect(_keyField(tester).controller!.text, 'vulpes:item/ruby_gem');
+      expect(
+        _nameField(tester).focusNode!.hasFocus,
+        isTrue,
+        reason: 'the suggested name is what the user checks next',
+      );
+      expect(controller.canUpload, isTrue);
+    },
+  );
 
   testWidgets('another file replaces the chosen one and its key', (
     tester,
@@ -92,7 +97,35 @@ void main() {
 
     expect(find.text('ruby.json'), findsNothing);
     expect(find.text('Texture · 3 B'), findsOneWidget);
+    expect(_nameField(tester).controller!.text, 'Gem');
     expect(_keyField(tester).controller!.text, 'vulpes:item/gem');
+  });
+
+  testWidgets('a typed name stays when another file is chosen', (tester) async {
+    await _pump(tester, picks: [_file('ruby.json'), _file('gem.png')]);
+    await _choose(tester);
+    await tester.enterText(
+      find.byKey(const Key('asset_upload_name')),
+      'Red Ruby',
+    );
+
+    await tester.tap(find.byTooltip('Choose another file'));
+    await tester.pumpAndSettle();
+
+    expect(_nameField(tester).controller!.text, 'Red Ruby');
+  });
+
+  testWidgets('a missing name is explained and blocks the upload', (
+    tester,
+  ) async {
+    final controller = await _pump(tester, picks: [_file('ruby.json')]);
+    await _choose(tester);
+
+    await tester.enterText(find.byKey(const Key('asset_upload_name')), '  ');
+    await tester.pump();
+
+    expect(find.text('Enter a name.'), findsOneWidget);
+    expect(controller.canUpload, isFalse);
   });
 
   testWidgets('removing the file asks for one again', (tester) async {
@@ -225,6 +258,36 @@ void main() {
     await tester.pump();
 
     expect(find.text('The key is already in use.'), findsNothing);
+  });
+
+  testWidgets('the name goes up with the file and the backend reason against '
+      'it goes on an edit', (tester) async {
+    RequestOptions? request;
+    ApiService().assetApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter((RequestOptions options) {
+          request = options;
+          return FakeHttpClientAdapter.response({
+            'title': 'Validation failed',
+            'status': 400,
+            'errors': [
+              {'field': 'displayName', 'message': 'The name is too long'},
+            ],
+          }, statusCode: 400);
+        });
+    final controller = await _pump(tester, picks: [_file('ruby.json')]);
+    await _choose(tester);
+
+    expect(await tester.runAsync(controller.upload), isNull);
+    await tester.pump();
+    final fields = Map.fromEntries((request!.data as FormData).fields);
+    expect(fields['displayName'], 'Ruby');
+    expect(find.text('The name is too long'), findsOneWidget);
+    expect(controller.uploadError, isNull);
+
+    await tester.enterText(find.byKey(const Key('asset_upload_name')), 'Rubin');
+    await tester.pump();
+
+    expect(find.text('The name is too long'), findsNothing);
   });
 
   test('formats file sizes in B, KB and MB', () {

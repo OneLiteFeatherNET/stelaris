@@ -12,11 +12,13 @@ Map<String, Object?> assetJson({
   required String id,
   required String key,
   required String kind,
+  String? displayName,
   String projectId = 'p-1',
 }) => {
   'id': id,
   'projectId': projectId,
   'key': key,
+  'displayName': displayName ?? 'Name of $id',
   'kind': kind,
   'fileName': '$id.json',
   'contentType': 'application/json',

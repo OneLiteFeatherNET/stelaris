@@ -11,10 +11,12 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// Shows the upload of [controller]: a drop zone until a file is chosen,
-/// then the file with its kind and size and the key it is stored under.
+/// then the file with its kind and size, the name it is shown by and the key
+/// it is stored under.
 ///
 /// A file dropped on the page while the form is shown replaces the chosen
-/// one. Enter in the key field calls [onSubmitted] when the upload can start.
+/// one. Enter in the name or key field calls [onSubmitted] when the upload
+/// can start.
 class AssetUploadForm extends StatefulWidget {
   const AssetUploadForm({
     required this.controller,
@@ -30,41 +32,41 @@ class AssetUploadForm extends StatefulWidget {
 }
 
 class _AssetUploadFormState extends State<AssetUploadForm> {
-  final FocusNode _keyFocus = FocusNode();
+  final FocusNode _nameFocus = FocusNode();
   PickedAssetFile? _shownFile;
 
   @override
   void initState() {
     super.initState();
     _shownFile = widget.controller.file;
-    widget.controller.addListener(_focusKeyOfNewFile);
+    widget.controller.addListener(_focusNameOfNewFile);
   }
 
   @override
   void didUpdateWidget(AssetUploadForm oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.controller != widget.controller) {
-      oldWidget.controller.removeListener(_focusKeyOfNewFile);
-      widget.controller.addListener(_focusKeyOfNewFile);
+      oldWidget.controller.removeListener(_focusNameOfNewFile);
+      widget.controller.addListener(_focusNameOfNewFile);
     }
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(_focusKeyOfNewFile);
-    _keyFocus.dispose();
+    widget.controller.removeListener(_focusNameOfNewFile);
+    _nameFocus.dispose();
     super.dispose();
   }
 
-  /// A new file comes with a suggested key, which is what the user checks
-  /// next.
-  void _focusKeyOfNewFile() {
+  /// A new file comes with a suggested name and key, which is what the user
+  /// checks next, the name first.
+  void _focusNameOfNewFile() {
     final file = widget.controller.file;
     if (identical(file, _shownFile)) return;
     _shownFile = file;
     if (file != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _keyFocus.requestFocus();
+        if (mounted) _nameFocus.requestFocus();
       });
     }
   }
@@ -100,6 +102,8 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
                   onRemove: controller.clear,
                 ),
                 const SizedBox(height: 16),
+                _buildNameField(context),
+                const SizedBox(height: 16),
                 _buildKeyField(context),
               ],
               if (_fileProblem(context) case final problem?) ...[
@@ -117,6 +121,29 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
     );
   }
 
+  Widget _buildNameField(BuildContext context) {
+    final l10n = context.l10n;
+    final controller = widget.controller;
+    return TextField(
+      key: const Key('asset_upload_name'),
+      controller: controller.nameController,
+      focusNode: _nameFocus,
+      enabled: !controller.uploading,
+      textCapitalization: TextCapitalization.words,
+      decoration: InputDecoration(
+        labelText: l10n.asset_upload_name,
+        helperText: l10n.asset_upload_name_helper,
+        errorText:
+            controller.nameError ??
+            (controller.nameMissing ? l10n.asset_upload_name_empty : null),
+        errorMaxLines: 3,
+      ),
+      onSubmitted: (_) {
+        if (controller.canUpload) widget.onSubmitted?.call();
+      },
+    );
+  }
+
   Widget _buildKeyField(BuildContext context) {
     final l10n = context.l10n;
     final controller = widget.controller;
@@ -124,7 +151,6 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
     return TextField(
       key: const Key('asset_upload_key'),
       controller: controller.keyController,
-      focusNode: _keyFocus,
       enabled: !controller.uploading,
       readOnly: controller.fixedKey != null,
       autocorrect: false,
