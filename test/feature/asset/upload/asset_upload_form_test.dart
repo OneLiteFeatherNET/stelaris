@@ -76,7 +76,8 @@ void main() {
       expect(find.text('Ruby Gem.bbmodel'), findsOneWidget);
       expect(find.text('Blockbench model · 2.0 KB'), findsOneWidget);
       expect(_nameField(tester).controller!.text, 'Ruby Gem');
-      expect(_keyField(tester).controller!.text, 'vulpes:item/ruby_gem');
+      expect(_keyField(tester).controller!.text, 'item/ruby_gem');
+      expect(_keyField(tester).decoration!.prefixText, 'vulpes:');
       expect(
         _nameField(tester).focusNode!.hasFocus,
         isTrue,
@@ -98,7 +99,7 @@ void main() {
     expect(find.text('ruby.json'), findsNothing);
     expect(find.text('Texture · 3 B'), findsOneWidget);
     expect(_nameField(tester).controller!.text, 'Gem');
-    expect(_keyField(tester).controller!.text, 'vulpes:item/gem');
+    expect(_keyField(tester).controller!.text, 'item/gem');
   });
 
   testWidgets('a typed name stays when another file is chosen', (tester) async {
@@ -146,7 +147,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('ruby.json'), findsOneWidget);
-    expect(_keyField(tester).controller!.text, 'vulpes:item/ruby');
+    expect(_keyField(tester).controller!.text, 'item/ruby');
   });
 
   testWidgets('a file of another type can not be uploaded', (tester) async {
@@ -192,6 +193,7 @@ void main() {
     await _choose(tester);
 
     expect(_keyField(tester).controller!.text, 'vulpes:item/ruby_glow');
+    expect(_keyField(tester).decoration!.prefixText, isNull);
     expect(_keyField(tester).readOnly, isTrue);
     expect(controller.canUpload, isTrue);
   });
@@ -205,32 +207,56 @@ void main() {
     expect(controller.file, isNull);
   });
 
-  testWidgets('a key without a namespace is explained and blocks the upload', (
+  testWidgets('only the path is typed and goes up behind the namespace', (
     tester,
   ) async {
+    RequestOptions? request;
+    ApiService().assetApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter((RequestOptions options) {
+          request = options;
+          return FakeHttpClientAdapter.response({
+            'title': 'Conflict',
+            'status': 409,
+          }, statusCode: 409);
+        });
     final controller = await _pump(tester, picks: [_file('ruby.json')]);
     await _choose(tester);
 
     await tester.enterText(
       find.byKey(const Key('asset_upload_key')),
-      'item/ruby',
+      'item/red ruby',
     );
     await tester.pump();
 
     expect(
-      find.text('Start the key with a namespace, e.g. vulpes:'),
+      find.text('The path may only contain a-z, 0-9, _, ., - and /.'),
       findsOneWidget,
     );
     expect(controller.canUpload, isFalse);
 
     await tester.enterText(
       find.byKey(const Key('asset_upload_key')),
-      'vulpes:item/ruby',
+      'item/red_ruby',
     );
     await tester.pump();
-
-    expect(find.textContaining('Start the key'), findsNothing);
     expect(controller.canUpload, isTrue);
+
+    await tester.runAsync(controller.upload);
+    final fields = Map.fromEntries((request!.data as FormData).fields);
+    expect(fields['key'], 'vulpes:item/red_ruby');
+  });
+
+  testWidgets('an empty path is explained and blocks the upload', (
+    tester,
+  ) async {
+    final controller = await _pump(tester, picks: [_file('ruby.json')]);
+    await _choose(tester);
+
+    await tester.enterText(find.byKey(const Key('asset_upload_key')), ' ');
+    await tester.pump();
+
+    expect(find.text('Enter a key.'), findsOneWidget);
+    expect(controller.canUpload, isFalse);
   });
 
   testWidgets('the reason of the backend against the key goes on an edit', (
@@ -253,7 +279,7 @@ void main() {
 
     await tester.enterText(
       find.byKey(const Key('asset_upload_key')),
-      'vulpes:item/ruby_2',
+      'item/ruby_2',
     );
     await tester.pump();
 

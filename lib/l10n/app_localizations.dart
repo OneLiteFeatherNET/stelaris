@@ -3367,7 +3367,7 @@ abstract class AppLocalizations {
   /// No description provided for @asset_upload_key_bad_path.
   ///
   /// In en, this message translates to:
-  /// **'The path after the colon may only contain a-z, 0-9, _, ., - and /.'**
+  /// **'The path may only contain a-z, 0-9, _, ., - and /.'**
   String get asset_upload_key_bad_path;
 
   /// No description provided for @asset_upload_name.

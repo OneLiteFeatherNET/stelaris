@@ -991,7 +991,7 @@
     }
   },
   "asset_upload_key_bad_namespace": "The namespace may only contain a-z, 0-9, _, . and -.",
-  "asset_upload_key_bad_path": "The path after the colon may only contain a-z, 0-9, _, ., - and /.",
+  "asset_upload_key_bad_path": "The path may only contain a-z, 0-9, _, ., - and /.",
   "asset_upload_name": "Name",
   "asset_upload_name_helper": "How the asset is shown in Stelaris",
   "asset_upload_name_empty": "Enter a name.",

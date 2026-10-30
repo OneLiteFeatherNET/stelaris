@@ -17,6 +17,12 @@ void main() {
     });
   });
 
+  group('suggestAssetPath', () {
+    test('puts the sanitized file name into the item folder', () {
+      expect(suggestAssetPath('Ruby Gem.bbmodel'), 'item/ruby_gem');
+    });
+  });
+
   group('suggestAssetKey', () {
     test('uses the minecraft namespace when none is given', () {
       expect(suggestAssetKey('ruby.bbmodel'), 'minecraft:item/ruby');

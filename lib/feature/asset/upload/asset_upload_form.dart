@@ -147,7 +147,7 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
   Widget _buildKeyField(BuildContext context) {
     final l10n = context.l10n;
     final controller = widget.controller;
-    final namespace = validNamespaceOr(controller.namespace);
+    final namespace = controller.keyNamespace;
     return TextField(
       key: const Key('asset_upload_key'),
       controller: controller.keyController,
@@ -158,7 +158,8 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
         labelText: l10n.asset_picker_key,
         helperText: controller.fixedKey != null
             ? l10n.asset_upload_key_fixed
-            : l10n.asset_upload_key_helper('$namespace:item/ruby'),
+            : l10n.asset_upload_key_helper('item/ruby'),
+        prefixText: controller.fixedKey == null ? '$namespace:' : null,
         suffixIcon: controller.fixedKey != null
             ? const Icon(Icons.lock_outline, size: 18)
             : null,
