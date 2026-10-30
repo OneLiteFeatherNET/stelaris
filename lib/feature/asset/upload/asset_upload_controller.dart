@@ -27,7 +27,7 @@ class AssetUploadController extends ChangeNotifier {
 
   final String projectId;
 
-  /// The project key, which the suggested keys start with.
+  /// The project key, which the keys start with.
   final String? namespace;
 
   /// The kinds this upload takes, a file of another kind can't be uploaded.
@@ -40,6 +40,7 @@ class AssetUploadController extends ChangeNotifier {
   /// Opens the file dialog, injectable for tests.
   final Future<PickedAssetFile?> Function() pickFile;
 
+  /// The path of the key behind [keyNamespace], or the [fixedKey] whole.
   final TextEditingController keyController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
 
@@ -89,8 +90,20 @@ class AssetUploadController extends ChangeNotifier {
   /// A reason of the backend that names no field.
   String? get uploadError => _uploadError;
 
+  /// The namespace the typed path is stored under, the project key when it
+  /// is a valid one.
+  String get keyNamespace => validNamespaceOr(namespace);
+
+  /// The key the file is stored under.
+  String get key => fixedKey ?? '$keyNamespace:${keyController.text.trim()}';
+
   /// What is wrong with the key before the backend sees it.
-  AssetKeyProblem? get keyProblem => checkAssetKey(keyController.text.trim());
+  AssetKeyProblem? get keyProblem {
+    if (fixedKey == null && keyController.text.trim().isEmpty) {
+      return AssetKeyProblem.empty;
+    }
+    return checkAssetKey(key);
+  }
 
   /// Whether the name is missing, which the upload requires.
   bool get nameMissing => nameController.text.trim().isEmpty;
@@ -132,11 +145,11 @@ class AssetUploadController extends ChangeNotifier {
         notifyListeners();
         return;
       }
-      final key = suggestAssetKey(picked.name, namespace: namespace);
-      _lastKey = key;
+      final path = suggestAssetPath(picked.name);
+      _lastKey = path;
       keyController.value = TextEditingValue(
-        text: key,
-        selection: TextSelection.collapsed(offset: key.length),
+        text: path,
+        selection: TextSelection.collapsed(offset: path.length),
       );
     }
     notifyListeners();
@@ -178,7 +191,7 @@ class AssetUploadController extends ChangeNotifier {
     try {
       return await ApiService().assetApi.upload(
         projectId,
-        key: keyController.text.trim(),
+        key: key,
         displayName: nameController.text.trim(),
         fileName: picked.name,
         bytes: picked.bytes,

@@ -23,15 +23,16 @@ String suggestAssetName(String fileName) {
 /// The namespace is [namespace] when it is a valid Minecraft namespace (after
 /// lowercasing), otherwise `minecraft`. The name is the file name without its
 /// extension, lowercased, with characters outside `[a-z0-9_./-]` replaced by `_`.
-String suggestAssetKey(String fileName, {String? namespace}) {
-  final resolvedNamespace = validNamespaceOr(namespace);
+String suggestAssetKey(String fileName, {String? namespace}) =>
+    '${validNamespaceOr(namespace)}:${suggestAssetPath(fileName)}';
 
+/// Suggests the path of the key of an uploaded [fileName] as `item/name`, see
+/// [suggestAssetKey].
+String suggestAssetPath(String fileName) {
   final dot = fileName.lastIndexOf('.');
   final baseName = (dot > 0 ? fileName.substring(0, dot) : fileName)
       .toLowerCase();
-  final path = baseName.replaceAll(_pathInvalidChars, '_');
-
-  return '$resolvedNamespace:item/$path';
+  return 'item/${baseName.replaceAll(_pathInvalidChars, '_')}';
 }
 
 /// [namespace] lowercased when it is a valid Minecraft namespace, otherwise

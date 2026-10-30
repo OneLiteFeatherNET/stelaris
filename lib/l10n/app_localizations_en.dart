@@ -1849,7 +1849,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asset_upload_key_bad_path =>
-      'The path after the colon may only contain a-z, 0-9, _, ., - and /.';
+      'The path may only contain a-z, 0-9, _, ., - and /.';
 
   @override
   String get asset_upload_name => 'Name';

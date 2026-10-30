@@ -289,7 +289,7 @@ void main() {
             .widget<TextField>(find.byKey(const Key('asset_upload_key')))
             .controller!
             .text,
-        'minecraft:item/ruby_gem',
+        'item/ruby_gem',
       );
 
       await _tap(tester, 'Upload');
