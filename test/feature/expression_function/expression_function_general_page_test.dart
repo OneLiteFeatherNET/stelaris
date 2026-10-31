@@ -14,7 +14,7 @@ const _project = Project(id: 'p1', displayName: 'P1', key: 'p1');
 const _identifierField = ValueKey('expression_function_identifier_f1');
 
 ExpressionFunctionModel _function({
-  ExpressionFunctionKind kind = ExpressionFunctionKind.FORMULA,
+  ExpressionFunctionKind kind = ExpressionFunctionKind.formula,
 }) => ExpressionFunctionModel(
   id: 'f1',
   uiName: 'Damage bonus',
@@ -78,7 +78,7 @@ void main() {
 
     expect(
       store.state.selectedExpressionFunction?.kind,
-      ExpressionFunctionKind.INTERFACE,
+      ExpressionFunctionKind.interface,
     );
     expect(find.text(l10n.expression_function_section_stub), findsOneWidget);
   });

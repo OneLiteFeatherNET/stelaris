@@ -18,7 +18,7 @@ void main() {
 
   const area = ExpressionVariable(
     name: 'radius',
-    type: ExpressionVariableType.NUMBER,
+    type: ExpressionValueType.number,
     testValue: '2',
   );
 
@@ -89,7 +89,7 @@ void main() {
     await expressionApi.evaluate('p1', 'label', const [
       ExpressionVariable(
         name: 'label',
-        type: ExpressionVariableType.STRING,
+        type: ExpressionValueType.string,
         testValue: 'x',
       ),
     ]);

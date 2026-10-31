@@ -58,7 +58,7 @@ void main() {
     ]);
     expect(
       store.state.selectedExpression?.variables.single.type,
-      ExpressionVariableType.NUMBER,
+      ExpressionValueType.number,
     );
     expect(store.state.unsavedChanges, NavigationEntry.expression);
   });
