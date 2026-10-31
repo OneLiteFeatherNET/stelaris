@@ -15,6 +15,19 @@ external JSAny? get _viewerReady;
 
 extension type _AssetViewerApi._(JSObject _) implements JSObject {
   external _ViewerHandle mount(web.HTMLElement element, JSObject scene);
+  external void disposeAll();
+}
+
+/// Disposes the 3D viewers a previous run of the app left mounted.
+///
+/// Call it once on start. A hot restart drops the Dart side without disposing
+/// its widgets, while the page and its viewers stay; their WebGL contexts
+/// would pile up until Chrome loses the oldest. On a fresh page the bridge
+/// is not loaded yet or has no viewers, so this does nothing.
+void disposeLeftoverAssetViewers() {
+  final api = _viewerApi;
+  if (api.isUndefinedOrNull) return;
+  (api! as _AssetViewerApi).disposeAll();
 }
 
 extension type _ViewerHandle._(JSObject _) implements JSObject {

@@ -9,9 +9,14 @@ import 'package:stelaris/auth/auth_session.dart';
 import 'package:stelaris/auth/auth_sessions.dart';
 import 'package:stelaris/env/runtime_config.dart';
 import 'package:stelaris/app.dart';
+import 'package:stelaris/feature/asset/preview/asset_preview_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // A hot restart runs main again on the same page: the 3D viewers of the run
+  // before are still mounted there and hold their WebGL contexts.
+  disposeLeftoverAssetViewers();
 
   // Before anything can reach for an API client: the backend URLs come from
   // the deployment, not from the bundle. Never throws - a missing or unusable

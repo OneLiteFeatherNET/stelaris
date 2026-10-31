@@ -164,6 +164,17 @@ function makeChecker() {
     return texture;
 }
 
+// The dispose of every mounted viewer.
+const viewers = new Set();
+
+// Disposes every mounted viewer. The app calls it on start: a Flutter hot
+// restart drops the Dart side without disposing its widgets, so the viewers
+// of the run before would keep their WebGL contexts until Chrome loses the
+// oldest. On a fresh page there is nothing to dispose.
+function disposeAll() {
+    for (const dispose of [...viewers]) dispose();
+}
+
 function mount(element, scene) {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -294,7 +305,7 @@ function mount(element, scene) {
 
     requestRender();
 
-    return {
+    const handle = {
         // level: 0 full, 1 reduced, 2 box; null restores the automatic LOD.
         setDetail(level) {
             if (level == null) {
@@ -313,6 +324,7 @@ function mount(element, scene) {
         },
         resetView,
         dispose() {
+            if (!viewers.delete(dispose)) return;
             cancelAnimationFrame(frame);
             frame = 0;
             controls.removeEventListener('change', requestRender);
@@ -329,7 +341,10 @@ function mount(element, scene) {
             canvas.remove();
         },
     };
+    const dispose = () => handle.dispose();
+    viewers.add(dispose);
+    return handle;
 }
 
-window.stelarisAssetViewer = { mount };
+window.stelarisAssetViewer = { mount, disposeAll };
 window.stelarisAssetViewerReady = Promise.resolve(true);
