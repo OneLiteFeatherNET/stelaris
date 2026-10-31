@@ -6,14 +6,13 @@ import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
-import 'package:stelaris/api/state/actions/asset_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/asset_kind_label.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
+import 'package:stelaris/feature/asset/models/asset_model_actions.dart';
 import 'package:stelaris/feature/asset/models/flat_item_model.dart';
 import 'package:stelaris/feature/asset/models/model_detail.dart';
-import 'package:stelaris/feature/asset/models/model_revisions_dialog.dart';
 import 'package:stelaris/feature/asset/models/model_textures.dart';
 import 'package:stelaris/feature/asset/models/model_usage.dart';
 import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
@@ -23,14 +22,11 @@ import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/build/download/download_helper.dart';
-import 'package:stelaris/feature/dialogs/model_info_dialog.dart';
-import 'package:stelaris/feature/dialogs/notes_edit_dialog.dart';
 import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:stelaris/feature/model/model_card_frame.dart';
 import 'package:stelaris/feature/model/model_grid.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/util/l10n_ext.dart';
-import 'package:stelaris/util/notes.dart';
 import 'package:stelaris/util/relative_time.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -385,32 +381,11 @@ class _ModelsBodyState extends State<_ModelsBody> {
                   onBack: () => _select(null),
                   compactBelow: PageHeader.detailCompactThreshold,
                   actions: [
-                    _notesAction(selected),
-                    PageHeaderAction(
-                      key: const Key('model_info'),
-                      icon: const Icon(Icons.info_outline),
-                      label: context.l10n.menu_item_info,
-                      onPressed: () => _openInfo(selected),
-                    ),
-                    PageHeaderAction(
-                      key: const Key('model_revisions'),
-                      icon: const Icon(Icons.history),
-                      label: context.l10n.asset_model_revisions,
-                      onPressed: () => _openRevisions(selected),
-                    ),
-                    PageHeaderAction(
-                      key: const Key('model_update'),
-                      icon: const Icon(Icons.upload_outlined),
-                      label: context.l10n.asset_model_update,
-                      onPressed: () => _update(selected),
-                    ),
-                    // The main action here, as saving is on other detail pages.
-                    PageHeaderAction(
-                      key: const Key('model_download'),
-                      icon: const Icon(Icons.download_outlined),
-                      label: context.l10n.button_download,
-                      primary: true,
-                      onPressed: () => _download(selected),
+                    AssetModelActions(
+                      model: selected,
+                      pickFile: widget.pickFile,
+                      saveFile: widget.saveFile,
+                      onChanged: _load,
                     ),
                   ],
                 ),
@@ -447,128 +422,6 @@ class _ModelsBodyState extends State<_ModelsBody> {
         },
       ),
     );
-  }
-
-  /// Opens the notes of [model] for editing. Unlike the other detail pages,
-  /// which only show them, because a model card has no menu to edit them.
-  Widget _notesAction(AssetModel model) {
-    final l10n = context.l10n;
-    final hasNotes = notesSummary(model.comment) != null;
-    return PageHeaderAction(
-      key: const Key('model_notes'),
-      icon: Badge(
-        isLabelVisible: hasNotes,
-        smallSize: 8,
-        child: Icon(
-          hasNotes ? Icons.sticky_note_2 : Icons.sticky_note_2_outlined,
-          semanticLabel: hasNotes ? l10n.tooltip_notes_present : null,
-        ),
-      ),
-      label: l10n.action_notes,
-      onPressed: () => _editNotes(model),
-    );
-  }
-
-  Future<void> _editNotes(AssetModel model) async {
-    await showDialog<void>(
-      context: context,
-      builder: (_) => NotesEditDialog(
-        name: model.displayName,
-        notes: model.comment,
-        saveAction: (notes) => AssetNotesUpdateAction(model, notes),
-      ),
-    );
-    if (!mounted) return;
-    await _load();
-  }
-
-  void _openInfo(AssetModel model) => showDialog<void>(
-    context: context,
-    builder: (_) => ModelInfoDialog(
-      name: model.displayName,
-      namespacedKey: model.key,
-      id: model.id,
-      creationDate: model.creationDate,
-      modificationDate: model.modificationDate,
-    ),
-  );
-
-  /// Lists the versions of [model]; after a restore, shows the outcome and
-  /// loads the page again.
-  Future<void> _openRevisions(AssetModel model) async {
-    final result = await showDialog<RevisionsResult>(
-      context: context,
-      builder: (_) =>
-          ModelRevisionsDialog(asset: model, saveFile: widget.saveFile),
-    );
-    if (result == null || !mounted) return;
-    final l10n = context.l10n;
-    switch (result) {
-      case RevisionRestored(:final revision, :final asset):
-        context.showSuccessSnackBar(
-          l10n.asset_model_revision_restored(
-            revision.number,
-            asset.displayName,
-          ),
-        );
-      case RevisionConflict():
-        context.showErrorSnackBar(
-          ProblemDetail(
-            title: l10n.error_title,
-            status: 412,
-            detail: l10n.asset_model_revision_conflict(model.displayName),
-          ),
-        );
-    }
-    await _load();
-  }
-
-  /// Uploads a new file for [model] in place of its stored one.
-  Future<void> _update(AssetModel model) async {
-    final file = await widget.pickFile();
-    if (file == null || !mounted) return;
-    final AssetModel updated;
-    try {
-      updated = await ApiService().assetApi.replaceContent(
-        model,
-        fileName: file.name,
-        bytes: file.bytes,
-      );
-    } on DioException catch (error) {
-      if (!mounted) return;
-      // Someone else stored a new file since this page loaded the model.
-      if (error.response?.statusCode == 412) {
-        context.showErrorSnackBar(
-          ProblemDetail(
-            title: context.l10n.error_title,
-            status: 412,
-            detail: context.l10n.asset_model_update_conflict(model.displayName),
-          ),
-        );
-        await _load();
-        return;
-      }
-      context.showErrorSnackBar(error);
-      return;
-    }
-    if (!mounted) return;
-    context.showSuccessSnackBar(
-      context.l10n.asset_model_updated(updated.displayName),
-    );
-    await _load();
-  }
-
-  /// Downloads the stored file of [model] under its file name.
-  Future<void> _download(AssetModel model) async {
-    final List<int> bytes;
-    try {
-      bytes = await ApiService().assetApi.content(widget.projectId, model.id);
-    } on DioException catch (error) {
-      if (!mounted) return;
-      context.showErrorSnackBar(error);
-      return;
-    }
-    widget.saveFile(bytes, model.fileName);
   }
 
   Widget _buildDetail(AssetModel model) => SingleChildScrollView(
