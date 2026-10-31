@@ -1069,11 +1069,9 @@ packages:
   stelaris_models:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "themeinerlp/poc/evalex-expressions"
-      resolved-ref: "920c10d162960d473d0e0dd9c54aefb4c649c7c9"
-      url: "https://github.com/OneLiteFeatherNET/stelaris-model.git"
-    source: git
+      path: "../stelaris-model"
+      relative: true
+    source: path
     version: "0.0.1"
   stream_channel:
     dependency: transitive

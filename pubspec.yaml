@@ -32,7 +32,7 @@ dependencies:
   stelaris_models:
     git:
       url: https://github.com/OneLiteFeatherNET/stelaris-model.git
-      ref: themeinerlp/poc/evalex-expressions
+      ref: main
   material_ui: ^1.8.0
   oidc: ^5.0.2
   oidc_default_store: ^2.0.0

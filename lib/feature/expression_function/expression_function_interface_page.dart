@@ -25,7 +25,7 @@ class ExpressionFunctionInterfacePage extends StatelessWidget {
       vm: () => SelectedExpressionFunctionState(),
       builder: (context, vm) {
         final l10n = context.l10n;
-        if (vm.selected.kind != ExpressionFunctionKind.INTERFACE) {
+        if (vm.selected.kind != ExpressionFunctionKind.interface) {
           return EmptyDataWidget.full(
             header: l10n.expression_function_interface_formula_header,
             subHeader: l10n.expression_function_interface_formula_subheader,
