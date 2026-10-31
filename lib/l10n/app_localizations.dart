@@ -3190,29 +3190,11 @@ abstract class AppLocalizations {
   /// **'Auto-rotate'**
   String get asset_preview_auto_rotate;
 
-  /// No description provided for @asset_preview_detail_auto.
+  /// No description provided for @asset_preview_reduced_detail.
   ///
   /// In en, this message translates to:
-  /// **'Auto'**
-  String get asset_preview_detail_auto;
-
-  /// No description provided for @asset_preview_detail_full.
-  ///
-  /// In en, this message translates to:
-  /// **'Full'**
-  String get asset_preview_detail_full;
-
-  /// No description provided for @asset_preview_detail_reduced.
-  ///
-  /// In en, this message translates to:
-  /// **'Reduced'**
-  String get asset_preview_detail_reduced;
-
-  /// No description provided for @asset_preview_detail_box.
-  ///
-  /// In en, this message translates to:
-  /// **'Box'**
-  String get asset_preview_detail_box;
+  /// **'Reduced detail'**
+  String get asset_preview_reduced_detail;
 
   /// No description provided for @asset_preview_unsupported.
   ///

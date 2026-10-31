@@ -1,15 +1,13 @@
 import 'package:flutter/foundation.dart';
 
 /// The detail level picked in the preview. [automatic] lets the viewer choose by distance.
-enum AssetDetail { automatic, full, reduced, box }
+enum AssetDetail { automatic, reduced }
 
 extension AssetDetailLevel on AssetDetail {
-  /// The level index the viewer takes (0 full, 1 reduced, 2 box), or null for automatic.
+  /// The level index the viewer takes (1 reduced), or null for automatic.
   int? get viewerLevel => switch (this) {
     AssetDetail.automatic => null,
-    AssetDetail.full => 0,
     AssetDetail.reduced => 1,
-    AssetDetail.box => 2,
   };
 }
 

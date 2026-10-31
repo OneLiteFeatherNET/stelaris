@@ -37,8 +37,12 @@ Future<void> _pump(
   );
 }
 
-SegmentedButton<AssetDetail> _detailButton(WidgetTester tester) =>
-    tester.widget(find.byType(SegmentedButton<AssetDetail>));
+IconButton _detailButton(WidgetTester tester) => tester.widget(
+  find.ancestor(
+    of: find.byTooltip(_en.asset_preview_reduced_detail),
+    matching: find.byType(IconButton),
+  ),
+);
 
 void main() {
   testWidgets('placeholder names the asset key', (tester) async {
@@ -77,33 +81,51 @@ void main() {
     await _pump(tester, controller: controller);
 
     expect(controller.detail, AssetDetail.automatic);
-    expect(_detailButton(tester).selected, {AssetDetail.automatic});
+    expect(_detailButton(tester).isSelected, isFalse);
   });
 
-  testWidgets('tapping a detail segment selects it on the controller', (
-    tester,
-  ) async {
-    final controller = AssetPreviewController();
-    addTearDown(controller.dispose);
-    await _pump(tester, controller: controller);
+  testWidgets(
+    'the reduced detail button toggles between reduced and automatic',
+    (tester) async {
+      final controller = AssetPreviewController();
+      addTearDown(controller.dispose);
+      await _pump(tester, controller: controller);
 
-    await tester.tap(find.text(_en.asset_preview_detail_reduced));
-    await tester.pump();
+      await tester.tap(find.byTooltip(_en.asset_preview_reduced_detail));
+      await tester.pump();
+      expect(controller.detail, AssetDetail.reduced);
+      expect(_detailButton(tester).isSelected, isTrue);
 
-    expect(controller.detail, AssetDetail.reduced);
-    expect(_detailButton(tester).selected, {AssetDetail.reduced});
-  });
+      await tester.tap(find.byTooltip(_en.asset_preview_reduced_detail));
+      await tester.pump();
+      expect(controller.detail, AssetDetail.automatic);
+    },
+  );
 
-  testWidgets('tapping the box segment selects the box level', (tester) async {
-    final controller = AssetPreviewController();
-    addTearDown(controller.dispose);
-    await _pump(tester, controller: controller);
+  testWidgets(
+    'the controls are stacked top to bottom in the top right corner',
+    (tester) async {
+      await _pump(tester);
 
-    await tester.tap(find.text(_en.asset_preview_detail_box));
-    await tester.pump();
+      final reset = tester.getRect(
+        find.byTooltip(_en.asset_preview_reset_view),
+      );
+      final rotate = tester.getRect(
+        find.byTooltip(_en.asset_preview_auto_rotate),
+      );
+      final detail = tester.getRect(
+        find.byTooltip(_en.asset_preview_reduced_detail),
+      );
+      final viewport = tester.getRect(find.byType(AssetPreviewPlaceholder));
 
-    expect(controller.detail, AssetDetail.box);
-  });
+      expect(reset.center.dx, rotate.center.dx);
+      expect(rotate.center.dx, detail.center.dx);
+      expect(reset.top, lessThan(rotate.top));
+      expect(rotate.top, lessThan(detail.top));
+      expect(reset.top - viewport.top, lessThan(24));
+      expect(viewport.right - reset.right, lessThan(24));
+    },
+  );
 
   testWidgets('tapping the auto-rotate button toggles it', (tester) async {
     final controller = AssetPreviewController();
@@ -162,17 +184,10 @@ void main() {
     expect(
       find.descendant(
         of: frame,
-        matching: find.byType(SegmentedButton<AssetDetail>),
-      ),
-      findsNothing,
-    );
-    expect(
-      find.descendant(
-        of: frame,
         matching: find.text(_en.asset_preview_unsupported('mesh: Sword blade')),
       ),
       findsNothing,
     );
-    expect(find.byType(IconButton), findsNWidgets(2));
+    expect(find.byType(IconButton), findsNWidgets(3));
   });
 }

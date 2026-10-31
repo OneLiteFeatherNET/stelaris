@@ -931,10 +931,7 @@
   "attribute_hint_translation_key": "Translates the name, e.g. attribute.name.max_health",
   "asset_preview_reset_view": "Reset view",
   "asset_preview_auto_rotate": "Auto-rotate",
-  "asset_preview_detail_auto": "Auto",
-  "asset_preview_detail_full": "Full",
-  "asset_preview_detail_reduced": "Reduced",
-  "asset_preview_detail_box": "Box",
+  "asset_preview_reduced_detail": "Reduced detail",
   "asset_preview_unsupported": "Not shown: {parts}",
   "@asset_preview_unsupported": {
     "placeholders": {

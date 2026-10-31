@@ -1746,16 +1746,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_preview_auto_rotate => 'Auto-rotate';
 
   @override
-  String get asset_preview_detail_auto => 'Auto';
-
-  @override
-  String get asset_preview_detail_full => 'Full';
-
-  @override
-  String get asset_preview_detail_reduced => 'Reduced';
-
-  @override
-  String get asset_preview_detail_box => 'Box';
+  String get asset_preview_reduced_detail => 'Reduced detail';
 
   @override
   String asset_preview_unsupported(String parts) {

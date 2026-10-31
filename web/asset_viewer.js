@@ -255,7 +255,8 @@ function mount(element, scene) {
     const homeOffset = new THREE.Vector3(0.7, 0.5, 1).normalize().multiplyScalar(distance);
     camera.far = Math.max(1000, distance * 10);
     controls.minDistance = radius * 0.5;
-    controls.maxDistance = distance * 6;
+    // Twice the framing distance: far enough to see the model whole, never a speck.
+    controls.maxDistance = distance * 2;
     const resetView = () => {
         camera.position.copy(homeOffset);
         controls.target.set(0, 0, 0);
