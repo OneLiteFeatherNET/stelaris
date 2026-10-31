@@ -30,7 +30,7 @@ class NavigationSideBar extends StatelessWidget {
             // Same tone as the AppBar — see BasePage.
             backgroundColor: Theme.of(context).colorScheme.appChrome,
             minExtendedWidth: maxXOffset,
-            extended: MediaQuery.of(context).size.width >= 1000
+            extended: MediaQuery.sizeOf(context).width >= 1000
                 ? vm.openNavigation
                 : false,
             onDestinationSelected: (index) =>
