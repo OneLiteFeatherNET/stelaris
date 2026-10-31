@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/asset/loading/asset_library.dart';
+import 'package:stelaris/feature/asset/preview/asset_preview_placeholder.dart';
 import 'package:stelaris/feature/item/components/book/written_book.dart';
 import 'package:stelaris/feature/item/components/book/written_book_editor.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
@@ -11,6 +13,9 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/feature/item/components/stelaris_components.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:vulpes_data/component.dart';
+
+import '../../../support/fake_asset_api.dart';
+import '../../../support/pump_until.dart';
 
 ComponentSpec _spec(String key) =>
     componentCatalog.singleWhere((spec) => spec.key == key);
@@ -32,6 +37,8 @@ const _tagPredicates = ComponentSpec(
 );
 
 void main() {
+  setUp(() => AssetLibrary.shared.clearContents());
+
   Future<void> pumpOpener(
     WidgetTester tester,
     Future<Object?> Function(BuildContext context) open,
@@ -698,6 +705,110 @@ void main() {
           'raw': {'text': 'Hello', 'color': 'gold'},
         },
       ],
+    });
+  });
+
+  group('item model', () {
+    const ComponentProject vulpes = (id: 'p-1', key: 'vulpes');
+
+    testWidgets('the item model offers a button to choose a model', (
+      tester,
+    ) async {
+      await pumpOpener(
+        tester,
+        (context) => showComponentEditDialog(
+          context,
+          spec: _spec('minecraft:item_model'),
+          value: initialValue(_spec('minecraft:item_model').schema),
+          project: vulpes,
+          onSave: (_) async => null,
+        ),
+        (_) {},
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('item_model_choose_asset')), findsOneWidget);
+    });
+
+    testWidgets('other components have no button to choose a model', (
+      tester,
+    ) async {
+      await pumpOpener(
+        tester,
+        (context) => showComponentEditDialog(
+          context,
+          spec: _spec('minecraft:max_stack_size'),
+          value: 1,
+          project: vulpes,
+          onSave: (_) async => null,
+        ),
+        (_) {},
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('item_model_choose_asset')), findsNothing);
+    });
+
+    testWidgets('a chosen model puts its key into the value and is saved', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1200, 1000);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      serveAssets([
+        assetJson(
+          id: 'm-1',
+          key: 'vulpes:item/ruby',
+          kind: 'MODEL',
+          displayName: 'Ruby',
+        ),
+      ]);
+      ({Object? value})? saved;
+      await pumpOpener(
+        tester,
+        (context) => showComponentEditDialog(
+          context,
+          spec: _spec('minecraft:item_model'),
+          value: initialValue(_spec('minecraft:item_model').schema),
+          project: vulpes,
+          onSave: (value) async {
+            saved = (value: value);
+            return null;
+          },
+        ),
+        (_) {},
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('item_model_choose_asset')));
+      await pumpUntil(
+        tester,
+        action: () async {},
+        done: () => find.text('Ruby').evaluate().isNotEmpty,
+      );
+      await tester.tap(find.text('Ruby'));
+      await pumpUntil(
+        tester,
+        action: () async {},
+        done: () => find.byType(AssetPreviewPlaceholder).evaluate().isNotEmpty,
+      );
+      await tester.tap(find.text('Choose'));
+      await tester.pumpAndSettle();
+
+      final field = tester.widget<EditableText>(
+        find.descendant(
+          of: find.byType(TextFormField),
+          matching: find.byType(EditableText),
+        ),
+      );
+      expect(field.controller.text, 'vulpes:item/ruby');
+
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+      expect(saved?.value, 'vulpes:item/ruby');
     });
   });
 }

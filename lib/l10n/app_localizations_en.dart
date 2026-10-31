@@ -1738,4 +1738,309 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get attribute_hint_translation_key =>
       'Translates the name, e.g. attribute.name.max_health';
+
+  @override
+  String get asset_preview_reset_view => 'Reset view';
+
+  @override
+  String get asset_preview_auto_rotate => 'Auto-rotate';
+
+  @override
+  String get asset_preview_reduced_detail => 'Reduced detail';
+
+  @override
+  String asset_preview_unsupported(String parts) {
+    return 'Not shown: $parts';
+  }
+
+  @override
+  String get asset_preview_unavailable =>
+      'The 3D preview is not available on this platform.';
+
+  @override
+  String get asset_preview_failed => 'The model could not be shown.';
+
+  @override
+  String get item_model_preview_title => 'Preview';
+
+  @override
+  String get asset_picker_key => 'Key';
+
+  @override
+  String get asset_picker_kind_model => 'Model';
+
+  @override
+  String get asset_picker_kind_bbmodel => 'Blockbench model';
+
+  @override
+  String get asset_library_kind_texture => 'Texture';
+
+  @override
+  String get asset_upload_drop => 'Drag a file here';
+
+  @override
+  String get asset_upload_drop_now => 'Drop to add the file';
+
+  @override
+  String get asset_upload_formats =>
+      'PNG textures, model JSON or Blockbench models (.bbmodel)';
+
+  @override
+  String get asset_upload_choose => 'Choose a file';
+
+  @override
+  String get asset_upload_change => 'Choose another file';
+
+  @override
+  String get asset_upload_remove => 'Remove the file';
+
+  @override
+  String asset_upload_file_details(String kind, String size) {
+    return '$kind · $size';
+  }
+
+  @override
+  String get asset_upload_unsupported_file =>
+      'Only .png, .json and .bbmodel files can be uploaded.';
+
+  @override
+  String get asset_upload_formats_models =>
+      'Model JSON or Blockbench models (.bbmodel)';
+
+  @override
+  String get asset_upload_formats_texture => 'PNG textures';
+
+  @override
+  String get asset_upload_unsupported_models =>
+      'Only .json and .bbmodel files can be uploaded here.';
+
+  @override
+  String get asset_upload_unsupported_texture =>
+      'Only .png files can be uploaded here.';
+
+  @override
+  String get asset_upload_read_failed => 'The file could not be read.';
+
+  @override
+  String asset_upload_key_helper(String example) {
+    return 'The path in the resource pack, e.g. $example';
+  }
+
+  @override
+  String get asset_upload_key_empty => 'Enter a key.';
+
+  @override
+  String asset_upload_key_no_namespace(String namespace) {
+    return 'Start the key with a namespace, e.g. $namespace:';
+  }
+
+  @override
+  String get asset_upload_key_bad_namespace =>
+      'The namespace may only contain a-z, 0-9, _, . and -.';
+
+  @override
+  String get asset_upload_key_bad_path =>
+      'The path may only contain a-z, 0-9, _, ., - and /.';
+
+  @override
+  String get asset_upload_name => 'Name';
+
+  @override
+  String get asset_upload_name_helper => 'How the asset is shown in Stelaris';
+
+  @override
+  String get asset_upload_name_empty => 'Enter a name.';
+
+  @override
+  String get asset_picker_title => 'Choose a model';
+
+  @override
+  String get asset_pick_model_tooltip => 'Choose a model from the project';
+
+  @override
+  String get asset_picker_choose => 'Choose';
+
+  @override
+  String get asset_picker_empty =>
+      'This project has no models yet. Upload one below.';
+
+  @override
+  String get asset_picker_load_failed => 'The models could not be loaded.';
+
+  @override
+  String get asset_picker_retry => 'Try again';
+
+  @override
+  String get asset_picker_upload_action => 'Upload';
+
+  @override
+  String asset_picker_texture_uploaded(String key) {
+    return 'Uploaded the texture $key. Only models can be chosen for an item.';
+  }
+
+  @override
+  String get asset_models_title => 'Models';
+
+  @override
+  String get asset_models_no_project => 'Choose a project to see its models.';
+
+  @override
+  String get asset_models_empty =>
+      'This project has no models yet. Upload one to get started.';
+
+  @override
+  String get asset_models_load_failed => 'The models could not be loaded.';
+
+  @override
+  String get asset_models_upload_title => 'Upload a model';
+
+  @override
+  String asset_models_missing_tooltip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count textures of this model are missing',
+      one: '1 texture of this model is missing',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get asset_model_info => 'General';
+
+  @override
+  String get asset_model_kind => 'Kind';
+
+  @override
+  String get asset_model_file => 'File';
+
+  @override
+  String get asset_model_size => 'Size';
+
+  @override
+  String get asset_model_changed => 'Last change';
+
+  @override
+  String get asset_model_used_by => 'Used by';
+
+  @override
+  String get asset_model_used_by_none => 'No item uses this model yet.';
+
+  @override
+  String get asset_model_used_by_failed => 'The items could not be loaded.';
+
+  @override
+  String get asset_model_textures => 'Textures';
+
+  @override
+  String get asset_model_textures_none => 'This model refers to no textures.';
+
+  @override
+  String get asset_model_texture_missing => 'Missing';
+
+  @override
+  String get asset_model_texture_embedded => 'Embedded in the Blockbench model';
+
+  @override
+  String asset_model_texture_also_in(String models) {
+    return 'Also in: $models';
+  }
+
+  @override
+  String get asset_upload_key_fixed =>
+      'The model refers to this key, so the texture is stored under it.';
+
+  @override
+  String get asset_model_texture_upload_title => 'Upload the missing texture';
+
+  @override
+  String get asset_models_from_texture => 'New from texture';
+
+  @override
+  String get asset_models_from_texture_title => 'New model from a texture';
+
+  @override
+  String get asset_model_texture_present => 'Texture';
+
+  @override
+  String get asset_model_texture_upload_hint => 'Click to upload it';
+
+  @override
+  String get asset_model_update => 'Update';
+
+  @override
+  String asset_model_updated(String name) {
+    return '$name was updated.';
+  }
+
+  @override
+  String asset_model_update_conflict(String name) {
+    return '$name was changed in the meantime. The page now shows the current version, check it and update again.';
+  }
+
+  @override
+  String get asset_model_revisions => 'Versions';
+
+  @override
+  String asset_model_revisions_title(String name) {
+    return 'Versions of $name';
+  }
+
+  @override
+  String get asset_model_revisions_failed =>
+      'The versions could not be loaded.';
+
+  @override
+  String asset_model_revision(int number) {
+    return 'Version $number';
+  }
+
+  @override
+  String get asset_model_revision_current => 'Current';
+
+  @override
+  String get asset_model_revision_download => 'Download this version';
+
+  @override
+  String get asset_model_revision_restore => 'Restore this version';
+
+  @override
+  String asset_model_revision_restore_title(int number) {
+    return 'Restore version $number?';
+  }
+
+  @override
+  String asset_model_revision_restore_body(int number, String name) {
+    return 'The file of version $number becomes the current file of $name. This adds a new version, so the current file stays in the list.';
+  }
+
+  @override
+  String get asset_model_revision_restore_action => 'Restore';
+
+  @override
+  String asset_model_revision_restored(int number, String name) {
+    return 'Version $number of $name was restored.';
+  }
+
+  @override
+  String asset_model_revision_conflict(String name) {
+    return '$name was changed in the meantime. The page now shows the current version, check it and restore again.';
+  }
+
+  @override
+  String asset_model_missing_notice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count textures of this model are missing.',
+      one: '1 texture of this model is missing.',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'them',
+      one: 'it',
+    );
+    return '$_temp0 Upload $_temp1 from the textures below.';
+  }
 }

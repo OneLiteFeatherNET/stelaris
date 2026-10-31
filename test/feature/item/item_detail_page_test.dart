@@ -8,6 +8,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/item/enchantment/enchantment_page.dart';
 import 'package:stelaris/feature/item/enchantment/item_group_selector.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
@@ -64,6 +65,8 @@ class _RoutingAdapter implements HttpClientAdapter {
 }
 
 void main() {
+  setUp(() => AssetLibrary.shared.clearContents());
+
   group('ItemDetailPage', () {
     const selected = ItemModel(id: 'item-1', uiName: 'Ruby Sword');
 

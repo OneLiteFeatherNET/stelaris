@@ -9,6 +9,7 @@ import 'package:stelaris/feature/base/skeleton_bar.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/components/component_category_menu.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
+import 'package:stelaris/feature/item/components/item_model_preview_slot.dart';
 import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/feature/item/components/stelaris_components.dart';
 import 'package:stelaris/feature/item/item_tab_loader.dart';
@@ -46,6 +47,27 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
   /// Shows only the components of this category, null shows all.
   ComponentCategory? _category;
 
+  /// The model preview next to the cards, see [ItemModelPreviewSlot].
+  final _preview = ItemModelPreviewController();
+
+  /// Looks the model up again when the app resumes, e.g. when the browser tab
+  /// regains focus, so a model saved elsewhere shows up.
+  late final AppLifecycleListener _lifecycle;
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycle = AppLifecycleListener(
+      onResume: () => setState(_preview.refresh),
+    );
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
   Future<void> _add(_ComponentsView vm) async {
     final spec = await showComponentPickerDialog(
       context,
@@ -57,6 +79,7 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
       context,
       spec: spec,
       value: initialValue(spec.schema),
+      project: vm.project,
       onSave: (value) => _run(
         ItemComponentAddAction(
           ItemComponentDto(componentKey: spec.key, value: value),
@@ -65,11 +88,16 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
     );
   }
 
-  Future<void> _edit(ComponentSpec spec, ItemComponentDto component) async {
+  Future<void> _edit(
+    ComponentSpec spec,
+    ItemComponentDto component,
+    ComponentProject? project,
+  ) async {
     await showComponentEditDialog(
       context,
       spec: spec,
       value: component.value,
+      project: project,
       onSave: (value) =>
           _run(ItemComponentUpdateAction(component.copyWith(value: value))),
     );
@@ -140,40 +168,53 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
                   if (_specsByKey[component.componentKey]?.category == category)
                     component,
               ];
+        final itemModelKey = itemModelKeyOf(all);
 
         return Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              PageHeader.small(
-                title: context.l10n.component_page_title(all.length),
-                actions: [
-                  if (counts.isNotEmpty)
-                    ComponentCategoryMenu(
-                      value: category,
-                      counts: counts,
-                      onChanged: (value) => setState(() => _category = value),
-                      builder: (context, toggle) => PageHeaderAction(
-                        key: const Key('component_category_filter'),
-                        icon: const Icon(Icons.filter_list),
-                        label:
-                            category?.displayName ??
-                            context.l10n.component_all_categories,
-                        onPressed: toggle,
-                      ),
+              LayoutBuilder(
+                builder: (context, constraints) => PageHeader.small(
+                  title: context.l10n.component_page_title(all.length),
+                  actions: [
+                    ItemModelPreviewToggle(
+                      controller: _preview,
+                      project: vm.project,
+                      itemModelKey: itemModelKey,
+                      wide: constraints.maxWidth >= itemModelPreviewBreakpoint,
+                      onToggle: () => setState(_preview.toggle),
                     ),
-                  PageHeaderAction(
-                    icon: const Icon(Icons.add),
-                    label: context.l10n.button_add,
-                    primary: true,
-                    loading: pending,
-                    onPressed: () => _add(vm),
-                  ),
-                ],
+                    if (counts.isNotEmpty)
+                      ComponentCategoryMenu(
+                        value: category,
+                        counts: counts,
+                        onChanged: (value) => setState(() => _category = value),
+                        builder: (context, toggle) => PageHeaderAction(
+                          key: const Key('component_category_filter'),
+                          icon: const Icon(Icons.filter_list),
+                          label:
+                              category?.displayName ??
+                              context.l10n.component_all_categories,
+                          onPressed: toggle,
+                        ),
+                      ),
+                    PageHeaderAction(
+                      icon: const Icon(Icons.add),
+                      label: context.l10n.button_add,
+                      primary: true,
+                      loading: pending,
+                      onPressed: () => _add(vm),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 12),
-              Expanded(
+              ItemModelPreviewSlot(
+                controller: _preview,
+                project: vm.project,
+                itemModelKey: itemModelKey,
                 child: switch ((pending, components.isEmpty)) {
                   (true, _) => _grid(
                     key: const Key('component_skeleton'),
@@ -201,7 +242,9 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
                         overridesDefault: defaults.contains(
                           component.componentKey,
                         ),
-                        onEdit: editable ? () => _edit(spec, component) : null,
+                        onEdit: editable
+                            ? () => _edit(spec, component, vm.project)
+                            : null,
                         // Every item has its required components.
                         onRemove: spec != null && spec.isRequired
                             ? null
@@ -256,11 +299,17 @@ class _ItemComponentsPageState extends State<ItemComponentsPage> {
 }
 
 class _ComponentsView extends Vm {
-  _ComponentsView({required this.material, required this.components})
-    : super(equals: [material, components]);
+  _ComponentsView({
+    required this.material,
+    required this.components,
+    required this.project,
+  }) : super(equals: [material, components, project]);
 
   final String material;
   final List<ItemComponentDto> components;
+
+  /// The project the item belongs to, null without an id to store assets under.
+  final ComponentProject? project;
 }
 
 class _ComponentsFactory
@@ -269,6 +318,10 @@ class _ComponentsFactory
   _ComponentsView fromStore() => _ComponentsView(
     material: materialOf(state.selectedItemComponents),
     components: state.selectedItemComponents,
+    project: switch (state.selectedProject) {
+      Project(id: final id?, :final key) => (id: id, key: key),
+      _ => null,
+    },
   );
 }
 

@@ -1,0 +1,77 @@
+import 'package:stelaris_models/stelaris_models.dart';
+
+final RegExp _namespacePattern = RegExp(r'^[a-z0-9_.-]+$');
+final RegExp _pathPattern = RegExp(r'^[a-z0-9_./-]+$');
+final RegExp _pathInvalidChars = RegExp(r'[^a-z0-9_./-]');
+final RegExp _nameSeparators = RegExp(r'[\s_-]+');
+
+/// Suggests the display name of an uploaded [fileName]: the file name without
+/// its extension, its words split at `_`, `-` and spaces and capitalized,
+/// e.g. `Red Ruby` for `red_ruby.png`.
+String suggestAssetName(String fileName) {
+  final dot = fileName.lastIndexOf('.');
+  final baseName = dot > 0 ? fileName.substring(0, dot) : fileName;
+  return baseName
+      .split(_nameSeparators)
+      .where((word) => word.isNotEmpty)
+      .map((word) => word[0].toUpperCase() + word.substring(1))
+      .join(' ');
+}
+
+/// Suggests the resource key of an uploaded [fileName] as `namespace:item/name`.
+///
+/// The namespace is [namespace] when it is a valid Minecraft namespace (after
+/// lowercasing), otherwise `minecraft`. The name is the file name without its
+/// extension, lowercased, with characters outside `[a-z0-9_./-]` replaced by `_`.
+String suggestAssetKey(String fileName, {String? namespace}) =>
+    '${validNamespaceOr(namespace)}:${suggestAssetPath(fileName)}';
+
+/// Suggests the path of the key of an uploaded [fileName] as `item/name`, see
+/// [suggestAssetKey].
+String suggestAssetPath(String fileName) {
+  final dot = fileName.lastIndexOf('.');
+  final baseName = (dot > 0 ? fileName.substring(0, dot) : fileName)
+      .toLowerCase();
+  return 'item/${baseName.replaceAll(_pathInvalidChars, '_')}';
+}
+
+/// [namespace] lowercased when it is a valid Minecraft namespace, otherwise
+/// `minecraft`.
+String validNamespaceOr(String? namespace) {
+  final given = namespace?.toLowerCase();
+  return given != null && _namespacePattern.hasMatch(given)
+      ? given
+      : 'minecraft';
+}
+
+/// Why a key can't name an asset.
+enum AssetKeyProblem { empty, missingNamespace, invalidNamespace, invalidPath }
+
+/// The problem of [key] as a resource location `namespace:path`, or null when
+/// it is one. Unlike Minecraft the namespace is required, since items refer
+/// to the asset by exactly this key.
+AssetKeyProblem? checkAssetKey(String key) {
+  if (key.isEmpty) return AssetKeyProblem.empty;
+  final colon = key.indexOf(':');
+  if (colon < 0) return AssetKeyProblem.missingNamespace;
+  if (!_namespacePattern.hasMatch(key.substring(0, colon))) {
+    return AssetKeyProblem.invalidNamespace;
+  }
+  if (!_pathPattern.hasMatch(key.substring(colon + 1))) {
+    return AssetKeyProblem.invalidPath;
+  }
+  return null;
+}
+
+/// The kind the backend stores [fileName] as, by its extension, or null when
+/// it can't be uploaded.
+AssetKind? assetKindOfFileName(String fileName) {
+  final dot = fileName.lastIndexOf('.');
+  if (dot < 0) return null;
+  return switch (fileName.substring(dot + 1).toLowerCase()) {
+    'png' => AssetKind.TEXTURE,
+    'json' => AssetKind.MODEL,
+    'bbmodel' => AssetKind.BBMODEL,
+    _ => null,
+  };
+}

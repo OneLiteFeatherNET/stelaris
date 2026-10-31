@@ -16,6 +16,19 @@ class EditCardGrid extends StatelessWidget {
   static const double _spacing = 12;
   static const double _padding = 16;
 
+  /// The space between two cards, across and down.
+  static const double spacing = _spacing;
+
+  /// The width of a card when a row of cards is [width] wide: as many
+  /// columns as fit, at most four.
+  static double cardWidthIn(double width) {
+    final columns = ((width + _spacing) / (_maxCardExtent + _spacing))
+        .floor()
+        .clamp(1, 4);
+    // Floored, so rounding never pushes the last card into a new row.
+    return ((width - _spacing * (columns - 1)) / columns).floorToDouble();
+  }
+
   final List<EditSection> sections;
 
   /// Shown above the sections and scrolled with them, e.g. toggles that
@@ -27,12 +40,7 @@ class EditCardGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth - 2 * _padding;
-        final columns = ((width + _spacing) / (_maxCardExtent + _spacing))
-            .floor()
-            .clamp(1, 4);
-        // Floored, so rounding never pushes the last card into a new row.
-        final cardWidth = ((width - _spacing * (columns - 1)) / columns)
-            .floorToDouble();
+        final cardWidth = cardWidthIn(width);
         return SingleChildScrollView(
           padding: const EdgeInsets.all(_padding),
           child: Column(

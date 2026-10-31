@@ -3177,6 +3177,492 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Translates the name, e.g. attribute.name.max_health'**
   String get attribute_hint_translation_key;
+
+  /// No description provided for @asset_preview_reset_view.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset view'**
+  String get asset_preview_reset_view;
+
+  /// No description provided for @asset_preview_auto_rotate.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-rotate'**
+  String get asset_preview_auto_rotate;
+
+  /// No description provided for @asset_preview_reduced_detail.
+  ///
+  /// In en, this message translates to:
+  /// **'Reduced detail'**
+  String get asset_preview_reduced_detail;
+
+  /// No description provided for @asset_preview_unsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Not shown: {parts}'**
+  String asset_preview_unsupported(String parts);
+
+  /// No description provided for @asset_preview_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The 3D preview is not available on this platform.'**
+  String get asset_preview_unavailable;
+
+  /// No description provided for @asset_preview_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The model could not be shown.'**
+  String get asset_preview_failed;
+
+  /// No description provided for @item_model_preview_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get item_model_preview_title;
+
+  /// No description provided for @asset_picker_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Key'**
+  String get asset_picker_key;
+
+  /// No description provided for @asset_picker_kind_model.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get asset_picker_kind_model;
+
+  /// No description provided for @asset_picker_kind_bbmodel.
+  ///
+  /// In en, this message translates to:
+  /// **'Blockbench model'**
+  String get asset_picker_kind_bbmodel;
+
+  /// No description provided for @asset_library_kind_texture.
+  ///
+  /// In en, this message translates to:
+  /// **'Texture'**
+  String get asset_library_kind_texture;
+
+  /// No description provided for @asset_upload_drop.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag a file here'**
+  String get asset_upload_drop;
+
+  /// No description provided for @asset_upload_drop_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop to add the file'**
+  String get asset_upload_drop_now;
+
+  /// No description provided for @asset_upload_formats.
+  ///
+  /// In en, this message translates to:
+  /// **'PNG textures, model JSON or Blockbench models (.bbmodel)'**
+  String get asset_upload_formats;
+
+  /// No description provided for @asset_upload_choose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a file'**
+  String get asset_upload_choose;
+
+  /// No description provided for @asset_upload_change.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose another file'**
+  String get asset_upload_change;
+
+  /// No description provided for @asset_upload_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the file'**
+  String get asset_upload_remove;
+
+  /// No description provided for @asset_upload_file_details.
+  ///
+  /// In en, this message translates to:
+  /// **'{kind} · {size}'**
+  String asset_upload_file_details(String kind, String size);
+
+  /// No description provided for @asset_upload_unsupported_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Only .png, .json and .bbmodel files can be uploaded.'**
+  String get asset_upload_unsupported_file;
+
+  /// No description provided for @asset_upload_formats_models.
+  ///
+  /// In en, this message translates to:
+  /// **'Model JSON or Blockbench models (.bbmodel)'**
+  String get asset_upload_formats_models;
+
+  /// No description provided for @asset_upload_formats_texture.
+  ///
+  /// In en, this message translates to:
+  /// **'PNG textures'**
+  String get asset_upload_formats_texture;
+
+  /// No description provided for @asset_upload_unsupported_models.
+  ///
+  /// In en, this message translates to:
+  /// **'Only .json and .bbmodel files can be uploaded here.'**
+  String get asset_upload_unsupported_models;
+
+  /// No description provided for @asset_upload_unsupported_texture.
+  ///
+  /// In en, this message translates to:
+  /// **'Only .png files can be uploaded here.'**
+  String get asset_upload_unsupported_texture;
+
+  /// No description provided for @asset_upload_read_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The file could not be read.'**
+  String get asset_upload_read_failed;
+
+  /// No description provided for @asset_upload_key_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'The path in the resource pack, e.g. {example}'**
+  String asset_upload_key_helper(String example);
+
+  /// No description provided for @asset_upload_key_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a key.'**
+  String get asset_upload_key_empty;
+
+  /// No description provided for @asset_upload_key_no_namespace.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the key with a namespace, e.g. {namespace}:'**
+  String asset_upload_key_no_namespace(String namespace);
+
+  /// No description provided for @asset_upload_key_bad_namespace.
+  ///
+  /// In en, this message translates to:
+  /// **'The namespace may only contain a-z, 0-9, _, . and -.'**
+  String get asset_upload_key_bad_namespace;
+
+  /// No description provided for @asset_upload_key_bad_path.
+  ///
+  /// In en, this message translates to:
+  /// **'The path may only contain a-z, 0-9, _, ., - and /.'**
+  String get asset_upload_key_bad_path;
+
+  /// No description provided for @asset_upload_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get asset_upload_name;
+
+  /// No description provided for @asset_upload_name_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'How the asset is shown in Stelaris'**
+  String get asset_upload_name_helper;
+
+  /// No description provided for @asset_upload_name_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name.'**
+  String get asset_upload_name_empty;
+
+  /// No description provided for @asset_picker_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a model'**
+  String get asset_picker_title;
+
+  /// No description provided for @asset_pick_model_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a model from the project'**
+  String get asset_pick_model_tooltip;
+
+  /// No description provided for @asset_picker_choose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose'**
+  String get asset_picker_choose;
+
+  /// No description provided for @asset_picker_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'This project has no models yet. Upload one below.'**
+  String get asset_picker_empty;
+
+  /// No description provided for @asset_picker_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The models could not be loaded.'**
+  String get asset_picker_load_failed;
+
+  /// No description provided for @asset_picker_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get asset_picker_retry;
+
+  /// No description provided for @asset_picker_upload_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get asset_picker_upload_action;
+
+  /// No description provided for @asset_picker_texture_uploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded the texture {key}. Only models can be chosen for an item.'**
+  String asset_picker_texture_uploaded(String key);
+
+  /// No description provided for @asset_models_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Models'**
+  String get asset_models_title;
+
+  /// No description provided for @asset_models_no_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a project to see its models.'**
+  String get asset_models_no_project;
+
+  /// No description provided for @asset_models_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'This project has no models yet. Upload one to get started.'**
+  String get asset_models_empty;
+
+  /// No description provided for @asset_models_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The models could not be loaded.'**
+  String get asset_models_load_failed;
+
+  /// No description provided for @asset_models_upload_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a model'**
+  String get asset_models_upload_title;
+
+  /// No description provided for @asset_models_missing_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 texture of this model is missing} other{{count} textures of this model are missing}}'**
+  String asset_models_missing_tooltip(int count);
+
+  /// No description provided for @asset_model_info.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get asset_model_info;
+
+  /// No description provided for @asset_model_kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind'**
+  String get asset_model_kind;
+
+  /// No description provided for @asset_model_file.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get asset_model_file;
+
+  /// No description provided for @asset_model_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get asset_model_size;
+
+  /// No description provided for @asset_model_changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Last change'**
+  String get asset_model_changed;
+
+  /// No description provided for @asset_model_used_by.
+  ///
+  /// In en, this message translates to:
+  /// **'Used by'**
+  String get asset_model_used_by;
+
+  /// No description provided for @asset_model_used_by_none.
+  ///
+  /// In en, this message translates to:
+  /// **'No item uses this model yet.'**
+  String get asset_model_used_by_none;
+
+  /// No description provided for @asset_model_used_by_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The items could not be loaded.'**
+  String get asset_model_used_by_failed;
+
+  /// No description provided for @asset_model_textures.
+  ///
+  /// In en, this message translates to:
+  /// **'Textures'**
+  String get asset_model_textures;
+
+  /// No description provided for @asset_model_textures_none.
+  ///
+  /// In en, this message translates to:
+  /// **'This model refers to no textures.'**
+  String get asset_model_textures_none;
+
+  /// No description provided for @asset_model_texture_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing'**
+  String get asset_model_texture_missing;
+
+  /// No description provided for @asset_model_texture_embedded.
+  ///
+  /// In en, this message translates to:
+  /// **'Embedded in the Blockbench model'**
+  String get asset_model_texture_embedded;
+
+  /// No description provided for @asset_model_texture_also_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Also in: {models}'**
+  String asset_model_texture_also_in(String models);
+
+  /// No description provided for @asset_upload_key_fixed.
+  ///
+  /// In en, this message translates to:
+  /// **'The model refers to this key, so the texture is stored under it.'**
+  String get asset_upload_key_fixed;
+
+  /// No description provided for @asset_model_texture_upload_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload the missing texture'**
+  String get asset_model_texture_upload_title;
+
+  /// No description provided for @asset_models_from_texture.
+  ///
+  /// In en, this message translates to:
+  /// **'New from texture'**
+  String get asset_models_from_texture;
+
+  /// No description provided for @asset_models_from_texture_title.
+  ///
+  /// In en, this message translates to:
+  /// **'New model from a texture'**
+  String get asset_models_from_texture_title;
+
+  /// No description provided for @asset_model_texture_present.
+  ///
+  /// In en, this message translates to:
+  /// **'Texture'**
+  String get asset_model_texture_present;
+
+  /// No description provided for @asset_model_texture_upload_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Click to upload it'**
+  String get asset_model_texture_upload_hint;
+
+  /// No description provided for @asset_model_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get asset_model_update;
+
+  /// No description provided for @asset_model_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was updated.'**
+  String asset_model_updated(String name);
+
+  /// No description provided for @asset_model_update_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was changed in the meantime. The page now shows the current version, check it and update again.'**
+  String asset_model_update_conflict(String name);
+
+  /// No description provided for @asset_model_revisions.
+  ///
+  /// In en, this message translates to:
+  /// **'Versions'**
+  String get asset_model_revisions;
+
+  /// No description provided for @asset_model_revisions_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Versions of {name}'**
+  String asset_model_revisions_title(String name);
+
+  /// No description provided for @asset_model_revisions_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The versions could not be loaded.'**
+  String get asset_model_revisions_failed;
+
+  /// No description provided for @asset_model_revision.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {number}'**
+  String asset_model_revision(int number);
+
+  /// No description provided for @asset_model_revision_current.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get asset_model_revision_current;
+
+  /// No description provided for @asset_model_revision_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download this version'**
+  String get asset_model_revision_download;
+
+  /// No description provided for @asset_model_revision_restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore this version'**
+  String get asset_model_revision_restore;
+
+  /// No description provided for @asset_model_revision_restore_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore version {number}?'**
+  String asset_model_revision_restore_title(int number);
+
+  /// No description provided for @asset_model_revision_restore_body.
+  ///
+  /// In en, this message translates to:
+  /// **'The file of version {number} becomes the current file of {name}. This adds a new version, so the current file stays in the list.'**
+  String asset_model_revision_restore_body(int number, String name);
+
+  /// No description provided for @asset_model_revision_restore_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get asset_model_revision_restore_action;
+
+  /// No description provided for @asset_model_revision_restored.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {number} of {name} was restored.'**
+  String asset_model_revision_restored(int number, String name);
+
+  /// No description provided for @asset_model_revision_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was changed in the meantime. The page now shows the current version, check it and restore again.'**
+  String asset_model_revision_conflict(String name);
+
+  /// No description provided for @asset_model_missing_notice.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 texture of this model is missing.} other{{count} textures of this model are missing.}} Upload {count, plural, =1{it} other{them}} from the textures below.'**
+  String asset_model_missing_notice(int count);
 }
 
 class _AppLocalizationsDelegate

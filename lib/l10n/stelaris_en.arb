@@ -928,5 +928,207 @@
   "attribute_hint_minimum": "The lowest value, at most the default value",
   "attribute_hint_default": "The base value, between the minimum and the maximum",
   "attribute_hint_maximum": "The highest value, greater than 0 and at least the default value",
-  "attribute_hint_translation_key": "Translates the name, e.g. attribute.name.max_health"
+  "attribute_hint_translation_key": "Translates the name, e.g. attribute.name.max_health",
+  "asset_preview_reset_view": "Reset view",
+  "asset_preview_auto_rotate": "Auto-rotate",
+  "asset_preview_reduced_detail": "Reduced detail",
+  "asset_preview_unsupported": "Not shown: {parts}",
+  "@asset_preview_unsupported": {
+    "placeholders": {
+      "parts": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_preview_unavailable": "The 3D preview is not available on this platform.",
+  "asset_preview_failed": "The model could not be shown.",
+  "item_model_preview_title": "Preview",
+  "asset_picker_key": "Key",
+  "asset_picker_kind_model": "Model",
+  "asset_picker_kind_bbmodel": "Blockbench model",
+  "asset_library_kind_texture": "Texture",
+  "asset_upload_drop": "Drag a file here",
+  "asset_upload_drop_now": "Drop to add the file",
+  "asset_upload_formats": "PNG textures, model JSON or Blockbench models (.bbmodel)",
+  "asset_upload_choose": "Choose a file",
+  "asset_upload_change": "Choose another file",
+  "asset_upload_remove": "Remove the file",
+  "asset_upload_file_details": "{kind} · {size}",
+  "@asset_upload_file_details": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_upload_unsupported_file": "Only .png, .json and .bbmodel files can be uploaded.",
+  "asset_upload_formats_models": "Model JSON or Blockbench models (.bbmodel)",
+  "asset_upload_formats_texture": "PNG textures",
+  "asset_upload_unsupported_models": "Only .json and .bbmodel files can be uploaded here.",
+  "asset_upload_unsupported_texture": "Only .png files can be uploaded here.",
+  "asset_upload_read_failed": "The file could not be read.",
+  "asset_upload_key_helper": "The path in the resource pack, e.g. {example}",
+  "@asset_upload_key_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_upload_key_empty": "Enter a key.",
+  "asset_upload_key_no_namespace": "Start the key with a namespace, e.g. {namespace}:",
+  "@asset_upload_key_no_namespace": {
+    "placeholders": {
+      "namespace": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_upload_key_bad_namespace": "The namespace may only contain a-z, 0-9, _, . and -.",
+  "asset_upload_key_bad_path": "The path may only contain a-z, 0-9, _, ., - and /.",
+  "asset_upload_name": "Name",
+  "asset_upload_name_helper": "How the asset is shown in Stelaris",
+  "asset_upload_name_empty": "Enter a name.",
+  "asset_picker_title": "Choose a model",
+  "asset_pick_model_tooltip": "Choose a model from the project",
+  "asset_picker_choose": "Choose",
+  "asset_picker_empty": "This project has no models yet. Upload one below.",
+  "asset_picker_load_failed": "The models could not be loaded.",
+  "asset_picker_retry": "Try again",
+  "asset_picker_upload_action": "Upload",
+  "asset_picker_texture_uploaded": "Uploaded the texture {key}. Only models can be chosen for an item.",
+  "@asset_picker_texture_uploaded": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_models_title": "Models",
+  "asset_models_no_project": "Choose a project to see its models.",
+  "asset_models_empty": "This project has no models yet. Upload one to get started.",
+  "asset_models_load_failed": "The models could not be loaded.",
+  "asset_models_upload_title": "Upload a model",
+  "asset_models_missing_tooltip": "{count, plural, =1{1 texture of this model is missing} other{{count} textures of this model are missing}}",
+  "@asset_models_missing_tooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "asset_model_info": "General",
+  "asset_model_kind": "Kind",
+  "asset_model_file": "File",
+  "asset_model_size": "Size",
+  "asset_model_changed": "Last change",
+  "asset_model_used_by": "Used by",
+  "asset_model_used_by_none": "No item uses this model yet.",
+  "asset_model_used_by_failed": "The items could not be loaded.",
+  "asset_model_textures": "Textures",
+  "asset_model_textures_none": "This model refers to no textures.",
+  "asset_model_texture_missing": "Missing",
+  "asset_model_texture_embedded": "Embedded in the Blockbench model",
+  "asset_model_texture_also_in": "Also in: {models}",
+  "@asset_model_texture_also_in": {
+    "placeholders": {
+      "models": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_upload_key_fixed": "The model refers to this key, so the texture is stored under it.",
+  "asset_model_texture_upload_title": "Upload the missing texture",
+  "asset_models_from_texture": "New from texture",
+  "asset_models_from_texture_title": "New model from a texture",
+  "asset_model_texture_present": "Texture",
+  "asset_model_texture_upload_hint": "Click to upload it",
+  "asset_model_update": "Update",
+  "asset_model_updated": "{name} was updated.",
+  "@asset_model_updated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_model_update_conflict": "{name} was changed in the meantime. The page now shows the current version, check it and update again.",
+  "@asset_model_update_conflict": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_model_revisions": "Versions",
+  "asset_model_revisions_title": "Versions of {name}",
+  "@asset_model_revisions_title": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_model_revisions_failed": "The versions could not be loaded.",
+  "asset_model_revision": "Version {number}",
+  "@asset_model_revision": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "asset_model_revision_current": "Current",
+  "asset_model_revision_download": "Download this version",
+  "asset_model_revision_restore": "Restore this version",
+  "asset_model_revision_restore_title": "Restore version {number}?",
+  "@asset_model_revision_restore_title": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "asset_model_revision_restore_body": "The file of version {number} becomes the current file of {name}. This adds a new version, so the current file stays in the list.",
+  "@asset_model_revision_restore_body": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_model_revision_restore_action": "Restore",
+  "asset_model_revision_restored": "Version {number} of {name} was restored.",
+  "@asset_model_revision_restored": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_model_revision_conflict": "{name} was changed in the meantime. The page now shows the current version, check it and restore again.",
+  "@asset_model_revision_conflict": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_model_missing_notice": "{count, plural, =1{1 texture of this model is missing.} other{{count} textures of this model are missing.}} Upload {count, plural, =1{it} other{them}} from the textures below.",
+  "@asset_model_missing_notice": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

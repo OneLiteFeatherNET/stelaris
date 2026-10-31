@@ -9,13 +9,14 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// field's kind, and an optional [footer] holds a rule or hint. The card is
 /// as high as its content, the footer always takes two lines, so cards with
 /// a footer in a row are equally high. On hover and focus a pencil shows in
-/// the corner.
+/// the corner. Without [onTap] the card only shows the value, e.g. one the
+/// app derives, and has no pencil.
 class EditCard extends StatefulWidget {
   const EditCard({
     required this.icon,
     required this.label,
     required this.value,
-    required this.onTap,
+    this.onTap,
     this.footer,
     this.preview,
     super.key,
@@ -27,7 +28,7 @@ class EditCard extends StatefulWidget {
   /// Empty shows a placeholder instead.
   final String value;
   final String? footer;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   /// Shown instead of the value text, e.g. a text component with its
   /// formatting. It shows its own placeholder, so the card keeps its height
@@ -53,11 +54,8 @@ class _EditCardState extends State<EditCard> {
     return Card.outlined(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: widget.onTap,
-        onHover: (value) => setState(() => _highlighted = value),
-        onFocusChange: (value) => setState(() => _highlighted = value),
-        child: Padding(
+      child: _tappable(
+        Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,15 +75,23 @@ class _EditCardState extends State<EditCard> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  // Kept in the layout, so the row doesn't jump on hover.
-                  AnimatedOpacity(
-                    duration: const Duration(milliseconds: 120),
-                    opacity: _highlighted ? 1 : 0,
-                    child: Tooltip(
-                      message: context.l10n.edit_card_edit(widget.label),
-                      child: Icon(Icons.edit_outlined, size: 18, color: muted),
+                  // Kept in the layout, so the row doesn't jump on hover, and
+                  // a card without a pencil is as high as one with it.
+                  if (widget.onTap == null)
+                    const SizedBox.square(dimension: 18)
+                  else
+                    AnimatedOpacity(
+                      duration: const Duration(milliseconds: 120),
+                      opacity: _highlighted ? 1 : 0,
+                      child: Tooltip(
+                        message: context.l10n.edit_card_edit(widget.label),
+                        child: Icon(
+                          Icons.edit_outlined,
+                          size: 18,
+                          color: muted,
+                        ),
+                      ),
                     ),
-                  ),
                 ],
               ),
               // The preview's frame needs more room below the pencil.
@@ -126,6 +132,18 @@ class _EditCardState extends State<EditCard> {
           ),
         ),
       ),
+    );
+  }
+
+  /// [child] with the ink and the hover of a tap, or as is without [onTap].
+  Widget _tappable(Widget child) {
+    final onTap = widget.onTap;
+    if (onTap == null) return child;
+    return InkWell(
+      onTap: onTap,
+      onHover: (value) => setState(() => _highlighted = value),
+      onFocusChange: (value) => setState(() => _highlighted = value),
+      child: child,
     );
   }
 }
