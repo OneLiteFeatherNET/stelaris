@@ -44,6 +44,9 @@ class ModelDetail extends StatelessWidget {
   static const double _previewWidth = 420;
   static const double _previewGap = 24;
 
+  /// The space between a section heading and its cards.
+  static const double _headingGap = 8;
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -85,7 +88,30 @@ class ModelDetail extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: _previewGap),
-                SizedBox(width: _previewWidth, child: _preview()),
+                SizedBox(
+                  width: _previewWidth,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Takes the room of the first heading, invisibly, so the
+                      // preview starts level with the first row of cards at
+                      // any text scale.
+                      ExcludeSemantics(
+                        child: Visibility(
+                          visible: false,
+                          maintainSize: true,
+                          maintainAnimation: true,
+                          maintainState: true,
+                          child: EditSectionHeading(
+                            title: l10n.asset_model_info,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: _headingGap),
+                      _preview(),
+                    ],
+                  ),
+                ),
               ],
             );
           },
@@ -116,7 +142,7 @@ class ModelDetail extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         EditSectionHeading(title: l10n.asset_model_info),
-        const SizedBox(height: 8),
+        const SizedBox(height: _headingGap),
         Wrap(
           spacing: EditCardGrid.spacing,
           runSpacing: EditCardGrid.spacing,

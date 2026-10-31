@@ -4,6 +4,7 @@ import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/models/model_detail.dart';
 import 'package:stelaris/feature/asset/models/model_textures.dart';
 import 'package:stelaris/feature/asset/preview/asset_scene_view.dart';
+import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -162,6 +163,12 @@ void main() {
     final info = tester.getRect(find.text('m1.json'));
     expect(preview.left, greaterThan(info.right));
     expect(preview.top, lessThan(info.bottom));
+    // Level with the first row of cards, below the "General" heading.
+    final firstCard = tester.getRect(
+      find.ancestor(of: find.text('Model'), matching: find.byType(EditCard)),
+    );
+    expect(preview.top, firstCard.top);
+    expect(find.text('General').hitTestable(), findsOneWidget);
   });
 
   testWidgets('a narrow page shows the preview above the cards', (
