@@ -190,4 +190,30 @@ void main() {
     );
     expect(find.byType(IconButton), findsNWidgets(3));
   });
+
+  testWidgets('a change of the controls leaves the viewport unbuilt', (
+    tester,
+  ) async {
+    final controller = AssetPreviewController();
+    addTearDown(controller.dispose);
+    var frames = 0;
+    await _pump(
+      tester,
+      controller: controller,
+      viewportFrame: (viewport) {
+        frames++;
+        return viewport;
+      },
+    );
+    final built = frames;
+
+    await tester.tap(find.byTooltip(_en.asset_preview_auto_rotate));
+    await tester.pump();
+    await tester.tap(find.byTooltip(_en.asset_preview_reduced_detail));
+    await tester.pump();
+
+    expect(controller.autoRotate, isTrue);
+    expect(controller.detail, AssetDetail.reduced);
+    expect(frames, built);
+  });
 }

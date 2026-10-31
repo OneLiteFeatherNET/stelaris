@@ -46,43 +46,43 @@ class _AssetPreviewState extends State<AssetPreview> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return ListenableBuilder(
-      listenable: _controller,
-      builder: (context, _) {
-        final controller = _controller;
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(
-              height: 320,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: _frame(
-                      AssetPreviewViewport(
-                        scene: widget.scene,
-                        assetKey: widget.assetKey,
-                        controller: controller,
-                      ),
-                    ),
+    final controller = _controller;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(
+          height: 320,
+          child: Stack(
+            children: [
+              // The viewport listens to the controller itself, so a change of
+              // the controls does not rebuild it.
+              Positioned.fill(
+                child: _frame(
+                  AssetPreviewViewport(
+                    scene: widget.scene,
+                    assetKey: widget.assetKey,
+                    controller: controller,
                   ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: _Toolbar(controller: controller),
-                  ),
-                ],
+                ),
               ),
-            ),
-            if (widget.unsupported.isNotEmpty)
-              Text(
-                l10n.asset_preview_unsupported(widget.unsupported.join(', ')),
-                style: Theme.of(context).textTheme.bodySmall,
+              Positioned(
+                top: 8,
+                right: 8,
+                child: ListenableBuilder(
+                  listenable: controller,
+                  builder: (context, _) => _Toolbar(controller: controller),
+                ),
               ),
-          ],
-        );
-      },
+            ],
+          ),
+        ),
+        if (widget.unsupported.isNotEmpty)
+          Text(
+            l10n.asset_preview_unsupported(widget.unsupported.join(', ')),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+      ],
     );
   }
 
