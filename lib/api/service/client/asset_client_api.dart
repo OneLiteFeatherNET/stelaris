@@ -63,6 +63,19 @@ class AssetClientApi {
     return AssetModel.fromJson(result.data as Map<String, dynamic>);
   }
 
+  /// Stores [comment] as the internal notes of [asset], `null` clears them.
+  Future<AssetModel> updateComment(AssetModel asset, String? comment) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/project/${asset.projectId}/$_endpoint/${asset.id}',
+    );
+    final result = await apiClient.dio.patchUri(
+      uri,
+      data: {'comment': comment},
+    );
+    return AssetModel.fromJson(result.data as Map<String, dynamic>);
+  }
+
   /// Downloads the stored bytes of the asset [assetId].
   Future<List<int>> content(String projectId, String assetId) async {
     final baseUri = Uri.parse(apiClient.baseUrl);

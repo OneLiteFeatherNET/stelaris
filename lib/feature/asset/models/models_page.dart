@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:async_redux/async_redux.dart';
 import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
+import 'package:stelaris/api/state/actions/asset_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/asset_kind_label.dart';
@@ -18,11 +21,15 @@ import 'package:stelaris/feature/asset/upload/asset_upload_dialog.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
+import 'package:stelaris/feature/build/download/download_helper.dart';
+import 'package:stelaris/feature/dialogs/model_info_dialog.dart';
+import 'package:stelaris/feature/dialogs/notes_edit_dialog.dart';
 import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:stelaris/feature/model/model_card_frame.dart';
 import 'package:stelaris/feature/model/model_grid.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/notes.dart';
 import 'package:stelaris/util/relative_time.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -32,13 +39,15 @@ import 'package:stelaris_models/stelaris_models.dart';
 ///
 /// The selection is [selectedId]; the page reports a new one through
 /// [onSelected], so the route can keep it. [pickFile] opens the file dialog
-/// of the uploads, injectable for tests.
+/// of the uploads and [saveFile] hands a download to the browser, both
+/// injectable for tests.
 class ModelsPage extends StatelessWidget {
   const ModelsPage({
     this.selectedId,
     this.onSelected,
     this.library,
     this.pickFile = pickAssetFile,
+    this.saveFile = _saveInBrowser,
     this.loadUsages = _loadUsages,
     super.key,
   });
@@ -49,6 +58,12 @@ class ModelsPage extends StatelessWidget {
   /// The asset library to load from, [AssetLibrary.shared] when null.
   final AssetLibrary? library;
   final Future<PickedAssetFile?> Function() pickFile;
+
+  /// Saves the downloaded [bytes] of a model as [fileName].
+  final void Function(List<int> bytes, String fileName) saveFile;
+
+  static void _saveInBrowser(List<int> bytes, String fileName) =>
+      triggerBrowserDownload(base64Encode(bytes), fileName);
 
   /// Loads the items of a project with their components, for "used by".
   final Future<Map<ItemModel, List<ItemComponentDto>>> Function(
@@ -90,6 +105,7 @@ class ModelsPage extends StatelessWidget {
           onSelected: onSelected,
           library: library ?? AssetLibrary.shared,
           pickFile: pickFile,
+          saveFile: saveFile,
           loadUsages: loadUsages,
         );
       },
@@ -122,6 +138,7 @@ class _ModelsBody extends StatefulWidget {
     required this.onSelected,
     required this.library,
     required this.pickFile,
+    required this.saveFile,
     required this.loadUsages,
     super.key,
   });
@@ -132,6 +149,7 @@ class _ModelsBody extends StatefulWidget {
   final ValueChanged<String?>? onSelected;
   final AssetLibrary library;
   final Future<PickedAssetFile?> Function() pickFile;
+  final void Function(List<int> bytes, String fileName) saveFile;
   final Future<Map<ItemModel, List<ItemComponentDto>>> Function(
     String projectId,
   )
@@ -365,6 +383,23 @@ class _ModelsBodyState extends State<_ModelsBody> {
                   title: selected.displayName,
                   onBack: () => _select(null),
                   compactBelow: PageHeader.detailCompactThreshold,
+                  actions: [
+                    _notesAction(selected),
+                    PageHeaderAction(
+                      key: const Key('model_info'),
+                      icon: const Icon(Icons.info_outline),
+                      label: context.l10n.menu_item_info,
+                      onPressed: () => _openInfo(selected),
+                    ),
+                    // The main action here, as saving is on other detail pages.
+                    PageHeaderAction(
+                      key: const Key('model_download'),
+                      icon: const Icon(Icons.download_outlined),
+                      label: context.l10n.button_download,
+                      primary: true,
+                      onPressed: () => _download(selected),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 12),
                 Expanded(child: _buildDetail(selected)),
@@ -399,6 +434,63 @@ class _ModelsBodyState extends State<_ModelsBody> {
         },
       ),
     );
+  }
+
+  /// Opens the notes of [model] for editing. Unlike the other detail pages,
+  /// which only show them, because a model card has no menu to edit them.
+  Widget _notesAction(AssetModel model) {
+    final l10n = context.l10n;
+    final hasNotes = notesSummary(model.comment) != null;
+    return PageHeaderAction(
+      key: const Key('model_notes'),
+      icon: Badge(
+        isLabelVisible: hasNotes,
+        smallSize: 8,
+        child: Icon(
+          hasNotes ? Icons.sticky_note_2 : Icons.sticky_note_2_outlined,
+          semanticLabel: hasNotes ? l10n.tooltip_notes_present : null,
+        ),
+      ),
+      label: l10n.action_notes,
+      onPressed: () => _editNotes(model),
+    );
+  }
+
+  Future<void> _editNotes(AssetModel model) async {
+    await showDialog<void>(
+      context: context,
+      builder: (_) => NotesEditDialog(
+        name: model.displayName,
+        notes: model.comment,
+        saveAction: (notes) => AssetNotesUpdateAction(model, notes),
+      ),
+    );
+    if (!mounted) return;
+    await _load();
+  }
+
+  void _openInfo(AssetModel model) => showDialog<void>(
+    context: context,
+    builder: (_) => ModelInfoDialog(
+      name: model.displayName,
+      namespacedKey: model.key,
+      id: model.id,
+      creationDate: model.creationDate,
+      modificationDate: model.modificationDate,
+    ),
+  );
+
+  /// Downloads the stored file of [model] under its file name.
+  Future<void> _download(AssetModel model) async {
+    final List<int> bytes;
+    try {
+      bytes = await ApiService().assetApi.content(widget.projectId, model.id);
+    } on DioException catch (error) {
+      if (!mounted) return;
+      context.showErrorSnackBar(error);
+      return;
+    }
+    widget.saveFile(bytes, model.fileName);
   }
 
   Widget _buildDetail(AssetModel model) => SingleChildScrollView(

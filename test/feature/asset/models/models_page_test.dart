@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:async_redux/async_redux.dart';
@@ -58,6 +59,7 @@ Future<List<String?>> _pump(
   String? selectedId,
   Size size = const Size(1200, 800),
   Future<PickedAssetFile?> Function()? pickFile,
+  void Function(List<int> bytes, String fileName)? saveFile,
 }) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
@@ -85,6 +87,7 @@ Future<List<String?>> _pump(
             selectedId: selectedId,
             onSelected: selections.add,
             pickFile: pickFile ?? () async => null,
+            saveFile: saveFile ?? (_, _) {},
             loadUsages: (_) async => {},
           ),
         ),
@@ -378,5 +381,82 @@ void main() {
       expect(find.text('The store is down.'), findsOneWidget);
       expect(selections, isEmpty);
     });
+  });
+
+  testWidgets('the download button saves the model file under its name', (
+    tester,
+  ) async {
+    final saved = <(String, String)>[];
+    await _pump(
+      tester,
+      library: _Library([_ruby], {}),
+      selectedId: 'm1',
+      saveFile: (bytes, fileName) =>
+          saved.add((utf8.decode(bytes), fileName)),
+    );
+    await _settlePreview(tester);
+
+    await tester.tap(find.byKey(const Key('model_download')));
+    await pumpUntil(
+      tester,
+      action: () async {},
+      done: () => saved.isNotEmpty,
+    );
+
+    expect(saved, [('{"elements":[]}', 'm1.json')]);
+  });
+
+  testWidgets('the notes button saves the notes of the model', (tester) async {
+    await _pump(tester, library: _Library([_ruby], {}), selectedId: 'm1');
+    await _settlePreview(tester);
+    final patches = <RequestOptions>[];
+    ApiService().assetApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter((options) {
+          patches.add(options);
+          return FakeHttpClientAdapter.response(
+            assetJson(id: 'm1', key: 'vulpes:item/ruby', kind: 'MODEL'),
+          );
+        });
+
+    await tester.tap(find.byKey(const Key('model_notes')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Glows at night');
+    await tester.tap(find.text('Save'));
+    await pumpUntil(
+      tester,
+      action: () async {},
+      done: () => find.byType(TextField).evaluate().isEmpty,
+    );
+
+    final patch = patches.single;
+    expect(patch.method, 'PATCH');
+    expect(patch.uri.path, endsWith('/project/p-1/asset/m1'));
+    expect(patch.data, {'comment': 'Glows at night'});
+  });
+
+  testWidgets('the info button shows the key and id of the model', (
+    tester,
+  ) async {
+    await _pump(tester, library: _Library([_ruby], {}), selectedId: 'm1');
+    await _settlePreview(tester);
+
+    await tester.tap(find.byKey(const Key('model_info')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Dialog), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.textContaining('vulpes:item/ruby'),
+      ),
+      findsWidgets,
+    );
+    expect(
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.textContaining('m1'),
+      ),
+      findsWidgets,
+    );
   });
 }
