@@ -391,6 +391,12 @@ class _ModelsBodyState extends State<_ModelsBody> {
                       label: context.l10n.menu_item_info,
                       onPressed: () => _openInfo(selected),
                     ),
+                    PageHeaderAction(
+                      key: const Key('model_update'),
+                      icon: const Icon(Icons.upload_outlined),
+                      label: context.l10n.asset_model_update,
+                      onPressed: () => _update(selected),
+                    ),
                     // The main action here, as saving is on other detail pages.
                     PageHeaderAction(
                       key: const Key('model_download'),
@@ -479,6 +485,41 @@ class _ModelsBodyState extends State<_ModelsBody> {
       modificationDate: model.modificationDate,
     ),
   );
+
+  /// Uploads a new file for [model] in place of its stored one.
+  Future<void> _update(AssetModel model) async {
+    final file = await widget.pickFile();
+    if (file == null || !mounted) return;
+    final AssetModel updated;
+    try {
+      updated = await ApiService().assetApi.replaceContent(
+        model,
+        fileName: file.name,
+        bytes: file.bytes,
+      );
+    } on DioException catch (error) {
+      if (!mounted) return;
+      // Someone else stored a new file since this page loaded the model.
+      if (error.response?.statusCode == 412) {
+        context.showErrorSnackBar(
+          ProblemDetail(
+            title: context.l10n.error_title,
+            status: 412,
+            detail: context.l10n.asset_model_update_conflict(model.displayName),
+          ),
+        );
+        await _load();
+        return;
+      }
+      context.showErrorSnackBar(error);
+      return;
+    }
+    if (!mounted) return;
+    context.showSuccessSnackBar(
+      context.l10n.asset_model_updated(updated.displayName),
+    );
+    await _load();
+  }
 
   /// Downloads the stored file of [model] under its file name.
   Future<void> _download(AssetModel model) async {

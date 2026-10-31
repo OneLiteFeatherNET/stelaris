@@ -1055,6 +1055,23 @@
   "asset_models_from_texture_title": "New model from a texture",
   "asset_model_texture_present": "Texture",
   "asset_model_texture_upload_hint": "Click to upload it",
+  "asset_model_update": "Update",
+  "asset_model_updated": "{name} was updated.",
+  "@asset_model_updated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_model_update_conflict": "{name} was changed in the meantime. The page now shows the current version, check it and update again.",
+  "@asset_model_update_conflict": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "asset_model_missing_notice": "{count, plural, =1{1 texture of this model is missing.} other{{count} textures of this model are missing.}} Upload {count, plural, =1{it} other{them}} from the textures below.",
   "@asset_model_missing_notice": {
     "placeholders": {

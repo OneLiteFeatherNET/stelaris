@@ -391,17 +391,12 @@ void main() {
       tester,
       library: _Library([_ruby], {}),
       selectedId: 'm1',
-      saveFile: (bytes, fileName) =>
-          saved.add((utf8.decode(bytes), fileName)),
+      saveFile: (bytes, fileName) => saved.add((utf8.decode(bytes), fileName)),
     );
     await _settlePreview(tester);
 
     await tester.tap(find.byKey(const Key('model_download')));
-    await pumpUntil(
-      tester,
-      action: () async {},
-      done: () => saved.isNotEmpty,
-    );
+    await pumpUntil(tester, action: () async {}, done: () => saved.isNotEmpty);
 
     expect(saved, [('{"elements":[]}', 'm1.json')]);
   });
@@ -457,6 +452,123 @@ void main() {
         matching: find.textContaining('m1'),
       ),
       findsWidgets,
+    );
+  });
+
+  testWidgets('the update button replaces the file of the model', (
+    tester,
+  ) async {
+    final assets = [_ruby];
+    await _pump(
+      tester,
+      library: _Library(assets, {}),
+      selectedId: 'm1',
+      pickFile: () async =>
+          PickedAssetFile(name: 'ruby_v2.json', bytes: Uint8List(3)),
+    );
+    await _settlePreview(tester);
+    final requests = <RequestOptions>[];
+    final updated = _ruby.copyWith(sha1: 'sha-m1-v2');
+    ApiService().assetApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter((options) {
+          requests.add(options);
+          if (options.method == 'POST') {
+            assets[0] = updated;
+            return FakeHttpClientAdapter.response(updated.toJson());
+          }
+          return ResponseBody.fromString('{"elements":[]}', 200);
+        });
+
+    await tester.tap(find.byKey(const Key('model_update')));
+    await pumpUntil(
+      tester,
+      action: () async {},
+      // The new file has a new sha1, so the preview loads it too.
+      done: () =>
+          find.text('Name of m1 was updated.').evaluate().isNotEmpty &&
+          requests.any((r) => r.method == 'GET') &&
+          find.byType(CircularProgressIndicator).evaluate().isEmpty,
+    );
+
+    final upload = requests.firstWhere((r) => r.method == 'POST');
+    expect(upload.uri.path, endsWith('/project/p-1/asset/m1/content'));
+    final form = upload.data as FormData;
+    expect(form.files.single.value.filename, 'ruby_v2.json');
+    expect(form.fields, isEmpty);
+    expect(upload.headers['If-Match'], '"sha-m1"');
+  });
+
+  testWidgets('an update after a change by someone else says so and reloads', (
+    tester,
+  ) async {
+    final assets = [_ruby];
+    await _pump(
+      tester,
+      library: _Library(assets, {}),
+      selectedId: 'm1',
+      pickFile: () async =>
+          PickedAssetFile(name: 'ruby.json', bytes: Uint8List(3)),
+    );
+    await _settlePreview(tester);
+    // Someone else stored a new file meanwhile.
+    assets[0] = _ruby.copyWith(sha1: 'sha-m1-theirs');
+    ApiService().assetApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter((options) {
+          if (options.method == 'POST') {
+            return FakeHttpClientAdapter.response({
+              'title': 'Precondition failed',
+              'status': 412,
+            }, statusCode: 412);
+          }
+          return ResponseBody.fromString('{"elements":[]}', 200);
+        });
+
+    await tester.tap(find.byKey(const Key('model_update')));
+    await pumpUntil(
+      tester,
+      action: () async {},
+      done: () =>
+          find
+              .textContaining('was changed in the meantime')
+              .evaluate()
+              .isNotEmpty &&
+          find.byType(CircularProgressIndicator).evaluate().isEmpty,
+    );
+
+    expect(find.textContaining('was updated'), findsNothing);
+  });
+
+  testWidgets('a refused update shows the error and keeps the model', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      library: _Library([_ruby], {}),
+      selectedId: 'm1',
+      pickFile: () async =>
+          PickedAssetFile(name: 'ruby.bbmodel', bytes: Uint8List(3)),
+    );
+    await _settlePreview(tester);
+    ApiService().assetApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter(
+          (_) => FakeHttpClientAdapter.response({
+            'title': 'Wrong kind',
+            'status': 400,
+            'detail': 'The file is of another kind.',
+          }, statusCode: 400),
+        );
+
+    await tester.tap(find.byKey(const Key('model_update')));
+    await pumpUntil(
+      tester,
+      action: () async {},
+      done: () => find.byType(SnackBar).evaluate().isNotEmpty,
+    );
+
+    expect(find.textContaining('was updated'), findsNothing);
+    expect(
+      tester.widget<Text>(find.byKey(const Key('model_detail_title'))).data,
+      'vulpes:item/ruby',
     );
   });
 }

@@ -63,6 +63,33 @@ class AssetClientApi {
     return AssetModel.fromJson(result.data as Map<String, dynamic>);
   }
 
+  /// Replaces the stored file of [asset] by [bytes]; its key and name stay.
+  ///
+  /// The backend refuses a file of another kind than the asset's, and with
+  /// 412 if the stored file is no longer the one of [asset]: the request
+  /// sends its sha1 as If-Match, so a change by someone else is not
+  /// overwritten unseen.
+  Future<AssetModel> replaceContent(
+    AssetModel asset, {
+    required String fileName,
+    required List<int> bytes,
+  }) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path:
+          '${baseUri.path}/project/${asset.projectId}/$_endpoint/${asset.id}/content',
+    );
+    final form = FormData.fromMap({
+      'file': MultipartFile.fromBytes(bytes, filename: fileName),
+    });
+    final result = await apiClient.dio.postUri(
+      uri,
+      data: form,
+      options: Options(headers: {'If-Match': '"${asset.sha1}"'}),
+    );
+    return AssetModel.fromJson(result.data as Map<String, dynamic>);
+  }
+
   /// Stores [comment] as the internal notes of [asset], `null` clears them.
   Future<AssetModel> updateComment(AssetModel asset, String? comment) async {
     final baseUri = Uri.parse(apiClient.baseUrl);

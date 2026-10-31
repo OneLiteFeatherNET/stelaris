@@ -1974,6 +1974,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_model_texture_upload_hint => 'Click to upload it';
 
   @override
+  String get asset_model_update => 'Update';
+
+  @override
+  String asset_model_updated(String name) {
+    return '$name was updated.';
+  }
+
+  @override
+  String asset_model_update_conflict(String name) {
+    return '$name was changed in the meantime. The page now shows the current version, check it and update again.';
+  }
+
+  @override
   String asset_model_missing_notice(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

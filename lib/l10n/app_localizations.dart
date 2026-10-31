@@ -3580,6 +3580,24 @@ abstract class AppLocalizations {
   /// **'Click to upload it'**
   String get asset_model_texture_upload_hint;
 
+  /// No description provided for @asset_model_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get asset_model_update;
+
+  /// No description provided for @asset_model_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was updated.'**
+  String asset_model_updated(String name);
+
+  /// No description provided for @asset_model_update_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was changed in the meantime. The page now shows the current version, check it and update again.'**
+  String asset_model_update_conflict(String name);
+
   /// No description provided for @asset_model_missing_notice.
   ///
   /// In en, this message translates to:
