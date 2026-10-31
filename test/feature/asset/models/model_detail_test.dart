@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/models/model_detail.dart';
 import 'package:stelaris/feature/asset/models/model_textures.dart';
+import 'package:stelaris/feature/asset/preview/asset_scene_view.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -32,8 +33,9 @@ Future<void> _pump(
   List<ItemModel> usedBy = const [],
   ValueChanged<ItemModel>? onOpenItem,
   ValueChanged<TextureSlot>? onUploadTexture,
+  double width = 1000,
 }) async {
-  tester.view.physicalSize = const Size(1000, 1600);
+  tester.view.physicalSize = Size(width, 1600);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
   serveAssets(const []);
@@ -150,5 +152,26 @@ void main() {
     await _pump(tester, textures: const ModelTextures(slots: []));
 
     expect(find.text('No item uses this model yet.'), findsOneWidget);
+  });
+
+  testWidgets('a wide page shows the preview to the right of the cards', (
+    tester,
+  ) async {
+    await _pump(tester, textures: const ModelTextures(slots: []));
+
+    final preview = tester.getRect(find.byType(AssetSceneView));
+    final info = tester.getRect(find.text('m1.json'));
+    expect(preview.left, greaterThan(info.right));
+    expect(preview.top, lessThan(info.bottom));
+  });
+
+  testWidgets('a narrow page shows the preview above the cards', (
+    tester,
+  ) async {
+    await _pump(tester, textures: const ModelTextures(slots: []), width: 700);
+
+    final preview = tester.getRect(find.byType(AssetSceneView));
+    final info = tester.getRect(find.text('m1.json'));
+    expect(preview.bottom, lessThan(info.top));
   });
 }

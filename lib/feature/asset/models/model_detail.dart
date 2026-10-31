@@ -14,8 +14,9 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/relative_time.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
-/// The detail of one model on the Models page: its key, the 3D preview, what
-/// it is, which items use it and its textures.
+/// The detail of one model on the Models page: its key, what it is, which
+/// items use it and its textures, with the 3D preview to the right of them on
+/// a wide page and above them on a narrow one.
 class ModelDetail extends StatelessWidget {
   const ModelDetail({
     required this.projectId,
@@ -37,6 +38,11 @@ class ModelDetail extends StatelessWidget {
 
   /// Uploads the missing texture of a slot, null hides the upload.
   final ValueChanged<TextureSlot>? onUploadTexture;
+
+  /// From this width on the preview stands to the right of the cards.
+  static const double _sideBySideWidth = 960;
+  static const double _previewWidth = 420;
+  static const double _previewGap = 24;
 
   @override
   Widget build(BuildContext context) {
@@ -64,28 +70,49 @@ class ModelDetail extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        AssetSceneView(
-          // Loads again when the model or one of its textures changes.
-          key: ValueKey(
-            [
-              model.sha1,
-              for (final slot in textures.slots) slot.texture?.sha1,
-            ].join('|'),
-          ),
-          projectId: projectId,
-          asset: model,
-          viewportFrame: _darkSurface,
-        ),
-        const SizedBox(height: 24),
         LayoutBuilder(
-          builder: (context, constraints) => _buildSections(
-            context,
-            EditCardGrid.cardWidthIn(constraints.maxWidth),
-          ),
+          builder: (context, constraints) {
+            final width = constraints.maxWidth;
+            if (width < _sideBySideWidth) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _preview(),
+                  const SizedBox(height: 24),
+                  _buildSections(context, EditCardGrid.cardWidthIn(width)),
+                ],
+              );
+            }
+            final sectionsWidth = width - _previewWidth - _previewGap;
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: sectionsWidth,
+                  child: _buildSections(
+                    context,
+                    EditCardGrid.cardWidthIn(sectionsWidth),
+                  ),
+                ),
+                const SizedBox(width: _previewGap),
+                SizedBox(width: _previewWidth, child: _preview()),
+              ],
+            );
+          },
         ),
       ],
     );
   }
+
+  Widget _preview() => AssetSceneView(
+    // Loads again when the model or one of its textures changes.
+    key: ValueKey(
+      [model.sha1, for (final slot in textures.slots) slot.texture?.sha1].join('|'),
+    ),
+    projectId: projectId,
+    asset: model,
+    viewportFrame: _darkSurface,
+  );
 
   /// The general facts and the textures, as cards under headings like the
   /// fields of the other detail pages. Each card is [cardWidth] wide.
