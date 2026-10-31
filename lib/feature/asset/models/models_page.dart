@@ -13,6 +13,7 @@ import 'package:stelaris/feature/asset/asset_kind_label.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/models/flat_item_model.dart';
 import 'package:stelaris/feature/asset/models/model_detail.dart';
+import 'package:stelaris/feature/asset/models/model_revisions_dialog.dart';
 import 'package:stelaris/feature/asset/models/model_textures.dart';
 import 'package:stelaris/feature/asset/models/model_usage.dart';
 import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
@@ -392,6 +393,12 @@ class _ModelsBodyState extends State<_ModelsBody> {
                       onPressed: () => _openInfo(selected),
                     ),
                     PageHeaderAction(
+                      key: const Key('model_revisions'),
+                      icon: const Icon(Icons.history),
+                      label: context.l10n.asset_model_revisions,
+                      onPressed: () => _openRevisions(selected),
+                    ),
+                    PageHeaderAction(
                       key: const Key('model_update'),
                       icon: const Icon(Icons.upload_outlined),
                       label: context.l10n.asset_model_update,
@@ -485,6 +492,36 @@ class _ModelsBodyState extends State<_ModelsBody> {
       modificationDate: model.modificationDate,
     ),
   );
+
+  /// Lists the versions of [model]; after a restore, shows the outcome and
+  /// loads the page again.
+  Future<void> _openRevisions(AssetModel model) async {
+    final result = await showDialog<RevisionsResult>(
+      context: context,
+      builder: (_) =>
+          ModelRevisionsDialog(asset: model, saveFile: widget.saveFile),
+    );
+    if (result == null || !mounted) return;
+    final l10n = context.l10n;
+    switch (result) {
+      case RevisionRestored(:final revision, :final asset):
+        context.showSuccessSnackBar(
+          l10n.asset_model_revision_restored(
+            revision.number,
+            asset.displayName,
+          ),
+        );
+      case RevisionConflict():
+        context.showErrorSnackBar(
+          ProblemDetail(
+            title: l10n.error_title,
+            status: 412,
+            detail: l10n.asset_model_revision_conflict(model.displayName),
+          ),
+        );
+    }
+    await _load();
+  }
 
   /// Uploads a new file for [model] in place of its stored one.
   Future<void> _update(AssetModel model) async {

@@ -1987,6 +1987,55 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get asset_model_revisions => 'Versions';
+
+  @override
+  String asset_model_revisions_title(String name) {
+    return 'Versions of $name';
+  }
+
+  @override
+  String get asset_model_revisions_failed =>
+      'The versions could not be loaded.';
+
+  @override
+  String asset_model_revision(int number) {
+    return 'Version $number';
+  }
+
+  @override
+  String get asset_model_revision_current => 'Current';
+
+  @override
+  String get asset_model_revision_download => 'Download this version';
+
+  @override
+  String get asset_model_revision_restore => 'Restore this version';
+
+  @override
+  String asset_model_revision_restore_title(int number) {
+    return 'Restore version $number?';
+  }
+
+  @override
+  String asset_model_revision_restore_body(int number, String name) {
+    return 'The file of version $number becomes the current file of $name. This adds a new version, so the current file stays in the list.';
+  }
+
+  @override
+  String get asset_model_revision_restore_action => 'Restore';
+
+  @override
+  String asset_model_revision_restored(int number, String name) {
+    return 'Version $number of $name was restored.';
+  }
+
+  @override
+  String asset_model_revision_conflict(String name) {
+    return '$name was changed in the meantime. The page now shows the current version, check it and restore again.';
+  }
+
+  @override
   String asset_model_missing_notice(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

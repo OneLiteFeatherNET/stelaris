@@ -134,6 +134,109 @@ void main() {
     });
   });
 
+  group('replaceContent', () {
+    test(
+      'POSTs the file to the content path with the sha1 as If-Match',
+      () async {
+        final adapter = RecordingHttpClientAdapter(_assetJson());
+        apiClient.dio.httpClientAdapter = adapter;
+        final asset = AssetModel.fromJson(_assetJson());
+
+        await assetApi.replaceContent(
+          asset,
+          fileName: 'ruby.json',
+          bytes: [1, 2, 3],
+        );
+
+        final request = adapter.lastRequest!;
+        expect(request.method, 'POST');
+        expect(request.uri.path, '/api/project/p-1/asset/a-1/content');
+        expect(request.headers['If-Match'], '"bbbb"');
+        expect(
+          (request.data as FormData).files.single.value.filename,
+          'ruby.json',
+        );
+      },
+    );
+  });
+
+  group('revisions', () {
+    test('GETs the revisions of the asset with zero-based paging', () async {
+      final adapter = RecordingHttpClientAdapter({
+        'items': [
+          {
+            'id': 'r-2',
+            'number': 2,
+            'sha1': 'bbbb',
+            'size': 512,
+            'current': true,
+          },
+          {'id': 'r-1', 'number': 1, 'sha1': 'aaaa', 'size': 256},
+        ],
+        'totalItems': 2,
+        'totalPages': 1,
+        'currentPage': 0,
+        'pageSize': 50,
+      });
+      apiClient.dio.httpClientAdapter = adapter;
+
+      final result = await assetApi.revisions(
+        AssetModel.fromJson(_assetJson()),
+      );
+
+      expect(adapter.lastRequest!.method, 'GET');
+      expect(
+        adapter.lastRequest!.uri.path,
+        '/api/project/p-1/asset/a-1/revision',
+      );
+      expect(adapter.lastRequest!.uri.queryParameters, {
+        'page': '0',
+        'size': '50',
+      });
+      expect(result.items.map((r) => r.number), [2, 1]);
+      expect(result.items.first.current, isTrue);
+    });
+
+    test('GETs the bytes of one revision', () async {
+      RequestOptions? request;
+      apiClient.dio.httpClientAdapter = FakeHttpClientAdapter((options) {
+        request = options;
+        return ResponseBody.fromBytes(Uint8List.fromList([1, 2]), 200);
+      });
+
+      final bytes = await assetApi.revisionContent(
+        AssetModel.fromJson(_assetJson()),
+        'r-1',
+      );
+
+      expect(bytes, [1, 2]);
+      expect(
+        request!.uri.path,
+        '/api/project/p-1/asset/a-1/revision/r-1/content',
+      );
+      expect(request!.responseType, ResponseType.bytes);
+    });
+
+    test('restores a revision with the sha1 as If-Match', () async {
+      final adapter = RecordingHttpClientAdapter(_assetJson());
+      apiClient.dio.httpClientAdapter = adapter;
+
+      final restored = await assetApi.restoreRevision(
+        AssetModel.fromJson(_assetJson()),
+        'r-1',
+      );
+
+      final request = adapter.lastRequest!;
+      expect(request.method, 'POST');
+      expect(
+        request.uri.path,
+        '/api/project/p-1/asset/a-1/revision/r-1/restore',
+      );
+      expect(request.headers['If-Match'], '"bbbb"');
+      expect(restored.id, 'a-1');
+    });
+  });
+
   group('errors', () {
     test('a 409 on upload surfaces as a ProblemDetail with code and field', () async {
       apiClient.dio.httpClientAdapter = FakeHttpClientAdapter.json(

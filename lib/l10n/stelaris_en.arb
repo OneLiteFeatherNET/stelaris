@@ -1072,6 +1072,66 @@
       }
     }
   },
+  "asset_model_revisions": "Versions",
+  "asset_model_revisions_title": "Versions of {name}",
+  "@asset_model_revisions_title": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_model_revisions_failed": "The versions could not be loaded.",
+  "asset_model_revision": "Version {number}",
+  "@asset_model_revision": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "asset_model_revision_current": "Current",
+  "asset_model_revision_download": "Download this version",
+  "asset_model_revision_restore": "Restore this version",
+  "asset_model_revision_restore_title": "Restore version {number}?",
+  "@asset_model_revision_restore_title": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "asset_model_revision_restore_body": "The file of version {number} becomes the current file of {name}. This adds a new version, so the current file stays in the list.",
+  "@asset_model_revision_restore_body": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_model_revision_restore_action": "Restore",
+  "asset_model_revision_restored": "Version {number} of {name} was restored.",
+  "@asset_model_revision_restored": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_model_revision_conflict": "{name} was changed in the meantime. The page now shows the current version, check it and restore again.",
+  "@asset_model_revision_conflict": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "asset_model_missing_notice": "{count, plural, =1{1 texture of this model is missing.} other{{count} textures of this model are missing.}} Upload {count, plural, =1{it} other{them}} from the textures below.",
   "@asset_model_missing_notice": {
     "placeholders": {

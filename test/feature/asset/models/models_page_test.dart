@@ -571,4 +571,66 @@ void main() {
       'vulpes:item/ruby',
     );
   });
+
+  testWidgets('a restored version is announced and the page reloads', (
+    tester,
+  ) async {
+    final assets = [_ruby];
+    await _pump(tester, library: _Library(assets, {}), selectedId: 'm1');
+    await _settlePreview(tester);
+    final restored = _ruby.copyWith(sha1: 'sha-m1-r1');
+    final requests = <RequestOptions>[];
+    ApiService().assetApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter((options) {
+          requests.add(options);
+          final path = options.uri.path;
+          if (path.endsWith('/restore')) {
+            assets[0] = restored;
+            return FakeHttpClientAdapter.response(restored.toJson());
+          }
+          if (path.endsWith('/revision')) {
+            return FakeHttpClientAdapter.response({
+              'items': [
+                {
+                  'id': 'r-2',
+                  'number': 2,
+                  'sha1': 'sha-m1',
+                  'size': 64,
+                  'current': true,
+                },
+                {'id': 'r-1', 'number': 1, 'sha1': 'sha-m1-r1', 'size': 32},
+              ],
+              'totalItems': 2,
+              'totalPages': 1,
+              'currentPage': 0,
+              'pageSize': 50,
+            });
+          }
+          return ResponseBody.fromString('{"elements":[]}', 200);
+        });
+
+    await tester.tap(find.byKey(const Key('model_revisions')));
+    await pumpUntil(
+      tester,
+      action: () async {},
+      done: () => find.text('Version 1').evaluate().isNotEmpty,
+    );
+    await tester.tap(find.byTooltip('Restore this version'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Restore'));
+    await pumpUntil(
+      tester,
+      action: () async {},
+      // The restored file has a new sha1, so the preview loads it too.
+      done: () =>
+          find
+              .text('Version 1 of Name of m1 was restored.')
+              .evaluate()
+              .isNotEmpty &&
+          requests.any((r) => r.uri.path.endsWith('/m1/content')) &&
+          find.byType(CircularProgressIndicator).evaluate().isEmpty,
+    );
+
+    expect(find.text('Versions of Name of m1'), findsNothing);
+  });
 }

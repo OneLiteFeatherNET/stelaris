@@ -3598,6 +3598,78 @@ abstract class AppLocalizations {
   /// **'{name} was changed in the meantime. The page now shows the current version, check it and update again.'**
   String asset_model_update_conflict(String name);
 
+  /// No description provided for @asset_model_revisions.
+  ///
+  /// In en, this message translates to:
+  /// **'Versions'**
+  String get asset_model_revisions;
+
+  /// No description provided for @asset_model_revisions_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Versions of {name}'**
+  String asset_model_revisions_title(String name);
+
+  /// No description provided for @asset_model_revisions_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The versions could not be loaded.'**
+  String get asset_model_revisions_failed;
+
+  /// No description provided for @asset_model_revision.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {number}'**
+  String asset_model_revision(int number);
+
+  /// No description provided for @asset_model_revision_current.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get asset_model_revision_current;
+
+  /// No description provided for @asset_model_revision_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download this version'**
+  String get asset_model_revision_download;
+
+  /// No description provided for @asset_model_revision_restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore this version'**
+  String get asset_model_revision_restore;
+
+  /// No description provided for @asset_model_revision_restore_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore version {number}?'**
+  String asset_model_revision_restore_title(int number);
+
+  /// No description provided for @asset_model_revision_restore_body.
+  ///
+  /// In en, this message translates to:
+  /// **'The file of version {number} becomes the current file of {name}. This adds a new version, so the current file stays in the list.'**
+  String asset_model_revision_restore_body(int number, String name);
+
+  /// No description provided for @asset_model_revision_restore_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get asset_model_revision_restore_action;
+
+  /// No description provided for @asset_model_revision_restored.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {number} of {name} was restored.'**
+  String asset_model_revision_restored(int number, String name);
+
+  /// No description provided for @asset_model_revision_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was changed in the meantime. The page now shows the current version, check it and restore again.'**
+  String asset_model_revision_conflict(String name);
+
   /// No description provided for @asset_model_missing_notice.
   ///
   /// In en, this message translates to:

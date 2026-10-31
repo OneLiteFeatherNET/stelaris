@@ -90,6 +90,60 @@ class AssetClientApi {
     return AssetModel.fromJson(result.data as Map<String, dynamic>);
   }
 
+  /// Fetches one page of the revisions of [asset], the newest first.
+  ///
+  /// [page] is zero-based, as the backend expects.
+  Future<PaginatedResult<AssetRevisionModel>> revisions(
+    AssetModel asset, {
+    int page = 0,
+    int size = 50,
+  }) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path:
+          '${baseUri.path}/project/${asset.projectId}/$_endpoint/${asset.id}/revision',
+      queryParameters: {'page': page.toString(), 'size': size.toString()},
+    );
+    final result = await apiClient.dio.getUri(uri);
+    return PaginatedResult.fromJson(
+      result.data!,
+      (json) => AssetRevisionModel.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
+  /// Downloads the stored bytes of the revision [revisionId] of [asset].
+  Future<List<int>> revisionContent(AssetModel asset, String revisionId) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path:
+          '${baseUri.path}/project/${asset.projectId}/$_endpoint/${asset.id}/revision/$revisionId/content',
+    );
+    final result = await apiClient.dio.getUri(
+      uri,
+      options: Options(responseType: ResponseType.bytes),
+    );
+    return result.data! as List<int>;
+  }
+
+  /// Makes the revision [revisionId] the current file of [asset], as a new
+  /// revision. Like [replaceContent] it sends the sha1 of [asset] as
+  /// If-Match, so the backend answers 412 if the file changed meanwhile.
+  Future<AssetModel> restoreRevision(
+    AssetModel asset,
+    String revisionId,
+  ) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path:
+          '${baseUri.path}/project/${asset.projectId}/$_endpoint/${asset.id}/revision/$revisionId/restore',
+    );
+    final result = await apiClient.dio.postUri(
+      uri,
+      options: Options(headers: {'If-Match': '"${asset.sha1}"'}),
+    );
+    return AssetModel.fromJson(result.data as Map<String, dynamic>);
+  }
+
   /// Stores [comment] as the internal notes of [asset], `null` clears them.
   Future<AssetModel> updateComment(AssetModel asset, String? comment) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
