@@ -3579,6 +3579,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Click to upload it'**
   String get asset_model_texture_upload_hint;
+
+  /// No description provided for @asset_model_missing_notice.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 texture of this model is missing.} other{{count} textures of this model are missing.}} Upload {count, plural, =1{it} other{them}} from the textures below.'**
+  String asset_model_missing_notice(int count);
 }
 
 class _AppLocalizationsDelegate

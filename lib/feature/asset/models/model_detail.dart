@@ -6,6 +6,7 @@ import 'package:stelaris/feature/asset/preview/asset_scene_view.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card_grid.dart';
+import 'package:stelaris/feature/base/dialog/notice_box.dart';
 import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/component/component_preview.dart';
@@ -14,7 +15,8 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/relative_time.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
-/// The detail of one model on the Models page: its key, what it is, which
+/// The detail of one model on the Models page: its key, a warning when
+/// textures are missing, what it is, which
 /// items use it and its textures, with the 3D preview to the right of them on
 /// a wide page and above them on a narrow one.
 class ModelDetail extends StatelessWidget {
@@ -70,6 +72,15 @@ class ModelDetail extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
+        if (_missingCount case final missing when missing > 0) ...[
+          NoticeBox(
+            key: const Key('model_missing_notice'),
+            icon: Icons.warning_amber_rounded,
+            color: theme.colorScheme.error,
+            content: Text(l10n.asset_model_missing_notice(missing)),
+          ),
+          const SizedBox(height: 16),
+        ],
         LayoutBuilder(
           builder: (context, constraints) {
             final width = constraints.maxWidth;
@@ -103,6 +114,8 @@ class ModelDetail extends StatelessWidget {
       ],
     );
   }
+
+  int get _missingCount => textures.slots.where((slot) => slot.missing).length;
 
   Widget _preview() => AssetSceneView(
     // Loads again when the model or one of its textures changes.

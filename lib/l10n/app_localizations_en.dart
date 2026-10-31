@@ -1972,4 +1972,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asset_model_texture_upload_hint => 'Click to upload it';
+
+  @override
+  String asset_model_missing_notice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count textures of this model are missing.',
+      one: '1 texture of this model is missing.',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'them',
+      one: 'it',
+    );
+    return '$_temp0 Upload $_temp1 from the textures below.';
+  }
 }

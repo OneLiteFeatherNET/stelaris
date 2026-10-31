@@ -174,4 +174,36 @@ void main() {
     final info = tester.getRect(find.text('m1.json'));
     expect(preview.bottom, lessThan(info.top));
   });
+
+  testWidgets('warns with the count when textures are missing', (tester) async {
+    await _pump(
+      tester,
+      textures: ModelTextures(
+        slots: [
+          TextureSlot(key: 'vulpes:block/gem', texture: _gem),
+          const TextureSlot(key: 'vulpes:item/glow'),
+          const TextureSlot(key: 'vulpes:item/dust'),
+        ],
+      ),
+    );
+
+    expect(
+      find.text(
+        '2 textures of this model are missing. '
+        'Upload them from the textures below.',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('no warning when every texture is present', (tester) async {
+    await _pump(
+      tester,
+      textures: ModelTextures(
+        slots: [TextureSlot(key: 'vulpes:block/gem', texture: _gem)],
+      ),
+    );
+
+    expect(find.byKey(const Key('model_missing_notice')), findsNothing);
+  });
 }

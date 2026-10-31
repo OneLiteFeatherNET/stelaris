@@ -1054,5 +1054,13 @@
   "asset_models_from_texture": "New from texture",
   "asset_models_from_texture_title": "New model from a texture",
   "asset_model_texture_present": "Texture",
-  "asset_model_texture_upload_hint": "Click to upload it"
+  "asset_model_texture_upload_hint": "Click to upload it",
+  "asset_model_missing_notice": "{count, plural, =1{1 texture of this model is missing.} other{{count} textures of this model are missing.}} Upload {count, plural, =1{it} other{them}} from the textures below.",
+  "@asset_model_missing_notice": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }
