@@ -75,32 +75,26 @@ void main() {
     );
   });
 
-  testWidgets('detail starts on automatic', (tester) async {
+  testWidgets('the reduced detail button starts off and toggles', (
+    tester,
+  ) async {
     final controller = AssetPreviewController();
     addTearDown(controller.dispose);
     await _pump(tester, controller: controller);
 
     expect(controller.detail, AssetDetail.automatic);
     expect(_detailButton(tester).isSelected, isFalse);
+
+    await tester.tap(find.byTooltip(_en.asset_preview_reduced_detail));
+    await tester.pump();
+    expect(controller.detail, AssetDetail.reduced);
+    expect(_detailButton(tester).isSelected, isTrue);
+
+    await tester.tap(find.byTooltip(_en.asset_preview_reduced_detail));
+    await tester.pump();
+    expect(controller.detail, AssetDetail.automatic);
+    expect(_detailButton(tester).isSelected, isFalse);
   });
-
-  testWidgets(
-    'the reduced detail button toggles between reduced and automatic',
-    (tester) async {
-      final controller = AssetPreviewController();
-      addTearDown(controller.dispose);
-      await _pump(tester, controller: controller);
-
-      await tester.tap(find.byTooltip(_en.asset_preview_reduced_detail));
-      await tester.pump();
-      expect(controller.detail, AssetDetail.reduced);
-      expect(_detailButton(tester).isSelected, isTrue);
-
-      await tester.tap(find.byTooltip(_en.asset_preview_reduced_detail));
-      await tester.pump();
-      expect(controller.detail, AssetDetail.automatic);
-    },
-  );
 
   testWidgets(
     'the controls are stacked top to bottom in the top right corner',

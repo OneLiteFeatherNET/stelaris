@@ -160,6 +160,23 @@ void main() {
     );
   });
 
+  group('updateComment', () {
+    test('PATCHes the asset with its notes', () async {
+      final adapter = RecordingHttpClientAdapter(_assetJson());
+      apiClient.dio.httpClientAdapter = adapter;
+
+      await assetApi.updateComment(
+        AssetModel.fromJson(_assetJson()),
+        'Glows at night',
+      );
+
+      final request = adapter.lastRequest!;
+      expect(request.method, 'PATCH');
+      expect(request.uri.path, '/api/project/p-1/asset/a-1');
+      expect(request.data, {'comment': 'Glows at night'});
+    });
+  });
+
   group('revisions', () {
     test('GETs the revisions of the asset with zero-based paging', () async {
       final adapter = RecordingHttpClientAdapter({

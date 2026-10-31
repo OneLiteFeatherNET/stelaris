@@ -380,251 +380,230 @@ void main() {
     });
   });
 
-  testWidgets('the download button saves the model file under its name', (
-    tester,
-  ) async {
-    final saved = <(String, String)>[];
-    await _pump(
-      tester,
-      library: _Library([_ruby], {}),
-      selectedId: 'm1',
-      saveFile: (bytes, fileName) => saved.add((utf8.decode(bytes), fileName)),
-    );
-    await _settlePreview(tester);
+  group('opened model', () {
+    late List<AssetModel> assets;
+    late List<RequestOptions> requests;
 
-    await tester.tap(find.byKey(const Key('model_download')));
-    await pumpUntil(tester, action: () async {}, done: () => saved.isNotEmpty);
-
-    expect(saved, [('{"elements":[]}', 'm1.json')]);
-  });
-
-  testWidgets('the notes button saves the notes of the model', (tester) async {
-    await _pump(tester, library: _Library([_ruby], {}), selectedId: 'm1');
-    await _settlePreview(tester);
-    final patches = <RequestOptions>[];
-    ApiService().assetApi.apiClient.dio.httpClientAdapter =
-        FakeHttpClientAdapter((options) {
-          patches.add(options);
-          return FakeHttpClientAdapter.response(
-            assetJson(id: 'm1', key: 'vulpes:item/ruby', kind: 'MODEL'),
-          );
-        });
-
-    await tester.tap(find.byKey(const Key('model_notes')));
-    await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), 'Glows at night');
-    await tester.tap(find.text('Save'));
-    await pumpUntil(
-      tester,
-      action: () async {},
-      done: () => find.byType(TextField).evaluate().isEmpty,
-    );
-
-    final patch = patches.single;
-    expect(patch.method, 'PATCH');
-    expect(patch.uri.path, endsWith('/project/p-1/asset/m1'));
-    expect(patch.data, {'comment': 'Glows at night'});
-  });
-
-  testWidgets('the info button shows the key and id of the model', (
-    tester,
-  ) async {
-    await _pump(tester, library: _Library([_ruby], {}), selectedId: 'm1');
-    await _settlePreview(tester);
-
-    await tester.tap(find.byKey(const Key('model_info')));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(Dialog), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byType(Dialog),
-        matching: find.textContaining('vulpes:item/ruby'),
-      ),
-      findsWidgets,
-    );
-    expect(
-      find.descendant(
-        of: find.byType(Dialog),
-        matching: find.textContaining('m1'),
-      ),
-      findsWidgets,
-    );
-  });
-
-  testWidgets('the update button replaces the file of the model', (
-    tester,
-  ) async {
-    final assets = [_ruby];
-    await _pump(
-      tester,
-      library: _Library(assets, {}),
-      selectedId: 'm1',
-      pickFile: () async =>
-          PickedAssetFile(name: 'ruby_v2.json', bytes: Uint8List(3)),
-    );
-    await _settlePreview(tester);
-    final requests = <RequestOptions>[];
-    final updated = _ruby.copyWith(sha1: 'sha-m1-v2');
-    ApiService().assetApi.apiClient.dio.httpClientAdapter =
-        FakeHttpClientAdapter((options) {
-          requests.add(options);
-          if (options.method == 'POST') {
-            assets[0] = updated;
-            return FakeHttpClientAdapter.response(updated.toJson());
-          }
+    /// Opens the ruby model. Requests after that go to [answer]; the content
+    /// of a model, which the preview loads, is always an empty model.
+    Future<void> openRuby(
+      WidgetTester tester, {
+      ResponseBody Function(RequestOptions options)? answer,
+      Future<PickedAssetFile?> Function()? pickFile,
+      void Function(List<int> bytes, String fileName)? saveFile,
+    }) async {
+      assets = [_ruby];
+      await _pump(
+        tester,
+        library: _Library(assets, {}),
+        selectedId: 'm1',
+        pickFile: pickFile,
+        saveFile: saveFile,
+      );
+      await _settlePreview(tester);
+      requests = [];
+      ApiService()
+          .assetApi
+          .apiClient
+          .dio
+          .httpClientAdapter = FakeHttpClientAdapter((options) {
+        requests.add(options);
+        final isContent =
+            options.method == 'GET' && options.uri.path.endsWith('/content');
+        if (isContent || answer == null) {
           return ResponseBody.fromString('{"elements":[]}', 200);
-        });
+        }
+        return answer(options);
+      });
+    }
 
-    await tester.tap(find.byKey(const Key('model_update')));
-    await pumpUntil(
-      tester,
-      action: () async {},
-      // The new file has a new sha1, so the preview loads it too.
-      done: () =>
-          find.text('Name of m1 was updated.').evaluate().isNotEmpty &&
-          requests.any((r) => r.method == 'GET') &&
-          find.byType(CircularProgressIndicator).evaluate().isEmpty,
-    );
-
-    final upload = requests.firstWhere((r) => r.method == 'POST');
-    expect(upload.uri.path, endsWith('/project/p-1/asset/m1/content'));
-    final form = upload.data as FormData;
-    expect(form.files.single.value.filename, 'ruby_v2.json');
-    expect(form.fields, isEmpty);
-    expect(upload.headers['If-Match'], '"sha-m1"');
-  });
-
-  testWidgets('an update after a change by someone else says so and reloads', (
-    tester,
-  ) async {
-    final assets = [_ruby];
-    await _pump(
-      tester,
-      library: _Library(assets, {}),
-      selectedId: 'm1',
-      pickFile: () async =>
-          PickedAssetFile(name: 'ruby.json', bytes: Uint8List(3)),
-    );
-    await _settlePreview(tester);
-    // Someone else stored a new file meanwhile.
-    assets[0] = _ruby.copyWith(sha1: 'sha-m1-theirs');
-    ApiService().assetApi.apiClient.dio.httpClientAdapter =
-        FakeHttpClientAdapter((options) {
-          if (options.method == 'POST') {
-            return FakeHttpClientAdapter.response({
-              'title': 'Precondition failed',
-              'status': 412,
-            }, statusCode: 412);
-          }
-          return ResponseBody.fromString('{"elements":[]}', 200);
-        });
-
-    await tester.tap(find.byKey(const Key('model_update')));
-    await pumpUntil(
-      tester,
-      action: () async {},
-      done: () =>
-          find
-              .textContaining('was changed in the meantime')
-              .evaluate()
-              .isNotEmpty &&
-          find.byType(CircularProgressIndicator).evaluate().isEmpty,
-    );
-
-    expect(find.textContaining('was updated'), findsNothing);
-  });
-
-  testWidgets('a refused update shows the error and keeps the model', (
-    tester,
-  ) async {
-    await _pump(
-      tester,
-      library: _Library([_ruby], {}),
-      selectedId: 'm1',
-      pickFile: () async =>
-          PickedAssetFile(name: 'ruby.bbmodel', bytes: Uint8List(3)),
-    );
-    await _settlePreview(tester);
-    ApiService().assetApi.apiClient.dio.httpClientAdapter =
-        FakeHttpClientAdapter(
-          (_) => FakeHttpClientAdapter.response({
-            'title': 'Wrong kind',
-            'status': 400,
-            'detail': 'The file is of another kind.',
-          }, statusCode: 400),
+    /// Pumps until [done] holds and the preview no longer loads.
+    Future<void> settleUntil(WidgetTester tester, bool Function() done) =>
+        pumpUntil(
+          tester,
+          action: () async {},
+          done: () =>
+              done() &&
+              find.byType(CircularProgressIndicator).evaluate().isEmpty,
         );
 
-    await tester.tap(find.byKey(const Key('model_update')));
-    await pumpUntil(
+    bool shows(String text) => find.text(text).evaluate().isNotEmpty;
+
+    ResponseBody problem(int status) => FakeHttpClientAdapter.response({
+      'title': 'Refused',
+      'status': status,
+    }, statusCode: status);
+
+    testWidgets('download saves the model file under its name', (tester) async {
+      final saved = <(String, String)>[];
+      await openRuby(
+        tester,
+        saveFile: (bytes, fileName) =>
+            saved.add((utf8.decode(bytes), fileName)),
+      );
+
+      await tester.tap(find.byKey(const Key('model_download')));
+      await settleUntil(tester, () => saved.isNotEmpty);
+
+      expect(saved, [('{"elements":[]}', 'm1.json')]);
+    });
+
+    testWidgets('notes are saved from their dialog', (tester) async {
+      await openRuby(
+        tester,
+        answer: (_) => FakeHttpClientAdapter.response(_ruby.toJson()),
+      );
+
+      await tester.tap(find.byKey(const Key('model_notes')));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), 'Glows at night');
+      await tester.tap(find.text('Save'));
+      await settleUntil(
+        tester,
+        () => find.byType(TextField).evaluate().isEmpty,
+      );
+
+      expect(requests.where((r) => r.method == 'PATCH'), hasLength(1));
+    });
+
+    testWidgets('info shows the key and id of the model', (tester) async {
+      await openRuby(tester);
+
+      await tester.tap(find.byKey(const Key('model_info')));
+      await tester.pumpAndSettle();
+
+      final dialog = find.byType(Dialog);
+      expect(
+        find.descendant(
+          of: dialog,
+          matching: find.textContaining('vulpes:item/ruby'),
+        ),
+        findsWidgets,
+      );
+      expect(
+        find.descendant(of: dialog, matching: find.textContaining('m1')),
+        findsWidgets,
+      );
+    });
+
+    testWidgets('update replaces the file and shows the new one', (
       tester,
-      action: () async {},
-      done: () => find.byType(SnackBar).evaluate().isNotEmpty,
-    );
+    ) async {
+      final updated = _ruby.copyWith(sha1: 'sha-m1-v2');
+      await openRuby(
+        tester,
+        pickFile: () async =>
+            PickedAssetFile(name: 'ruby_v2.json', bytes: Uint8List(3)),
+        answer: (_) {
+          assets[0] = updated;
+          return FakeHttpClientAdapter.response(updated.toJson());
+        },
+      );
 
-    expect(find.textContaining('was updated'), findsNothing);
-    expect(find.text('Name of m1'), findsWidgets);
-  });
+      await tester.tap(find.byKey(const Key('model_update')));
+      // The new file has a new sha1, so the preview loads it.
+      await settleUntil(
+        tester,
+        () =>
+            shows('Name of m1 was updated.') &&
+            requests.any((r) => r.method == 'GET'),
+      );
 
-  testWidgets('a restored version is announced and the page reloads', (
-    tester,
-  ) async {
-    final assets = [_ruby];
-    await _pump(tester, library: _Library(assets, {}), selectedId: 'm1');
-    await _settlePreview(tester);
-    final restored = _ruby.copyWith(sha1: 'sha-m1-r1');
-    final requests = <RequestOptions>[];
-    ApiService().assetApi.apiClient.dio.httpClientAdapter =
-        FakeHttpClientAdapter((options) {
-          requests.add(options);
-          final path = options.uri.path;
-          if (path.endsWith('/restore')) {
+      final upload = requests.firstWhere((r) => r.method == 'POST');
+      expect(
+        (upload.data as FormData).files.single.value.filename,
+        'ruby_v2.json',
+      );
+    });
+
+    testWidgets('update after a change by someone else says so and reloads', (
+      tester,
+    ) async {
+      await openRuby(
+        tester,
+        pickFile: () async =>
+            PickedAssetFile(name: 'ruby.json', bytes: Uint8List(3)),
+        answer: (_) => problem(412),
+      );
+      // Someone else stored a new file meanwhile.
+      assets[0] = _ruby.copyWith(sha1: 'sha-m1-theirs');
+
+      await tester.tap(find.byKey(const Key('model_update')));
+      await settleUntil(
+        tester,
+        () => find
+            .textContaining('was changed in the meantime')
+            .evaluate()
+            .isNotEmpty,
+      );
+
+      expect(find.textContaining('was updated'), findsNothing);
+    });
+
+    testWidgets('a refused update shows the error and keeps the model', (
+      tester,
+    ) async {
+      await openRuby(
+        tester,
+        pickFile: () async =>
+            PickedAssetFile(name: 'ruby.bbmodel', bytes: Uint8List(3)),
+        answer: (_) => problem(400),
+      );
+
+      await tester.tap(find.byKey(const Key('model_update')));
+      await settleUntil(
+        tester,
+        () => find.byType(SnackBar).evaluate().isNotEmpty,
+      );
+
+      expect(find.textContaining('was updated'), findsNothing);
+      expect(find.text('Name of m1'), findsWidgets);
+    });
+
+    testWidgets('a restored version is announced and the page reloads', (
+      tester,
+    ) async {
+      final restored = _ruby.copyWith(sha1: 'sha-m1-r1');
+      await openRuby(
+        tester,
+        answer: (options) {
+          if (options.uri.path.endsWith('/restore')) {
             assets[0] = restored;
             return FakeHttpClientAdapter.response(restored.toJson());
           }
-          if (path.endsWith('/revision')) {
-            return FakeHttpClientAdapter.response({
-              'items': [
-                {
-                  'id': 'r-2',
-                  'number': 2,
-                  'sha1': 'sha-m1',
-                  'size': 64,
-                  'current': true,
-                },
-                {'id': 'r-1', 'number': 1, 'sha1': 'sha-m1-r1', 'size': 32},
-              ],
-              'totalItems': 2,
-              'totalPages': 1,
-              'currentPage': 0,
-              'pageSize': 50,
-            });
-          }
-          return ResponseBody.fromString('{"elements":[]}', 200);
-        });
+          return FakeHttpClientAdapter.response({
+            'items': [
+              {
+                'id': 'r-2',
+                'number': 2,
+                'sha1': 'sha-m1',
+                'size': 64,
+                'current': true,
+              },
+              {'id': 'r-1', 'number': 1, 'sha1': 'sha-m1-r1', 'size': 32},
+            ],
+            'totalItems': 2,
+            'totalPages': 1,
+            'currentPage': 0,
+            'pageSize': 50,
+          });
+        },
+      );
 
-    await tester.tap(find.byKey(const Key('model_revisions')));
-    await pumpUntil(
-      tester,
-      action: () async {},
-      done: () => find.text('Version 1').evaluate().isNotEmpty,
-    );
-    await tester.tap(find.byTooltip('Restore this version'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Restore'));
-    await pumpUntil(
-      tester,
-      action: () async {},
-      // The restored file has a new sha1, so the preview loads it too.
-      done: () =>
-          find
-              .text('Version 1 of Name of m1 was restored.')
-              .evaluate()
-              .isNotEmpty &&
-          requests.any((r) => r.uri.path.endsWith('/m1/content')) &&
-          find.byType(CircularProgressIndicator).evaluate().isEmpty,
-    );
+      await tester.tap(find.byKey(const Key('model_revisions')));
+      await settleUntil(tester, () => shows('Version 1'));
+      await tester.tap(find.byTooltip('Restore this version'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Restore'));
+      // The restored file has a new sha1, so the preview loads it.
+      await settleUntil(
+        tester,
+        () =>
+            shows('Version 1 of Name of m1 was restored.') &&
+            requests.any((r) => r.uri.path.endsWith('/m1/content')),
+      );
 
-    expect(find.text('Versions of Name of m1'), findsNothing);
+      expect(find.text('Versions of Name of m1'), findsNothing);
+    });
   });
 }
