@@ -196,6 +196,20 @@ function mount(element, scene) {
     controls.autoRotate = false;
     controls.autoRotateSpeed = 2;
 
+    // Frames are drawn on demand, not in a loop: an idle preview costs nothing.
+    // A frame updates the controls, which fire 'change' while the camera still
+    // moves (a drag, the damping after it, auto-rotate), and so ask for the next.
+    let frame = 0;
+    const requestRender = () => {
+        if (frame === 0) frame = requestAnimationFrame(draw);
+    };
+    function draw() {
+        frame = 0;
+        controls.update();
+        renderer.render(threeScene, camera);
+    }
+    controls.addEventListener('change', requestRender);
+
     // Textures: nearest filtering keeps pixel art sharp.
     const checker = makeChecker();
     const textures = new Map();
@@ -206,6 +220,7 @@ function mount(element, scene) {
             // Once the image is known, the average colour of box faces is known too.
             const average = averageOpaqueColor(loaded.image);
             if (average) materials.get(`avg:${t.id}`)?.color.copy(average);
+            requestRender();
         });
         texture.magFilter = THREE.NearestFilter;
         texture.minFilter = THREE.NearestFilter;
@@ -261,6 +276,7 @@ function mount(element, scene) {
         camera.position.copy(homeOffset);
         controls.target.set(0, 0, 0);
         controls.update();
+        requestRender();
     };
     resetView();
 
@@ -270,34 +286,36 @@ function mount(element, scene) {
         renderer.setSize(width, height, false);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
+        requestRender();
     };
     const observer = new ResizeObserver(resize);
     observer.observe(element);
     resize();
 
-    renderer.setAnimationLoop(() => {
-        controls.update();
-        renderer.render(threeScene, camera);
-    });
+    requestRender();
 
     return {
         // level: 0 full, 1 reduced, 2 box; null restores the automatic LOD.
         setDetail(level) {
             if (level == null) {
                 lod.autoUpdate = true;
-                return;
+            } else {
+                lod.autoUpdate = false;
+                lod.levels.forEach((entry, i) => {
+                    entry.object.visible = i === level;
+                });
             }
-            lod.autoUpdate = false;
-            lod.levels.forEach((entry, i) => {
-                entry.object.visible = i === level;
-            });
+            requestRender();
         },
         setAutoRotate(enabled) {
             controls.autoRotate = !!enabled;
+            requestRender();
         },
         resetView,
         dispose() {
-            renderer.setAnimationLoop(null);
+            cancelAnimationFrame(frame);
+            frame = 0;
+            controls.removeEventListener('change', requestRender);
             observer.disconnect();
             controls.dispose();
             threeScene.traverse((object) => {
