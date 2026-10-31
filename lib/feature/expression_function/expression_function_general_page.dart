@@ -32,7 +32,7 @@ class ExpressionFunctionGeneralPage extends StatelessWidget {
         final l10n = context.l10n;
         final theme = Theme.of(context);
         final function = vm.selected;
-        final isInterface = function.kind == ExpressionFunctionKind.INTERFACE;
+        final isInterface = function.kind == ExpressionFunctionKind.interface;
         final problem = vm.problem;
         final nameError =
             _first(violationsFor(problem, 'name')) ??
@@ -90,12 +90,12 @@ class ExpressionFunctionGeneralPage extends StatelessWidget {
                   SegmentedButton<ExpressionFunctionKind>(
                     segments: [
                       ButtonSegment(
-                        value: ExpressionFunctionKind.FORMULA,
+                        value: ExpressionFunctionKind.formula,
                         label: Text(l10n.expression_function_kind_formula),
                         icon: const Icon(Icons.functions),
                       ),
                       ButtonSegment(
-                        value: ExpressionFunctionKind.INTERFACE,
+                        value: ExpressionFunctionKind.interface,
                         label: Text(l10n.expression_function_kind_interface),
                         icon: const Icon(
                           Icons.integration_instructions_outlined,
@@ -114,7 +114,7 @@ class ExpressionFunctionGeneralPage extends StatelessWidget {
                     style: theme.textTheme.bodySmall,
                   ),
                   const SizedBox(height: 16),
-                  DropdownButtonFormField<ExpressionFunctionReturnType>(
+                  DropdownButtonFormField<ExpressionValueType>(
                     initialValue: function.returnType,
                     decoration: InputDecoration(
                       labelText: l10n.expression_function_field_return_type,
@@ -122,7 +122,7 @@ class ExpressionFunctionGeneralPage extends StatelessWidget {
                       prefixIcon: const Icon(Icons.keyboard_return),
                     ),
                     items: [
-                      for (final type in ExpressionFunctionReturnType.values)
+                      for (final type in ExpressionValueType.values)
                         DropdownMenuItem(
                           value: type,
                           child: Text(_returnTypeLabel(l10n, type)),
@@ -229,13 +229,13 @@ class ExpressionFunctionGeneralPage extends StatelessWidget {
 
   static String _returnTypeLabel(
     AppLocalizations l10n,
-    ExpressionFunctionReturnType type,
+    ExpressionValueType type,
   ) => switch (type) {
-    ExpressionFunctionReturnType.NUMBER =>
+    ExpressionValueType.number =>
       l10n.expression_function_return_number,
-    ExpressionFunctionReturnType.BOOLEAN =>
+    ExpressionValueType.boolean =>
       l10n.expression_function_return_boolean,
-    ExpressionFunctionReturnType.STRING =>
+    ExpressionValueType.string =>
       l10n.expression_function_return_string,
   };
 }

@@ -103,7 +103,7 @@ class _ExpressionFunctionTestPageState
         final function = vm.selected;
         final body = function.body ?? '';
         final hasBody = body.trim().isNotEmpty;
-        final isInterface = function.kind == ExpressionFunctionKind.INTERFACE;
+        final isInterface = function.kind == ExpressionFunctionKind.interface;
         final canEvaluate = hasBody && vm.projectId != null;
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),

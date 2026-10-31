@@ -56,7 +56,9 @@ class ExpressionClientApi extends BaseApi<ExpressionModel> {
               variable.name: variable.testValue ?? '',
           },
           'types': {
-            for (final variable in variables) variable.name: variable.type.name,
+            // The wire name, as the model writes it, not the Dart enum name.
+            for (final variable in variables)
+              variable.name: variable.toJson()['type'],
           },
         },
       );

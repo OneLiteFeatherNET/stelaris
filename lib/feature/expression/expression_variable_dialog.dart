@@ -15,11 +15,11 @@ final RegExp expressionVariableNamePattern = RegExp(
 /// The label of a variable type, e.g. Number.
 String expressionVariableTypeLabel(
   AppLocalizations l10n,
-  ExpressionVariableType type,
+  ExpressionValueType type,
 ) => switch (type) {
-  ExpressionVariableType.NUMBER => l10n.expression_variable_type_number,
-  ExpressionVariableType.BOOLEAN => l10n.expression_variable_type_boolean,
-  ExpressionVariableType.STRING => l10n.expression_variable_type_string,
+  ExpressionValueType.number => l10n.expression_variable_type_number,
+  ExpressionValueType.boolean => l10n.expression_variable_type_boolean,
+  ExpressionValueType.string => l10n.expression_variable_type_string,
 };
 
 /// Opens the dialog that adds a variable when [variable] is null, and edits
@@ -71,8 +71,8 @@ class _ExpressionVariableDialogState extends State<ExpressionVariableDialog> {
   late final TextEditingController _testValue = TextEditingController(
     text: widget.variable?.testValue ?? emptyString,
   );
-  late ExpressionVariableType _type =
-      widget.variable?.type ?? ExpressionVariableType.NUMBER;
+  late ExpressionValueType _type =
+      widget.variable?.type ?? ExpressionValueType.number;
 
   @override
   void dispose() {
@@ -108,7 +108,7 @@ class _ExpressionVariableDialogState extends State<ExpressionVariableDialog> {
 
   /// A boolean takes a pick of true or false, or none, instead of text.
   Widget _testValueField(AppLocalizations l10n) {
-    if (_type != ExpressionVariableType.BOOLEAN) {
+    if (_type != ExpressionValueType.boolean) {
       return TextFormField(
         controller: _testValue,
         decoration: InputDecoration(
@@ -171,14 +171,14 @@ class _ExpressionVariableDialogState extends State<ExpressionVariableDialog> {
               validator: _validateName,
             ),
             verticalSpacing10,
-            DropdownButtonFormField<ExpressionVariableType>(
+            DropdownButtonFormField<ExpressionValueType>(
               initialValue: _type,
               decoration: InputDecoration(
                 labelText: l10n.expression_variable_type_label,
                 prefixIcon: const Icon(Icons.category_outlined),
               ),
               items: [
-                for (final type in ExpressionVariableType.values)
+                for (final type in ExpressionValueType.values)
                   DropdownMenuItem(
                     value: type,
                     child: Text(expressionVariableTypeLabel(l10n, type)),
@@ -188,7 +188,7 @@ class _ExpressionVariableDialogState extends State<ExpressionVariableDialog> {
                 if (type == null) return;
                 setState(() {
                   // A value typed as text may not be one of the booleans.
-                  if (type == ExpressionVariableType.BOOLEAN &&
+                  if (type == ExpressionValueType.boolean &&
                       _testValue.text != 'true' &&
                       _testValue.text != 'false') {
                     _testValue.text = emptyString;

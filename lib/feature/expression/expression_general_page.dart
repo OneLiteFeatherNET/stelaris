@@ -115,7 +115,7 @@ class ExpressionGeneralPage extends StatelessWidget {
     final added = [
       for (final name in names)
         if (declared.add(name.toLowerCase()))
-          ExpressionVariable(name: name, type: ExpressionVariableType.NUMBER),
+          ExpressionVariable(name: name, type: ExpressionValueType.number),
     ];
     if (added.isEmpty) return;
     _stage(
