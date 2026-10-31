@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.8.2...v1.9.0) (2026-10-31)
+
+
+### Features
+
+* **asset:** add a models page with 3D preview, uploads and versions ([#289](https://github.com/OneLiteFeatherNET/stelaris/issues/289)) ([30f94cb](https://github.com/OneLiteFeatherNET/stelaris/commit/30f94cb673611477930ee89df528eb74ed31b036))
+
 ## [1.8.2](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.8.1...v1.8.2) (2026-10-27)
 
 
