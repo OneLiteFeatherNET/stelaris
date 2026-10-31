@@ -41,7 +41,7 @@ ExpressionModel _expression({
   String text = '',
   List<ExpressionVariable> variables = const [
     ExpressionVariable(name: 'radius'),
-    ExpressionVariable(name: 'rate', type: ExpressionVariableType.BOOLEAN),
+    ExpressionVariable(name: 'rate', type: ExpressionValueType.boolean),
     ExpressionVariable(name: 'height'),
   ],
 }) => ExpressionModel(

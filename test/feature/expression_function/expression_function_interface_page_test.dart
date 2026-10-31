@@ -68,7 +68,7 @@ void main() {
           'source': _source,
         });
 
-    await _pump(tester, ExpressionFunctionKind.INTERFACE);
+    await _pump(tester, ExpressionFunctionKind.interface);
 
     expect(
       tester.widget<SelectableText>(find.byType(SelectableText)).data,
@@ -89,7 +89,7 @@ void main() {
     ApiService().expressionFunctionApi.apiClient.dio.httpClientAdapter =
         adapter;
 
-    await _pump(tester, ExpressionFunctionKind.FORMULA);
+    await _pump(tester, ExpressionFunctionKind.formula);
 
     expect(
       find.text(l10n.expression_function_interface_formula_header),

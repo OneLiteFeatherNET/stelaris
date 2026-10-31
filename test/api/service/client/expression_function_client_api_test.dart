@@ -18,7 +18,7 @@ void main() {
 
   const base = ExpressionVariable(
     name: 'base',
-    type: ExpressionVariableType.NUMBER,
+    type: ExpressionValueType.number,
     testValue: '2',
   );
 
@@ -28,7 +28,7 @@ void main() {
     body: 'base * 2',
     parameters: [
       base,
-      ExpressionVariable(name: 'crit', type: ExpressionVariableType.BOOLEAN),
+      ExpressionVariable(name: 'crit', type: ExpressionValueType.boolean),
     ],
     projectId: 'p1',
   );

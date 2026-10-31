@@ -26,7 +26,7 @@ ExpressionModel _expression({String text = 'radius * 2'}) => ExpressionModel(
   expression: text,
   variables: const [
     ExpressionVariable(name: 'radius'),
-    ExpressionVariable(name: 'rate', type: ExpressionVariableType.BOOLEAN),
+    ExpressionVariable(name: 'rate', type: ExpressionValueType.boolean),
   ],
 );
 
@@ -146,7 +146,7 @@ void main() {
 
       final declared = store.state.selectedExpression!.variables.last;
       expect(declared.name, 'b');
-      expect(declared.type, ExpressionVariableType.NUMBER);
+      expect(declared.type, ExpressionValueType.number);
       expect(store.state.unsavedChanges, NavigationEntry.expression);
     },
   );
