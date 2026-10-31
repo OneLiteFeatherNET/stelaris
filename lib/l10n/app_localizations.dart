@@ -3454,18 +3454,6 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 texture of this model is missing} other{{count} textures of this model are missing}}'**
   String asset_models_missing_tooltip(int count);
 
-  /// No description provided for @asset_model_copy_key.
-  ///
-  /// In en, this message translates to:
-  /// **'Copy the key'**
-  String get asset_model_copy_key;
-
-  /// No description provided for @asset_model_key_copied.
-  ///
-  /// In en, this message translates to:
-  /// **'Copied {key}'**
-  String asset_model_key_copied(String key);
-
   /// No description provided for @asset_model_info.
   ///
   /// In en, this message translates to:

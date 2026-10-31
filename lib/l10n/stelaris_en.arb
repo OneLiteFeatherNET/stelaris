@@ -1020,15 +1020,6 @@
       }
     }
   },
-  "asset_model_copy_key": "Copy the key",
-  "asset_model_key_copied": "Copied {key}",
-  "@asset_model_key_copied": {
-    "placeholders": {
-      "key": {
-        "type": "String"
-      }
-    }
-  },
   "asset_model_info": "General",
   "asset_model_kind": "Kind",
   "asset_model_file": "File",

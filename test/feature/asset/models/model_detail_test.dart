@@ -72,10 +72,9 @@ void main() {
   testWidgets('shows what the model is', (tester) async {
     await _pump(tester, textures: const ModelTextures(slots: []));
 
-    expect(
-      tester.widget<Text>(find.byKey(const Key('model_detail_title'))).data,
-      'vulpes:item/ruby',
-    );
+    // No key row with a copy button above the cards: the info dialog of the
+    // page header shows the key.
+    expect(find.byIcon(Icons.copy_outlined), findsNothing);
     expect(find.text('Model'), findsOneWidget);
     expect(find.text('m1.json'), findsOneWidget);
     expect(find.text('2.0 KB'), findsOneWidget);

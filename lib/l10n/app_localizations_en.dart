@@ -1906,14 +1906,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get asset_model_copy_key => 'Copy the key';
-
-  @override
-  String asset_model_key_copied(String key) {
-    return 'Copied $key';
-  }
-
-  @override
   String get asset_model_info => 'General';
 
   @override

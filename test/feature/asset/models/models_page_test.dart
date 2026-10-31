@@ -175,10 +175,7 @@ void main() {
     await _settlePreview(tester);
 
     expect(selections, ['m2']);
-    expect(
-      tester.widget<Text>(find.byKey(const Key('model_detail_title'))).data,
-      'vulpes:item/sword',
-    );
+    expect(find.text('Name of m2'), findsWidgets);
     expect(find.byKey(const Key('models_grid')), findsNothing);
 
     await tester.tap(find.byKey(const Key('page_header_back_button')));
@@ -566,10 +563,7 @@ void main() {
     );
 
     expect(find.textContaining('was updated'), findsNothing);
-    expect(
-      tester.widget<Text>(find.byKey(const Key('model_detail_title'))).data,
-      'vulpes:item/ruby',
-    );
+    expect(find.text('Name of m1'), findsWidgets);
   });
 
   testWidgets('a restored version is announced and the page reloads', (
