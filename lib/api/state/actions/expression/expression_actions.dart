@@ -129,7 +129,7 @@ class UpdateExpressionAction extends ReduxAction<AppState> {
   UpdateExpressionAction(this.newEntry);
 
   @override
-  Future<AppState?> reduce() async => state.copyWith(
+  AppState? reduce() => state.copyWith(
     selectedExpression: newEntry,
     unsavedChanges: NavigationEntry.expression,
   );
