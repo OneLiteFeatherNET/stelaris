@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/expression/expression_function_sidebar.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -6,9 +7,9 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// Below this width the picker fills the screen instead of floating over it.
 const double expressionFunctionPickerFullScreenWidth = 600;
 
-/// The widest the floating picker gets, and the share of the height it takes.
+/// The size of the floating picker, the same as the component picker's.
 const double _maxPickerWidth = 560;
-const double _pickerHeightFactor = 0.7;
+const double _contentHeight = 480;
 
 /// Opens the picker of the catalog's functions and constants, to search and
 /// tap one. A tap closes the picker, then calls [onFunction] or [onConstant]
@@ -62,37 +63,16 @@ Future<void> showExpressionFunctionPicker(
           ),
         );
       }
-      final size = MediaQuery.sizeOf(dialogContext);
-      return Dialog(
-        clipBehavior: Clip.antiAlias,
-        child: SizedBox(
-          width: _maxPickerWidth,
-          height: size.height * _pickerHeightFactor,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 16, 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: Theme.of(dialogContext).textTheme.titleLarge,
-                      ),
-                    ),
-                    IconButton(
-                      tooltip: l10n.button_close,
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.of(dialogContext).pop(),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Expanded(child: content(dialogContext)),
-              ],
-            ),
-          ),
+      return FormDialog(
+        title: title,
+        actionLabel: l10n.button_close,
+        onSubmit: null,
+        showActions: false,
+        maxWidth: _maxPickerWidth,
+        // Fixed, so the dialog keeps its size while the user types.
+        content: SizedBox(
+          height: _contentHeight,
+          child: content(dialogContext),
         ),
       );
     },

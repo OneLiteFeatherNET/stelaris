@@ -438,18 +438,21 @@ void main() {
     expect(store.state.selectedExpression?.expression, '2 * PI');
   });
 
-  testWidgets('a group header expands its functions when no search is active', (
+  testWidgets('without a search the picker lists every entry under a header', (
     tester,
   ) async {
     await _pump(tester, catalog: _catalog);
     await _openPicker(tester);
-    final entry = find.byKey(const ValueKey('expression_function_ROUND'));
-    expect(entry, findsNothing);
 
-    await tester.tap(find.text('Basic'));
-    await tester.pumpAndSettle();
-
-    expect(entry, findsOneWidget);
+    expect(find.text('Basic'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('expression_function_ROUND')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('expression_constant_PI')),
+      findsOneWidget,
+    );
   });
 
   testWidgets(
