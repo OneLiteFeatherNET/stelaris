@@ -164,4 +164,72 @@ void main() {
 
     expect(tester.takeException(), isNull);
   });
+
+  /// The [Semantics] a toggle action wraps its button in, by its state.
+  Finder toggled(bool? value) => find.byWidgetPredicate(
+    (widget) => widget is Semantics && widget.properties.toggled == value,
+  );
+
+  group('a toggle action', () {
+    Widget toggle({required bool selected, double width = 800}) => wrap(
+      width: width,
+      PageHeader(
+        title: 'Expression',
+        actions: [
+          PageHeaderAction.toggle(
+            icon: const Icon(Icons.preview),
+            label: 'Preview',
+            selected: selected,
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
+
+    testWidgets('is tonal and reported on while on', (tester) async {
+      await tester.pumpWidget(toggle(selected: true));
+
+      expect(find.byType(OutlinedButton), findsNothing);
+      expect(find.byType(FilledButton), findsOneWidget);
+      expect(toggled(true), findsOneWidget);
+    });
+
+    testWidgets('is outlined and reported off while off', (tester) async {
+      await tester.pumpWidget(toggle(selected: false));
+
+      expect(find.byType(OutlinedButton), findsOneWidget);
+      expect(find.byType(FilledButton), findsNothing);
+      expect(toggled(false), findsOneWidget);
+    });
+
+    testWidgets('collapses to an icon button with its label as tooltip', (
+      tester,
+    ) async {
+      await tester.pumpWidget(toggle(selected: false, width: 400));
+
+      expect(find.text('Preview'), findsNothing);
+      expect(tester.widget<IconButton>(find.byType(IconButton)).tooltip, 'Preview');
+      expect(toggled(false), findsOneWidget);
+    });
+  });
+
+  testWidgets('a plain action reports no toggled state', (tester) async {
+    await tester.pumpWidget(
+      wrap(
+        PageHeader(
+          title: 'Items',
+          actions: [
+            PageHeaderAction(
+              icon: const Icon(Icons.refresh),
+              label: 'Refresh',
+              onPressed: () {},
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(toggled(true), findsNothing);
+    expect(toggled(false), findsNothing);
+  });
 }
