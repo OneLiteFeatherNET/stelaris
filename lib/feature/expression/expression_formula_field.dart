@@ -382,7 +382,7 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
           onPunctuation: _insertPunctuation,
           onInsertFunction: _openFunctionPicker,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
         OverlayPortal(
           controller: _panels,
           overlayChildBuilder: (context) => CompositedTransformFollower(

@@ -58,7 +58,7 @@ class ExpressionGeneralPage extends StatelessWidget {
                           EditSectionHeading(
                             title: l10n.expression_section_formula,
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 16),
                           editor,
                           // Below the editor, so the line being typed stays
                           // put while the typeset formula grows.
