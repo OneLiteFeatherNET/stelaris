@@ -123,6 +123,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_sound_delete_title => 'Delete sound event';
 
   @override
+  String get dialog_expression_delete_title => 'Delete expression';
+
+  @override
   String get dialog_attribute_create => 'Create attribute';
 
   @override
@@ -226,6 +229,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tab_entries => 'Entries';
+
+  @override
+  String get tab_variables => 'Variables';
+
+  @override
+  String get tab_test => 'Test';
 
   @override
   String get card_material => 'Material';
@@ -521,7 +530,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialog_project_switch_hint =>
-      'Loaded items, fonts, advancements, attributes and sound events will be reset.';
+      'Loaded items, fonts, advancements, attributes, sound events and expressions will be reset.';
 
   @override
   String get dialog_project_switch_confirm => 'Switch project';
@@ -541,6 +550,241 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialog_sound_create => 'Create new sound event';
+
+  @override
+  String get dialog_expression_create => 'Create new expression';
+
+  @override
+  String get expression_section_formula => 'Formula';
+
+  @override
+  String get expression_field_expression => 'Expression';
+
+  @override
+  String get expression_rendered_formula_label => 'Rendered formula';
+
+  @override
+  String get expression_hint_expression =>
+      'An EvalEx formula, e.g. a * 2 + sqrt(b). Use + - * / ^ %, comparisons, && || ! for logic (not and/or), functions such as MAX, MIN, ROUND or IF, and the variables declared on the Variables tab.';
+
+  @override
+  String expression_operator_alias(String text, String alias) {
+    return '$text, also written $alias';
+  }
+
+  @override
+  String get expression_operator_group_arithmetic => 'Arithmetic';
+
+  @override
+  String get expression_operator_group_comparison => 'Comparison';
+
+  @override
+  String get expression_operator_group_logic => 'Logic';
+
+  @override
+  String get expression_operator_group_other => 'Other operators';
+
+  @override
+  String get expression_toolbar_punctuation => 'Parentheses and comma';
+
+  @override
+  String get expression_hint_expression_short =>
+      'An EvalEx formula, e.g. a * 2 + sqrt(b).';
+
+  @override
+  String get expression_hint_expression_more => 'More about formulas';
+
+  @override
+  String get expression_formula_variables_label => 'Insert a variable';
+
+  @override
+  String get expression_formula_variables_empty =>
+      'No variables yet. Declare them on the Variables tab to insert and suggest them here.';
+
+  @override
+  String get expression_toolbar_parenthesis =>
+      'Parenthesis, wraps the selection';
+
+  @override
+  String get expression_toolbar_comma =>
+      'Separates the arguments of a function';
+
+  @override
+  String expression_operator_tooltip(String kind, int precedence) {
+    return '$kind, precedence $precedence';
+  }
+
+  @override
+  String get expression_operator_kind_infix => 'Infix';
+
+  @override
+  String get expression_operator_kind_prefix => 'Prefix';
+
+  @override
+  String get expression_operator_kind_postfix => 'Postfix';
+
+  @override
+  String get expression_operator_kind_other => 'Operator';
+
+  @override
+  String get expression_functions_title => 'Functions and constants';
+
+  @override
+  String get expression_insert_function => 'Insert function';
+
+  @override
+  String get expression_functions_search_label =>
+      'Search functions and constants';
+
+  @override
+  String get expression_functions_unavailable =>
+      'Functions and constants load from the backend. They are unavailable right now, the formula can still be typed.';
+
+  @override
+  String get expression_functions_empty_search => 'Nothing matches the search.';
+
+  @override
+  String get expression_functions_group_basic => 'Basic';
+
+  @override
+  String get expression_functions_group_string => 'Text';
+
+  @override
+  String get expression_functions_group_date_time => 'Date and time';
+
+  @override
+  String get expression_functions_group_trigonometric => 'Trigonometric';
+
+  @override
+  String get expression_functions_group_other => 'Other';
+
+  @override
+  String get expression_functions_group_constants => 'Constants';
+
+  @override
+  String expression_suggestion_constant(String value) {
+    return 'Constant $value';
+  }
+
+  @override
+  String get expression_suggestion_function => 'Function';
+
+  @override
+  String get expression_variables_empty_header => 'No variables yet';
+
+  @override
+  String get expression_variables_empty_subheader =>
+      'Add a variable for each name the expression reads.';
+
+  @override
+  String get expression_variable_add_title => 'Add variable';
+
+  @override
+  String get expression_variable_edit_title => 'Edit variable';
+
+  @override
+  String get expression_variable_delete_title => 'Delete variable';
+
+  @override
+  String get expression_variable_name_label => 'Name';
+
+  @override
+  String get expression_variable_name_hint => 'e.g. radius';
+
+  @override
+  String get expression_variable_name_invalid =>
+      'Start with a letter or underscore, then use only letters, digits and underscores';
+
+  @override
+  String expression_variable_name_duplicate(String name) {
+    return 'A variable named $name already exists';
+  }
+
+  @override
+  String get expression_variable_type_label => 'Type';
+
+  @override
+  String get expression_variable_type_number => 'Number';
+
+  @override
+  String get expression_variable_type_boolean => 'Boolean';
+
+  @override
+  String get expression_variable_type_string => 'String';
+
+  @override
+  String get expression_variable_test_value_label => 'Test value';
+
+  @override
+  String get expression_variable_test_value_hint =>
+      'Optional, used on the Test tab';
+
+  @override
+  String get expression_variable_test_value_none => 'None';
+
+  @override
+  String get expression_variable_no_test_value => 'No test value';
+
+  @override
+  String get expression_test_section_expression => 'Expression';
+
+  @override
+  String get expression_test_section_variables => 'Variables';
+
+  @override
+  String get expression_test_no_variables =>
+      'This expression reads no variables.';
+
+  @override
+  String get expression_test_evaluate => 'Evaluate';
+
+  @override
+  String get expression_test_empty_hint =>
+      'Write an expression on the General tab to evaluate it.';
+
+  @override
+  String get expression_test_result_label => 'Result';
+
+  @override
+  String expression_test_result_type(String type) {
+    return 'Type: $type';
+  }
+
+  @override
+  String get expression_test_rejected =>
+      'The expression or a variable was rejected';
+
+  @override
+  String get expression_test_error =>
+      'The expression could not be evaluated. Try again.';
+
+  @override
+  String get expression_validation_valid => 'Valid formula';
+
+  @override
+  String expression_validation_undefined(String names) {
+    return 'Not declared: $names';
+  }
+
+  @override
+  String get expression_validation_declare => 'Declare';
+
+  @override
+  String get expression_validation_declare_all => 'Declare all';
+
+  @override
+  String get dialog_expression_function_identifier_label =>
+      'Called in formulas as';
+
+  @override
+  String get dialog_expression_function_identifier_note =>
+      'Can be changed later on the General tab';
+
+  @override
+  String get expression_function_group_project => 'Project';
+
+  @override
+  String get expression_variable_unused => 'Not used in the formula';
 
   @override
   String get dialog_model_key_label => 'Key';
@@ -776,7 +1020,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get command_palette_mode_entities_help =>
-      'Open an item, font, sound, advancement or attribute';
+      'Open an item, font, sound, advancement, attribute or expression';
 
   @override
   String get command_palette_mode_projects => 'Projects';
@@ -802,6 +1046,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get command_palette_kind_sounds => 'Sounds';
+
+  @override
+  String get command_palette_kind_expressions => 'Expressions';
 
   @override
   String get command_palette_kind_advancements => 'Advancements';
@@ -848,7 +1095,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get command_palette_hint_entities =>
-      'Search loaded items, fonts, sounds, advancements and attributes';
+      'Search loaded items, fonts, sounds, advancements, attributes and expressions';
 
   @override
   String command_palette_hint_kind(String kind) {
@@ -941,6 +1188,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command_create_sound => 'New sound';
 
   @override
+  String get command_create_expression => 'New expression';
+
+  @override
   String get command_create_advancement => 'New advancement';
 
   @override
@@ -963,6 +1213,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get command_delete_this_sound => 'Delete this sound…';
+
+  @override
+  String get command_delete_this_expression => 'Delete this expression…';
 
   @override
   String get command_delete_this_advancement => 'Delete this advancement…';
@@ -2042,5 +2295,26 @@ class AppLocalizationsEn extends AppLocalizations {
       one: 'it',
     );
     return '$_temp0 Upload $_temp1 from the textures below.';
+  }
+
+  @override
+  String get navigation_group_assets => 'Assets';
+
+  @override
+  String get navigation_group_runtime => 'Runtime';
+
+  @override
+  String get expression_preview_title => 'Preview';
+
+  @override
+  String get expression_preview_copy => 'Copy the full value';
+
+  @override
+  String get expression_preview_no_project =>
+      'Select a project to see the result.';
+
+  @override
+  String expression_preview_missing_values(String names) {
+    return 'Give a test value to $names to see the result.';
   }
 }

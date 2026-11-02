@@ -8,11 +8,14 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/navigation/navigation_side_bar.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 
+/// The route of the expression detail page, nested below its section.
+const _expressionDetailRoute = '/expression/detail';
+
 GoRouter createTestRouter() {
   return GoRouter(
-    initialLocation: navigationEntries.first.route,
+    initialLocation: sectionEntries.first.route,
     routes: [
-      for (final entry in navigationEntries)
+      for (final entry in NavigationEntry.values)
         GoRoute(
           path: entry.route,
           builder: (context, state) {
@@ -41,12 +44,14 @@ Widget buildTestWidget(GoRouter router, Store<AppState> store) {
   );
 }
 
-/// Builds a router for every section and asset page, each showing its route
-/// as text next to the sidebar, so a test can see where it has navigated.
-GoRouter createAssetTestRouter(String initialLocation) {
+/// Builds a router for every entry and asset page, plus the expression detail
+/// route, each page showing its route as text next to the sidebar, so a test
+/// can see where it has navigated.
+GoRouter createRailTestRouter(String initialLocation) {
   final routes = [
-    for (final entry in navigationEntries) entry.route,
+    for (final entry in NavigationEntry.values) entry.route,
     for (final entry in AssetNavigationEntry.values) entry.route,
+    _expressionDetailRoute,
   ];
   return GoRouter(
     initialLocation: initialLocation,
@@ -68,10 +73,12 @@ GoRouter createAssetTestRouter(String initialLocation) {
 }
 
 void main() {
-  // The labels of the rail's destinations, sections first, then the asset pages.
+  // The labels of the rail's destinations: the sections, the asset pages,
+  // then the runtime entries.
   final railDisplays = [
-    for (final entry in navigationEntries) entry.display,
+    for (final entry in sectionEntries) entry.display,
     for (final entry in AssetNavigationEntry.values) entry.display,
+    for (final entry in runtimeNavigationEntries) entry.display,
   ];
 
   testWidgets('stays on the matching entry when on a nested detail route '
@@ -79,12 +86,12 @@ void main() {
     tester,
   ) async {
     final store = Store<AppState>(initialState: AppState.fromJson({}));
-    final itemsIndex = navigationEntries.indexOf(NavigationEntry.items);
+    final itemsIndex = sectionEntries.indexOf(NavigationEntry.items);
 
     final router = GoRouter(
       initialLocation: '${NavigationEntry.items.route}/detail',
       routes: [
-        for (final entry in navigationEntries)
+        for (final entry in NavigationEntry.values)
           GoRoute(
             path: entry.route,
             builder: (context, state) => Scaffold(
@@ -275,13 +282,13 @@ void main() {
         tester.widget<NavigationRail>(find.byType(NavigationRail));
 
     final modelsIndex =
-        NavigationEntry.values.length + 1 + AssetNavigationEntry.models.index;
+        sectionEntries.length + 1 + AssetNavigationEntry.models.index;
 
     testWidgets('shows the heading when extended', (tester) async {
       useWideView(tester);
       final store = Store<AppState>(initialState: AppState.fromJson({}));
       await tester.pumpWidget(
-        buildTestWidget(createAssetTestRouter('/items'), store),
+        buildTestWidget(createRailTestRouter('/items'), store),
       );
       await tester.pumpAndSettle();
 
@@ -294,7 +301,7 @@ void main() {
       useWideView(tester);
       final store = Store<AppState>(initialState: AppState.fromJson({}));
       await tester.pumpWidget(
-        buildTestWidget(createAssetTestRouter('/items'), store),
+        buildTestWidget(createRailTestRouter('/items'), store),
       );
       await tester.pumpAndSettle();
 
@@ -315,7 +322,7 @@ void main() {
       useWideView(tester);
       final store = Store<AppState>(initialState: AppState.fromJson({}));
       await tester.pumpWidget(
-        buildTestWidget(createAssetTestRouter('/items'), store),
+        buildTestWidget(createRailTestRouter('/items'), store),
       );
       await tester.pumpAndSettle();
 
@@ -333,7 +340,7 @@ void main() {
       useWideView(tester);
       final store = Store<AppState>(initialState: AppState.fromJson({}));
       await tester.pumpWidget(
-        buildTestWidget(createAssetTestRouter('/assets/models?id=m1'), store),
+        buildTestWidget(createRailTestRouter('/assets/models?id=m1'), store),
       );
       await tester.pumpAndSettle();
 
@@ -344,7 +351,7 @@ void main() {
       useWideView(tester);
       final store = Store<AppState>(initialState: AppState.fromJson({}));
       await tester.pumpWidget(
-        buildTestWidget(createAssetTestRouter('/items'), store),
+        buildTestWidget(createRailTestRouter('/items'), store),
       );
       await tester.pumpAndSettle();
 
@@ -361,7 +368,7 @@ void main() {
       useWideView(tester);
       final store = Store<AppState>(initialState: AppState.fromJson({}));
       await tester.pumpWidget(
-        buildTestWidget(createAssetTestRouter('/sound'), store),
+        buildTestWidget(createRailTestRouter('/sound'), store),
       );
       await tester.pumpAndSettle();
 
@@ -370,10 +377,161 @@ void main() {
       expect(
         destinations,
         hasLength(
-          navigationEntries.length + 1 + AssetNavigationEntry.values.length,
+          sectionEntries.length +
+              1 +
+              AssetNavigationEntry.values.length +
+              1 +
+              runtimeNavigationEntries.length,
         ),
       );
-      expect(destinations[navigationEntries.length].disabled, isTrue);
+      expect(destinations[sectionEntries.length].disabled, isTrue);
+    });
+  });
+
+  group('runtime heading', () {
+    // Width >= 1000 is required for the rail to be allowed to extend.
+    const railTestWidth = 1200.0;
+    const railTestHeight = 800.0;
+
+    void useWideView(WidgetTester tester) {
+      tester.view.physicalSize = const Size(railTestWidth, railTestHeight);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+    }
+
+    NavigationRail rail(WidgetTester tester) =>
+        tester.widget<NavigationRail>(find.byType(NavigationRail));
+
+    // The Runtime heading comes after the Assets heading and its pages.
+    final runtimeHeadingIndex =
+        sectionEntries.length + 1 + AssetNavigationEntry.values.length;
+    final expressionIndex =
+        runtimeHeadingIndex +
+        1 +
+        runtimeNavigationEntries.indexOf(NavigationEntry.expression);
+
+    testWidgets('shows the Runtime heading when extended', (tester) async {
+      useWideView(tester);
+      final store = Store<AppState>(initialState: AppState.fromJson({}));
+      await tester.pumpWidget(
+        buildTestWidget(createRailTestRouter('/items'), store),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Runtime'), findsOneWidget);
+    });
+
+    testWidgets('shows the Runtime heading when collapsed, not ellipsized', (
+      tester,
+    ) async {
+      useWideView(tester);
+      final store = Store<AppState>(initialState: AppState.fromJson({}));
+      await tester.pumpWidget(
+        buildTestWidget(createRailTestRouter('/items'), store),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.runAsync(
+        () async => store.dispatch(UpdateNavigationAction()),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Runtime'), findsOneWidget);
+      expect(
+        tester.getSize(find.text('Runtime')).width,
+        lessThanOrEqualTo(80),
+        reason: 'the heading must fit the 80 px collapsed icon column',
+      );
+    });
+
+    testWidgets(
+      'lists the expression tile below the heading, after the asset pages',
+      (tester) async {
+        useWideView(tester);
+        final store = Store<AppState>(initialState: AppState.fromJson({}));
+        await tester.pumpWidget(
+          buildTestWidget(createRailTestRouter('/items'), store),
+        );
+        await tester.pumpAndSettle();
+
+        final headingY = tester.getTopLeft(find.text('Runtime')).dy;
+        expect(
+          tester.getTopLeft(find.text('Models')).dy,
+          lessThan(headingY),
+          reason: 'the sections and asset pages come before the heading',
+        );
+        expect(
+          tester.getTopLeft(find.text('Expressions')).dy,
+          greaterThan(headingY),
+          reason: 'the expression tile comes after the heading',
+        );
+      },
+    );
+
+    testWidgets('the heading is a disabled destination', (tester) async {
+      useWideView(tester);
+      final store = Store<AppState>(initialState: AppState.fromJson({}));
+      await tester.pumpWidget(
+        buildTestWidget(createRailTestRouter('/items'), store),
+      );
+      await tester.pumpAndSettle();
+
+      final destinations = rail(tester).destinations;
+      expect(
+        destinations,
+        hasLength(
+          NavigationEntry.values.length +
+              AssetNavigationEntry.values.length +
+              2,
+        ),
+        reason: 'the two headings are destinations beside the pages',
+      );
+      expect(destinations[runtimeHeadingIndex].disabled, isTrue);
+    });
+
+    testWidgets('tapping the heading does not navigate', (tester) async {
+      useWideView(tester);
+      final store = Store<AppState>(initialState: AppState.fromJson({}));
+      await tester.pumpWidget(
+        buildTestWidget(createRailTestRouter('/items'), store),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Runtime'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('/items'), findsOneWidget);
+      expect(find.text('/expression'), findsNothing);
+      expect(rail(tester).selectedIndex, NavigationEntry.items.index);
+    });
+
+    testWidgets('highlights the expression tile on its detail route', (
+      tester,
+    ) async {
+      useWideView(tester);
+      final store = Store<AppState>(initialState: AppState.fromJson({}));
+      await tester.pumpWidget(
+        buildTestWidget(createRailTestRouter(_expressionDetailRoute), store),
+      );
+      await tester.pumpAndSettle();
+
+      expect(rail(tester).selectedIndex, expressionIndex);
+    });
+
+    testWidgets('tapping Expressions navigates to /expression', (tester) async {
+      useWideView(tester);
+      final store = Store<AppState>(initialState: AppState.fromJson({}));
+      await tester.pumpWidget(
+        buildTestWidget(createRailTestRouter('/items'), store),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Expressions'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('/expression'), findsOneWidget);
+      expect(rail(tester).selectedIndex, expressionIndex);
     });
   });
 }

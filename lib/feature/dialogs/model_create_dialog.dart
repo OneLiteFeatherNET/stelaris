@@ -12,6 +12,10 @@ import 'package:stelaris/util/validators.dart';
 /// - Display name field (`uiName`)
 /// - Key field with Adventure key-part validation
 /// - Live preview of the resulting `namespace:key`
+///
+/// Models without a key, such as expressions, pass `askKey: false`. The key
+/// field and its preview are then left out, and the key handed to [onSubmit]
+/// is empty.
 class ModelCreateDialog extends StatefulWidget {
   final String title;
   final String projectNamespace;
@@ -19,6 +23,7 @@ class ModelCreateDialog extends StatefulWidget {
   final String? nameHint;
   final String? keyHint;
   final double maxWidth;
+  final bool askKey;
 
   const ModelCreateDialog({
     required this.title,
@@ -27,6 +32,7 @@ class ModelCreateDialog extends StatefulWidget {
     this.nameHint,
     this.keyHint,
     this.maxWidth = 520,
+    this.askKey = true,
     super.key,
   });
 
@@ -80,55 +86,57 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
               validator: Validators.required(context.l10n.validation_name_required),
               onFieldSubmitted: (_) => _handleSubmit(),
             ),
-            verticalSpacing10,
-            TextFormField(
-              controller: _keyController,
-              inputFormatters: const [lowerCaseFormatter],
-              decoration: InputDecoration(
-                labelText: '${context.l10n.dialog_model_key_label} *',
-                hintText: widget.keyHint ?? context.l10n.dialog_model_key_hint,
-                prefixIcon: const Icon(Icons.vpn_key_outlined),
+            if (widget.askKey) ...[
+              verticalSpacing10,
+              TextFormField(
+                controller: _keyController,
+                inputFormatters: const [lowerCaseFormatter],
+                decoration: InputDecoration(
+                  labelText: '${context.l10n.dialog_model_key_label} *',
+                  hintText: widget.keyHint ?? context.l10n.dialog_model_key_hint,
+                  prefixIcon: const Icon(Icons.vpn_key_outlined),
+                ),
+                validator: Validators.adventureKeyPart(context.l10n),
+                onFieldSubmitted: (_) => _handleSubmit(),
               ),
-              validator: Validators.adventureKeyPart(context.l10n),
-              onFieldSubmitted: (_) => _handleSubmit(),
-            ),
-            verticalSpacing10,
-            NoticeBox(
-              icon: Icons.preview_outlined,
-              content: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    context.l10n.dialog_model_preview_label,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w600,
+              verticalSpacing10,
+              NoticeBox(
+                icon: Icons.preview_outlined,
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.dialog_model_preview_label,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  ValueListenableBuilder<TextEditingValue>(
-                    valueListenable: _keyController,
-                    builder: (context, value, _) {
-                      final text = value.text.trim();
-                      return Text(
-                        '${widget.projectNamespace}:${text.isEmpty ? '<key>' : text}',
-                        style: TextStyle(
-                          fontFamily: 'monospace',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: text.isEmpty
-                              ? theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5)
-                              : theme.colorScheme.primary,
-                          fontStyle: text.isEmpty
-                              ? FontStyle.italic
-                              : FontStyle.normal,
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                    const SizedBox(height: 6),
+                    ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: _keyController,
+                      builder: (context, value, _) {
+                        final text = value.text.trim();
+                        return Text(
+                          '${widget.projectNamespace}:${text.isEmpty ? '<key>' : text}',
+                          style: TextStyle(
+                            fontFamily: 'monospace',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: text.isEmpty
+                                ? theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5)
+                                : theme.colorScheme.primary,
+                            fontStyle: text.isEmpty
+                                ? FontStyle.italic
+                                : FontStyle.normal,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

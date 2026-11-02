@@ -96,6 +96,8 @@ void main() {
       ),
       soundDelete,
     ),
+    // An expression's detail page has no Delete, it is deleted from the
+    // overview and the palette only.
     'advancement': (
       const AdvancementDetailPage(),
       const AppState(

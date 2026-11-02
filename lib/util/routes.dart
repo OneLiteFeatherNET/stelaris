@@ -32,6 +32,10 @@ import 'package:stelaris/feature/advancement/advancement_detail_page.dart'
     deferred as advancement_detail_page;
 import 'package:stelaris/feature/sound/sound_detail_page.dart'
     deferred as sound_detail_page;
+import 'package:stelaris/feature/expression/expression_page.dart'
+    deferred as expression_page;
+import 'package:stelaris/feature/expression/expression_detail_page.dart'
+    deferred as expression_detail_page;
 
 const String projectSelectionRoute = '/projects';
 
@@ -176,6 +180,23 @@ String? soundDetailRedirect(BuildContext context, GoRouterState state) {
 
     if (isAtSoundDetail && appState.selectedSoundEvent == null) {
       return NavigationEntry.sound.route;
+    }
+  } on StoreException catch (_) {}
+  return null;
+}
+
+/// Redirects `/expression/detail` back to `/expression` when nothing is
+/// selected — reachable by a direct URL visit or a page reload, since the
+/// detail route relies entirely on the already-dispatched Redux selection
+/// rather than a route parameter.
+String? expressionDetailRedirect(BuildContext context, GoRouterState state) {
+  try {
+    final appState = StoreProvider.state<AppState>(context);
+    final isAtExpressionDetail =
+        state.matchedLocation == '${NavigationEntry.expression.route}/detail';
+
+    if (isAtExpressionDetail && appState.selectedExpression == null) {
+      return NavigationEntry.expression.route;
     }
   } on StoreException catch (_) {}
   return null;
@@ -450,6 +471,37 @@ final GoRouter router = GoRouter(
               child,
             ) => FadeTransition(opacity: animation, child: child),
           ),
+        ),
+        GoRoute(
+          path: NavigationEntry.expression.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: expression_page.loadLibrary,
+              builder: () => expression_page.ExpressionPage(),
+            ),
+            key: state.pageKey,
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
+          ),
+          routes: [
+            GoRoute(
+              path: 'detail',
+              redirect: expressionDetailRedirect,
+              onExit: detailExitGuard,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                child: DeferredWidget(
+                  loader: expression_detail_page.loadLibrary,
+                  builder: () => expression_detail_page.ExpressionDetailPage(),
+                ),
+                key: state.pageKey,
+                transitionsBuilder: buildDetailSlideTransition,
+              ),
+            ),
+          ],
         ),
       ],
     ),
