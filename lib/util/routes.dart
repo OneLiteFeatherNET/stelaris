@@ -274,6 +274,26 @@ Widget buildDetailSlideTransition(
   );
 }
 
+/// The library of each sidebar page, keyed by its route, so hovering an
+/// entry can fetch the page before it is clicked.
+final Map<String, LibraryLoader> sidebarPageLoaders = {
+  NavigationEntry.attributes.route: attribute_page.loadLibrary,
+  NavigationEntry.items.route: item_page.loadLibrary,
+  NavigationEntry.advancements.route: advancement_page.loadLibrary,
+  NavigationEntry.font.route: font_page.loadLibrary,
+  NavigationEntry.sound.route: sound_page.loadLibrary,
+  NavigationEntry.expression.route: expression_page.loadLibrary,
+  NavigationEntry.function.route: expression_function_page.loadLibrary,
+  AssetNavigationEntry.models.route: models_page.loadLibrary,
+  BuildNavigationEntry.generator.route: generator_page.loadLibrary,
+};
+
+/// Starts fetching the page shown at [route], if it is a sidebar page.
+void preloadPage(String route) {
+  final loader = sidebarPageLoaders[route];
+  if (loader != null) unawaited(DeferredWidget.preload(loader));
+}
+
 /// Re-runs the guards whenever the session changes.
 ///
 /// Without this a session that expires while the app is open would leave the

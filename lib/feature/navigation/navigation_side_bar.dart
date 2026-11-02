@@ -9,6 +9,7 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/settings/settings_dialog.dart';
 import 'package:stelaris/util/color_scheme_ext.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/routes.dart';
 
 const double maxXOffset = 208;
 
@@ -30,7 +31,11 @@ const TextStyle navigationEntryTextStyle = TextStyle(fontSize: 16);
 /// The [NavigationSideBar] allows users to navigate between different
 /// sections of the application using a [NavigationRail].
 class NavigationSideBar extends StatelessWidget {
-  const NavigationSideBar({super.key});
+  const NavigationSideBar({this.onHoverRoute = preloadPage, super.key});
+
+  /// Called with an entry's route when the pointer enters it. Fetches the
+  /// page's deferred library by default, so the first visit needs no spinner.
+  final ValueChanged<String> onHoverRoute;
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +145,7 @@ class NavigationSideBar extends StatelessWidget {
     return [
       for (final navigationValue in sectionEntries)
         _destination(
+          route: navigationValue.route,
           display: navigationValue.display,
           icon: navigationValue.data,
           selectedIcon: navigationValue.selected,
@@ -147,6 +153,7 @@ class NavigationSideBar extends StatelessWidget {
       _groupHeading(context, context.l10n.navigation_group_assets),
       for (final assetValue in AssetNavigationEntry.values)
         _destination(
+          route: assetValue.route,
           display: assetValue.display,
           icon: assetValue.data,
           selectedIcon: assetValue.selected,
@@ -154,6 +161,7 @@ class NavigationSideBar extends StatelessWidget {
       _groupHeading(context, context.l10n.navigation_group_runtime),
       for (final runtimeValue in runtimeNavigationEntries)
         _destination(
+          route: runtimeValue.route,
           display: runtimeValue.display,
           icon: runtimeValue.data,
           selectedIcon: runtimeValue.selected,
@@ -161,6 +169,7 @@ class NavigationSideBar extends StatelessWidget {
       _groupHeading(context, context.l10n.navigation_group_build),
       for (final buildValue in BuildNavigationEntry.values)
         _destination(
+          route: buildValue.route,
           display: buildValue.display,
           icon: buildValue.data,
           selectedIcon: buildValue.selected,
@@ -171,13 +180,21 @@ class NavigationSideBar extends StatelessWidget {
   /// A destination for one page. Its label is hidden until the rail is
   /// extended.
   NavigationRailDestination _destination({
+    required String route,
     required String display,
     required IconData icon,
     required IconData selectedIcon,
   }) {
+    // The rail offers no hover callback per destination, so icon and label
+    // each listen themselves; together they cover the whole row.
+    Widget hoverable(Widget child) => MouseRegion(
+      opaque: false,
+      onEnter: (_) => onHoverRoute(route),
+      child: child,
+    );
     return NavigationRailDestination(
-      selectedIcon: Icon(selectedIcon),
-      icon: Icon(icon),
+      selectedIcon: hoverable(Icon(selectedIcon)),
+      icon: hoverable(Icon(icon)),
       // The rail's icon column is 80 wide and adds 8 after the label, so the
       // label box makes every row exactly maxXOffset wide when extended.
       // A wider label would widen only its own row and shift the icons of
@@ -185,17 +202,19 @@ class NavigationSideBar extends StatelessWidget {
       // Labels are invisible while the rail expands from collapsed and fade
       // out in the first half of collapsing, so the mid-word clipping of the
       // rail's width animation is never shown.
-      label: Builder(
-        builder: (context) => FadeTransition(
-          opacity: NavigationRail.extendedAnimation(context)
-              .drive(CurveTween(curve: const Interval(0.5, 1))),
-          child: SizedBox(
-            width: maxXOffset - 88,
-            child: Text(
-              display,
-              style: navigationEntryTextStyle,
-              softWrap: false,
-              overflow: TextOverflow.fade,
+      label: hoverable(
+        Builder(
+          builder: (context) => FadeTransition(
+            opacity: NavigationRail.extendedAnimation(context)
+                .drive(CurveTween(curve: const Interval(0.5, 1))),
+            child: SizedBox(
+              width: maxXOffset - 88,
+              child: Text(
+                display,
+                style: navigationEntryTextStyle,
+                softWrap: false,
+                overflow: TextOverflow.fade,
+              ),
             ),
           ),
         ),

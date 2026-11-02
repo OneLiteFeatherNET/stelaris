@@ -1,8 +1,19 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 typedef LibraryLoader = Future<void> Function();
 typedef DeferredWidgetBuilder = Widget Function();
+
+/// Loaders whose library has already loaded in this session.
+///
+/// A [FutureBuilder] reports `waiting` for its first frame even when the
+/// future has long completed, so without this every revisit of a page would
+/// flash the placeholder for one frame — right in the middle of the route
+/// transition. `prefix.loadLibrary` tear-offs compare equal, so the set
+/// recognises a library across widget instances.
+final Set<LibraryLoader> _loadedLibraries = {};
 
 /// Asynchronously loads a Dart module chunk before building and displaying the widget.
 ///
@@ -21,24 +32,31 @@ class DeferredWidget extends StatefulWidget {
   final DeferredWidgetBuilder builder;
   final Widget? placeholder;
 
+  /// Fetches the library behind [loader] ahead of time, so a [DeferredWidget]
+  /// built with it later shows its page straight away instead of the
+  /// placeholder.
+  ///
+  /// A chunk that fails to load is left for the visit itself, which tries
+  /// again and shows the error with its retry button.
+  static Future<void> preload(LibraryLoader loader) async {
+    if (_loadedLibraries.contains(loader)) return;
+    try {
+      await loader();
+      _loadedLibraries.add(loader);
+    } on DeferredLoadException {
+      // See above: the visit retries and reports it.
+    }
+  }
+
   @override
   State<DeferredWidget> createState() => _DeferredWidgetState();
 }
 
 class _DeferredWidgetState extends State<DeferredWidget> {
-  /// Loaders whose library has already loaded in this session.
-  ///
-  /// A [FutureBuilder] reports `waiting` for its first frame even when the
-  /// future has long completed, so without this every revisit of a page would
-  /// flash the placeholder for one frame — right in the middle of the route
-  /// transition. `prefix.loadLibrary` tear-offs compare equal, so the set
-  /// recognises a library across widget instances.
-  static final Set<LibraryLoader> _loaded = {};
-
   /// Decided once per instance: switching between the direct build and the
   /// [FutureBuilder] later would change the tree above the page and throw
   /// away its state.
-  late final bool _loadedBefore = _loaded.contains(widget.loader);
+  late final bool _loadedBefore = _loadedLibraries.contains(widget.loader);
 
   late Future<void> _loadingFuture;
 
@@ -51,7 +69,7 @@ class _DeferredWidgetState extends State<DeferredWidget> {
   Future<void> _load() async {
     final loader = widget.loader;
     await loader();
-    _loaded.add(loader);
+    _loadedLibraries.add(loader);
   }
 
   // dart2js forgets a failed chunk, so calling the loader again really
