@@ -26,6 +26,7 @@ import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:stelaris/feature/model/model_card_frame.dart';
 import 'package:stelaris/feature/model/model_grid.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/relative_time.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -38,6 +39,10 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// [onSelected], so the route can keep it. [pickFile] opens the file dialog
 /// of the uploads and [saveFile] hands a download to the browser, both
 /// injectable for tests.
+/// The insets of the other list pages (see `ModelPage`): the header sits
+/// 12px below the top.
+const EdgeInsets _pagePadding = EdgeInsets.fromLTRB(16, 12, 16, 0);
+
 class ModelsPage extends StatelessWidget {
   const ModelsPage({
     this.selectedId,
@@ -80,11 +85,11 @@ class ModelsPage extends StatelessWidget {
         final project = vm.project;
         if (project == null) {
           return Padding(
-            padding: const EdgeInsets.all(16),
+            padding: _pagePadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                PageHeader.small(title: context.l10n.asset_models_title),
+                PageHeader(title: context.l10n.asset_models_title),
                 Expanded(
                   child: Center(
                     child: Text(context.l10n.asset_models_no_project),
@@ -367,7 +372,7 @@ class _ModelsBodyState extends State<_ModelsBody> {
   Widget build(BuildContext context) {
     final selected = _selected;
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: _pagePadding,
       child: Builder(
         builder: (context) {
           // Like the other list pages: a grid of cards, and a model opens
@@ -389,7 +394,7 @@ class _ModelsBodyState extends State<_ModelsBody> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                verticalSpacing10,
                 Expanded(child: _buildDetail(selected)),
               ],
             );
@@ -397,8 +402,10 @@ class _ModelsBodyState extends State<_ModelsBody> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              PageHeader.small(
-                title: context.l10n.asset_models_title,
+              PageHeader(
+                title: _listed
+                    ? '${context.l10n.asset_models_title} (${_models.length})'
+                    : context.l10n.asset_models_title,
                 actions: [
                   PageHeaderAction(
                     key: const Key('models_from_texture'),
@@ -415,7 +422,7 @@ class _ModelsBodyState extends State<_ModelsBody> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              verticalSpacing10,
               Expanded(child: _buildGrid()),
             ],
           );
