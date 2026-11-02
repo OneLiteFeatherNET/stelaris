@@ -143,7 +143,7 @@ class ExpressionFormulaController extends TextEditingController {
 
   static TextStyle? _styleOf(ExpressionTokenKind kind, ColorScheme colors) {
     return switch (kind) {
-      ExpressionTokenKind.number => TextStyle(color: colors.tertiary),
+      ExpressionTokenKind.number => TextStyle(color: colors.secondary),
       ExpressionTokenKind.string => TextStyle(
         color: colors.secondary,
         fontStyle: FontStyle.italic,
@@ -152,9 +152,13 @@ class ExpressionFormulaController extends TextEditingController {
         color: colors.primary,
         fontWeight: FontWeight.w600,
       ),
-      ExpressionTokenKind.variable => TextStyle(color: colors.secondary),
-      ExpressionTokenKind.constant => TextStyle(
+      // The same color as the variable chips below the field.
+      ExpressionTokenKind.variable => TextStyle(
         color: colors.tertiary,
+        fontWeight: FontWeight.w600,
+      ),
+      ExpressionTokenKind.constant => TextStyle(
+        color: colors.primary,
         fontStyle: FontStyle.italic,
       ),
       ExpressionTokenKind.unknown => TextStyle(color: colors.error),

@@ -66,7 +66,8 @@ class ExpressionFormulaField extends StatefulWidget {
 }
 
 class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
-  static const int _minLines = 8;
+  /// The field starts this high and grows with the formula.
+  static const int _minLines = 4;
 
   /// Rows of the suggestion list, and how many are visible before it scrolls.
   static const double _rowHeight = 40;
@@ -418,8 +419,11 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
                     labelText: l10n.expression_field_expression,
-                    helperText: l10n.expression_hint_expression,
-                    helperMaxLines: 3,
+                    helper: _FormulaHint(
+                      text: l10n.expression_hint_expression_short,
+                      more: l10n.expression_hint_expression,
+                      moreLabel: l10n.expression_hint_expression_more,
+                    ),
                     alignLabelWithHint: true,
                     border: AppShapes.fieldBorder(),
                   ),
@@ -465,28 +469,12 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
             runSpacing: 8,
             children: [
               for (final variable in variables)
-                if (unused.contains(variable.name.toLowerCase()))
-                  Tooltip(
-                    message: l10n.expression_variable_unused,
-                    child: ActionChip(
-                      key: ValueKey('expression_chip_unused_${variable.name}'),
-                      label: Text(
-                        variable.name,
-                        style: monospace?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                      onPressed: () => _insert(variable.name),
-                    ),
-                  )
-                else
-                  Tooltip(
-                    message: expressionVariableTypeLabel(l10n, variable.type),
-                    child: ActionChip(
-                      label: Text(variable.name, style: monospace),
-                      onPressed: () => _insert(variable.name),
-                    ),
-                  ),
+                _VariableChip(
+                  variable: variable,
+                  unused: unused.contains(variable.name.toLowerCase()),
+                  style: monospace,
+                  onPressed: () => _insert(variable.name),
+                ),
             ],
           ),
       ],
@@ -578,12 +566,13 @@ class _ValidationNotes extends StatelessWidget {
           key: const ValueKey('expression_valid'),
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.check, size: 16, color: colors.onSurfaceVariant),
+            Icon(Icons.check_circle, size: 16, color: colors.primary),
             const SizedBox(width: 4),
             Text(
               l10n.expression_validation_valid,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: colors.onSurfaceVariant,
+                color: colors.primary,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],
@@ -728,6 +717,94 @@ class _SuggestionList extends StatelessWidget {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+/// The short hint under the formula field, with an info icon whose tooltip
+/// holds [more], the long one.
+class _FormulaHint extends StatelessWidget {
+  const _FormulaHint({
+    required this.text,
+    required this.more,
+    required this.moreLabel,
+  });
+
+  final String text;
+  final String more;
+
+  /// What the info icon says to a screen reader.
+  final String moreLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.onSurfaceVariant;
+    return Row(
+      children: [
+        Flexible(
+          child: Text(
+            text,
+            style: theme.textTheme.bodySmall?.copyWith(color: color),
+          ),
+        ),
+        const SizedBox(width: 4),
+        Tooltip(
+          key: const ValueKey('expression_hint_more'),
+          message: more,
+          child: Semantics(
+            label: moreLabel,
+            child: Icon(Icons.info_outline, size: 16, color: color),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// A declared variable as a chip that inserts its name. It has the color the
+/// formula gives variables, and an icon of its type. An [unused] one is muted
+/// and says so in its tooltip.
+class _VariableChip extends StatelessWidget {
+  const _VariableChip({
+    required this.variable,
+    required this.unused,
+    required this.style,
+    required this.onPressed,
+  });
+
+  final ExpressionVariable variable;
+  final bool unused;
+  final TextStyle? style;
+  final VoidCallback onPressed;
+
+  static IconData _typeIcon(ExpressionValueType type) => switch (type) {
+    ExpressionValueType.number => Icons.tag,
+    ExpressionValueType.boolean => Icons.toggle_on_outlined,
+    ExpressionValueType.string => Icons.text_fields,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = Theme.of(context).colorScheme;
+    final foreground = unused
+        ? colors.onSurfaceVariant
+        : colors.onTertiaryContainer;
+    return Tooltip(
+      message: unused
+          ? l10n.expression_variable_unused
+          : expressionVariableTypeLabel(l10n, variable.type),
+      child: ActionChip(
+        key: unused
+            ? ValueKey('expression_chip_unused_${variable.name}')
+            : null,
+        avatar: Icon(_typeIcon(variable.type), color: foreground),
+        backgroundColor: unused ? null : colors.tertiaryContainer,
+        side: unused ? null : BorderSide.none,
+        label: Text(variable.name, style: style?.copyWith(color: foreground)),
+        onPressed: onPressed,
       ),
     );
   }

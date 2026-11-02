@@ -142,23 +142,16 @@ class ExpressionFunctionGeneralPage extends StatelessWidget {
                       alignment: AlignmentDirectional.topStart,
                       child: (function.body ?? '').trim().isEmpty
                           ? const SizedBox(width: double.infinity)
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                const SizedBox(height: 16),
-                                Text(
-                                  l10n.expression_rendered_formula_label,
-                                  style: theme.textTheme.labelMedium?.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                _FunctionMath(
+                          : Padding(
+                              padding: const EdgeInsets.only(top: 16),
+                              child: ExpressionMathPanel(
+                                label: l10n.expression_rendered_formula_label,
+                                child: _FunctionMath(
                                   function: function,
                                   catalog: vm.catalog,
-                                  fontSize: 16,
+                                  fontSize: ExpressionMathPanel.fontSize,
                                 ),
-                              ],
+                              ),
                             ),
                     ),
                     for (final message in bodyErrors)

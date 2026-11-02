@@ -361,6 +361,90 @@ List<OperatorSymbol> operatorSymbols(ExpressionCatalog? catalog) {
   ];
 }
 
+/// The groups the toolbar shows the operators in, in this order.
+enum OperatorGroupKind { arithmetic, comparison, logic, other }
+
+/// The operators of one [kind] in the toolbar.
+class OperatorGroup {
+  const OperatorGroup(this.kind, this.operators);
+
+  final OperatorGroupKind kind;
+  final List<OperatorSymbol> operators;
+}
+
+/// The symbols that mean the same as another one, mapped to that one. Only one
+/// of a pair is shown; the other is named in its tooltip.
+const Map<String, String> operatorAliases = {'=': '==', '<>': '!='};
+
+/// The group of each known symbol. A symbol of the catalog that is not listed
+/// goes to [OperatorGroupKind.other].
+const Map<String, OperatorGroupKind> _operatorGroups = {
+  '+': OperatorGroupKind.arithmetic,
+  '-': OperatorGroupKind.arithmetic,
+  '*': OperatorGroupKind.arithmetic,
+  '/': OperatorGroupKind.arithmetic,
+  '%': OperatorGroupKind.arithmetic,
+  '^': OperatorGroupKind.arithmetic,
+  '=': OperatorGroupKind.comparison,
+  '==': OperatorGroupKind.comparison,
+  '!=': OperatorGroupKind.comparison,
+  '<>': OperatorGroupKind.comparison,
+  '<': OperatorGroupKind.comparison,
+  '<=': OperatorGroupKind.comparison,
+  '>': OperatorGroupKind.comparison,
+  '>=': OperatorGroupKind.comparison,
+  '&&': OperatorGroupKind.logic,
+  '||': OperatorGroupKind.logic,
+  '!': OperatorGroupKind.logic,
+};
+
+/// The order of the known symbols inside their group, the way they are read:
+/// `+ - * / % ^`, `== != < <= > >=`, `&& || !`.
+const List<String> _operatorOrder = [
+  '+', '-', '*', '/', '%', '^', //
+  '==', '!=', '<', '<=', '>', '>=', //
+  '&&', '||', '!',
+];
+
+/// [operators] in their groups, see [OperatorGroupKind], without the empty
+/// ones. An alias is left out when the symbol it stands for is there too, see
+/// [operatorAliases]. Known symbols keep a fixed order; the others keep the
+/// order they came in.
+List<OperatorGroup> groupOperatorSymbols(List<OperatorSymbol> operators) {
+  final symbols = {for (final operator in operators) operator.symbol};
+  final byKind = {for (final kind in OperatorGroupKind.values) kind: <OperatorSymbol>[]};
+  for (final operator in operators) {
+    final alias = operatorAliases[operator.symbol];
+    if (alias != null && symbols.contains(alias)) continue;
+    byKind[_operatorGroups[operator.symbol] ?? OperatorGroupKind.other]!.add(
+      operator,
+    );
+  }
+  int rank(OperatorSymbol operator) {
+    final index = _operatorOrder.indexOf(operator.symbol);
+    return index == -1 ? _operatorOrder.length : index;
+  }
+
+  return [
+    for (final kind in OperatorGroupKind.values)
+      if (byKind[kind]!.isNotEmpty)
+        OperatorGroup(
+          kind,
+          kind == OperatorGroupKind.other
+              ? byKind[kind]!
+              : (byKind[kind]!..sort((a, b) => rank(a).compareTo(rank(b)))),
+        ),
+  ];
+}
+
+/// The alias of [symbol] that the toolbar leaves out, or null.
+String? operatorAliasOf(String symbol) {
+  for (final MapEntry(:key, :value) in operatorAliases.entries) {
+    if (value == symbol) return key;
+  }
+  return null;
+}
+
 /// Inserts [operator] in place of [start] to [end]. An infix operator gets a
 /// space on each side, the others are inserted as they are.
 FormulaEdit insertOperator(

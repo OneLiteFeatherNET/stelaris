@@ -33,7 +33,6 @@ class ExpressionGeneralPage extends StatelessWidget {
       builder: (context, vm) {
         final expression = vm.selected;
         final l10n = context.l10n;
-        final theme = Theme.of(context);
         return ExpressionPreviewBeside(
           child: ListView(
             padding: const EdgeInsets.all(16),
@@ -69,27 +68,16 @@ class ExpressionGeneralPage extends StatelessWidget {
                             alignment: AlignmentDirectional.topStart,
                             child: expression.expression.trim().isEmpty
                                 ? const SizedBox(width: double.infinity)
-                                : Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        l10n.expression_rendered_formula_label,
-                                        style: theme.textTheme.labelMedium
-                                            ?.copyWith(
-                                              color: theme
-                                                  .colorScheme
-                                                  .onSurfaceVariant,
-                                            ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      _FormulaMath(
+                                : Padding(
+                                    padding: const EdgeInsets.only(top: 16),
+                                    child: ExpressionMathPanel(
+                                      label: l10n.expression_rendered_formula_label,
+                                      child: _FormulaMath(
                                         formula: expression.expression,
                                         catalog: vm.catalog,
-                                        fontSize: 16,
+                                        fontSize: ExpressionMathPanel.fontSize,
                                       ),
-                                    ],
+                                    ),
                                   ),
                           ),
                         ],

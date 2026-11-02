@@ -1132,6 +1132,54 @@ abstract class AppLocalizations {
   /// **'An EvalEx formula, e.g. a * 2 + sqrt(b). Use + - * / ^ %, comparisons, && || ! for logic (not and/or), functions such as MAX, MIN, ROUND or IF, and the variables declared on the Variables tab.'**
   String get expression_hint_expression;
 
+  /// No description provided for @expression_operator_alias.
+  ///
+  /// In en, this message translates to:
+  /// **'{text}, also written {alias}'**
+  String expression_operator_alias(String text, String alias);
+
+  /// No description provided for @expression_operator_group_arithmetic.
+  ///
+  /// In en, this message translates to:
+  /// **'Arithmetic'**
+  String get expression_operator_group_arithmetic;
+
+  /// No description provided for @expression_operator_group_comparison.
+  ///
+  /// In en, this message translates to:
+  /// **'Comparison'**
+  String get expression_operator_group_comparison;
+
+  /// No description provided for @expression_operator_group_logic.
+  ///
+  /// In en, this message translates to:
+  /// **'Logic'**
+  String get expression_operator_group_logic;
+
+  /// No description provided for @expression_operator_group_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other operators'**
+  String get expression_operator_group_other;
+
+  /// No description provided for @expression_toolbar_punctuation.
+  ///
+  /// In en, this message translates to:
+  /// **'Parentheses and comma'**
+  String get expression_toolbar_punctuation;
+
+  /// No description provided for @expression_hint_expression_short.
+  ///
+  /// In en, this message translates to:
+  /// **'An EvalEx formula, e.g. a * 2 + sqrt(b).'**
+  String get expression_hint_expression_short;
+
+  /// No description provided for @expression_hint_expression_more.
+  ///
+  /// In en, this message translates to:
+  /// **'More about formulas'**
+  String get expression_hint_expression_more;
+
   /// No description provided for @expression_formula_variables_label.
   ///
   /// In en, this message translates to:

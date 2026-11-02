@@ -1,5 +1,6 @@
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// A formula typeset as math, read-only. [tex] is its LaTeX, see
 /// [expressionToTex]. A long formula breaks after its operators and relations
@@ -89,6 +90,52 @@ class _ExpressionMathViewState extends State<ExpressionMathView> {
           // than the line scrolls, the others wrap.
           SingleChildScrollView(scrollDirection: Axis.horizontal, child: part),
       ],
+    );
+  }
+}
+
+/// The typeset formula on a surface of its own under the editor, with its
+/// [label] above it, so the result stands apart from the text it comes from.
+class ExpressionMathPanel extends StatelessWidget {
+  const ExpressionMathPanel({
+    required this.label,
+    required this.child,
+    super.key,
+  });
+
+  /// The size the panels typeset their formula in.
+  static const double fontSize = 22;
+
+  final String label;
+
+  /// The formula, typically an [ExpressionMathView] in [fontSize].
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    return DecoratedBox(
+      decoration: ShapeDecoration(
+        color: colors.surfaceContainerHighest,
+        shape: AppShapes.rounded(AppShapes.small),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              label,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 8),
+            child,
+          ],
+        ),
+      ),
     );
   }
 }

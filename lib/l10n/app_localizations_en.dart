@@ -568,6 +568,33 @@ class AppLocalizationsEn extends AppLocalizations {
       'An EvalEx formula, e.g. a * 2 + sqrt(b). Use + - * / ^ %, comparisons, && || ! for logic (not and/or), functions such as MAX, MIN, ROUND or IF, and the variables declared on the Variables tab.';
 
   @override
+  String expression_operator_alias(String text, String alias) {
+    return '$text, also written $alias';
+  }
+
+  @override
+  String get expression_operator_group_arithmetic => 'Arithmetic';
+
+  @override
+  String get expression_operator_group_comparison => 'Comparison';
+
+  @override
+  String get expression_operator_group_logic => 'Logic';
+
+  @override
+  String get expression_operator_group_other => 'Other operators';
+
+  @override
+  String get expression_toolbar_punctuation => 'Parentheses and comma';
+
+  @override
+  String get expression_hint_expression_short =>
+      'An EvalEx formula, e.g. a * 2 + sqrt(b).';
+
+  @override
+  String get expression_hint_expression_more => 'More about formulas';
+
+  @override
   String get expression_formula_variables_label => 'Insert a variable';
 
   @override
