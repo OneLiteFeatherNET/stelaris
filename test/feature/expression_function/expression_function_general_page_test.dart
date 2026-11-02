@@ -1,5 +1,5 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:flutter/widgets.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
@@ -11,7 +11,6 @@ import 'package:stelaris_models/stelaris_models.dart';
 import '../../support/pump_in_app.dart';
 
 const _project = Project(id: 'p1', displayName: 'P1', key: 'p1');
-const _identifierField = ValueKey('expression_function_identifier_f1');
 
 ExpressionFunctionModel _function({
   ExpressionFunctionKind kind = ExpressionFunctionKind.formula,
@@ -73,7 +72,15 @@ void main() {
   ) async {
     final store = await _pump(tester);
 
-    await tester.tap(find.text(l10n.expression_function_kind_interface));
+    // The kind's card opens the list of kinds, a tap picks one.
+    await tester.tap(find.text(l10n.expression_function_field_kind));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.text(l10n.expression_function_kind_interface),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(
@@ -83,7 +90,7 @@ void main() {
     expect(find.text(l10n.expression_function_section_stub), findsOneWidget);
   });
 
-  testWidgets('a rejected name shows its message under the identifier field', (
+  testWidgets('a rejected name shows its message on the identifier card', (
     tester,
   ) async {
     await _pump(
@@ -103,11 +110,44 @@ void main() {
   testWidgets('an identifier that starts with a digit is flagged as typed', (
     tester,
   ) async {
-    await _pump(tester);
+    final store = await _pump(tester);
 
-    await tester.enterText(find.byKey(_identifierField), '3d_hit');
+    await tester.tap(find.text(l10n.expression_function_field_name));
+    await tester.pumpAndSettle();
+    final field = find.descendant(
+      of: find.byType(Dialog),
+      matching: find.byType(TextFormField),
+    );
+    await tester.enterText(field, '3d_hit');
     await tester.pumpAndSettle();
 
     expect(find.text(l10n.expression_function_name_invalid), findsOneWidget);
+
+    await tester.tap(find.text(l10n.button_save));
+    await tester.pumpAndSettle();
+
+    expect(
+      store.state.selectedExpressionFunction?.name,
+      'damage_bonus',
+      reason: 'a bad identifier cannot be saved',
+    );
+  });
+
+  testWidgets('a name saved in its dialog is staged', (tester) async {
+    final store = await _pump(tester);
+
+    await tester.tap(find.text(l10n.expression_function_field_ui_name));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.byType(TextFormField),
+      ),
+      'Crit bonus',
+    );
+    await tester.tap(find.text(l10n.button_save));
+    await tester.pumpAndSettle();
+
+    expect(store.state.selectedExpressionFunction?.uiName, 'Crit bonus');
   });
 }
