@@ -141,6 +141,16 @@ void main() {
     );
   });
 
+  testWidgets('the notes have no card, they are edited from the overview', (
+    tester,
+  ) async {
+    await _pump(tester);
+
+    // The header shows them; a card here would edit them a second way.
+    expect(find.text(l10n.action_notes), findsNothing);
+    expect(find.text('Comment'), findsNothing);
+  });
+
   testWidgets('a name saved in its dialog is staged', (tester) async {
     final store = await _pump(tester);
 

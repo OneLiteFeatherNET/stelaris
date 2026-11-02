@@ -225,4 +225,33 @@ void main() {
 
     expect(store.state.expressionFunctionProblem, isNull);
   });
+
+  test('ExpressionFunctionNotesUpdateAction saves the notes and only patches them into a selection of the same function', () async {
+    // The selection carries an unsaved rename that must survive.
+    final store = Store<AppState>(
+      initialState: AppState(
+        expressionFunctions: const PaginatedResult<ExpressionFunctionModel>(
+          items: [_function],
+          totalItems: 1,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: 10,
+        ),
+        selectedExpressionFunction: _function.copyWith(
+          uiName: 'Renamed',
+          comment: 'Old',
+        ),
+      ),
+    );
+    ApiService().expressionFunctionApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter.json({..._functionJson, 'comment': 'Boss room'});
+
+    await store.dispatchAndWait(
+      ExpressionFunctionNotesUpdateAction(_function, 'Boss room'),
+    );
+
+    expect(store.state.expressionFunctions.items.single.comment, 'Boss room');
+    expect(store.state.selectedExpressionFunction!.uiName, 'Renamed');
+    expect(store.state.selectedExpressionFunction!.comment, 'Boss room');
+  });
 }
