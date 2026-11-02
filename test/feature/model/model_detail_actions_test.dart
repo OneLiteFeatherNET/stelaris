@@ -17,7 +17,11 @@ void main() {
   late Store<AppState> store;
   ItemModel? removed;
 
-  Future<void> pump(WidgetTester tester, AppState state) async {
+  Future<void> pump(
+    WidgetTester tester,
+    AppState state, {
+    bool withDelete = true,
+  }) async {
     store = Store<AppState>(initialState: state);
     removed = null;
     final router = GoRouter(
@@ -39,7 +43,9 @@ void main() {
                       nameSelector: (m) => m.uiName,
                       keySelector: (m) => m.key ?? '',
                       deleteTitle: 'Delete item',
-                      removeAction: (m) => _RecordRemove(m, (v) => removed = v),
+                      removeAction: withDelete
+                          ? (m) => _RecordRemove(m, (v) => removed = v)
+                          : null,
                       readNotes: (m) => m.comment,
                     ),
                   ],
@@ -142,6 +148,16 @@ void main() {
     expect(find.text('Boss drop\nNether only'), findsOneWidget);
     expect(find.byType(TextField), findsNothing);
     expect(store.state.unsavedChanges, isNull);
+  });
+
+  testWidgets('without a remove action the header has no Delete', (
+    tester,
+  ) async {
+    await pump(tester, const AppState(selectedItem: item), withDelete: false);
+
+    expect(find.text('Delete'), findsNothing);
+    expect(find.text('Info'), findsOneWidget);
+    expect(find.text('Save'), findsOneWidget);
   });
 
   testWidgets('deleting with unsaved edits skips the guard and returns to '
