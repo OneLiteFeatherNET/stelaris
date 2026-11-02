@@ -7,6 +7,7 @@ import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card_grid.dart';
 import 'package:stelaris/feature/base/dialog/notice_box.dart';
 import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
+import 'package:stelaris/feature/base/side_panel_layout.dart';
 import 'package:stelaris/feature/component/component_preview.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -76,43 +77,34 @@ class ModelDetail extends StatelessWidget {
                 ],
               );
             }
-            final sectionsWidth = width - _previewWidth - _previewGap;
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: sectionsWidth,
-                  child: _buildSections(
-                    context,
-                    EditCardGrid.cardWidthIn(sectionsWidth),
+            return SidePanelLayout(
+              content: (context, sectionsWidth) => _buildSections(
+                context,
+                EditCardGrid.cardWidthIn(sectionsWidth),
+              ),
+              panelWidth: (_) => _previewWidth,
+              panelPadding: const EdgeInsetsDirectional.only(
+                start: _previewGap,
+              ),
+              panel: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Takes the room of the first heading, invisibly, so the
+                  // preview starts level with the first row of cards at any
+                  // text scale.
+                  ExcludeSemantics(
+                    child: Visibility(
+                      visible: false,
+                      maintainSize: true,
+                      maintainAnimation: true,
+                      maintainState: true,
+                      child: EditSectionHeading(title: l10n.asset_model_info),
+                    ),
                   ),
-                ),
-                const SizedBox(width: _previewGap),
-                SizedBox(
-                  width: _previewWidth,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Takes the room of the first heading, invisibly, so the
-                      // preview starts level with the first row of cards at
-                      // any text scale.
-                      ExcludeSemantics(
-                        child: Visibility(
-                          visible: false,
-                          maintainSize: true,
-                          maintainAnimation: true,
-                          maintainState: true,
-                          child: EditSectionHeading(
-                            title: l10n.asset_model_info,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: _headingGap),
-                      _preview(),
-                    ],
-                  ),
-                ),
-              ],
+                  const SizedBox(height: _headingGap),
+                  _preview(),
+                ],
+              ),
             );
           },
         ),
