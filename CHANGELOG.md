@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.9.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.8.2...v1.9.0) (2026-11-02)
+
+
+### Features
+
+* **asset:** add a models page with 3D preview, uploads and versions ([#289](https://github.com/OneLiteFeatherNET/stelaris/issues/289)) ([30f94cb](https://github.com/OneLiteFeatherNET/stelaris/commit/30f94cb673611477930ee89df528eb74ed31b036))
+* **base:** add detail page building blocks for the expression pages ([#291](https://github.com/OneLiteFeatherNET/stelaris/issues/291)) ([c8d7461](https://github.com/OneLiteFeatherNET/stelaris/commit/c8d746187dc3257173b83dc5dddb2a6edbf94c32))
+* **expression:** define, edit and test project functions ([#293](https://github.com/OneLiteFeatherNET/stelaris/issues/293)) ([53459a3](https://github.com/OneLiteFeatherNET/stelaris/commit/53459a35ff751de1c660ee38bd1b4bf4e97c4ad6))
+* **expression:** list, edit and test evalex expressions ([#292](https://github.com/OneLiteFeatherNET/stelaris/issues/292)) ([8a9f343](https://github.com/OneLiteFeatherNET/stelaris/commit/8a9f3430fd1c7ef387bc1b5147a78370bd4d970b))
+
+
+### Bug Fixes
+
+* **asset:** align the models page header with the other list pages ([#294](https://github.com/OneLiteFeatherNET/stelaris/issues/294)) ([3919f45](https://github.com/OneLiteFeatherNET/stelaris/commit/3919f45225a0168762a86f46feb0870d7982ac7c))
+* **expression:** align the function picker with the component picker ([#295](https://github.com/OneLiteFeatherNET/stelaris/issues/295)) ([36c1e3e](https://github.com/OneLiteFeatherNET/stelaris/commit/36c1e3e2fa83159ad34056cd95e8b7e970748e90))
+* **expression:** validate variable values against their type ([#296](https://github.com/OneLiteFeatherNET/stelaris/issues/296)) ([1d8ff32](https://github.com/OneLiteFeatherNET/stelaris/commit/1d8ff32b59de474b9ac3fe009773d3e0690ed70c))
+
 ## [1.8.2](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.8.1...v1.8.2) (2026-10-27)
 
 
