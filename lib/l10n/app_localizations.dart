@@ -4402,6 +4402,12 @@ abstract class AppLocalizations {
   /// **'Preview'**
   String get expression_preview_title;
 
+  /// No description provided for @expression_preview_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the full value'**
+  String get expression_preview_copy;
+
   /// No description provided for @expression_preview_column_name.
   ///
   /// In en, this message translates to:

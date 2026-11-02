@@ -2,15 +2,18 @@ import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/expression/selected_expression_state.dart';
+import 'package:stelaris/feature/base/edit_card/edit_section_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
 import 'package:stelaris/feature/expression/expression_math_view.dart';
 import 'package:stelaris/feature/expression/expression_tex.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
+import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -18,10 +21,10 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// The pause after the last change before the result is asked for again.
 const Duration expressionPreviewDebounce = Duration(milliseconds: 400);
 
-/// The live result of the expression, as the formula is typed: the formula,
-/// its variables with their test values, and the value the backend evaluates
-/// it to. Shown beside the General and Variables tabs on a wide screen, and
-/// as a bottom sheet on a narrow one.
+/// The live result of the expression, as the formula is typed: first the value
+/// the backend evaluates it to, then the formula when [showFormula], and the
+/// variables with their test values. Shown beside the General and Variables
+/// tabs on a wide screen, and as a bottom sheet on a narrow one.
 ///
 /// Nothing is stored here. The values are the variables' test values, which
 /// the Variables tab edits. A variable without one is not sent: the preview
@@ -29,8 +32,13 @@ const Duration expressionPreviewDebounce = Duration(milliseconds: 400);
 class ExpressionPreview extends StatelessWidget {
   const ExpressionPreview({
     this.debounce = expressionPreviewDebounce,
+    this.showFormula = true,
     super.key,
   });
+
+  /// Whether the formula is shown too. Off beside a page that shows it
+  /// already.
+  final bool showFormula;
 
   /// The pause after a change before the backend is asked, see
   /// [expressionPreviewDebounce].
@@ -50,6 +58,7 @@ class ExpressionPreview extends StatelessWidget {
           ),
           debounce: debounce,
           catalog: catalog,
+          showFormula: showFormula,
         ),
       ),
     );
@@ -93,11 +102,13 @@ class _ExpressionPreviewBody extends StatefulWidget {
   const _ExpressionPreviewBody({
     required this.request,
     required this.debounce,
+    required this.showFormula,
     this.catalog,
   });
 
   final _PreviewRequest request;
   final Duration debounce;
+  final bool showFormula;
 
   /// Names the functions the formula is typeset with. Not part of the request:
   /// the backend's answer does not depend on it.
@@ -160,9 +171,10 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
       return;
     }
     final evaluation = ++_evaluation;
+    // The last result stays, dimmed, until the new one is in, so the panel
+    // does not jump on every key.
     setState(() {
       _running = true;
-      _result = null;
       _rejection = null;
       _failed = false;
     });
@@ -181,12 +193,14 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
       if (!mounted || evaluation != _evaluation) return;
       setState(() {
         _running = false;
+        _result = null;
         _rejection = problem;
       });
     } catch (_) {
       if (!mounted || evaluation != _evaluation) return;
       setState(() {
         _running = false;
+        _result = null;
         _failed = true;
       });
     }
@@ -197,38 +211,35 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final request = widget.request;
-    final tex = request.expression.trim().isEmpty
-        ? null
-        : _tex(request.expression);
-    // The panel is its own surface, one step above the section cards beside
-    // it. Its sections are separated by dividers.
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(AppShapes.medium),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          key: const Key('expression_preview'),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.preview_outlined,
-                    size: 18,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    l10n.expression_preview_title,
-                    style: theme.textTheme.titleMedium,
-                  ),
-                ],
-              ),
-              const Divider(height: 32),
+    final colors = theme.colorScheme;
+    // The same surface as the section cards beside it; the sections are set
+    // apart by space, not by lines.
+    return EditSectionCard(
+      child: SingleChildScrollView(
+        key: const Key('expression_preview'),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.preview_outlined,
+                  size: 18,
+                  color: colors.onSurfaceVariant,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.expression_preview_title,
+                  style: theme.textTheme.titleSmall,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            EditSectionHeading(title: l10n.expression_test_result_label),
+            const SizedBox(height: 8),
+            _outcome(context, request),
+            if (widget.showFormula) ...[
+              const SizedBox(height: 24),
               EditSectionHeading(title: l10n.expression_section_formula),
               const SizedBox(height: 8),
               if (request.expression.trim().isEmpty)
@@ -236,34 +247,20 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
                   l10n.expression_test_empty_hint,
                   style: theme.textTheme.bodySmall,
                 )
-              else ...[
-                _formula(request.expression, tex),
-                // The raw text is only shown under a typeset formula: without one,
-                // the math view already shows it.
-                if (tex != null) ...[
-                  const SizedBox(height: 6),
-                  Text(
-                    request.expression,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      fontFamily: 'monospace',
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ],
-              const Divider(height: 32),
-              EditSectionHeading(title: l10n.expression_test_section_variables),
-              const SizedBox(height: 8),
-              if (request.variables.isEmpty)
-                Text(l10n.expression_test_no_variables)
               else
-                _VariableTable(variables: request.variables),
-              const Divider(height: 32),
-              EditSectionHeading(title: l10n.expression_test_result_label),
-              const SizedBox(height: 8),
-              _outcome(context, request),
+                _formula(request.expression, _tex(request.expression)),
             ],
-          ),
+            const SizedBox(height: 24),
+            EditSectionHeading(title: l10n.expression_test_section_variables),
+            const SizedBox(height: 8),
+            if (request.variables.isEmpty)
+              Text(
+                l10n.expression_test_no_variables,
+                style: theme.textTheme.bodySmall,
+              )
+            else
+              _VariableList(variables: request.variables),
+          ],
         ),
       ),
     );
@@ -310,7 +307,8 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
         style: theme.textTheme.bodySmall,
       );
     }
-    if (_running) {
+    final result = _result;
+    if (_running && result == null) {
       return const Center(child: CircularProgressIndicator());
     }
     if (_failed) {
@@ -332,29 +330,106 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
         ],
       );
     }
-    final result = _result;
     if (result == null) return const SizedBox.shrink();
-    return Row(
-      children: [
-        Flexible(
-          child: SelectableText(
-            result.value,
-            style: theme.textTheme.headlineMedium?.copyWith(
-              fontFamily: 'monospace',
-            ),
+    return _ResultTile(result: result, pending: _running);
+  }
+}
+
+/// The value of the formula on a colored surface of its own, rounded to fit
+/// one line, with its type below. The full value is in the tooltip and can be
+/// copied. While [pending] a new result is on its way, and this one is dimmed.
+class _ResultTile extends StatelessWidget {
+  const _ResultTile({required this.result, required this.pending});
+
+  final ExpressionResult result;
+  final bool pending;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final shown = formatExpressionResult(result.value);
+    return AnimatedOpacity(
+      key: const ValueKey('expression_preview_result'),
+      duration: const Duration(milliseconds: 150),
+      opacity: pending ? 0.5 : 1,
+      child: DecoratedBox(
+        decoration: ShapeDecoration(
+          color: colors.primaryContainer,
+          shape: AppShapes.rounded(AppShapes.small),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Tooltip(
+                      message: result.value,
+                      child: Text(
+                        shown,
+                        key: const ValueKey('expression_preview_value'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontFamily: 'monospace',
+                          color: colors.onPrimaryContainer,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      expressionResultTypeLabel(l10n, result.type),
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: colors.onPrimaryContainer,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                tooltip: l10n.expression_preview_copy,
+                color: colors.onPrimaryContainer,
+                icon: const Icon(Icons.copy_outlined, size: 20),
+                onPressed: () =>
+                    Clipboard.setData(ClipboardData(text: result.value)),
+              ),
+            ],
           ),
         ),
-        const SizedBox(width: 12),
-        Chip(label: Text(result.type)),
-      ],
+      ),
     );
   }
 }
 
-/// The variables as a table: name, type and test value. A variable without a
-/// test value says so in place of the value.
-class _VariableTable extends StatelessWidget {
-  const _VariableTable({required this.variables});
+/// [value] as the preview shows it: a decimal number rounded to at most six
+/// places, without trailing zeros, anything else as it is.
+String formatExpressionResult(String value) {
+  final number = double.tryParse(value.trim());
+  final decimals = value.contains('.') ? value.split('.').last.length : 0;
+  if (number == null || !number.isFinite || decimals <= 6) return value;
+  final fixed = number.toStringAsFixed(6);
+  return fixed.replaceFirst(RegExp(r'\.?0+$'), '');
+}
+
+/// The backend's result [type] in words. A type the app does not know is
+/// shown as the backend names it.
+String expressionResultTypeLabel(AppLocalizations l10n, String type) =>
+    switch (type.toUpperCase()) {
+      'NUMBER' || 'NUMERIC' => l10n.expression_variable_type_number,
+      'BOOLEAN' => l10n.expression_variable_type_boolean,
+      'STRING' => l10n.expression_variable_type_string,
+      _ => type,
+    };
+
+/// The variables as a compact list, one row each: the type icon and the name
+/// in the color of the variable chips, and the test value at the end. A
+/// variable without a test value says so in place of the value.
+class _VariableList extends StatelessWidget {
+  const _VariableList({required this.variables});
 
   final List<ExpressionVariable> variables;
 
@@ -362,75 +437,55 @@ class _VariableTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
-    final headerStyle = theme.textTheme.labelMedium?.copyWith(
-      color: theme.colorScheme.onSurfaceVariant,
-    );
-    return Container(
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        border: Border.all(color: theme.colorScheme.outlineVariant),
-        borderRadius: BorderRadius.circular(AppShapes.small),
-      ),
-      child: Table(
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        columnWidths: const {
-          0: FlexColumnWidth(),
-          1: IntrinsicColumnWidth(),
-          2: FlexColumnWidth(),
-        },
-        children: [
-          TableRow(
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerLow,
-            ),
-            children: [
-              _cell(
-                Text(l10n.expression_preview_column_name, style: headerStyle),
-              ),
-              _cell(
-                Text(l10n.expression_variable_type_label, style: headerStyle),
-              ),
-              _cell(
-                Text(
-                  l10n.expression_variable_test_value_label,
-                  style: headerStyle,
-                ),
-              ),
-            ],
-          ),
-          for (final variable in variables)
-            TableRow(
-              children: [
-                _cell(
-                  Text(
-                    variable.name,
-                    style: const TextStyle(fontFamily: 'monospace'),
-                    overflow: TextOverflow.ellipsis,
+    final colors = theme.colorScheme;
+    const monospace = TextStyle(fontFamily: 'monospace');
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final variable in variables)
+          Tooltip(
+            message: expressionVariableTypeLabel(l10n, variable.type),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Row(
+                children: [
+                  Icon(
+                    expressionVariableTypeIcon(variable.type),
+                    size: 18,
+                    color: colors.tertiary,
                   ),
-                ),
-                _cell(Text(expressionVariableTypeLabel(l10n, variable.type))),
-                _cell(
-                  variable.testValue?.trim().isEmpty ?? true
-                      ? Text(
-                          l10n.expression_variable_no_test_value,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        )
-                      : SelectableText(
-                          variable.testValue!,
-                          style: const TextStyle(fontFamily: 'monospace'),
-                        ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      variable.name,
+                      overflow: TextOverflow.ellipsis,
+                      style: monospace.copyWith(
+                        color: colors.tertiary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  if (variable.testValue?.trim().isEmpty ?? true)
+                    Text(
+                      l10n.expression_variable_no_test_value,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                    )
+                  else
+                    Flexible(
+                      child: SelectableText(
+                        variable.testValue!,
+                        maxLines: 1,
+                        style: monospace,
+                      ),
+                    ),
+                ],
+              ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
-
-  static Widget _cell(Widget child) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-    child: child,
-  );
 }

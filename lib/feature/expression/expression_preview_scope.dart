@@ -34,9 +34,17 @@ class ExpressionPreviewScope extends InheritedWidget {
 /// [SidePanelLayout] when the scope above shows it. Without a scope, or on a
 /// narrow screen, the content is shown alone.
 class ExpressionPreviewBeside extends StatelessWidget {
-  const ExpressionPreviewBeside({required this.child, super.key});
+  const ExpressionPreviewBeside({
+    required this.child,
+    this.showFormula = true,
+    super.key,
+  });
 
   final Widget child;
+
+  /// Whether the preview shows the formula too, see
+  /// [ExpressionPreview.showFormula].
+  final bool showFormula;
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +58,9 @@ class ExpressionPreviewBeside extends StatelessWidget {
         panelWidth: (width) => (width * 0.35).clamp(280, 420),
         // The tab pages pad their content by 16, which is the gap.
         panelPadding: const EdgeInsets.fromLTRB(0, 16, 16, 16),
-        panel: const KeyedSubtree(
-          key: ValueKey('expression_preview_slot'),
-          child: ExpressionPreview(),
+        panel: KeyedSubtree(
+          key: const ValueKey('expression_preview_slot'),
+          child: ExpressionPreview(showFormula: showFormula),
         ),
       ),
     );

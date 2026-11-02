@@ -22,6 +22,13 @@ String expressionVariableTypeLabel(
   ExpressionValueType.string => l10n.expression_variable_type_string,
 };
 
+/// The icon of a variable [type], on its chips and in the preview.
+IconData expressionVariableTypeIcon(ExpressionValueType type) => switch (type) {
+  ExpressionValueType.number => Icons.tag,
+  ExpressionValueType.boolean => Icons.toggle_on_outlined,
+  ExpressionValueType.string => Icons.text_fields,
+};
+
 /// Opens the dialog that adds a variable when [variable] is null, and edits
 /// it otherwise. [taken] are the names of the other variables of the
 /// expression, which the name may not repeat. [parameter] words the dialog for

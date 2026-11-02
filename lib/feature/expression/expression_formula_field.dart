@@ -779,12 +779,6 @@ class _VariableChip extends StatelessWidget {
   final TextStyle? style;
   final VoidCallback onPressed;
 
-  static IconData _typeIcon(ExpressionValueType type) => switch (type) {
-    ExpressionValueType.number => Icons.tag,
-    ExpressionValueType.boolean => Icons.toggle_on_outlined,
-    ExpressionValueType.string => Icons.text_fields,
-  };
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -800,7 +794,10 @@ class _VariableChip extends StatelessWidget {
         key: unused
             ? ValueKey('expression_chip_unused_${variable.name}')
             : null,
-        avatar: Icon(_typeIcon(variable.type), color: foreground),
+        avatar: Icon(
+          expressionVariableTypeIcon(variable.type),
+          color: foreground,
+        ),
         backgroundColor: unused ? null : colors.tertiaryContainer,
         side: unused ? null : BorderSide.none,
         label: Text(variable.name, style: style?.copyWith(color: foreground)),

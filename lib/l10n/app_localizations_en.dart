@@ -2458,6 +2458,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expression_preview_title => 'Preview';
 
   @override
+  String get expression_preview_copy => 'Copy the full value';
+
+  @override
   String get expression_preview_column_name => 'Name';
 
   @override

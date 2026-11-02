@@ -34,6 +34,8 @@ class ExpressionGeneralPage extends StatelessWidget {
         final expression = vm.selected;
         final l10n = context.l10n;
         return ExpressionPreviewBeside(
+          // The page shows the formula itself.
+          showFormula: false,
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [

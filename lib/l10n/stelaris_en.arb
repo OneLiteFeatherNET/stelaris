@@ -1309,6 +1309,7 @@
   "navigation_group_assets": "Assets",
   "navigation_group_runtime": "Runtime",
   "expression_preview_title": "Preview",
+  "expression_preview_copy": "Copy the full value",
   "expression_preview_column_name": "Name",
   "expression_preview_no_project": "Select a project to see the result.",
   "expression_preview_missing_values": "Give a test value to {names} to see the result.",
