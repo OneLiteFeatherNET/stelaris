@@ -70,6 +70,7 @@ Future<bool> openModelCreateDialog(
               ExpressionFunctionModel(
                 uiName: name,
                 name: functionIdentifierFor(name),
+                body: defaultFunctionBody,
               ),
             ),
             NavigationEntry.advancements => AdvancementAddAction(
