@@ -5,9 +5,11 @@ import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
+import 'package:stelaris/api/state/actions/expression/expression_function_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
+import 'package:stelaris/feature/expression_function/function_identifier.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -36,12 +38,24 @@ Future<bool> openModelCreateDialog(
           NavigationEntry.font => l10n.dialog_font_create_title,
           NavigationEntry.sound => l10n.dialog_sound_create,
           NavigationEntry.expression => l10n.dialog_expression_create,
+          NavigationEntry.function => l10n.dialog_expression_function_create,
           NavigationEntry.advancements => l10n.dialog_advancement_create,
           NavigationEntry.attributes => l10n.dialog_attribute_create,
         },
         projectNamespace: projectKey,
-        // Expressions have no key, so the dialog asks for none.
-        askKey: entry != NavigationEntry.expression,
+        // Expressions and functions have no key, so the dialog asks for none.
+        askKey:
+            entry != NavigationEntry.expression &&
+            entry != NavigationEntry.function,
+        // A function's identifier comes from its name and cannot change
+        // later, so the dialog shows what it will be.
+        namePreview: entry == NavigationEntry.function
+            ? NamePreview(
+                label: l10n.dialog_expression_function_identifier_label,
+                fromName: functionIdentifierFor,
+                note: l10n.dialog_expression_function_identifier_note,
+              )
+            : null,
         onSubmit: (name, key) async {
           final ReduxAction<AppState> action = switch (entry) {
             NavigationEntry.items => ItemAddAction(
@@ -60,6 +74,13 @@ Future<bool> openModelCreateDialog(
             ),
             NavigationEntry.expression => ExpressionAddAction(
               ExpressionModel(uiName: name, expression: ''),
+            ),
+            NavigationEntry.function => ExpressionFunctionAddAction(
+              ExpressionFunctionModel(
+                uiName: name,
+                name: functionIdentifierFor(name),
+                body: defaultFunctionBody,
+              ),
             ),
             NavigationEntry.advancements => AdvancementAddAction(
               AdvancementModel(uiName: name, key: key),

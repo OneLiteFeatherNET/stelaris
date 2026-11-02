@@ -72,6 +72,10 @@ const String defaultFontProvider = 'bitmap';
 /// starts out valid for the backend, which requires a positive maximum
 const double defaultAttributeMaximum = 1024;
 
+/// The body a new function starts with, so it starts out valid for the
+/// backend, which requires a body for every formula function
+const String defaultFunctionBody = '0';
+
 // Text
 // Button
 Icon addModelIcon = const Icon(Icons.add);

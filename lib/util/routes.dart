@@ -36,6 +36,10 @@ import 'package:stelaris/feature/expression/expression_page.dart'
     deferred as expression_page;
 import 'package:stelaris/feature/expression/expression_detail_page.dart'
     deferred as expression_detail_page;
+import 'package:stelaris/feature/expression_function/expression_function_page.dart'
+    deferred as expression_function_page;
+import 'package:stelaris/feature/expression_function/expression_function_detail_page.dart'
+    deferred as expression_function_detail_page;
 
 const String projectSelectionRoute = '/projects';
 
@@ -197,6 +201,24 @@ String? expressionDetailRedirect(BuildContext context, GoRouterState state) {
 
     if (isAtExpressionDetail && appState.selectedExpression == null) {
       return NavigationEntry.expression.route;
+    }
+  } on StoreException catch (_) {}
+  return null;
+}
+
+/// Redirects `/expression-function/detail` back to `/expression-function` when
+/// nothing is selected, as [expressionDetailRedirect] does for expressions.
+String? expressionFunctionDetailRedirect(
+  BuildContext context,
+  GoRouterState state,
+) {
+  try {
+    final appState = StoreProvider.state<AppState>(context);
+    final isAtFunctionDetail =
+        state.matchedLocation == '${NavigationEntry.function.route}/detail';
+
+    if (isAtFunctionDetail && appState.selectedExpressionFunction == null) {
+      return NavigationEntry.function.route;
     }
   } on StoreException catch (_) {}
   return null;
@@ -496,6 +518,38 @@ final GoRouter router = GoRouter(
                 child: DeferredWidget(
                   loader: expression_detail_page.loadLibrary,
                   builder: () => expression_detail_page.ExpressionDetailPage(),
+                ),
+                key: state.pageKey,
+                transitionsBuilder: buildDetailSlideTransition,
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: NavigationEntry.function.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: expression_function_page.loadLibrary,
+              builder: () => expression_function_page.ExpressionFunctionPage(),
+            ),
+            key: state.pageKey,
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
+          ),
+          routes: [
+            GoRoute(
+              path: 'detail',
+              redirect: expressionFunctionDetailRedirect,
+              onExit: detailExitGuard,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                child: DeferredWidget(
+                  loader: expression_function_detail_page.loadLibrary,
+                  builder: () => expression_function_detail_page
+                      .ExpressionFunctionDetailPage(),
                 ),
                 key: state.pageKey,
                 transitionsBuilder: buildDetailSlideTransition,

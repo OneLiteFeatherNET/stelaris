@@ -5,7 +5,15 @@ import 'package:stelaris/l10n/app_localizations.dart';
 enum PaletteMode { commands, navigation, entities, projects, settings, help }
 
 /// The kinds of entity the entity mode can search, in display order.
-enum EntityKind { item, font, sound, advancement, attribute, expression }
+enum EntityKind {
+  item,
+  font,
+  sound,
+  advancement,
+  attribute,
+  expression,
+  function,
+}
 
 /// One row of the syntax table: how a mode is typed and how it is described.
 ///
@@ -90,6 +98,7 @@ const Map<EntityKind, List<String>> kindAliases = {
   EntityKind.advancement: ['advancement', 'advancements'],
   EntityKind.attribute: ['attribute', 'attributes'],
   EntityKind.expression: ['expression', 'expressions', 'formula'],
+  EntityKind.function: ['function', 'functions'],
 };
 
 String kindLabel(EntityKind kind, AppLocalizations l10n) {
@@ -100,6 +109,7 @@ String kindLabel(EntityKind kind, AppLocalizations l10n) {
     EntityKind.advancement => l10n.command_palette_kind_advancements,
     EntityKind.attribute => l10n.command_palette_kind_attributes,
     EntityKind.expression => l10n.command_palette_kind_expressions,
+    EntityKind.function => l10n.expression_function_palette_kind,
   };
 }
 
