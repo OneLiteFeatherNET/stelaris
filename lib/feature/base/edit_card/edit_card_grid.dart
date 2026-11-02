@@ -9,7 +9,12 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// The fields of a detail page in [sections], each with its heading. In a
 /// section the cards fill as many columns as fit.
 class EditCardGrid extends StatelessWidget {
-  const EditCardGrid({required this.sections, this.header, super.key});
+  const EditCardGrid({
+    required this.sections,
+    this.header,
+    this.trailing,
+    super.key,
+  });
 
   /// The widest a card gets before another column fits.
   static const double _maxCardExtent = 320;
@@ -34,6 +39,10 @@ class EditCardGrid extends StatelessWidget {
   /// Shown above the sections and scrolled with them, e.g. toggles that
   /// change in place.
   final Widget? header;
+
+  /// Shown below the sections across their full width and scrolled with
+  /// them, e.g. an editor that changes in place and does not fit on a card.
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +78,10 @@ class EditCardGrid extends StatelessWidget {
                       ),
                   ],
                 ),
+              ],
+              if (trailing case final trailing?) ...[
+                const SizedBox(height: 24),
+                SizedBox(width: width, child: trailing),
               ],
             ],
           ),
