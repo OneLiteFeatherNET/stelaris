@@ -47,12 +47,9 @@ class ExpressionFunctionGeneralPage extends StatelessWidget {
             EditSection(
               title: l10n.expression_function_section_signature,
               fields: [
-                TextEdit(
-                  label: l10n.expression_function_field_ui_name,
-                  icon: Icons.title,
-                  value: function.uiName,
-                  onChanged: (value) => stage(function.copyWith(uiName: value)),
-                ),
+                // No card for the display name: like every model's, it is
+                // fixed once the function is created. The name is the one
+                // formulas call the function by in game.
                 TextEdit(
                   label: l10n.expression_function_field_name,
                   icon: Icons.functions,

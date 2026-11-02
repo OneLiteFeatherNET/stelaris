@@ -1558,22 +1558,16 @@ abstract class AppLocalizations {
   /// **'An interface is implemented by the game runtime. The stub is only evaluated on the Test tab in Stelaris and is not part of the generated interface.'**
   String get expression_function_stub_hint;
 
-  /// No description provided for @expression_function_field_ui_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Name'**
-  String get expression_function_field_ui_name;
-
   /// No description provided for @expression_function_field_name.
   ///
   /// In en, this message translates to:
-  /// **'Identifier'**
+  /// **'Name'**
   String get expression_function_field_name;
 
   /// No description provided for @expression_function_field_name_hint.
   ///
   /// In en, this message translates to:
-  /// **'The name formulas call the function by'**
+  /// **'The name formulas call the function by in game'**
   String get expression_function_field_name_hint;
 
   /// No description provided for @expression_function_name_invalid.

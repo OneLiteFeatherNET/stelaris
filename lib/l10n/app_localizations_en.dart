@@ -807,14 +807,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'An interface is implemented by the game runtime. The stub is only evaluated on the Test tab in Stelaris and is not part of the generated interface.';
 
   @override
-  String get expression_function_field_ui_name => 'Name';
-
-  @override
-  String get expression_function_field_name => 'Identifier';
+  String get expression_function_field_name => 'Name';
 
   @override
   String get expression_function_field_name_hint =>
-      'The name formulas call the function by';
+      'The name formulas call the function by in game';
 
   @override
   String get expression_function_name_invalid =>
