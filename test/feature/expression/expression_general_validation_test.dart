@@ -112,6 +112,38 @@ void main() {
     expect(find.byKey(const ValueKey('expression_valid')), findsNothing);
   });
 
+  testWidgets('the check of an older text stays dimmed until the new one', (
+    tester,
+  ) async {
+    final (store, _) = await _pump(tester, answer: _answer(undefined: ['b']));
+    final notes = find.byKey(const ValueKey('expression_validation_notes'));
+    double opacity() => tester.widget<AnimatedOpacity>(notes).opacity;
+    TextButton declare() => tester.widget<TextButton>(
+      find.byKey(const ValueKey('expression_declare_b')),
+    );
+
+    await tester.enterText(
+      find.byKey(const ValueKey('expression_formula_text')),
+      'radius * b + 1',
+    );
+    await tester.pump();
+
+    expect(find.text('Not declared: b'), findsOneWidget);
+    expect(opacity(), lessThan(1));
+    expect(declare().onPressed, isNull, reason: 'it would declare old names');
+
+    await pumpUntil(
+      tester,
+      action: () async {},
+      done: () =>
+          store.state.expressionValidation?.expression == 'radius * b + 1',
+    );
+    await tester.pumpAndSettle();
+
+    expect(opacity(), 1);
+    expect(declare().onPressed, isNotNull);
+  });
+
   testWidgets('a valid check shows the valid mark', (tester) async {
     await _pump(tester, answer: _answer());
 

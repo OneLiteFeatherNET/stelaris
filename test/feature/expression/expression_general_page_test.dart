@@ -100,16 +100,38 @@ Future<void> _key(WidgetTester tester, LogicalKeyboardKey key) async {
 }
 
 void main() {
-  testWidgets('the formula is shown typeset above the editor', (tester) async {
+  testWidgets('the formula is shown typeset below the editor', (tester) async {
     await _pump(tester, expression: _expression(text: 'a * 2'));
 
     final l10n = lookupAppLocalizations(const Locale('en'));
-    expect(find.text(l10n.expression_rendered_formula_label), findsOneWidget);
+    final label = find.text(l10n.expression_rendered_formula_label);
+    expect(label, findsOneWidget);
     expect(
       find.byType(Math),
       findsWidgets,
       reason: 'the rendered line is drawn as math',
     );
+    expect(
+      tester.getTopLeft(label).dy,
+      greaterThan(tester.getBottomLeft(_formula).dy),
+      reason: 'a growing formula must not push the line being typed',
+    );
+  });
+
+  testWidgets('the suggestions float and leave the page below in place', (
+    tester,
+  ) async {
+    await _pump(tester);
+    final chip = find.widgetWithText(ActionChip, 'radius');
+
+    await _type(tester, '2 * r');
+    expect(find.byKey(_suggestions), findsOneWidget);
+    final open = tester.getTopLeft(chip);
+
+    await _key(tester, LogicalKeyboardKey.escape);
+
+    expect(find.byKey(_suggestions), findsNothing);
+    expect(tester.getTopLeft(chip), open);
   });
 
   testWidgets('the formula and the variables are each in a section card', (
