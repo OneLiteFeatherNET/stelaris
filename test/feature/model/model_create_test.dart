@@ -197,6 +197,30 @@ void main() {
     expect((sent! as Map<String, dynamic>)['maximumValue'], 1024);
   });
 
+  testWidgets('a new function is sent as a formula with a body', (
+    tester,
+  ) async {
+    await _pump(tester, NavigationEntry.function);
+    Object? sent;
+    ApiService().expressionFunctionApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter((options) {
+          sent = options.data;
+          return ResponseBody.fromString(
+            jsonEncode(options.data),
+            200,
+            headers: {
+              Headers.contentTypeHeader: [Headers.jsonContentType],
+            },
+          );
+        });
+
+    await _submit(tester);
+
+    final body = sent! as Map<String, dynamic>;
+    expect(body['kind'], 'FORMULA');
+    expect(body['body'], '0');
+  });
+
   testWidgets('a failed add keeps the dialog open and shows why', (
     tester,
   ) async {
