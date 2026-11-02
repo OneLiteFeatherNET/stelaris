@@ -360,6 +360,50 @@ void main() {
     });
   });
 
+  group('groupOperatorSymbols', () {
+    List<OperatorSymbol> symbols(List<String> list) => [
+      for (final symbol in list)
+        OperatorSymbol(symbol: symbol, kind: CatalogOperatorKind.infix),
+    ];
+    Map<OperatorGroupKind, List<String>> grouped(List<String> list) => {
+      for (final group in groupOperatorSymbols(symbols(list)))
+        group.kind: [for (final operator in group.operators) operator.symbol],
+    };
+
+    test('puts each operator in its group, in reading order', () {
+      expect(grouped(['||', '>=', '*', '+', '!', '==', '<', '&&', '^']), {
+        OperatorGroupKind.arithmetic: ['+', '*', '^'],
+        OperatorGroupKind.comparison: ['==', '<', '>='],
+        OperatorGroupKind.logic: ['&&', '||', '!'],
+      });
+    });
+
+    test('leaves out an alias when the symbol it stands for is there', () {
+      expect(grouped(['=', '==', '<>', '!=']), {
+        OperatorGroupKind.comparison: ['==', '!='],
+      });
+    });
+
+    test('keeps an alias that has nothing to stand in for', () {
+      expect(grouped(['=']), {
+        OperatorGroupKind.comparison: ['='],
+      });
+    });
+
+    test('an unknown symbol goes to the other group, in catalog order', () {
+      expect(grouped(['~', '+', '@']), {
+        OperatorGroupKind.arithmetic: ['+'],
+        OperatorGroupKind.other: ['~', '@'],
+      });
+    });
+
+    test('names the alias a symbol leaves out', () {
+      expect(operatorAliasOf('=='), '=');
+      expect(operatorAliasOf('!='), '<>');
+      expect(operatorAliasOf('+'), isNull);
+    });
+  });
+
   group('insertOperator', () {
     test('an infix operator gets a space on each side', () {
       final edit = insertOperator(

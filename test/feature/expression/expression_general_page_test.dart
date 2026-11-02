@@ -534,6 +534,64 @@ void main() {
     }
   });
 
+  testWidgets('the toolbar shows one of two equal operators, naming both', (
+    tester,
+  ) async {
+    const catalog = ExpressionCatalog(
+      operators: [
+        CatalogOperator(
+          symbol: '==',
+          kind: CatalogOperatorKind.infix,
+          precedence: 7,
+        ),
+        CatalogOperator(
+          symbol: '=',
+          kind: CatalogOperatorKind.infix,
+          precedence: 7,
+        ),
+      ],
+    );
+    await _pump(tester, catalog: catalog);
+
+    expect(find.byKey(const ValueKey('expression_operator_==')), findsOne);
+    expect(find.byKey(const ValueKey('expression_operator_=')), findsNothing);
+    final tooltip = tester.widget<Tooltip>(
+      find.ancestor(
+        of: find.byKey(const ValueKey('expression_operator_==')),
+        matching: find.byType(Tooltip),
+      ),
+    );
+    expect(tooltip.message, contains('also written ='));
+  });
+
+  testWidgets('a variable chip has the variable color and its type icon', (
+    tester,
+  ) async {
+    await _pump(tester);
+
+    final context = tester.element(_formula);
+    final colors = Theme.of(context).colorScheme;
+    final chip = tester.widget<ActionChip>(
+      find.widgetWithText(ActionChip, 'radius'),
+    );
+    expect(chip.backgroundColor, colors.tertiaryContainer);
+    expect((chip.avatar! as Icon).icon, Icons.tag);
+  });
+
+  testWidgets('the long formula hint is behind the info icon', (tester) async {
+    await _pump(tester);
+
+    final l10n = lookupAppLocalizations(const Locale('en'));
+    expect(find.text(l10n.expression_hint_expression_short), findsOneWidget);
+    expect(find.text(l10n.expression_hint_expression), findsNothing);
+    expect(
+      tester
+          .widget<Tooltip>(find.byKey(const ValueKey('expression_hint_more')))
+          .message,
+      l10n.expression_hint_expression,
+    );
+  });
+
   testWidgets(
     'a function and a variable get distinct styles in the highlighting',
     (tester) async {
@@ -556,7 +614,7 @@ void main() {
       final colors = Theme.of(context).colorScheme;
 
       expect(spans['ROUND']?.color, colors.primary);
-      expect(spans['radius']?.color, colors.secondary);
+      expect(spans['radius']?.color, colors.tertiary);
       expect(spans['ROUND']?.color, isNot(spans['radius']?.color));
     },
   );

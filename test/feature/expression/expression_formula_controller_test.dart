@@ -182,8 +182,8 @@ void main() {
       );
       expect(
         colorOf(dark, '2'),
-        darkColors.tertiary,
-        reason: 'the number 2 must use the dark tertiary colour',
+        darkColors.secondary,
+        reason: 'the number 2 must use the dark secondary colour',
       );
       expect(
         colorOf(dark, '('),
