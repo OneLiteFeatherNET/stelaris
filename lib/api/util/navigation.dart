@@ -27,6 +27,12 @@ enum NavigationEntry {
     '/sound',
     StelarisIcons.noteBlockOutlined,
     StelarisIcons.noteBlock,
+  ),
+  expression(
+    'Expressions',
+    '/expression',
+    Icons.functions_outlined,
+    Icons.functions,
   );
 
   final String display;
@@ -36,6 +42,10 @@ enum NavigationEntry {
 
   /// Creates a new enum entry with the given value
   const NavigationEntry(this.display, this.route, this.data, this.selected);
+
+  /// Whether the entry holds runtime data rather than resource-pack content.
+  /// The sidebar lists these in their own group below the sections.
+  bool get isRuntime => runtimeEntries.contains(this);
 }
 
 /// The enum class contains the project asset pages, listed under the "Assets"
@@ -64,6 +74,11 @@ enum AssetNavigationEntry {
     this.selected,
   );
 }
+
+/// The entries that hold runtime data, see [NavigationEntry.isRuntime].
+const Set<NavigationEntry> runtimeEntries = {
+  NavigationEntry.expression,
+};
 
 /// The section [location] belongs to — its own route or one nested below
 /// it (e.g. `/items/detail`) — or null outside the sections.
