@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/base/filter/category_filter_menu.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:vulpes_data/component.dart';
-import 'package:stelaris/util/app_shapes.dart';
 
 /// Opens a menu to filter components by their category, null stands for
 /// all categories.
@@ -18,9 +18,6 @@ class ComponentCategoryMenu extends StatelessWidget {
     super.key,
   });
 
-  static const double _width = 260;
-  static const double _maxHeight = 480;
-
   final ComponentCategory? value;
 
   /// The components per category; categories without any are left out.
@@ -32,64 +29,22 @@ class ComponentCategoryMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final countStyle = theme.textTheme.labelMedium?.copyWith(
-      color: colorScheme.onSurfaceVariant,
-    );
-    final total = counts.values.fold(0, (sum, count) => sum + count);
-
-    Widget item(ComponentCategory? category, String label, int count) {
-      final isActive = category == value;
-      return MenuItemButton(
-        key: Key('component_category_item_${category?.key ?? 'all'}'),
-        onPressed: () => onChanged(category),
-        // The menu takes the width of its items, so they fix it; the end
-        // padding keeps the counts clear of the scrollbar.
-        style: MenuItemButton.styleFrom(
-          minimumSize: const Size(_width, 40),
-          maximumSize: const Size(_width, 40),
-          padding: const EdgeInsetsDirectional.only(start: 12, end: 20),
-          backgroundColor: isActive ? colorScheme.secondaryContainer : null,
-          foregroundColor: isActive ? colorScheme.onSecondaryContainer : null,
-        ),
-        // An empty box keeps the labels in line with the active one.
-        leadingIcon: isActive
-            ? const Icon(Icons.check, size: 18)
-            : const SizedBox(width: 18),
-        trailingIcon: Text('$count', style: countStyle),
-        child: Text(label),
-      );
-    }
-
-    return MenuAnchor(
-      // Opens below the button, aligned to its end, so the menu stays
-      // inside a dialog whose edge the button sits at.
-      alignmentOffset: const Offset(-_width, 4),
-      style: MenuStyle(
-        alignment: AlignmentDirectional.bottomEnd,
-        maximumSize: const WidgetStatePropertyAll(
-          Size(double.infinity, _maxHeight),
-        ),
-        visualDensity: VisualDensity.compact,
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppShapes.medium)),
-        ),
-        padding: const WidgetStatePropertyAll(
-          EdgeInsets.symmetric(vertical: 6),
-        ),
-      ),
-      menuChildren: [
-        item(null, context.l10n.component_all_categories, total),
-        const Divider(height: 9),
+    return CategoryFilterMenu<ComponentCategory>(
+      value: value,
+      allLabel: context.l10n.component_all_categories,
+      keyPrefix: 'component_category_item',
+      entries: [
         for (final category in ComponentCategory.values)
-          if (counts[category] case final count? when count > 0)
-            item(category, category.displayName, count),
+          if (counts[category] case final count?)
+            (
+              value: category,
+              label: category.displayName,
+              count: count,
+              id: category.key,
+            ),
       ],
-      builder: (context, controller, _) => builder(
-        context,
-        () => controller.isOpen ? controller.close() : controller.open(),
-      ),
+      onChanged: onChanged,
+      builder: builder,
     );
   }
 }
