@@ -29,6 +29,23 @@ String? expressionToTex(
   }
 }
 
+/// The LaTeX of a function definition `name(parameters) = body`, or null when
+/// the body does not convert. The name is set as an operator name and the
+/// parameters as variables, like the names in the body.
+String? functionToTex(
+  String name,
+  List<String> parameters,
+  String body, {
+  Set<String> functionNames = const {},
+}) {
+  if (!_identifier.hasMatch(name)) return null;
+  final bodyTex = expressionToTex(body, functionNames: functionNames);
+  if (bodyTex == null) return null;
+  final head = [for (final parameter in parameters) _variableTex(parameter)];
+  return '\\mathrm{${_escapeUnderscore(name.toLowerCase())}}'
+      '${_paren(head.join(', '))} = $bodyTex';
+}
+
 /// The names of the functions in [catalog], the EvalEx ones and the project's,
 /// in the form [expressionToTex] takes. Empty while the catalog is not loaded.
 Set<String> catalogFunctionNames(ExpressionCatalog? catalog) => {

@@ -149,6 +149,35 @@ void main() {
     expect(find.byType(TextFormField), findsOneWidget);
   });
 
+  testWidgets('a new function shows the identifier its name gives it', (
+    tester,
+  ) async {
+    await _pump(tester, NavigationEntry.function);
+
+    expect(
+      find.text(l10n.dialog_expression_function_identifier_label),
+      findsOneWidget,
+    );
+    expect(
+      find.text(l10n.dialog_expression_function_identifier_note),
+      findsOneWidget,
+    );
+
+    await tester.enterText(find.byType(TextFormField), 'Ruby Sword');
+    await tester.pump();
+
+    expect(find.text('Ruby_Sword'), findsOneWidget);
+  });
+
+  testWidgets('a model with a key shows no identifier', (tester) async {
+    await _pump(tester, NavigationEntry.items);
+
+    expect(
+      find.text(l10n.dialog_expression_function_identifier_label),
+      findsNothing,
+    );
+  });
+
   testWidgets('a new font is sent as a bitmap with the default height', (
     tester,
   ) async {
@@ -195,6 +224,30 @@ void main() {
     await _submit(tester);
 
     expect((sent! as Map<String, dynamic>)['maximumValue'], 1024);
+  });
+
+  testWidgets('a new function is sent as a formula with a body', (
+    tester,
+  ) async {
+    await _pump(tester, NavigationEntry.function);
+    Object? sent;
+    ApiService().expressionFunctionApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter((options) {
+          sent = options.data;
+          return ResponseBody.fromString(
+            jsonEncode(options.data),
+            200,
+            headers: {
+              Headers.contentTypeHeader: [Headers.jsonContentType],
+            },
+          );
+        });
+
+    await _submit(tester);
+
+    final body = sent! as Map<String, dynamic>;
+    expect(body['kind'], 'FORMULA');
+    expect(body['body'], '0');
   });
 
   testWidgets('a failed add keeps the dialog open and shows why', (

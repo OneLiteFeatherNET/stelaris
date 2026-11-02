@@ -33,6 +33,12 @@ enum NavigationEntry {
     '/expression',
     Icons.functions_outlined,
     Icons.functions,
+  ),
+  function(
+    'Functions',
+    '/expression-function',
+    Icons.data_object_outlined,
+    Icons.data_object,
   );
 
   final String display;
@@ -78,6 +84,7 @@ enum AssetNavigationEntry {
 /// The entries that hold runtime data, see [NavigationEntry.isRuntime].
 const Set<NavigationEntry> runtimeEntries = {
   NavigationEntry.expression,
+  NavigationEntry.function,
 };
 
 /// The section [location] belongs to — its own route or one nested below
