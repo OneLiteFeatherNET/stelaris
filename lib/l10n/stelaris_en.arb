@@ -337,6 +337,8 @@
   "expression_validation_declare_all": "Declare all",
   "dialog_expression_function_delete_title": "Delete function",
   "dialog_expression_function_create": "Create new function",
+  "dialog_expression_function_identifier_label": "Called in formulas as",
+  "dialog_expression_function_identifier_note": "Can be changed later on the General tab",
   "tab_parameters": "Parameters",
   "tab_interface": "Interface",
   "expression_function_command_create": "New function",

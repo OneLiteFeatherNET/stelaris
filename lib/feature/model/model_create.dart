@@ -47,6 +47,15 @@ Future<bool> openModelCreateDialog(
         askKey:
             entry != NavigationEntry.expression &&
             entry != NavigationEntry.function,
+        // A function's identifier comes from its name and cannot change
+        // later, so the dialog shows what it will be.
+        namePreview: entry == NavigationEntry.function
+            ? NamePreview(
+                label: l10n.dialog_expression_function_identifier_label,
+                fromName: functionIdentifierFor,
+                note: l10n.dialog_expression_function_identifier_note,
+              )
+            : null,
         onSubmit: (name, key) async {
           final ReduxAction<AppState> action = switch (entry) {
             NavigationEntry.items => ItemAddAction(

@@ -1504,6 +1504,18 @@ abstract class AppLocalizations {
   /// **'Create new function'**
   String get dialog_expression_function_create;
 
+  /// No description provided for @dialog_expression_function_identifier_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Called in formulas as'**
+  String get dialog_expression_function_identifier_label;
+
+  /// No description provided for @dialog_expression_function_identifier_note.
+  ///
+  /// In en, this message translates to:
+  /// **'Can be changed later on the General tab'**
+  String get dialog_expression_function_identifier_note;
+
   /// No description provided for @tab_parameters.
   ///
   /// In en, this message translates to:

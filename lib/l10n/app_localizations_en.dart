@@ -779,6 +779,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_expression_function_create => 'Create new function';
 
   @override
+  String get dialog_expression_function_identifier_label =>
+      'Called in formulas as';
+
+  @override
+  String get dialog_expression_function_identifier_note =>
+      'Can be changed later on the General tab';
+
+  @override
   String get tab_parameters => 'Parameters';
 
   @override
