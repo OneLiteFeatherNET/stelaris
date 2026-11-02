@@ -43,6 +43,7 @@ class ExpressionGeneralPage extends StatelessWidget {
                 expression: expression,
                 catalog: vm.catalog,
                 validation: vm.validation,
+                validationPending: vm.validationPending,
                 onChanged: (value) =>
                     _stage(context, vm, expression.copyWith(expression: value)),
                 onDeclare: (names) => _declare(context, vm, names),
@@ -59,22 +60,38 @@ class ExpressionGeneralPage extends StatelessWidget {
                             title: l10n.expression_section_formula,
                           ),
                           const SizedBox(height: 8),
-                          if (expression.expression.trim().isNotEmpty) ...[
-                            Text(
-                              l10n.expression_rendered_formula_label,
-                              style: theme.textTheme.labelMedium?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            _FormulaMath(
-                              formula: expression.expression,
-                              catalog: vm.catalog,
-                              fontSize: 16,
-                            ),
-                            const SizedBox(height: 12),
-                          ],
                           editor,
+                          // Below the editor, so the line being typed stays
+                          // put while the typeset formula grows.
+                          AnimatedSize(
+                            duration: const Duration(milliseconds: 150),
+                            curve: Curves.easeOutCubic,
+                            alignment: AlignmentDirectional.topStart,
+                            child: expression.expression.trim().isEmpty
+                                ? const SizedBox(width: double.infinity)
+                                : Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        l10n.expression_rendered_formula_label,
+                                        style: theme.textTheme.labelMedium
+                                            ?.copyWith(
+                                              color: theme
+                                                  .colorScheme
+                                                  .onSurfaceVariant,
+                                            ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      _FormulaMath(
+                                        formula: expression.expression,
+                                        catalog: vm.catalog,
+                                        fontSize: 16,
+                                      ),
+                                    ],
+                                  ),
+                          ),
                         ],
                       ),
                     ),
@@ -144,14 +161,21 @@ class _ExpressionGeneralView extends Vm {
     required this.catalog,
     required this.projectId,
     required this.validation,
-  }) : super(equals: [selected, catalog, projectId, validation]);
+    required this.validationPending,
+  }) : super(
+         equals: [selected, catalog, projectId, validation, validationPending],
+       );
 
   final ExpressionModel selected;
   final ExpressionCatalog? catalog;
   final String? projectId;
 
-  /// The backend's check of [selected]'s text, null when there is none for it.
+  /// The backend's latest check, null when there is none.
   final ExpressionValidation? validation;
+
+  /// Whether [validation] is of an older text or other variables than
+  /// [selected]'s, and the check of the current ones is on its way.
+  final bool validationPending;
 }
 
 class _ExpressionGeneralFactory
@@ -163,10 +187,9 @@ class _ExpressionGeneralFactory
       selected: selected,
       catalog: state.expressionCatalog,
       projectId: state.selectedProject?.id,
-      validation: ExpressionValidationState.forModel(
-        state.expressionValidation,
-        selected,
-      ),
+      validation: state.expressionValidation?.validation,
+      validationPending:
+          !(state.expressionValidation?.belongsTo(selected) ?? true),
     );
   }
 }

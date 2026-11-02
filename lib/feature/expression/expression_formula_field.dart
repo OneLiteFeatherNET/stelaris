@@ -18,15 +18,22 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// keeps its own controller, so typing does not move the caret when the store
 /// rebuilds.
 ///
-/// [validation] is the backend's check of the current text, when there is one:
-/// its errors are underlined and listed, undefined variables are offered for
-/// declaration, and unused declared variables are marked on their chips.
+/// [validation] is the backend's check of the text, when there is one: its
+/// errors are underlined and listed, undefined variables are offered for
+/// declaration, and unused declared variables are marked on their chips. While
+/// [validationPending] the check is of an older text: it stays in place,
+/// dimmed and without its underlines and actions, until the new one is in, so
+/// the page does not jump on every key.
+///
+/// The suggestions and the signature float below the field over the page, so
+/// they never push what is below the field.
 class ExpressionFormulaField extends StatefulWidget {
   const ExpressionFormulaField({
     required this.expression,
     required this.onChanged,
     this.catalog,
     this.validation,
+    this.validationPending = false,
     this.onDeclare,
     this.sections,
     super.key,
@@ -39,8 +46,12 @@ class ExpressionFormulaField extends StatefulWidget {
   /// while it is not loaded: only the variables are suggested then.
   final ExpressionCatalog? catalog;
 
-  /// The backend's check of the current text, null when there is none.
+  /// The backend's latest check, null when there is none.
   final ExpressionValidation? validation;
+
+  /// Whether [validation] is of an older text than the field's and a new
+  /// check is on its way.
+  final bool validationPending;
 
   /// Declares the given names, as written in the formula, as variables. Null
   /// hides the declare actions.
@@ -64,6 +75,18 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
 
   late final ExpressionFormulaController _controller;
   late final FocusNode _focusNode;
+
+  /// Shows the suggestions and the signature below the field while it has
+  /// focus.
+  final OverlayPortalController _panels = OverlayPortalController();
+
+  /// Ties the floating panels to the field, so they follow it as the page
+  /// scrolls.
+  final LayerLink _fieldLink = LayerLink();
+
+  /// The width of the field, which the floating panels take. Null until the
+  /// field is laid out.
+  double? _fieldWidth;
 
   /// The highlighted suggestion, moved with the arrow keys.
   int _highlight = 0;
@@ -96,7 +119,25 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
     _updateNames();
     // The focus node handles keys before the text field's own shortcuts do,
     // so Enter, Tab and the arrows can be taken while suggestions are open.
-    _focusNode = FocusNode(onKeyEvent: _handleKey);
+    _focusNode = FocusNode(onKeyEvent: _handleKey)
+      ..addListener(_onFocusChanged);
+  }
+
+  void _onFocusChanged() {
+    if (_focusNode.hasFocus) {
+      _panels.show();
+    } else {
+      _panels.hide();
+    }
+  }
+
+  /// Keeps [_fieldWidth] at [width], after the frame: it is learnt during
+  /// layout, too late for this frame's build of the panels.
+  void _trackFieldWidth(double width) {
+    if (width == _fieldWidth) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && width != _fieldWidth) setState(() => _fieldWidth = width);
+    });
   }
 
   @override
@@ -134,7 +175,8 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
     variables: [
       for (final variable in widget.expression.variables) variable.name,
     ],
-    validation: widget.validation,
+    // Underlines of an older text would sit in the wrong places.
+    validation: widget.validationPending ? null : widget.validation,
   );
 
   @override
@@ -191,8 +233,8 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
     );
   }
 
-  /// The signature and the suggestions under the field. They follow the caret
-  /// and the focus, so they are built on their own, see [build].
+  /// The signature and the suggestions, floating under the field. They follow
+  /// the caret and the focus, so they are built on their own, see [build].
   Widget _caretPanels() {
     final matches = _suggestions();
     final signature = _signature();
@@ -340,28 +382,65 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
           onInsertFunction: _openFunctionPicker,
         ),
         const SizedBox(height: 8),
-        TextField(
-          key: const ValueKey('expression_formula_text'),
-          controller: _controller,
-          focusNode: _focusNode,
-          style: monospace,
-          minLines: _minLines,
-          maxLines: null,
-          keyboardType: TextInputType.multiline,
-          decoration: InputDecoration(
-            labelText: l10n.expression_field_expression,
-            helperText: l10n.expression_hint_expression,
-            helperMaxLines: 3,
-            alignLabelWithHint: true,
-            border: AppShapes.fieldBorder(),
+        OverlayPortal(
+          controller: _panels,
+          overlayChildBuilder: (context) => CompositedTransformFollower(
+            link: _fieldLink,
+            showWhenUnlinked: false,
+            targetAnchor: Alignment.bottomLeft,
+            child: Align(
+              alignment: AlignmentDirectional.topStart,
+              // Taps on the panels don't count as taps outside the field,
+              // which would take its focus.
+              child: TextFieldTapRegion(
+                child: SizedBox(
+                  width: _fieldWidth,
+                  child: ListenableBuilder(
+                    listenable: Listenable.merge([_controller, _focusNode]),
+                    builder: (context, _) => _caretPanels(),
+                  ),
+                ),
+              ),
+            ),
           ),
-          onChanged: widget.onChanged,
+          child: CompositedTransformTarget(
+            link: _fieldLink,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                _trackFieldWidth(constraints.maxWidth);
+                return TextField(
+                  key: const ValueKey('expression_formula_text'),
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  style: monospace,
+                  minLines: _minLines,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  decoration: InputDecoration(
+                    labelText: l10n.expression_field_expression,
+                    helperText: l10n.expression_hint_expression,
+                    helperMaxLines: 3,
+                    alignLabelWithHint: true,
+                    border: AppShapes.fieldBorder(),
+                  ),
+                  onChanged: widget.onChanged,
+                );
+              },
+            ),
+          ),
         ),
-        if (validation != null)
-          _ValidationNotes(validation: validation, onDeclare: widget.onDeclare),
-        ListenableBuilder(
-          listenable: Listenable.merge([_controller, _focusNode]),
-          builder: (context, _) => _caretPanels(),
+        // Grows and shrinks smoothly when the check says more or less.
+        AnimatedSize(
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.easeOutCubic,
+          alignment: AlignmentDirectional.topStart,
+          child: validation == null
+              ? const SizedBox(width: double.infinity)
+              : _ValidationNotes(
+                  validation: validation,
+                  pending: widget.validationPending,
+                  onDeclare: widget.onDeclare,
+                ),
         ),
       ],
     );
@@ -425,9 +504,17 @@ class _ExpressionFormulaFieldState extends State<ExpressionFormulaField> {
 /// errors when it does not parse, the names it reads but does not declare with
 /// a way to declare them, or a small check when it is valid.
 class _ValidationNotes extends StatelessWidget {
-  const _ValidationNotes({required this.validation, this.onDeclare});
+  const _ValidationNotes({
+    required this.validation,
+    required this.pending,
+    this.onDeclare,
+  });
 
   final ExpressionValidation validation;
+
+  /// Whether [validation] is of an older text. It is dimmed then and its
+  /// declare actions are off, they would declare names of the older text.
+  final bool pending;
 
   /// Declares the given names. Null hides the declare actions.
   final ValueChanged<List<String>>? onDeclare;
@@ -438,6 +525,7 @@ class _ValidationNotes extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final undefined = validation.undefinedVariables;
+    final declare = pending ? null : onDeclare;
     final children = <Widget>[];
     if (!validation.valid) {
       children.add(
@@ -470,13 +558,13 @@ class _ValidationNotes extends StatelessWidget {
               for (final name in undefined)
                 TextButton(
                   key: ValueKey('expression_declare_$name'),
-                  onPressed: () => onDeclare!([name]),
+                  onPressed: declare == null ? null : () => declare([name]),
                   child: Text(l10n.expression_validation_declare),
                 ),
               if (undefined.length > 1)
                 TextButton(
                   key: const ValueKey('expression_declare_all'),
-                  onPressed: () => onDeclare!(undefined),
+                  onPressed: declare == null ? null : () => declare(undefined),
                   child: Text(l10n.expression_validation_declare_all),
                 ),
             ],
@@ -502,12 +590,17 @@ class _ValidationNotes extends StatelessWidget {
         ),
       );
     }
-    if (children.isEmpty) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
+    if (children.isEmpty) return const SizedBox(width: double.infinity);
+    return AnimatedOpacity(
+      key: const ValueKey('expression_validation_notes'),
+      duration: const Duration(milliseconds: 150),
+      opacity: pending ? 0.5 : 1,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        ),
       ),
     );
   }

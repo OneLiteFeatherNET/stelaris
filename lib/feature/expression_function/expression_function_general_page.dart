@@ -120,23 +120,8 @@ class ExpressionFunctionGeneralPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                     ],
-                    if ((function.body ?? '').trim().isNotEmpty) ...[
-                      Text(
-                        l10n.expression_rendered_formula_label,
-                        style: theme.textTheme.labelMedium?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      _FunctionMath(
-                        function: function,
-                        catalog: vm.catalog,
-                        fontSize: 16,
-                      ),
-                      const SizedBox(height: 12),
-                    ],
                     // Keyed, so the field keeps its focus and text when the
-                    // rendered line above it comes and goes.
+                    // section above it changes.
                     ExpressionFormulaField(
                       key: const ValueKey('expression_formula_field'),
                       expression: ExpressionModel(
@@ -148,6 +133,33 @@ class ExpressionFunctionGeneralPage extends StatelessWidget {
                       catalog: vm.catalog,
                       onChanged: (value) =>
                           stage(function.copyWith(body: value)),
+                    ),
+                    // Below the editor, so the line being typed stays put
+                    // while the typeset function grows.
+                    AnimatedSize(
+                      duration: const Duration(milliseconds: 150),
+                      curve: Curves.easeOutCubic,
+                      alignment: AlignmentDirectional.topStart,
+                      child: (function.body ?? '').trim().isEmpty
+                          ? const SizedBox(width: double.infinity)
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const SizedBox(height: 16),
+                                Text(
+                                  l10n.expression_rendered_formula_label,
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                _FunctionMath(
+                                  function: function,
+                                  catalog: vm.catalog,
+                                  fontSize: 16,
+                                ),
+                              ],
+                            ),
                     ),
                     for (final message in bodyErrors)
                       Padding(
