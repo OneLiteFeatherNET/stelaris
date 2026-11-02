@@ -98,8 +98,8 @@ class _ExpressionDetailPageState extends State<ExpressionDetailPage> {
                   selectModel: (state) => state.selectedExpression,
                   nameSelector: (model) => model.uiName,
                   keySelector: (model) => '',
-                  deleteTitle: context.l10n.dialog_expression_delete_title,
-                  removeAction: ExpressionRemoveAction.new,
+                  // No Delete here: an expression is deleted from the
+                  // overview.
                   readNotes: (model) => model.comment,
                 ),
               ],

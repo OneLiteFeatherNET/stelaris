@@ -15,7 +15,8 @@ import 'package:stelaris/util/notes.dart';
 import 'package:stelaris/feature/model/model_delete.dart';
 
 /// The Notes / Info / Delete / Save actions of a detail page's [PageHeader].
-/// Notes only appear when [readNotes] is given. Opens
+/// Notes only appear when [readNotes] is given, Delete only when
+/// [removeAction] is given. Opens
 /// the same dialogs as a grid card's menu, so both places stay in sync.
 ///
 /// The model is read from the store when an action is pressed (via
@@ -27,8 +28,8 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
     required this.selectModel,
     required this.nameSelector,
     required this.keySelector,
-    required this.deleteTitle,
-    required this.removeAction,
+    this.deleteTitle,
+    this.removeAction,
     this.deleteWarning,
     this.readNotes,
     super.key,
@@ -38,9 +39,13 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
   final E? Function(AppState state) selectModel;
   final ModelNameSelector<E> nameSelector;
   final ModelKeySelector<E> keySelector;
-  final String deleteTitle;
+  /// The title of the delete dialog, needed with [removeAction].
+  final String? deleteTitle;
   final String? deleteWarning;
-  final ReduxAction<AppState> Function(E model) removeAction;
+
+  /// Removes the model. Null leaves Delete out of the header; the model is
+  /// then deleted from the overview only.
+  final ReduxAction<AppState> Function(E model)? removeAction;
   /// Returns the model's internal notes, shown read-only — they are edited
   /// from the overview, see [NotesViewDialog].
   final String? Function(E model)? readNotes;
@@ -74,14 +79,17 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
     );
   }
 
-  Future<void> _openDelete(BuildContext context) async {
+  Future<void> _openDelete(
+    BuildContext context,
+    ReduxAction<AppState> Function(E model) removeAction,
+  ) async {
     final state = StoreProvider.state<AppState>(context);
     final model = selectModel(state);
     if (model == null) return;
     await confirmAndDeleteModel<E>(
       context,
       entry: entry,
-      title: deleteTitle,
+      title: deleteTitle ?? '',
       name: nameSelector(model),
       namespacedKey: _namespacedKey(state, model),
       model: model,
@@ -130,12 +138,14 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
           onPressed: () => _openInfo(context),
         ),
         const SizedBox(width: 8),
-        PageHeaderAction(
-          icon: deleteIcon,
-          label: l10n.button_delete,
-          onPressed: () => _openDelete(context),
-        ),
-        const SizedBox(width: 8),
+        if (removeAction case final removeAction?) ...[
+          PageHeaderAction(
+            icon: deleteIcon,
+            label: l10n.button_delete,
+            onPressed: () => _openDelete(context, removeAction),
+          ),
+          const SizedBox(width: 8),
+        ],
         DetailSaveAction(entry: entry),
       ],
     );
