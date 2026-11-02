@@ -18,6 +18,10 @@ const _catalog = ExpressionCatalog(
   constants: [CatalogConstant(name: 'E', value: _e)],
 );
 
+final _search = find.byKey(const ValueKey('expression_function_search'));
+final _filter = find.byKey(const Key('expression_group_filter'));
+final _round = find.byKey(const ValueKey('expression_function_ROUND'));
+final _sin = find.byKey(const ValueKey('expression_function_SIN'));
 final _constant = find.byKey(const ValueKey('expression_constant_E'));
 
 Future<void> _pump(WidgetTester tester) async {
@@ -43,6 +47,9 @@ Future<void> _pump(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+bool _filterSelected(WidgetTester tester) =>
+    tester.widget<IconButton>(_filter).isSelected ?? false;
+
 void main() {
   testWidgets('a constant with a very long value lays out in a narrow picker', (
     tester,
@@ -51,5 +58,52 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(_constant, findsOneWidget);
+  });
+
+  testWidgets('clicking a group header shows only that group', (tester) async {
+    await _pump(tester);
+    expect(_filterSelected(tester), isFalse);
+
+    await tester.tap(find.byKey(const Key('expression_group_header_basic')));
+    await tester.pumpAndSettle();
+
+    expect(_round, findsOneWidget);
+    expect(_sin, findsNothing);
+    expect(_constant, findsNothing);
+    expect(_filterSelected(tester), isTrue);
+  });
+
+  testWidgets('the filter menu picks a group and shows all again', (
+    tester,
+  ) async {
+    await _pump(tester);
+
+    await tester.tap(_filter);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('expression_group_item_constants')));
+    await tester.pumpAndSettle();
+
+    expect(_constant, findsOneWidget);
+    expect(_round, findsNothing);
+
+    await tester.tap(_filter);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('expression_group_item_all')));
+    await tester.pumpAndSettle();
+
+    expect(_round, findsOneWidget);
+    expect(_sin, findsOneWidget);
+    expect(_constant, findsOneWidget);
+    expect(_filterSelected(tester), isFalse);
+  });
+
+  testWidgets('the search matches the name of a group', (tester) async {
+    await _pump(tester);
+
+    await tester.enterText(_search, 'trigono');
+    await tester.pumpAndSettle();
+
+    expect(_sin, findsOneWidget);
+    expect(_round, findsNothing);
   });
 }

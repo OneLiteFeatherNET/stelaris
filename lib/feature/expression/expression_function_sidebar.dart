@@ -1,30 +1,54 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/base/filter/category_filter_menu.dart';
 import 'package:stelaris/feature/base/hide_tooltips_while_scrolling.dart';
 import 'package:stelaris/feature/base/search/dialog_search_bar.dart';
 import 'package:stelaris/feature/expression/expression_completion.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
-/// The categories functions are grouped under, in the order they are listed.
-const List<CatalogFunctionCategory> _groupOrder = [
-  CatalogFunctionCategory.project,
-  CatalogFunctionCategory.basic,
-  CatalogFunctionCategory.string,
-  CatalogFunctionCategory.dateTime,
-  CatalogFunctionCategory.trigonometric,
-  CatalogFunctionCategory.other,
-];
+/// The groups of the picker in the order they are listed: one per function
+/// category, then the constants.
+enum _Group {
+  project(CatalogFunctionCategory.project),
+  basic(CatalogFunctionCategory.basic),
+  string(CatalogFunctionCategory.string),
+  dateTime(CatalogFunctionCategory.dateTime),
+  trigonometric(CatalogFunctionCategory.trigonometric),
+  other(CatalogFunctionCategory.other),
+  constants(null);
+
+  const _Group(this.category);
+
+  /// The category of the group's functions, null for the constants.
+  final CatalogFunctionCategory? category;
+
+  String label(AppLocalizations l10n) => switch (this) {
+    project => l10n.expression_function_group_project,
+    basic => l10n.expression_functions_group_basic,
+    string => l10n.expression_functions_group_string,
+    dateTime => l10n.expression_functions_group_date_time,
+    trigonometric => l10n.expression_functions_group_trigonometric,
+    other => l10n.expression_functions_group_other,
+    constants => l10n.expression_functions_group_constants,
+  };
+}
 
 /// The widest a constant's value gets at the end of its row. Values like E
 /// or PI carry up to 100 digits, unbounded they take the whole row.
 const double _maxConstantValueWidth = 160;
 
+const double _filterButtonSize = 32;
+
 /// The catalog's functions and constants to browse and insert, shown in the
-/// function picker, styled like the component picker: a search bar above a
-/// list of the entries under a header per group. The search filters both by
-/// name ignoring case. The caller inserts the tapped entry.
+/// function picker, styled like the component picker: a search bar with a
+/// group filter above a list of the entries under a header per group.
+///
+/// The search matches the names of the entries ignoring case, and the name
+/// of a group, so typing e.g. `text` lists every text function. A click on a
+/// header shows only its group. The caller inserts the tapped entry.
 class ExpressionFunctionSidebar extends StatefulWidget {
   const ExpressionFunctionSidebar({
     required this.catalog,
@@ -44,42 +68,60 @@ class ExpressionFunctionSidebar extends StatefulWidget {
 }
 
 class _ExpressionFunctionSidebarState extends State<ExpressionFunctionSidebar> {
+  final FocusNode _focusNode = FocusNode();
+
   String _search = '';
 
-  /// The functions per category in the order of [_groupOrder], computed once
-  /// so a keystroke only filters. Categories without any are left out.
-  late final Map<CatalogFunctionCategory, List<CatalogFunction>> _functions =
-      () {
-        final byCategory = <CatalogFunctionCategory, List<CatalogFunction>>{
-          for (final category in _groupOrder) category: [],
-        };
-        for (final function in widget.catalog?.functions ?? const []) {
-          byCategory[function.category]?.add(function);
-        }
-        return byCategory..removeWhere((_, functions) => functions.isEmpty);
-      }();
+  /// The group picked in the filter. Null shows all.
+  _Group? _group;
+
+  /// The entries per group, computed once so a keystroke only filters.
+  /// Groups without any are left out.
+  late final Map<_Group, List<_Row>> _entries = () {
+    final catalog = widget.catalog;
+    final byGroup = <_Group, List<_Row>>{
+      for (final group in _Group.values) group: [],
+    };
+    if (catalog != null) {
+      for (final function in catalog.functions) {
+        final group = _Group.values.firstWhere(
+          (group) => group.category == function.category,
+          orElse: () => _Group.other,
+        );
+        byGroup[group]!.add(_FunctionRow(function));
+      }
+      byGroup[_Group.constants]!.addAll(
+        catalog.constants.map(_ConstantRow.new),
+      );
+    }
+    return byGroup..removeWhere((_, entries) => entries.isEmpty);
+  }();
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _selectGroup(_Group? group) {
+    setState(() => _group = group);
+    _focusNode.requestFocus();
+  }
 
   /// The rows of the list: a header per group followed by its entries.
   List<_Row> _rows(AppLocalizations l10n) {
     final search = _search.trim().toLowerCase();
-    bool matches(String name) =>
-        search.isEmpty || name.toLowerCase().contains(search);
-
     final rows = <_Row>[];
-    for (final MapEntry(key: category, value: functions)
-        in _functions.entries) {
-      final hits = functions.where((function) => matches(function.name));
-      if (hits.isEmpty) continue;
+    for (final MapEntry(key: group, value: entries) in _entries.entries) {
+      if (_group != null && group != _group) continue;
+      final Iterable<_Row> matches =
+          search.isEmpty || group.label(l10n).toLowerCase().contains(search)
+          ? entries
+          : entries.where((row) => row.name.toLowerCase().contains(search));
+      if (matches.isEmpty) continue;
       rows
-        ..add(_HeaderRow(_categoryLabel(l10n, category)))
-        ..addAll(hits.map(_FunctionRow.new));
-    }
-    final constants = (widget.catalog?.constants ?? const <CatalogConstant>[])
-        .where((constant) => matches(constant.name));
-    if (constants.isNotEmpty) {
-      rows
-        ..add(_HeaderRow(l10n.expression_functions_group_constants))
-        ..addAll(constants.map(_ConstantRow.new));
+        ..add(_HeaderRow(group))
+        ..addAll(matches);
     }
     return rows;
   }
@@ -87,6 +129,7 @@ class _ExpressionFunctionSidebarState extends State<ExpressionFunctionSidebar> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final group = _group;
     final rows = _rows(l10n);
     final String? note = widget.catalog == null
         ? l10n.expression_functions_unavailable
@@ -99,7 +142,42 @@ class _ExpressionFunctionSidebarState extends State<ExpressionFunctionSidebar> {
       children: [
         DialogSearchBar(
           key: const ValueKey('expression_function_search'),
-          hintText: l10n.expression_functions_search_label,
+          focusNode: _focusNode,
+          hintText: group == null
+              ? l10n.expression_functions_search_label
+              : l10n.expression_functions_search_in(group.label(l10n)),
+          trailing: [
+            CategoryFilterMenu<_Group>(
+              value: group,
+              allLabel: l10n.expression_functions_all_groups,
+              keyPrefix: 'expression_group_item',
+              entries: [
+                for (final MapEntry(key: group, value: entries)
+                    in _entries.entries)
+                  (
+                    value: group,
+                    label: group.label(l10n),
+                    count: entries.length,
+                    id: group.name,
+                  ),
+              ],
+              onChanged: _selectGroup,
+              builder: (context, toggle) => SizedBox(
+                // The anchor would stretch the button to the bar's height
+                // otherwise.
+                width: _filterButtonSize,
+                height: _filterButtonSize,
+                child: IconButton(
+                  key: const Key('expression_group_filter'),
+                  padding: EdgeInsets.zero,
+                  isSelected: group != null,
+                  icon: const Icon(Icons.filter_list),
+                  tooltip: l10n.expression_functions_filter_tooltip,
+                  onPressed: toggle,
+                ),
+              ),
+            ),
+          ],
           onChanged: (value) => setState(() => _search = value),
         ),
         verticalSpacing10,
@@ -117,7 +195,14 @@ class _ExpressionFunctionSidebarState extends State<ExpressionFunctionSidebar> {
                       padding: const EdgeInsets.only(right: 16),
                       itemCount: rows.length,
                       itemBuilder: (context, index) => switch (rows[index]) {
-                        _HeaderRow(:final title) => _GroupHeader(title),
+                        _HeaderRow(group: final header) => _GroupHeader(
+                          header,
+                          // A filtered list has only this header, so it
+                          // offers nothing to click.
+                          onTap: group == null
+                              ? () => _selectGroup(header)
+                              : null,
+                        ),
                         _FunctionRow(:final function) => _FunctionTile(
                           function: function,
                           onTap: () => widget.onFunction(function),
@@ -134,61 +219,81 @@ class _ExpressionFunctionSidebarState extends State<ExpressionFunctionSidebar> {
       ],
     );
   }
-
-  static String _categoryLabel(
-    AppLocalizations l10n,
-    CatalogFunctionCategory category,
-  ) => switch (category) {
-    CatalogFunctionCategory.basic => l10n.expression_functions_group_basic,
-    CatalogFunctionCategory.string => l10n.expression_functions_group_string,
-    CatalogFunctionCategory.dateTime =>
-      l10n.expression_functions_group_date_time,
-    CatalogFunctionCategory.trigonometric =>
-      l10n.expression_functions_group_trigonometric,
-    CatalogFunctionCategory.other => l10n.expression_functions_group_other,
-    CatalogFunctionCategory.project => l10n.expression_function_group_project,
-  };
 }
 
 /// A row of the list.
 sealed class _Row {
   const _Row();
+
+  /// What the search matches.
+  String get name;
 }
 
 final class _HeaderRow extends _Row {
-  const _HeaderRow(this.title);
+  const _HeaderRow(this.group);
 
-  final String title;
+  final _Group group;
+
+  @override
+  String get name => group.name;
 }
 
 final class _FunctionRow extends _Row {
   const _FunctionRow(this.function);
 
   final CatalogFunction function;
+
+  @override
+  String get name => function.name;
 }
 
 final class _ConstantRow extends _Row {
   const _ConstantRow(this.constant);
 
   final CatalogConstant constant;
+
+  @override
+  String get name => constant.name;
 }
 
-/// The header of a group, like the category headers of the component picker.
+/// The header of a group, like the category headers of the component picker:
+/// a click shows only the group.
 class _GroupHeader extends StatelessWidget {
-  const _GroupHeader(this.title);
+  const _GroupHeader(this.group, {required this.onTap});
 
-  final String title;
+  final _Group group;
+
+  /// Filters the list by the group, null when it is already filtered.
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
+    final color = theme.colorScheme.primary;
+    final label = group.label(context.l10n);
+    final header = Padding(
       padding: const EdgeInsets.fromLTRB(8, 12, 8, 4),
-      child: Text(
-        title,
-        style: theme.textTheme.labelLarge?.copyWith(
-          color: theme.colorScheme.primary,
-        ),
+      child: Row(
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.labelLarge?.copyWith(color: color),
+          ),
+          if (onTap != null) ...[
+            const SizedBox(width: 4),
+            Icon(Icons.filter_list, size: 16, color: color),
+          ],
+        ],
+      ),
+    );
+    if (onTap == null) return header;
+    return Tooltip(
+      message: context.l10n.expression_functions_group_only(label),
+      child: InkWell(
+        key: Key('expression_group_header_${group.name}'),
+        borderRadius: BorderRadius.circular(AppShapes.small),
+        onTap: onTap,
+        child: header,
       ),
     );
   }
