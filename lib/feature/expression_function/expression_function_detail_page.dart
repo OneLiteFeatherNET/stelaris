@@ -50,8 +50,7 @@ class ExpressionFunctionDetailPage extends StatelessWidget {
             selectModel: (state) => state.selectedExpressionFunction,
             nameSelector: (model) => model.uiName,
             keySelector: (model) => model.name,
-            deleteTitle: context.l10n.dialog_expression_function_delete_title,
-            removeAction: ExpressionFunctionRemoveAction.new,
+            // No Delete here: a function is deleted from the overview.
             readNotes: (model) => model.comment,
           ),
         ],
