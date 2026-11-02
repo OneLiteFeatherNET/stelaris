@@ -5,6 +5,7 @@ import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/expression/selected_expression_state.dart';
 import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
+import 'package:stelaris/feature/expression/expression_value_field.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -23,6 +24,9 @@ class _ExpressionTestPageState extends State<ExpressionTestPage> {
   /// One input per variable name, pre-filled from its test value the first
   /// time it is shown. Kept while the page is open.
   final Map<String, TextEditingController> _inputs = {};
+
+  /// The inputs, which must fit their types before an evaluation.
+  final _formKey = GlobalKey<FormState>();
 
   /// Counts the evaluations started. An answer to an older press is dropped.
   int _evaluation = 0;
@@ -58,6 +62,7 @@ class _ExpressionTestPageState extends State<ExpressionTestPage> {
   Future<void> _evaluate(SelectedExpressionView vm) async {
     final projectId = vm.projectId;
     if (projectId == null) return;
+    if (_formKey.currentState?.validate() == false) return;
     final evaluation = ++_evaluation;
     setState(() {
       _running = true;
@@ -119,22 +124,31 @@ class _ExpressionTestPageState extends State<ExpressionTestPage> {
               if (expression.variables.isEmpty)
                 Text(l10n.expression_test_no_variables)
               else
-                for (final variable in expression.variables)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: TextFormField(
-                      key: ValueKey(variable.name),
-                      controller: _inputFor(variable),
-                      decoration: InputDecoration(
-                        labelText: variable.name,
-                        helperText: expressionVariableTypeLabel(
-                          l10n,
-                          variable.type,
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final variable in expression.variables)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: ExpressionValueField(
+                            key: ValueKey(variable.name),
+                            controller: _inputFor(variable),
+                            type: variable.type,
+                            decoration: InputDecoration(
+                              labelText: variable.name,
+                              helperText: expressionVariableTypeLabel(
+                                l10n,
+                                variable.type,
+                              ),
+                              prefixIcon: const Icon(Icons.data_object),
+                            ),
+                          ),
                         ),
-                        prefixIcon: const Icon(Icons.data_object),
-                      ),
-                    ),
+                    ],
                   ),
+                ),
               const SizedBox(height: 8),
               FilledButton.icon(
                 icon: const Icon(Icons.play_arrow),

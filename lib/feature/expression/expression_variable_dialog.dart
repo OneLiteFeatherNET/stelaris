@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/feature/expression/expression_value_field.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -113,38 +114,6 @@ class _ExpressionVariableDialogState extends State<ExpressionVariableDialog> {
     );
   }
 
-  /// A boolean takes a pick of true or false, or none, instead of text.
-  Widget _testValueField(AppLocalizations l10n) {
-    if (_type != ExpressionValueType.boolean) {
-      return TextFormField(
-        controller: _testValue,
-        decoration: InputDecoration(
-          labelText: l10n.expression_variable_test_value_label,
-          helperText: l10n.expression_variable_test_value_hint,
-          prefixIcon: const Icon(Icons.science_outlined),
-        ),
-      );
-    }
-    final current = _testValue.text;
-    return DropdownButtonFormField<String?>(
-      initialValue: current == 'true' || current == 'false' ? current : null,
-      decoration: InputDecoration(
-        labelText: l10n.expression_variable_test_value_label,
-        helperText: l10n.expression_variable_test_value_hint,
-        prefixIcon: const Icon(Icons.science_outlined),
-      ),
-      items: [
-        DropdownMenuItem<String?>(
-          value: null,
-          child: Text(l10n.expression_variable_test_value_none),
-        ),
-        const DropdownMenuItem<String?>(value: 'true', child: Text('true')),
-        const DropdownMenuItem<String?>(value: 'false', child: Text('false')),
-      ],
-      onChanged: (value) => setState(() => _testValue.text = value ?? ''),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -194,10 +163,8 @@ class _ExpressionVariableDialogState extends State<ExpressionVariableDialog> {
               onChanged: (type) {
                 if (type == null) return;
                 setState(() {
-                  // A value typed as text may not be one of the booleans.
-                  if (type == ExpressionValueType.boolean &&
-                      _testValue.text != 'true' &&
-                      _testValue.text != 'false') {
+                  // A value of the old type may not fit the new one.
+                  if (!isExpressionValueValid(type, _testValue.text)) {
                     _testValue.text = emptyString;
                   }
                   _type = type;
@@ -205,7 +172,15 @@ class _ExpressionVariableDialogState extends State<ExpressionVariableDialog> {
               },
             ),
             verticalSpacing10,
-            _testValueField(l10n),
+            ExpressionValueField(
+              controller: _testValue,
+              type: _type,
+              decoration: InputDecoration(
+                labelText: l10n.expression_variable_test_value_label,
+                helperText: l10n.expression_variable_test_value_hint,
+                prefixIcon: const Icon(Icons.science_outlined),
+              ),
+            ),
           ],
         ),
       ),
