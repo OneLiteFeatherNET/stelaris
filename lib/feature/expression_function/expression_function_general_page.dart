@@ -86,14 +86,6 @@ class ExpressionFunctionGeneralPage extends StatelessWidget {
                   onChanged: (type) =>
                       stage(function.copyWith(returnType: type)),
                 ),
-                TextEdit(
-                  label: l10n.expression_function_field_comment,
-                  icon: Icons.notes,
-                  value: function.comment ?? '',
-                  onChanged: (value) => stage(
-                    function.copyWith(comment: value.isEmpty ? null : value),
-                  ),
-                ),
               ],
             ),
           ],

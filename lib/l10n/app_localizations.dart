@@ -1642,12 +1642,6 @@ abstract class AppLocalizations {
   /// **'String'**
   String get expression_function_return_string;
 
-  /// No description provided for @expression_function_field_comment.
-  ///
-  /// In en, this message translates to:
-  /// **'Comment'**
-  String get expression_function_field_comment;
-
   /// No description provided for @expression_function_parameter_add_title.
   ///
   /// In en, this message translates to:

@@ -855,9 +855,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expression_function_return_string => 'String';
 
   @override
-  String get expression_function_field_comment => 'Comment';
-
-  @override
   String get expression_function_parameter_add_title => 'Add parameter';
 
   @override

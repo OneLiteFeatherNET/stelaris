@@ -360,7 +360,6 @@
   "expression_function_return_number": "Number",
   "expression_function_return_boolean": "Boolean",
   "expression_function_return_string": "String",
-  "expression_function_field_comment": "Comment",
   "expression_function_parameter_add_title": "Add parameter",
   "expression_function_parameter_edit_title": "Edit parameter",
   "expression_function_parameter_delete_title": "Delete parameter",

@@ -145,6 +145,33 @@ class UpdateExpressionFunctionAction extends ReduxAction<AppState> {
   );
 }
 
+/// Saves [notes] as [model]'s comment, from the overview card's menu. An
+/// open function only takes the new comment, so its unsaved edits stay.
+class ExpressionFunctionNotesUpdateAction extends ReduxAction<AppState>
+    with NonReentrant {
+  final ExpressionFunctionModel model;
+  final String? notes;
+
+  ExpressionFunctionNotesUpdateAction(this.model, this.notes);
+
+  @override
+  Future<AppState?> reduce() async {
+    final ExpressionFunctionModel response = await ApiService()
+        .expressionFunctionApi
+        .update(model.copyWith(comment: notes));
+    final selected = state.selectedExpressionFunction;
+    return state.copyWith(
+      expressionFunctions: state.expressionFunctions.replacingWhere(
+        (item) => item.id == response.id,
+        response,
+      ),
+      selectedExpressionFunction: selected?.id == response.id
+          ? selected!.copyWith(comment: response.comment)
+          : selected,
+    );
+  }
+}
+
 /// Saves the selected function. A rejection (HTTP 400) is kept in the state,
 /// so the fields it names can show it, and is thrown on as a [ProblemDetail]
 /// for the save's own message.

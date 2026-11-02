@@ -6,6 +6,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/expression_function/expression_function_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/model_create.dart';
+import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -32,6 +33,10 @@ class ExpressionFunctionPage extends StatelessWidget {
           models: vm.models,
           nameSelector: (model) => model.uiName,
           keySelector: (model) => model.name,
+          notes: ModelNotes(
+            read: (model) => model.comment,
+            update: ExpressionFunctionNotesUpdateAction.new,
+          ),
           projectKey: vm.projectKey,
           matchesFilter: (model, filter) => true,
           onAdd: () => openModelCreateDialog(
