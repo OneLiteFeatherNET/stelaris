@@ -280,6 +280,24 @@ void main() {
     });
   });
 
+  group('function definitions', () {
+    test('the name is an operator name and the parameters are variables', () {
+      expect(
+        functionToTex('damage_bonus', ['base', 'bonus_rate'], 'base * 2'),
+        r'\mathrm{damage\_bonus}(\mathit{base}, \mathit{bonus\_rate}) = '
+        r'\mathit{base} \cdot 2',
+      );
+    });
+
+    test('a body that does not convert gives no definition', () {
+      expect(functionToTex('f', ['a'], 'a +'), isNull);
+    });
+
+    test('a name that is not an identifier gives no definition', () {
+      expect(functionToTex('my function', ['a'], 'a'), isNull);
+    });
+  });
+
   group('catalog names', () {
     test('every catalog function is named, EvalEx and project alike', () {
       const catalog = ExpressionCatalog(
