@@ -197,6 +197,42 @@ void main() {
     expect(seen, hasLength(greaterThan(1)));
     expect(seen.toSet(), hasLength(1));
   });
+
+  testWidgets('a preloaded page builds straight away on its first visit', (
+    tester,
+  ) async {
+    Future<void> loader() => Future.value();
+    await DeferredWidget.preload(loader);
+
+    await tester.pumpWidget(
+      host(DeferredWidget(loader: loader, builder: () => const Text('page'))),
+    );
+
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.text('page'), findsOneWidget);
+  });
+
+  testWidgets('a failed preload is left for the visit to retry', (
+    tester,
+  ) async {
+    var calls = 0;
+    Future<void> loader() {
+      calls++;
+      return calls == 1
+          ? Future.error(DeferredLoadException('offline'))
+          : Future.value();
+    }
+
+    await DeferredWidget.preload(loader);
+    await tester.pumpWidget(
+      host(DeferredWidget(loader: loader, builder: () => const Text('page'))),
+    );
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    await tester.pumpAndSettle();
+    expect(calls, 2);
+    expect(find.text('page'), findsOneWidget);
+  });
 }
 
 class _InitCounter extends StatefulWidget {

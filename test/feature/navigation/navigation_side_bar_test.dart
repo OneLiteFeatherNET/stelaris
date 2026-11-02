@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:flutter/gestures.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -725,5 +726,41 @@ void main() {
         findsNothing,
       );
     });
+  });
+
+  testWidgets('reports the route of an entry the pointer moves onto', (
+    tester,
+  ) async {
+    final store = Store<AppState>(initialState: AppState.fromJson({}));
+    final hovered = <String>[];
+    final router = GoRouter(
+      initialLocation: NavigationEntry.attributes.route,
+      routes: [
+        for (final entry in NavigationEntry.values)
+          GoRoute(
+            path: entry.route,
+            builder: (context, state) => Scaffold(
+              body: Row(
+                children: [
+                  NavigationSideBar(onHoverRoute: hovered.add),
+                  Expanded(child: Text(entry.display)),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+    await tester.pumpWidget(buildTestWidget(router, store));
+    await tester.pumpAndSettle();
+
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    addTearDown(mouse.removePointer);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(
+      tester.getCenter(find.byIcon(NavigationEntry.items.data)),
+    );
+    await tester.pump();
+
+    expect(hovered, [NavigationEntry.items.route]);
   });
 }
