@@ -39,6 +39,18 @@ bug:
   - changed-files:
       - any-glob-to-any-file: ['lib/feature/project/**', 'lib/feature/build/**', 'test/feature/project/**', 'test/feature/build/**']
 
+'area: asset':
+  - changed-files:
+      - any-glob-to-any-file: ['lib/feature/asset/**', 'test/feature/asset/**']
+
+'area: expression':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'lib/feature/expression/**'
+          - 'lib/feature/expression_function/**'
+          - 'test/feature/expression/**'
+          - 'test/feature/expression_function/**'
+
 # Shared parts of the app
 'area: ui':
   - changed-files:
