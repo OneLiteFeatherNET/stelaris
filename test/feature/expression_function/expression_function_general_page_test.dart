@@ -90,6 +90,14 @@ void main() {
     expect(find.text(l10n.expression_function_section_stub), findsOneWidget);
   });
 
+  testWidgets('the display name has no card, it is fixed once created', (
+    tester,
+  ) async {
+    await _pump(tester);
+
+    expect(find.text('Damage bonus'), findsNothing);
+  });
+
   testWidgets('a rejected name shows its message on the identifier card', (
     tester,
   ) async {
@@ -136,18 +144,19 @@ void main() {
   testWidgets('a name saved in its dialog is staged', (tester) async {
     final store = await _pump(tester);
 
-    await tester.tap(find.text(l10n.expression_function_field_ui_name));
+    await tester.tap(find.text(l10n.expression_function_field_name));
     await tester.pumpAndSettle();
     await tester.enterText(
       find.descendant(
         of: find.byType(Dialog),
         matching: find.byType(TextFormField),
       ),
-      'Crit bonus',
+      'crit_bonus',
     );
     await tester.tap(find.text(l10n.button_save));
     await tester.pumpAndSettle();
 
-    expect(store.state.selectedExpressionFunction?.uiName, 'Crit bonus');
+    expect(store.state.selectedExpressionFunction?.name, 'crit_bonus');
+    expect(store.state.selectedExpressionFunction?.uiName, 'Damage bonus');
   });
 }
