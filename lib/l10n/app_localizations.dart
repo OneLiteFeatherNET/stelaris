@@ -1300,6 +1300,30 @@ abstract class AppLocalizations {
   /// **'Constants'**
   String get expression_functions_group_constants;
 
+  /// No description provided for @expression_functions_all_groups.
+  ///
+  /// In en, this message translates to:
+  /// **'All groups'**
+  String get expression_functions_all_groups;
+
+  /// No description provided for @expression_functions_filter_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by group'**
+  String get expression_functions_filter_tooltip;
+
+  /// No description provided for @expression_functions_search_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Search in {group}'**
+  String expression_functions_search_in(String group);
+
+  /// No description provided for @expression_functions_group_only.
+  ///
+  /// In en, this message translates to:
+  /// **'Only show {group}'**
+  String expression_functions_group_only(String group);
+
   /// No description provided for @expression_suggestion_constant.
   ///
   /// In en, this message translates to:

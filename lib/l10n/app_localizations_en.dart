@@ -662,6 +662,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expression_functions_group_constants => 'Constants';
 
   @override
+  String get expression_functions_all_groups => 'All groups';
+
+  @override
+  String get expression_functions_filter_tooltip => 'Filter by group';
+
+  @override
+  String expression_functions_search_in(String group) {
+    return 'Search in $group';
+  }
+
+  @override
+  String expression_functions_group_only(String group) {
+    return 'Only show $group';
+  }
+
+  @override
   String expression_suggestion_constant(String value) {
     return 'Constant $value';
   }

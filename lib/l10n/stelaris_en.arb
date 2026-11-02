@@ -289,6 +289,24 @@
   "expression_functions_group_trigonometric": "Trigonometric",
   "expression_functions_group_other": "Other",
   "expression_functions_group_constants": "Constants",
+  "expression_functions_all_groups": "All groups",
+  "expression_functions_filter_tooltip": "Filter by group",
+  "expression_functions_search_in": "Search in {group}",
+  "@expression_functions_search_in": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "expression_functions_group_only": "Only show {group}",
+  "@expression_functions_group_only": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
   "expression_suggestion_constant": "Constant {value}",
   "@expression_suggestion_constant": {
     "placeholders": {
