@@ -70,7 +70,9 @@ class ExpressionFunctionSidebar extends StatefulWidget {
 class _ExpressionFunctionSidebarState extends State<ExpressionFunctionSidebar> {
   final FocusNode _focusNode = FocusNode();
 
-  String _search = '';
+  /// The search text. Only the list listens to it, so a keystroke leaves the
+  /// search bar and the filter alone.
+  final ValueNotifier<String> _search = ValueNotifier('');
 
   /// The group picked in the filter. Null shows all.
   _Group? _group;
@@ -100,6 +102,7 @@ class _ExpressionFunctionSidebarState extends State<ExpressionFunctionSidebar> {
   @override
   void dispose() {
     _focusNode.dispose();
+    _search.dispose();
     super.dispose();
   }
 
@@ -109,8 +112,8 @@ class _ExpressionFunctionSidebarState extends State<ExpressionFunctionSidebar> {
   }
 
   /// The rows of the list: a header per group followed by its entries.
-  List<_Row> _rows(AppLocalizations l10n) {
-    final search = _search.trim().toLowerCase();
+  List<_Row> _rows(AppLocalizations l10n, String text) {
+    final search = text.trim().toLowerCase();
     final rows = <_Row>[];
     for (final MapEntry(key: group, value: entries) in _entries.entries) {
       if (_group != null && group != _group) continue;
@@ -130,12 +133,6 @@ class _ExpressionFunctionSidebarState extends State<ExpressionFunctionSidebar> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final group = _group;
-    final rows = _rows(l10n);
-    final String? note = widget.catalog == null
-        ? l10n.expression_functions_unavailable
-        : rows.isEmpty
-        ? l10n.expression_functions_empty_search
-        : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -178,45 +175,71 @@ class _ExpressionFunctionSidebarState extends State<ExpressionFunctionSidebar> {
               ),
             ),
           ],
-          onChanged: (value) => setState(() => _search = value),
+          onChanged: (value) => _search.value = value,
         ),
         verticalSpacing10,
         Expanded(
-          child: note != null
-              ? Center(child: Text(note, textAlign: TextAlign.center))
-              // The rows paint their ink on this material, which clips it to
-              // the list, as in the component picker.
-              : Material(
-                  type: MaterialType.transparency,
-                  clipBehavior: Clip.hardEdge,
-                  child: HideTooltipsWhileScrolling(
-                    child: ListView.builder(
-                      // Keeps the rows clear of the scrollbar.
-                      padding: const EdgeInsets.only(right: 16),
-                      itemCount: rows.length,
-                      itemBuilder: (context, index) => switch (rows[index]) {
-                        _HeaderRow(group: final header) => _GroupHeader(
-                          header,
-                          // A filtered list has only this header, so it
-                          // offers nothing to click.
-                          onTap: group == null
-                              ? () => _selectGroup(header)
-                              : null,
-                        ),
-                        _FunctionRow(:final function) => _FunctionTile(
-                          function: function,
-                          onTap: () => widget.onFunction(function),
-                        ),
-                        _ConstantRow(:final constant) => _ConstantTile(
-                          constant: constant,
-                          onTap: () => widget.onConstant(constant),
-                        ),
-                      },
-                    ),
-                  ),
-                ),
+          child: ValueListenableBuilder(
+            valueListenable: _search,
+            builder: (context, search, _) => _list(l10n, search),
+          ),
         ),
       ],
+    );
+  }
+
+  /// The list of the entries matching [search], or a note when there are
+  /// none.
+  Widget _list(AppLocalizations l10n, String search) {
+    final rows = _rows(l10n, search);
+    final String? note = widget.catalog == null
+        ? l10n.expression_functions_unavailable
+        : rows.isEmpty
+        ? l10n.expression_functions_empty_search
+        : null;
+    if (note != null) {
+      return Center(child: Text(note, textAlign: TextAlign.center));
+    }
+
+    // Lets a row which the search moved keep its element: without it the
+    // list matches rows by index, and every row at a new index is built
+    // from scratch.
+    final indexOf = <Key, int>{
+      for (final (index, row) in rows.indexed) row.key: index,
+    };
+    final group = _group;
+    // The rows paint their ink on this material, which clips it to the list,
+    // as in the component picker.
+    return Material(
+      type: MaterialType.transparency,
+      clipBehavior: Clip.hardEdge,
+      child: HideTooltipsWhileScrolling(
+        child: ListView.builder(
+          // Keeps the rows clear of the scrollbar.
+          padding: const EdgeInsets.only(right: 16),
+          itemCount: rows.length,
+          findChildIndexCallback: (key) => indexOf[key],
+          itemBuilder: (context, index) => switch (rows[index]) {
+            final _HeaderRow row => _GroupHeader(
+              key: row.key,
+              row.group,
+              // A filtered list has only this header, so it offers nothing
+              // to click.
+              onTap: group == null ? () => _selectGroup(row.group) : null,
+            ),
+            final _FunctionRow row => _FunctionTile(
+              key: row.key,
+              function: row.function,
+              onTap: () => widget.onFunction(row.function),
+            ),
+            final _ConstantRow row => _ConstantTile(
+              key: row.key,
+              constant: row.constant,
+              onTap: () => widget.onConstant(row.constant),
+            ),
+          },
+        ),
+      ),
     );
   }
 }
@@ -227,6 +250,9 @@ sealed class _Row {
 
   /// What the search matches.
   String get name;
+
+  /// The key of the row's widget, unique in the list.
+  Key get key;
 }
 
 final class _HeaderRow extends _Row {
@@ -236,6 +262,9 @@ final class _HeaderRow extends _Row {
 
   @override
   String get name => group.name;
+
+  @override
+  Key get key => ValueKey('expression_group_header_${group.name}');
 }
 
 final class _FunctionRow extends _Row {
@@ -245,6 +274,9 @@ final class _FunctionRow extends _Row {
 
   @override
   String get name => function.name;
+
+  @override
+  Key get key => ValueKey('expression_function_${function.name}');
 }
 
 final class _ConstantRow extends _Row {
@@ -254,12 +286,15 @@ final class _ConstantRow extends _Row {
 
   @override
   String get name => constant.name;
+
+  @override
+  Key get key => ValueKey('expression_constant_${constant.name}');
 }
 
 /// The header of a group, like the category headers of the component picker:
 /// a click shows only the group.
 class _GroupHeader extends StatelessWidget {
-  const _GroupHeader(this.group, {required this.onTap});
+  const _GroupHeader(this.group, {required this.onTap, super.key});
 
   final _Group group;
 
@@ -290,7 +325,6 @@ class _GroupHeader extends StatelessWidget {
     return Tooltip(
       message: context.l10n.expression_functions_group_only(label),
       child: InkWell(
-        key: Key('expression_group_header_${group.name}'),
         borderRadius: BorderRadius.circular(AppShapes.small),
         onTap: onTap,
         child: header,
@@ -300,7 +334,7 @@ class _GroupHeader extends StatelessWidget {
 }
 
 class _FunctionTile extends StatelessWidget {
-  const _FunctionTile({required this.function, required this.onTap});
+  const _FunctionTile({required this.function, required this.onTap, super.key});
 
   final CatalogFunction function;
   final VoidCallback onTap;
@@ -310,7 +344,6 @@ class _FunctionTile extends StatelessWidget {
     final theme = Theme.of(context);
     final description = function.description;
     return ListTile(
-      key: ValueKey('expression_function_${function.name}'),
       dense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
       title: Text(
@@ -327,7 +360,7 @@ class _FunctionTile extends StatelessWidget {
 }
 
 class _ConstantTile extends StatelessWidget {
-  const _ConstantTile({required this.constant, required this.onTap});
+  const _ConstantTile({required this.constant, required this.onTap, super.key});
 
   final CatalogConstant constant;
   final VoidCallback onTap;
@@ -336,7 +369,6 @@ class _ConstantTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return ListTile(
-      key: ValueKey('expression_constant_${constant.name}'),
       dense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
       title: Text(

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/base/filter/category_filter_menu.dart';
 import 'package:stelaris/feature/expression/expression_function_sidebar.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -105,5 +106,33 @@ void main() {
 
     expect(_sin, findsOneWidget);
     expect(_round, findsNothing);
+  });
+
+  testWidgets('a row which moves in the filtered list keeps its element', (
+    tester,
+  ) async {
+    await _pump(tester);
+    // Before the search SIN is the fourth row, after it the second.
+    final before = tester.element(_sin);
+
+    await tester.enterText(_search, 'sin');
+    await tester.pumpAndSettle();
+
+    expect(_round, findsNothing);
+    expect(identical(tester.element(_sin), before), isTrue);
+  });
+
+  testWidgets('typing rebuilds the list but not the search bar', (
+    tester,
+  ) async {
+    await _pump(tester);
+    final menu = find.byWidgetPredicate((w) => w is CategoryFilterMenu);
+    final before = tester.widget(menu);
+
+    await tester.enterText(_search, 'round');
+    await tester.pumpAndSettle();
+
+    expect(_sin, findsNothing);
+    expect(identical(tester.widget(menu), before), isTrue);
   });
 }
