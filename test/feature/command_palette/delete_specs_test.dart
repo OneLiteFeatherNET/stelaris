@@ -6,7 +6,6 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/command_palette/delete_specs.dart';
-import 'package:stelaris/feature/expression/expression_detail_page.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/item/item_detail_page.dart';
 import 'package:stelaris/feature/model/model_detail_actions.dart';
@@ -97,13 +96,8 @@ void main() {
       ),
       soundDelete,
     ),
-    'expression': (
-      const ExpressionDetailPage(),
-      const AppState(
-        selectedExpression: ExpressionModel(uiName: 'Formula', id: 'x1'),
-      ),
-      expressionDelete,
-    ),
+    // An expression's detail page has no Delete, it is deleted from the
+    // overview and the palette only.
     'advancement': (
       const AdvancementDetailPage(),
       const AppState(
