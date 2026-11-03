@@ -18,7 +18,7 @@ ChoiceEdit<Project> projectChoice(
   required Project current,
 }) {
   return ChoiceEdit<Project>(
-    label: context.l10n.settings_project_active_title,
+    label: context.l10n.project_choice_title,
     icon: Icons.folder_outlined,
     value: current,
     options: projects,

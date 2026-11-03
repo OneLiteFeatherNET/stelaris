@@ -517,7 +517,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_project_create_button => 'Create';
 
   @override
-  String get settings_project_active_title => 'Active Project';
+  String get project_choice_title => 'Active Project';
 
   @override
   String get dialog_project_switch_title => 'Switch project?';

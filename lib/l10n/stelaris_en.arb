@@ -225,7 +225,7 @@
   "dialog_project_docu_url": "Documentation URL",
   "dialog_project_labor": "Labor / Experimental",
   "dialog_project_create_button": "Create",
-  "settings_project_active_title": "Active Project",
+  "project_choice_title": "Active Project",
   "dialog_project_switch_title": "Switch project?",
   "dialog_project_switch_hint": "Loaded items, fonts, advancements, attributes, sound events and expressions will be reset.",
   "dialog_project_switch_confirm": "Switch project",

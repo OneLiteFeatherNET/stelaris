@@ -1036,11 +1036,11 @@ abstract class AppLocalizations {
   /// **'Create'**
   String get dialog_project_create_button;
 
-  /// No description provided for @settings_project_active_title.
+  /// No description provided for @project_choice_title.
   ///
   /// In en, this message translates to:
   /// **'Active Project'**
-  String get settings_project_active_title;
+  String get project_choice_title;
 
   /// No description provided for @dialog_project_switch_title.
   ///
