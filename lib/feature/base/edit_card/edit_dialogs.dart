@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
@@ -66,30 +67,98 @@ const int _visibleOptions = 8;
 Future<T?> showChoiceEditDialog<T>(BuildContext context, ChoiceEdit<T> field) {
   return showDialog<T>(
     context: context,
-    builder: (context) => FormDialog(
+    builder: (context) => _ChoiceEditDialog<T>(field: field),
+  );
+}
+
+/// The dialog of a [ChoiceEdit]. With [ChoiceEdit.refresh] set, a button in
+/// the title loads the options anew and the list starts over with them.
+class _ChoiceEditDialog<T> extends StatefulWidget {
+  const _ChoiceEditDialog({required this.field});
+
+  final ChoiceEdit<T> field;
+
+  @override
+  State<_ChoiceEditDialog<T>> createState() => _ChoiceEditDialogState<T>();
+}
+
+class _ChoiceEditDialogState<T> extends State<_ChoiceEditDialog<T>> {
+  late List<T> _options = widget.field.options;
+  bool _refreshing = false;
+  bool _refreshFailed = false;
+
+  Future<void> _refresh(Future<List<T>> Function() refresh) async {
+    setState(() {
+      _refreshing = true;
+      _refreshFailed = false;
+    });
+    try {
+      final options = await refresh();
+      if (!mounted) return;
+      setState(() => _options = options);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _refreshFailed = true);
+    } finally {
+      if (mounted) setState(() => _refreshing = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final field = widget.field;
+    final theme = Theme.of(context);
+    return FormDialog(
       title: field.label,
       actionLabel: context.l10n.button_save,
       maxWidth: 440,
       onSubmit: null,
       showActions: false,
+      titleActions: [
+        if (field.refresh case final refresh?)
+          IconButton(
+            tooltip: context.l10n.command_bar_refresh_tooltip,
+            onPressed: _refreshing ? null : () => _refresh(refresh),
+            icon: _refreshing
+                ? const SizedBox.square(
+                    dimension: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.refresh),
+          ),
+      ],
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _ChoiceList<T>(field: field),
+          // Keyed by the options, so fresh ones start a fresh list.
+          _ChoiceList<T>(
+            key: ObjectKey(_options),
+            field: field,
+            options: _options,
+          ),
+          if (_refreshFailed) ...[
+            const SizedBox(height: 8),
+            Text(
+              context.l10n.command_reload_list_failure,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
+          ],
           if (field.footer case final footer?) ...[
             const SizedBox(height: 8),
             Text(
               footer,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ],
         ],
       ),
-    ),
-  );
+    );
+  }
 }
 
 /// The options of a [ChoiceEdit], at most [_visibleOptions] in view.
@@ -98,16 +167,19 @@ Future<T?> showChoiceEditDialog<T>(BuildContext context, ChoiceEdit<T> field) {
 /// whose text holds every typed word; Enter picks the first of those. The
 /// list keeps its height while narrowing, so the dialog doesn't jump.
 class _ChoiceList<T> extends StatefulWidget {
-  const _ChoiceList({required this.field});
+  const _ChoiceList({required this.field, required this.options, super.key});
 
   final ChoiceEdit<T> field;
+
+  /// The options to list, the field's own or refreshed ones.
+  final List<T> options;
 
   @override
   State<_ChoiceList<T>> createState() => _ChoiceListState<T>();
 }
 
 class _ChoiceListState<T> extends State<_ChoiceList<T>> {
-  late final List<T> _options = widget.field.options;
+  late final List<T> _options = widget.options;
   late final int _visible = _options.length.clamp(1, _visibleOptions);
   late final bool _searchable = _options.length > _visibleOptions;
   final TextEditingController _search = TextEditingController();
@@ -118,7 +190,8 @@ class _ChoiceListState<T> extends State<_ChoiceList<T>> {
     initialScrollOffset:
         (_options.indexOf(widget.field.value) - _visible ~/ 2).clamp(
           0,
-          _options.length - _visible,
+          // No options at all, e.g. after a refresh, leave nothing to scroll.
+          math.max(0, _options.length - _visible),
         ) *
         _optionExtent,
   );

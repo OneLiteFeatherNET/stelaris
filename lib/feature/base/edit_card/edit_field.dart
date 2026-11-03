@@ -57,10 +57,15 @@ final class ChoiceEdit<T> extends EditField {
     required this.onChanged,
     super.footer,
     this.optionTrailing,
+    this.refresh,
   });
 
   final T value;
   final List<T> options;
+
+  /// Loads the options anew, e.g. from the backend, and resolves to them. Set,
+  /// the list gets a refresh button in its title.
+  final Future<List<T>> Function()? refresh;
 
   /// A widget after an option in the list, e.g. a badge.
   final Widget? Function(T option)? optionTrailing;

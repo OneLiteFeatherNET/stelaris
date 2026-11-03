@@ -21,6 +21,7 @@ class FormDialog extends StatelessWidget {
     this.maxHeight = 650,
     this.showActions = true,
     this.busy = false,
+    this.titleActions = const [],
     super.key,
   });
 
@@ -43,6 +44,9 @@ class FormDialog extends StatelessWidget {
   /// Keeps the dialog open while its action runs: close, cancel and Esc do
   /// nothing, so a result can't arrive after the dialog is gone.
   final bool busy;
+
+  /// Buttons in the title row, before the close icon.
+  final List<Widget> titleActions;
 
   void _handleCancel(BuildContext context) {
     FocusScope.of(context).unfocus();
@@ -89,6 +93,7 @@ class FormDialog extends StatelessWidget {
                           ),
                         ),
                       ),
+                      ...titleActions,
                       IconButton(
                         onPressed: busy ? null : () => _handleCancel(context),
                         icon: const Icon(Icons.close),

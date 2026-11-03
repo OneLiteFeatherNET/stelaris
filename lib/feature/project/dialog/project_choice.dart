@@ -1,10 +1,12 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/project/project_actions.dart';
+import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/edit_card/edit_field.dart';
 import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/feature/project/badge/project_labor_badge.dart';
 import 'package:stelaris/feature/project/dialog/switch_project_dialog.dart';
+import 'package:stelaris/util/dispatch_ext.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -24,6 +26,14 @@ ChoiceEdit<Project> projectChoice(
     optionTrailing: (project) =>
         project.labor ? const ProjectLaborBadge(fontSize: 10) : null,
     onChanged: (project) => _switchTo(context, current, project),
+    refresh: () async {
+      final (:ok, :error) = await context.dispatchAndCatch(
+        InitProjectAction(),
+      );
+      if (!ok) throw error!;
+      if (!context.mounted) return projects;
+      return StoreProvider.state<AppState>(context).projects;
+    },
   );
 }
 
