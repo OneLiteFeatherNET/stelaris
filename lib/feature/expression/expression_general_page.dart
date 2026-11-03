@@ -7,6 +7,7 @@ import 'package:stelaris/feature/base/edit_card/edit_section_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
 import 'package:stelaris/feature/expression/expression_formula_field.dart';
 import 'package:stelaris/feature/expression/expression_math_view.dart';
+import 'package:stelaris/feature/expression/expression_preview.dart';
 import 'package:stelaris/feature/expression/expression_preview_scope.dart';
 import 'package:stelaris/feature/expression/expression_stage.dart';
 import 'package:stelaris/feature/expression/expression_tex.dart';
@@ -35,7 +36,7 @@ class ExpressionGeneralPage extends StatelessWidget {
         final l10n = context.l10n;
         return ExpressionPreviewBeside(
           // The page shows the formula itself.
-          showFormula: false,
+          preview: const ExpressionPreview(showFormula: false),
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
