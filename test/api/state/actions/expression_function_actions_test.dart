@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:async_redux/async_redux.dart';
@@ -30,6 +31,9 @@ class _RoutingAdapter implements HttpClientAdapter {
   final Map<String, (int, Object?)> routes;
   final List<String> paths = [];
 
+  /// When set, the answers to paths ending in its key wait for its value.
+  (String, Future<void>)? hold;
+
   @override
   Future<ResponseBody> fetch(
     RequestOptions options,
@@ -37,6 +41,8 @@ class _RoutingAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     paths.add('${options.method} ${options.uri.path}');
+    final held = hold;
+    if (held != null && options.uri.path.endsWith(held.$1)) await held.$2;
     for (final entry in routes.entries) {
       if (options.uri.path.endsWith(entry.key)) {
         return FakeHttpClientAdapter.response(
@@ -146,7 +152,101 @@ void main() {
     },
   );
 
-  test('saving the function reloads the catalog, which holds the project functions', () async {
+  test(
+    'saving a function with no stored copy to compare with reloads the catalog',
+    () async {
+      final store = Store<AppState>(
+        initialState: const AppState(
+          selectedProject: project,
+          selectedExpressionFunction: _function,
+          unsavedChanges: NavigationEntry.function,
+        ),
+      );
+      final adapter = _RoutingAdapter({
+        'expression-function/update': (200, _functionJson),
+        'expression-catalog': (200, _catalogJson),
+      });
+      ApiService().expressionFunctionApi.apiClient.dio.httpClientAdapter =
+          adapter;
+
+      await store.dispatchAndWait(ExpressionFunctionDatabaseUpdate());
+      await store.waitAllActions([], completeImmediately: true);
+
+      expect(adapter.paths, contains('GET /project/p1/expression-catalog'));
+      expect(
+        store.state.expressionCatalog?.functions.single.name,
+        'damage_bonus',
+      );
+    },
+  );
+
+  test(
+    'saving a changed body keeps the catalog, as the signature is the same',
+    () async {
+      final store = Store<AppState>(
+        initialState: const AppState(
+          selectedProject: project,
+          expressionFunctions: PaginatedResult<ExpressionFunctionModel>(
+            items: [_function],
+            totalItems: 1,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: 10,
+          ),
+          selectedExpressionFunction: _function,
+          unsavedChanges: NavigationEntry.function,
+        ),
+      );
+      final adapter = _RoutingAdapter({
+        'expression-function/update': (
+          200,
+          {..._functionJson, 'body': 'level * 2', 'comment': 'Boss room'},
+        ),
+        'expression-catalog': (200, _catalogJson),
+      });
+      ApiService().expressionFunctionApi.apiClient.dio.httpClientAdapter =
+          adapter;
+
+      await store.dispatchAndWait(ExpressionFunctionDatabaseUpdate());
+      await store.waitAllActions([], completeImmediately: true);
+
+      expect(
+        adapter.paths,
+        isNot(contains('GET /project/p1/expression-catalog')),
+      );
+      expect(store.state.selectedExpressionFunction?.body, 'level * 2');
+    },
+  );
+
+  test('saving a renamed function reloads the catalog', () async {
+    final store = Store<AppState>(
+      initialState: AppState(
+        selectedProject: project,
+        expressionFunctions: const PaginatedResult<ExpressionFunctionModel>(
+          items: [_function],
+          totalItems: 1,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: 10,
+        ),
+        selectedExpressionFunction: _function.copyWith(name: 'bonus'),
+        unsavedChanges: NavigationEntry.function,
+      ),
+    );
+    final adapter = _RoutingAdapter({
+      'expression-function/update': (200, {..._functionJson, 'name': 'bonus'}),
+      'expression-catalog': (200, _catalogJson),
+    });
+    ApiService().expressionFunctionApi.apiClient.dio.httpClientAdapter =
+        adapter;
+
+    await store.dispatchAndWait(ExpressionFunctionDatabaseUpdate());
+    await store.waitAllActions([], completeImmediately: true);
+
+    expect(adapter.paths, contains('GET /project/p1/expression-catalog'));
+  });
+
+  test('a save is done before the catalog it reloads has answered', () async {
     final store = Store<AppState>(
       initialState: const AppState(
         selectedProject: project,
@@ -154,16 +254,22 @@ void main() {
         unsavedChanges: NavigationEntry.function,
       ),
     );
+    final catalogAnswer = Completer<void>();
     final adapter = _RoutingAdapter({
       'expression-function/update': (200, _functionJson),
       'expression-catalog': (200, _catalogJson),
-    });
+    })..hold = ('expression-catalog', catalogAnswer.future);
     ApiService().expressionFunctionApi.apiClient.dio.httpClientAdapter =
         adapter;
 
     await store.dispatchAndWait(ExpressionFunctionDatabaseUpdate());
 
-    expect(adapter.paths, contains('GET /project/p1/expression-catalog'));
+    expect(store.state.unsavedChanges, isNull);
+    expect(store.state.expressionCatalog, isNull);
+
+    catalogAnswer.complete();
+    await store.waitAllActions([], completeImmediately: true);
+
     expect(
       store.state.expressionCatalog?.functions.single.name,
       'damage_bonus',
