@@ -3,7 +3,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
-import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/expression/expression_general_page.dart';
 import 'package:stelaris/feature/expression/expression_preview.dart';
 import 'package:stelaris/feature/expression/expression_preview_scope.dart';
@@ -42,56 +41,8 @@ class ExpressionDetailPage extends StatefulWidget {
   State<ExpressionDetailPage> createState() => _ExpressionDetailPageState();
 }
 
-class _ExpressionDetailPageState extends State<ExpressionDetailPage> {
-  /// Whether the preview is shown beside the tab pages. Not kept across app
-  /// starts, the app doesn't store settings locally yet.
-  final ValueNotifier<bool> _previewShown = ValueNotifier(true);
-
-  /// The values typed into the preview, shared by every place it is shown.
-  final ValueNotifier<Map<String, String>> _previewOverrides = ValueNotifier(
-    const {},
-  );
-
-  /// The expression the [_previewOverrides] were typed for. Another one starts
-  /// without them.
-  String? _overridesFor;
-
-  /// From this width on there is room for the preview beside the tabs.
-  static const double _previewBreakpoint = 840;
-
-  @override
-  void dispose() {
-    _previewShown.dispose();
-    _previewOverrides.dispose();
-    super.dispose();
-  }
-
-  /// Without room beside the tabs, the preview opens as a bottom sheet.
-  void _openPreviewSheet(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      // The sheet is not below the page, so it gets the scope again and with
-      // it the values typed in.
-      builder: (context) => ExpressionPreviewScope(
-        shown: _previewShown,
-        wide: false,
-        overrides: _previewOverrides,
-        // Above the keyboard, which the preview's inputs bring up.
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            16,
-            0,
-            16,
-            24 + MediaQuery.viewInsetsOf(context).bottom,
-          ),
-          child: const ExpressionPreview(),
-        ),
-      ),
-    );
-  }
-
+class _ExpressionDetailPageState extends State<ExpressionDetailPage>
+    with ExpressionPreviewHost {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ExpressionDetailView>(
@@ -101,28 +52,12 @@ class _ExpressionDetailPageState extends State<ExpressionDetailPage> {
       onInit: (store) => store.dispatch(LoadExpressionCatalogAction()),
       onDispose: (store) =>
           store.dispatch(RemoveSelectedExpression(), notify: false),
-      onInitialBuild: (context, store, vm) => _overridesFor = vm.id,
-      onDidChange: (context, store, vm) {
-        final previous = _overridesFor;
-        _overridesFor = vm.id;
-        // A new expression gets its id on the first save, and is still the
-        // same one.
-        if (vm.id != previous && previous != null) {
-          _previewOverrides.value = const {};
-          return;
-        }
-        // A value typed for a variable since renamed or removed would come
-        // back with a variable of that name again.
-        final typed = _previewOverrides.value;
-        if (typed.keys.every(vm.variableNames.contains)) return;
-        _previewOverrides.value = {
-          for (final entry in typed.entries)
-            if (vm.variableNames.contains(entry.key)) entry.key: entry.value,
-        };
-      },
+      onInitialBuild: (context, store, vm) => startPreviewValues(vm.id),
+      onDidChange: (context, store, vm) =>
+          syncPreviewValues(vm.id, vm.variableNames),
       builder: (context, vm) => LayoutBuilder(
         builder: (context, constraints) {
-          final wide = constraints.maxWidth >= _previewBreakpoint;
+          final wide = constraints.maxWidth >= expressionPreviewBreakpoint;
           // Above the shell, so the header knows the tab and shows the
           // Preview toggle on the General tab only.
           return DefaultTabController(
@@ -131,10 +66,8 @@ class _ExpressionDetailPageState extends State<ExpressionDetailPage> {
             key: ValueKey(requestedTab(context)),
             initialIndex: initialTabIndex(context, ExpressionDetailPage.tabs),
             length: ExpressionDetailPage.tabs.length,
-            child: ExpressionPreviewScope(
-              shown: _previewShown,
+            child: previewScope(
               wide: wide,
-              overrides: _previewOverrides,
               child: Builder(
                 builder: (context) {
                   final tabs = DefaultTabController.of(context);
@@ -146,15 +79,9 @@ class _ExpressionDetailPageState extends State<ExpressionDetailPage> {
                       actions: [
                         if (ExpressionDetailPage.tabs[tabs.index] ==
                             ExpressionDetailPage.generalTab)
-                          ValueListenableBuilder<bool>(
-                            valueListenable: _previewShown,
-                            builder: (context, shown, _) => _PreviewToggle(
-                              wide: wide,
-                              shown: shown,
-                              onPressed: wide
-                                  ? () => _previewShown.value = !shown
-                                  : () => _openPreviewSheet(context),
-                            ),
+                          previewToggle(
+                            wide: wide,
+                            preview: const ExpressionPreview(),
                           ),
                         ModelDetailActions<ExpressionModel>(
                           entry: NavigationEntry.expression,
@@ -198,33 +125,6 @@ class _ExpressionDetailPageState extends State<ExpressionDetailPage> {
           );
         },
       ),
-    );
-  }
-}
-
-/// The header's Preview toggle. Beside the tabs it shows or hides the preview,
-/// and it is selected while the preview is shown. On a narrow screen it opens
-/// the preview as a bottom sheet instead, and is not selected.
-class _PreviewToggle extends StatelessWidget {
-  const _PreviewToggle({
-    required this.wide,
-    required this.shown,
-    required this.onPressed,
-  });
-
-  final bool wide;
-  final bool shown;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final visible = wide && shown;
-    return PageHeaderAction.toggle(
-      key: const Key('expression_preview_toggle'),
-      icon: Icon(visible ? Icons.visibility : Icons.visibility_off),
-      label: context.l10n.expression_preview_title,
-      selected: visible,
-      onPressed: onPressed,
     );
   }
 }
