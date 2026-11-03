@@ -17,17 +17,24 @@ import 'package:stelaris_models/stelaris_models.dart';
 
 /// The detail view reached by tapping an expression in [ExpressionPage].
 ///
-/// Shows the shared [ModelDetailShell] header with its actions, the Preview
-/// toggle among them, and a `TabBar`/`TabBarView` below it. Each tab reads the
-/// selected expression from Redux itself, see [ExpressionGeneralPage] and
-/// [ExpressionVariablesPage]. Other values are tried in the preview.
+/// Shows the shared [ModelDetailShell] header with its actions, and a
+/// `TabBar`/`TabBarView` below it. Each tab reads the selected expression from
+/// Redux itself, see [ExpressionGeneralPage] and [ExpressionVariablesPage].
+/// The preview, where other values are tried, belongs to the General tab, and
+/// so does the Preview toggle among the actions.
 class ExpressionDetailPage extends StatefulWidget {
   const ExpressionDetailPage({super.key});
+
+  /// The tab the preview belongs to.
+  static final DetailTab generalTab = DetailTab(
+    'general',
+    (l10n) => l10n.tab_general,
+  );
 
   /// The tabs in order. Their ids are what `?tab=` and the command palette
   /// refer to.
   static final List<DetailTab> tabs = [
-    DetailTab('general', (l10n) => l10n.tab_general),
+    generalTab,
     DetailTab('variables', (l10n) => l10n.tab_variables),
   ];
 
@@ -71,9 +78,15 @@ class _ExpressionDetailPageState extends State<ExpressionDetailPage> {
         shown: _previewShown,
         wide: false,
         overrides: _previewOverrides,
-        child: const Padding(
-          padding: EdgeInsets.fromLTRB(16, 0, 16, 24),
-          child: ExpressionPreview(),
+        // Above the keyboard, which the preview's inputs bring up.
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            16,
+            0,
+            16,
+            24 + MediaQuery.viewInsetsOf(context).bottom,
+          ),
+          child: const ExpressionPreview(),
         ),
       ),
     );
@@ -91,75 +104,95 @@ class _ExpressionDetailPageState extends State<ExpressionDetailPage> {
       onInitialBuild: (context, store, vm) => _overridesFor = vm.id,
       onDidChange: (context, store, vm) {
         final previous = _overridesFor;
-        if (vm.id == previous) return;
         _overridesFor = vm.id;
         // A new expression gets its id on the first save, and is still the
         // same one.
-        if (previous != null) _previewOverrides.value = const {};
+        if (vm.id != previous && previous != null) {
+          _previewOverrides.value = const {};
+          return;
+        }
+        // A value typed for a variable since renamed or removed would come
+        // back with a variable of that name again.
+        final typed = _previewOverrides.value;
+        if (typed.keys.every(vm.variableNames.contains)) return;
+        _previewOverrides.value = {
+          for (final entry in typed.entries)
+            if (vm.variableNames.contains(entry.key)) entry.key: entry.value,
+        };
       },
       builder: (context, vm) => LayoutBuilder(
         builder: (context, constraints) {
           final wide = constraints.maxWidth >= _previewBreakpoint;
-          return ExpressionPreviewScope(
-            shown: _previewShown,
-            wide: wide,
-            overrides: _previewOverrides,
-            child: ModelDetailShell(
-              entry: NavigationEntry.expression,
-              title: vm.title,
-              actions: [
-                ValueListenableBuilder<bool>(
-                  valueListenable: _previewShown,
-                  builder: (context, shown, _) => _PreviewToggle(
-                    wide: wide,
-                    shown: shown,
-                    onPressed: wide
-                        ? () => _previewShown.value = !shown
-                        : () => _openPreviewSheet(context),
-                  ),
-                ),
-                ModelDetailActions<ExpressionModel>(
-                  entry: NavigationEntry.expression,
-                  selectModel: (state) => state.selectedExpression,
-                  nameSelector: (model) => model.uiName,
-                  keySelector: (model) => '',
-                  // No Delete here: an expression is deleted from the
-                  // overview.
-                  readNotes: (model) => model.comment,
-                ),
-              ],
-              body: DefaultTabController(
-                // Keyed by the requested tab: a new ?tab= on the same route has
-                // to start a new controller, or the old tab would stay selected.
-                key: ValueKey(requestedTab(context)),
-                initialIndex: initialTabIndex(
-                  context,
-                  ExpressionDetailPage.tabs,
-                ),
-                length: ExpressionDetailPage.tabs.length,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ModelDetailTabBar(
-                      tabs: [
-                        for (final tab in ExpressionDetailPage.tabs)
-                          Tab(text: tab.label(context.l10n)),
+          // Above the shell, so the header knows the tab and shows the
+          // Preview toggle on the General tab only.
+          return DefaultTabController(
+            // Keyed by the requested tab: a new ?tab= on the same route has
+            // to start a new controller, or the old tab would stay selected.
+            key: ValueKey(requestedTab(context)),
+            initialIndex: initialTabIndex(context, ExpressionDetailPage.tabs),
+            length: ExpressionDetailPage.tabs.length,
+            child: ExpressionPreviewScope(
+              shown: _previewShown,
+              wide: wide,
+              overrides: _previewOverrides,
+              child: Builder(
+                builder: (context) {
+                  final tabs = DefaultTabController.of(context);
+                  return ListenableBuilder(
+                    listenable: tabs,
+                    builder: (context, body) => ModelDetailShell(
+                      entry: NavigationEntry.expression,
+                      title: vm.title,
+                      actions: [
+                        if (ExpressionDetailPage.tabs[tabs.index] ==
+                            ExpressionDetailPage.generalTab)
+                          ValueListenableBuilder<bool>(
+                            valueListenable: _previewShown,
+                            builder: (context, shown, _) => _PreviewToggle(
+                              wide: wide,
+                              shown: shown,
+                              onPressed: wide
+                                  ? () => _previewShown.value = !shown
+                                  : () => _openPreviewSheet(context),
+                            ),
+                          ),
+                        ModelDetailActions<ExpressionModel>(
+                          entry: NavigationEntry.expression,
+                          selectModel: (state) => state.selectedExpression,
+                          nameSelector: (model) => model.uiName,
+                          keySelector: (model) => '',
+                          // No Delete here: an expression is deleted from the
+                          // overview.
+                          readNotes: (model) => model.comment,
+                        ),
+                      ],
+                      body: body!,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ModelDetailTabBar(
+                          tabs: [
+                            for (final tab in ExpressionDetailPage.tabs)
+                              Tab(text: tab.label(context.l10n)),
+                          ],
+                        ),
+                        // The preview is inside the General page, not beside
+                        // the TabBarView: the page view keeps its width, so a
+                        // tab change while the preview comes or goes does not
+                        // snap to another page.
+                        const Expanded(
+                          child: TabBarView(
+                            children: [
+                              ExpressionGeneralPage(),
+                              ExpressionVariablesPage(),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                    // The preview is inside the General and Variables pages,
-                    // not beside the TabBarView: the page view keeps its
-                    // width, so a tab change while the preview comes or goes
-                    // does not snap to another page.
-                    const Expanded(
-                      child: TabBarView(
-                        children: [
-                          ExpressionGeneralPage(),
-                          ExpressionVariablesPage(),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
             ),
           );
@@ -197,11 +230,15 @@ class _PreviewToggle extends StatelessWidget {
 }
 
 class _ExpressionDetailView extends Vm {
-  _ExpressionDetailView({required this.title, required this.id})
-    : super(equals: [title, id]);
+  _ExpressionDetailView({
+    required this.title,
+    required this.id,
+    required this.variableNames,
+  }) : super(equals: [title, id, ...variableNames]);
 
   final String? title;
   final String? id;
+  final List<String> variableNames;
 }
 
 class _ExpressionDetailFactory
@@ -210,5 +247,9 @@ class _ExpressionDetailFactory
   _ExpressionDetailView fromStore() => _ExpressionDetailView(
     title: state.selectedExpression?.uiName,
     id: state.selectedExpression?.id,
+    variableNames: [
+      for (final variable in state.selectedExpression?.variables ?? const [])
+        variable.name,
+    ],
   );
 }

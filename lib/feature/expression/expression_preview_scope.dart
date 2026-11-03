@@ -2,12 +2,12 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/side_panel_layout.dart';
 import 'package:stelaris/feature/expression/expression_preview.dart';
 
-/// Shares the preview's visibility with the tab pages below a detail page.
+/// Shares the preview's visibility with the General tab below a detail page.
 /// The page owns [shown], which the header's Preview toggle sets, and tells
-/// the pages whether there is room for the preview beside them: [wide] is
-/// false on a narrow screen, where the preview is a bottom sheet instead.
-/// The [overrides] are shared too, so the values typed into one preview stay
-/// when another tab, or the bottom sheet, shows it.
+/// the tab whether there is room for the preview beside it: [wide] is false
+/// on a narrow screen, where the preview is a bottom sheet instead. The
+/// [overrides] are shared too, so the values typed in stay when the preview
+/// is built again, after a tab change or in the bottom sheet.
 class ExpressionPreviewScope extends InheritedWidget {
   const ExpressionPreviewScope({
     required this.shown,
