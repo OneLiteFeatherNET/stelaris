@@ -1,9 +1,12 @@
+import 'dart:ui' show lerpDouble;
+
 import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/navigation_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/base/button/settings_button.dart';
 import 'package:stelaris/util/color_scheme_ext.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -50,6 +53,10 @@ class NavigationSideBar extends StatelessWidget {
             labelType: NavigationRailLabelType.none,
             destinations: _buildNavigationView(context),
             selectedIndex: selectedIndex != -1 ? selectedIndex : 0,
+            // Settings are app-wide rather than a page, so they sit apart
+            // from the destinations at the bottom of the rail.
+            trailingAtBottom: true,
+            trailing: const _RailSettingsButton(),
           ),
         );
       },
@@ -192,6 +199,65 @@ class NavigationSideBar extends StatelessWidget {
         ),
       ),
       label: const SizedBox(width: maxXOffset - 88),
+    );
+  }
+}
+
+/// The settings button at the bottom of the rail: an icon button in the
+/// shape of the rail's indicator pill, in the 80 wide icon column, with a
+/// label that fades in with the other labels. The rail centers its trailing
+/// widget, so the button row takes the width of a destination row to keep
+/// the icon under the destination icons while the rail extends and collapses.
+class _RailSettingsButton extends StatelessWidget {
+  const _RailSettingsButton();
+
+  static const double _iconColumnWidth = 80;
+
+  /// The size of the rail's indicator pill behind a destination icon.
+  static const Size _pillSize = Size(56, 32);
+
+  @override
+  Widget build(BuildContext context) {
+    final animation = NavigationRail.extendedAnimation(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: AnimatedBuilder(
+        animation: animation,
+        builder: (context, child) => SizedBox(
+          width: lerpDouble(_iconColumnWidth, maxXOffset, animation.value),
+          child: child,
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              width: _iconColumnWidth,
+              child: Center(
+                child: SettingsButton(
+                  style: IconButton.styleFrom(
+                    fixedSize: _pillSize,
+                    minimumSize: _pillSize,
+                    padding: EdgeInsets.zero,
+                    shape: const StadiumBorder(),
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              child: FadeTransition(
+                opacity: animation.drive(
+                  CurveTween(curve: const Interval(0.5, 1)),
+                ),
+                child: Text(
+                  context.l10n.settings_title,
+                  style: navigationEntryTextStyle,
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
