@@ -116,10 +116,20 @@ class ExpressionPreviewBeside extends StatelessWidget {
       valueListenable: scope.shown,
       builder: (context, shown, _) => SidePanelLayout(
         shown: shown,
-        content: (context, _) => child,
+        // The scrollbar the scroll behavior adds is inset by the media
+        // query's padding: so it starts level with the content, padded by 16,
+        // and not right below the tab bar. Only the top: the bottom would lift
+        // the horizontal scrollbars of the typeset formula as well.
+        content: (context, _) => MediaQuery(
+          key: const ValueKey('expression_preview_content'),
+          data: MediaQuery.of(context)
+              .copyWith(padding: const EdgeInsets.only(top: 16)),
+          child: child,
+        ),
         panelWidth: (width) => (width * 0.35).clamp(280, 420),
-        // The tab pages pad their content by 16, which is the gap.
-        panelPadding: const EdgeInsets.fromLTRB(0, 16, 16, 16),
+        // The tab pages pad their content by 16, where the scrollbar runs; 8
+        // more keep it off the preview.
+        panelPadding: const EdgeInsets.fromLTRB(8, 16, 16, 16),
         panel: KeyedSubtree(
           key: const ValueKey('expression_preview_slot'),
           child: preview,

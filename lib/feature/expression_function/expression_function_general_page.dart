@@ -9,9 +9,11 @@ import 'package:stelaris/feature/base/edit_card/edit_section_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/feature/expression/expression_formula_field.dart';
+import 'package:stelaris/feature/expression/expression_preview_scope.dart';
 import 'package:stelaris/feature/expression/expression_math_view.dart';
 import 'package:stelaris/feature/expression/expression_tex.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
+import 'package:stelaris/feature/expression_function/expression_function_preview.dart';
 import 'package:stelaris/feature/expression_function/expression_function_stage.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -19,7 +21,8 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// The function's General tab: its signature as edit cards, each changed in
 /// its dialog, and below them its body. A formula's body is edited in place
 /// with the parameters suggested; an interface's body is only an optional
-/// stub the Test tab evaluates.
+/// stub the preview evaluates. The [ExpressionFunctionPreview] is to the
+/// right of it when the detail page shows it.
 ///
 /// The backend's rejection of the last save is shown on the card of the field
 /// it names. The name dialog also checks the identifier, so a bad one cannot
@@ -42,121 +45,125 @@ class ExpressionFunctionGeneralPage extends StatelessWidget {
         void stage(ExpressionFunctionModel changed) =>
             stageExpressionFunction(context, changed);
 
-        return EditCardGrid(
-          sections: [
-            EditSection(
-              title: l10n.expression_function_section_signature,
-              fields: [
-                // No card for the display name: like every model's, it is
-                // fixed once the function is created. The name is the one
-                // formulas call the function by in game.
-                TextEdit(
-                  label: l10n.expression_function_field_name,
-                  icon: Icons.functions,
-                  value: function.name,
-                  footer:
-                      _first(violationsFor(problem, 'name')) ??
-                      l10n.expression_function_field_name_hint,
-                  validator: (value) =>
-                      expressionVariableNamePattern.hasMatch(value ?? '')
-                      ? null
-                      : l10n.expression_function_name_invalid,
-                  onChanged: (value) => stage(function.copyWith(name: value)),
+        return ExpressionPreviewBeside(
+          // The page shows the body itself.
+          preview: const ExpressionFunctionPreview(),
+          child: EditCardGrid(
+            sections: [
+              EditSection(
+                title: l10n.expression_function_section_signature,
+                fields: [
+                  // No card for the display name: like every model's, it is
+                  // fixed once the function is created. The name is the one
+                  // formulas call the function by in game.
+                  TextEdit(
+                    label: l10n.expression_function_field_name,
+                    icon: Icons.functions,
+                    value: function.name,
+                    footer:
+                        _first(violationsFor(problem, 'name')) ??
+                        l10n.expression_function_field_name_hint,
+                    validator: (value) =>
+                        expressionVariableNamePattern.hasMatch(value ?? '')
+                        ? null
+                        : l10n.expression_function_name_invalid,
+                    onChanged: (value) => stage(function.copyWith(name: value)),
+                  ),
+                  ChoiceEdit<ExpressionFunctionKind>(
+                    label: l10n.expression_function_field_kind,
+                    icon: isInterface
+                        ? Icons.integration_instructions_outlined
+                        : Icons.functions,
+                    value: function.kind,
+                    options: ExpressionFunctionKind.values,
+                    display: (kind) => _kindLabel(l10n, kind),
+                    footer: isInterface
+                        ? l10n.expression_function_kind_interface_hint
+                        : l10n.expression_function_kind_formula_hint,
+                    onChanged: (kind) => stage(function.copyWith(kind: kind)),
+                  ),
+                  ChoiceEdit<ExpressionValueType>(
+                    label: l10n.expression_function_field_return_type,
+                    icon: Icons.keyboard_return,
+                    value: function.returnType,
+                    options: ExpressionValueType.values,
+                    display: (type) => _returnTypeLabel(l10n, type),
+                    footer: _first(violationsFor(problem, 'returnType')),
+                    onChanged: (type) =>
+                        stage(function.copyWith(returnType: type)),
+                  ),
+                ],
+              ),
+            ],
+            trailing: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                EditSectionHeading(
+                  title: isInterface
+                      ? l10n.expression_function_section_stub
+                      : l10n.expression_function_section_body,
                 ),
-                ChoiceEdit<ExpressionFunctionKind>(
-                  label: l10n.expression_function_field_kind,
-                  icon: isInterface
-                      ? Icons.integration_instructions_outlined
-                      : Icons.functions,
-                  value: function.kind,
-                  options: ExpressionFunctionKind.values,
-                  display: (kind) => _kindLabel(l10n, kind),
-                  footer: isInterface
-                      ? l10n.expression_function_kind_interface_hint
-                      : l10n.expression_function_kind_formula_hint,
-                  onChanged: (kind) => stage(function.copyWith(kind: kind)),
-                ),
-                ChoiceEdit<ExpressionValueType>(
-                  label: l10n.expression_function_field_return_type,
-                  icon: Icons.keyboard_return,
-                  value: function.returnType,
-                  options: ExpressionValueType.values,
-                  display: (type) => _returnTypeLabel(l10n, type),
-                  footer: _first(violationsFor(problem, 'returnType')),
-                  onChanged: (type) =>
-                      stage(function.copyWith(returnType: type)),
+                const SizedBox(height: 8),
+                EditSectionCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (isInterface) ...[
+                        Text(
+                          l10n.expression_function_stub_hint,
+                          style: theme.textTheme.bodySmall,
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                      // Keyed, so the field keeps its focus and text when the
+                      // section above it changes.
+                      ExpressionFormulaField(
+                        key: const ValueKey('expression_formula_field'),
+                        expression: ExpressionModel(
+                          uiName: function.uiName,
+                          id: function.id,
+                          expression: function.body ?? '',
+                          variables: function.parameters,
+                        ),
+                        catalog: vm.catalog,
+                        onChanged: (value) =>
+                            stage(function.copyWith(body: value)),
+                      ),
+                      // Below the editor, so the line being typed stays put
+                      // while the typeset function grows.
+                      AnimatedSize(
+                        duration: const Duration(milliseconds: 150),
+                        curve: Curves.easeOutCubic,
+                        alignment: AlignmentDirectional.topStart,
+                        child: (function.body ?? '').trim().isEmpty
+                            ? const SizedBox(width: double.infinity)
+                            : Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: ExpressionMathPanel(
+                                  label: l10n.expression_rendered_formula_label,
+                                  child: _FunctionMath(
+                                    function: function,
+                                    catalog: vm.catalog,
+                                    fontSize: ExpressionMathPanel.fontSize,
+                                  ),
+                                ),
+                              ),
+                      ),
+                      for (final message in bodyErrors)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            message,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.error,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ],
-          trailing: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              EditSectionHeading(
-                title: isInterface
-                    ? l10n.expression_function_section_stub
-                    : l10n.expression_function_section_body,
-              ),
-              const SizedBox(height: 8),
-              EditSectionCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (isInterface) ...[
-                      Text(
-                        l10n.expression_function_stub_hint,
-                        style: theme.textTheme.bodySmall,
-                      ),
-                      const SizedBox(height: 8),
-                    ],
-                    // Keyed, so the field keeps its focus and text when the
-                    // section above it changes.
-                    ExpressionFormulaField(
-                      key: const ValueKey('expression_formula_field'),
-                      expression: ExpressionModel(
-                        uiName: function.uiName,
-                        id: function.id,
-                        expression: function.body ?? '',
-                        variables: function.parameters,
-                      ),
-                      catalog: vm.catalog,
-                      onChanged: (value) =>
-                          stage(function.copyWith(body: value)),
-                    ),
-                    // Below the editor, so the line being typed stays put
-                    // while the typeset function grows.
-                    AnimatedSize(
-                      duration: const Duration(milliseconds: 150),
-                      curve: Curves.easeOutCubic,
-                      alignment: AlignmentDirectional.topStart,
-                      child: (function.body ?? '').trim().isEmpty
-                          ? const SizedBox(width: double.infinity)
-                          : Padding(
-                              padding: const EdgeInsets.only(top: 16),
-                              child: ExpressionMathPanel(
-                                label: l10n.expression_rendered_formula_label,
-                                child: _FunctionMath(
-                                  function: function,
-                                  catalog: vm.catalog,
-                                  fontSize: ExpressionMathPanel.fontSize,
-                                ),
-                              ),
-                            ),
-                    ),
-                    for (final message in bodyErrors)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Text(
-                          message,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.error,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
           ),
         );
       },

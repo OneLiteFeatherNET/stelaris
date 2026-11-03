@@ -82,6 +82,7 @@ class ExpressionPreviewPanel extends StatefulWidget {
     this.formula,
     this.variablesTitle,
     this.noVariablesHint,
+    this.emptyHint,
     super.key,
   });
 
@@ -105,6 +106,9 @@ class ExpressionPreviewPanel extends StatefulWidget {
 
   /// Shown when there are no variables, the expression's wording when null.
   final String? noVariablesHint;
+
+  /// Shown as the result while the formula is blank, nothing when null.
+  final String? emptyHint;
 
   @override
   State<ExpressionPreviewPanel> createState() => _ExpressionPreviewPanelState();
@@ -269,7 +273,11 @@ class _ExpressionPreviewPanelState extends State<ExpressionPreviewPanel> {
     final errorStyle = theme.textTheme.bodyMedium?.copyWith(
       color: theme.colorScheme.error,
     );
-    if (request.formula.trim().isEmpty) return const SizedBox.shrink();
+    if (request.formula.trim().isEmpty) {
+      final hint = widget.emptyHint;
+      if (hint == null) return const SizedBox.shrink();
+      return Text(hint, style: theme.textTheme.bodySmall);
+    }
     if (request.missing.isNotEmpty) {
       return Text(
         l10n.expression_preview_missing_values(request.missing.join(', ')),
