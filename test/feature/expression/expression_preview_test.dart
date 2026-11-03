@@ -284,6 +284,120 @@ void main() {
     },
   );
 
+  testWidgets('a value typed in is evaluated with, and marked as not saved', (
+    tester,
+  ) async {
+    final sent = <Map<String, dynamic>>[];
+    await _useFakeBackend(tester, sent);
+    final store = _storeWith(_double);
+    await _pumpPreview(tester, store);
+    await _settle(tester, until: '6');
+
+    await tester.enterText(find.byType(TextField), '5');
+    await tester.pump();
+    expect(find.text(l10n.expression_preview_value_not_saved), findsOneWidget);
+    await pumpUntil(
+      tester,
+      action: () => tester.pump(expressionPreviewDebounce),
+      done: () => sent.length == 2,
+    );
+
+    expect(sent, hasLength(2));
+    expect((sent.last['variables'] as Map)['a'], '5');
+    expect(
+      store.state.selectedExpression?.variables.single.testValue,
+      '3',
+      reason: 'the stored test value stays',
+    );
+  });
+
+  testWidgets('reset brings back the stored test values', (tester) async {
+    final sent = <Map<String, dynamic>>[];
+    await _useFakeBackend(tester, sent);
+    await _pumpPreview(tester, _storeWith(_double));
+    await _settle(tester, until: '6');
+    final reset = find.byKey(const Key('expression_preview_reset'));
+    expect(reset, findsNothing, reason: 'nothing to reset yet');
+
+    await tester.enterText(find.byType(TextField), '5');
+    await tester.pump();
+    await tester.tap(reset);
+    await tester.pump();
+
+    expect(find.text('3'), findsOneWidget);
+    expect(find.text(l10n.expression_preview_value_not_saved), findsNothing);
+    expect(reset, findsNothing);
+    await tester.pump(expressionPreviewDebounce);
+  });
+
+  testWidgets('typing the stored value again is no override', (tester) async {
+    final sent = <Map<String, dynamic>>[];
+    await _useFakeBackend(tester, sent);
+    await _pumpPreview(tester, _storeWith(_double));
+    await _settle(tester, until: '6');
+
+    await tester.enterText(find.byType(TextField), '5');
+    await tester.pump();
+    await tester.enterText(find.byType(TextField), '3');
+    await tester.pump();
+
+    expect(find.text(l10n.expression_preview_value_not_saved), findsNothing);
+    expect(find.byKey(const Key('expression_preview_reset')), findsNothing);
+    await tester.pump(expressionPreviewDebounce);
+  });
+
+  testWidgets('a missing value typed in lets the preview evaluate', (
+    tester,
+  ) async {
+    final sent = <Map<String, dynamic>>[];
+    await _useFakeBackend(tester, sent);
+    await _pumpPreview(
+      tester,
+      _storeWith(
+        const ExpressionModel(
+          uiName: 'Double',
+          id: 'e2',
+          projectId: 'p1',
+          expression: 'a * 2',
+          variables: [ExpressionVariable(name: 'a')],
+        ),
+      ),
+    );
+    await tester.pump(expressionPreviewDebounce);
+    expect(sent, isEmpty);
+
+    await tester.enterText(find.byType(TextField), '3');
+    await tester.pump();
+    await _settle(tester, until: '6');
+
+    expect(sent, hasLength(1));
+  });
+
+  testWidgets('a stored test value changed elsewhere shows in its input', (
+    tester,
+  ) async {
+    final sent = <Map<String, dynamic>>[];
+    await _useFakeBackend(tester, sent);
+    final store = _storeWith(_double);
+    await _pumpPreview(tester, store);
+    await _settle(tester, until: '6');
+
+    await tester.runAsync(
+      () async => store.dispatch(
+        UpdateExpressionAction(
+          _double.copyWith(
+            variables: const [ExpressionVariable(name: 'a', testValue: '7')],
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text('7'), findsOneWidget);
+    expect(find.text(l10n.expression_preview_value_not_saved), findsNothing);
+    await tester.pump(expressionPreviewDebounce);
+  });
+
   testWidgets('a valid formula is shown typeset as math', (tester) async {
     final sent = <Map<String, dynamic>>[];
     await _useFakeBackend(tester, sent);

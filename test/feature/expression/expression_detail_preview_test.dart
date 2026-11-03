@@ -26,6 +26,10 @@ const _narrow = Size(600, 900);
 
 final _previewSlot = find.byKey(const ValueKey('expression_preview_slot'));
 final _previewToggle = find.byKey(const Key('expression_preview_toggle'));
+final _previewInput = find.descendant(
+  of: find.byType(ExpressionPreview),
+  matching: find.byType(TextField),
+);
 
 /// Answers the catalog and the evaluation, so no request leaves the test.
 void _useFakeBackend() {
@@ -112,16 +116,6 @@ void main() {
     expect(find.byType(ExpressionPreview), findsOneWidget);
   });
 
-  testWidgets('the Test tab has no preview beside it', (tester) async {
-    await _pumpDetail(tester, _wide);
-    await _settlePreview(tester);
-
-    await tester.tap(find.text('Test'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(ExpressionPreview), findsNothing);
-  });
-
   testWidgets('the Variables tab shows the preview beside it too', (
     tester,
   ) async {
@@ -157,19 +151,49 @@ void main() {
     expect(tester.widget<PageHeaderAction>(_previewToggle).selected, isFalse);
   });
 
-  testWidgets('the page keeps the Test tab after the preview leaves', (
+  testWidgets('there is no Test tab, the preview takes its place', (
     tester,
   ) async {
     await _pumpDetail(tester, _wide);
     await _settlePreview(tester);
 
-    await tester.tap(find.text('Test'));
+    expect(find.widgetWithText(Tab, 'Test'), findsNothing);
+  });
+
+  testWidgets('a value typed into the preview stays on the Variables tab', (
+    tester,
+  ) async {
+    await _pumpDetail(tester, _wide);
+    await _settlePreview(tester);
+
+    await tester.enterText(_previewInput, '5');
+    await tester.pump();
+    await tester.tap(find.widgetWithText(Tab, 'Variables'));
     await tester.pumpAndSettle();
 
     expect(
-      find.text('Evaluate'),
+      find.descendant(of: _previewSlot, matching: find.text('5')),
       findsOneWidget,
-      reason: 'the tab change must not snap back to an earlier tab',
+    );
+  });
+
+  testWidgets('a value typed in beside the tabs is in the bottom sheet too', (
+    tester,
+  ) async {
+    await _pumpDetail(tester, _wide);
+    await _settlePreview(tester);
+    await tester.enterText(_previewInput, '5');
+    await tester.pump();
+
+    tester.view.physicalSize = _narrow;
+    await tester.pumpAndSettle();
+    await tester.tap(_previewToggle);
+    await tester.pump();
+    await _settlePreview(tester);
+
+    expect(
+      find.descendant(of: find.byType(BottomSheet), matching: find.text('5')),
+      findsOneWidget,
     );
   });
 
