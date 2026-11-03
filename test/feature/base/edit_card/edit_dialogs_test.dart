@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
@@ -168,6 +170,91 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(changes, isEmpty);
+    });
+  });
+
+  group('choice refresh', () {
+    ChoiceEdit<String> refreshable(Future<List<String>> Function() refresh) =>
+        ChoiceEdit<String>(
+          label: 'Frame',
+          icon: Icons.list,
+          value: 'task',
+          options: const ['task', 'goal'],
+          display: (option) => option,
+          onChanged: changes.add,
+          refresh: refresh,
+        );
+
+    testWidgets('has no refresh button without a refresh', (tester) async {
+      await pumpGrid(
+        tester,
+        ChoiceEdit<String>(
+          label: 'Frame',
+          icon: Icons.list,
+          value: 'task',
+          options: const ['task', 'goal'],
+          display: (option) => option,
+          onChanged: changes.add,
+        ),
+      );
+      await open(tester);
+
+      expect(find.byIcon(Icons.refresh), findsNothing);
+    });
+
+    testWidgets('lists the refreshed options', (tester) async {
+      await pumpGrid(
+        tester,
+        refreshable(() async => ['task', 'goal', 'challenge']),
+      );
+      await open(tester);
+      expect(find.widgetWithText(ListTile, 'challenge'), findsNothing);
+
+      await tester.tap(find.byIcon(Icons.refresh));
+      await tester.pumpAndSettle();
+
+      expect(find.widgetWithText(ListTile, 'challenge'), findsOneWidget);
+    });
+
+    testWidgets('shows a spinner while refreshing', (tester) async {
+      final pending = Completer<List<String>>();
+      await pumpGrid(tester, refreshable(() => pending.future));
+      await open(tester);
+
+      await tester.tap(find.byIcon(Icons.refresh));
+      await tester.pump();
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      pending.complete(['task']);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.byIcon(Icons.refresh), findsOneWidget);
+    });
+
+    testWidgets('keeps the options and says so when refreshing fails', (
+      tester,
+    ) async {
+      await pumpGrid(tester, refreshable(() async => throw Exception('down')));
+      await open(tester);
+
+      await tester.tap(find.byIcon(Icons.refresh));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Could not reload the list'), findsOneWidget);
+      expect(find.widgetWithText(ListTile, 'goal'), findsOneWidget);
+    });
+
+    testWidgets('lists nothing after refreshing to no options', (tester) async {
+      await pumpGrid(tester, refreshable(() async => []));
+      await open(tester);
+
+      await tester.tap(find.byIcon(Icons.refresh));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(ListTile), findsNothing);
     });
   });
 
