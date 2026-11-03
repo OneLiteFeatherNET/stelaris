@@ -11,7 +11,9 @@ import 'package:stelaris/api/state/factory/expression/selected_expression_state.
 import 'package:stelaris/feature/base/edit_card/edit_section_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
 import 'package:stelaris/feature/expression/expression_math_view.dart';
+import 'package:stelaris/feature/expression/expression_preview_scope.dart';
 import 'package:stelaris/feature/expression/expression_tex.dart';
+import 'package:stelaris/feature/expression/expression_value_field.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/app_shapes.dart';
@@ -23,13 +25,15 @@ const Duration expressionPreviewDebounce = Duration(milliseconds: 400);
 
 /// The live result of the expression, as the formula is typed: first the value
 /// the backend evaluates it to, then the formula when [showFormula], and the
-/// variables with their test values. Shown beside the General and Variables
-/// tabs on a wide screen, and as a bottom sheet on a narrow one.
+/// variables with their test values. Shown beside the General tab on a wide
+/// screen, and as a bottom sheet on a narrow one.
 ///
-/// Nothing is stored here. The values are the variables' test values, which
-/// the Variables tab edits. A variable without one is not sent: the preview
-/// asks for the values to be given instead.
-class ExpressionPreview extends StatelessWidget {
+/// Nothing is stored here. The values start as the variables' test values,
+/// which the Variables tab edits, and can be changed in the preview to try
+/// others. Those changes are kept in the [ExpressionPreviewScope] above, or in
+/// the preview itself without one, until they are reset. A variable without a
+/// value is not sent: the preview asks for one instead.
+class ExpressionPreview extends StatefulWidget {
   const ExpressionPreview({
     this.debounce = expressionPreviewDebounce,
     this.showFormula = true,
@@ -45,20 +49,52 @@ class ExpressionPreview extends StatelessWidget {
   final Duration debounce;
 
   @override
+  State<ExpressionPreview> createState() => _ExpressionPreviewState();
+}
+
+class _ExpressionPreviewState extends State<ExpressionPreview> {
+  /// The values typed in when no scope is above to keep them.
+  ValueNotifier<Map<String, String>>? _ownOverrides;
+
+  @override
+  void dispose() {
+    _ownOverrides?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final overrides =
+        ExpressionPreviewScope.maybeOf(context)?.overrides ??
+        (_ownOverrides ??= ValueNotifier(const {}));
     return StoreConnector<AppState, SelectedExpressionView>(
       vm: () => SelectedExpressionState(),
       builder: (context, vm) => StoreConnector<AppState, ExpressionCatalog?>(
         converter: (store) => store.state.expressionCatalog,
-        builder: (context, catalog) => _ExpressionPreviewBody(
-          request: _PreviewRequest(
-            projectId: vm.projectId,
-            expression: vm.selected.expression,
-            variables: vm.selected.variables,
-          ),
-          debounce: debounce,
-          catalog: catalog,
-          showFormula: showFormula,
+        builder: (context, catalog) => ValueListenableBuilder(
+          valueListenable: overrides,
+          builder: (context, typed, _) {
+            final variables = vm.selected.variables;
+            // A value typed for a variable since renamed or removed is left
+            // out.
+            final live = {
+              for (final variable in variables)
+                variable.name: ?typed[variable.name],
+            };
+            return _ExpressionPreviewBody(
+              request: _PreviewRequest(
+                projectId: vm.projectId,
+                expression: vm.selected.expression,
+                variables: variables,
+              ).withOverrides(live),
+              variables: variables,
+              overrides: live,
+              onOverridesChanged: (values) => overrides.value = values,
+              debounce: widget.debounce,
+              catalog: catalog,
+              showFormula: widget.showFormula,
+            );
+          },
         ),
       ),
     );
@@ -86,6 +122,29 @@ class _PreviewRequest {
       if (variable.testValue?.trim().isEmpty ?? true) variable.name,
   ];
 
+  /// Whether a test value does not fit the type of its variable.
+  bool get invalid => variables.any(
+    (variable) =>
+        !isExpressionValueValid(variable.type, variable.testValue ?? ''),
+  );
+
+  /// This request with the test values in [overrides] in place of the stored
+  /// ones.
+  _PreviewRequest withOverrides(Map<String, String> overrides) {
+    if (overrides.isEmpty) return this;
+    return _PreviewRequest(
+      projectId: projectId,
+      expression: expression,
+      variables: [
+        for (final variable in variables)
+          if (overrides[variable.name] case final value?)
+            variable.copyWith(testValue: value)
+          else
+            variable,
+      ],
+    );
+  }
+
   @override
   bool operator ==(Object other) =>
       other is _PreviewRequest &&
@@ -101,12 +160,24 @@ class _PreviewRequest {
 class _ExpressionPreviewBody extends StatefulWidget {
   const _ExpressionPreviewBody({
     required this.request,
+    required this.variables,
+    required this.overrides,
+    required this.onOverridesChanged,
     required this.debounce,
     required this.showFormula,
     this.catalog,
   });
 
+  /// What is sent: the formula with the values typed in, or else the stored
+  /// test values.
   final _PreviewRequest request;
+
+  /// The variables with their stored test values.
+  final List<ExpressionVariable> variables;
+
+  /// The values typed in, by the name of a current variable.
+  final Map<String, String> overrides;
+  final ValueChanged<Map<String, String>> onOverridesChanged;
   final Duration debounce;
   final bool showFormula;
 
@@ -167,7 +238,8 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
     final projectId = request.projectId;
     if (projectId == null ||
         request.expression.trim().isEmpty ||
-        request.missing.isNotEmpty) {
+        request.missing.isNotEmpty ||
+        request.invalid) {
       return;
     }
     final evaluation = ++_evaluation;
@@ -235,7 +307,7 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
               ],
             ),
             const SizedBox(height: 16),
-            EditSectionHeading(title: l10n.expression_test_result_label),
+            EditSectionHeading(title: l10n.expression_preview_result_label),
             const SizedBox(height: 8),
             _outcome(context, request),
             if (widget.showFormula) ...[
@@ -244,22 +316,36 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
               const SizedBox(height: 8),
               if (request.expression.trim().isEmpty)
                 Text(
-                  l10n.expression_test_empty_hint,
+                  l10n.expression_preview_empty_hint,
                   style: theme.textTheme.bodySmall,
                 )
               else
                 _formula(request.expression, _tex(request.expression)),
             ],
             const SizedBox(height: 24),
-            EditSectionHeading(title: l10n.expression_test_section_variables),
+            EditSectionHeading(
+              title: l10n.expression_preview_section_variables,
+              trailing: widget.overrides.isEmpty
+                  ? null
+                  : IconButton(
+                      key: const Key('expression_preview_reset'),
+                      tooltip: l10n.expression_preview_reset_values,
+                      icon: const Icon(Icons.restart_alt, size: 20),
+                      onPressed: () => widget.onOverridesChanged(const {}),
+                    ),
+            ),
             const SizedBox(height: 8),
             if (request.variables.isEmpty)
               Text(
-                l10n.expression_test_no_variables,
+                l10n.expression_preview_no_variables,
                 style: theme.textTheme.bodySmall,
               )
             else
-              _VariableList(variables: request.variables),
+              _VariableInputs(
+                variables: widget.variables,
+                overrides: widget.overrides,
+                onChanged: widget.onOverridesChanged,
+              ),
           ],
         ),
       ),
@@ -301,6 +387,8 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
         style: theme.textTheme.bodySmall,
       );
     }
+    // The field that does not fit says so itself.
+    if (request.invalid) return const SizedBox.shrink();
     if (request.projectId == null) {
       return Text(
         l10n.expression_preview_no_project,
@@ -312,7 +400,7 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
       return const Center(child: CircularProgressIndicator());
     }
     if (_failed) {
-      return Text(l10n.expression_test_error, style: errorStyle);
+      return Text(l10n.expression_preview_error, style: errorStyle);
     }
     final rejection = _rejection;
     if (rejection != null) {
@@ -425,63 +513,125 @@ String expressionResultTypeLabel(AppLocalizations l10n, String type) =>
       _ => type,
     };
 
-/// The variables as a compact list, one row each: the type icon and the name
-/// in the color of the variable chips, and the test value at the end. A
-/// variable without a test value says so in place of the value.
-class _VariableList extends StatelessWidget {
-  const _VariableList({required this.variables});
+/// One input per variable, labelled with its name and the icon of its type,
+/// holding the value the preview evaluates with: the stored test value until
+/// another is typed in. A typed value goes to [onChanged] with the others in
+/// [overrides], and is marked as not saved. Typing the stored value again
+/// takes it out.
+class _VariableInputs extends StatefulWidget {
+  const _VariableInputs({
+    required this.variables,
+    required this.overrides,
+    required this.onChanged,
+  });
 
+  /// The variables with their stored test values.
   final List<ExpressionVariable> variables;
+  final Map<String, String> overrides;
+  final ValueChanged<Map<String, String>> onChanged;
+
+  @override
+  State<_VariableInputs> createState() => _VariableInputsState();
+}
+
+class _VariableInputsState extends State<_VariableInputs> {
+  final Map<String, TextEditingController> _inputs = {};
+
+  /// Set while the inputs are matched to the values, so their listeners do
+  /// not take that for typing.
+  bool _syncing = false;
+
+  @override
+  void didUpdateWidget(_VariableInputs oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final names = {for (final variable in widget.variables) variable.name};
+    for (final name in [..._inputs.keys]) {
+      if (names.contains(name)) continue;
+      // Its field is still attached until this build has replaced it.
+      final input = _inputs.remove(name)!;
+      WidgetsBinding.instance.addPostFrameCallback((_) => input.dispose());
+    }
+    // A reset, or a test value changed on the Variables tab, shows here.
+    _syncing = true;
+    for (final variable in widget.variables) {
+      final input = _inputs[variable.name];
+      final value = _valueOf(variable);
+      if (input != null && input.text != value) input.text = value;
+    }
+    _syncing = false;
+  }
+
+  @override
+  void dispose() {
+    for (final input in _inputs.values) {
+      input.dispose();
+    }
+    super.dispose();
+  }
+
+  String _valueOf(ExpressionVariable variable) =>
+      widget.overrides[variable.name] ?? variable.testValue ?? '';
+
+  TextEditingController _inputFor(ExpressionVariable variable) =>
+      _inputs.putIfAbsent(variable.name, () {
+        final input = TextEditingController(text: _valueOf(variable));
+        input.addListener(() => _typed(variable.name, input.text));
+        return input;
+      });
+
+  void _typed(String name, String text) {
+    if (_syncing) return;
+    final variable = widget.variables
+        .where((variable) => variable.name == name)
+        .firstOrNull;
+    if (variable == null) return;
+    final overrides = widget.overrides;
+    final stored = variable.testValue ?? '';
+    if (text == (overrides[name] ?? stored)) return;
+    widget.onChanged({
+      for (final entry in overrides.entries)
+        if (entry.key != name) entry.key: entry.value,
+      if (text != stored) name: text,
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-    const monospace = TextStyle(fontFamily: 'monospace');
+    final colors = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (final variable in variables)
-          Tooltip(
-            message: expressionVariableTypeLabel(l10n, variable.type),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: Row(
-                children: [
-                  Icon(
+        for (final variable in widget.variables)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: ExpressionValueField(
+              // A boolean is picked from a menu that shows its first value
+              // only, so a changed value builds a new one.
+              key: ValueKey((
+                variable.name,
+                variable.type,
+                variable.type == ExpressionValueType.boolean
+                    ? _valueOf(variable)
+                    : null,
+              )),
+              controller: _inputFor(variable),
+              type: variable.type,
+              decoration: InputDecoration(
+                isDense: true,
+                labelText: variable.name,
+                hintText: l10n.expression_variable_no_test_value,
+                helperText: widget.overrides.containsKey(variable.name)
+                    ? l10n.expression_preview_value_not_saved
+                    : null,
+                prefixIcon: Tooltip(
+                  message: expressionVariableTypeLabel(l10n, variable.type),
+                  child: Icon(
                     expressionVariableTypeIcon(variable.type),
                     size: 18,
                     color: colors.tertiary,
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      variable.name,
-                      overflow: TextOverflow.ellipsis,
-                      style: monospace.copyWith(
-                        color: colors.tertiary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  if (variable.testValue?.trim().isEmpty ?? true)
-                    Text(
-                      l10n.expression_variable_no_test_value,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colors.onSurfaceVariant,
-                      ),
-                    )
-                  else
-                    Flexible(
-                      child: SelectableText(
-                        variable.testValue!,
-                        maxLines: 1,
-                        style: monospace,
-                      ),
-                    ),
-                ],
+                ),
               ),
             ),
           ),

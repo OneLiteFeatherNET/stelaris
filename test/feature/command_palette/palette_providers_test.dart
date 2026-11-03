@@ -366,7 +366,6 @@ void main() {
       expect(childrenOf('Damage Formula', everyKind), [
         'General',
         'Variables',
-        'Test',
         'Delete\u2026',
       ]);
       expect(childrenOf('Quest Done', everyKind), ['Delete\u2026']);

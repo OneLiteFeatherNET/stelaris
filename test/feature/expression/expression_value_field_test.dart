@@ -2,7 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/expression/expression_test_page.dart';
+import 'package:stelaris/feature/expression/expression_preview.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -12,7 +12,7 @@ import '../../support/pump_in_app.dart';
 void main() {
   final AppLocalizations l10n = lookupAppLocalizations(const Locale('en'));
 
-  Future<void> pumpTestPage(
+  Future<void> pumpPreview(
     WidgetTester tester,
     List<ExpressionVariable> variables,
   ) => pumpInApp(
@@ -28,13 +28,13 @@ void main() {
         ),
       ),
     ),
-    const ExpressionTestPage(),
+    const ExpressionPreview(),
   );
 
-  testWidgets('a number variable on the test tab takes no letters', (
+  testWidgets('a number variable in the preview takes no letters', (
     tester,
   ) async {
-    await pumpTestPage(tester, const [ExpressionVariable(name: 'a')]);
+    await pumpPreview(tester, const [ExpressionVariable(name: 'a')]);
 
     await tester.enterText(find.byType(TextFormField), 'abc');
     await tester.pump();
@@ -43,26 +43,26 @@ void main() {
     await tester.enterText(find.byType(TextFormField), '-1.5');
     await tester.pump();
     expect(find.text('-1.5'), findsOneWidget);
+    await tester.pump(expressionPreviewDebounce);
   });
 
-  testWidgets('a string variable on the test tab takes letters', (
-    tester,
-  ) async {
-    await pumpTestPage(tester, const [
+  testWidgets('a string variable in the preview takes letters', (tester) async {
+    await pumpPreview(tester, const [
       ExpressionVariable(name: 'a', type: ExpressionValueType.string),
     ]);
 
     await tester.enterText(find.byType(TextFormField), 'abc');
     await tester.pump();
     expect(find.text('abc'), findsOneWidget);
+    await tester.pump(expressionPreviewDebounce);
   });
 
   testWidgets('a stored invalid number blocks the evaluation', (tester) async {
-    await pumpTestPage(tester, const [
+    await pumpPreview(tester, const [
       ExpressionVariable(name: 'a', testValue: 'abc'),
     ]);
 
-    await tester.tap(find.text('Evaluate'));
+    await tester.pump(expressionPreviewDebounce);
     await tester.pump();
 
     expect(find.text(l10n.validation_number_invalid), findsOneWidget);

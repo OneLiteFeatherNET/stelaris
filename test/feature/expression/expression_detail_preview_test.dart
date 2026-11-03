@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/expression/expression_detail_page.dart';
@@ -26,6 +27,10 @@ const _narrow = Size(600, 900);
 
 final _previewSlot = find.byKey(const ValueKey('expression_preview_slot'));
 final _previewToggle = find.byKey(const Key('expression_preview_toggle'));
+final _previewInput = find.descendant(
+  of: find.byType(ExpressionPreview),
+  matching: find.byType(TextField),
+);
 
 /// Answers the catalog and the evaluation, so no request leaves the test.
 void _useFakeBackend() {
@@ -41,7 +46,7 @@ void _useFakeBackend() {
       });
 }
 
-Future<void> _pumpDetail(WidgetTester tester, Size size) async {
+Future<Store<AppState>> _pumpDetail(WidgetTester tester, Size size) async {
   tester.view
     ..physicalSize = size
     ..devicePixelRatio = 1;
@@ -73,6 +78,7 @@ Future<void> _pumpDetail(WidgetTester tester, Size size) async {
     ),
   );
   await tester.pump();
+  return store;
 }
 
 /// Fires the preview's debounce and waits for its result to show. The
@@ -112,17 +118,7 @@ void main() {
     expect(find.byType(ExpressionPreview), findsOneWidget);
   });
 
-  testWidgets('the Test tab has no preview beside it', (tester) async {
-    await _pumpDetail(tester, _wide);
-    await _settlePreview(tester);
-
-    await tester.tap(find.text('Test'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(ExpressionPreview), findsNothing);
-  });
-
-  testWidgets('the Variables tab shows the preview beside it too', (
+  testWidgets('the Variables tab has no preview and no Preview toggle', (
     tester,
   ) async {
     await _pumpDetail(tester, _wide);
@@ -131,7 +127,13 @@ void main() {
     await tester.tap(find.widgetWithText(Tab, 'Variables'));
     await tester.pumpAndSettle();
 
-    expect(_previewSlot, findsOneWidget);
+    expect(find.byType(ExpressionPreview), findsNothing);
+    expect(_previewToggle, findsNothing);
+
+    await tester.tap(find.widgetWithText(Tab, 'General'));
+    await tester.pumpAndSettle();
+    expect(_previewToggle, findsOneWidget, reason: 'back on General');
+    await _settlePreview(tester);
   });
 
   testWidgets('the preview toggle is not in the tab bar row', (tester) async {
@@ -157,19 +159,84 @@ void main() {
     expect(tester.widget<PageHeaderAction>(_previewToggle).selected, isFalse);
   });
 
-  testWidgets('the page keeps the Test tab after the preview leaves', (
+  testWidgets('there is no Test tab, the preview takes its place', (
     tester,
   ) async {
     await _pumpDetail(tester, _wide);
     await _settlePreview(tester);
 
-    await tester.tap(find.text('Test'));
+    expect(find.widgetWithText(Tab, 'Test'), findsNothing);
+  });
+
+  testWidgets('a value typed into the preview stays across a tab change', (
+    tester,
+  ) async {
+    await _pumpDetail(tester, _wide);
+    await _settlePreview(tester);
+
+    await tester.enterText(_previewInput, '5');
+    await tester.pump();
+    await tester.tap(find.widgetWithText(Tab, 'Variables'));
     await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(Tab, 'General'));
+    await tester.pumpAndSettle();
+    await _settlePreview(tester);
 
     expect(
-      find.text('Evaluate'),
+      find.descendant(of: _previewSlot, matching: find.text('5')),
       findsOneWidget,
-      reason: 'the tab change must not snap back to an earlier tab',
+    );
+  });
+
+  testWidgets('a value typed for a renamed variable does not come back', (
+    tester,
+  ) async {
+    final store = await _pumpDetail(tester, _wide);
+    await _settlePreview(tester);
+    await tester.enterText(_previewInput, '5');
+    await tester.pump();
+
+    Future<void> rename(String name) async {
+      await tester.runAsync(
+        () async => store.dispatch(
+          UpdateExpressionAction(
+            _double.copyWith(
+              variables: [ExpressionVariable(name: name, testValue: '3')],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    await rename('b');
+    await rename('a');
+    await _settlePreview(tester);
+
+    expect(
+      find.descendant(of: _previewSlot, matching: find.text('3')),
+      findsOneWidget,
+      reason: 'the stored test value, not the one typed before',
+    );
+  });
+
+  testWidgets('a value typed in beside the tabs is in the bottom sheet too', (
+    tester,
+  ) async {
+    await _pumpDetail(tester, _wide);
+    await _settlePreview(tester);
+    await tester.enterText(_previewInput, '5');
+    await tester.pump();
+
+    tester.view.physicalSize = _narrow;
+    await tester.pumpAndSettle();
+    await tester.tap(_previewToggle);
+    await tester.pump();
+    await _settlePreview(tester);
+
+    expect(
+      find.descendant(of: find.byType(BottomSheet), matching: find.text('5')),
+      findsOneWidget,
     );
   });
 
