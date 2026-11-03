@@ -234,9 +234,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tab_variables => 'Variables';
 
   @override
-  String get tab_test => 'Test';
-
-  @override
   String get card_material => 'Material';
 
   @override
@@ -807,7 +804,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get expression_function_stub_hint =>
-      'An interface is implemented by the game runtime. The stub is only evaluated on the Test tab in Stelaris and is not part of the generated interface.';
+      'An interface is implemented by the game runtime. The stub is only evaluated in the preview in Stelaris and is not part of the generated interface.';
 
   @override
   String get expression_function_field_name => 'Name';
@@ -866,40 +863,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add a parameter for each value the function takes.';
 
   @override
-  String get expression_function_test_section_body => 'Body';
+  String get expression_function_preview_parameters => 'Parameters';
 
   @override
-  String get expression_function_test_no_body =>
-      'This function has no body to evaluate.';
-
-  @override
-  String get expression_function_test_section_parameters => 'Parameters';
-
-  @override
-  String get expression_function_test_no_parameters =>
+  String get expression_function_preview_no_parameters =>
       'This function takes no parameters.';
 
   @override
-  String get expression_function_test_evaluate => 'Evaluate';
+  String get expression_function_preview_empty_hint =>
+      'Write a body to see its result.';
 
   @override
-  String get expression_function_test_empty_hint =>
-      'Write a formula on the General tab to evaluate it.';
-
-  @override
-  String get expression_function_test_interface_hint =>
-      'The game runtime implements this function. A test stub on the General tab lets it be evaluated here.';
-
-  @override
-  String get expression_function_test_result_label => 'Result';
-
-  @override
-  String get expression_function_test_rejected =>
-      'The function or an argument was rejected';
-
-  @override
-  String get expression_function_test_error =>
-      'The function could not be evaluated. Try again.';
+  String get expression_function_preview_interface_hint =>
+      'The game runtime implements this function. Write a test stub to try it here.';
 
   @override
   String get expression_function_interface_formula_header =>
@@ -925,11 +901,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get expression_function_interface_retry => 'Try again';
-
-  @override
-  String expression_function_test_result_type(String type) {
-    return 'Type: $type';
-  }
 
   @override
   String get expression_variable_unused => 'Not used in the formula';

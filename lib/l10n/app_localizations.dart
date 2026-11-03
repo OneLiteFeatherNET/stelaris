@@ -508,12 +508,6 @@ abstract class AppLocalizations {
   /// **'Variables'**
   String get tab_variables;
 
-  /// No description provided for @tab_test.
-  ///
-  /// In en, this message translates to:
-  /// **'Test'**
-  String get tab_test;
-
   /// No description provided for @card_material.
   ///
   /// In en, this message translates to:
@@ -1555,7 +1549,7 @@ abstract class AppLocalizations {
   /// No description provided for @expression_function_stub_hint.
   ///
   /// In en, this message translates to:
-  /// **'An interface is implemented by the game runtime. The stub is only evaluated on the Test tab in Stelaris and is not part of the generated interface.'**
+  /// **'An interface is implemented by the game runtime. The stub is only evaluated in the preview in Stelaris and is not part of the generated interface.'**
   String get expression_function_stub_hint;
 
   /// No description provided for @expression_function_field_name.
@@ -1660,65 +1654,29 @@ abstract class AppLocalizations {
   /// **'Add a parameter for each value the function takes.'**
   String get expression_function_parameters_empty_subheader;
 
-  /// No description provided for @expression_function_test_section_body.
-  ///
-  /// In en, this message translates to:
-  /// **'Body'**
-  String get expression_function_test_section_body;
-
-  /// No description provided for @expression_function_test_no_body.
-  ///
-  /// In en, this message translates to:
-  /// **'This function has no body to evaluate.'**
-  String get expression_function_test_no_body;
-
-  /// No description provided for @expression_function_test_section_parameters.
+  /// No description provided for @expression_function_preview_parameters.
   ///
   /// In en, this message translates to:
   /// **'Parameters'**
-  String get expression_function_test_section_parameters;
+  String get expression_function_preview_parameters;
 
-  /// No description provided for @expression_function_test_no_parameters.
+  /// No description provided for @expression_function_preview_no_parameters.
   ///
   /// In en, this message translates to:
   /// **'This function takes no parameters.'**
-  String get expression_function_test_no_parameters;
+  String get expression_function_preview_no_parameters;
 
-  /// No description provided for @expression_function_test_evaluate.
+  /// No description provided for @expression_function_preview_empty_hint.
   ///
   /// In en, this message translates to:
-  /// **'Evaluate'**
-  String get expression_function_test_evaluate;
+  /// **'Write a body to see its result.'**
+  String get expression_function_preview_empty_hint;
 
-  /// No description provided for @expression_function_test_empty_hint.
+  /// No description provided for @expression_function_preview_interface_hint.
   ///
   /// In en, this message translates to:
-  /// **'Write a formula on the General tab to evaluate it.'**
-  String get expression_function_test_empty_hint;
-
-  /// No description provided for @expression_function_test_interface_hint.
-  ///
-  /// In en, this message translates to:
-  /// **'The game runtime implements this function. A test stub on the General tab lets it be evaluated here.'**
-  String get expression_function_test_interface_hint;
-
-  /// No description provided for @expression_function_test_result_label.
-  ///
-  /// In en, this message translates to:
-  /// **'Result'**
-  String get expression_function_test_result_label;
-
-  /// No description provided for @expression_function_test_rejected.
-  ///
-  /// In en, this message translates to:
-  /// **'The function or an argument was rejected'**
-  String get expression_function_test_rejected;
-
-  /// No description provided for @expression_function_test_error.
-  ///
-  /// In en, this message translates to:
-  /// **'The function could not be evaluated. Try again.'**
-  String get expression_function_test_error;
+  /// **'The game runtime implements this function. Write a test stub to try it here.'**
+  String get expression_function_preview_interface_hint;
 
   /// No description provided for @expression_function_interface_formula_header.
   ///
@@ -1761,12 +1719,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try again'**
   String get expression_function_interface_retry;
-
-  /// No description provided for @expression_function_test_result_type.
-  ///
-  /// In en, this message translates to:
-  /// **'Type: {type}'**
-  String expression_function_test_result_type(String type);
 
   /// No description provided for @expression_variable_unused.
   ///
