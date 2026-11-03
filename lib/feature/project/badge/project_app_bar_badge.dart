@@ -2,7 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/project/badge/project_labor_badge.dart';
-import 'package:stelaris/feature/settings/settings_dialog.dart';
+import 'package:stelaris/feature/project/dialog/project_choice.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/app_shapes.dart';
@@ -15,23 +15,26 @@ class ProjectAppBarBadge extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return StoreConnector<AppState, Project?>(
-      converter: (store) => store.state.selectedProject,
-      builder: (context, project) {
+    return StoreConnector<AppState, (List<Project>, Project?)>(
+      converter: (store) => (store.state.projects, store.state.selectedProject),
+      builder: (context, state) {
+        final (projects, project) = state;
         if (project == null) return const SizedBox.shrink();
 
         return Tooltip(
-          message: context.l10n.project_badge_tooltip(project.displayName, project.key),
+          message: context.l10n.project_badge_tooltip,
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(AppShapes.full),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => const SettingsDialog(),
-                );
-              },
+              // Opens the choice of another project, which confirms a switch.
+              onTap: projects.isEmpty
+                  ? null
+                  : () => projectChoice(
+                      context,
+                      projects: projects,
+                      current: project,
+                    ).pick(context),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(

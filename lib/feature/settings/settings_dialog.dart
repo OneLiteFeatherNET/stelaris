@@ -4,7 +4,6 @@ import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/settings/rows/account_settings_row.dart';
 import 'package:stelaris/feature/settings/rows/accessibility_settings_row.dart';
 import 'package:stelaris/feature/settings/rows/misc_settings_row.dart';
-import 'package:stelaris/feature/settings/rows/project_settings_row.dart';
 import 'package:stelaris/feature/settings/rows/theme_settings_row.dart';
 import 'package:stelaris/feature/settings/settings_end_tile.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -29,7 +28,6 @@ class SettingsDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const AccountSettingsRow(),
-          const ProjectSettingsRow(),
           const ThemeSettingsRow(),
           const AccessibilitySettingsRow(),
           const MiscSettingsRow(),

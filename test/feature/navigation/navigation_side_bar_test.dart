@@ -133,6 +133,9 @@ void main() {
     const railTestWidth = 1200.0;
     const railTestHeight = 800.0;
 
+    // The settings button at the bottom of the rail shares the icon column.
+    final iconOwners = [...railDisplays, 'Settings'];
+
     List<double> iconCentersX(WidgetTester tester) {
       return [
         for (final icon in tester.widgetList<Icon>(
@@ -160,8 +163,8 @@ void main() {
         final extendedCenters = iconCentersX(tester);
         expect(
           extendedCenters,
-          hasLength(railDisplays.length),
-          reason: 'expected one icon per navigation destination',
+          hasLength(iconOwners.length),
+          reason: 'expected one icon per destination and one for settings',
         );
         final extendedColumn = extendedCenters.first;
         for (final (index, dx) in extendedCenters.indexed) {
@@ -169,7 +172,7 @@ void main() {
             dx,
             closeTo(extendedColumn, 0.5),
             reason:
-                'extended: icon of ${railDisplays[index]} is at x=$dx '
+                'extended: icon of ${iconOwners[index]} is at x=$dx '
                 'but the first icon is at x=$extendedColumn',
           );
         }
@@ -191,7 +194,7 @@ void main() {
             dx,
             closeTo(extendedColumn, 0.5),
             reason:
-                'mid-animation: icon of ${railDisplays[index]} moved to x=$dx '
+                'mid-animation: icon of ${iconOwners[index]} moved to x=$dx '
                 'instead of staying in the column at x=$extendedColumn',
           );
         }
@@ -208,7 +211,7 @@ void main() {
             dx,
             closeTo(extendedColumn, 0.5),
             reason:
-                'collapsed: icon of ${railDisplays[index]} is at x=$dx '
+                'collapsed: icon of ${iconOwners[index]} is at x=$dx '
                 'but the extended column is at x=$extendedColumn',
           );
         }

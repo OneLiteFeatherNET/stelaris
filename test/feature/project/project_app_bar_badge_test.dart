@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/project/badge/project_app_bar_badge.dart';
+import 'package:stelaris/feature/settings/settings_dialog.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 
@@ -62,6 +63,45 @@ void main() {
       expect(find.text('My Project'), findsOneWidget);
       expect(find.text('Labor'), findsOneWidget);
       expect(find.byIcon(Icons.folder_outlined), findsOneWidget);
+    });
+    testWidgets('opens the project choice instead of the settings', (
+      tester,
+    ) async {
+      const project = Project(
+        id: 'a',
+        displayName: 'My Project',
+        key: 'my_project',
+      );
+      const other = Project(id: 'b', displayName: 'Other', key: 'other');
+
+      final store = Store<AppState>(
+        initialState: const AppState(
+          projects: [project, other],
+          selectedProject: project,
+        ),
+      );
+
+      await tester.pumpWidget(
+        StoreProvider<AppState>(
+          store: store,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              appBar: PreferredSize(
+                preferredSize: Size.fromHeight(56),
+                child: ProjectAppBarBadge(),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('My Project'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SettingsDialog), findsNothing);
+      expect(find.text('Other (other)'), findsOneWidget);
     });
   });
 }

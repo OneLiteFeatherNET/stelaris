@@ -200,18 +200,6 @@ void main() {
     });
   });
 
-  group('SetProjectsAction', () {
-    test('replaces local projects list', () {
-      const p1 = Project(id: 'p1', displayName: 'P1', key: 'k1');
-      const p2 = Project(id: 'p2', displayName: 'P2', key: 'k2');
-
-      final store = Store<AppState>(initialState: const AppState());
-      store.dispatchSync(SetProjectsAction([p1, p2]));
-
-      expect(store.state.projects, [p1, p2]);
-    });
-  });
-
   group('RemoveProjectAction', () {
     test(
       'removes project from list and unselects if currently selected',

@@ -158,18 +158,6 @@ class UpdateProjectAction extends ReduxAction<AppState> with NonReentrant {
   }
 }
 
-/// Action to replace the list of available projects locally.
-class SetProjectsAction extends ReduxAction<AppState> {
-  final List<Project> projects;
-
-  SetProjectsAction(this.projects);
-
-  @override
-  AppState reduce() {
-    return state.copyWith(projects: projects);
-  }
-}
-
 /// Action to remove a project from the backend API and state.
 class RemoveProjectAction extends ReduxAction<AppState> with NonReentrant {
   final Project project;

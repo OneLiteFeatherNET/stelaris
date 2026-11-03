@@ -225,9 +225,7 @@
   "dialog_project_docu_url": "Documentation URL",
   "dialog_project_labor": "Labor / Experimental",
   "dialog_project_create_button": "Create",
-  "settings_project_title": "Project",
-  "settings_project_active_title": "Active Project",
-  "settings_project_empty": "No projects yet",
+  "project_choice_title": "Active Project",
   "dialog_project_switch_title": "Switch project?",
   "dialog_project_switch_hint": "Loaded items, fonts, advancements, attributes, sound events and expressions will be reset.",
   "dialog_project_switch_confirm": "Switch project",
@@ -782,17 +780,7 @@
   "validation_commit_length": "The commit must contain 10 characters",
   "project_description_hint": "Brief description of the project",
   "project_labor_toggle": "Mark as laboratory / experimental project",
-  "project_badge_tooltip": "Project: {name} ({key})\nClick to open settings",
-  "@project_badge_tooltip": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "key": {
-        "type": "String"
-      }
-    }
-  },
+  "project_badge_tooltip": "Click to switch project",
   "project_labor_badge": "Labor",
   "build_service_unavailable": "Service unavailable",
   "build_release_version": "Build: {version}",
