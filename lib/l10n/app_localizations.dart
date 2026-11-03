@@ -1036,23 +1036,11 @@ abstract class AppLocalizations {
   /// **'Create'**
   String get dialog_project_create_button;
 
-  /// No description provided for @settings_project_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Project'**
-  String get settings_project_title;
-
   /// No description provided for @settings_project_active_title.
   ///
   /// In en, this message translates to:
   /// **'Active Project'**
   String get settings_project_active_title;
-
-  /// No description provided for @settings_project_empty.
-  ///
-  /// In en, this message translates to:
-  /// **'No projects yet'**
-  String get settings_project_empty;
 
   /// No description provided for @dialog_project_switch_title.
   ///
@@ -3001,8 +2989,8 @@ abstract class AppLocalizations {
   /// No description provided for @project_badge_tooltip.
   ///
   /// In en, this message translates to:
-  /// **'Project: {name} ({key})\nClick to open settings'**
-  String project_badge_tooltip(String name, String key);
+  /// **'Click to switch project'**
+  String get project_badge_tooltip;
 
   /// No description provided for @project_labor_badge.
   ///

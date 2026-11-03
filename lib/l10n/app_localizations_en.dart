@@ -517,13 +517,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_project_create_button => 'Create';
 
   @override
-  String get settings_project_title => 'Project';
-
-  @override
   String get settings_project_active_title => 'Active Project';
-
-  @override
-  String get settings_project_empty => 'No projects yet';
 
   @override
   String get dialog_project_switch_title => 'Switch project?';
@@ -1622,9 +1616,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Mark as laboratory / experimental project';
 
   @override
-  String project_badge_tooltip(String name, String key) {
-    return 'Project: $name ($key)\nClick to open settings';
-  }
+  String get project_badge_tooltip => 'Click to switch project';
 
   @override
   String get project_labor_badge => 'Labor';
