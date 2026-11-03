@@ -1438,35 +1438,35 @@ abstract class AppLocalizations {
   /// **'No test value'**
   String get expression_variable_no_test_value;
 
-  /// No description provided for @expression_test_section_variables.
+  /// No description provided for @expression_preview_section_variables.
   ///
   /// In en, this message translates to:
   /// **'Variables'**
-  String get expression_test_section_variables;
+  String get expression_preview_section_variables;
 
-  /// No description provided for @expression_test_no_variables.
+  /// No description provided for @expression_preview_no_variables.
   ///
   /// In en, this message translates to:
   /// **'This expression reads no variables.'**
-  String get expression_test_no_variables;
+  String get expression_preview_no_variables;
 
-  /// No description provided for @expression_test_empty_hint.
+  /// No description provided for @expression_preview_empty_hint.
   ///
   /// In en, this message translates to:
   /// **'Write an expression on the General tab to evaluate it.'**
-  String get expression_test_empty_hint;
+  String get expression_preview_empty_hint;
 
-  /// No description provided for @expression_test_result_label.
+  /// No description provided for @expression_preview_result_label.
   ///
   /// In en, this message translates to:
   /// **'Result'**
-  String get expression_test_result_label;
+  String get expression_preview_result_label;
 
-  /// No description provided for @expression_test_error.
+  /// No description provided for @expression_preview_error.
   ///
   /// In en, this message translates to:
   /// **'The expression could not be evaluated. Try again.'**
-  String get expression_test_error;
+  String get expression_preview_error;
 
   /// No description provided for @expression_validation_valid.
   ///

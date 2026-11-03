@@ -742,21 +742,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expression_variable_no_test_value => 'No test value';
 
   @override
-  String get expression_test_section_variables => 'Variables';
+  String get expression_preview_section_variables => 'Variables';
 
   @override
-  String get expression_test_no_variables =>
+  String get expression_preview_no_variables =>
       'This expression reads no variables.';
 
   @override
-  String get expression_test_empty_hint =>
+  String get expression_preview_empty_hint =>
       'Write an expression on the General tab to evaluate it.';
 
   @override
-  String get expression_test_result_label => 'Result';
+  String get expression_preview_result_label => 'Result';
 
   @override
-  String get expression_test_error =>
+  String get expression_preview_error =>
       'The expression could not be evaluated. Try again.';
 
   @override

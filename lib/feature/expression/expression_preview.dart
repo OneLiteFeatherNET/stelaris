@@ -307,7 +307,7 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
               ],
             ),
             const SizedBox(height: 16),
-            EditSectionHeading(title: l10n.expression_test_result_label),
+            EditSectionHeading(title: l10n.expression_preview_result_label),
             const SizedBox(height: 8),
             _outcome(context, request),
             if (widget.showFormula) ...[
@@ -316,7 +316,7 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
               const SizedBox(height: 8),
               if (request.expression.trim().isEmpty)
                 Text(
-                  l10n.expression_test_empty_hint,
+                  l10n.expression_preview_empty_hint,
                   style: theme.textTheme.bodySmall,
                 )
               else
@@ -324,7 +324,7 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
             ],
             const SizedBox(height: 24),
             EditSectionHeading(
-              title: l10n.expression_test_section_variables,
+              title: l10n.expression_preview_section_variables,
               trailing: widget.overrides.isEmpty
                   ? null
                   : IconButton(
@@ -337,7 +337,7 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
             const SizedBox(height: 8),
             if (request.variables.isEmpty)
               Text(
-                l10n.expression_test_no_variables,
+                l10n.expression_preview_no_variables,
                 style: theme.textTheme.bodySmall,
               )
             else
@@ -400,7 +400,7 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
       return const Center(child: CircularProgressIndicator());
     }
     if (_failed) {
-      return Text(l10n.expression_test_error, style: errorStyle);
+      return Text(l10n.expression_preview_error, style: errorStyle);
     }
     final rejection = _rejection;
     if (rejection != null) {
