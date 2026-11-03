@@ -209,9 +209,9 @@ void main() {
     );
     await _pumpPreview(tester, _storeWith(_double));
 
-    await _settle(tester, until: l10n.expression_test_error);
+    await _settle(tester, until: l10n.expression_preview_error);
 
-    expect(find.text(l10n.expression_test_error), findsOneWidget);
+    expect(find.text(l10n.expression_preview_error), findsOneWidget);
   });
 
   testWidgets(
