@@ -398,6 +398,34 @@ void main() {
     await tester.pump(expressionPreviewDebounce);
   });
 
+  testWidgets('a value typed for a renamed variable is left out', (
+    tester,
+  ) async {
+    final sent = <Map<String, dynamic>>[];
+    await _useFakeBackend(tester, sent);
+    final store = _storeWith(_double);
+    await _pumpPreview(tester, store);
+    await _settle(tester, until: '6');
+    await tester.enterText(find.byType(TextField), '5');
+    await tester.pump();
+
+    await tester.runAsync(
+      () async => store.dispatch(
+        UpdateExpressionAction(
+          _double.copyWith(
+            expression: 'b * 2',
+            variables: const [ExpressionVariable(name: 'b', testValue: '3')],
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text('3'), findsOneWidget, reason: 'its stored test value');
+    expect(find.byKey(const Key('expression_preview_reset')), findsNothing);
+    await tester.pump(expressionPreviewDebounce);
+  });
+
   testWidgets('a valid formula is shown typeset as math', (tester) async {
     final sent = <Map<String, dynamic>>[];
     await _useFakeBackend(tester, sent);
