@@ -7,7 +7,7 @@ version: 1.9.0 # x-release-please-version
 
 environment:
   sdk: ">=3.13.7 <4.0.0"
-  flutter: "^3.47.8"
+  flutter: "^3.47.9"
 
 dependencies:
   flutter:

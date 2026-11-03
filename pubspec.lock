@@ -1069,11 +1069,9 @@ packages:
   stelaris_models:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: ee54d76c0b68d3d546b5dfac55f16b93927721fd
-      url: "https://github.com/OneLiteFeatherNET/stelaris-model.git"
-    source: git
+      path: "../stelaris-model"
+      relative: true
+    source: path
     version: "0.0.1"
   stream_channel:
     dependency: transitive
@@ -1342,4 +1340,4 @@ packages:
     version: "3.1.4"
 sdks:
   dart: ">=3.13.7 <4.0.0"
-  flutter: ">=3.47.8 <4.0.0"
+  flutter: ">=3.47.9 <4.0.0"
