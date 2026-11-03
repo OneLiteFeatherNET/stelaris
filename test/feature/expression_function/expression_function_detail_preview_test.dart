@@ -107,6 +107,32 @@ void main() {
     expect(find.widgetWithText(Tab, 'Test'), findsNothing);
   });
 
+  testWidgets(
+    'the scrollbar beside the preview starts level with the content',
+    (tester) async {
+      await _pumpDetail(tester, _wide);
+      await _settlePreview(tester);
+
+      final pageScrollbar = find
+          .descendant(
+            of: find.byType(TabBarView),
+            matching: find.byType(Scrollbar),
+          )
+          .first;
+      expect(
+        MediaQuery.paddingOf(tester.element(pageScrollbar)).top,
+        16,
+        reason: 'the scrollbar is inset like the content below the tab bar',
+      );
+      expect(
+        find.descendant(of: _previewSlot, matching: pageScrollbar),
+        findsNothing,
+        reason: "it is the page's scrollbar, not the preview's",
+      );
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.linux),
+  );
+
   testWidgets('the toggle hides the preview', (tester) async {
     await _pumpDetail(tester, _wide);
     await _settlePreview(tester);
