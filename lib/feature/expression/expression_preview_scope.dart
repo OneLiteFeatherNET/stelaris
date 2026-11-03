@@ -6,10 +6,13 @@ import 'package:stelaris/feature/expression/expression_preview.dart';
 /// The page owns [shown], which the header's Preview toggle sets, and tells
 /// the pages whether there is room for the preview beside them: [wide] is
 /// false on a narrow screen, where the preview is a bottom sheet instead.
+/// The [overrides] are shared too, so the values typed into one preview stay
+/// when another tab, or the bottom sheet, shows it.
 class ExpressionPreviewScope extends InheritedWidget {
   const ExpressionPreviewScope({
     required this.shown,
     required this.wide,
+    required this.overrides,
     required super.child,
     super.key,
   });
@@ -20,6 +23,10 @@ class ExpressionPreviewScope extends InheritedWidget {
   /// Whether there is room for the preview beside the tab pages.
   final bool wide;
 
+  /// The values typed into the preview, by variable name, in place of the
+  /// stored test values. Never stored.
+  final ValueNotifier<Map<String, String>> overrides;
+
   /// The scope above [context], or null when no detail page is above it. The
   /// tab pages then show no preview.
   static ExpressionPreviewScope? maybeOf(BuildContext context) =>
@@ -27,7 +34,9 @@ class ExpressionPreviewScope extends InheritedWidget {
 
   @override
   bool updateShouldNotify(ExpressionPreviewScope oldWidget) =>
-      wide != oldWidget.wide || shown != oldWidget.shown;
+      wide != oldWidget.wide ||
+      shown != oldWidget.shown ||
+      overrides != oldWidget.overrides;
 }
 
 /// A tab page's content, with the [ExpressionPreview] to its right in a

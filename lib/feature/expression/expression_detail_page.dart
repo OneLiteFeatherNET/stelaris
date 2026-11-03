@@ -7,7 +7,6 @@ import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/expression/expression_general_page.dart';
 import 'package:stelaris/feature/expression/expression_preview.dart';
 import 'package:stelaris/feature/expression/expression_preview_scope.dart';
-import 'package:stelaris/feature/expression/expression_test_page.dart';
 import 'package:stelaris/feature/expression/expression_variables_page.dart';
 import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:stelaris/feature/model/model_detail_actions.dart';
@@ -20,8 +19,8 @@ import 'package:stelaris_models/stelaris_models.dart';
 ///
 /// Shows the shared [ModelDetailShell] header with its actions, the Preview
 /// toggle among them, and a `TabBar`/`TabBarView` below it. Each tab reads the
-/// selected expression from Redux itself, see [ExpressionGeneralPage],
-/// [ExpressionVariablesPage] and [ExpressionTestPage].
+/// selected expression from Redux itself, see [ExpressionGeneralPage] and
+/// [ExpressionVariablesPage]. Other values are tried in the preview.
 class ExpressionDetailPage extends StatefulWidget {
   const ExpressionDetailPage({super.key});
 
@@ -30,7 +29,6 @@ class ExpressionDetailPage extends StatefulWidget {
   static final List<DetailTab> tabs = [
     DetailTab('general', (l10n) => l10n.tab_general),
     DetailTab('variables', (l10n) => l10n.tab_variables),
-    DetailTab('test', (l10n) => l10n.tab_test),
   ];
 
   @override
@@ -42,12 +40,22 @@ class _ExpressionDetailPageState extends State<ExpressionDetailPage> {
   /// starts, the app doesn't store settings locally yet.
   final ValueNotifier<bool> _previewShown = ValueNotifier(true);
 
+  /// The values typed into the preview, shared by every place it is shown.
+  final ValueNotifier<Map<String, String>> _previewOverrides = ValueNotifier(
+    const {},
+  );
+
+  /// The expression the [_previewOverrides] were typed for. Another one starts
+  /// without them.
+  String? _overridesFor;
+
   /// From this width on there is room for the preview beside the tabs.
   static const double _previewBreakpoint = 840;
 
   @override
   void dispose() {
     _previewShown.dispose();
+    _previewOverrides.dispose();
     super.dispose();
   }
 
@@ -57,9 +65,16 @@ class _ExpressionDetailPageState extends State<ExpressionDetailPage> {
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
-      builder: (context) => const Padding(
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 24),
-        child: ExpressionPreview(),
+      // The sheet is not below the page, so it gets the scope again and with
+      // it the values typed in.
+      builder: (context) => ExpressionPreviewScope(
+        shown: _previewShown,
+        wide: false,
+        overrides: _previewOverrides,
+        child: const Padding(
+          padding: EdgeInsets.fromLTRB(16, 0, 16, 24),
+          child: ExpressionPreview(),
+        ),
       ),
     );
   }
@@ -73,12 +88,22 @@ class _ExpressionDetailPageState extends State<ExpressionDetailPage> {
       onInit: (store) => store.dispatch(LoadExpressionCatalogAction()),
       onDispose: (store) =>
           store.dispatch(RemoveSelectedExpression(), notify: false),
+      onInitialBuild: (context, store, vm) => _overridesFor = vm.id,
+      onDidChange: (context, store, vm) {
+        final previous = _overridesFor;
+        if (vm.id == previous) return;
+        _overridesFor = vm.id;
+        // A new expression gets its id on the first save, and is still the
+        // same one.
+        if (previous != null) _previewOverrides.value = const {};
+      },
       builder: (context, vm) => LayoutBuilder(
         builder: (context, constraints) {
           final wide = constraints.maxWidth >= _previewBreakpoint;
           return ExpressionPreviewScope(
             shown: _previewShown,
             wide: wide,
+            overrides: _previewOverrides,
             child: ModelDetailShell(
               entry: NavigationEntry.expression,
               title: vm.title,
@@ -130,7 +155,6 @@ class _ExpressionDetailPageState extends State<ExpressionDetailPage> {
                         children: [
                           ExpressionGeneralPage(),
                           ExpressionVariablesPage(),
-                          ExpressionTestPage(),
                         ],
                       ),
                     ),
@@ -173,14 +197,18 @@ class _PreviewToggle extends StatelessWidget {
 }
 
 class _ExpressionDetailView extends Vm {
-  _ExpressionDetailView({required this.title}) : super(equals: [title]);
+  _ExpressionDetailView({required this.title, required this.id})
+    : super(equals: [title, id]);
 
   final String? title;
+  final String? id;
 }
 
 class _ExpressionDetailFactory
     extends VmFactory<AppState, ExpressionDetailPage, _ExpressionDetailView> {
   @override
-  _ExpressionDetailView fromStore() =>
-      _ExpressionDetailView(title: state.selectedExpression?.uiName);
+  _ExpressionDetailView fromStore() => _ExpressionDetailView(
+    title: state.selectedExpression?.uiName,
+    id: state.selectedExpression?.id,
+  );
 }

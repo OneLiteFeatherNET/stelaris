@@ -1423,7 +1423,7 @@ abstract class AppLocalizations {
   /// No description provided for @expression_variable_test_value_hint.
   ///
   /// In en, this message translates to:
-  /// **'Optional, used on the Test tab'**
+  /// **'Optional, the value it is tried with'**
   String get expression_variable_test_value_hint;
 
   /// No description provided for @expression_variable_test_value_none.
@@ -1438,12 +1438,6 @@ abstract class AppLocalizations {
   /// **'No test value'**
   String get expression_variable_no_test_value;
 
-  /// No description provided for @expression_test_section_expression.
-  ///
-  /// In en, this message translates to:
-  /// **'Expression'**
-  String get expression_test_section_expression;
-
   /// No description provided for @expression_test_section_variables.
   ///
   /// In en, this message translates to:
@@ -1456,12 +1450,6 @@ abstract class AppLocalizations {
   /// **'This expression reads no variables.'**
   String get expression_test_no_variables;
 
-  /// No description provided for @expression_test_evaluate.
-  ///
-  /// In en, this message translates to:
-  /// **'Evaluate'**
-  String get expression_test_evaluate;
-
   /// No description provided for @expression_test_empty_hint.
   ///
   /// In en, this message translates to:
@@ -1473,18 +1461,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Result'**
   String get expression_test_result_label;
-
-  /// No description provided for @expression_test_result_type.
-  ///
-  /// In en, this message translates to:
-  /// **'Type: {type}'**
-  String expression_test_result_type(String type);
-
-  /// No description provided for @expression_test_rejected.
-  ///
-  /// In en, this message translates to:
-  /// **'The expression or a variable was rejected'**
-  String get expression_test_rejected;
 
   /// No description provided for @expression_test_error.
   ///
@@ -4437,6 +4413,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Name'**
   String get expression_preview_column_name;
+
+  /// No description provided for @expression_preview_reset_values.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to the stored test values'**
+  String get expression_preview_reset_values;
+
+  /// No description provided for @expression_preview_value_not_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Only for the preview, not saved'**
+  String get expression_preview_value_not_saved;
 
   /// No description provided for @expression_preview_no_project.
   ///

@@ -733,16 +733,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get expression_variable_test_value_hint =>
-      'Optional, used on the Test tab';
+      'Optional, the value it is tried with';
 
   @override
   String get expression_variable_test_value_none => 'None';
 
   @override
   String get expression_variable_no_test_value => 'No test value';
-
-  @override
-  String get expression_test_section_expression => 'Expression';
 
   @override
   String get expression_test_section_variables => 'Variables';
@@ -752,23 +749,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'This expression reads no variables.';
 
   @override
-  String get expression_test_evaluate => 'Evaluate';
-
-  @override
   String get expression_test_empty_hint =>
       'Write an expression on the General tab to evaluate it.';
 
   @override
   String get expression_test_result_label => 'Result';
-
-  @override
-  String expression_test_result_type(String type) {
-    return 'Type: $type';
-  }
-
-  @override
-  String get expression_test_rejected =>
-      'The expression or a variable was rejected';
 
   @override
   String get expression_test_error =>
@@ -2480,6 +2465,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get expression_preview_column_name => 'Name';
+
+  @override
+  String get expression_preview_reset_values =>
+      'Reset to the stored test values';
+
+  @override
+  String get expression_preview_value_not_saved =>
+      'Only for the preview, not saved';
 
   @override
   String get expression_preview_no_project =>
