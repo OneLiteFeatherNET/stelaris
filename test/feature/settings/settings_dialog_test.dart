@@ -81,10 +81,17 @@ void main() {
     testWidgets('lists the sections in order', (tester) async {
       await openDialog(tester);
 
-      final headings = ['Project', 'Appearance', 'Accessibility', 'About'];
+      final headings = ['Appearance', 'Accessibility', 'About'];
       final tops = [for (final heading in headings) top(tester, heading)];
 
       expect(tops, orderedEquals([...tops]..sort()));
+    });
+
+    testWidgets('leaves the project to the project badge', (tester) async {
+      await openDialog(tester);
+
+      expect(find.text('Project'), findsNothing);
+      expect(find.text('Project A (a)'), findsNothing);
     });
 
     testWidgets('puts the account section first when signed in', (
@@ -95,7 +102,7 @@ void main() {
         auth: const AuthState(status: AuthStatus.signedIn),
       );
 
-      expect(top(tester, 'Account'), lessThan(top(tester, 'Project')));
+      expect(top(tester, 'Account'), lessThan(top(tester, 'Appearance')));
     });
 
     testWidgets('closes with the close icon', (tester) async {
