@@ -26,35 +26,80 @@ class DeferredWidget extends StatefulWidget {
 }
 
 class _DeferredWidgetState extends State<DeferredWidget> {
+  /// Loaders whose library has already loaded in this session.
+  ///
+  /// A [FutureBuilder] reports `waiting` for its first frame even when the
+  /// future has long completed, so without this every revisit of a page would
+  /// flash the placeholder for one frame — right in the middle of the route
+  /// transition. `prefix.loadLibrary` tear-offs compare equal, so the set
+  /// recognises a library across widget instances.
+  static final Set<LibraryLoader> _loaded = {};
+
+  /// Decided once per instance: switching between the direct build and the
+  /// [FutureBuilder] later would change the tree above the page and throw
+  /// away its state.
+  late final bool _loadedBefore = _loaded.contains(widget.loader);
+
   late Future<void> _loadingFuture;
 
   @override
   void initState() {
     super.initState();
-    _loadingFuture = widget.loader();
+    if (!_loadedBefore) _loadingFuture = _load();
+  }
+
+  Future<void> _load() async {
+    final loader = widget.loader;
+    await loader();
+    _loaded.add(loader);
   }
 
   // dart2js forgets a failed chunk, so calling the loader again really
   // fetches it again rather than replaying the cached failure.
   void _retry() {
     setState(() {
-      _loadingFuture = widget.loader();
+      _loadingFuture = _load();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_loadedBefore) return widget.builder();
     return FutureBuilder<void>(
       future: _loadingFuture,
       builder: (context, snapshot) {
+        final Widget content;
         if (snapshot.connectionState != ConnectionState.done) {
-          return widget.placeholder ??
+          content =
+              widget.placeholder ??
               const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          content = _LoadFailed(onRetry: _retry);
+        } else {
+          content = widget.builder();
         }
-        if (snapshot.hasError) {
-          return _LoadFailed(onRetry: _retry);
-        }
-        return widget.builder();
+        // A first load finishes after the route transition has settled, so
+        // fade the page in instead of letting it pop in over the spinner.
+        return AnimatedSwitcher(
+          duration: MediaQuery.disableAnimationsOf(context)
+              ? Duration.zero
+              : Durations.short4,
+          // The default layout centres its children with loose constraints;
+          // the page has to get the parent's constraints unchanged, just as a
+          // direct build would.
+          layoutBuilder: (current, previous) => Stack(
+            fit: StackFit.passthrough,
+            children: [...previous, ?current],
+          ),
+          child: KeyedSubtree(
+            key: ValueKey(
+              snapshot.connectionState == ConnectionState.done
+                  ? (snapshot.hasError ? 'failed' : 'loaded')
+                  : 'loading',
+            ),
+            child: content,
+          ),
+        );
       },
     );
   }
