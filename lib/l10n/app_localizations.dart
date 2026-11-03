@@ -4408,12 +4408,6 @@ abstract class AppLocalizations {
   /// **'Copy the full value'**
   String get expression_preview_copy;
 
-  /// No description provided for @expression_preview_column_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Name'**
-  String get expression_preview_column_name;
-
   /// No description provided for @expression_preview_reset_values.
   ///
   /// In en, this message translates to:

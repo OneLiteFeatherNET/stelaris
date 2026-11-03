@@ -2464,9 +2464,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expression_preview_copy => 'Copy the full value';
 
   @override
-  String get expression_preview_column_name => 'Name';
-
-  @override
   String get expression_preview_reset_values =>
       'Reset to the stored test values';
 
