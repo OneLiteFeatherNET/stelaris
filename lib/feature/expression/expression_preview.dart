@@ -25,15 +25,15 @@ const Duration expressionPreviewDebounce = Duration(milliseconds: 400);
 
 /// The live result of the expression, as the formula is typed: first the value
 /// the backend evaluates it to, then the formula when [showFormula], and the
-/// variables with their test values. Shown beside the General and Variables
-/// tabs on a wide screen, and as a bottom sheet on a narrow one.
+/// variables with their test values. Shown beside the General tab on a wide
+/// screen, and as a bottom sheet on a narrow one.
 ///
 /// Nothing is stored here. The values start as the variables' test values,
 /// which the Variables tab edits, and can be changed in the preview to try
 /// others. Those changes are kept in the [ExpressionPreviewScope] above, or in
 /// the preview itself without one, until they are reset. A variable without a
 /// value is not sent: the preview asks for one instead.
-class ExpressionPreview extends StatelessWidget {
+class ExpressionPreview extends StatefulWidget {
   const ExpressionPreview({
     this.debounce = expressionPreviewDebounce,
     this.showFormula = true,
@@ -49,21 +49,52 @@ class ExpressionPreview extends StatelessWidget {
   final Duration debounce;
 
   @override
+  State<ExpressionPreview> createState() => _ExpressionPreviewState();
+}
+
+class _ExpressionPreviewState extends State<ExpressionPreview> {
+  /// The values typed in when no scope is above to keep them.
+  ValueNotifier<Map<String, String>>? _ownOverrides;
+
+  @override
+  void dispose() {
+    _ownOverrides?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final overrides =
+        ExpressionPreviewScope.maybeOf(context)?.overrides ??
+        (_ownOverrides ??= ValueNotifier(const {}));
     return StoreConnector<AppState, SelectedExpressionView>(
       vm: () => SelectedExpressionState(),
       builder: (context, vm) => StoreConnector<AppState, ExpressionCatalog?>(
         converter: (store) => store.state.expressionCatalog,
-        builder: (context, catalog) => _ExpressionPreviewBody(
-          request: _PreviewRequest(
-            projectId: vm.projectId,
-            expression: vm.selected.expression,
-            variables: vm.selected.variables,
-          ),
-          overrides: ExpressionPreviewScope.maybeOf(context)?.overrides,
-          debounce: debounce,
-          catalog: catalog,
-          showFormula: showFormula,
+        builder: (context, catalog) => ValueListenableBuilder(
+          valueListenable: overrides,
+          builder: (context, typed, _) {
+            final variables = vm.selected.variables;
+            // A value typed for a variable since renamed or removed is left
+            // out.
+            final live = {
+              for (final variable in variables)
+                variable.name: ?typed[variable.name],
+            };
+            return _ExpressionPreviewBody(
+              request: _PreviewRequest(
+                projectId: vm.projectId,
+                expression: vm.selected.expression,
+                variables: variables,
+              ).withOverrides(live),
+              variables: variables,
+              overrides: live,
+              onOverridesChanged: (values) => overrides.value = values,
+              debounce: widget.debounce,
+              catalog: catalog,
+              showFormula: widget.showFormula,
+            );
+          },
         ),
       ),
     );
@@ -129,18 +160,24 @@ class _PreviewRequest {
 class _ExpressionPreviewBody extends StatefulWidget {
   const _ExpressionPreviewBody({
     required this.request,
+    required this.variables,
+    required this.overrides,
+    required this.onOverridesChanged,
     required this.debounce,
     required this.showFormula,
-    this.overrides,
     this.catalog,
   });
 
-  /// The request with the stored test values.
+  /// What is sent: the formula with the values typed in, or else the stored
+  /// test values.
   final _PreviewRequest request;
 
-  /// The values typed in, from the scope above. Without one the body keeps
-  /// its own.
-  final ValueNotifier<Map<String, String>>? overrides;
+  /// The variables with their stored test values.
+  final List<ExpressionVariable> variables;
+
+  /// The values typed in, by the name of a current variable.
+  final Map<String, String> overrides;
+  final ValueChanged<Map<String, String>> onOverridesChanged;
   final Duration debounce;
   final bool showFormula;
 
@@ -167,45 +204,23 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
   ProblemDetail? _rejection;
   bool _failed = false;
 
-  /// The values typed in when no scope is above.
-  ValueNotifier<Map<String, String>>? _ownOverrides;
-
-  ValueNotifier<Map<String, String>> get _overrides =>
-      widget.overrides ?? (_ownOverrides ??= ValueNotifier(const {}));
-
-  /// What is sent: the request with the values typed in.
-  _PreviewRequest get _request =>
-      widget.request.withOverrides(_overrides.value);
-
   @override
   void initState() {
     super.initState();
-    _overrides.addListener(_overridesChanged);
     _schedule();
   }
 
   @override
   void didUpdateWidget(_ExpressionPreviewBody oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final oldOverrides = oldWidget.overrides ?? _ownOverrides;
-    if (oldOverrides != _overrides) {
-      oldOverrides?.removeListener(_overridesChanged);
-      _overrides.addListener(_overridesChanged);
-      _schedule();
-    } else if (oldWidget.request != widget.request) {
-      _schedule();
-    }
+    if (oldWidget.request != widget.request) _schedule();
   }
 
   @override
   void dispose() {
     _timer?.cancel();
-    _overrides.removeListener(_overridesChanged);
-    _ownOverrides?.dispose();
     super.dispose();
   }
-
-  void _overridesChanged() => setState(_schedule);
 
   /// Asks the backend once the requests stop changing for [widget.debounce].
   /// Only the state fields change here, not the widget: this runs from
@@ -219,7 +234,7 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
   }
 
   Future<void> _evaluate() async {
-    final request = _request;
+    final request = widget.request;
     final projectId = request.projectId;
     if (projectId == null ||
         request.expression.trim().isEmpty ||
@@ -267,7 +282,7 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
-    final request = _request;
+    final request = widget.request;
     final colors = theme.colorScheme;
     // The same surface as the section cards beside it; the sections are set
     // apart by space, not by lines.
@@ -310,13 +325,13 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
             const SizedBox(height: 24),
             EditSectionHeading(
               title: l10n.expression_test_section_variables,
-              trailing: _overrides.value.isEmpty
+              trailing: widget.overrides.isEmpty
                   ? null
                   : IconButton(
                       key: const Key('expression_preview_reset'),
                       tooltip: l10n.expression_preview_reset_values,
                       icon: const Icon(Icons.restart_alt, size: 20),
-                      onPressed: () => _overrides.value = const {},
+                      onPressed: () => widget.onOverridesChanged(const {}),
                     ),
             ),
             const SizedBox(height: 8),
@@ -327,8 +342,9 @@ class _ExpressionPreviewBodyState extends State<_ExpressionPreviewBody> {
               )
             else
               _VariableInputs(
-                variables: widget.request.variables,
-                overrides: _overrides,
+                variables: widget.variables,
+                overrides: widget.overrides,
+                onChanged: widget.onOverridesChanged,
               ),
           ],
         ),
@@ -499,14 +515,20 @@ String expressionResultTypeLabel(AppLocalizations l10n, String type) =>
 
 /// One input per variable, labelled with its name and the icon of its type,
 /// holding the value the preview evaluates with: the stored test value until
-/// another is typed in. A typed value goes to [overrides], and is marked as
-/// not saved. Typing the stored value again takes it out.
+/// another is typed in. A typed value goes to [onChanged] with the others in
+/// [overrides], and is marked as not saved. Typing the stored value again
+/// takes it out.
 class _VariableInputs extends StatefulWidget {
-  const _VariableInputs({required this.variables, required this.overrides});
+  const _VariableInputs({
+    required this.variables,
+    required this.overrides,
+    required this.onChanged,
+  });
 
   /// The variables with their stored test values.
   final List<ExpressionVariable> variables;
-  final ValueNotifier<Map<String, String>> overrides;
+  final Map<String, String> overrides;
+  final ValueChanged<Map<String, String>> onChanged;
 
   @override
   State<_VariableInputs> createState() => _VariableInputsState();
@@ -520,37 +542,16 @@ class _VariableInputsState extends State<_VariableInputs> {
   bool _syncing = false;
 
   @override
-  void initState() {
-    super.initState();
-    widget.overrides.addListener(_sync);
-  }
-
-  @override
   void didUpdateWidget(_VariableInputs oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.overrides != widget.overrides) {
-      oldWidget.overrides.removeListener(_sync);
-      widget.overrides.addListener(_sync);
+    final names = {for (final variable in widget.variables) variable.name};
+    for (final name in [..._inputs.keys]) {
+      if (names.contains(name)) continue;
+      // Its field is still attached until this build has replaced it.
+      final input = _inputs.remove(name)!;
+      WidgetsBinding.instance.addPostFrameCallback((_) => input.dispose());
     }
-    // A test value changed on the Variables tab shows here, unless another
-    // value was typed in.
-    _sync();
-  }
-
-  @override
-  void dispose() {
-    widget.overrides.removeListener(_sync);
-    for (final input in _inputs.values) {
-      input.dispose();
-    }
-    super.dispose();
-  }
-
-  String _valueOf(ExpressionVariable variable) =>
-      widget.overrides.value[variable.name] ?? variable.testValue ?? '';
-
-  /// Matches every input to the value it stands for.
-  void _sync() {
+    // A reset, or a test value changed on the Variables tab, shows here.
     _syncing = true;
     for (final variable in widget.variables) {
       final input = _inputs[variable.name];
@@ -559,6 +560,17 @@ class _VariableInputsState extends State<_VariableInputs> {
     }
     _syncing = false;
   }
+
+  @override
+  void dispose() {
+    for (final input in _inputs.values) {
+      input.dispose();
+    }
+    super.dispose();
+  }
+
+  String _valueOf(ExpressionVariable variable) =>
+      widget.overrides[variable.name] ?? variable.testValue ?? '';
 
   TextEditingController _inputFor(ExpressionVariable variable) =>
       _inputs.putIfAbsent(variable.name, () {
@@ -573,49 +585,48 @@ class _VariableInputsState extends State<_VariableInputs> {
         .where((variable) => variable.name == name)
         .firstOrNull;
     if (variable == null) return;
-    final overrides = widget.overrides.value;
+    final overrides = widget.overrides;
     final stored = variable.testValue ?? '';
     if (text == (overrides[name] ?? stored)) return;
-    widget.overrides.value = {
+    widget.onChanged({
       for (final entry in overrides.entries)
         if (entry.key != name) entry.key: entry.value,
       if (text != stored) name: text,
-    };
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colors = Theme.of(context).colorScheme;
-    final overrides = widget.overrides.value;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (final variable in widget.variables)
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: Tooltip(
-              message: expressionVariableTypeLabel(l10n, variable.type),
-              child: ExpressionValueField(
-                // A boolean is picked from a menu that shows its first value
-                // only, so a changed value builds a new one.
-                key: ValueKey((
-                  variable.name,
-                  variable.type,
-                  variable.type == ExpressionValueType.boolean
-                      ? _valueOf(variable)
-                      : null,
-                )),
-                controller: _inputFor(variable),
-                type: variable.type,
-                decoration: InputDecoration(
-                  isDense: true,
-                  labelText: variable.name,
-                  hintText: l10n.expression_variable_no_test_value,
-                  helperText: overrides.containsKey(variable.name)
-                      ? l10n.expression_preview_value_not_saved
-                      : null,
-                  prefixIcon: Icon(
+            child: ExpressionValueField(
+              // A boolean is picked from a menu that shows its first value
+              // only, so a changed value builds a new one.
+              key: ValueKey((
+                variable.name,
+                variable.type,
+                variable.type == ExpressionValueType.boolean
+                    ? _valueOf(variable)
+                    : null,
+              )),
+              controller: _inputFor(variable),
+              type: variable.type,
+              decoration: InputDecoration(
+                isDense: true,
+                labelText: variable.name,
+                hintText: l10n.expression_variable_no_test_value,
+                helperText: widget.overrides.containsKey(variable.name)
+                    ? l10n.expression_preview_value_not_saved
+                    : null,
+                prefixIcon: Tooltip(
+                  message: expressionVariableTypeLabel(l10n, variable.type),
+                  child: Icon(
                     expressionVariableTypeIcon(variable.type),
                     size: 18,
                     color: colors.tertiary,
