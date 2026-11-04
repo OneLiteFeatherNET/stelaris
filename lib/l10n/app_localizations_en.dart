@@ -531,6 +531,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Project key cannot be changed after creation';
 
   @override
+  String get dialog_project_tab_project => 'Project';
+
+  @override
+  String get dialog_project_tab_pack_meta => 'Pack';
+
+  @override
   String get pack_meta_hint =>
       'The pack.mcmeta of the resource pack. Leave all fields empty for none.';
 

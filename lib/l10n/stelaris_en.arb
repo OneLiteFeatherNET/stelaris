@@ -229,6 +229,8 @@
   "dialog_project_edit_title": "Edit project",
   "dialog_project_edit_button": "Save",
   "dialog_project_key_readonly_hint": "Project key cannot be changed after creation",
+  "dialog_project_tab_project": "Project",
+  "dialog_project_tab_pack_meta": "Pack",
   "pack_meta_hint": "The pack.mcmeta of the resource pack. Leave all fields empty for none.",
   "pack_meta_description": "Description",
   "pack_meta_min_format_major": "Min format",

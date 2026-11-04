@@ -1060,6 +1060,18 @@ abstract class AppLocalizations {
   /// **'Project key cannot be changed after creation'**
   String get dialog_project_key_readonly_hint;
 
+  /// No description provided for @dialog_project_tab_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get dialog_project_tab_project;
+
+  /// No description provided for @dialog_project_tab_pack_meta.
+  ///
+  /// In en, this message translates to:
+  /// **'Pack'**
+  String get dialog_project_tab_pack_meta;
+
   /// No description provided for @pack_meta_hint.
   ///
   /// In en, this message translates to:
