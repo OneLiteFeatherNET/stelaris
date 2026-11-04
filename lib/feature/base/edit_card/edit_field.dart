@@ -109,6 +109,24 @@ final class TextComponentEdit extends EditField {
   final ValueChanged<String?> onChanged;
 }
 
+/// A field whose value is picked in a dialog of its own, e.g. an asset from
+/// the project, instead of typed.
+final class PickEdit extends EditField {
+  const PickEdit({
+    required super.label,
+    required super.icon,
+    required this.value,
+    required this.pick,
+    super.footer,
+  });
+
+  /// How the current value reads on the card, empty when none is set.
+  final String value;
+
+  /// Opens the dialog and hands a picked value on itself.
+  final Future<void> Function(BuildContext context) pick;
+}
+
 /// A heading and the fields under it.
 class EditSection {
   const EditSection({required this.title, required this.fields});

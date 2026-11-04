@@ -158,7 +158,7 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
         labelText: l10n.asset_picker_key,
         helperText: controller.fixedKey != null
             ? l10n.asset_upload_key_fixed
-            : l10n.asset_upload_key_helper('item/ruby'),
+            : l10n.asset_upload_key_helper('${controller.keyFolder}/ruby'),
         prefixText: controller.fixedKey == null ? '$namespace:' : null,
         suffixIcon: controller.fixedKey != null
             ? const Icon(Icons.lock_outline, size: 18)

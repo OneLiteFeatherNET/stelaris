@@ -574,11 +574,11 @@ abstract class AppLocalizations {
   /// **'Provider'**
   String get card_font_provider;
 
-  /// No description provided for @card_font_texture_path.
+  /// No description provided for @card_font_texture.
   ///
   /// In en, this message translates to:
-  /// **'Texture path'**
-  String get card_font_texture_path;
+  /// **'Texture'**
+  String get card_font_texture;
 
   /// No description provided for @card_description.
   ///
@@ -2776,12 +2776,6 @@ abstract class AppLocalizations {
   /// **'Invalid key (only lowercase letters, numbers, [._/-] allowed, e.g. \"magic_wand\")'**
   String get validation_key_part_invalid;
 
-  /// No description provided for @validation_texture_path_invalid.
-  ///
-  /// In en, this message translates to:
-  /// **'Invalid texture path (e.g. \"minecraft:font/ascii.png\")'**
-  String get validation_texture_path_invalid;
-
   /// No description provided for @validation_background_invalid.
   ///
   /// In en, this message translates to:
@@ -3700,11 +3694,29 @@ abstract class AppLocalizations {
   /// **'The provider type, e.g. bitmap'**
   String get font_hint_provider;
 
-  /// No description provided for @font_hint_texture_path.
+  /// No description provided for @font_hint_texture.
   ///
   /// In en, this message translates to:
-  /// **'A namespaced path, e.g. minecraft:font/ascii.png'**
-  String get font_hint_texture_path;
+  /// **'A texture of the project, chosen or uploaded'**
+  String get font_hint_texture;
+
+  /// No description provided for @font_texture_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get font_texture_loading;
+
+  /// No description provided for @font_texture_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'The texture could not be loaded'**
+  String get font_texture_missing;
+
+  /// No description provided for @texture_preview_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The texture could not be shown'**
+  String get texture_preview_failed;
 
   /// No description provided for @font_hint_ascent.
   ///
@@ -4000,6 +4012,12 @@ abstract class AppLocalizations {
   /// **'Choose a model'**
   String get asset_picker_title;
 
+  /// No description provided for @asset_picker_title_texture.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a texture'**
+  String get asset_picker_title_texture;
+
   /// No description provided for @asset_pick_model_tooltip.
   ///
   /// In en, this message translates to:
@@ -4018,11 +4036,23 @@ abstract class AppLocalizations {
   /// **'This project has no models yet. Upload one below.'**
   String get asset_picker_empty;
 
+  /// No description provided for @asset_picker_empty_texture.
+  ///
+  /// In en, this message translates to:
+  /// **'This project has no textures yet. Upload one below.'**
+  String get asset_picker_empty_texture;
+
   /// No description provided for @asset_picker_load_failed.
   ///
   /// In en, this message translates to:
   /// **'The models could not be loaded.'**
   String get asset_picker_load_failed;
+
+  /// No description provided for @asset_picker_load_failed_texture.
+  ///
+  /// In en, this message translates to:
+  /// **'The textures could not be loaded.'**
+  String get asset_picker_load_failed_texture;
 
   /// No description provided for @asset_picker_retry.
   ///
@@ -4035,6 +4065,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Upload'**
   String get asset_picker_upload_action;
+
+  /// No description provided for @asset_picker_replace.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload new version'**
+  String get asset_picker_replace;
+
+  /// No description provided for @asset_picker_replaced.
+  ///
+  /// In en, this message translates to:
+  /// **'Stored a new version of {name}.'**
+  String asset_picker_replaced(String name);
+
+  /// No description provided for @asset_picker_replace_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was changed meanwhile. The list now shows the stored version.'**
+  String asset_picker_replace_conflict(String name);
 
   /// No description provided for @asset_picker_texture_uploaded.
   ///

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
@@ -25,12 +26,16 @@ void main() {
     late Store<AppState> store;
 
 
+    const project = Project(id: 'p-1', displayName: 'Cygnus', key: 'cygnus');
+
     Future<void> pumpPage(
       WidgetTester tester, {
       String location = '/fonts/detail',
+      FontModel font = selected,
+      Project? project,
     }) async {
       store = Store<AppState>(
-        initialState: const AppState(selectedFont: selected),
+        initialState: AppState(selectedFont: font, selectedProject: project),
       );
 
       final router = GoRouter(
@@ -112,31 +117,96 @@ void main() {
       expect(selectedTab(tester), 0);
     });
 
-    testWidgets('the texture path keeps its namespace, slashes and dots', (
+    Map<String, Object?> textureJson(String id, String key) => {
+      'id': id,
+      'projectId': 'p-1',
+      'key': key,
+      'displayName': key,
+      'kind': 'TEXTURE',
+      'fileName': 'ghost.png',
+      'contentType': 'image/png',
+      'size': 1,
+      'sha1': 'aaaa',
+      'derivedAssetIds': <String>[],
+    };
+
+    testWidgets('without a project the texture card is hidden', (
       tester,
     ) async {
       await pumpPage(tester);
 
-      await editCard(tester, 'Texture path', 'minecraft:font/ascii.png');
-
-      expect(store.state.selectedFont?.texturePath, 'minecraft:font/ascii.png');
-      expect(store.state.unsavedChanges, NavigationEntry.font);
-      expect(find.byType(Dialog), findsNothing);
+      expect(find.text('Texture'), findsNothing);
     });
 
-    testWidgets('an invalid texture path keeps the dialog open', (
+    testWidgets('the texture card shows the key of the texture asset', (
       tester,
     ) async {
-      await pumpPage(tester);
-
-      await editCard(tester, 'Texture path', 'Not A Path');
-
-      expect(
-        find.text('Invalid texture path (e.g. "minecraft:font/ascii.png")'),
-        findsOneWidget,
+      final requests = <String>[];
+      ApiService().assetApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            requests.add(options.uri.path);
+            return FakeHttpClientAdapter.response(
+              textureJson('t-1', 'cygnus:font/ghost'),
+            );
+          });
+      await pumpPage(
+        tester,
+        font: selected.copyWith(textureAssetId: 't-1'),
+        project: project,
       );
-      expect(find.byType(Dialog), findsOneWidget);
-      expect(store.state.selectedFont?.texturePath, isNot('Not A Path'));
+
+      expect(find.text('cygnus:font/ghost'), findsOneWidget);
+      expect(requests.single, endsWith('/project/p-1/asset/t-1'));
+    });
+
+    testWidgets('a texture that can not be loaded is named missing', (
+      tester,
+    ) async {
+      ApiService().assetApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json({
+            'title': 'Not found',
+            'status': 404,
+          }, statusCode: 404);
+      await pumpPage(
+        tester,
+        font: selected.copyWith(textureAssetId: 't-1'),
+        project: project,
+      );
+
+      expect(find.text('The texture could not be loaded'), findsOneWidget);
+    });
+
+    testWidgets('choosing a texture stages its id and shows its key', (
+      tester,
+    ) async {
+      ApiService().assetApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            final kind = options.uri.queryParameters['kind'];
+            return FakeHttpClientAdapter.response({
+              'items': [
+                if (kind == 'TEXTURE') textureJson('t-2', 'cygnus:font/clock'),
+              ],
+              'totalItems': kind == 'TEXTURE' ? 1 : 0,
+              'totalPages': 1,
+              'currentPage': 0,
+              'pageSize': 50,
+            });
+          });
+      await pumpPage(tester, project: project);
+
+      await tester.tap(find.text('Texture'));
+      await tester.pumpAndSettle();
+      expect(find.text('Choose a texture'), findsOneWidget);
+      await tester.tap(find.text('cygnus:font/clock'));
+      await tester.pumpAndSettle();
+      expect(find.byType(TexturePreview), findsOneWidget);
+      await tester.tap(find.text('Choose'));
+      await tester.pumpAndSettle();
+
+      expect(store.state.selectedFont?.textureAssetId, 't-2');
+      expect(store.state.unsavedChanges, NavigationEntry.font);
+      expect(find.byType(Dialog), findsNothing);
+      expect(find.text('cygnus:font/clock'), findsOneWidget);
     });
 
     testWidgets('a number field takes only digits', (tester) async {

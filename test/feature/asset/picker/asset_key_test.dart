@@ -21,11 +21,22 @@ void main() {
     test('puts the sanitized file name into the item folder', () {
       expect(suggestAssetPath('Ruby Gem.bbmodel'), 'item/ruby_gem');
     });
+
+    test('puts the file name into another folder when given', () {
+      expect(suggestAssetPath('Ghost.png', folder: 'font'), 'font/ghost');
+    });
   });
 
   group('suggestAssetKey', () {
     test('uses the minecraft namespace when none is given', () {
       expect(suggestAssetKey('ruby.bbmodel'), 'minecraft:item/ruby');
+    });
+
+    test('puts the path into the given folder', () {
+      expect(
+        suggestAssetKey('ghost.png', namespace: 'cygnus', folder: 'font'),
+        'cygnus:font/ghost',
+      );
     });
 
     test('uses the given namespace when it is a valid one', () {

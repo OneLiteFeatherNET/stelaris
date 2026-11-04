@@ -16,6 +16,7 @@ class AssetUploadController extends ChangeNotifier {
     this.namespace,
     this.kinds = const {...AssetKind.values},
     this.fixedKey,
+    this.keyFolder = defaultAssetFolder,
   }) {
     if (fixedKey case final key?) {
       keyController.text = key;
@@ -36,6 +37,10 @@ class AssetUploadController extends ChangeNotifier {
   /// The key the file must be stored under, e.g. the one a model refers to.
   /// A chosen file keeps it instead of suggesting one from its name.
   final String? fixedKey;
+
+  /// The folder the suggested key path starts with, e.g. `font` for a font
+  /// texture.
+  final String keyFolder;
 
   /// Opens the file dialog, injectable for tests.
   final Future<PickedAssetFile?> Function() pickFile;
@@ -145,7 +150,7 @@ class AssetUploadController extends ChangeNotifier {
         notifyListeners();
         return;
       }
-      final path = suggestAssetPath(picked.name);
+      final path = suggestAssetPath(picked.name, folder: keyFolder);
       _lastKey = path;
       keyController.value = TextEditingValue(
         text: path,

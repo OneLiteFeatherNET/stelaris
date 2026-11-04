@@ -112,7 +112,7 @@
   "card_attribute_translation_key": "Translation key",
   "tooltip_attribute_synced": "Sends the value to the client",
   "card_font_provider": "Provider",
-  "card_font_texture_path": "Texture path",
+  "card_font_texture": "Texture",
   "card_description": "Description",
   "card_advancement_parent": "Parent",
   "card_advancement_background": "Background",
@@ -696,7 +696,6 @@
   "validation_key_part_no_colon": "Colons (:) are not allowed in the key part",
   "validation_namespace_invalid": "Invalid namespace (only lowercase letters, numbers, [._-] allowed, e.g. \"my_project\")",
   "validation_key_part_invalid": "Invalid key (only lowercase letters, numbers, [._/-] allowed, e.g. \"magic_wand\")",
-  "validation_texture_path_invalid": "Invalid texture path (e.g. \"minecraft:font/ascii.png\")",
   "validation_background_invalid": "Invalid texture path (e.g. \"minecraft:gui/advancements/backgrounds/stone\")",
   "validation_sound_key_invalid": "Invalid key (e.g. \"entity.player.hurt\" or \"custom:ui/click\")",
   "validation_level_required": "Please enter a level",
@@ -1061,7 +1060,10 @@
   "font_section_source": "Source",
   "font_section_metrics": "Metrics",
   "font_hint_provider": "The provider type, e.g. bitmap",
-  "font_hint_texture_path": "A namespaced path, e.g. minecraft:font/ascii.png",
+  "font_hint_texture": "A texture of the project, chosen or uploaded",
+  "font_texture_loading": "Loading…",
+  "font_texture_missing": "The texture could not be loaded",
+  "texture_preview_failed": "The texture could not be shown",
   "font_hint_ascent": "Pixels above the baseline, at most the height",
   "font_hint_height": "Height of a glyph in pixels, 8 by default",
   "sound_section_general": "Event",
@@ -1142,12 +1144,32 @@
   "asset_upload_name_helper": "How the asset is shown in Stelaris",
   "asset_upload_name_empty": "Enter a name.",
   "asset_picker_title": "Choose a model",
+  "asset_picker_title_texture": "Choose a texture",
   "asset_pick_model_tooltip": "Choose a model from the project",
   "asset_picker_choose": "Choose",
   "asset_picker_empty": "This project has no models yet. Upload one below.",
+  "asset_picker_empty_texture": "This project has no textures yet. Upload one below.",
   "asset_picker_load_failed": "The models could not be loaded.",
+  "asset_picker_load_failed_texture": "The textures could not be loaded.",
   "asset_picker_retry": "Try again",
   "asset_picker_upload_action": "Upload",
+  "asset_picker_replace": "Upload new version",
+  "asset_picker_replaced": "Stored a new version of {name}.",
+  "@asset_picker_replaced": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_picker_replace_conflict": "{name} was changed meanwhile. The list now shows the stored version.",
+  "@asset_picker_replace_conflict": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "asset_picker_texture_uploaded": "Uploaded the texture {key}. Only models can be chosen for an item.",
   "@asset_picker_texture_uploaded": {
     "placeholders": {

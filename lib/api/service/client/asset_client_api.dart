@@ -39,6 +39,16 @@ class AssetClientApi {
     );
   }
 
+  /// Fetches the asset [id] of [projectId].
+  Future<AssetModel> getById(String projectId, String id) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/project/$projectId/$_endpoint/$id',
+    );
+    final result = await apiClient.dio.getUri(uri);
+    return AssetModel.fromJson(result.data as Map<String, dynamic>);
+  }
+
   /// Uploads [bytes] as a new asset of [projectId] under [key], shown as
   /// [displayName].
   ///

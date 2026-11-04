@@ -1069,9 +1069,11 @@ packages:
   stelaris_models:
     dependency: "direct main"
     description:
-      path: "../stelaris-model"
-      relative: true
-    source: path
+      path: "."
+      ref: main
+      resolved-ref: f10720ee0cb3975dc2df24641fbf1c9295cf340b
+      url: "https://github.com/OneLiteFeatherNET/stelaris-model.git"
+    source: git
     version: "0.0.1"
   stream_channel:
     dependency: transitive

@@ -267,7 +267,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get card_font_provider => 'Provider';
 
   @override
-  String get card_font_texture_path => 'Texture path';
+  String get card_font_texture => 'Texture';
 
   @override
   String get card_description => 'Description';
@@ -1483,10 +1483,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Invalid key (only lowercase letters, numbers, [._/-] allowed, e.g. \"magic_wand\")';
 
   @override
-  String get validation_texture_path_invalid =>
-      'Invalid texture path (e.g. \"minecraft:font/ascii.png\")';
-
-  @override
   String get validation_background_invalid =>
       'Invalid texture path (e.g. \"minecraft:gui/advancements/backgrounds/stone\")';
 
@@ -2027,8 +2023,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get font_hint_provider => 'The provider type, e.g. bitmap';
 
   @override
-  String get font_hint_texture_path =>
-      'A namespaced path, e.g. minecraft:font/ascii.png';
+  String get font_hint_texture =>
+      'A texture of the project, chosen or uploaded';
+
+  @override
+  String get font_texture_loading => 'Loading…';
+
+  @override
+  String get font_texture_missing => 'The texture could not be loaded';
+
+  @override
+  String get texture_preview_failed => 'The texture could not be shown';
 
   @override
   String get font_hint_ascent =>
@@ -2203,6 +2208,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_picker_title => 'Choose a model';
 
   @override
+  String get asset_picker_title_texture => 'Choose a texture';
+
+  @override
   String get asset_pick_model_tooltip => 'Choose a model from the project';
 
   @override
@@ -2213,13 +2221,34 @@ class AppLocalizationsEn extends AppLocalizations {
       'This project has no models yet. Upload one below.';
 
   @override
+  String get asset_picker_empty_texture =>
+      'This project has no textures yet. Upload one below.';
+
+  @override
   String get asset_picker_load_failed => 'The models could not be loaded.';
+
+  @override
+  String get asset_picker_load_failed_texture =>
+      'The textures could not be loaded.';
 
   @override
   String get asset_picker_retry => 'Try again';
 
   @override
   String get asset_picker_upload_action => 'Upload';
+
+  @override
+  String get asset_picker_replace => 'Upload new version';
+
+  @override
+  String asset_picker_replaced(String name) {
+    return 'Stored a new version of $name.';
+  }
+
+  @override
+  String asset_picker_replace_conflict(String name) {
+    return '$name was changed meanwhile. The list now shows the stored version.';
+  }
 
   @override
   String asset_picker_texture_uploaded(String key) {
