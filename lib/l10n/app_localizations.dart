@@ -1120,6 +1120,66 @@ abstract class AppLocalizations {
   /// **'The resource pack formats the pack works with. An empty max minor allows any minor version.'**
   String get pack_meta_formats_hint;
 
+  /// No description provided for @pack_icon_none.
+  ///
+  /// In en, this message translates to:
+  /// **'No icon'**
+  String get pack_icon_none;
+
+  /// No description provided for @pack_icon_size.
+  ///
+  /// In en, this message translates to:
+  /// **'pack.png, {width} × {height}'**
+  String pack_icon_size(int width, int height);
+
+  /// No description provided for @pack_icon_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'A square PNG of 16 × 16, 32 × 32, 64 × 64 … pixels'**
+  String get pack_icon_hint;
+
+  /// No description provided for @pack_icon_choose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose icon'**
+  String get pack_icon_choose;
+
+  /// No description provided for @pack_icon_change.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get pack_icon_change;
+
+  /// No description provided for @pack_icon_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get pack_icon_remove;
+
+  /// No description provided for @pack_icon_not_png.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is no PNG'**
+  String get pack_icon_not_png;
+
+  /// No description provided for @pack_icon_not_square.
+  ///
+  /// In en, this message translates to:
+  /// **'The icon must be square'**
+  String get pack_icon_not_square;
+
+  /// No description provided for @pack_icon_not_power_of_two.
+  ///
+  /// In en, this message translates to:
+  /// **'The size must be 16, 32, 64 … pixels'**
+  String get pack_icon_not_power_of_two;
+
+  /// No description provided for @pack_icon_too_small.
+  ///
+  /// In en, this message translates to:
+  /// **'The icon must be at least 16 × 16 pixels'**
+  String get pack_icon_too_small;
+
   /// No description provided for @pack_meta_load_failed.
   ///
   /// In en, this message translates to:

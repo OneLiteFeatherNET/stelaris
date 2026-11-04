@@ -563,6 +563,40 @@ class AppLocalizationsEn extends AppLocalizations {
       'The resource pack formats the pack works with. An empty max minor allows any minor version.';
 
   @override
+  String get pack_icon_none => 'No icon';
+
+  @override
+  String pack_icon_size(int width, int height) {
+    return 'pack.png, $width × $height';
+  }
+
+  @override
+  String get pack_icon_hint =>
+      'A square PNG of 16 × 16, 32 × 32, 64 × 64 … pixels';
+
+  @override
+  String get pack_icon_choose => 'Choose icon';
+
+  @override
+  String get pack_icon_change => 'Change';
+
+  @override
+  String get pack_icon_remove => 'Remove';
+
+  @override
+  String get pack_icon_not_png => 'The file is no PNG';
+
+  @override
+  String get pack_icon_not_square => 'The icon must be square';
+
+  @override
+  String get pack_icon_not_power_of_two =>
+      'The size must be 16, 32, 64 … pixels';
+
+  @override
+  String get pack_icon_too_small => 'The icon must be at least 16 × 16 pixels';
+
+  @override
   String get pack_meta_load_failed => 'The pack.mcmeta could not be loaded';
 
   @override
