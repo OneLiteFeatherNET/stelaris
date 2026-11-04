@@ -12,10 +12,6 @@ const String appVersion = '1.9.0'; // x-release-please-version
 
 const String unknownEntry = 'Unknown';
 
-/// EdgeInsets
-const EdgeInsets generalPadding = EdgeInsets.only(top: 10, left: 10);
-
-const loader = SizedBox(height: 25, width: 25, child: CircularProgressIndicator());
 const divider = Divider();
 
 
@@ -56,7 +52,6 @@ final List<TextInputFormatter> enchantmentLevelFormatters = [
 const double fiftyLength = 50;
 
 /// Minecraft related values
-const String zeroString = '0';
 const String emptyString = '';
 const String defaultMaterial = 'minecraft:dirt';
 
@@ -79,12 +74,8 @@ const String defaultFunctionBody = '0';
 // Text
 // Button
 Icon addModelIcon = const Icon(Icons.add);
-Icon confirmIcon = const Icon(Icons.check);
 Icon deleteIcon = const Icon(Icons.delete_forever, color: Colors.red);
 Icon saveIcon = const Icon(Icons.save);
-Icon editIcon = const Icon(Icons.edit);
-
-/// Styles
 
 // Boxes
 const SizedBox heightTen = SizedBox(height: 10);
