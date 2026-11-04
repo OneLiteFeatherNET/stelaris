@@ -95,6 +95,7 @@ class EditCardGrid extends StatelessWidget {
       TextEdit(:final value) => value,
       ChoiceEdit() => field.displayValue,
       TextComponentEdit(:final value) => textComponentSource(value),
+      PickEdit(:final value) => value,
     };
     return EditCard(
       icon: field.icon,

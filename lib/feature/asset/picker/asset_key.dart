@@ -5,6 +5,9 @@ final RegExp _pathPattern = RegExp(r'^[a-z0-9_./-]+$');
 final RegExp _pathInvalidChars = RegExp(r'[^a-z0-9_./-]');
 final RegExp _nameSeparators = RegExp(r'[\s_-]+');
 
+/// The folder the suggested keys start with, the one item models live in.
+const String defaultAssetFolder = 'item';
+
 /// Suggests the display name of an uploaded [fileName]: the file name without
 /// its extension, its words split at `_`, `-` and spaces and capitalized,
 /// e.g. `Red Ruby` for `red_ruby.png`.
@@ -18,21 +21,26 @@ String suggestAssetName(String fileName) {
       .join(' ');
 }
 
-/// Suggests the resource key of an uploaded [fileName] as `namespace:item/name`.
+/// Suggests the resource key of an uploaded [fileName] as `namespace:item/name`,
+/// or under [folder] instead of `item`.
 ///
 /// The namespace is [namespace] when it is a valid Minecraft namespace (after
 /// lowercasing), otherwise `minecraft`. The name is the file name without its
 /// extension, lowercased, with characters outside `[a-z0-9_./-]` replaced by `_`.
-String suggestAssetKey(String fileName, {String? namespace}) =>
-    '${validNamespaceOr(namespace)}:${suggestAssetPath(fileName)}';
+String suggestAssetKey(
+  String fileName, {
+  String? namespace,
+  String folder = defaultAssetFolder,
+}) =>
+    '${validNamespaceOr(namespace)}:${suggestAssetPath(fileName, folder: folder)}';
 
-/// Suggests the path of the key of an uploaded [fileName] as `item/name`, see
-/// [suggestAssetKey].
-String suggestAssetPath(String fileName) {
+/// Suggests the path of the key of an uploaded [fileName] as `item/name`, or
+/// `folder/name` for another [folder], see [suggestAssetKey].
+String suggestAssetPath(String fileName, {String folder = defaultAssetFolder}) {
   final dot = fileName.lastIndexOf('.');
   final baseName = (dot > 0 ? fileName.substring(0, dot) : fileName)
       .toLowerCase();
-  return 'item/${baseName.replaceAll(_pathInvalidChars, '_')}';
+  return '$folder/${baseName.replaceAll(_pathInvalidChars, '_')}';
 }
 
 /// [namespace] lowercased when it is a valid Minecraft namespace, otherwise

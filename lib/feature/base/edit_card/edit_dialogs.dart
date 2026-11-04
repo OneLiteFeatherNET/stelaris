@@ -22,6 +22,8 @@ Future<void> editField(BuildContext context, EditField field) async {
       if (value != null && value != field.value) field.onChanged(value);
     case ChoiceEdit():
       await field.pick(context);
+    case PickEdit():
+      await field.pick(context);
     case TextComponentEdit():
       final text = await showDialog<String>(
         context: context,
