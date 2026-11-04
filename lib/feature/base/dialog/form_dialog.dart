@@ -22,6 +22,7 @@ class FormDialog extends StatelessWidget {
     this.showActions = true,
     this.busy = false,
     this.titleActions = const [],
+    this.header,
     super.key,
   });
 
@@ -47,6 +48,10 @@ class FormDialog extends StatelessWidget {
 
   /// Buttons in the title row, before the close icon.
   final List<Widget> titleActions;
+
+  /// Sits between the title row and the content and does not scroll with
+  /// it, e.g. a [TabBar].
+  final Widget? header;
 
   void _handleCancel(BuildContext context) {
     FocusScope.of(context).unfocus();
@@ -102,6 +107,10 @@ class FormDialog extends StatelessWidget {
                   ),
                 ),
                 const _Gutter(child: Divider(height: 24)),
+                if (header case final header?) ...[
+                  _Gutter(child: header),
+                  verticalSpacing25,
+                ],
                 Flexible(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.only(right: _gutter),
