@@ -275,7 +275,7 @@ void main() {
   });
 
   testWidgets(
-    'an upload is prefilled with the suggested key and selects the new model',
+    'an upload is prefilled with the suggested key and returns the new model',
     (tester) async {
       final backend = _Backend(
         models: models,
@@ -311,8 +311,7 @@ void main() {
       );
 
       await _tap(tester, 'Upload');
-      await _waitFor(tester, find.text(_gemKey));
-      await _tap(tester, 'Choose');
+      await pumpUntil(tester, action: () async {}, done: () => outcome.closed);
 
       final upload = backend.requests.singleWhere((r) => r.method == 'POST');
       expect(upload.uri.path, endsWith('/project/p-1/asset'));
@@ -453,7 +452,10 @@ void main() {
     testWidgets('lists only the textures, with their size', (tester) async {
       final backend = _Backend(models: models, textures: [ghost]);
       await _open(tester, backend: backend, outcome: _Outcome(), texture: true);
-      await _waitFor(tester, find.text('cygnus:font/ghost · Texture · 32 × 32'));
+      await _waitFor(
+        tester,
+        find.text('cygnus:font/ghost · Texture · 32 × 32'),
+      );
 
       expect(backend.queriedKinds, ['TEXTURE']);
       expect(find.text('Choose a texture'), findsOneWidget);
@@ -508,17 +510,45 @@ void main() {
       await _tap(tester, 'Choose a file');
 
       expect(find.text('font/ghost'), findsOneWidget);
+      expect(
+        find.text('The path in the resource pack, e.g. font/ruby'),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('an uploaded texture is listed and can be chosen', (
+    testWidgets('a chosen file hides the hint and turns Choose into Upload', (
       tester,
     ) async {
+      await _open(
+        tester,
+        backend: _Backend(),
+        outcome: _Outcome(),
+        texture: true,
+        pickFile: () async =>
+            PickedAssetFile(name: 'ghost.png', bytes: Uint8List.fromList([1])),
+      );
+      const hint = 'This project has no textures yet. Upload one below.';
+      await _waitFor(tester, find.text(hint));
+
+      await _tap(tester, 'Choose a file');
+
+      expect(find.text(hint), findsNothing);
+      expect(find.text('Upload'), findsOneWidget);
+      expect(find.text('Choose'), findsNothing);
+      expect(
+        find.text('Cancel'),
+        findsOneWidget,
+        reason:
+            'only the dialog cancels, the file is dropped by its own button',
+      );
+    });
+
+    testWidgets('an uploaded texture is returned right away', (tester) async {
       final outcome = _Outcome();
       await _open(
         tester,
         backend: _Backend(
-          upload: (_) =>
-              FakeHttpClientAdapter.response(ghost, statusCode: 201),
+          upload: (_) => FakeHttpClientAdapter.response(ghost, statusCode: 201),
         ),
         outcome: outcome,
         texture: true,
@@ -529,8 +559,7 @@ void main() {
 
       await _tap(tester, 'Choose a file');
       await _tap(tester, 'Upload');
-      await _waitFor(tester, find.text('cygnus:font/ghost · Texture · 32 × 32'));
-      await _tap(tester, 'Choose');
+      await pumpUntil(tester, action: () async {}, done: () => outcome.closed);
 
       expect(outcome.closed, isTrue);
       expect(outcome.asset?.key, 'cygnus:font/ghost');
