@@ -217,8 +217,7 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
 
                   Navigator.of(context).pop();
                   final text = context.l10n.error_generation_submit;
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(InfoBarFactory().create(text));
+                  context.showInfoSnackBar(text);
 
                   final (data, filename) = await ApiService().generateApi
                       .download(value, projectId);

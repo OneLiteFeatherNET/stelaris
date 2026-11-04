@@ -316,12 +316,6 @@ abstract class AppLocalizations {
   /// **'Create attribute'**
   String get dialog_attribute_create;
 
-  /// No description provided for @dialog_attribute_edit_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit attribute'**
-  String get dialog_attribute_edit_title;
-
   /// No description provided for @dialog_item_create.
   ///
   /// In en, this message translates to:
@@ -519,12 +513,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Title'**
   String get card_title;
-
-  /// No description provided for @card_type.
-  ///
-  /// In en, this message translates to:
-  /// **'Type'**
-  String get card_type;
 
   /// No description provided for @card_frame_type.
   ///
@@ -2746,12 +2734,6 @@ abstract class AppLocalizations {
   /// **'Uppercase letters are not allowed'**
   String get validation_no_uppercase;
 
-  /// No description provided for @validation_no_uppercase_key.
-  ///
-  /// In en, this message translates to:
-  /// **'Uppercase letters are not allowed in Adventure keys'**
-  String get validation_no_uppercase_key;
-
   /// No description provided for @validation_no_spaces.
   ///
   /// In en, this message translates to:
@@ -2763,18 +2745,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Double dots (..) are not allowed'**
   String get validation_no_double_dots;
-
-  /// No description provided for @validation_one_colon.
-  ///
-  /// In en, this message translates to:
-  /// **'Only one colon (:) is allowed for namespace:key'**
-  String get validation_one_colon;
-
-  /// No description provided for @validation_namespace_slash_in_key.
-  ///
-  /// In en, this message translates to:
-  /// **'Namespace cannot contain slashes (/)'**
-  String get validation_namespace_slash_in_key;
 
   /// No description provided for @validation_namespace_no_colon.
   ///
@@ -2793,12 +2763,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Colons (:) are not allowed in the key part'**
   String get validation_key_part_no_colon;
-
-  /// No description provided for @validation_adventure_key_invalid.
-  ///
-  /// In en, this message translates to:
-  /// **'Invalid Adventure key (e.g. \"my_project\" or \"custom:my_project\")'**
-  String get validation_adventure_key_invalid;
 
   /// No description provided for @validation_namespace_invalid.
   ///

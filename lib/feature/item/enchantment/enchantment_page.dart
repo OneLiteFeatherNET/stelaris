@@ -63,8 +63,8 @@ class ItemEnchantmentPage extends StatelessWidget {
 
   void _showAddEnchantmentDialog(BuildContext context, EnchantmentView vm) {
     if (vm.selectedEnchantmentMap.length >= vm.enchantments.length) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        InfoBarFactory().create(context.l10n.tooltip_item_enchantment_all_set),
+      context.showInfoSnackBar(
+        context.l10n.tooltip_item_enchantment_all_set,
       );
       return;
     }

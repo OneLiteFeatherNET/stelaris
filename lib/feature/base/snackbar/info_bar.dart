@@ -162,13 +162,6 @@ extension ScaffoldMessengerContextExtension on BuildContext {
         ));
   }
 
-  /// Shows a floating warning [SnackBar] with amber background and warning icon.
-  void showWarningSnackBar(String text) {
-    ScaffoldMessenger.of(this)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(InfoBarFactory().createWarning(text));
-  }
-
   /// Shows a floating info [SnackBar].
   void showInfoSnackBar(String text) {
     ScaffoldMessenger.of(this)

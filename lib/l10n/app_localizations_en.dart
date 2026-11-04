@@ -129,9 +129,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_attribute_create => 'Create attribute';
 
   @override
-  String get dialog_attribute_edit_title => 'Edit attribute';
-
-  @override
   String get dialog_item_create => 'Create new item';
 
   @override
@@ -238,9 +235,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get card_title => 'Title';
-
-  @override
-  String get card_type => 'Type';
 
   @override
   String get card_frame_type => 'Frame type';
@@ -1463,22 +1457,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validation_no_uppercase => 'Uppercase letters are not allowed';
 
   @override
-  String get validation_no_uppercase_key =>
-      'Uppercase letters are not allowed in Adventure keys';
-
-  @override
   String get validation_no_spaces => 'Spaces are not allowed';
 
   @override
   String get validation_no_double_dots => 'Double dots (..) are not allowed';
-
-  @override
-  String get validation_one_colon =>
-      'Only one colon (:) is allowed for namespace:key';
-
-  @override
-  String get validation_namespace_slash_in_key =>
-      'Namespace cannot contain slashes (/)';
 
   @override
   String get validation_namespace_no_colon =>
@@ -1491,10 +1473,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get validation_key_part_no_colon =>
       'Colons (:) are not allowed in the key part';
-
-  @override
-  String get validation_adventure_key_invalid =>
-      'Invalid Adventure key (e.g. \"my_project\" or \"custom:my_project\")';
 
   @override
   String get validation_namespace_invalid =>

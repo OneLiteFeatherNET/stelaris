@@ -45,55 +45,6 @@ class Validators {
     };
   }
 
-  /// Validates a Minecraft / Kyori Adventure key or namespace.
-  ///
-  /// Examples of valid keys: `my_project`, `minecraft:stone`, `custom:item/tool`
-  static FormValidator<String> adventureKey(
-    AppLocalizations l10n, {
-    bool detailed = true,
-  }) {
-    final requiredMessage = l10n.validation_namespace_required;
-    final invalidMessage = l10n.validation_adventure_key_invalid;
-    if (!detailed) {
-      return compose([
-        required(requiredMessage),
-        pattern(adventureKeyPattern, invalidMessage),
-      ]);
-    }
-
-    return (value) {
-      if (value == null || value.trim().isEmpty) {
-        return requiredMessage;
-      }
-
-      final text = value.trim();
-
-      if (text.contains(RegExp(r'[A-Z]'))) {
-        return l10n.validation_no_uppercase_key;
-      }
-      if (text.contains(' ')) {
-        return l10n.validation_no_spaces;
-      }
-      if (':'.allMatches(text).length > 1) {
-        return l10n.validation_one_colon;
-      }
-      if (text.contains('..')) {
-        return l10n.validation_no_double_dots;
-      }
-      if (text.contains(':')) {
-        final parts = text.split(':');
-        if (parts[0].contains('/')) {
-          return l10n.validation_namespace_slash_in_key;
-        }
-      }
-      if (!adventureKeyPattern.hasMatch(text)) {
-        return invalidMessage;
-      }
-
-      return null;
-    };
-  }
-
   /// Validates only the namespace part of an Adventure key (the left part before the colon).
   /// Slashes (/), colons (:), double dots (..), uppercase letters, and spaces are not allowed.
   ///

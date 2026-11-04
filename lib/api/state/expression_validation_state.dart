@@ -16,16 +16,6 @@ class ExpressionValidationState {
   final List<String> variables;
   final ExpressionValidation validation;
 
-  /// The validation of [model] when it still belongs to the text and the
-  /// declared variables of [model]; null when they changed since it was asked.
-  static ExpressionValidation? forModel(
-    ExpressionValidationState? state,
-    ExpressionModel model,
-  ) {
-    if (state == null || !state.belongsTo(model)) return null;
-    return state.validation;
-  }
-
   /// Whether the answer was asked for the text and variables of [model].
   bool belongsTo(ExpressionModel model) =>
       expression == model.expression &&
