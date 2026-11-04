@@ -7,6 +7,7 @@ import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/selected_font_state.dart';
 import 'package:stelaris/feature/asset/picker/asset_picker_dialog.dart';
+import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card_grid.dart';
 import 'package:stelaris/feature/base/edit_card/edit_field.dart';
 import 'package:stelaris/feature/font/font_texture_asset.dart';
@@ -59,6 +60,8 @@ class FontGeneralPage extends StatelessWidget {
       uploadKinds: textureAssetKinds,
       keyFolder: _textureFolder,
       hideExtracted: true,
+      previewBuilder: (asset) =>
+          TexturePreview(projectId: projectId, asset: asset),
     );
     if (asset == null || asset.id == font.textureAssetId) return;
     loader.remember(asset);

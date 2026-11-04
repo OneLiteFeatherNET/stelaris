@@ -2033,6 +2033,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get font_texture_missing => 'The texture could not be loaded';
 
   @override
+  String get texture_preview_failed => 'The texture could not be shown';
+
+  @override
   String get font_hint_ascent =>
       'Pixels above the baseline, at most the height';
 

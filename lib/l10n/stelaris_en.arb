@@ -1063,6 +1063,7 @@
   "font_hint_texture": "A texture of the project, chosen or uploaded",
   "font_texture_loading": "Loading…",
   "font_texture_missing": "The texture could not be loaded",
+  "texture_preview_failed": "The texture could not be shown",
   "font_hint_ascent": "Pixels above the baseline, at most the height",
   "font_hint_height": "Height of a glyph in pixels, 8 by default",
   "sound_section_general": "Event",

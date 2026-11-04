@@ -3712,6 +3712,12 @@ abstract class AppLocalizations {
   /// **'The texture could not be loaded'**
   String get font_texture_missing;
 
+  /// No description provided for @texture_preview_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The texture could not be shown'**
+  String get texture_preview_failed;
+
   /// No description provided for @font_hint_ascent.
   ///
   /// In en, this message translates to:
