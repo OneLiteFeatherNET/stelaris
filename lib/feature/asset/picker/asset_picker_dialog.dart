@@ -179,22 +179,28 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
     return null;
   }
 
+  /// Uploads the chosen file and closes the dialog with it. A file of a kind
+  /// the picker does not list, e.g. a texture for an item, is stored and
+  /// reported, and the dialog stays open.
   Future<void> _submitUpload() async {
+    if (!_upload.canUpload) return;
     final asset = await _upload.upload();
     if (asset == null || !mounted) return;
+    if (widget.kinds.contains(asset.kind)) {
+      Navigator.of(context).pop(asset);
+      return;
+    }
     _upload.clear();
-    setState(() {
-      if (widget.kinds.contains(asset.kind)) {
-        _assets = _sortedByKey([
-          ..._assets.where((listed) => listed.id != asset.id),
-          asset,
-        ]);
-        _selected = asset;
-        _uploadedTextureKey = null;
-      } else {
-        _uploadedTextureKey = asset.key;
-      }
-    });
+    setState(() => _uploadedTextureKey = asset.key);
+  }
+
+  /// The dialog's action: the upload while a file waits, else choosing the
+  /// selected asset.
+  VoidCallback? _submit(AssetModel? selected) {
+    if (_upload.uploading) return null;
+    if (_upload.file != null) return _upload.canUpload ? _submitUpload : null;
+    if (selected == null) return null;
+    return () => Navigator.of(context).pop(selected);
   }
 
   @override
@@ -208,37 +214,22 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
         title: _picksTexture
             ? l10n.asset_picker_title_texture
             : l10n.asset_picker_title,
-        actionLabel: l10n.asset_picker_choose,
+        actionLabel: _upload.file != null
+            ? l10n.asset_picker_upload_action
+            : l10n.asset_picker_choose,
         maxWidth: 560,
         busy: _upload.uploading,
-        onSubmit: selected == null || _upload.uploading
-            ? null
-            : () => Navigator.of(context).pop(selected),
+        onSubmit: _submit(selected),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildList(context),
-            const SizedBox(height: 16),
-            AssetUploadForm(controller: _upload, onSubmitted: _submitUpload),
-            if (_upload.file != null) ...[
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: _upload.uploading ? null : _upload.clear,
-                    child: Text(l10n.button_cancel),
-                  ),
-                  const SizedBox(width: 8),
-                  // Tonal, the dialog's own action is to choose an asset.
-                  FilledButton.tonal(
-                    onPressed: _upload.canUpload ? _submitUpload : null,
-                    child: Text(l10n.asset_picker_upload_action),
-                  ),
-                ],
-              ),
+            // The hint to upload one is moot once a file is chosen.
+            if (!_showsOnlyUpload) ...[
+              _buildList(context),
+              const SizedBox(height: 16),
             ],
+            AssetUploadForm(controller: _upload, onSubmitted: _submitUpload),
             if (_uploadedTextureKey case final key?) ...[
               const SizedBox(height: 12),
               Text(l10n.asset_picker_texture_uploaded(key)),
@@ -255,6 +246,14 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
       ),
     );
   }
+
+  /// Whether the list is left out: nothing is listed and a file waits for
+  /// upload.
+  bool get _showsOnlyUpload =>
+      !_loading &&
+      _loadError == null &&
+      _assets.isEmpty &&
+      _upload.file != null;
 
   Widget _buildList(BuildContext context) {
     final l10n = context.l10n;
@@ -279,13 +278,12 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
       );
     }
     if (_assets.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Text(
-          _picksTexture
-              ? l10n.asset_picker_empty_texture
-              : l10n.asset_picker_empty,
-        ),
+      // No padding of its own: the divider above and the gap to the upload
+      // form below already set it apart.
+      return Text(
+        _picksTexture
+            ? l10n.asset_picker_empty_texture
+            : l10n.asset_picker_empty,
       );
     }
     return Column(
