@@ -5,14 +5,16 @@ import 'package:web/web.dart' as web;
 
 import 'picked_asset_file.dart';
 
-/// Opens the browser's file dialog for an asset file. Resolves to the chosen
-/// file, or null when the dialog is cancelled. Fails when the chosen file
-/// can't be read.
-Future<PickedAssetFile?> pickAssetFile() {
+/// Opens the browser's file dialog for an asset file, offering the file
+/// types in [accept]. Resolves to the chosen file, or null when the dialog
+/// is cancelled. Fails when the chosen file can't be read.
+Future<PickedAssetFile?> pickAssetFile({
+  String accept = '.png,.json,.bbmodel',
+}) {
   final completer = Completer<PickedAssetFile?>();
   final input = web.HTMLInputElement()
     ..type = 'file'
-    ..accept = '.png,.json,.bbmodel'
+    ..accept = accept
     ..style.display = 'none';
 
   void finish(Future<PickedAssetFile?> picked) {
