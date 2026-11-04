@@ -531,6 +531,57 @@ class AppLocalizationsEn extends AppLocalizations {
       'Project key cannot be changed after creation';
 
   @override
+  String get dialog_project_tab_project => 'Project';
+
+  @override
+  String get dialog_project_tab_pack_meta => 'Pack';
+
+  @override
+  String get pack_meta_hint =>
+      'The pack.mcmeta of the resource pack. Leave all fields empty for none.';
+
+  @override
+  String get pack_meta_description => 'Description';
+
+  @override
+  String get pack_meta_min_format_major => 'Min format';
+
+  @override
+  String get pack_meta_max_format_major => 'Max format';
+
+  @override
+  String get pack_meta_format_minor => 'Minor';
+
+  @override
+  String get pack_meta_format_minor_any => 'any';
+
+  @override
+  String get pack_meta_formats => 'Supported formats';
+
+  @override
+  String get pack_meta_formats_hint =>
+      'The resource pack formats the pack works with. An empty max minor allows any minor version.';
+
+  @override
+  String get pack_meta_load_failed => 'The pack.mcmeta could not be loaded';
+
+  @override
+  String get pack_meta_retry => 'Try again';
+
+  @override
+  String get validation_pack_meta_description_required =>
+      'Description is required';
+
+  @override
+  String get validation_pack_meta_format_required => 'Required';
+
+  @override
+  String get validation_pack_meta_format_number => 'Not a number ≥ 0';
+
+  @override
+  String get validation_pack_meta_format_range => 'Below the min format';
+
+  @override
   String get project_selection_edit_tooltip => 'Edit project';
 
   @override

@@ -1060,6 +1060,102 @@ abstract class AppLocalizations {
   /// **'Project key cannot be changed after creation'**
   String get dialog_project_key_readonly_hint;
 
+  /// No description provided for @dialog_project_tab_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get dialog_project_tab_project;
+
+  /// No description provided for @dialog_project_tab_pack_meta.
+  ///
+  /// In en, this message translates to:
+  /// **'Pack'**
+  String get dialog_project_tab_pack_meta;
+
+  /// No description provided for @pack_meta_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'The pack.mcmeta of the resource pack. Leave all fields empty for none.'**
+  String get pack_meta_hint;
+
+  /// No description provided for @pack_meta_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get pack_meta_description;
+
+  /// No description provided for @pack_meta_min_format_major.
+  ///
+  /// In en, this message translates to:
+  /// **'Min format'**
+  String get pack_meta_min_format_major;
+
+  /// No description provided for @pack_meta_max_format_major.
+  ///
+  /// In en, this message translates to:
+  /// **'Max format'**
+  String get pack_meta_max_format_major;
+
+  /// No description provided for @pack_meta_format_minor.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor'**
+  String get pack_meta_format_minor;
+
+  /// No description provided for @pack_meta_format_minor_any.
+  ///
+  /// In en, this message translates to:
+  /// **'any'**
+  String get pack_meta_format_minor_any;
+
+  /// No description provided for @pack_meta_formats.
+  ///
+  /// In en, this message translates to:
+  /// **'Supported formats'**
+  String get pack_meta_formats;
+
+  /// No description provided for @pack_meta_formats_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'The resource pack formats the pack works with. An empty max minor allows any minor version.'**
+  String get pack_meta_formats_hint;
+
+  /// No description provided for @pack_meta_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The pack.mcmeta could not be loaded'**
+  String get pack_meta_load_failed;
+
+  /// No description provided for @pack_meta_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get pack_meta_retry;
+
+  /// No description provided for @validation_pack_meta_description_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Description is required'**
+  String get validation_pack_meta_description_required;
+
+  /// No description provided for @validation_pack_meta_format_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get validation_pack_meta_format_required;
+
+  /// No description provided for @validation_pack_meta_format_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a number ≥ 0'**
+  String get validation_pack_meta_format_number;
+
+  /// No description provided for @validation_pack_meta_format_range.
+  ///
+  /// In en, this message translates to:
+  /// **'Below the min format'**
+  String get validation_pack_meta_format_range;
+
   /// No description provided for @project_selection_edit_tooltip.
   ///
   /// In en, this message translates to:

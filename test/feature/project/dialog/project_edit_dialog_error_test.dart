@@ -8,6 +8,7 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
+import '../../../support/fake_pack_meta_api.dart';
 import '../../../support/pump_until.dart';
 
 void main() {
@@ -37,7 +38,10 @@ void main() {
               builder: (context) => TextButton(
                 onPressed: () async => dialogResult = await showDialog<Object>(
                   context: context,
-                  builder: (_) => const EditProjectDialog(project: project),
+                  builder: (_) => EditProjectDialog(
+                  project: project,
+                  packMetaApi: FakePackMetaApi(),
+                ),
                 ),
                 child: const Text('Open'),
               ),

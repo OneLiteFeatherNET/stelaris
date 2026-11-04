@@ -8,6 +8,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 
 import 'package:stelaris/api/api_service.dart';
 import '../../support/fake_http_client_adapter.dart';
+import '../../support/settle_requests.dart';
 
 void main() {
   group('ProjectSelectionPage Widget Tests', () {
@@ -150,7 +151,14 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byIcon(Icons.edit_outlined));
-      await tester.pumpAndSettle();
+      // The dialog loads the pack meta through the faked client.
+      await settleRequests(
+        tester,
+        () => find
+            .byType(CircularProgressIndicator, skipOffstage: false)
+            .evaluate()
+            .isNotEmpty,
+      );
 
       expect(find.text('Edit project'), findsOneWidget);
       expect(find.text('test_key'), findsOneWidget);
