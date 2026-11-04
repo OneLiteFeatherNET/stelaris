@@ -3,6 +3,7 @@ import 'package:stelaris/api/base_api.dart';
 import 'package:stelaris/api/service/client/asset_client_api.dart';
 import 'package:stelaris/api/service/client/expression_client_api.dart';
 import 'package:stelaris/api/service/client/expression_function_client_api.dart';
+import 'package:stelaris/api/service/client/pack_meta_client_api.dart';
 import 'package:stelaris/api/service/client/project_client_api.dart';
 import 'package:stelaris/api/service/client/sound_client_api.dart';
 import 'package:stelaris/api/client_api.dart';
@@ -61,6 +62,10 @@ class ApiService {
   );
 
   late final AssetClientApi assetApi = AssetClientApi(
+    apiClient: _apiClient,
+  );
+
+  late final PackMetaClientApi packMetaApi = PackMetaClientApi(
     apiClient: _apiClient,
   );
 
