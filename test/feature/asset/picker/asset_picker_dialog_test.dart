@@ -24,6 +24,7 @@ Map<String, Object?> _assetJson({
   int? width,
   int? height,
   String? sourceAssetId,
+  String sha1 = 'bbbb',
 }) => {
   'id': id,
   'projectId': 'p-1',
@@ -33,7 +34,7 @@ Map<String, Object?> _assetJson({
   'fileName': fileName ?? '$id.json',
   'contentType': 'application/json',
   'size': 512,
-  'sha1': 'bbbb',
+  'sha1': sha1,
   'derivedAssetIds': <String>[],
   'width': ?width,
   'height': ?height,
@@ -105,6 +106,7 @@ Future<void> _open(
   Widget Function(AssetModel asset)? previewBuilder,
   bool texture = false,
   bool hideExtracted = false,
+  bool replaceable = false,
 }) async {
   ApiService().assetApi.apiClient.dio.httpClientAdapter = FakeHttpClientAdapter(
     backend.handle,
@@ -129,6 +131,7 @@ Future<void> _open(
                     : const {...AssetKind.values},
                 keyFolder: texture ? 'font' : 'item',
                 hideExtracted: hideExtracted,
+                replaceable: replaceable,
                 pickFile: pickFile ?? () async => null,
               );
               outcome.closed = true;
@@ -563,6 +566,85 @@ void main() {
 
       expect(outcome.closed, isTrue);
       expect(outcome.asset?.key, 'cygnus:font/ghost');
+    });
+
+    group('new version', () {
+      Future<void> openAndSelect(
+        WidgetTester tester,
+        _Backend backend, {
+        bool replaceable = true,
+      }) async {
+        await _open(
+          tester,
+          backend: backend,
+          outcome: _Outcome(),
+          texture: true,
+          replaceable: replaceable,
+          pickFile: () async => PickedAssetFile(
+            name: 'ghost.png',
+            bytes: Uint8List.fromList([7]),
+          ),
+        );
+        await _waitFor(tester, find.text('cygnus:font/ghost'));
+        await _tap(tester, 'cygnus:font/ghost');
+      }
+
+      testWidgets('replaces the file of the selected texture', (tester) async {
+        final backend = _Backend(
+          textures: [ghost],
+          upload: (_) => FakeHttpClientAdapter.response(
+            _assetJson(
+              id: 't-1',
+              key: 'cygnus:font/ghost',
+              kind: 'TEXTURE',
+              displayName: 'Ghost',
+              sha1: 'cccc',
+            ),
+          ),
+        );
+        await openAndSelect(tester, backend);
+
+        await _tap(tester, 'Upload new version');
+        await _waitFor(tester, find.text('Stored a new version of Ghost.'));
+
+        final replace = backend.requests.singleWhere((r) => r.method == 'POST');
+        expect(replace.uri.path, endsWith('/project/p-1/asset/t-1/content'));
+        expect(replace.headers['If-Match'], '"bbbb"');
+      });
+
+      testWidgets('a conflict names the texture and loads the list anew', (
+        tester,
+      ) async {
+        final backend = _Backend(
+          textures: [ghost],
+          upload: (_) => FakeHttpClientAdapter.response({
+            'title': 'Precondition failed',
+            'status': 412,
+          }, statusCode: 412),
+        );
+        await openAndSelect(tester, backend);
+
+        await _tap(tester, 'Upload new version');
+        await _waitFor(
+          tester,
+          find.text(
+            'cygnus:font/ghost was changed meanwhile. '
+            'The list now shows the stored version.',
+          ),
+        );
+
+        expect(backend.queriedKinds, ['TEXTURE', 'TEXTURE']);
+      });
+
+      testWidgets('is not offered unless the picker allows it', (tester) async {
+        await openAndSelect(
+          tester,
+          _Backend(textures: [ghost]),
+          replaceable: false,
+        );
+
+        expect(find.text('Upload new version'), findsNothing);
+      });
     });
   });
 }
