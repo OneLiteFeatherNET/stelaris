@@ -97,7 +97,7 @@ class ExpressionFunctionRemoveAction extends ReduxAction<AppState> {
     await ApiService().expressionFunctionApi.remove(model);
     // The selection stays while the detail page is still mounted during its
     // exit transition; its onDispose clears it.
-    await dispatchAndWait(ReloadExpressionCatalogAction());
+    dispatch(ReloadExpressionCatalogAction());
     return state.copyWith(
       expressionFunctions: state.expressionFunctions.removingWhere(
         (element) => element.id == model.id,
@@ -120,7 +120,7 @@ class ExpressionFunctionAddAction extends ReduxAction<AppState>
     final ExpressionFunctionModel databaseModel = await ApiService()
         .expressionFunctionApi
         .add(toAdd);
-    await dispatchAndWait(ReloadExpressionCatalogAction());
+    dispatch(ReloadExpressionCatalogAction());
     return state.copyWith(
       expressionFunctions: state.expressionFunctions.adding(databaseModel),
       selectedExpressionFunction: databaseModel,
@@ -175,6 +175,9 @@ class ExpressionFunctionNotesUpdateAction extends ReduxAction<AppState>
 /// Saves the selected function. A rejection (HTTP 400) is kept in the state,
 /// so the fields it names can show it, and is thrown on as a [ProblemDetail]
 /// for the save's own message.
+///
+/// The catalog is loaded again only when the save changed the function's
+/// signature, or when no stored copy of it is loaded to compare with.
 class ExpressionFunctionDatabaseUpdate extends ReduxAction<AppState>
     with Throttle {
   ExpressionFunctionDatabaseUpdate();
@@ -192,7 +195,12 @@ class ExpressionFunctionDatabaseUpdate extends ReduxAction<AppState>
       dispatchSync(_SetExpressionFunctionProblem(problem));
       throw problem;
     }
-    await dispatchAndWait(ReloadExpressionCatalogAction());
+    final stored = state.expressionFunctions.items
+        .where((element) => element.id == selected.id)
+        .firstOrNull;
+    if (stored == null || _changesCatalog(stored, response)) {
+      dispatch(ReloadExpressionCatalogAction());
+    }
     return state
         .copyWith(
           expressionFunctions: state.expressionFunctions.replacingWhere(
@@ -204,6 +212,28 @@ class ExpressionFunctionDatabaseUpdate extends ReduxAction<AppState>
         )
         .clearUnsavedChanges(NavigationEntry.function);
   }
+}
+
+/// Whether [saved] shows another entry in the catalog than [before]: the
+/// catalog lists a function by its name, kind, return type and parameters, so
+/// a changed body or comment leaves it as it is. A parameter's test value is
+/// not part of its signature.
+bool _changesCatalog(
+  ExpressionFunctionModel before,
+  ExpressionFunctionModel saved,
+) {
+  if (before.name != saved.name ||
+      before.kind != saved.kind ||
+      before.returnType != saved.returnType ||
+      before.parameters.length != saved.parameters.length) {
+    return true;
+  }
+  for (var i = 0; i < saved.parameters.length; i++) {
+    final a = before.parameters[i];
+    final b = saved.parameters[i];
+    if (a.name != b.name || a.type != b.type) return true;
+  }
+  return false;
 }
 
 /// Page 1 of the functions of the open project, in the size of the loaded

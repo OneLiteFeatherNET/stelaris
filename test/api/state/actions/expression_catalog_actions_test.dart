@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:async_redux/async_redux.dart';
@@ -25,7 +26,7 @@ const _catalogJson = {
 class _CountingAdapter implements HttpClientAdapter {
   _CountingAdapter(this.respond);
 
-  final ResponseBody Function(RequestOptions options) respond;
+  final FutureOr<ResponseBody> Function(RequestOptions options) respond;
   int requests = 0;
 
   @override
@@ -150,4 +151,41 @@ void main() {
     expect(adapter.requests, 1);
     expect(store.state.expressionCatalog?.functions.single.name, 'ROUND');
   });
+
+  test(
+    'an earlier answer arriving late does not replace a newer catalog',
+    () async {
+      final store = Store<AppState>(
+        initialState: const AppState(selectedProject: _project),
+      );
+      // The first request is answered only when the test says so, the second
+      // at once.
+      final firstAnswer = Completer<ResponseBody>();
+      late final _CountingAdapter adapter;
+      adapter = _CountingAdapter(
+        (_) => adapter.requests == 1
+            ? firstAnswer.future
+            : FakeHttpClientAdapter.response(_catalogJson),
+      );
+      ApiService().expressionApi.apiClient.dio.httpClientAdapter = adapter;
+
+      final earlier = store.dispatchAndWait(ReloadExpressionCatalogAction());
+      while (adapter.requests == 0) {
+        await Future<void>.delayed(Duration.zero);
+      }
+      await store.dispatchAndWait(ReloadExpressionCatalogAction());
+      firstAnswer.complete(
+        FakeHttpClientAdapter.response({
+          ..._catalogJson,
+          'functions': [
+            {'name': 'OLD', 'category': 'BASIC', 'parameters': []},
+          ],
+        }),
+      );
+      await earlier;
+
+      expect(adapter.requests, 2);
+      expect(store.state.expressionCatalog?.functions.single.name, 'ROUND');
+    },
+  );
 }

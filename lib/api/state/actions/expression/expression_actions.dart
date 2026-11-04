@@ -263,30 +263,42 @@ class LoadExpressionCatalogAction extends ReduxAction<AppState>
         state.expressionCatalogProjectId == projectId) {
       return null;
     }
-    final catalog = await _fetchCatalog(projectId);
-    if (catalog == null) return null;
-    return state.copyWith(
-      expressionCatalog: catalog,
-      expressionCatalogProjectId: projectId,
-    );
+    return _loadCatalog(() => state, projectId);
   }
 }
 
 /// Loads the catalog of the selected project again, whatever was loaded
-/// before. Dispatched when a project function is saved or deleted, as the
-/// project's functions in the catalog change with it.
+/// before. Dispatched when a project function is added or deleted, or saved
+/// with another signature, as the project's functions in the catalog change
+/// with it. The saves do not wait for it.
 class ReloadExpressionCatalogAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     final projectId = state.selectedProject?.id;
     if (projectId == null) return null;
-    final catalog = await _fetchCatalog(projectId);
-    if (catalog == null) return null;
-    return state.copyWith(
-      expressionCatalog: catalog,
-      expressionCatalogProjectId: projectId,
-    );
+    return _loadCatalog(() => state, projectId);
   }
+}
+
+/// Counts the catalog requests, so that only the answer to the latest one is
+/// stored: a reload is not awaited by the save that starts it, and an earlier
+/// answer arriving late must not replace a newer catalog.
+int _catalogRequests = 0;
+
+/// The state with the catalog of [projectId] fetched, or null when the
+/// request failed or a later request has been started meanwhile. [current]
+/// reads the state once the answer is there.
+Future<AppState?> _loadCatalog(
+  AppState Function() current,
+  String projectId,
+) async {
+  final request = ++_catalogRequests;
+  final catalog = await _fetchCatalog(projectId);
+  if (catalog == null || request != _catalogRequests) return null;
+  return current().copyWith(
+    expressionCatalog: catalog,
+    expressionCatalogProjectId: projectId,
+  );
 }
 
 /// The catalog of [projectId], or null when the request failed.
