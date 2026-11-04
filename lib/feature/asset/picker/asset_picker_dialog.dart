@@ -26,7 +26,8 @@ const _pageSize = 50;
 /// for a texture. An upload takes the files of [uploadKinds], all by default.
 ///
 /// With [hideExtracted] the textures extracted from a Blockbench model are not
-/// listed, e.g. for a font, which can't use them.
+/// listed, e.g. for a font, which can't use them. With [replaceable] a new
+/// version of the selected asset can be uploaded in place of its file.
 ///
 /// Resolves to the chosen asset, or null when the dialog is closed. [namespace]
 /// prefills the key of an upload, whose path starts with [keyFolder].
@@ -42,6 +43,7 @@ Future<AssetModel?> showAssetPickerDialog(
   Set<AssetKind> uploadKinds = const {...AssetKind.values},
   String keyFolder = defaultAssetFolder,
   bool hideExtracted = false,
+  bool replaceable = false,
   Future<PickedAssetFile?> Function() pickFile = pickAssetFile,
 }) {
   return showDialog<AssetModel>(
@@ -55,6 +57,7 @@ Future<AssetModel?> showAssetPickerDialog(
       uploadKinds: uploadKinds,
       keyFolder: keyFolder,
       hideExtracted: hideExtracted,
+      replaceable: replaceable,
       pickFile: pickFile,
     ),
   );
@@ -73,6 +76,7 @@ class _AssetPickerDialog extends StatefulWidget {
     required this.uploadKinds,
     required this.keyFolder,
     required this.hideExtracted,
+    required this.replaceable,
     required this.pickFile,
   });
 
@@ -84,6 +88,7 @@ class _AssetPickerDialog extends StatefulWidget {
   final Set<AssetKind> uploadKinds;
   final String keyFolder;
   final bool hideExtracted;
+  final bool replaceable;
   final Future<PickedAssetFile?> Function() pickFile;
 
   @override
@@ -107,6 +112,15 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
   /// The key of the last texture uploaded while only models are listed. Such
   /// a texture is stored but not listed.
   String? _uploadedTextureKey;
+
+  /// Whether a new version of the selected asset is being uploaded.
+  bool _replacing = false;
+
+  /// What went wrong with the last new version, null after a success.
+  String? _replaceError;
+
+  /// The name of the asset whose new version was stored last.
+  String? _replacedName;
 
   /// Whether the picker is for a texture, which its texts name.
   bool get _picksTexture => widget.kinds.contains(AssetKind.TEXTURE);
@@ -143,7 +157,10 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
       final preselected = widget.selectedKey;
       setState(() {
         _assets = assets;
-        _selected = _firstWithKey(assets, preselected);
+        // A reload keeps the selection while its asset is still listed.
+        _selected =
+            _withId(assets, _selected?.id) ??
+            _firstWithKey(assets, preselected);
         _loading = false;
       });
     } on DioException catch (error) {
@@ -171,6 +188,14 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
     }
   }
 
+  static AssetModel? _withId(List<AssetModel> assets, String? id) {
+    if (id == null) return null;
+    for (final asset in assets) {
+      if (asset.id == id) return asset;
+    }
+    return null;
+  }
+
   static AssetModel? _firstWithKey(List<AssetModel> assets, String? key) {
     if (key == null) return null;
     for (final asset in assets) {
@@ -194,10 +219,49 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
     setState(() => _uploadedTextureKey = asset.key);
   }
 
+  /// Uploads a new version of [asset] in place of its file. The backend
+  /// answers 412 if the file changed meanwhile, then the list is loaded anew.
+  Future<void> _replace(AssetModel asset) async {
+    final file = await widget.pickFile();
+    if (file == null || !mounted) return;
+    setState(() {
+      _replacing = true;
+      _replaceError = null;
+      _replacedName = null;
+    });
+    try {
+      final updated = await ApiService().assetApi.replaceContent(
+        asset,
+        fileName: file.name,
+        bytes: file.bytes,
+      );
+      if (!mounted) return;
+      setState(() {
+        _replacing = false;
+        _replacedName = updated.displayName;
+        _assets = _sortedByKey([
+          ..._assets.where((listed) => listed.id != updated.id),
+          updated,
+        ]);
+        _selected = updated;
+      });
+    } on DioException catch (error) {
+      if (!mounted) return;
+      final conflict = error.response?.statusCode == 412;
+      setState(() {
+        _replacing = false;
+        _replaceError = conflict
+            ? context.l10n.asset_picker_replace_conflict(asset.displayName)
+            : ProblemDetail.fromDioException(error).displayMessage;
+      });
+      if (conflict) await _load();
+    }
+  }
+
   /// The dialog's action: the upload while a file waits, else choosing the
   /// selected asset.
   VoidCallback? _submit(AssetModel? selected) {
-    if (_upload.uploading) return null;
+    if (_upload.uploading || _replacing) return null;
     if (_upload.file != null) return _upload.canUpload ? _submitUpload : null;
     if (selected == null) return null;
     return () => Navigator.of(context).pop(selected);
@@ -218,7 +282,7 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
             ? l10n.asset_picker_upload_action
             : l10n.asset_picker_choose,
         maxWidth: 560,
-        busy: _upload.uploading,
+        busy: _upload.uploading || _replacing,
         onSubmit: _submit(selected),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -240,6 +304,23 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
                 key: ValueKey(selected.id),
                 child: previewBuilder(selected),
               ),
+            ],
+            if (selected != null && widget.replaceable) ...[
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  onPressed: _replacing || _upload.uploading
+                      ? null
+                      : () => _replace(selected),
+                  icon: const Icon(Icons.upload_file),
+                  label: Text(l10n.asset_picker_replace),
+                ),
+              ),
+              if (_replaceError case final error?)
+                Text(error, style: _errorStyle(context))
+              else if (_replacedName case final name?)
+                Text(l10n.asset_picker_replaced(name)),
             ],
           ],
         ),

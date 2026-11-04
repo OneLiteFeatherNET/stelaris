@@ -4066,6 +4066,24 @@ abstract class AppLocalizations {
   /// **'Upload'**
   String get asset_picker_upload_action;
 
+  /// No description provided for @asset_picker_replace.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload new version'**
+  String get asset_picker_replace;
+
+  /// No description provided for @asset_picker_replaced.
+  ///
+  /// In en, this message translates to:
+  /// **'Stored a new version of {name}.'**
+  String asset_picker_replaced(String name);
+
+  /// No description provided for @asset_picker_replace_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was changed meanwhile. The list now shows the stored version.'**
+  String asset_picker_replace_conflict(String name);
+
   /// No description provided for @asset_picker_texture_uploaded.
   ///
   /// In en, this message translates to:

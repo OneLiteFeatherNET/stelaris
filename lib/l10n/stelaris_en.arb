@@ -1153,6 +1153,23 @@
   "asset_picker_load_failed_texture": "The textures could not be loaded.",
   "asset_picker_retry": "Try again",
   "asset_picker_upload_action": "Upload",
+  "asset_picker_replace": "Upload new version",
+  "asset_picker_replaced": "Stored a new version of {name}.",
+  "@asset_picker_replaced": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_picker_replace_conflict": "{name} was changed meanwhile. The list now shows the stored version.",
+  "@asset_picker_replace_conflict": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "asset_picker_texture_uploaded": "Uploaded the texture {key}. Only models can be chosen for an item.",
   "@asset_picker_texture_uploaded": {
     "placeholders": {

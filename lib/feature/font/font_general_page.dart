@@ -60,6 +60,7 @@ class FontGeneralPage extends StatelessWidget {
       uploadKinds: textureAssetKinds,
       keyFolder: _textureFolder,
       hideExtracted: true,
+      replaceable: true,
       previewBuilder: (asset) =>
           TexturePreview(projectId: projectId, asset: asset),
     );

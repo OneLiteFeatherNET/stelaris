@@ -2238,6 +2238,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_picker_upload_action => 'Upload';
 
   @override
+  String get asset_picker_replace => 'Upload new version';
+
+  @override
+  String asset_picker_replaced(String name) {
+    return 'Stored a new version of $name.';
+  }
+
+  @override
+  String asset_picker_replace_conflict(String name) {
+    return '$name was changed meanwhile. The list now shows the stored version.';
+  }
+
+  @override
   String asset_picker_texture_uploaded(String key) {
     return 'Uploaded the texture $key. Only models can be chosen for an item.';
   }
