@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
@@ -198,6 +199,7 @@ void main() {
       expect(find.text('Choose a texture'), findsOneWidget);
       await tester.tap(find.text('cygnus:font/clock'));
       await tester.pumpAndSettle();
+      expect(find.byType(TexturePreview), findsOneWidget);
       await tester.tap(find.text('Choose'));
       await tester.pumpAndSettle();
 
