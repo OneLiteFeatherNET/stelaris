@@ -537,10 +537,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_project_tab_pack_meta => 'Pack';
 
   @override
-  String get pack_meta_hint =>
-      'The pack.mcmeta of the resource pack. Leave all fields empty for none.';
-
-  @override
   String get pack_meta_description => 'Description';
 
   @override
@@ -560,7 +556,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pack_meta_formats_hint =>
-      'The resource pack formats the pack works with. An empty max minor allows any minor version.';
+      'An empty max minor allows any minor version.';
 
   @override
   String get pack_icon_none => 'No icon';

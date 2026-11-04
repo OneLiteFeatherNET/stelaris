@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
 import 'package:stelaris/feature/component/minimessage_editor.dart';
+import 'package:stelaris/feature/project/dialog/pack_icon_field.dart';
 import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -17,6 +20,10 @@ class PackMetaFormController {
   final minFormatMinor = TextEditingController();
   final maxFormatMajor = TextEditingController();
   final maxFormatMinor = TextEditingController();
+
+  /// The PNG of the pack icon, null for none. Only kept in the dialog for
+  /// now, nothing stores it yet.
+  Uint8List? icon;
 
   /// The description as MiniMessage, stored as a vanilla JSON text
   /// component.
@@ -101,9 +108,14 @@ class PackMetaFormController {
 /// Expects to sit inside a [Form]. While every field is empty nothing is
 /// required, as the project then has no pack meta.
 class PackMetaForm extends StatelessWidget {
-  const PackMetaForm({required this.controller, super.key});
+  const PackMetaForm({
+    required this.controller,
+    this.pickIcon = pickPackIcon,
+    super.key,
+  });
 
   final PackMetaFormController controller;
+  final Future<PickedAssetFile?> Function() pickIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +124,11 @@ class PackMetaForm extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(l10n.pack_meta_hint, style: hintStyle),
+        PackIconField(
+          value: controller.icon,
+          onChanged: (icon) => controller.icon = icon,
+          pickFile: pickIcon,
+        ),
         verticalSpacing25,
         EditSectionHeading(title: '${l10n.pack_meta_description} *'),
         const SizedBox(height: 8),

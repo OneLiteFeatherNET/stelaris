@@ -1072,12 +1072,6 @@ abstract class AppLocalizations {
   /// **'Pack'**
   String get dialog_project_tab_pack_meta;
 
-  /// No description provided for @pack_meta_hint.
-  ///
-  /// In en, this message translates to:
-  /// **'The pack.mcmeta of the resource pack. Leave all fields empty for none.'**
-  String get pack_meta_hint;
-
   /// No description provided for @pack_meta_description.
   ///
   /// In en, this message translates to:
@@ -1117,7 +1111,7 @@ abstract class AppLocalizations {
   /// No description provided for @pack_meta_formats_hint.
   ///
   /// In en, this message translates to:
-  /// **'The resource pack formats the pack works with. An empty max minor allows any minor version.'**
+  /// **'An empty max minor allows any minor version.'**
   String get pack_meta_formats_hint;
 
   /// No description provided for @pack_icon_none.
