@@ -21,6 +21,9 @@ Map<String, Object?> _assetJson({
   required String kind,
   String? displayName,
   String? fileName,
+  int? width,
+  int? height,
+  String? sourceAssetId,
 }) => {
   'id': id,
   'projectId': 'p-1',
@@ -32,6 +35,9 @@ Map<String, Object?> _assetJson({
   'size': 512,
   'sha1': 'bbbb',
   'derivedAssetIds': <String>[],
+  'width': ?width,
+  'height': ?height,
+  'sourceAssetId': ?sourceAssetId,
 };
 
 /// Answers the picker's requests: the list per kind, and the upload with [upload].
@@ -39,12 +45,14 @@ class _Backend {
   _Backend({
     this.models = const [],
     this.bbmodels = const [],
+    this.textures = const [],
     this.listStatus = 200,
     this.upload,
   });
 
   final List<Map<String, Object?>> models;
   final List<Map<String, Object?>> bbmodels;
+  final List<Map<String, Object?>> textures;
   final int listStatus;
   final ResponseBody Function(RequestOptions options)? upload;
 
@@ -64,6 +72,7 @@ class _Backend {
     final items = switch (kind) {
       'MODEL' => models,
       'BBMODEL' => bbmodels,
+      'TEXTURE' => textures,
       _ => const <Map<String, Object?>>[],
     };
     return FakeHttpClientAdapter.response({
@@ -94,6 +103,8 @@ Future<void> _open(
   Future<PickedAssetFile?> Function()? pickFile,
   String? selectedKey,
   Widget Function(AssetModel asset)? previewBuilder,
+  bool texture = false,
+  bool hideExtracted = false,
 }) async {
   ApiService().assetApi.apiClient.dio.httpClientAdapter = FakeHttpClientAdapter(
     backend.handle,
@@ -111,6 +122,13 @@ Future<void> _open(
                 projectId: 'p-1',
                 selectedKey: selectedKey,
                 previewBuilder: previewBuilder,
+                namespace: texture ? 'cygnus' : null,
+                kinds: texture ? textureAssetKinds : modelAssetKinds,
+                uploadKinds: texture
+                    ? textureAssetKinds
+                    : const {...AssetKind.values},
+                keyFolder: texture ? 'font' : 'item',
+                hideExtracted: hideExtracted,
                 pickFile: pickFile ?? () async => null,
               );
               outcome.closed = true;
@@ -420,5 +438,102 @@ void main() {
       isFalse,
       reason: 'nothing is chosen, so Choose does nothing',
     );
+  });
+
+  group('texture', () {
+    final ghost = _assetJson(
+      id: 't-1',
+      key: 'cygnus:font/ghost',
+      kind: 'TEXTURE',
+      fileName: 'ghost.png',
+      width: 32,
+      height: 32,
+    );
+
+    testWidgets('lists only the textures, with their size', (tester) async {
+      final backend = _Backend(models: models, textures: [ghost]);
+      await _open(tester, backend: backend, outcome: _Outcome(), texture: true);
+      await _waitFor(tester, find.text('cygnus:font/ghost · Texture · 32 × 32'));
+
+      expect(backend.queriedKinds, ['TEXTURE']);
+      expect(find.text('Choose a texture'), findsOneWidget);
+      expect(find.text(_rubyModel), findsNothing);
+    });
+
+    testWidgets('hides the textures extracted from a Blockbench model', (
+      tester,
+    ) async {
+      final extracted = _assetJson(
+        id: 't-2',
+        key: 'cygnus:item/sapphire_skin',
+        kind: 'TEXTURE',
+        sourceAssetId: 'b-1',
+      );
+      await _open(
+        tester,
+        backend: _Backend(textures: [ghost, extracted]),
+        outcome: _Outcome(),
+        texture: true,
+        hideExtracted: true,
+      );
+      await _waitFor(tester, find.text('cygnus:font/ghost'));
+
+      expect(find.textContaining('sapphire_skin'), findsNothing);
+    });
+
+    testWidgets('names an empty list a list of textures', (tester) async {
+      await _open(
+        tester,
+        backend: _Backend(),
+        outcome: _Outcome(),
+        texture: true,
+      );
+      await _waitFor(
+        tester,
+        find.text('This project has no textures yet. Upload one below.'),
+      );
+    });
+
+    testWidgets('suggests the key in the given folder', (tester) async {
+      await _open(
+        tester,
+        backend: _Backend(),
+        outcome: _Outcome(),
+        texture: true,
+        pickFile: () async =>
+            PickedAssetFile(name: 'Ghost.png', bytes: Uint8List.fromList([1])),
+      );
+      await _waitFor(tester, find.text('Choose a file'));
+
+      await _tap(tester, 'Choose a file');
+
+      expect(find.text('font/ghost'), findsOneWidget);
+    });
+
+    testWidgets('an uploaded texture is listed and can be chosen', (
+      tester,
+    ) async {
+      final outcome = _Outcome();
+      await _open(
+        tester,
+        backend: _Backend(
+          upload: (_) =>
+              FakeHttpClientAdapter.response(ghost, statusCode: 201),
+        ),
+        outcome: outcome,
+        texture: true,
+        pickFile: () async =>
+            PickedAssetFile(name: 'ghost.png', bytes: Uint8List.fromList([1])),
+      );
+      await _waitFor(tester, find.text('Choose a file'));
+
+      await _tap(tester, 'Choose a file');
+      await _tap(tester, 'Upload');
+      await _waitFor(tester, find.text('cygnus:font/ghost · Texture · 32 × 32'));
+      await _tap(tester, 'Choose');
+
+      expect(outcome.closed, isTrue);
+      expect(outcome.asset?.key, 'cygnus:font/ghost');
+    });
   });
 }
