@@ -128,10 +128,14 @@ class PackMetaForm extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        PackIconField(
-          value: controller.icon,
-          onChanged: (icon) => controller.icon = icon,
-          pickFile: pickIcon,
+        // Rebuilds the field with the chosen icon, the controller doesn't
+        // notify.
+        StatefulBuilder(
+          builder: (context, setState) => PackIconField(
+            value: controller.icon,
+            onChanged: (icon) => setState(() => controller.icon = icon),
+            pickFile: pickIcon,
+          ),
         ),
         verticalSpacing25,
         EditSectionHeading(title: '${l10n.pack_meta_description} *'),
