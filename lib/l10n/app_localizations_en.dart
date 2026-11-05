@@ -2520,6 +2520,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navigation_group_runtime => 'Runtime';
 
   @override
+  String get navigation_group_build => 'Build';
+
+  @override
   String get expression_preview_title => 'Preview';
 
   @override

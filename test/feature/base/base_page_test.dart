@@ -60,6 +60,51 @@ void main() {
       expect(find.text('Test Project'), findsOneWidget);
     });
 
+    testWidgets('the app bar has no generator button', (tester) async {
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          selectedProject: const Project(
+            id: 'proj_1',
+            key: 'test_key',
+            displayName: 'Test Project',
+          ),
+        ),
+      );
+      final testRouter = GoRouter(
+        initialLocation: '/test',
+        routes: [
+          GoRoute(
+            path: '/test',
+            builder: (context, state) =>
+                const BasePage(child: Text('Protected Content')),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        StoreProvider<AppState>(
+          store: store,
+          child: MaterialApp.router(
+            routerConfig: testRouter,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.descendant(
+          of: find.byType(AppBar),
+          matching: find.byIcon(Icons.build_outlined),
+        ),
+        findsNothing,
+        reason:
+            'the generator is a page in the navigation rail, not an app '
+            'bar action',
+      );
+    });
+
     testWidgets('switching sections gives the search a fresh field and drops '
         'a query still in the debounce', (tester) async {
       // Wide enough for the full search field instead of the compact icon.

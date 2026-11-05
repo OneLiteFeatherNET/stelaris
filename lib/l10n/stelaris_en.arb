@@ -1349,6 +1349,7 @@
   },
   "navigation_group_assets": "Assets",
   "navigation_group_runtime": "Runtime",
+  "navigation_group_build": "Build",
   "expression_preview_title": "Preview",
   "expression_preview_copy": "Copy the full value",
   "expression_preview_reset_values": "Reset to the stored test values",

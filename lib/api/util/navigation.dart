@@ -81,6 +81,25 @@ enum AssetNavigationEntry {
   );
 }
 
+/// The enum class contains the build pages, listed under the "Build" heading
+/// of the sidebar, below the runtime entries.
+enum BuildNavigationEntry {
+  generator('Generator', '/generator', Icons.build_outlined, Icons.build);
+
+  final String display;
+  final String route;
+  final IconData data;
+  final IconData selected;
+
+  /// Creates a new enum entry with the given value
+  const BuildNavigationEntry(
+    this.display,
+    this.route,
+    this.data,
+    this.selected,
+  );
+}
+
 /// The entries that hold runtime data, see [NavigationEntry.isRuntime].
 const Set<NavigationEntry> runtimeEntries = {
   NavigationEntry.expression,
@@ -101,6 +120,16 @@ NavigationEntry? entryForLocation(String location) {
 /// The asset page [location] belongs to, or null outside the asset pages.
 AssetNavigationEntry? assetEntryForLocation(String location) {
   for (final entry in AssetNavigationEntry.values) {
+    if (location == entry.route || location.startsWith('${entry.route}/')) {
+      return entry;
+    }
+  }
+  return null;
+}
+
+/// The build page [location] belongs to, or null outside the build pages.
+BuildNavigationEntry? buildEntryForLocation(String location) {
+  for (final entry in BuildNavigationEntry.values) {
     if (location == entry.route || location.startsWith('${entry.route}/')) {
       return entry;
     }

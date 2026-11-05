@@ -3,9 +3,17 @@ import 'package:go_router/go_router.dart';
 import 'package:stelaris/util/constants.dart';
 
 class SettingsHeaderTile extends StatelessWidget {
-  const SettingsHeaderTile({required this.text, super.key});
+  const SettingsHeaderTile({
+    required this.text,
+    this.closable = true,
+    super.key,
+  });
 
   final String text;
+
+  /// Whether the close button is shown. Only a dialog has something to close;
+  /// on a page it would pop a route that is not there.
+  final bool closable;
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +33,17 @@ class SettingsHeaderTile extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                onPressed: () => context.pop(false),
-                icon: Icon(
-                  Icons.close,
-                  color: theme.colorScheme.onPrimaryContainer,
+            if (closable)
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  onPressed: () => context.pop(false),
+                  icon: Icon(
+                    Icons.close,
+                    color: theme.colorScheme.onPrimaryContainer,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),

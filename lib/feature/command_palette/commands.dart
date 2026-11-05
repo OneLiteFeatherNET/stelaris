@@ -12,7 +12,6 @@ import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/actions/theme_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
-import 'package:stelaris/feature/build/build_dialog.dart';
 import 'package:stelaris/feature/command_palette/backend_command.dart';
 import 'package:stelaris/feature/command_palette/command.dart';
 import 'package:stelaris/feature/command_palette/delete_specs.dart';
@@ -210,8 +209,7 @@ final StelarisCommand _openBuild = StelarisCommand(
   keywords: (l10n) => _split(l10n.command_open_build_keywords),
   group: CommandGroup.interface,
   icon: Icons.build_outlined,
-  run: (context) =>
-      showDialog<void>(context: context, builder: (_) => const BuildDialog()),
+  run: (context) async => context.go(BuildNavigationEntry.generator.route),
 );
 
 /// The action each list page's refresh button dispatches.
