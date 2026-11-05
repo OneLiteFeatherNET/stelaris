@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
 import 'package:stelaris/feature/component/minimessage_editor.dart';
+import 'package:stelaris/feature/project/dialog/pack_icon_field.dart';
 import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -17,6 +20,10 @@ class PackMetaFormController {
   final minFormatMinor = TextEditingController();
   final maxFormatMajor = TextEditingController();
   final maxFormatMinor = TextEditingController();
+
+  /// The PNG of the pack icon, null for none. The dialog stores it as a
+  /// texture asset the pack meta refers to.
+  Uint8List? icon;
 
   /// The description as MiniMessage, stored as a vanilla JSON text
   /// component.
@@ -36,7 +43,9 @@ class PackMetaFormController {
   ];
 
   /// Whether every field is empty, which means the project has no pack meta.
+  /// An icon counts as a field: it is stored with the pack meta.
   bool get isEmpty =>
+      icon == null &&
       description.trim().isEmpty &&
       _formats.every((field) => field.text.trim().isEmpty);
 
@@ -47,8 +56,10 @@ class PackMetaFormController {
     return jsonEncode(MiniMessageJson.encode(description.trim()));
   }
 
-  /// Fills the fields with [meta], or clears them when there is none.
-  void fill(PackMeta? meta) {
+  /// Fills the fields with [meta] and its [icon], or clears them when there is
+  /// none.
+  void fill(PackMeta? meta, {Uint8List? icon}) {
+    this.icon = icon;
     _loadedDescriptionJson = meta?.description;
     description = _loadedDescription = meta == null
         ? ''
@@ -101,9 +112,14 @@ class PackMetaFormController {
 /// Expects to sit inside a [Form]. While every field is empty nothing is
 /// required, as the project then has no pack meta.
 class PackMetaForm extends StatelessWidget {
-  const PackMetaForm({required this.controller, super.key});
+  const PackMetaForm({
+    required this.controller,
+    this.pickIcon = pickPackIcon,
+    super.key,
+  });
 
   final PackMetaFormController controller;
+  final Future<PickedAssetFile?> Function() pickIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +128,15 @@ class PackMetaForm extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(l10n.pack_meta_hint, style: hintStyle),
+        // Rebuilds the field with the chosen icon, the controller doesn't
+        // notify.
+        StatefulBuilder(
+          builder: (context, setState) => PackIconField(
+            value: controller.icon,
+            onChanged: (icon) => setState(() => controller.icon = icon),
+            pickFile: pickIcon,
+          ),
+        ),
         verticalSpacing25,
         EditSectionHeading(title: '${l10n.pack_meta_description} *'),
         const SizedBox(height: 8),

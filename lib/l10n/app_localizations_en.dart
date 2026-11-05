@@ -537,10 +537,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_project_tab_pack_meta => 'Pack';
 
   @override
-  String get pack_meta_hint =>
-      'The pack.mcmeta of the resource pack. Leave all fields empty for none.';
-
-  @override
   String get pack_meta_description => 'Description';
 
   @override
@@ -560,7 +556,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pack_meta_formats_hint =>
-      'The resource pack formats the pack works with. An empty max minor allows any minor version.';
+      'An empty max minor allows any minor version.';
+
+  @override
+  String get pack_icon_none => 'No icon';
+
+  @override
+  String pack_icon_size(int width, int height) {
+    return '$width × $height px';
+  }
+
+  @override
+  String get pack_icon_hint =>
+      'A square PNG of 16 × 16, 32 × 32, 64 × 64 … pixels';
+
+  @override
+  String get pack_icon_choose => 'Choose icon';
+
+  @override
+  String get pack_icon_change => 'Change icon';
+
+  @override
+  String get pack_icon_remove => 'Remove icon';
+
+  @override
+  String get pack_icon_not_png => 'The file is no PNG';
+
+  @override
+  String get pack_icon_not_square => 'The icon must be square';
+
+  @override
+  String get pack_icon_not_power_of_two =>
+      'The size must be 16, 32, 64 … pixels';
+
+  @override
+  String get pack_icon_too_small => 'The icon must be at least 16 × 16 pixels';
+
+  @override
+  String get pack_icon_asset_name => 'Pack icon';
+
+  @override
+  String project_created(String name) {
+    return 'Project $name created';
+  }
+
+  @override
+  String get project_created_set_up_pack => 'Set up pack';
 
   @override
   String get pack_meta_load_failed => 'The pack.mcmeta could not be loaded';

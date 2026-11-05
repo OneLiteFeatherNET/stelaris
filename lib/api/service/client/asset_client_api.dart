@@ -167,6 +167,17 @@ class AssetClientApi {
     return AssetModel.fromJson(result.data as Map<String, dynamic>);
   }
 
+  /// Removes the asset [assetId] of [projectId] with its stored bytes and
+  /// returns it.
+  Future<AssetModel> delete(String projectId, String assetId) async {
+    final baseUri = Uri.parse(apiClient.baseUrl);
+    final uri = baseUri.replace(
+      path: '${baseUri.path}/project/$projectId/$_endpoint/delete/$assetId',
+    );
+    final result = await apiClient.dio.deleteUri(uri);
+    return AssetModel.fromJson(result.data as Map<String, dynamic>);
+  }
+
   /// Downloads the stored bytes of the asset [assetId].
   Future<List<int>> content(String projectId, String assetId) async {
     final baseUri = Uri.parse(apiClient.baseUrl);

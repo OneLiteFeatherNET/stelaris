@@ -49,6 +49,7 @@ class PackMetaClientApi {
         'maxFormatMajor': meta.maxFormatMajor,
         'maxFormatMinor': meta.maxFormatMinor,
         'enabledFeatures': meta.enabledFeatures,
+        'iconAssetId': meta.iconAssetId,
       },
     );
     return PackMeta.fromJson(result.data as Map<String, dynamic>);

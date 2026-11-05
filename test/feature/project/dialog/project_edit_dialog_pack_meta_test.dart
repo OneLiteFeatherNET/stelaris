@@ -41,6 +41,7 @@ void main() {
     WidgetTester tester,
     FakePackMetaApi api, {
     void Function(Object? result)? onResult,
+    EditProjectTab initialTab = EditProjectTab.project,
   }) async {
     await tester.pumpWidget(
       StoreProvider<AppState>(
@@ -59,8 +60,11 @@ void main() {
                 onPressed: () async {
                   final result = await showDialog<Object>(
                     context: context,
-                    builder: (_) =>
-                        EditProjectDialog(project: project, packMetaApi: api),
+                    builder: (_) => EditProjectDialog(
+                      project: project,
+                      packMetaApi: api,
+                      initialTab: initialTab,
+                    ),
                   );
                   onResult?.call(result);
                 },
@@ -101,6 +105,20 @@ void main() {
     expect(tester.widget<EditableText>(description).controller.text, 'My pack');
     expect(find.text('46'), findsOneWidget);
     expect(find.text('48'), findsOneWidget);
+  });
+
+  testWidgets('opens on the pack tab when asked to', (tester) async {
+    await pumpDialog(
+      tester,
+      FakePackMetaApi(stored: existing),
+      initialTab: EditProjectTab.pack,
+    );
+
+    expect(tester.widget<EditableText>(description).controller.text, 'My pack');
+    expect(
+      tester.widget<TabBar>(find.byType(TabBar)).controller!.index,
+      EditProjectTab.pack.index,
+    );
   });
 
   testWidgets('an unchanged pack meta is not sent again', (tester) async {

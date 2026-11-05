@@ -1072,12 +1072,6 @@ abstract class AppLocalizations {
   /// **'Pack'**
   String get dialog_project_tab_pack_meta;
 
-  /// No description provided for @pack_meta_hint.
-  ///
-  /// In en, this message translates to:
-  /// **'The pack.mcmeta of the resource pack. Leave all fields empty for none.'**
-  String get pack_meta_hint;
-
   /// No description provided for @pack_meta_description.
   ///
   /// In en, this message translates to:
@@ -1117,8 +1111,86 @@ abstract class AppLocalizations {
   /// No description provided for @pack_meta_formats_hint.
   ///
   /// In en, this message translates to:
-  /// **'The resource pack formats the pack works with. An empty max minor allows any minor version.'**
+  /// **'An empty max minor allows any minor version.'**
   String get pack_meta_formats_hint;
+
+  /// No description provided for @pack_icon_none.
+  ///
+  /// In en, this message translates to:
+  /// **'No icon'**
+  String get pack_icon_none;
+
+  /// No description provided for @pack_icon_size.
+  ///
+  /// In en, this message translates to:
+  /// **'{width} × {height} px'**
+  String pack_icon_size(int width, int height);
+
+  /// No description provided for @pack_icon_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'A square PNG of 16 × 16, 32 × 32, 64 × 64 … pixels'**
+  String get pack_icon_hint;
+
+  /// No description provided for @pack_icon_choose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose icon'**
+  String get pack_icon_choose;
+
+  /// No description provided for @pack_icon_change.
+  ///
+  /// In en, this message translates to:
+  /// **'Change icon'**
+  String get pack_icon_change;
+
+  /// No description provided for @pack_icon_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove icon'**
+  String get pack_icon_remove;
+
+  /// No description provided for @pack_icon_not_png.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is no PNG'**
+  String get pack_icon_not_png;
+
+  /// No description provided for @pack_icon_not_square.
+  ///
+  /// In en, this message translates to:
+  /// **'The icon must be square'**
+  String get pack_icon_not_square;
+
+  /// No description provided for @pack_icon_not_power_of_two.
+  ///
+  /// In en, this message translates to:
+  /// **'The size must be 16, 32, 64 … pixels'**
+  String get pack_icon_not_power_of_two;
+
+  /// No description provided for @pack_icon_too_small.
+  ///
+  /// In en, this message translates to:
+  /// **'The icon must be at least 16 × 16 pixels'**
+  String get pack_icon_too_small;
+
+  /// The name the uploaded pack icon asset is shown by in the asset list.
+  ///
+  /// In en, this message translates to:
+  /// **'Pack icon'**
+  String get pack_icon_asset_name;
+
+  /// No description provided for @project_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Project {name} created'**
+  String project_created(String name);
+
+  /// Snackbar action after creating a project, opens its pack tab.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up pack'**
+  String get project_created_set_up_pack;
 
   /// No description provided for @pack_meta_load_failed.
   ///

@@ -113,6 +113,7 @@ void main() {
           maxFormatMajor: 69,
           maxFormatMinor: 2,
           enabledFeatures: ['minecraft:trade_rebalance'],
+          iconAssetId: 'asset-1',
         ),
       );
 
@@ -126,6 +127,7 @@ void main() {
         'maxFormatMajor': 69,
         'maxFormatMinor': 2,
         'enabledFeatures': ['minecraft:trade_rebalance'],
+        'iconAssetId': 'asset-1',
       });
       expect(result.packType, PackType.data);
       expect(result.maxFormatMinor, 2);

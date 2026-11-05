@@ -65,6 +65,33 @@ void main() {
       expect(row.children.whereType<Icon>().first.icon, equals(Icons.check_circle_outline));
     });
 
+    test('createSuccess shows its action in white on the green', () {
+      var pressed = false;
+      final snackBar = factory.createSuccess(
+        'Created',
+        action: SnackBarAction(label: 'Open', onPressed: () => pressed = true),
+      );
+
+      final action = snackBar.action!;
+      expect(action.label, 'Open');
+      expect(action.textColor, Colors.white);
+      action.onPressed();
+      expect(pressed, isTrue);
+    });
+
+    test('createSuccess keeps the color an action brings', () {
+      final snackBar = factory.createSuccess(
+        'Created',
+        action: SnackBarAction(
+          label: 'Open',
+          textColor: Colors.yellow,
+          onPressed: () {},
+        ),
+      );
+
+      expect(snackBar.action!.textColor, Colors.yellow);
+    });
+
     test('createErrorText returns styled error SnackBar', () {
       const String text = 'Error occurred';
       final SnackBar snackBar = factory.createErrorText(text);

@@ -9,10 +9,13 @@ import 'package:stelaris_models/stelaris_models.dart';
 ///
 /// Keeps the resource pack meta in memory and records what was sent.
 class FakePackMetaApi implements PackMetaClientApi {
-  FakePackMetaApi({this.stored, this.failLoad = false});
+  FakePackMetaApi({this.stored, this.failLoad = false, this.failPuts = 0});
 
   PackMeta? stored;
   final bool failLoad;
+
+  /// How many of the next puts fail with a 500, without being recorded.
+  int failPuts;
   final List<PackMeta> puts = [];
   final List<PackType> deletes = [];
 
@@ -40,6 +43,14 @@ class FakePackMetaApi implements PackMetaClientApi {
 
   @override
   Future<PackMeta> put(String projectId, PackMeta meta) async {
+    if (failPuts > 0) {
+      failPuts--;
+      final options = RequestOptions(path: '/pack-meta');
+      throw DioException(
+        requestOptions: options,
+        response: Response(requestOptions: options, statusCode: 500),
+      );
+    }
     puts.add(meta);
     return stored = meta.copyWith(id: 'meta-1', projectId: projectId);
   }
