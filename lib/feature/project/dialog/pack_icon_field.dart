@@ -117,7 +117,6 @@ class _PackIconFieldState extends State<PackIconField> {
     final size = icon == null ? null : pngSize(icon);
     final problem = _problem;
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _IconPreview(
           icon: icon,
@@ -129,6 +128,7 @@ class _PackIconFieldState extends State<PackIconField> {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 size == null
@@ -145,17 +145,15 @@ class _PackIconFieldState extends State<PackIconField> {
                       : colorScheme.error,
                 ),
               ),
-              if (icon != null) ...[
-                const SizedBox(height: 8),
-                TextButton.icon(
-                  onPressed: _reading ? null : _remove,
-                  icon: const Icon(Icons.delete_outline),
-                  label: Text(l10n.pack_icon_remove),
-                ),
-              ],
             ],
           ),
         ),
+        if (icon != null)
+          IconButton(
+            onPressed: _reading ? null : _remove,
+            tooltip: l10n.pack_icon_remove,
+            icon: const Icon(Icons.delete_outline),
+          ),
       ],
     );
   }

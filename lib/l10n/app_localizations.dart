@@ -1123,7 +1123,7 @@ abstract class AppLocalizations {
   /// No description provided for @pack_icon_size.
   ///
   /// In en, this message translates to:
-  /// **'pack.png, {width} × {height}'**
+  /// **'{width} × {height} px'**
   String pack_icon_size(int width, int height);
 
   /// No description provided for @pack_icon_hint.
@@ -1147,7 +1147,7 @@ abstract class AppLocalizations {
   /// No description provided for @pack_icon_remove.
   ///
   /// In en, this message translates to:
-  /// **'Remove'**
+  /// **'Remove icon'**
   String get pack_icon_remove;
 
   /// No description provided for @pack_icon_not_png.

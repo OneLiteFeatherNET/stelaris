@@ -563,7 +563,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pack_icon_size(int width, int height) {
-    return 'pack.png, $width × $height';
+    return '$width × $height px';
   }
 
   @override
@@ -577,7 +577,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pack_icon_change => 'Change icon';
 
   @override
-  String get pack_icon_remove => 'Remove';
+  String get pack_icon_remove => 'Remove icon';
 
   @override
   String get pack_icon_not_png => 'The file is no PNG';

@@ -239,7 +239,7 @@
   "pack_meta_formats": "Supported formats",
   "pack_meta_formats_hint": "An empty max minor allows any minor version.",
   "pack_icon_none": "No icon",
-  "pack_icon_size": "pack.png, {width} × {height}",
+  "pack_icon_size": "{width} × {height} px",
   "@pack_icon_size": {
     "placeholders": {
       "width": {"type": "int"},
@@ -249,7 +249,7 @@
   "pack_icon_hint": "A square PNG of 16 × 16, 32 × 32, 64 × 64 … pixels",
   "pack_icon_choose": "Choose icon",
   "pack_icon_change": "Change icon",
-  "pack_icon_remove": "Remove",
+  "pack_icon_remove": "Remove icon",
   "pack_icon_not_png": "The file is no PNG",
   "pack_icon_not_square": "The icon must be square",
   "pack_icon_not_power_of_two": "The size must be 16, 32, 64 … pixels",
