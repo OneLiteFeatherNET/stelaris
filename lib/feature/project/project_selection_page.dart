@@ -7,6 +7,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/project/project_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -94,26 +95,55 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
     );
   }
 
-  void _openCreateDialog(BuildContext context) {
-    _openProjectDialog(context, (context) => const CreateProjectDialog());
-  }
-
-  void _openEditDialog(BuildContext context, Project project) {
-    _openProjectDialog(
+  /// Opens the create dialog. A created project is selected, and a snackbar
+  /// offers to set up its pack right away.
+  Future<void> _openCreateDialog(BuildContext context) async {
+    final created = await _openProjectDialog(
       context,
-      (context) => EditProjectDialog(project: project),
+      (context) => const CreateProjectDialog(),
+    );
+    if (created == null || !mounted) return;
+    this.context.showSuccessSnackBar(
+      this.context.l10n.project_created(created.displayName),
+      duration: const Duration(seconds: 6),
+      action: SnackBarAction(
+        label: this.context.l10n.project_created_set_up_pack,
+        onPressed: () {
+          if (!mounted) return;
+          _openEditDialog(this.context, created, tab: EditProjectTab.pack);
+        },
+      ),
     );
   }
 
-  void _openProjectDialog(BuildContext context, WidgetBuilder builder) {
-    showDialog<Project>(context: context, builder: builder).then((result) {
-      if (result != null) {
-        setState(() => _selected = result);
-      }
-    });
+  void _openEditDialog(
+    BuildContext context,
+    Project project, {
+    EditProjectTab tab = EditProjectTab.project,
+  }) {
+    _openProjectDialog(
+      context,
+      (context) => EditProjectDialog(project: project, initialTab: tab),
+    );
+  }
+
+  Future<Project?> _openProjectDialog(
+    BuildContext context,
+    WidgetBuilder builder,
+  ) async {
+    final result = await showDialog<Project>(
+      context: context,
+      builder: builder,
+    );
+    if (result != null && mounted) {
+      setState(() => _selected = result);
+    }
+    return result;
   }
 
   void _proceedWithProject(ProjectViewModel vm, Project selected) {
+    // An offer to set up the pack only works on this page.
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     vm.onSelectProject(selected);
     context.go(NavigationEntry.attributes.route);
   }

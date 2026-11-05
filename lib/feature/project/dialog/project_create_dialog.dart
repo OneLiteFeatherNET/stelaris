@@ -1,5 +1,7 @@
+import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/project/project_actions.dart';
+import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/formatter/formatters.dart';
@@ -9,6 +11,8 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/dispatch_ext.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 
+/// Creates a [Project] and selects it. Pops the project as the backend
+/// stored it, with its id.
 class CreateProjectDialog extends StatefulWidget {
   const CreateProjectDialog({super.key});
 
@@ -146,6 +150,12 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
       context.showErrorSnackBar(error);
       return;
     }
-    if (ok) Navigator.of(context).pop(newProject);
+    if (!ok) return;
+    // The action selected the project the backend returned.
+    final created = StoreProvider.state<AppState>(
+      context,
+      notify: false,
+    ).selectedProject;
+    Navigator.of(context).pop(created);
   }
 }

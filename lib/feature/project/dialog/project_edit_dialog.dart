@@ -17,6 +17,9 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/dispatch_ext.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 
+/// The tabs of the [EditProjectDialog].
+enum EditProjectTab { project, pack }
+
 /// Edits a [Project] in two tabs: the project itself and the `pack.mcmeta`
 /// of its resource pack. One save stores both.
 ///
@@ -36,11 +39,15 @@ class EditProjectDialog extends StatefulWidget {
   /// Opens the file dialog for the pack icon.
   final Future<PickedAssetFile?> Function() pickIcon;
 
+  /// The tab shown first.
+  final EditProjectTab initialTab;
+
   const EditProjectDialog({
     required this.project,
     this.packMetaApi,
     this.assetApi,
     this.pickIcon = pickPackIcon,
+    this.initialTab = EditProjectTab.project,
     super.key,
   });
 
@@ -90,8 +97,11 @@ class _EditProjectDialogState extends State<EditProjectDialog>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this)
-      ..addListener(() => setState(() {}));
+    _tabController = TabController(
+      length: EditProjectTab.values.length,
+      initialIndex: widget.initialTab.index,
+      vsync: this,
+    )..addListener(() => setState(() {}));
     _displayNameController = TextEditingController(
       text: widget.project.displayName,
     );

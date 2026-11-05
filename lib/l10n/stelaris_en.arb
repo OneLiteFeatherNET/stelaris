@@ -255,6 +255,16 @@
   "pack_icon_not_power_of_two": "The size must be 16, 32, 64 … pixels",
   "pack_icon_too_small": "The icon must be at least 16 × 16 pixels",
   "pack_icon_asset_name": "Pack icon",
+  "project_created": "Project {name} created",
+  "@project_created": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "project_created_set_up_pack": "Set up pack",
+  "@project_created_set_up_pack": {
+    "description": "Snackbar action after creating a project, opens its pack tab."
+  },
   "@pack_icon_asset_name": {
     "description": "The name the uploaded pack icon asset is shown by in the asset list."
   },

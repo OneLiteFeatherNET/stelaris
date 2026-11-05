@@ -596,6 +596,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pack_icon_asset_name => 'Pack icon';
 
   @override
+  String project_created(String name) {
+    return 'Project $name created';
+  }
+
+  @override
+  String get project_created_set_up_pack => 'Set up pack';
+
+  @override
   String get pack_meta_load_failed => 'The pack.mcmeta could not be loaded';
 
   @override

@@ -1180,6 +1180,18 @@ abstract class AppLocalizations {
   /// **'Pack icon'**
   String get pack_icon_asset_name;
 
+  /// No description provided for @project_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Project {name} created'**
+  String project_created(String name);
+
+  /// Snackbar action after creating a project, opens its pack tab.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up pack'**
+  String get project_created_set_up_pack;
+
   /// No description provided for @pack_meta_load_failed.
   ///
   /// In en, this message translates to:
