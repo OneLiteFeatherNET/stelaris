@@ -120,6 +120,34 @@ void main() {
     expect(image.bytes, png16);
   });
 
+  testWidgets('a chosen icon is shown before it is saved', (tester) async {
+    await pumpDialog(
+      tester,
+      FakePackMetaApi(),
+      FakeAssetClientApi(),
+      picked: png32,
+    );
+    expect(iconImage, findsNothing);
+
+    await tapPreview(tester);
+
+    expect(iconImage, findsOneWidget);
+    final image = tester.widget<Image>(iconImage).image as MemoryImage;
+    expect(image.bytes, png32);
+    expect(find.text('pack.png, 32 × 32'), findsOneWidget);
+    expect(find.text('Remove'), findsOneWidget);
+  });
+
+  testWidgets('a removed icon disappears before it is saved', (tester) async {
+    await pumpDialog(tester, FakePackMetaApi(stored: withIcon), storedIcon());
+    expect(iconImage, findsOneWidget);
+
+    await tapButton(tester, 'Remove');
+
+    expect(iconImage, findsNothing);
+    expect(find.text('No icon'), findsOneWidget);
+  });
+
   testWidgets('a chosen icon is uploaded and named by the new pack meta', (
     tester,
   ) async {
