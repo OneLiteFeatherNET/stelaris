@@ -63,19 +63,19 @@ The "Test locally" section SHALL offer one action that downloads the project's g
 - **WHEN** no project is selected
 - **THEN** the action is disabled and the section says that a project must be selected
 
-### Requirement: Next version is proposed from the latest published version
+### Requirement: Next version is proposed from the latest published Release
 
-The "Publish" section SHALL propose a next version computed from the latest published version of the selected channel. The user SHALL choose a major, minor or patch bump. When the channel has no published version, the proposal SHALL be `0.1.0` for the Release channel, and the snapshot proposal SHALL be based on `0.1.0` for the Snapshot channel.
+The "Publish" section SHALL propose a next version computed from the latest published Release, `X.Y.Z`. The user SHALL choose a major, minor or patch bump. When the project has no published Release, the Release proposal SHALL be `0.1.0` and the Snapshot proposal SHALL be `0.1.0-SNAPSHOT`.
 
 #### Scenario: Minor bump from the latest release
 
 - **WHEN** the latest published Release version is `1.4.2` and the user chooses minor
-- **THEN** the proposed version is `1.5.0`
+- **THEN** the proposed Release version is `1.5.0`
 
 #### Scenario: Patch bump from the latest release
 
 - **WHEN** the latest published Release version is `1.4.2` and the user chooses patch
-- **THEN** the proposed version is `1.4.3`
+- **THEN** the proposed Release version is `1.4.3`
 
 #### Scenario: First release
 
@@ -84,22 +84,22 @@ The "Publish" section SHALL propose a next version computed from the latest publ
 
 #### Scenario: Version fields never produce a crash
 
-- **WHEN** the latest published version is not in the form `X.Y.Z` or `X.Y.Z-dev.N`
+- **WHEN** a published version is not in the form `X.Y.Z` or `X.Y.Z-SNAPSHOT`
 - **THEN** no proposal is computed, the section explains that the version cannot be read, publishing is disabled, and the page stays usable
 
 ### Requirement: Release and snapshot channels
 
-The "Publish" section SHALL offer the Release channel, which publishes `X.Y.Z`, and the Snapshot channel, which publishes `X.Y.Z-dev.N`. For a snapshot, N SHALL be the smallest integer of at least 1 for which that version is not yet published.
+The "Publish" section SHALL offer the Release channel, which publishes `X.Y.Z`, and the Snapshot channel, which publishes `X.Y.Z-SNAPSHOT`. The Snapshot proposal SHALL be the proposal of the Release channel with `-SNAPSHOT` appended. Publishing a snapshot version that is already published SHALL replace it on the server.
 
-#### Scenario: Snapshot number is the next free one
+#### Scenario: Snapshot from the latest release
 
-- **WHEN** the snapshot base is `1.5.0` and `1.5.0-dev.1` and `1.5.0-dev.2` are published
-- **THEN** the proposed snapshot version is `1.5.0-dev.3`
+- **WHEN** the latest published Release version is `1.4.2` and the user chooses minor on the Snapshot channel
+- **THEN** the proposed snapshot version is `1.5.0-SNAPSHOT`
 
-#### Scenario: Snapshot numbering starts at one
+#### Scenario: Snapshot without a release
 
-- **WHEN** the snapshot base is `1.5.0` and no `1.5.0-dev.N` is published
-- **THEN** the proposed snapshot version is `1.5.0-dev.1`
+- **WHEN** the project has no published Release version and the user is on the Snapshot channel
+- **THEN** the proposed snapshot version is `0.1.0-SNAPSHOT`
 
 #### Scenario: Channel switch updates the proposal
 
@@ -108,7 +108,7 @@ The "Publish" section SHALL offer the Release channel, which publishes `X.Y.Z`, 
 
 ### Requirement: Publish shows the full version and asks for confirmation
 
-Before anything is sent, the "Publish" section SHALL show the full version string, the channel and the vulpes-base branch, and SHALL ask the user to confirm. No publish request SHALL be sent without confirmation.
+Before anything is sent, the "Publish" section SHALL show the full version string, the channel and the vulpes-base branch, and SHALL ask the user to confirm. For a Snapshot version that is already published, the confirmation SHALL say that the existing snapshot is replaced. No publish request SHALL be sent without confirmation.
 
 #### Scenario: Cancelled confirmation
 
@@ -118,7 +118,12 @@ Before anything is sent, the "Publish" section SHALL show the full version strin
 #### Scenario: Confirmed publish
 
 - **WHEN** the user confirms the publish of `1.5.0`
-- **THEN** exactly one publish request is sent with the project, version and selected vulpes-base branch
+- **THEN** exactly one publish request is sent with the project id, version and selected vulpes-base branch
+
+#### Scenario: Snapshot replacement is stated
+
+- **WHEN** the user opens the confirmation for `1.5.0-SNAPSHOT` and that snapshot is already published
+- **THEN** the confirmation says that publishing replaces the existing `1.5.0-SNAPSHOT`
 
 ### Requirement: Successful publish shows coordinates and a Gradle line
 
@@ -127,7 +132,12 @@ After a successful publish, the "Publish" section SHALL show the published coord
 #### Scenario: Result shown
 
 - **WHEN** the publish request succeeds
-- **THEN** the section shows the coordinates, revision and vulpes-base commit returned by the service
+- **THEN** the section shows the coordinates, the revision and the vulpes-base commit returned by the service
+
+#### Scenario: Base commit shortened with full copy
+
+- **WHEN** the publish request succeeds with a 40-character vulpes-base commit
+- **THEN** the section shows the first 10 characters of the commit and a copy action that copies the full 40-character value
 
 #### Scenario: Copy the Gradle line
 
@@ -158,8 +168,8 @@ The "Published versions" section SHALL list the project's published versions, ne
 
 #### Scenario: Newest first
 
-- **WHEN** the project has versions `1.4.2`, `1.5.0-dev.1` and `1.5.0`
-- **THEN** the list shows `1.5.0`, then `1.5.0-dev.1`, then `1.4.2`
+- **WHEN** the project has versions `1.4.2`, `1.5.0-SNAPSHOT` and `1.5.0`
+- **THEN** the list shows `1.5.0`, then `1.5.0-SNAPSHOT`, then `1.4.2`
 
 #### Scenario: Download a published version
 
@@ -173,7 +183,7 @@ The "Published versions" section SHALL list the project's published versions, ne
 
 ### Requirement: Empty and unavailable states are distinct
 
-The "Published versions" section SHALL show an empty state when the repository is reachable and has no versions, and a repository-unavailable error state, with a retry action, when the service cannot read the repository. The two states SHALL NOT look the same.
+The "Published versions" section SHALL show an empty state when the repository is reachable and has no versions, and a repository-unavailable error state, with a retry action, when the service answers 502 because it cannot read the repository. The two states SHALL NOT look the same.
 
 #### Scenario: Repository has no versions
 
@@ -182,7 +192,7 @@ The "Published versions" section SHALL show an empty state when the repository i
 
 #### Scenario: Repository unavailable
 
-- **WHEN** the list request fails because the repository cannot be read
+- **WHEN** the list request is answered with 502 because the repository cannot be read
 - **THEN** the section shows the repository-unavailable error with a retry action and does not show the empty state
 
 ### Requirement: Every request shows loading and error states

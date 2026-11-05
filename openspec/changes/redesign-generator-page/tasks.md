@@ -4,16 +4,16 @@ Each task names how to verify it. Tests are unit or widget tests: no network, no
 
 ## 1. Prerequisite and API client
 
-- [ ] 1.1 Confirm the open questions in design.md that affect the client (projectKey versus projectId, the repository-unavailable status, the 422 and 409 body shape) with the vulpes-generator change; verify each answer is recorded in design.md before 1.2 starts
-- [ ] 1.2 Add typed result models (`LocalBuildFile`, `PublishResult`, `PublishedVersion`) and `GeneratorApiException` with kinds `versionExists`, `compileFailed`, `repositoryUnavailable`, `unexpected`, `network`; verify unit tests map each kind from a scripted Dio response, including the diagnostics list on 422
-- [ ] 1.3 Implement `GenerateApi.branches`, `localBuild(projectId, baseBranch)`, `publish(projectKey, version, baseBranch)`, `publishedVersions(projectKey)` and `publishedVersionBuild(projectKey, version)` against the companion endpoints; verify tests with a fake `Dio` adapter check URL, query, method and body for each call
+- [ ] 1.1 Read the vulpes-generator `add-editor-release-flow` proposal and confirm the field names of the 422 diagnostics and 409 bodies it defines; record them in design.md before 1.2 starts; verify design.md names them
+- [ ] 1.2 Add typed result models (`LocalBuildFile`, `PublishResult`, `PublishedVersion`) and `GeneratorApiException` with kinds `versionExists` (409), `compileFailed` (422), `repositoryUnavailable` (502), `unexpected`, `network`; verify unit tests map each kind from a scripted Dio response, including the diagnostics list on 422 and the full 40-character base commit in `PublishResult`
+- [ ] 1.3 Implement `GenerateApi.branches`, `localBuild(projectId, baseBranch)`, `publish(projectId, version, baseBranch)` (body `{projectId, version, baseBranch}`), `publishedVersions(projectId)` and `publishedVersionBuild(projectId, version)` against the companion endpoints; verify tests with a fake `Dio` adapter check URL, query, method and body for each call
 - [ ] 1.4 Remove `generate`, `download` (`/download`) and `buildInformation` from `GenerateApi` and every caller; verify `rg -n "generateApi.generate|/generate|/build/data|/download\b" lib` finds nothing in the generator code and the analyzer reports no unused import
 
 ## 2. Version computation (pure)
 
-- [ ] 2.1 Write failing unit tests for `proposeVersion` covering: first Release gives `0.1.0`; minor and patch bumps from `1.4.2`; major bump resets minor and patch; snapshot base from the latest snapshot; snapshot N is the smallest free integer from 1; unreadable published strings are reported as `Unreadable`, not thrown; verify the tests fail before implementation
+- [ ] 2.1 Write failing unit tests for `proposeVersion` covering: first Release gives `0.1.0`; minor and patch bumps from `1.4.2`; major bump resets minor and patch; Snapshot is the Release proposal with `-SNAPSHOT` (`1.5.0-SNAPSHOT` from `1.4.2` with minor); Snapshot with no Release gives `0.1.0-SNAPSHOT`; snapshot versions are ignored as the Release base; unreadable published strings are reported as `Unreadable`, not thrown; verify the tests fail before implementation
 - [ ] 2.2 Implement `lib/feature/build/publish/version_proposal.dart` with `proposeVersion`, the `VersionProposal` sealed type and the semver ordering helper; verify all tests from 2.1 pass and no code path throws for any input string
-- [ ] 2.3 Add a unit test that the newest-first ordering of published versions puts `1.5.0` above `1.5.0-dev.1` above `1.4.2`, and implement the ordering helper it covers; verify the test passes
+- [ ] 2.3 Add a unit test that the newest-first ordering of published versions puts `1.5.0` above `1.5.0-SNAPSHOT` above `1.4.2`, and implement the ordering helper it covers; verify the test passes
 
 ## 3. State: actions and view model
 
@@ -30,9 +30,9 @@ Each task names how to verify it. Tests are unit or widget tests: no network, no
 
 ## 5. Publish section
 
-- [ ] 5.1 Write failing widget tests: bump selector and channel switch update the proposal; a confirmation dialog shows the full version and channel before any request; cancelling sends nothing; verify tests fail first
+- [ ] 5.1 Write failing widget tests: bump selector and channel switch update the proposal; a confirmation dialog shows the full version and channel before any request, and says that an existing snapshot is replaced; cancelling sends nothing; verify tests fail first
 - [ ] 5.2 Implement the bump and channel controls and the confirmation step, reusing `proposeVersion`; verify the widget tests from 5.1 pass and no request is sent without confirmation
-- [ ] 5.3 Write failing widget tests for the publish outcomes: success shows coordinates, revision, base commit and the `vulpes("<coordinates>")` line with a copy action; 422 lists every diagnostic; 409 says the version exists and reloads the versions list; verify tests fail first
+- [ ] 5.3 Write failing widget tests for the publish outcomes: success shows coordinates, revision, base commit (first 10 characters, with a copy action for the full 40-character value) and the `vulpes("<coordinates>")` line with a copy action; 422 lists every diagnostic; 409 says the version exists and reloads the versions list; verify tests fail first
 - [ ] 5.4 Implement the success, diagnostics and conflict views on the Publish section; verify the widget tests from 5.3 pass
 - [ ] 5.5 Write a widget test that an `Unreadable` published version explains the problem and disables Publish without an exception; implement it; verify the test passes
 

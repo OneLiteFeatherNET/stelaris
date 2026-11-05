@@ -6,7 +6,7 @@ The generator page on `feat/generator-page` is a `StoreConnector` page (`lib/fea
 
 Requirements are in `specs/generator-page/spec.md`; motivation is in proposal.md, "Why".
 
-The companion APIs (vulpes-generator `add-editor-release-flow`) provide `GET /projects/{projectId}/local-build?baseBranch=`, `POST /generator/release`, `GET /projects/{projectKey}/releases` and `GET /projects/{projectKey}/releases/{version}/local-build`. `/git/branches` is unchanged.
+The companion APIs (vulpes-generator `add-editor-release-flow`) are all keyed by the project id (UUID): `GET /projects/{projectId}/local-build?baseBranch=`, `POST /generator/release` with body `{projectId, version, baseBranch}`, `GET /projects/{projectId}/releases` and `GET /projects/{projectId}/releases/{version}/local-build`. `/git/branches` is unchanged.
 
 ## Goals / Non-Goals
 
@@ -25,13 +25,13 @@ Non-Goals:
 
 ### State: one generator-page slice in the store
 
-The three sections each have their own status (loading, loaded, error with kind) in `AppState`, replacing `releaseModel`, `isLoadingRelease` and the commit-related fields. Actions: `LoadBranchesAction`, `LoadPublishedVersionsAction(projectKey)`, `DownloadLocalBuildAction(projectId, baseBranch)`, `DownloadPublishedVersionAction(projectKey, version)`, `PublishReleaseAction(projectKey, version, baseBranch)`. Each action's `reduce` sets loading first and then a final status, and catches every exception, mapping it to an error kind (see Error mapping). The view model exposes the derived proposal (`PublishProposal?` from the pure function) and `canPublish`, so widgets hold no version logic.
+The three sections each have their own status (loading, loaded, error with kind) in `AppState`, replacing `releaseModel`, `isLoadingRelease` and the commit-related fields. Actions: `LoadBranchesAction`, `LoadPublishedVersionsAction(projectId)`, `DownloadLocalBuildAction(projectId, baseBranch)`, `DownloadPublishedVersionAction(projectId, version)`, `PublishReleaseAction(projectId, version, baseBranch)`. Each action's `reduce` sets loading first and then a final status, and catches every exception, mapping it to an error kind (see Error mapping). The view model exposes the derived proposal (`VersionProposal` from the pure function) and `canPublish`, so widgets hold no version logic.
 
 Alternative considered: keep the state in local `StatefulWidget` fields as `BuildTrigger` does today. Rejected because the branch selection is shared between two sections and the publish result must survive a list refresh.
 
 ### API client: typed results instead of raw Responses
 
-`GenerateApi` returns domain types: `List<String> branches()`, `LocalBuildFile(bytes, filename)` for both downloads, `PublishResult(coordinates, revision, baseCommit, repositoryUrl)`, and `List<PublishedVersion>` for the list. Non-2xx responses are converted to `GeneratorApiException(kind, message, diagnostics)` where `kind` is one of `versionExists` (409), `compileFailed` (422, with the diagnostics list), `repositoryUnavailable` (see Open Questions), `unexpected(status)`, or `network`. The existing `generate`, `download` (`/download`) and `buildInformation` methods are deleted with their callers; `GenerateApi.generate` is the call the spec forbids.
+`GenerateApi` returns domain types: `List<String> branches()`, `LocalBuildFile(bytes, filename)` for both downloads, `PublishResult(coordinates, revision, baseCommit, repositoryUrl)` where `baseCommit` is the full 40-character SHA, and `List<PublishedVersion>` for the list. Non-2xx responses are converted to `GeneratorApiException(kind, message, diagnostics)` where `kind` is one of `versionExists` (409), `compileFailed` (422, with the diagnostics list), `repositoryUnavailable` (502), `unexpected(status)`, or `network`. The existing `generate`, `download` (`/download`) and `buildInformation` methods are deleted with their callers; `GenerateApi.generate` is the call the spec forbids.
 
 Downloads use `ResponseType.bytes` as today. The filename is fixed to `<project>-local.zip` for Test locally, as the spec says; for published versions it is `<project>-<version>-local.zip`.
 
@@ -44,18 +44,18 @@ sealed class VersionProposal { ... }   // Proposed(version) | Unreadable(raw)
 VersionProposal proposeVersion({
   required Channel channel,            // release | snapshot
   required BumpPart bump,              // major | minor | patch
-  required Iterable<String> published, // versions of the selected channel
+  required Iterable<String> published, // all published versions of the project
 });
 ```
 
-Rules, applied to the latest published version of the selected channel (highest by semver, ignoring `-dev.N` for the Release channel):
-- Release: no published Release version gives `0.1.0`; otherwise bump the `X.Y.Z` of the latest one (major resets minor and patch, minor resets patch).
-- Snapshot: take the base `X.Y.Z` of the latest published snapshot (or `0.1.0` when none); bump it the same way; then N is the smallest integer ≥ 1 with `base-dev.N` not published. Snapshot bumping applies to the snapshot base, not to Release versions.
-- Any published version that does not match `X.Y.Z` or `X.Y.Z-dev.N` is ignored for the proposal and reported through `Unreadable`, so the page explains it and disables Publish instead of throwing.
+Rules, applied to the latest published Release (highest `X.Y.Z` by semver, ignoring `-SNAPSHOT` versions):
+- Release: no published Release gives `0.1.0`; otherwise bump the `X.Y.Z` of the latest one (major resets minor and patch, minor resets patch). Proposed version is `X.Y.Z`.
+- Snapshot: the same base as the Release proposal, then `-SNAPSHOT` appended. With no published Release the snapshot is `0.1.0-SNAPSHOT`; otherwise `1.4.2` with minor gives `1.5.0-SNAPSHOT`.
+- Any published version that does not match `X.Y.Z` or `X.Y.Z-SNAPSHOT` is ignored for the proposal and reported through `Unreadable`, so the page explains it and disables Publish instead of throwing.
 
 The function takes no clock and no I/O, so tests need no fakes.
 
-Alternative considered: derive the snapshot base from the latest Release. Rejected because it would reset the snapshot numbering whenever a Release is published, and the spec asks that each channel's latest version drive its own proposal. Open question 4 asks for confirmation.
+Snapshot publishing replaces the snapshot of the same version on the server. The Publish confirmation says so, and the page does not compute a free snapshot number.
 
 ### Download on web
 
@@ -74,7 +74,7 @@ The actions take the generator API through their constructor, defaulting to `Api
 | 422 publish | Publish | diagnostics list; version not published |
 | 409 publish | Publish | "version exists" message; versions list reloaded |
 | other publish failure | Publish | generic error with status and retry |
-| versions list, repository unavailable | Published versions | repository-unavailable error with retry |
+| versions list, repository unavailable (502) | Published versions | repository-unavailable error with retry |
 | versions list, success with zero items | Published versions | empty state |
 | any other failure | the affected section | generic error with status and retry |
 
@@ -87,14 +87,20 @@ The actions take the generator API through their constructor, defaulting to `Api
 
 ## Migration Plan
 
-1. Land or rebase onto the generator page (open question 1) so `develop` contains `GeneratorPage`.
+1. The generator page lands on `develop` first, as its own pull request (from `feat/generator-page`). The code PR is opened from a `develop` that contains `GeneratorPage`.
 2. Ship the code PR behind no flag; the page is reachable only from the Build group, so the old commit-search path is never shipped.
 3. Rollback: revert the code PR. The companion endpoints are additive, so reverting the page does not affect them.
 
 ## Open Questions
 
-1. **Base of the code PR (blocks the code PR, not this proposal).** The generator page exists only on the unpushed `feat/generator-page` (`5451ef1e`). Should that branch land on `develop` first, or should the code PR include it? The code PR cannot be opened from a `develop` that lacks the page.
-2. **Project identifier.** The local-build endpoint takes `projectId`, the releases endpoints take `projectKey`. Is `projectKey` the same value as `Project.id` in the app, or a separate field to read from the project?
-3. **Repository-unavailable status.** Which HTTP status does the releases endpoint return when the repository cannot be read (503 assumed here)? The design depends on it only for the error mapping; confirm with the vulpes-generator change.
-4. **Snapshot base.** Confirm that the Snapshot proposal is based on the latest published snapshot base, not on the latest Release, as described in Decisions.
-5. **422 and 409 body shape.** Confirm the field names for the diagnostics list and the conflict message in the vulpes-generator ProblemDetail responses.
+1. **Field names of the 422 and 409 bodies.** The diagnostics list and the conflict message are fields of the ProblemDetail responses defined by the vulpes-generator `add-editor-release-flow` proposal. This change consumes them as that proposal defines them; the exact names are confirmed when task 1.1 reads that proposal, and the parsing tests use its examples.
+
+## Settled Decisions
+
+The product owner settled these, which were open questions in the first draft:
+
+- **Snapshot version format.** Snapshots are Maven `X.Y.Z-SNAPSHOT`, not `-dev.N`. The snapshot proposal is the latest Release with the chosen bump plus `-SNAPSHOT`. Publishing the same snapshot again replaces it on the server; the UI says so in the confirmation. There is no "next free N" logic.
+- **Project identifier.** All generator endpoints use the project id (UUID). There is no separate project key.
+- **Repository unavailable.** The releases endpoint answers 502 when the repository cannot be read; the page maps it to the "unavailable" state.
+- **Base of the code PR.** The generator page lands on `develop` first, as its own PR. The code PR for this change builds on that `develop`.
+- **Base commit display.** The vulpes-base commit is the full 40-character SHA. The page displays its first 10 characters and offers a copy action for the full value.
