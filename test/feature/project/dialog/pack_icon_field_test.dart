@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
@@ -33,10 +35,14 @@ void main() {
   });
 
   group('PackIconField', () {
+    final preview = find.byKey(const Key('pack_icon_preview'));
+    final editOverlay = find.byKey(const Key('pack_icon_edit_overlay'));
+
     Future<List<Uint8List?>> pump(
       WidgetTester tester, {
       Uint8List? value,
       PickedAssetFile? picked,
+      Future<PickedAssetFile?> Function()? pickFile,
     }) async {
       final changes = <Uint8List?>[];
       await tester.pumpWidget(
@@ -51,7 +57,7 @@ void main() {
                   changes.add(icon);
                   setState(() => value = icon);
                 },
-                pickFile: () async => picked,
+                pickFile: pickFile ?? () async => picked,
               ),
             ),
           ),
@@ -64,23 +70,94 @@ void main() {
       await pump(tester);
 
       expect(find.text('No icon'), findsOneWidget);
-      expect(find.text('Choose icon'), findsOneWidget);
+      expect(find.byIcon(Icons.add_photo_alternate_outlined), findsOneWidget);
+      expect(find.byTooltip('Choose icon'), findsOneWidget);
+      expect(find.byType(OutlinedButton), findsNothing);
       expect(find.text('Remove'), findsNothing);
     });
 
-    testWidgets('the preview is square and as high as the column beside it', (
+    testWidgets('the preview keeps its square size with and without icon', (
       tester,
     ) async {
+      await pump(tester);
+      expect(tester.getSize(preview), const Size.square(packIconPreviewSize));
+
+      await pump(tester, value: png16);
+      expect(tester.getSize(preview), const Size.square(packIconPreviewSize));
+    });
+
+    testWidgets('the preview is a button named by what a tap does', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
       await pump(tester, value: png16);
 
-      final preview = tester.getSize(
-        find.byKey(const Key('pack_icon_preview')),
+      expect(
+        tester.getSemantics(preview),
+        matchesSemantics(
+          label: 'Change icon',
+          tooltip: 'Change icon',
+          isButton: true,
+          hasTapAction: true,
+          hasFocusAction: true,
+          isFocusable: true,
+          hasEnabledState: true,
+          isEnabled: true,
+        ),
       );
-      final column = tester.getSize(
-        find.ancestor(of: find.text('Remove'), matching: find.byType(Column)),
+      handle.dispose();
+    });
+
+    testWidgets('a hovered icon shows the edit mark', (tester) async {
+      await pump(tester, value: png16);
+      expect(editOverlay, findsNothing);
+
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: tester.getCenter(preview));
+      await tester.pumpAndSettle();
+
+      expect(editOverlay, findsOneWidget);
+      await mouse.removePointer();
+    });
+
+    testWidgets('an empty preview shows no edit mark when hovered', (
+      tester,
+    ) async {
+      await pump(tester);
+
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: tester.getCenter(preview));
+      await tester.pumpAndSettle();
+
+      expect(editOverlay, findsNothing);
+      await mouse.removePointer();
+    });
+
+    testWidgets('shows a spinner and ignores taps while the file is read', (
+      tester,
+    ) async {
+      final file = Completer<PickedAssetFile?>();
+      var picks = 0;
+      final changes = await pump(
+        tester,
+        pickFile: () {
+          picks++;
+          return file.future;
+        },
       );
-      expect(preview.width, preview.height);
-      expect(preview.height, column.height);
+
+      await tester.tap(preview);
+      await tester.pump();
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      await tester.tap(preview);
+      await tester.pump();
+      expect(picks, 1);
+
+      file.complete(PickedAssetFile(name: 'pack.png', bytes: png16));
+      await tester.pumpAndSettle();
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(changes, [png16]);
     });
 
     testWidgets('takes a valid icon and shows its size', (tester) async {
@@ -89,13 +166,13 @@ void main() {
         picked: PickedAssetFile(name: 'pack.png', bytes: png32),
       );
 
-      await tester.tap(find.text('Choose icon'));
+      await tester.tap(preview);
       await tester.pumpAndSettle();
 
       expect(changes, [png32]);
       expect(find.text('pack.png, 32 × 32'), findsOneWidget);
       expect(find.byKey(const Key('pack_icon_image')), findsOneWidget);
-      expect(find.text('Change'), findsOneWidget);
+      expect(find.byTooltip('Change icon'), findsOneWidget);
     });
 
     testWidgets('turns down an icon of the wrong size', (tester) async {
@@ -104,7 +181,7 @@ void main() {
         picked: PickedAssetFile(name: 'pack.png', bytes: png24),
       );
 
-      await tester.tap(find.text('Choose icon'));
+      await tester.tap(preview);
       await tester.pumpAndSettle();
 
       expect(changes, isEmpty);
@@ -115,7 +192,7 @@ void main() {
     testWidgets('keeps the icon when the dialog is cancelled', (tester) async {
       final changes = await pump(tester, value: png16);
 
-      await tester.tap(find.text('Change'));
+      await tester.tap(preview);
       await tester.pumpAndSettle();
 
       expect(changes, isEmpty);

@@ -100,6 +100,11 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  Future<void> tapPreview(WidgetTester tester) async {
+    await tester.tap(find.byKey(const Key('pack_icon_preview')));
+    await tester.pumpAndSettle();
+  }
+
   Finder field(String label) => find.widgetWithText(TextFormField, label);
   final description = find.descendant(
     of: find.byType(MiniMessageField),
@@ -129,7 +134,7 @@ void main() {
       onResult: (value) => result = value,
     );
 
-    await tapButton(tester, 'Choose icon');
+    await tapPreview(tester);
     await tester.enterText(description, 'Pack');
     await tester.enterText(field('Min format *'), '46');
     await tester.enterText(field('Max format *'), '48');
@@ -156,7 +161,7 @@ void main() {
       onResult: (value) => result = value,
     );
 
-    await tapButton(tester, 'Change');
+    await tapPreview(tester);
     await save(tester, () => result != null);
 
     expect(assetApi.replaces, [iconAsset.id]);
@@ -233,7 +238,7 @@ void main() {
     final assetApi = FakeAssetClientApi();
     await pumpDialog(tester, packMetaApi, assetApi, picked: png16);
 
-    await tapButton(tester, 'Choose icon');
+    await tapPreview(tester);
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
 
@@ -257,7 +262,7 @@ void main() {
       onResult: (value) => result = value,
     );
 
-    await tapButton(tester, 'Choose icon');
+    await tapPreview(tester);
     await tester.enterText(description, 'Pack');
     await tester.enterText(field('Min format *'), '46');
     await tester.enterText(field('Max format *'), '48');
