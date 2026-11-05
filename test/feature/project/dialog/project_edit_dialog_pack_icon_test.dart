@@ -95,8 +95,8 @@ void main() {
     done: done,
   );
 
-  Future<void> tapButton(WidgetTester tester, String label) async {
-    await tester.tap(find.text(label));
+  Future<void> tapRemove(WidgetTester tester) async {
+    await tester.tap(find.byTooltip('Remove icon'));
     await tester.pumpAndSettle();
   }
 
@@ -134,15 +134,15 @@ void main() {
     expect(iconImage, findsOneWidget);
     final image = tester.widget<Image>(iconImage).image as MemoryImage;
     expect(image.bytes, png32);
-    expect(find.text('pack.png, 32 × 32'), findsOneWidget);
-    expect(find.text('Remove'), findsOneWidget);
+    expect(find.text('32 × 32 px'), findsOneWidget);
+    expect(find.byTooltip('Remove icon'), findsOneWidget);
   });
 
   testWidgets('a removed icon disappears before it is saved', (tester) async {
     await pumpDialog(tester, FakePackMetaApi(stored: withIcon), storedIcon());
     expect(iconImage, findsOneWidget);
 
-    await tapButton(tester, 'Remove');
+    await tapRemove(tester);
 
     expect(iconImage, findsNothing);
     expect(find.text('No icon'), findsOneWidget);
@@ -231,7 +231,7 @@ void main() {
       onResult: (value) => result = value,
     );
 
-    await tapButton(tester, 'Remove');
+    await tapRemove(tester);
     await save(tester, () => result != null);
 
     expect(packMetaApi.puts, [existing]);
@@ -249,7 +249,7 @@ void main() {
       onResult: (value) => result = value,
     );
 
-    await tapButton(tester, 'Remove');
+    await tapRemove(tester);
     await tester.enterText(description, '');
     for (final text in ['46', '0', '48']) {
       await tester.enterText(field(text), '');

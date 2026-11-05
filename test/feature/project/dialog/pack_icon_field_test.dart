@@ -73,7 +73,7 @@ void main() {
       expect(find.byIcon(Icons.add_photo_alternate_outlined), findsOneWidget);
       expect(find.byTooltip('Choose icon'), findsOneWidget);
       expect(find.byType(OutlinedButton), findsNothing);
-      expect(find.text('Remove'), findsNothing);
+      expect(find.byTooltip('Remove icon'), findsNothing);
     });
 
     testWidgets('the preview keeps its square size with and without icon', (
@@ -84,6 +84,21 @@ void main() {
 
       await pump(tester, value: png16);
       expect(tester.getSize(preview), const Size.square(packIconPreviewSize));
+    });
+
+    testWidgets('the text beside the preview is centered on it', (
+      tester,
+    ) async {
+      await pump(tester, value: png16);
+
+      final text = find.ancestor(
+        of: find.text('16 × 16 px'),
+        matching: find.byType(Column),
+      );
+      expect(
+        tester.getCenter(text.first).dy,
+        moreOrLessEquals(tester.getCenter(preview).dy, epsilon: 0.5),
+      );
     });
 
     testWidgets('the preview is a button named by what a tap does', (
@@ -170,7 +185,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(changes, [png32]);
-      expect(find.text('pack.png, 32 × 32'), findsOneWidget);
+      expect(find.text('32 × 32 px'), findsOneWidget);
       expect(find.byKey(const Key('pack_icon_image')), findsOneWidget);
       expect(find.byTooltip('Change icon'), findsOneWidget);
     });
@@ -196,13 +211,13 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(changes, isEmpty);
-      expect(find.text('pack.png, 16 × 16'), findsOneWidget);
+      expect(find.text('16 × 16 px'), findsOneWidget);
     });
 
     testWidgets('removes the icon', (tester) async {
       final changes = await pump(tester, value: png16);
 
-      await tester.tap(find.text('Remove'));
+      await tester.tap(find.byTooltip('Remove icon'));
       await tester.pumpAndSettle();
 
       expect(changes, [null]);
