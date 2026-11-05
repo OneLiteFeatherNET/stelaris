@@ -1,5 +1,11 @@
 // SPIKE: throwaway proof of concept for rule based blockstate editing.
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/feature/base/edit_card/edit_card.dart';
+import 'package:stelaris/feature/base/edit_card/edit_card_grid.dart';
+import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
+import 'package:stelaris/feature/dialogs/delete_dialog.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/feature/blockstate/block_state_rules.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -47,12 +53,63 @@ class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
   void _setRules(List<BlockStateRule> rules) =>
       widget.onChanged(widget.entry.copyWith(rules: rules));
 
-  void _update(int index, BlockStateRule rule) =>
-      _setRules([..._rules]..[index] = rule);
-
   void _replace(int index, List<BlockStateRule> rules) {
     setState(() => _generation++);
     _setRules([..._rules]..replaceRange(index, index + 1, rules));
+  }
+
+  /// Opens the [_RuleDialog] for [rule]; it pops the rules to put in its
+  /// place: the edited rule, none when deleted, one per facing when split.
+  Future<List<BlockStateRule>?> _openDialog(
+    String title,
+    BlockStateRule rule, {
+    bool existing = true,
+  }) => showDialog<List<BlockStateRule>>(
+    context: context,
+    builder: (_) =>
+        _RuleDialog(title: title, spec: _spec, rule: rule, existing: existing),
+  );
+
+  Future<void> _add() async {
+    final rules = await _openDialog(
+      'Regel hinzufügen',
+      const BlockStateRule(),
+      existing: false,
+    );
+    if (rules != null && mounted) _setRules([..._rules, ...rules]);
+  }
+
+  Future<void> _edit(int index) async {
+    final rules = await _openDialog('Regel ${index + 1}', _rules[index]);
+    if (rules != null && mounted) _replace(index, rules);
+  }
+
+  /// A rule in the card of the edit pages: the model as its value, the
+  /// condition and the rotation below, and a warning icon when other
+  /// contexts claim some of its states. A tap opens the [_RuleDialog].
+  Widget _ruleCard(
+    int index,
+    BlockStateRule rule,
+    ({Set<String> names, int count}) overlap,
+  ) {
+    final rotation = [
+      if (rule.x != 0) 'x ${rule.x}°',
+      if (rule.y != 0) 'y ${rule.y}°',
+      if (rule.uvlock) 'uvlock',
+    ];
+    return EditCard(
+      icon: overlap.count > 0 ? Icons.warning_amber_rounded : Icons.rule,
+      label: overlap.count > 0
+          ? 'Regel ${index + 1} · ${overlap.count} auch in '
+                '${overlap.names.map((name) => '„$name“').join(', ')}'
+          : 'Regel ${index + 1}',
+      value: rule.model,
+      footer: [
+        conditionOf(rule, _spec),
+        if (rotation.isNotEmpty) rotation.join(' · '),
+      ].join('\n'),
+      onTap: () => _edit(index),
+    );
   }
 
   /// The names of the other contexts claiming [state].
@@ -95,35 +152,40 @@ class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: ListView(
-              children: [
-                for (final (index, rule) in _rules.indexed)
-                  _RuleCard(
-                    key: ValueKey('$_generation-$index'),
-                    index: index,
-                    spec: _spec,
-                    rule: rule,
-                    active: rule.matches(_probe),
-                    overlap: overlapOf(rule),
-                    onChanged: (rule) => _update(index, rule),
-                    onDelete: () => _replace(index, const []),
-                    onExpandFacing: _spec.properties.containsKey('facing')
-                        ? () => _replace(index, expandFacing(rule, _spec))
-                        : null,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final cardWidth = EditCardGrid.cardWidthIn(
+                  constraints.maxWidth,
+                );
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      EditSectionHeading(
+                        title: 'Regeln (${_rules.length})',
+                        trailing: TextButton.icon(
+                          onPressed: _add,
+                          icon: const Icon(Icons.add),
+                          label: const Text('Regel hinzufügen'),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: EditCardGrid.spacing,
+                        runSpacing: EditCardGrid.spacing,
+                        children: [
+                          for (final (index, rule) in _rules.indexed)
+                            SizedBox(
+                              key: ValueKey('$_generation-$index'),
+                              width: cardWidth,
+                              child: _ruleCard(index, rule, overlapOf(rule)),
+                            ),
+                        ],
+                      ),
+                    ],
                   ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: FilledButton.tonalIcon(
-                      onPressed: () =>
-                          _setRules([..._rules, const BlockStateRule()]),
-                      icon: const Icon(Icons.add),
-                      label: const Text('Regel hinzufügen'),
-                    ),
-                  ),
-                ),
-              ],
+                );
+              },
             ),
           ),
           const SizedBox(width: 16),
@@ -155,94 +217,94 @@ class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
   }
 }
 
-class _RuleCard extends StatelessWidget {
-  const _RuleCard({
-    required this.index,
+/// The condition of [rule] as `property=a|b`, joined by ` · `.
+String conditionOf(BlockStateRule rule, BlockSpec spec) {
+  final parts = [
+    for (final MapEntry(key: property, value: values) in rule.when.entries)
+      if (values.isNotEmpty &&
+          values.length < (spec.properties[property]?.length ?? 0))
+        '$property=${values.join('|')}',
+  ];
+  return parts.isEmpty ? 'Jeder Zustand' : parts.join(' · ');
+}
+
+/// Edits a copy of [rule]: the values per property it applies to, then the
+/// model with its rotation. Pops the rules to put in its place: the edited
+/// rule on save, none on delete, one per facing on a split.
+class _RuleDialog extends StatefulWidget {
+  const _RuleDialog({
+    required this.title,
     required this.spec,
     required this.rule,
-    required this.active,
-    required this.overlap,
-    required this.onChanged,
-    required this.onDelete,
-    required this.onExpandFacing,
-    super.key,
+    required this.existing,
   });
 
-  final int index;
+  final String title;
   final BlockSpec spec;
   final BlockStateRule rule;
-  final bool active;
 
-  /// The other contexts claiming states of this rule, and how many.
-  final ({Set<String> names, int count}) overlap;
-  final ValueChanged<BlockStateRule> onChanged;
-  final VoidCallback onDelete;
-  final VoidCallback? onExpandFacing;
+  /// Whether the rule is already in the list, only then it can be deleted.
+  final bool existing;
+
+  @override
+  State<_RuleDialog> createState() => _RuleDialogState();
+}
+
+class _RuleDialogState extends State<_RuleDialog> {
+  late BlockStateRule _rule = widget.rule;
+
+  void _change(BlockStateRule rule) => setState(() => _rule = rule);
+
+  Future<void> _delete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => DeleteDialog<BlockStateRule>(
+        title: 'Regel löschen',
+        header: [TextSpan(text: '${widget.title} wird entfernt.')],
+        value: _rule,
+        successfully: (_) => true,
+      ),
+    );
+    if (confirmed == true && mounted) {
+      Navigator.of(context).pop(const <BlockStateRule>[]);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: active ? scheme.primary : scheme.outlineVariant,
-          width: active ? 2 : 1,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
+    final theme = Theme.of(context);
+    final spec = widget.spec;
+    return FormDialog(
+      title: widget.title,
+      actionLabel: context.l10n.button_save,
+      maxWidth: 640,
+      onSubmit: () => Navigator.of(context).pop([_rule]),
+      titleActions: [
+        if (spec.properties.containsKey('facing'))
+          IconButton(
+            tooltip: 'Pro facing aufteilen und drehen',
+            onPressed: () =>
+                Navigator.of(context).pop(expandFacing(_rule, spec)),
+            icon: const Icon(Icons.rotate_90_degrees_cw_outlined),
+          ),
+        if (widget.existing)
+          IconButton(
+            tooltip: context.l10n.tooltip_delete,
+            onPressed: _delete,
+            icon: const Icon(Icons.delete_forever),
+          ),
+      ],
+      content: SingleChildScrollView(
+        padding: const EdgeInsets.only(right: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Text(
-                  'Regel ${index + 1}',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                if (active) ...[
-                  const SizedBox(width: 8),
-                  Icon(Icons.bolt, size: 18, color: scheme.primary),
-                ],
-                const Spacer(),
-                if (onExpandFacing != null)
-                  TextButton.icon(
-                    onPressed: onExpandFacing,
-                    icon: const Icon(Icons.rotate_90_degrees_cw_outlined),
-                    label: const Text('Pro facing drehen'),
-                  ),
-                IconButton(
-                  tooltip: 'Löschen',
-                  onPressed: onDelete,
-                  icon: const Icon(Icons.delete_outline),
-                ),
-              ],
-            ),
-            if (overlap.count > 0)
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.warning_amber_rounded,
-                      size: 18,
-                      color: scheme.error,
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        '${overlap.count} ${overlap.count == 1 ? 'Zustand ist' : 'Zustände sind'} '
-                        'auch in ${overlap.names.map((name) => '„$name“').join(', ')} belegt',
-                        style: TextStyle(color: scheme.error),
-                      ),
-                    ),
-                  ],
-                ),
+            Text('Wenn', style: theme.textTheme.labelLarge),
+            if (spec.properties.isEmpty)
+              const Padding(
+                padding: EdgeInsets.only(top: 6),
+                child: Text('Der Block hat keine Properties.'),
               ),
-            const SizedBox(height: 8),
-            Text('Wenn', style: Theme.of(context).textTheme.labelLarge),
             for (final MapEntry(key: property, value: values)
                 in spec.properties.entries)
               Padding(
@@ -267,9 +329,10 @@ class _RuleCard extends StatelessWidget {
                               visualDensity: VisualDensity.compact,
                               label: Text(value),
                               selected:
-                                  rule.when[property]?.contains(value) ?? false,
+                                  _rule.when[property]?.contains(value) ??
+                                  false,
                               onSelected: (_) =>
-                                  onChanged(rule.toggle(property, value)),
+                                  _change(_rule.toggle(property, value)),
                             ),
                         ],
                       ),
@@ -277,19 +340,19 @@ class _RuleCard extends StatelessWidget {
                   ],
                 ),
               ),
-            const SizedBox(height: 12),
-            Text('Dann', style: Theme.of(context).textTheme.labelLarge),
+            const SizedBox(height: 16),
+            Text('Dann', style: theme.textTheme.labelLarge),
             const SizedBox(height: 6),
             TextFormField(
-              initialValue: rule.model,
+              initialValue: _rule.model,
               decoration: const InputDecoration(
                 labelText: 'Modell',
                 hintText: 'minecraft:block/footprint_slender',
                 isDense: true,
               ),
-              onChanged: (model) => onChanged(rule.copyWith(model: model)),
+              onChanged: (model) => _change(_rule.copyWith(model: model)),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Wrap(
               spacing: 16,
               runSpacing: 8,
@@ -297,22 +360,22 @@ class _RuleCard extends StatelessWidget {
               children: [
                 _RotationPicker(
                   axis: 'x',
-                  value: rule.x,
-                  onChanged: (x) => onChanged(rule.copyWith(x: x)),
+                  value: _rule.x,
+                  onChanged: (x) => _change(_rule.copyWith(x: x)),
                 ),
                 _RotationPicker(
                   axis: 'y',
-                  value: rule.y,
-                  onChanged: (y) => onChanged(rule.copyWith(y: y)),
+                  value: _rule.y,
+                  onChanged: (y) => _change(_rule.copyWith(y: y)),
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Text('uvlock'),
                     Switch(
-                      value: rule.uvlock,
+                      value: _rule.uvlock,
                       onChanged: (uvlock) =>
-                          onChanged(rule.copyWith(uvlock: uvlock)),
+                          _change(_rule.copyWith(uvlock: uvlock)),
                     ),
                   ],
                 ),
