@@ -4,10 +4,10 @@ import 'package:async_redux/async_redux.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/build/build_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
-import 'package:stelaris/feature/build/build_dialog.dart';
+import 'package:stelaris/feature/build/generator_page.dart';
 
 class BuildStateFactory
-    extends VmFactory<AppState, BuildDialog, BuildViewModel> {
+    extends VmFactory<AppState, GeneratorPage, BuildViewModel> {
   BuildStateFactory();
 
   @override

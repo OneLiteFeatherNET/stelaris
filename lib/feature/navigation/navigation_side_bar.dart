@@ -57,6 +57,9 @@ class NavigationSideBar extends StatelessWidget {
             // from the destinations at the bottom of the rail.
             trailingAtBottom: true,
             trailing: const _RailSettingsButton(),
+            // The destinations scroll on short windows, so the groups below
+            // the sections never push the rail past its height.
+            scrollable: true,
           ),
         );
       },
@@ -75,6 +78,12 @@ class NavigationSideBar extends StatelessWidget {
   static int _runtimeRailIndex(int runtimeIndex) =>
       _assetRailIndex(AssetNavigationEntry.values.length) + 1 + runtimeIndex;
 
+  /// The rail index of the build entry at [buildIndex] in
+  /// [BuildNavigationEntry.values]. After the runtime entries is the "Build"
+  /// heading.
+  static int _buildRailIndex(int buildIndex) =>
+      _runtimeRailIndex(runtimeNavigationEntries.length) + 1 + buildIndex;
+
   /// The rail index of the destination showing [location], or -1 if none does.
   /// Nested routes (e.g. a model's `/detail` route) share the parent entry's
   /// highlight rather than falling back to the first entry.
@@ -91,6 +100,10 @@ class NavigationSideBar extends StatelessWidget {
     final currentAssetEntry = assetEntryForLocation(location);
     if (currentAssetEntry != null) {
       return _assetRailIndex(currentAssetEntry.index);
+    }
+    final currentBuildEntry = buildEntryForLocation(location);
+    if (currentBuildEntry != null) {
+      return _buildRailIndex(currentBuildEntry.index);
     }
     return -1;
   }
@@ -111,12 +124,18 @@ class NavigationSideBar extends StatelessWidget {
     final runtimeIndex = index - _runtimeRailIndex(0);
     if (runtimeIndex >= 0 && runtimeIndex < runtimeNavigationEntries.length) {
       context.go(runtimeNavigationEntries[runtimeIndex].route);
+      return;
+    }
+    final buildIndex = index - _buildRailIndex(0);
+    if (buildIndex >= 0 && buildIndex < BuildNavigationEntry.values.length) {
+      context.go(BuildNavigationEntry.values[buildIndex].route);
     }
   }
 
   /// Builds the list of navigation destinations for the [NavigationRail]: the
   /// sections, the disabled "Assets" heading, the asset pages, the disabled
-  /// "Runtime" heading, then the runtime entries.
+  /// "Runtime" heading, the runtime entries, the disabled "Build" heading,
+  /// then the build pages.
   List<NavigationRailDestination> _buildNavigationView(BuildContext context) {
     return [
       for (final navigationValue in sectionEntries)
@@ -138,6 +157,13 @@ class NavigationSideBar extends StatelessWidget {
           display: runtimeValue.display,
           icon: runtimeValue.data,
           selectedIcon: runtimeValue.selected,
+        ),
+      _groupHeading(context, context.l10n.navigation_group_build),
+      for (final buildValue in BuildNavigationEntry.values)
+        _destination(
+          display: buildValue.display,
+          icon: buildValue.data,
+          selectedIcon: buildValue.selected,
         ),
     ];
   }

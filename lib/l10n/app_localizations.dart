@@ -4516,6 +4516,12 @@ abstract class AppLocalizations {
   /// **'Runtime'**
   String get navigation_group_runtime;
 
+  /// No description provided for @navigation_group_build.
+  ///
+  /// In en, this message translates to:
+  /// **'Build'**
+  String get navigation_group_build;
+
   /// No description provided for @expression_preview_title.
   ///
   /// In en, this message translates to:

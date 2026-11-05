@@ -8,6 +8,8 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/auth/auth_sessions.dart';
 import 'package:stelaris/auth/auth_state.dart';
 import 'package:stelaris/feature/auth/sign_in_page.dart';
+import 'package:stelaris/feature/build/generator_page.dart'
+    deferred as generator_page;
 import 'package:stelaris/feature/base/base_page.dart';
 import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/feature/project/project_selection_page.dart';
@@ -524,6 +526,22 @@ final GoRouter router = GoRouter(
               ),
             ),
           ],
+        ),
+        GoRoute(
+          path: BuildNavigationEntry.generator.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: generator_page.loadLibrary,
+              builder: () => generator_page.GeneratorPage(),
+            ),
+            key: state.pageKey,
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
+          ),
         ),
         GoRoute(
           path: NavigationEntry.function.route,
