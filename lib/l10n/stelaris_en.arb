@@ -1361,5 +1361,215 @@
         "type": "String"
       }
     }
+  },
+  "blockstate_picker_title": "Choose a block",
+  "blockstate_picker_search": "Search blocks",
+  "blockstate_picker_search_in": "Search in {group}",
+  "@blockstate_picker_search_in": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "blockstate_picker_all": "All blocks",
+  "blockstate_picker_filter": "Filter by block type",
+  "blockstate_picker_no_match": "No block matches the search.",
+  "blockstate_picker_only_group": "Show only {group}",
+  "@blockstate_picker_only_group": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "blockstate_states": "{count, plural, =1{1 state} other{{count} states}}",
+  "@blockstate_states": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockstate_contexts": "{count, plural, =1{1 context} other{{count} contexts}}",
+  "@blockstate_contexts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockstate_group_stairs": "Stairs",
+  "blockstate_group_slab": "Slabs",
+  "blockstate_group_fence": "Fences",
+  "blockstate_group_fence_gate": "Fence gates",
+  "blockstate_group_wall": "Walls",
+  "blockstate_group_door": "Doors",
+  "blockstate_group_trapdoor": "Trapdoors",
+  "blockstate_group_button": "Buttons",
+  "blockstate_group_pressure_plate": "Pressure plates",
+  "blockstate_group_sign": "Signs",
+  "blockstate_group_pane": "Panes and bars",
+  "blockstate_group_bed": "Beds",
+  "blockstate_group_candle": "Candles",
+  "blockstate_group_banner": "Banners",
+  "blockstate_group_head": "Heads",
+  "blockstate_group_rail": "Rails",
+  "blockstate_group_leaves": "Leaves",
+  "blockstate_group_pillar": "Logs and pillars",
+  "blockstate_group_other": "Other",
+  "blockstate_group_none": "Without properties",
+  "blockstate_list_title": "Blockstates ({count})",
+  "@blockstate_list_title": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockstate_empty": "No blockstates yet.",
+  "blockstate_delete_title": "Delete blockstate",
+  "blockstate_delete_warning": "Its rules are removed from the file of the block, the other contexts stay.",
+  "blockstate_create_title": "Create blockstate",
+  "blockstate_create_name": "Name",
+  "blockstate_create_fixed": "Name and block cannot be changed afterwards.",
+  "blockstate_create_shared": "{count, plural, =1{The block already has 1 context, they share its file.} other{The block already has {count} contexts, they share its file.}} Name and block cannot be changed afterwards.",
+  "@blockstate_create_shared": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockstate_rules_title": "Rules ({count})",
+  "@blockstate_rules_title": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockstate_rule_add": "Add rule",
+  "blockstate_rule": "Rule {number}",
+  "@blockstate_rule": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "blockstate_rule_overlap": "Rule {number} · {count} also in {names}",
+  "@blockstate_rule_overlap": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "blockstate_rule_any_state": "Every state",
+  "blockstate_rule_delete_title": "Delete rule",
+  "blockstate_rule_delete_header": "{rule} will be removed.",
+  "@blockstate_rule_delete_header": {
+    "placeholders": {
+      "rule": {
+        "type": "String"
+      }
+    }
+  },
+  "blockstate_rule_split_facing": "Split per facing and rotate",
+  "blockstate_rule_when": "When",
+  "blockstate_rule_then": "Then",
+  "blockstate_rule_no_properties": "The block has no properties.",
+  "blockstate_rule_model": "Model",
+  "blockstate_rule_no_model": "(no model)",
+  "blockstate_probe_title": "Test a state",
+  "blockstate_probe_free": "Free: the export needs the vanilla fallback for it.",
+  "blockstate_probe_rule": "Rule {number}: {description}",
+  "@blockstate_probe_rule": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "description": {
+        "type": "String"
+      }
+    }
+  },
+  "blockstate_probe_foreign": "“{name}” · Rule {number}: {description}",
+  "@blockstate_probe_foreign": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "number": {
+        "type": "int"
+      },
+      "description": {
+        "type": "String"
+      }
+    }
+  },
+  "blockstate_probe_conflict": "Claimed twice: multipart draws both models on top of each other.",
+  "blockstate_coverage_title": "Coverage of the block",
+  "blockstate_coverage_own": "This context claims {own} of {total} states",
+  "@blockstate_coverage_own": {
+    "placeholders": {
+      "own": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "blockstate_coverage_others": "{count} claimed by {contexts, plural, =1{the other context} other{the {contexts} other contexts}}",
+  "@blockstate_coverage_others": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "contexts": {
+        "type": "int"
+      }
+    }
+  },
+  "blockstate_coverage_free_hint": "{count} free, they get the vanilla fallback at export",
+  "@blockstate_coverage_free_hint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockstate_coverage_conflicts": "Claimed twice ({count}):",
+  "@blockstate_coverage_conflicts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockstate_coverage_free": "Free ({count}):",
+  "@blockstate_coverage_free": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockstate_coverage_only_state": "(only state)",
+  "blockstate_coverage_more": "… and {count} more",
+  "@blockstate_coverage_more": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -19,11 +19,6 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/notes.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
-const String _deleteTitle = 'Blockstate löschen';
-const String _deleteWarning =
-    'Seine Regeln fallen aus der Datei des Blocks, die anderen Kontexte '
-    'bleiben.';
-
 /// The namespace and the path of a block key, e.g. `minecraft` and
 /// `pink_petals`. The cards build the namespaced key from both, like the
 /// project key and the model key on the other pages.
@@ -103,17 +98,18 @@ class _BlockStateList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           PageHeader(
-            title: 'Blockstates (${entries.length})',
+            title: l10n.blockstate_list_title(entries.length),
             actions: [
               PageHeaderAction(
                 icon: addModelIcon,
-                label: context.l10n.button_add,
+                label: l10n.button_add,
                 primary: true,
                 onPressed: () => _add(context),
               ),
@@ -122,7 +118,7 @@ class _BlockStateList extends StatelessWidget {
           verticalSpacing10,
           Expanded(
             child: entries.isEmpty
-                ? const Center(child: Text('Noch keine Blockstates.'))
+                ? Center(child: Text(l10n.blockstate_empty))
                 : ModelGrid<BlockStateModel>(
                     items: entries,
                     itemBuilder: (context, entry) {
@@ -135,8 +131,8 @@ class _BlockStateList extends StatelessWidget {
                           modelKey: path,
                           projectKey: namespace,
                         ),
-                        deleteTitle: _deleteTitle,
-                        deleteWarning: _deleteWarning,
+                        deleteTitle: l10n.blockstate_delete_title,
+                        deleteWarning: l10n.blockstate_delete_warning,
                         mapToDeleteSuccessfully: (entry) {
                           BlockStateStore.shared.remove(entry.id);
                           return true;
@@ -195,13 +191,14 @@ class _CreateDialogState extends State<_CreateDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final block = _block;
     final contexts = block == null
         ? 0
         : BlockStateStore.shared.contextCounts[block.key] ?? 0;
     return AlertDialog(
-      title: const Text('Blockstate anlegen'),
+      title: Text(l10n.blockstate_create_title),
       content: SizedBox(
         width: 360,
         child: Column(
@@ -211,7 +208,9 @@ class _CreateDialogState extends State<_CreateDialog> {
             TextField(
               controller: _name,
               autofocus: true,
-              decoration: const InputDecoration(labelText: 'Name'),
+              decoration: InputDecoration(
+                labelText: l10n.blockstate_create_name,
+              ),
               onSubmitted: (_) => _create(),
             ),
             const SizedBox(height: 16),
@@ -220,18 +219,15 @@ class _CreateDialogState extends State<_CreateDialog> {
               icon: const Icon(Icons.view_in_ar_outlined),
               label: Text(
                 block == null
-                    ? 'Block wählen'
+                    ? l10n.blockstate_picker_title
                     : '${block.displayName} (${block.key})',
               ),
             ),
             const SizedBox(height: 6),
             Text(
               contexts == 0
-                  ? 'Name und Block lassen sich danach nicht mehr ändern.'
-                  : 'Der Block hat schon $contexts '
-                        '${contexts == 1 ? 'Kontext' : 'Kontexte'}, sie teilen '
-                        'sich seine Datei. Name und Block lassen sich danach '
-                        'nicht mehr ändern.',
+                  ? l10n.blockstate_create_fixed
+                  : l10n.blockstate_create_shared(contexts),
               style: theme.textTheme.bodySmall,
             ),
           ],
@@ -240,11 +236,11 @@ class _CreateDialogState extends State<_CreateDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(context.l10n.button_cancel),
+          child: Text(l10n.button_cancel),
         ),
         FilledButton(
           onPressed: block == null ? null : _create,
-          child: Text(context.l10n.button_add),
+          child: Text(l10n.button_add),
         ),
       ],
     );
@@ -285,11 +281,11 @@ class _BlockStateDetail extends StatelessWidget {
     final deleted = await showDialog<bool>(
       context: context,
       builder: (_) => ModelDeleteDialog<BlockStateModel>(
-        title: _deleteTitle,
+        title: context.l10n.blockstate_delete_title,
         name: entry.uiName,
         value: entry,
         namespacedKey: _namespacedKey,
-        warning: _deleteWarning,
+        warning: context.l10n.blockstate_delete_warning,
         successfully: (_) => true,
       ),
     );

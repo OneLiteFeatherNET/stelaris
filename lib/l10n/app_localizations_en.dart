@@ -2541,4 +2541,257 @@ class AppLocalizationsEn extends AppLocalizations {
   String expression_preview_missing_values(String names) {
     return 'Give a test value to $names to see the result.';
   }
+
+  @override
+  String get blockstate_picker_title => 'Choose a block';
+
+  @override
+  String get blockstate_picker_search => 'Search blocks';
+
+  @override
+  String blockstate_picker_search_in(String group) {
+    return 'Search in $group';
+  }
+
+  @override
+  String get blockstate_picker_all => 'All blocks';
+
+  @override
+  String get blockstate_picker_filter => 'Filter by block type';
+
+  @override
+  String get blockstate_picker_no_match => 'No block matches the search.';
+
+  @override
+  String blockstate_picker_only_group(String group) {
+    return 'Show only $group';
+  }
+
+  @override
+  String blockstate_states(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count states',
+      one: '1 state',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String blockstate_contexts(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count contexts',
+      one: '1 context',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get blockstate_group_stairs => 'Stairs';
+
+  @override
+  String get blockstate_group_slab => 'Slabs';
+
+  @override
+  String get blockstate_group_fence => 'Fences';
+
+  @override
+  String get blockstate_group_fence_gate => 'Fence gates';
+
+  @override
+  String get blockstate_group_wall => 'Walls';
+
+  @override
+  String get blockstate_group_door => 'Doors';
+
+  @override
+  String get blockstate_group_trapdoor => 'Trapdoors';
+
+  @override
+  String get blockstate_group_button => 'Buttons';
+
+  @override
+  String get blockstate_group_pressure_plate => 'Pressure plates';
+
+  @override
+  String get blockstate_group_sign => 'Signs';
+
+  @override
+  String get blockstate_group_pane => 'Panes and bars';
+
+  @override
+  String get blockstate_group_bed => 'Beds';
+
+  @override
+  String get blockstate_group_candle => 'Candles';
+
+  @override
+  String get blockstate_group_banner => 'Banners';
+
+  @override
+  String get blockstate_group_head => 'Heads';
+
+  @override
+  String get blockstate_group_rail => 'Rails';
+
+  @override
+  String get blockstate_group_leaves => 'Leaves';
+
+  @override
+  String get blockstate_group_pillar => 'Logs and pillars';
+
+  @override
+  String get blockstate_group_other => 'Other';
+
+  @override
+  String get blockstate_group_none => 'Without properties';
+
+  @override
+  String blockstate_list_title(int count) {
+    return 'Blockstates ($count)';
+  }
+
+  @override
+  String get blockstate_empty => 'No blockstates yet.';
+
+  @override
+  String get blockstate_delete_title => 'Delete blockstate';
+
+  @override
+  String get blockstate_delete_warning =>
+      'Its rules are removed from the file of the block, the other contexts stay.';
+
+  @override
+  String get blockstate_create_title => 'Create blockstate';
+
+  @override
+  String get blockstate_create_name => 'Name';
+
+  @override
+  String get blockstate_create_fixed =>
+      'Name and block cannot be changed afterwards.';
+
+  @override
+  String blockstate_create_shared(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'The block already has $count contexts, they share its file.',
+      one: 'The block already has 1 context, they share its file.',
+    );
+    return '$_temp0 Name and block cannot be changed afterwards.';
+  }
+
+  @override
+  String blockstate_rules_title(int count) {
+    return 'Rules ($count)';
+  }
+
+  @override
+  String get blockstate_rule_add => 'Add rule';
+
+  @override
+  String blockstate_rule(int number) {
+    return 'Rule $number';
+  }
+
+  @override
+  String blockstate_rule_overlap(int number, int count, String names) {
+    return 'Rule $number · $count also in $names';
+  }
+
+  @override
+  String get blockstate_rule_any_state => 'Every state';
+
+  @override
+  String get blockstate_rule_delete_title => 'Delete rule';
+
+  @override
+  String blockstate_rule_delete_header(String rule) {
+    return '$rule will be removed.';
+  }
+
+  @override
+  String get blockstate_rule_split_facing => 'Split per facing and rotate';
+
+  @override
+  String get blockstate_rule_when => 'When';
+
+  @override
+  String get blockstate_rule_then => 'Then';
+
+  @override
+  String get blockstate_rule_no_properties => 'The block has no properties.';
+
+  @override
+  String get blockstate_rule_model => 'Model';
+
+  @override
+  String get blockstate_rule_no_model => '(no model)';
+
+  @override
+  String get blockstate_probe_title => 'Test a state';
+
+  @override
+  String get blockstate_probe_free =>
+      'Free: the export needs the vanilla fallback for it.';
+
+  @override
+  String blockstate_probe_rule(int number, String description) {
+    return 'Rule $number: $description';
+  }
+
+  @override
+  String blockstate_probe_foreign(String name, int number, String description) {
+    return '“$name” · Rule $number: $description';
+  }
+
+  @override
+  String get blockstate_probe_conflict =>
+      'Claimed twice: multipart draws both models on top of each other.';
+
+  @override
+  String get blockstate_coverage_title => 'Coverage of the block';
+
+  @override
+  String blockstate_coverage_own(int own, int total) {
+    return 'This context claims $own of $total states';
+  }
+
+  @override
+  String blockstate_coverage_others(int count, int contexts) {
+    String _temp0 = intl.Intl.pluralLogic(
+      contexts,
+      locale: localeName,
+      other: 'the $contexts other contexts',
+      one: 'the other context',
+    );
+    return '$count claimed by $_temp0';
+  }
+
+  @override
+  String blockstate_coverage_free_hint(int count) {
+    return '$count free, they get the vanilla fallback at export';
+  }
+
+  @override
+  String blockstate_coverage_conflicts(int count) {
+    return 'Claimed twice ($count):';
+  }
+
+  @override
+  String blockstate_coverage_free(int count) {
+    return 'Free ($count):';
+  }
+
+  @override
+  String get blockstate_coverage_only_state => '(only state)';
+
+  @override
+  String blockstate_coverage_more(int count) {
+    return '… and $count more';
+  }
 }

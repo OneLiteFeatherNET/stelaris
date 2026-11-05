@@ -4551,6 +4551,384 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Give a test value to {names} to see the result.'**
   String expression_preview_missing_values(String names);
+
+  /// No description provided for @blockstate_picker_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a block'**
+  String get blockstate_picker_title;
+
+  /// No description provided for @blockstate_picker_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search blocks'**
+  String get blockstate_picker_search;
+
+  /// No description provided for @blockstate_picker_search_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Search in {group}'**
+  String blockstate_picker_search_in(String group);
+
+  /// No description provided for @blockstate_picker_all.
+  ///
+  /// In en, this message translates to:
+  /// **'All blocks'**
+  String get blockstate_picker_all;
+
+  /// No description provided for @blockstate_picker_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by block type'**
+  String get blockstate_picker_filter;
+
+  /// No description provided for @blockstate_picker_no_match.
+  ///
+  /// In en, this message translates to:
+  /// **'No block matches the search.'**
+  String get blockstate_picker_no_match;
+
+  /// No description provided for @blockstate_picker_only_group.
+  ///
+  /// In en, this message translates to:
+  /// **'Show only {group}'**
+  String blockstate_picker_only_group(String group);
+
+  /// No description provided for @blockstate_states.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 state} other{{count} states}}'**
+  String blockstate_states(int count);
+
+  /// No description provided for @blockstate_contexts.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 context} other{{count} contexts}}'**
+  String blockstate_contexts(int count);
+
+  /// No description provided for @blockstate_group_stairs.
+  ///
+  /// In en, this message translates to:
+  /// **'Stairs'**
+  String get blockstate_group_stairs;
+
+  /// No description provided for @blockstate_group_slab.
+  ///
+  /// In en, this message translates to:
+  /// **'Slabs'**
+  String get blockstate_group_slab;
+
+  /// No description provided for @blockstate_group_fence.
+  ///
+  /// In en, this message translates to:
+  /// **'Fences'**
+  String get blockstate_group_fence;
+
+  /// No description provided for @blockstate_group_fence_gate.
+  ///
+  /// In en, this message translates to:
+  /// **'Fence gates'**
+  String get blockstate_group_fence_gate;
+
+  /// No description provided for @blockstate_group_wall.
+  ///
+  /// In en, this message translates to:
+  /// **'Walls'**
+  String get blockstate_group_wall;
+
+  /// No description provided for @blockstate_group_door.
+  ///
+  /// In en, this message translates to:
+  /// **'Doors'**
+  String get blockstate_group_door;
+
+  /// No description provided for @blockstate_group_trapdoor.
+  ///
+  /// In en, this message translates to:
+  /// **'Trapdoors'**
+  String get blockstate_group_trapdoor;
+
+  /// No description provided for @blockstate_group_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Buttons'**
+  String get blockstate_group_button;
+
+  /// No description provided for @blockstate_group_pressure_plate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pressure plates'**
+  String get blockstate_group_pressure_plate;
+
+  /// No description provided for @blockstate_group_sign.
+  ///
+  /// In en, this message translates to:
+  /// **'Signs'**
+  String get blockstate_group_sign;
+
+  /// No description provided for @blockstate_group_pane.
+  ///
+  /// In en, this message translates to:
+  /// **'Panes and bars'**
+  String get blockstate_group_pane;
+
+  /// No description provided for @blockstate_group_bed.
+  ///
+  /// In en, this message translates to:
+  /// **'Beds'**
+  String get blockstate_group_bed;
+
+  /// No description provided for @blockstate_group_candle.
+  ///
+  /// In en, this message translates to:
+  /// **'Candles'**
+  String get blockstate_group_candle;
+
+  /// No description provided for @blockstate_group_banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Banners'**
+  String get blockstate_group_banner;
+
+  /// No description provided for @blockstate_group_head.
+  ///
+  /// In en, this message translates to:
+  /// **'Heads'**
+  String get blockstate_group_head;
+
+  /// No description provided for @blockstate_group_rail.
+  ///
+  /// In en, this message translates to:
+  /// **'Rails'**
+  String get blockstate_group_rail;
+
+  /// No description provided for @blockstate_group_leaves.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaves'**
+  String get blockstate_group_leaves;
+
+  /// No description provided for @blockstate_group_pillar.
+  ///
+  /// In en, this message translates to:
+  /// **'Logs and pillars'**
+  String get blockstate_group_pillar;
+
+  /// No description provided for @blockstate_group_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get blockstate_group_other;
+
+  /// No description provided for @blockstate_group_none.
+  ///
+  /// In en, this message translates to:
+  /// **'Without properties'**
+  String get blockstate_group_none;
+
+  /// No description provided for @blockstate_list_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Blockstates ({count})'**
+  String blockstate_list_title(int count);
+
+  /// No description provided for @blockstate_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No blockstates yet.'**
+  String get blockstate_empty;
+
+  /// No description provided for @blockstate_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete blockstate'**
+  String get blockstate_delete_title;
+
+  /// No description provided for @blockstate_delete_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Its rules are removed from the file of the block, the other contexts stay.'**
+  String get blockstate_delete_warning;
+
+  /// No description provided for @blockstate_create_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create blockstate'**
+  String get blockstate_create_title;
+
+  /// No description provided for @blockstate_create_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get blockstate_create_name;
+
+  /// No description provided for @blockstate_create_fixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Name and block cannot be changed afterwards.'**
+  String get blockstate_create_fixed;
+
+  /// No description provided for @blockstate_create_shared.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{The block already has 1 context, they share its file.} other{The block already has {count} contexts, they share its file.}} Name and block cannot be changed afterwards.'**
+  String blockstate_create_shared(int count);
+
+  /// No description provided for @blockstate_rules_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules ({count})'**
+  String blockstate_rules_title(int count);
+
+  /// No description provided for @blockstate_rule_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add rule'**
+  String get blockstate_rule_add;
+
+  /// No description provided for @blockstate_rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule {number}'**
+  String blockstate_rule(int number);
+
+  /// No description provided for @blockstate_rule_overlap.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule {number} · {count} also in {names}'**
+  String blockstate_rule_overlap(int number, int count, String names);
+
+  /// No description provided for @blockstate_rule_any_state.
+  ///
+  /// In en, this message translates to:
+  /// **'Every state'**
+  String get blockstate_rule_any_state;
+
+  /// No description provided for @blockstate_rule_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete rule'**
+  String get blockstate_rule_delete_title;
+
+  /// No description provided for @blockstate_rule_delete_header.
+  ///
+  /// In en, this message translates to:
+  /// **'{rule} will be removed.'**
+  String blockstate_rule_delete_header(String rule);
+
+  /// No description provided for @blockstate_rule_split_facing.
+  ///
+  /// In en, this message translates to:
+  /// **'Split per facing and rotate'**
+  String get blockstate_rule_split_facing;
+
+  /// No description provided for @blockstate_rule_when.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get blockstate_rule_when;
+
+  /// No description provided for @blockstate_rule_then.
+  ///
+  /// In en, this message translates to:
+  /// **'Then'**
+  String get blockstate_rule_then;
+
+  /// No description provided for @blockstate_rule_no_properties.
+  ///
+  /// In en, this message translates to:
+  /// **'The block has no properties.'**
+  String get blockstate_rule_no_properties;
+
+  /// No description provided for @blockstate_rule_model.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get blockstate_rule_model;
+
+  /// No description provided for @blockstate_rule_no_model.
+  ///
+  /// In en, this message translates to:
+  /// **'(no model)'**
+  String get blockstate_rule_no_model;
+
+  /// No description provided for @blockstate_probe_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Test a state'**
+  String get blockstate_probe_title;
+
+  /// No description provided for @blockstate_probe_free.
+  ///
+  /// In en, this message translates to:
+  /// **'Free: the export needs the vanilla fallback for it.'**
+  String get blockstate_probe_free;
+
+  /// No description provided for @blockstate_probe_rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule {number}: {description}'**
+  String blockstate_probe_rule(int number, String description);
+
+  /// No description provided for @blockstate_probe_foreign.
+  ///
+  /// In en, this message translates to:
+  /// **'“{name}” · Rule {number}: {description}'**
+  String blockstate_probe_foreign(String name, int number, String description);
+
+  /// No description provided for @blockstate_probe_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'Claimed twice: multipart draws both models on top of each other.'**
+  String get blockstate_probe_conflict;
+
+  /// No description provided for @blockstate_coverage_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage of the block'**
+  String get blockstate_coverage_title;
+
+  /// No description provided for @blockstate_coverage_own.
+  ///
+  /// In en, this message translates to:
+  /// **'This context claims {own} of {total} states'**
+  String blockstate_coverage_own(int own, int total);
+
+  /// No description provided for @blockstate_coverage_others.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} claimed by {contexts, plural, =1{the other context} other{the {contexts} other contexts}}'**
+  String blockstate_coverage_others(int count, int contexts);
+
+  /// No description provided for @blockstate_coverage_free_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} free, they get the vanilla fallback at export'**
+  String blockstate_coverage_free_hint(int count);
+
+  /// No description provided for @blockstate_coverage_conflicts.
+  ///
+  /// In en, this message translates to:
+  /// **'Claimed twice ({count}):'**
+  String blockstate_coverage_conflicts(int count);
+
+  /// No description provided for @blockstate_coverage_free.
+  ///
+  /// In en, this message translates to:
+  /// **'Free ({count}):'**
+  String blockstate_coverage_free(int count);
+
+  /// No description provided for @blockstate_coverage_only_state.
+  ///
+  /// In en, this message translates to:
+  /// **'(only state)'**
+  String get blockstate_coverage_only_state;
+
+  /// No description provided for @blockstate_coverage_more.
+  ///
+  /// In en, this message translates to:
+  /// **'… and {count} more'**
+  String blockstate_coverage_more(int count);
 }
 
 class _AppLocalizationsDelegate
