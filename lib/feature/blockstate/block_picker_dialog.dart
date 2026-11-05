@@ -5,6 +5,7 @@ import 'package:stelaris/feature/base/filter/category_filter_menu.dart';
 import 'package:stelaris/feature/base/hide_tooltips_while_scrolling.dart';
 import 'package:stelaris/feature/base/search/dialog_search_bar.dart';
 import 'package:stelaris/feature/blockstate/block_state_rules.dart';
+import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -22,31 +23,53 @@ const double _filterButtonSize = 32;
 /// family, told apart by the end of the key, then the remaining blocks with
 /// and without properties.
 enum _Group {
-  stairs('Treppen', ['_stairs']),
-  slab('Stufen', ['_slab']),
-  fence('Zäune', ['_fence']),
-  fenceGate('Zauntore', ['_fence_gate']),
-  wall('Mauern', ['_wall']),
-  door('Türen', ['_door']),
-  trapdoor('Falltüren', ['_trapdoor']),
-  button('Knöpfe', ['_button']),
-  pressurePlate('Druckplatten', ['_pressure_plate']),
-  sign('Schilder', ['_sign']),
-  pane('Scheiben und Gitter', ['_pane', '_bars']),
-  bed('Betten', ['_bed']),
-  candle('Kerzen', ['candle']),
-  banner('Banner', ['_banner']),
-  head('Köpfe', ['_head', '_skull']),
-  rail('Schienen', ['rail']),
-  leaves('Blätter', ['_leaves']),
-  pillar('Stämme und Säulen', ['_log', '_wood', '_stem', '_hyphae', '_pillar']),
-  other('Sonstige', []),
-  none('Ohne Properties', []);
+  stairs(['_stairs']),
+  slab(['_slab']),
+  fence(['_fence']),
+  fenceGate(['_fence_gate']),
+  wall(['_wall']),
+  door(['_door']),
+  trapdoor(['_trapdoor']),
+  button(['_button']),
+  pressurePlate(['_pressure_plate']),
+  sign(['_sign']),
+  pane(['_pane', '_bars']),
+  bed(['_bed']),
+  candle(['candle']),
+  banner(['_banner']),
+  head(['_head', '_skull']),
+  rail(['rail']),
+  leaves(['_leaves']),
+  pillar(['_log', '_wood', '_stem', '_hyphae', '_pillar']),
+  other([]),
+  none([]);
 
-  const _Group(this.label, this.suffixes);
+  const _Group(this.suffixes);
 
-  final String label;
   final List<String> suffixes;
+
+  String label(AppLocalizations l10n) => switch (this) {
+    stairs => l10n.blockstate_group_stairs,
+    slab => l10n.blockstate_group_slab,
+    fence => l10n.blockstate_group_fence,
+    fenceGate => l10n.blockstate_group_fence_gate,
+    wall => l10n.blockstate_group_wall,
+    door => l10n.blockstate_group_door,
+    trapdoor => l10n.blockstate_group_trapdoor,
+    button => l10n.blockstate_group_button,
+    pressurePlate => l10n.blockstate_group_pressure_plate,
+    sign => l10n.blockstate_group_sign,
+    pane => l10n.blockstate_group_pane,
+    bed => l10n.blockstate_group_bed,
+    candle => l10n.blockstate_group_candle,
+    banner => l10n.blockstate_group_banner,
+    head => l10n.blockstate_group_head,
+    rail => l10n.blockstate_group_rail,
+    leaves => l10n.blockstate_group_leaves,
+    pillar => l10n.blockstate_group_pillar,
+    other => l10n.blockstate_group_other,
+    none => l10n.blockstate_group_none,
+  };
 
   static _Group of(BlockSpec block) {
     if (block.properties.isEmpty) return none;
@@ -67,10 +90,10 @@ Future<BlockSpec?> showBlockPicker(
   String? current,
 }) {
   final fullScreen = MediaQuery.sizeOf(context).width < _fullScreenWidth;
-  const title = 'Block wählen';
   return showDialog<BlockSpec>(
     context: context,
     builder: (dialogContext) {
+      final title = dialogContext.l10n.blockstate_picker_title;
       // Built from the dialog's own context: a tap pops the dialog.
       final content = _BlockPicker(
         contexts: contexts,
@@ -86,7 +109,7 @@ Future<BlockSpec?> showBlockPicker(
                 icon: const Icon(Icons.close),
                 onPressed: () => Navigator.of(dialogContext).pop(),
               ),
-              title: const Text(title),
+              title: Text(title),
             ),
             body: Padding(padding: const EdgeInsets.all(16), child: content),
           ),
@@ -109,7 +132,7 @@ Future<BlockSpec?> showBlockPicker(
 /// a group filter above a list of the blocks under a header per group.
 ///
 /// The search matches the name and the key of a block ignoring case, and
-/// the name of a group, so typing e.g. `treppen` lists every stair. A click
+/// the name of a group, so typing e.g. `stairs` lists every stair. A click
 /// on a header shows only its group.
 class _BlockPicker extends StatefulWidget {
   const _BlockPicker({
@@ -161,13 +184,13 @@ class _BlockPickerState extends State<_BlockPicker> {
   }
 
   /// The rows of the list: a header per group followed by its blocks.
-  List<_Row> _rows(String text) {
+  List<_Row> _rows(AppLocalizations l10n, String text) {
     final search = text.trim().toLowerCase();
     final rows = <_Row>[];
     for (final MapEntry(key: group, value: blocks) in _entries.entries) {
       if (_group != null && group != _group) continue;
       final Iterable<BlockSpec> matches =
-          search.isEmpty || group.label.toLowerCase().contains(search)
+          search.isEmpty || group.label(l10n).toLowerCase().contains(search)
           ? blocks
           : blocks.where(
               (block) =>
@@ -184,6 +207,7 @@ class _BlockPickerState extends State<_BlockPicker> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final group = _group;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -191,19 +215,19 @@ class _BlockPickerState extends State<_BlockPicker> {
         DialogSearchBar(
           focusNode: _focusNode,
           hintText: group == null
-              ? 'Blöcke durchsuchen'
-              : 'In ${group.label} suchen',
+              ? l10n.blockstate_picker_search
+              : l10n.blockstate_picker_search_in(group.label(l10n)),
           trailing: [
             CategoryFilterMenu<_Group>(
               value: group,
-              allLabel: 'Alle Blöcke',
+              allLabel: l10n.blockstate_picker_all,
               keyPrefix: 'block_group_item',
               entries: [
                 for (final MapEntry(key: group, value: blocks)
                     in _entries.entries)
                   (
                     value: group,
-                    label: group.label,
+                    label: group.label(l10n),
                     count: blocks.length,
                     id: group.name,
                   ),
@@ -218,7 +242,7 @@ class _BlockPickerState extends State<_BlockPicker> {
                   padding: EdgeInsets.zero,
                   isSelected: group != null,
                   icon: const Icon(Icons.filter_list),
-                  tooltip: 'Nach Blockart filtern',
+                  tooltip: l10n.blockstate_picker_filter,
                   onPressed: toggle,
                 ),
               ),
@@ -238,9 +262,10 @@ class _BlockPickerState extends State<_BlockPicker> {
   }
 
   Widget _list(String search) {
-    final rows = _rows(search);
+    final l10n = context.l10n;
+    final rows = _rows(l10n, search);
     if (rows.isEmpty) {
-      return const Center(child: Text('Kein Block passt zur Suche.'));
+      return Center(child: Text(l10n.blockstate_picker_no_match));
     }
     // Lets a row which the search moved keep its element.
     final indexOf = <Key, int>{
@@ -316,14 +341,16 @@ class _GroupHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final color = theme.colorScheme.primary;
+    final label = group.label(l10n);
     final header = Padding(
       padding: const EdgeInsets.fromLTRB(8, 12, 8, 4),
       child: Row(
         children: [
           Text(
-            group.label,
+            label,
             style: theme.textTheme.labelLarge?.copyWith(color: color),
           ),
           if (onTap != null) ...[
@@ -335,7 +362,7 @@ class _GroupHeader extends StatelessWidget {
     );
     if (onTap == null) return header;
     return Tooltip(
-      message: 'Nur ${group.label} zeigen',
+      message: l10n.blockstate_picker_only_group(label),
       child: InkWell(
         borderRadius: BorderRadius.circular(AppShapes.small),
         onTap: onTap,
@@ -363,8 +390,8 @@ class _BlockTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
-    final states = block.stateCount;
     return ListTile(
       dense: true,
       selected: selected,
@@ -378,9 +405,8 @@ class _BlockTile extends StatelessWidget {
       ),
       trailing: Text(
         [
-          '$states ${states == 1 ? 'Zustand' : 'Zustände'}',
-          if (contexts > 0)
-            '$contexts ${contexts == 1 ? 'Kontext' : 'Kontexte'}',
+          l10n.blockstate_states(block.stateCount),
+          if (contexts > 0) l10n.blockstate_contexts(contexts),
         ].join(' · '),
         style: theme.textTheme.labelSmall?.copyWith(
           color: theme.colorScheme.onSurfaceVariant,

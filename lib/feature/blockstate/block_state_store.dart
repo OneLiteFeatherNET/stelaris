@@ -18,7 +18,7 @@ final class BlockStateStore extends ChangeNotifier {
       id: '${_nextId++}',
       uiName: 'Footprints',
       key: _petals.key,
-      comment: 'Spuren auf dem Boden, ersetzt die Pink Petals.',
+      comment: 'Footprints on the ground, replaces the pink petals.',
       creationDate: DateTime.now(),
       rules: [
         for (final (amount, model) in const [
@@ -40,9 +40,9 @@ final class BlockStateStore extends ChangeNotifier {
     ),
     BlockStateModel(
       id: '${_nextId++}',
-      uiName: 'Möbel',
+      uiName: 'Furniture',
       key: 'minecraft:note_block',
-      comment: 'Stühle und Tische auf der Harfe.',
+      comment: 'Chairs and tables on the harp.',
       creationDate: DateTime.now(),
       rules: const [
         BlockStateRule(
@@ -56,7 +56,7 @@ final class BlockStateStore extends ChangeNotifier {
     ),
     BlockStateModel(
       id: '${_nextId++}',
-      uiName: 'Deko',
+      uiName: 'Decoration',
       key: 'minecraft:note_block',
       creationDate: DateTime.now(),
       rules: const [

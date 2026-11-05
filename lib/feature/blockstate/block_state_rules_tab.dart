@@ -5,8 +5,9 @@ import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card_grid.dart';
 import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
-import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/feature/blockstate/block_state_rules.dart';
+import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// The rules of a blockstate: the rules on the left, a state to try them
@@ -72,7 +73,7 @@ class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
 
   Future<void> _add() async {
     final rules = await _openDialog(
-      'Regel hinzufügen',
+      context.l10n.blockstate_rule_add,
       const BlockStateRule(),
       existing: false,
     );
@@ -80,7 +81,10 @@ class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
   }
 
   Future<void> _edit(int index) async {
-    final rules = await _openDialog('Regel ${index + 1}', _rules[index]);
+    final rules = await _openDialog(
+      context.l10n.blockstate_rule(index + 1),
+      _rules[index],
+    );
     if (rules != null && mounted) _replace(index, rules);
   }
 
@@ -92,6 +96,7 @@ class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
     BlockStateRule rule,
     ({Set<String> names, int count}) overlap,
   ) {
+    final l10n = context.l10n;
     final rotation = [
       if (rule.x != 0) 'x ${rule.x}°',
       if (rule.y != 0) 'y ${rule.y}°',
@@ -100,12 +105,15 @@ class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
     return EditCard(
       icon: overlap.count > 0 ? Icons.warning_amber_rounded : Icons.rule,
       label: overlap.count > 0
-          ? 'Regel ${index + 1} · ${overlap.count} auch in '
-                '${overlap.names.map((name) => '„$name“').join(', ')}'
-          : 'Regel ${index + 1}',
+          ? l10n.blockstate_rule_overlap(
+              index + 1,
+              overlap.count,
+              overlap.names.map((name) => '“$name”').join(', '),
+            )
+          : l10n.blockstate_rule(index + 1),
       value: rule.model,
       footer: [
-        conditionOf(rule, _spec),
+        conditionOf(l10n, rule, _spec),
         if (rotation.isNotEmpty) rotation.join(' · '),
       ].join('\n'),
       onTap: () => _edit(index),
@@ -120,6 +128,7 @@ class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final states = _spec.states.toList();
     final claims = [for (final state in states) _claimedBy(state)];
     var own = 0;
@@ -162,11 +171,11 @@ class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       EditSectionHeading(
-                        title: 'Regeln (${_rules.length})',
+                        title: l10n.blockstate_rules_title(_rules.length),
                         trailing: TextButton.icon(
                           onPressed: _add,
                           icon: const Icon(Icons.add),
-                          label: const Text('Regel hinzufügen'),
+                          label: Text(l10n.blockstate_rule_add),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -218,14 +227,14 @@ class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
 }
 
 /// The condition of [rule] as `property=a|b`, joined by ` · `.
-String conditionOf(BlockStateRule rule, BlockSpec spec) {
+String conditionOf(AppLocalizations l10n, BlockStateRule rule, BlockSpec spec) {
   final parts = [
     for (final MapEntry(key: property, value: values) in rule.when.entries)
       if (values.isNotEmpty &&
           values.length < (spec.properties[property]?.length ?? 0))
         '$property=${values.join('|')}',
   ];
-  return parts.isEmpty ? 'Jeder Zustand' : parts.join(' · ');
+  return parts.isEmpty ? l10n.blockstate_rule_any_state : parts.join(' · ');
 }
 
 /// Edits a copy of [rule]: the values per property it applies to, then the
@@ -259,8 +268,12 @@ class _RuleDialogState extends State<_RuleDialog> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => DeleteDialog<BlockStateRule>(
-        title: 'Regel löschen',
-        header: [TextSpan(text: '${widget.title} wird entfernt.')],
+        title: context.l10n.blockstate_rule_delete_title,
+        header: [
+          TextSpan(
+            text: context.l10n.blockstate_rule_delete_header(widget.title),
+          ),
+        ],
         value: _rule,
         successfully: (_) => true,
       ),
@@ -272,24 +285,25 @@ class _RuleDialogState extends State<_RuleDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final spec = widget.spec;
     return FormDialog(
       title: widget.title,
-      actionLabel: context.l10n.button_save,
+      actionLabel: l10n.button_save,
       maxWidth: 640,
       onSubmit: () => Navigator.of(context).pop([_rule]),
       titleActions: [
         if (spec.properties.containsKey('facing'))
           IconButton(
-            tooltip: 'Pro facing aufteilen und drehen',
+            tooltip: l10n.blockstate_rule_split_facing,
             onPressed: () =>
                 Navigator.of(context).pop(expandFacing(_rule, spec)),
             icon: const Icon(Icons.rotate_90_degrees_cw_outlined),
           ),
         if (widget.existing)
           IconButton(
-            tooltip: context.l10n.tooltip_delete,
+            tooltip: l10n.tooltip_delete,
             onPressed: _delete,
             icon: const Icon(Icons.delete_forever),
           ),
@@ -299,11 +313,11 @@ class _RuleDialogState extends State<_RuleDialog> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Wenn', style: theme.textTheme.labelLarge),
+            Text(l10n.blockstate_rule_when, style: theme.textTheme.labelLarge),
             if (spec.properties.isEmpty)
-              const Padding(
-                padding: EdgeInsets.only(top: 6),
-                child: Text('Der Block hat keine Properties.'),
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(l10n.blockstate_rule_no_properties),
               ),
             for (final MapEntry(key: property, value: values)
                 in spec.properties.entries)
@@ -341,12 +355,12 @@ class _RuleDialogState extends State<_RuleDialog> {
                 ),
               ),
             const SizedBox(height: 16),
-            Text('Dann', style: theme.textTheme.labelLarge),
+            Text(l10n.blockstate_rule_then, style: theme.textTheme.labelLarge),
             const SizedBox(height: 6),
             TextFormField(
               initialValue: _rule.model,
-              decoration: const InputDecoration(
-                labelText: 'Modell',
+              decoration: InputDecoration(
+                labelText: l10n.blockstate_rule_model,
                 hintText: 'minecraft:block/footprint_slender',
                 isDense: true,
               ),
@@ -436,6 +450,7 @@ class _ProbeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final applied = [
       for (final (index, rule) in rules.indexed)
         if (rule.matches(probe)) (index, rule),
@@ -453,7 +468,7 @@ class _ProbeCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Zustand testen',
+              l10n.blockstate_probe_title,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -478,20 +493,26 @@ class _ProbeCard extends StatelessWidget {
             const Divider(),
             if (applied.isEmpty && foreign.isEmpty)
               Text(
-                'Frei: beim Export braucht er den vanilla Rückfall.',
+                l10n.blockstate_probe_free,
                 style: TextStyle(color: scheme.onSurfaceVariant),
               ),
             for (final (index, rule) in applied)
-              Text('Regel ${index + 1}: ${_describe(rule)}'),
+              Text(
+                l10n.blockstate_probe_rule(index + 1, _describe(l10n, rule)),
+              ),
             for (final (name, index, rule) in foreign)
               Text(
-                '„$name“ · Regel ${index + 1}: ${_describe(rule)}',
+                l10n.blockstate_probe_foreign(
+                  name,
+                  index + 1,
+                  _describe(l10n, rule),
+                ),
                 style: TextStyle(color: scheme.onSurfaceVariant),
               ),
             if (applied.isNotEmpty && foreign.isNotEmpty) ...[
               const SizedBox(height: 8),
               Text(
-                'Doppelt belegt: multipart zeichnet beide Modelle übereinander.',
+                l10n.blockstate_probe_conflict,
                 style: TextStyle(color: scheme.error),
               ),
             ],
@@ -501,8 +522,8 @@ class _ProbeCard extends StatelessWidget {
     );
   }
 
-  static String _describe(BlockStateRule rule) =>
-      '${rule.model.isEmpty ? '(kein Modell)' : rule.model}'
+  static String _describe(AppLocalizations l10n, BlockStateRule rule) =>
+      '${rule.model.isEmpty ? l10n.blockstate_rule_no_model : rule.model}'
       '${rule.x != 0 ? '  x=${rule.x}' : ''}'
       '${rule.y != 0 ? '  y=${rule.y}' : ''}';
 }
@@ -534,6 +555,7 @@ class _CoverageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final others = total - own - free.length + conflicts.length;
@@ -543,25 +565,37 @@ class _CoverageCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Abdeckung des Blocks', style: theme.textTheme.titleMedium),
+            Text(
+              l10n.blockstate_coverage_title,
+              style: theme.textTheme.titleMedium,
+            ),
             const SizedBox(height: 8),
             LinearProgressIndicator(
               value: total == 0 ? 1 : (total - free.length) / total,
             ),
             const SizedBox(height: 8),
-            Text('$own von $total Zuständen belegt dieser Kontext'),
+            Text(l10n.blockstate_coverage_own(own, total)),
             if (contexts > 1)
               Text(
-                '$others belegen die ${contexts - 1} anderen Kontexte',
+                l10n.blockstate_coverage_others(others, contexts - 1),
                 style: TextStyle(color: scheme.onSurfaceVariant),
               ),
             Text(
-              '${free.length} frei, sie bekommen beim Export den vanilla '
-              'Rückfall',
+              l10n.blockstate_coverage_free_hint(free.length),
               style: TextStyle(color: scheme.onSurfaceVariant),
             ),
-            ..._states(context, 'Doppelt belegt', conflicts, scheme.error),
-            ..._states(context, 'Frei', free, scheme.onSurfaceVariant),
+            ..._states(
+              l10n,
+              l10n.blockstate_coverage_conflicts(conflicts.length),
+              conflicts,
+              scheme.error,
+            ),
+            ..._states(
+              l10n,
+              l10n.blockstate_coverage_free(free.length),
+              free,
+              scheme.onSurfaceVariant,
+            ),
           ],
         ),
       ),
@@ -570,14 +604,14 @@ class _CoverageCard extends StatelessWidget {
 
   /// Up to five of [states] under [title], each to try in the probe.
   List<Widget> _states(
-    BuildContext context,
+    AppLocalizations l10n,
     String title,
     List<Map<String, String>> states,
     Color color,
   ) => [
     if (states.isNotEmpty) ...[
       const SizedBox(height: 8),
-      Text('$title (${states.length}):', style: TextStyle(color: color)),
+      Text(title, style: TextStyle(color: color)),
       for (final state in states.take(5))
         TextButton(
           style: TextButton.styleFrom(
@@ -587,12 +621,13 @@ class _CoverageCard extends StatelessWidget {
           onPressed: () => onPick(state),
           child: Text(
             state.isEmpty
-                ? '(einziger Zustand)'
+                ? l10n.blockstate_coverage_only_state
                 : state.entries.map((e) => '${e.key}=${e.value}').join(','),
             overflow: TextOverflow.ellipsis,
           ),
         ),
-      if (states.length > 5) Text('… und ${states.length - 5} weitere'),
+      if (states.length > 5)
+        Text(l10n.blockstate_coverage_more(states.length - 5)),
     ],
   ];
 }
