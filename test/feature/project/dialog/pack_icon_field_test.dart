@@ -7,27 +7,7 @@ import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/project/dialog/pack_icon_field.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 
-/// Red PNGs of the given size, made with Python's zlib.
-final Uint8List png16 = base64Decode(
-  'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAG0lEQVR4nGP4z8DwnxLMMGrAaBi'
-  'MpoP/wyQMADDE/hC/PRjdAAAAAElFTkSuQmCC',
-);
-final Uint8List png32 = base64Decode(
-  'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAMUlEQVR4nO3XoQ0AAAzDsPz/dHf'
-  'GiEF5ZNZW+1wCCBAgQIAAAQIECBAgQIAAgT3f8wNUDfhq0ialkQAAAABJRU5ErkJggg==',
-);
-final Uint8List png8 = base64Decode(
-  'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAEklEQVR4nGP4z8DwHx9mGBkKAMLX'
-  'f4EvceABAAAAAElFTkSuQmCC',
-);
-final Uint8List png24 = base64Decode(
-  'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAKUlEQVR4nGP4z8Dwn5aYYdSC0SA'
-  'aTUWj+WC0qBgtTUfrg9Eq8/+QyAcAxNZ7vfAo/0EAAAAASUVORK5CYII=',
-);
-final Uint8List png32x16 = base64Decode(
-  'iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAAJklEQVR4nGP4z8DwfyAxw6gDRkN'
-  'gNARGQ2A0BEZDYDQE/g9wdQwA2QD8LgZyndQAAAAASUVORK5CYII=',
-);
+import '../../../support/pack_icon_pngs.dart';
 
 void main() {
   group('checkPackIcon', () {
