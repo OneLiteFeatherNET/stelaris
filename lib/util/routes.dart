@@ -22,6 +22,8 @@ import 'package:stelaris/feature/advancement/advancement_page.dart'
 import 'package:stelaris/feature/sound/sound_page.dart' deferred as sound_page;
 import 'package:stelaris/feature/asset/models/models_page.dart'
     deferred as models_page;
+import 'package:stelaris/feature/blockstate/block_state_page.dart'
+    deferred as block_state_page;
 import 'package:stelaris/feature/attributes/attribute_detail_page.dart'
     deferred as attribute_detail_page;
 import 'package:stelaris/feature/font/font_detail_page.dart'
@@ -480,6 +482,30 @@ final GoRouter router = GoRouter(
                 onSelected: (id) => context.go(
                   Uri(
                     path: AssetNavigationEntry.models.route,
+                    queryParameters: id == null ? null : {'id': id},
+                  ).toString(),
+                ),
+              ),
+            ),
+            key: state.pageKey,
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
+          ),
+        ),
+        GoRoute(
+          path: AssetNavigationEntry.blockstates.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: block_state_page.loadLibrary,
+              builder: () => block_state_page.BlockStatePage(
+                selectedId: state.uri.queryParameters['id'],
+                onSelected: (id) => context.go(
+                  Uri(
+                    path: AssetNavigationEntry.blockstates.route,
                     queryParameters: id == null ? null : {'id': id},
                   ).toString(),
                 ),

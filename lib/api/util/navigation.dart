@@ -65,6 +65,13 @@ enum AssetNavigationEntry {
     '/assets/models',
     Icons.view_in_ar_outlined,
     Icons.view_in_ar,
+  ),
+  // SPIKE: rule based blockstate editor.
+  blockstates(
+    'Blockstates',
+    '/assets/blockstates',
+    Icons.grid_view_outlined,
+    Icons.grid_view,
   );
 
   final String display;
