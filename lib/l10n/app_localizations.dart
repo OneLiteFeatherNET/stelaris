@@ -1174,6 +1174,12 @@ abstract class AppLocalizations {
   /// **'The icon must be at least 16 × 16 pixels'**
   String get pack_icon_too_small;
 
+  /// The name the uploaded pack icon asset is shown by in the asset list.
+  ///
+  /// In en, this message translates to:
+  /// **'Pack icon'**
+  String get pack_icon_asset_name;
+
   /// No description provided for @pack_meta_load_failed.
   ///
   /// In en, this message translates to:

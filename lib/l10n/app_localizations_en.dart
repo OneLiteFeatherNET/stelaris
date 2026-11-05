@@ -593,6 +593,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pack_icon_too_small => 'The icon must be at least 16 × 16 pixels';
 
   @override
+  String get pack_icon_asset_name => 'Pack icon';
+
+  @override
   String get pack_meta_load_failed => 'The pack.mcmeta could not be loaded';
 
   @override

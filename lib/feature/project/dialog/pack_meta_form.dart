@@ -21,8 +21,8 @@ class PackMetaFormController {
   final maxFormatMajor = TextEditingController();
   final maxFormatMinor = TextEditingController();
 
-  /// The PNG of the pack icon, null for none. Only kept in the dialog for
-  /// now, nothing stores it yet.
+  /// The PNG of the pack icon, null for none. The dialog stores it as a
+  /// texture asset the pack meta refers to.
   Uint8List? icon;
 
   /// The description as MiniMessage, stored as a vanilla JSON text
@@ -43,7 +43,9 @@ class PackMetaFormController {
   ];
 
   /// Whether every field is empty, which means the project has no pack meta.
+  /// An icon counts as a field: it is stored with the pack meta.
   bool get isEmpty =>
+      icon == null &&
       description.trim().isEmpty &&
       _formats.every((field) => field.text.trim().isEmpty);
 
@@ -54,8 +56,10 @@ class PackMetaFormController {
     return jsonEncode(MiniMessageJson.encode(description.trim()));
   }
 
-  /// Fills the fields with [meta], or clears them when there is none.
-  void fill(PackMeta? meta) {
+  /// Fills the fields with [meta] and its [icon], or clears them when there is
+  /// none.
+  void fill(PackMeta? meta, {Uint8List? icon}) {
+    this.icon = icon;
     _loadedDescriptionJson = meta?.description;
     description = _loadedDescription = meta == null
         ? ''

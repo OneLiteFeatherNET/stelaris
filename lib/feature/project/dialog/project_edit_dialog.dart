@@ -1,9 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/service/client/asset_client_api.dart';
 import 'package:stelaris/api/service/client/pack_meta_client_api.dart';
 import 'package:stelaris/api/state/actions/project/project_actions.dart';
+import 'package:stelaris/feature/asset/picker/asset_key.dart';
+import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/feature/project/dialog/pack_icon_field.dart';
 import 'package:stelaris/feature/project/dialog/pack_meta_form.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -14,13 +19,37 @@ import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 
 /// Edits a [Project] in two tabs: the project itself and the `pack.mcmeta`
 /// of its resource pack. One save stores both.
+///
+/// The pack icon is a texture asset of the project the pack meta refers to.
+/// A changed icon replaces the content of that asset, a removed one deletes
+/// it, so no unused icon is left behind.
 class EditProjectDialog extends StatefulWidget {
   final Project project;
 
   /// The pack meta client, the shared one of [ApiService] when not given.
   final PackMetaClientApi? packMetaApi;
 
-  const EditProjectDialog({required this.project, this.packMetaApi, super.key});
+  /// The asset client storing the pack icon, the shared one of [ApiService]
+  /// when not given.
+  final AssetClientApi? assetApi;
+
+  /// Opens the file dialog for the pack icon.
+  final Future<PickedAssetFile?> Function() pickIcon;
+
+  const EditProjectDialog({
+    required this.project,
+    this.packMetaApi,
+    this.assetApi,
+    this.pickIcon = pickPackIcon,
+    super.key,
+  });
+
+  /// The key the pack icon of [project] is uploaded under.
+  static String packIconKey(Project project) =>
+      '${validNamespaceOr(project.key)}:pack/icon';
+
+  /// The file name the pack icon is uploaded with.
+  static const String packIconFileName = 'pack.png';
 
   @override
   State<EditProjectDialog> createState() => _EditProjectDialogState();
@@ -45,10 +74,18 @@ class _EditProjectDialogState extends State<EditProjectDialog>
 
   /// The pack meta as the backend has it, null if the project has none.
   PackMeta? _existingMeta;
+
+  /// The stored asset of the pack icon and the bytes it holds. It can
+  /// outlive the pack meta's reference when deleting it failed, so the next
+  /// save tries again instead of uploading a second icon under its key.
+  AssetModel? _iconAsset;
+  Uint8List? _iconAssetBytes;
   bool _saving = false;
 
   PackMetaClientApi get _packMetaApi =>
       widget.packMetaApi ?? ApiService().packMetaApi;
+
+  AssetClientApi get _assetApi => widget.assetApi ?? ApiService().assetApi;
 
   @override
   void initState() {
@@ -206,23 +243,46 @@ class _EditProjectDialogState extends State<EditProjectDialog>
           ),
         ],
       ),
-      _MetaLoad.loaded => PackMetaForm(controller: _meta),
+      _MetaLoad.loaded => PackMetaForm(
+        controller: _meta,
+        pickIcon: widget.pickIcon,
+      ),
     };
   }
 
-  /// Loads the resource pack's meta; a 404 means the project has none.
+  /// Loads the resource pack's meta and its icon; a 404 for the meta means
+  /// the project has none.
+  ///
+  /// An icon that can't be loaded fails the whole tab: shown without it, a
+  /// save would remove it.
   Future<void> _loadPackMeta() async {
     if (_metaLoad != _MetaLoad.loading) {
       setState(() => _metaLoad = _MetaLoad.loading);
     }
+    final projectId = widget.project.id!;
     PackMeta? meta;
+    AssetModel? iconAsset;
+    Uint8List? icon;
     var failed = false;
     try {
-      meta = await _packMetaApi.get(widget.project.id!, PackType.resource);
+      meta = await _packMetaApi.get(projectId, PackType.resource);
     } on DioException catch (error) {
       failed = error.response?.statusCode != 404;
     } catch (_) {
       failed = true;
+    }
+    final iconAssetId = meta?.iconAssetId;
+    if (!failed && iconAssetId != null) {
+      try {
+        final (asset, bytes) = await (
+          _assetApi.getById(projectId, iconAssetId),
+          _assetApi.content(projectId, iconAssetId),
+        ).wait;
+        iconAsset = asset;
+        icon = Uint8List.fromList(bytes);
+      } catch (_) {
+        failed = true;
+      }
     }
     if (!mounted) return;
     setState(() {
@@ -231,7 +291,9 @@ class _EditProjectDialogState extends State<EditProjectDialog>
         return;
       }
       _existingMeta = meta;
-      _meta.fill(meta);
+      _iconAsset = iconAsset;
+      _iconAssetBytes = icon;
+      _meta.fill(meta, icon: icon);
       _metaLoad = _MetaLoad.loaded;
     });
   }
@@ -285,17 +347,56 @@ class _EditProjectDialogState extends State<EditProjectDialog>
   /// Stores the pack meta tab: creates or replaces the pack meta when it is
   /// filled in and changed, removes it when all its fields were cleared. Leaves it alone
   /// when it could not be loaded, as there is nothing known to change.
+  ///
+  /// The icon is stored first, so the pack meta can refer to it. A removed
+  /// icon is deleted only after the pack meta no longer refers to it.
   Future<void> _savePackMeta() async {
     if (_metaLoad != _MetaLoad.loaded) return;
     final projectId = widget.project.id!;
     final existing = _existingMeta;
+    final icon = _meta.icon;
     if (!_meta.isEmpty) {
-      final meta = _meta.toMeta(existing);
-      if (meta == existing) return;
-      _existingMeta = await _packMetaApi.put(projectId, meta);
+      final iconAsset = icon == null ? null : await _storeIcon(icon);
+      final meta = _meta.toMeta(existing).copyWith(iconAssetId: iconAsset?.id);
+      if (meta != existing) {
+        _existingMeta = await _packMetaApi.put(projectId, meta);
+      }
     } else if (existing != null) {
       await _packMetaApi.delete(projectId, existing.packType);
       _existingMeta = null;
     }
+    if (icon == null) await _deleteIcon();
+  }
+
+  /// Stores [icon] as the pack icon asset: uploads it if there is none yet,
+  /// otherwise replaces the asset's content if it changed.
+  Future<AssetModel> _storeIcon(Uint8List icon) async {
+    final stored = _iconAsset;
+    if (stored != null && listEquals(_iconAssetBytes, icon)) return stored;
+    final asset = stored == null
+        ? await _assetApi.upload(
+            widget.project.id!,
+            key: EditProjectDialog.packIconKey(widget.project),
+            displayName: context.l10n.pack_icon_asset_name,
+            fileName: EditProjectDialog.packIconFileName,
+            bytes: icon,
+          )
+        : await _assetApi.replaceContent(
+            stored,
+            fileName: EditProjectDialog.packIconFileName,
+            bytes: icon,
+          );
+    _iconAsset = asset;
+    _iconAssetBytes = icon;
+    return asset;
+  }
+
+  /// Deletes the pack icon asset, if there is one.
+  Future<void> _deleteIcon() async {
+    final stored = _iconAsset;
+    if (stored == null) return;
+    await _assetApi.delete(widget.project.id!, stored.id);
+    _iconAsset = null;
+    _iconAssetBytes = null;
   }
 }

@@ -254,6 +254,10 @@
   "pack_icon_not_square": "The icon must be square",
   "pack_icon_not_power_of_two": "The size must be 16, 32, 64 … pixels",
   "pack_icon_too_small": "The icon must be at least 16 × 16 pixels",
+  "pack_icon_asset_name": "Pack icon",
+  "@pack_icon_asset_name": {
+    "description": "The name the uploaded pack icon asset is shown by in the asset list."
+  },
   "pack_meta_load_failed": "The pack.mcmeta could not be loaded",
   "pack_meta_retry": "Try again",
   "validation_pack_meta_description_required": "Description is required",
