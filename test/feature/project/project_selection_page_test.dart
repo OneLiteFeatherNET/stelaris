@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/project/dialog/project_create_dialog.dart';
 import 'package:stelaris/feature/project/project_selection_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -162,6 +163,85 @@ void main() {
 
       expect(find.text('Edit project'), findsOneWidget);
       expect(find.text('test_key'), findsOneWidget);
+    });
+
+    testWidgets('a created project offers to set up its pack', (tester) async {
+      const created = Project(
+        id: 'p-new',
+        displayName: 'My Project',
+        key: 'my_project',
+      );
+      ApiService().projectApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            final path = options.uri.path;
+            if (path.contains('/pack-meta/')) {
+              return FakeHttpClientAdapter.response({
+                'title': 'Not found',
+                'status': 404,
+              }, statusCode: 404);
+            }
+            if (options.method == 'POST') {
+              return FakeHttpClientAdapter.response(created.toJson());
+            }
+            return FakeHttpClientAdapter.response(
+              const PaginatedResult<Project>(
+                items: [],
+                totalItems: 0,
+                totalPages: 0,
+                currentPage: 1,
+                pageSize: 50,
+              ).toJson((p) => p.toJson()),
+            );
+          });
+
+      await tester.pumpWidget(
+        StoreProvider<AppState>(
+          store: Store<AppState>(initialState: const AppState()),
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: ProjectSelectionPage(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.add));
+      await tester.pumpAndSettle();
+      final fields = find.byType(TextFormField);
+      await tester.enterText(fields.at(0), 'My Project');
+      await tester.enterText(fields.at(1), 'my_project');
+      await tester.tap(
+        find.descendant(
+          of: find.byType(CreateProjectDialog),
+          matching: find.byType(FilledButton),
+        ),
+      );
+      await settleRequests(
+        tester,
+        () => find.byType(SnackBar).evaluate().isEmpty,
+      );
+
+      expect(find.text('Project My Project created'), findsOneWidget);
+
+      await tester.tap(find.text('Set up pack'));
+      await settleRequests(
+        tester,
+        () => find
+            .byType(CircularProgressIndicator, skipOffstage: false)
+            .evaluate()
+            .isNotEmpty,
+      );
+
+      expect(find.text('Edit project'), findsOneWidget);
+      // The key sits in the project tab, which is mounted but not shown.
+      expect(
+        find.text('my_project', skipOffstage: false),
+        findsOneWidget,
+        reason: 'the dialog edits the created project',
+      );
+      final tabs = tester.widget<TabBar>(find.byType(TabBar));
+      expect(tabs.controller!.index, 1, reason: 'the pack tab is shown');
     });
   });
 }

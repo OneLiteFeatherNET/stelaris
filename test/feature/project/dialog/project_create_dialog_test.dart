@@ -5,6 +5,7 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/project/dialog/project_create_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
 import '../../../support/pump_until.dart';
@@ -54,5 +55,49 @@ void main() {
     expect(find.byType(CreateProjectDialog), findsOneWidget);
     expect(find.byType(SnackBar), findsOneWidget);
     expect(dialogResult, 'open');
+  });
+
+  testWidgets('pops the project as the backend stored it', (tester) async {
+    const created = Project(
+      id: 'p-new',
+      displayName: 'My Project',
+      key: 'my_project',
+    );
+    ApiService().projectApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter.json(created.toJson());
+    Object? dialogResult;
+    await tester.pumpWidget(
+      StoreProvider<AppState>(
+        store: Store<AppState>(initialState: const AppState()),
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => TextButton(
+                onPressed: () async => dialogResult = await showDialog<Object>(
+                  context: context,
+                  builder: (_) => const CreateProjectDialog(),
+                ),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+
+    final fields = find.byType(TextFormField);
+    await tester.enterText(fields.at(0), 'My Project');
+    await tester.enterText(fields.at(1), 'my_project');
+    await pumpUntil(
+      tester,
+      action: () => tester.tap(find.byType(FilledButton)),
+      done: () => dialogResult != null,
+    );
+
+    expect(dialogResult, created);
   });
 }
