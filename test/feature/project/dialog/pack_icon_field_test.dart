@@ -86,7 +86,7 @@ void main() {
       expect(tester.getSize(preview), const Size.square(packIconPreviewSize));
     });
 
-    testWidgets('the text beside the preview is centered on it', (
+    testWidgets('the text and the remove button are centered on the preview', (
       tester,
     ) async {
       await pump(tester, value: png16);
@@ -97,6 +97,10 @@ void main() {
       );
       expect(
         tester.getCenter(text.first).dy,
+        moreOrLessEquals(tester.getCenter(preview).dy, epsilon: 0.5),
+      );
+      expect(
+        tester.getCenter(find.byTooltip('Remove icon')).dy,
         moreOrLessEquals(tester.getCenter(preview).dy, epsilon: 0.5),
       );
     });
