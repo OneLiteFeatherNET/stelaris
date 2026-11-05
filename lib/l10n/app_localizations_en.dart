@@ -574,7 +574,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pack_icon_choose => 'Choose icon';
 
   @override
-  String get pack_icon_change => 'Change';
+  String get pack_icon_change => 'Change icon';
 
   @override
   String get pack_icon_remove => 'Remove';

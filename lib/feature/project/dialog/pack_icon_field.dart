@@ -116,100 +116,152 @@ class _PackIconFieldState extends State<PackIconField> {
     final icon = widget.value;
     final size = icon == null ? null : pngSize(icon);
     final problem = _problem;
-    // The preview is as high as the text and buttons beside it, and square.
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          AspectRatio(aspectRatio: 1, child: _IconPreview(icon: icon)),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  size == null
-                      ? l10n.pack_icon_none
-                      : l10n.pack_icon_size(size.width, size.height),
-                  style: theme.textTheme.bodyMedium,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _IconPreview(
+          icon: icon,
+          reading: _reading,
+          label: icon == null ? l10n.pack_icon_choose : l10n.pack_icon_change,
+          onTap: _reading ? null : _choose,
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                size == null
+                    ? l10n.pack_icon_none
+                    : l10n.pack_icon_size(size.width, size.height),
+                style: theme.textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                problem == null ? l10n.pack_icon_hint : _problemText(problem),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: problem == null
+                      ? colorScheme.onSurfaceVariant
+                      : colorScheme.error,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  problem == null ? l10n.pack_icon_hint : _problemText(problem),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: problem == null
-                        ? colorScheme.onSurfaceVariant
-                        : colorScheme.error,
-                  ),
-                ),
+              ),
+              if (icon != null) ...[
                 const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    OutlinedButton.icon(
-                      onPressed: _reading ? null : _choose,
-                      icon: _reading
-                          ? const SizedBox.square(
-                              dimension: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.folder_open_outlined),
-                      label: Text(
-                        icon == null
-                            ? l10n.pack_icon_choose
-                            : l10n.pack_icon_change,
-                      ),
-                    ),
-                    if (icon != null)
-                      TextButton.icon(
-                        onPressed: _reading ? null : _remove,
-                        icon: const Icon(Icons.delete_outline),
-                        label: Text(l10n.pack_icon_remove),
-                      ),
-                  ],
+                TextButton.icon(
+                  onPressed: _reading ? null : _remove,
+                  icon: const Icon(Icons.delete_outline),
+                  label: Text(l10n.pack_icon_remove),
                 ),
               ],
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-/// The icon filling its box, its pixels kept sharp, or a placeholder.
-class _IconPreview extends StatelessWidget {
-  const _IconPreview({required this.icon});
+/// The side of the icon preview.
+const double packIconPreviewSize = 80;
+
+/// The icon filling its box, its pixels kept sharp, or a placeholder asking
+/// for one. Tapping the box opens the file dialog; while hovered or focused
+/// a stored icon is overlaid with an edit mark, while a file is read a
+/// spinner shows.
+class _IconPreview extends StatefulWidget {
+  const _IconPreview({
+    required this.icon,
+    required this.reading,
+    required this.label,
+    required this.onTap,
+  });
 
   final Uint8List? icon;
+  final bool reading;
+
+  /// What a tap does, shown as tooltip and read by screen readers.
+  final String label;
+  final VoidCallback? onTap;
+
+  @override
+  State<_IconPreview> createState() => _IconPreviewState();
+}
+
+class _IconPreviewState extends State<_IconPreview> {
+  bool _hovered = false;
+  bool _focused = false;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final icon = this.icon;
-    final placeholder = Icon(
-      Icons.image_outlined,
-      color: colorScheme.onSurfaceVariant,
+    final icon = widget.icon;
+    final showEdit = icon != null && !widget.reading && (_hovered || _focused);
+    final empty = Icon(
+      Icons.add_photo_alternate_outlined,
+      color: colorScheme.primary,
     );
-    return Container(
-      key: const Key('pack_icon_preview'),
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerLow,
-        borderRadius: AppShapes.fieldRadius,
-        border: Border.all(color: colorScheme.outlineVariant),
-      ),
-      child: icon == null
-          ? placeholder
-          : Image.memory(
-              icon,
-              key: const Key('pack_icon_image'),
-              fit: BoxFit.contain,
-              filterQuality: FilterQuality.none,
-              gaplessPlayback: true,
-              errorBuilder: (_, _, _) => placeholder,
+    return Tooltip(
+      message: widget.label,
+      child: Semantics(
+        button: true,
+        enabled: widget.onTap != null,
+        label: widget.label,
+        child: SizedBox.square(
+          key: const Key('pack_icon_preview'),
+          dimension: packIconPreviewSize,
+          child: Material(
+            color: colorScheme.surfaceContainerLow,
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: AppShapes.fieldRadius,
+              side: BorderSide(color: colorScheme.outlineVariant),
             ),
+            child: InkWell(
+              onTap: widget.onTap,
+              onHover: (hovered) => setState(() => _hovered = hovered),
+              onFocusChange: (focused) => setState(() => _focused = focused),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  if (icon == null)
+                    Center(child: empty)
+                  else
+                    Image.memory(
+                      icon,
+                      key: const Key('pack_icon_image'),
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.none,
+                      gaplessPlayback: true,
+                      // The button's label and the size beside it say enough.
+                      excludeFromSemantics: true,
+                      errorBuilder: (_, _, _) => Center(
+                        child: Icon(
+                          Icons.broken_image_outlined,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  if (showEdit)
+                    ColoredBox(
+                      key: const Key('pack_icon_edit_overlay'),
+                      color: colorScheme.scrim.withValues(alpha: 0.4),
+                      child: const Center(
+                        child: Icon(Icons.edit_outlined, color: Colors.white),
+                      ),
+                    ),
+                  if (widget.reading)
+                    const Center(
+                      child: SizedBox.square(
+                        dimension: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

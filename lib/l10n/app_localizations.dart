@@ -1141,7 +1141,7 @@ abstract class AppLocalizations {
   /// No description provided for @pack_icon_change.
   ///
   /// In en, this message translates to:
-  /// **'Change'**
+  /// **'Change icon'**
   String get pack_icon_change;
 
   /// No description provided for @pack_icon_remove.

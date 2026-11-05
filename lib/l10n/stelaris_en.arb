@@ -248,7 +248,7 @@
   },
   "pack_icon_hint": "A square PNG of 16 × 16, 32 × 32, 64 × 64 … pixels",
   "pack_icon_choose": "Choose icon",
-  "pack_icon_change": "Change",
+  "pack_icon_change": "Change icon",
   "pack_icon_remove": "Remove",
   "pack_icon_not_png": "The file is no PNG",
   "pack_icon_not_square": "The icon must be square",
