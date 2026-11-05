@@ -294,6 +294,22 @@ class _BlockStateDetail extends StatelessWidget {
     BlockStateStore.shared.remove(entry.id);
   }
 
+  /// Appends the rules of the dialog to the stored entry, which may have
+  /// changed since this page was built.
+  Future<void> _addRule(BuildContext context) async {
+    final rules = await showRuleDialog(
+      context,
+      title: context.l10n.blockstate_rule_add,
+      spec: specFor(entry.key),
+      rule: const BlockStateRule(),
+      existing: false,
+    );
+    final store = BlockStateStore.shared;
+    final current = store.byId(entry.id);
+    if (rules == null || current == null) return;
+    store.update(current.copyWith(rules: [...current.rules, ...rules]));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -310,6 +326,12 @@ class _BlockStateDetail extends StatelessWidget {
             onBack: onBack,
             compactBelow: PageHeader.detailCompactThreshold,
             actions: [
+              PageHeaderAction(
+                icon: addModelIcon,
+                label: l10n.button_add,
+                primary: true,
+                onPressed: () => _addRule(context),
+              ),
               PageHeaderAction(
                 icon: Badge(
                   isLabelVisible: notes != null,
