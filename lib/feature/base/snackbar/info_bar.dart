@@ -52,7 +52,7 @@ class InfoBarFactory {
         ],
       ),
       backgroundColor: Colors.green.shade700,
-      action: action,
+      action: action == null ? null : _onGreen(action),
       // A button would otherwise keep the bar up until it is dismissed.
       persist: false,
       duration: duration,
@@ -60,6 +60,18 @@ class InfoBarFactory {
       behavior: SnackBarBehavior.floating,
     );
   }
+
+  /// [action] in white unless it brings its own color: the theme's action
+  /// color is a light tint that doesn't stand out on the green.
+  static SnackBarAction _onGreen(SnackBarAction action) => SnackBarAction(
+    key: action.key,
+    label: action.label,
+    onPressed: action.onPressed,
+    textColor: action.textColor ?? Colors.white,
+    disabledTextColor: action.disabledTextColor,
+    backgroundColor: action.backgroundColor,
+    disabledBackgroundColor: action.disabledBackgroundColor,
+  );
 
   /// Creates a [SnackBar] displaying the given [ProblemDetail].
   ///
