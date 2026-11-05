@@ -1,13 +1,10 @@
 // SPIKE: throwaway proof of concept for rule based blockstate editing.
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/blockstate/block_state_rules.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// The rules of a blockstate: the rules on the left, a state to try them
-/// on, the coverage of the block and its file on the right.
+/// on and the coverage of the block on the right.
 ///
 /// Every blockstate is a context of its own. The [others] are the contexts
 /// of the same block: the export writes all of them into one file, so the
@@ -92,12 +89,6 @@ class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
       return (names: names, count: count);
     }
 
-    final json = const JsonEncoder.withIndent('  ').convert(
-      toMultipart([
-        for (final entry in [widget.entry, ...widget.others]) ...entry.rules,
-      ], _spec),
-    );
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Row(
@@ -155,7 +146,6 @@ class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
                   contexts: widget.others.length + 1,
                   onPick: (state) => setState(() => _probe = state),
                 ),
-                _JsonCard(json: json, contexts: widget.others.length + 1),
               ],
             ),
           ),
@@ -542,46 +532,4 @@ class _CoverageCard extends StatelessWidget {
       if (states.length > 5) Text('… und ${states.length - 5} weitere'),
     ],
   ];
-}
-
-class _JsonCard extends StatelessWidget {
-  const _JsonCard({required this.json, required this.contexts});
-
-  final String json;
-
-  /// How many contexts are written into the file.
-  final int contexts;
-
-  @override
-  Widget build(BuildContext context) => Card(
-    child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  contexts == 1
-                      ? 'Datei des Blocks'
-                      : 'Datei des Blocks ($contexts Kontexte)',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-              IconButton(
-                tooltip: 'Kopieren',
-                onPressed: () => Clipboard.setData(ClipboardData(text: json)),
-                icon: const Icon(Icons.copy),
-              ),
-            ],
-          ),
-          SelectableText(
-            json,
-            style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-          ),
-        ],
-      ),
-    ),
-  );
 }
