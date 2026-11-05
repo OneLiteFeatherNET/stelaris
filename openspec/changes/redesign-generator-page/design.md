@@ -11,7 +11,7 @@ The companion APIs (vulpes-generator `add-editor-release-flow`) are all keyed by
 ## Goals / Non-Goals
 
 Goals:
-- The three sections and their states as specified, with each request's loading, success and error state driven by store state.
+- The three tabs and their states as specified, with the branch dropdown above them and no title header, and each request's loading, success and error state driven by store state.
 - Version computation as a pure, unit-tested function that never throws.
 - Errors from the API mapped to a small set of UI outcomes, so that the widgets never see raw exceptions.
 
@@ -25,9 +25,9 @@ Non-Goals:
 
 ### State: one generator-page slice in the store
 
-The three sections each have their own status (loading, loaded, error with kind) in `AppState`, replacing `releaseModel`, `isLoadingRelease` and the commit-related fields. Actions: `LoadBranchesAction`, `LoadPublishedVersionsAction(projectId)`, `DownloadLocalBuildAction(projectId, baseBranch)`, `DownloadPublishedVersionAction(projectId, version)`, `PublishReleaseAction(projectId, version, baseBranch)`. Each action's `reduce` sets loading first and then a final status, and catches every exception, mapping it to an error kind (see Error mapping). The view model exposes the derived proposal (`VersionProposal` from the pure function) and `canPublish`, so widgets hold no version logic.
+The three tabs each have their own status (loading, loaded, error with kind) in `AppState`, replacing `releaseModel`, `isLoadingRelease` and the commit-related fields. Actions: `LoadBranchesAction`, `LoadPublishedVersionsAction(projectId)`, `DownloadLocalBuildAction(projectId, baseBranch)`, `DownloadPublishedVersionAction(projectId, version)`, `PublishReleaseAction(projectId, version, baseBranch)`. Each action's `reduce` sets loading first and then a final status, and catches every exception, mapping it to an error kind (see Error mapping). The view model exposes the derived proposal (`VersionProposal` from the pure function) and `canPublish`, so widgets hold no version logic.
 
-Alternative considered: keep the state in local `StatefulWidget` fields as `BuildTrigger` does today. Rejected because the branch selection is shared between two sections and the publish result must survive a list refresh.
+Alternative considered: keep the state in local `StatefulWidget` fields as `BuildTrigger` does today. Rejected because the branch selection is shared between two tabs, the tab widgets may be rebuilt on every switch, and the publish result must survive both a tab switch and a list refresh.
 
 ### API client: typed results instead of raw Responses
 
@@ -67,16 +67,17 @@ The actions take the generator API through their constructor, defaulting to `Api
 
 ### Error mapping to UI
 
-| Source | Section | Shown as |
+| Source | Tab | Shown as |
 | --- | --- | --- |
-| branch list failure | branch dropdown | error with retry; Test locally and Publish disabled |
+| branch list failure | branch dropdown (above the tabs) | error with retry; Test locally and Publish disabled |
 | local-build download failure | Test locally | error with retry; no file saved |
+| publish success | Publish | coordinates, revision, base commit, Gradle line; versions list requested again |
 | 422 publish | Publish | diagnostics list; version not published |
 | 409 publish | Publish | "version exists" message; versions list reloaded |
 | other publish failure | Publish | generic error with status and retry |
 | versions list, repository unavailable (502) | Published versions | repository-unavailable error with retry |
 | versions list, success with zero items | Published versions | empty state |
-| any other failure | the affected section | generic error with status and retry |
+| any other failure | the affected tab | generic error with status and retry |
 
 ## Risks / Trade-offs
 

@@ -10,11 +10,11 @@ The product owner needs the page to work end to end for the Vulpes Gradle plugin
 
 ## What Changes
 
-- The generator page shows three sections, in order: **Test locally**, **Publish**, **Published versions**.
-- A vulpes-base branch dropdown, filled from `/git/branches` with `develop` as the default, is shared by Test locally and Publish.
+- The generator page has no title header. Below the top bar it shows three tabs, in order: **Test locally**, **Publish**, **Published versions**.
+- A vulpes-base branch dropdown above the tabs, filled from `/git/branches` with `develop` as the default, is shown on Test locally and Publish and hidden on Published versions. Its selection is shared by Test locally and Publish and is kept when switching tabs; each tab keeps its state when switched.
 - **Test locally** downloads `<project>-local.zip` for the selected branch and explains where to unzip it (project root, giving `vulpes/<project>/`) and that the Gradle plugin then prefers it over the published version.
 - **Publish** proposes the next version from the latest published Release (major, minor or patch bump; first release `0.1.0`), offers the Release (`X.Y.Z`) or Snapshot (`X.Y.Z-SNAPSHOT`) channel, shows the full version, asks for confirmation (and says that publishing an existing snapshot version replaces it), and on success shows coordinates, revision, the vulpes-base commit (shortened, with a copy of the full value) and a copyable `vulpes("<coordinates>")` line. A 422 shows the compiler diagnostics; a 409 says the version exists and refreshes the list.
-- **Published versions** lists versions newest first with channel, coordinates, repository URL and the actions download as local ZIP and copy Gradle line. The empty state and the repository-unavailable error state (the service answers 502) are distinct.
+- **Published versions** lists versions newest first with channel, coordinates, repository URL and the actions download as local ZIP and copy Gradle line. The empty state and the repository-unavailable error state (the service answers 502) are distinct. A successful publish refreshes this list.
 - Removed (never released; not a breaking change): the "search by commit" switch, the `GET /generate` call, the vulpes-base GitHub release status header, and the crash on a version string that is not `X.Y.Z`.
 - Every request shows a loading state and a mapped error state; no request error escapes as an unhandled exception.
 
