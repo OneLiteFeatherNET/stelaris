@@ -6,6 +6,7 @@ import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/build/parts/generator_parts.dart';
 import 'package:stelaris/feature/build/publish/publish_outcome.dart';
 import 'package:stelaris/feature/build/publish/version_proposal.dart';
+import 'package:stelaris/feature/build/tabs/published_versions_tab.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -19,6 +20,7 @@ class PublishTab extends StatelessWidget {
     required this.onBump,
     required this.onPublish,
     required this.onReloadVersions,
+    required this.onDownloadVersion,
     super.key,
   });
 
@@ -36,6 +38,9 @@ class PublishTab extends StatelessWidget {
   final VoidCallback onPublish;
   final VoidCallback onReloadVersions;
 
+  /// Downloads the local build of a published version.
+  final ValueChanged<String> onDownloadVersion;
+
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
@@ -44,60 +49,97 @@ class PublishTab extends StatelessWidget {
 
     return GeneratorTabBody(
       children: [
-        GeneratorSection(
-          title: l10n.generator_publish_title,
-          children: [
-            GeneratorText(l10n.generator_publish_description),
-            branchSelector,
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
+        GeneratorColumns(
+          start: [
+            GeneratorSection(
+              title: l10n.generator_publish_title,
               children: [
-                SegmentedButton<ReleaseChannel>(
-                  showSelectedIcon: false,
-                  segments: [
-                    ButtonSegment(
-                      value: ReleaseChannel.release,
-                      label: Text(l10n.generator_channel_release),
+                GeneratorText(l10n.generator_publish_description),
+                branchSelector,
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    SegmentedButton<ReleaseChannel>(
+                      showSelectedIcon: false,
+                      segments: [
+                        ButtonSegment(
+                          value: ReleaseChannel.release,
+                          label: Text(l10n.generator_channel_release),
+                        ),
+                        ButtonSegment(
+                          value: ReleaseChannel.snapshot,
+                          label: Text(l10n.generator_channel_snapshot),
+                        ),
+                      ],
+                      selected: {generator.channel},
+                      onSelectionChanged: (selected) =>
+                          onChannel(selected.first),
                     ),
-                    ButtonSegment(
-                      value: ReleaseChannel.snapshot,
-                      label: Text(l10n.generator_channel_snapshot),
+                    SegmentedButton<BumpPart>(
+                      showSelectedIcon: false,
+                      segments: [
+                        ButtonSegment(
+                          value: BumpPart.major,
+                          label: Text(l10n.generator_bump_major),
+                        ),
+                        ButtonSegment(
+                          value: BumpPart.minor,
+                          label: Text(l10n.generator_bump_minor),
+                        ),
+                        ButtonSegment(
+                          value: BumpPart.patch,
+                          label: Text(l10n.generator_bump_patch),
+                        ),
+                      ],
+                      selected: {generator.bump},
+                      onSelectionChanged: (selected) => onBump(selected.first),
                     ),
                   ],
-                  selected: {generator.channel},
-                  onSelectionChanged: (selected) => onChannel(selected.first),
                 ),
-                SegmentedButton<BumpPart>(
-                  showSelectedIcon: false,
-                  segments: [
-                    ButtonSegment(
-                      value: BumpPart.major,
-                      label: Text(l10n.generator_bump_major),
-                    ),
-                    ButtonSegment(
-                      value: BumpPart.minor,
-                      label: Text(l10n.generator_bump_minor),
-                    ),
-                    ButtonSegment(
-                      value: BumpPart.patch,
-                      label: Text(l10n.generator_bump_patch),
-                    ),
-                  ],
-                  selected: {generator.bump},
-                  onSelectionChanged: (selected) => onBump(selected.first),
-                ),
+                ..._proposal(context),
               ],
             ),
-            ..._proposal(context),
+          ],
+          end: [
+            if (outcome != null)
+              GeneratorSection(
+                title: l10n.generator_publish_outcome_title,
+                children: [outcome],
+              ),
+            GeneratorSection(
+              title: l10n.generator_current_title,
+              children: [
+                for (final channel in ReleaseChannel.values)
+                  _current(context, channel),
+              ],
+            ),
           ],
         ),
-        if (outcome != null)
-          GeneratorSection(
-            title: l10n.generator_publish_outcome_title,
-            children: [outcome],
-          ),
       ],
+    );
+  }
+
+  /// The newest published version of [channel], or that there is none.
+  Widget _current(BuildContext context, ReleaseChannel channel) {
+    final AppLocalizations l10n = context.l10n;
+    if (!vm.generator.versions.isDone) {
+      return const PublishedVersionCardSkeleton();
+    }
+    final PublishedVersion? latest = vm.latestPublished(channel);
+    if (latest == null) {
+      return GeneratorNote(
+        '${channel == ReleaseChannel.release ? l10n.generator_channel_release : l10n.generator_channel_snapshot}: '
+        '${l10n.generator_current_none}',
+      );
+    }
+    final String? downloading = vm.generator.downloadingVersion;
+    return PublishedVersionCard(
+      version: latest,
+      downloading: downloading == latest.version,
+      onDownload: downloading == null
+          ? () => onDownloadVersion(latest.version)
+          : null,
     );
   }
 

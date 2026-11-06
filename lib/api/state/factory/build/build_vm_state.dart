@@ -54,6 +54,17 @@ class BuildViewModel extends Vm {
     generator.versions.value?.map((it) => it.version) ?? const [],
   );
 
+  /// The newest published version of [channel], with its coordinates.
+  PublishedVersion? latestPublished(ReleaseChannel channel) {
+    final List<PublishedVersion> versions =
+        generator.versions.value ?? const [];
+    final Iterable<String> names = versions.map((it) => it.version);
+    final String? latest = channel == ReleaseChannel.release
+        ? latestRelease(names)
+        : latestSnapshot(names);
+    return versions.where((it) => it.version == latest).firstOrNull;
+  }
+
   /// The version publish sends, when one can be sent now.
   String? get publishableVersion {
     final VersionProposal? proposal = this.proposal;

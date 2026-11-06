@@ -4444,12 +4444,6 @@ abstract class AppLocalizations {
   /// **'Download the generated code of this project on the selected vulpes-base branch and try it before publishing.'**
   String get generator_local_description;
 
-  /// No description provided for @generator_local_instructions.
-  ///
-  /// In en, this message translates to:
-  /// **'Unzip the file into the project root. It creates vulpes/{project}/, and the Gradle plugin then uses it in place of the published version.'**
-  String generator_local_instructions(String project);
-
   /// No description provided for @generator_local_download.
   ///
   /// In en, this message translates to:
@@ -4719,6 +4713,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The generator works on the project selected in the top bar.'**
   String get generator_no_project_hint;
+
+  /// No description provided for @generator_local_howto_title.
+  ///
+  /// In en, this message translates to:
+  /// **'How to use it'**
+  String get generator_local_howto_title;
+
+  /// No description provided for @generator_local_step_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the zip for the selected vulpes-base branch.'**
+  String get generator_local_step_download;
+
+  /// No description provided for @generator_local_step_unzip.
+  ///
+  /// In en, this message translates to:
+  /// **'Unzip it into the project root. It creates vulpes/{project}/.'**
+  String generator_local_step_unzip(String project);
+
+  /// No description provided for @generator_local_step_build.
+  ///
+  /// In en, this message translates to:
+  /// **'Build as usual. The Gradle plugin uses vulpes/{project}/ in place of the published version.'**
+  String generator_local_step_build(String project);
+
+  /// No description provided for @generator_local_step_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete vulpes/{project}/ to build against the published version again.'**
+  String generator_local_step_remove(String project);
+
+  /// No description provided for @generator_current_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Currently published'**
+  String get generator_current_title;
+
+  /// No description provided for @generator_current_none.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing published on this channel yet.'**
+  String get generator_current_none;
 }
 
 class _AppLocalizationsDelegate

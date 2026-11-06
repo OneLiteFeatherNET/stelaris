@@ -29,6 +29,55 @@ class GeneratorTabBody extends StatelessWidget {
   }
 }
 
+/// Two groups of sections side by side once the tab is wide enough, so a
+/// wide screen shows more at once; stacked below that.
+class GeneratorColumns extends StatelessWidget {
+  const GeneratorColumns({
+    required this.start,
+    required this.end,
+    this.startFlex = 3,
+    this.endFlex = 2,
+    super.key,
+  });
+
+  /// The width from which the two groups stand side by side.
+  static const double breakpoint = 1100;
+
+  final List<Widget> start;
+  final List<Widget> end;
+  final int startFlex;
+  final int endFlex;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < breakpoint || end.isEmpty) {
+          return _stack([...start, ...end]);
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(flex: startFlex, child: _stack(start)),
+            const SizedBox(width: 16),
+            Expanded(flex: endFlex, child: _stack(end)),
+          ],
+        );
+      },
+    );
+  }
+
+  static Widget _stack(List<Widget> children) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      for (final (index, child) in children.indexed) ...[
+        if (index > 0) const SizedBox(height: 16),
+        child,
+      ],
+    ],
+  );
+}
+
 /// A section of a generator tab: an [EditSectionCard] with its heading.
 class GeneratorSection extends StatelessWidget {
   const GeneratorSection({
@@ -102,16 +151,26 @@ class GeneratorText extends StatelessWidget {
   /// Whether this is the line the user has to act on.
   final bool emphasized;
 
+  /// Lines longer than this are hard to read on a wide screen.
+  static const double maxWidth = 760;
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    return Text(
+    final Widget body = Text(
       text,
       style: emphasized
           ? theme.textTheme.bodyMedium
           : theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
+    );
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: maxWidth),
+        child: body,
+      ),
     );
   }
 }

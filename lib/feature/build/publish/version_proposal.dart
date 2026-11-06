@@ -162,11 +162,18 @@ List<PublishedVersion> newestFirst(Iterable<PublishedVersion> versions) {
 
 /// The newest release in [published], ignoring snapshots and versions that
 /// cannot be read; `null` when there is none.
-String? latestRelease(Iterable<String> published) {
+String? latestRelease(Iterable<String> published) =>
+    _latest(published, snapshot: false);
+
+/// The newest snapshot in [published]; `null` when there is none.
+String? latestSnapshot(Iterable<String> published) =>
+    _latest(published, snapshot: true);
+
+String? _latest(Iterable<String> published, {required bool snapshot}) {
   SemanticVersion? latest;
   for (final raw in published) {
     final SemanticVersion? version = SemanticVersion.tryParse(raw);
-    if (version == null || version.snapshot) continue;
+    if (version == null || version.snapshot != snapshot) continue;
     if (latest == null || version.compareTo(latest) > 0) latest = version;
   }
   return latest?.toString();

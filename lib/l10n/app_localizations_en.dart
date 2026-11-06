@@ -2481,11 +2481,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Download the generated code of this project on the selected vulpes-base branch and try it before publishing.';
 
   @override
-  String generator_local_instructions(String project) {
-    return 'Unzip the file into the project root. It creates vulpes/$project/, and the Gradle plugin then uses it in place of the published version.';
-  }
-
-  @override
   String generator_local_download(String filename) {
     return 'Download $filename';
   }
@@ -2657,4 +2652,32 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get generator_no_project_hint =>
       'The generator works on the project selected in the top bar.';
+
+  @override
+  String get generator_local_howto_title => 'How to use it';
+
+  @override
+  String get generator_local_step_download =>
+      'Download the zip for the selected vulpes-base branch.';
+
+  @override
+  String generator_local_step_unzip(String project) {
+    return 'Unzip it into the project root. It creates vulpes/$project/.';
+  }
+
+  @override
+  String generator_local_step_build(String project) {
+    return 'Build as usual. The Gradle plugin uses vulpes/$project/ in place of the published version.';
+  }
+
+  @override
+  String generator_local_step_remove(String project) {
+    return 'Delete vulpes/$project/ to build against the published version again.';
+  }
+
+  @override
+  String get generator_current_title => 'Currently published';
+
+  @override
+  String get generator_current_none => 'Nothing published on this channel yet.';
 }

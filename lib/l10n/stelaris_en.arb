@@ -1323,12 +1323,6 @@
   "generator_tab_versions": "Published versions",
   "generator_no_project": "Select a project to use the generator.",
   "generator_local_description": "Download the generated code of this project on the selected vulpes-base branch and try it before publishing.",
-  "generator_local_instructions": "Unzip the file into the project root. It creates vulpes/{project}/, and the Gradle plugin then uses it in place of the published version.",
-  "@generator_local_instructions": {
-    "placeholders": {
-      "project": {"type": "String"}
-    }
-  },
   "generator_local_download": "Download {filename}",
   "@generator_local_download": {
     "placeholders": {
@@ -1435,5 +1429,27 @@
   "generator_publish_outcome_title": "Last publish",
   "generator_versions_title": "Published versions",
   "generator_versions_empty_hint": "Publish a release or snapshot on the Publish tab.",
-  "generator_no_project_hint": "The generator works on the project selected in the top bar."
+  "generator_no_project_hint": "The generator works on the project selected in the top bar.",
+  "generator_local_howto_title": "How to use it",
+  "generator_local_step_download": "Download the zip for the selected vulpes-base branch.",
+  "generator_local_step_unzip": "Unzip it into the project root. It creates vulpes/{project}/.",
+  "@generator_local_step_unzip": {
+    "placeholders": {
+      "project": {"type": "String"}
+    }
+  },
+  "generator_local_step_build": "Build as usual. The Gradle plugin uses vulpes/{project}/ in place of the published version.",
+  "@generator_local_step_build": {
+    "placeholders": {
+      "project": {"type": "String"}
+    }
+  },
+  "generator_local_step_remove": "Delete vulpes/{project}/ to build against the published version again.",
+  "@generator_local_step_remove": {
+    "placeholders": {
+      "project": {"type": "String"}
+    }
+  },
+  "generator_current_title": "Currently published",
+  "generator_current_none": "Nothing published on this channel yet."
 }

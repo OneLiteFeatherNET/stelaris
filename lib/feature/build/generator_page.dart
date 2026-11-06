@@ -125,6 +125,8 @@ class GeneratorPage extends StatelessWidget {
                             context.dispatch(SelectBumpPartAction(bump)),
                         onPublish: () => _publish(context, vm),
                         onReloadVersions: () => _reloadVersions(context, vm),
+                        onDownloadVersion: (version) =>
+                            _downloadPublished(context, vm, version),
                       ),
                       PublishedVersionsTab(
                         vm: vm,

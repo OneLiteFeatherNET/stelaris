@@ -7,6 +7,7 @@ import 'package:stelaris/api/service/generator/generator_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/build/generator_page.dart';
+import 'package:stelaris/feature/build/tabs/published_versions_tab.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/fake_generator_api.dart';
@@ -254,6 +255,24 @@ void main() {
       await tester.pumpAndSettle();
       expect(proposal('0.3.0-SNAPSHOT'), findsOneWidget);
       expect(proposal('0.3.0'), findsNothing);
+    });
+
+    testWidgets('shows the newest release and snapshot next to it', (
+      tester,
+    ) async {
+      await pump(tester);
+      await openTab(tester, 'Publish');
+
+      expect(find.text('Currently published'), findsOneWidget);
+      final cards = find.byType(PublishedVersionCard);
+      expect(
+        find.descendant(of: cards, matching: find.text('0.2.12')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: cards, matching: find.text('0.3.0-SNAPSHOT')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('the first release is 0.1.0 and says so', (tester) async {
