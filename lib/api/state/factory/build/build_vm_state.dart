@@ -49,6 +49,11 @@ class BuildViewModel extends Vm {
     );
   }
 
+  /// The newest published release, the base of [proposal].
+  String? get latestPublishedRelease => latestRelease(
+    generator.versions.value?.map((it) => it.version) ?? const [],
+  );
+
   /// The version publish sends, when one can be sent now.
   String? get publishableVersion {
     final VersionProposal? proposal = this.proposal;

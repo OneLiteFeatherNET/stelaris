@@ -1348,12 +1348,6 @@
   "generator_bump_major": "Major",
   "generator_bump_minor": "Minor",
   "generator_bump_patch": "Patch",
-  "generator_publish_version": "Version {version}",
-  "@generator_publish_version": {
-    "placeholders": {
-      "version": {"type": "String"}
-    }
-  },
   "generator_publish_button": "Publish {version}",
   "@generator_publish_button": {
     "placeholders": {
@@ -1428,5 +1422,18 @@
       "version": {"type": "String"}
     }
   },
-  "generator_versions_copy": "Copy the Gradle line"
+  "generator_versions_copy": "Copy the Gradle line",
+  "generator_local_title": "Local build",
+  "generator_publish_title": "Next version",
+  "generator_publish_latest": "Latest release: {version}",
+  "@generator_publish_latest": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "generator_publish_first": "No release yet, so this is the first one.",
+  "generator_publish_outcome_title": "Last publish",
+  "generator_versions_title": "Published versions",
+  "generator_versions_empty_hint": "Publish a release or snapshot on the Publish tab.",
+  "generator_no_project_hint": "The generator works on the project selected in the top bar."
 }

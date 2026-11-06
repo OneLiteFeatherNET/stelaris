@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/service/generator/generator_models.dart';
 import 'package:stelaris/api/state/factory/build/build_vm_state.dart';
 import 'package:stelaris/api/state/generator_state.dart';
+import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/build/parts/generator_parts.dart';
 import 'package:stelaris/feature/build/publish/publish_outcome.dart';
 import 'package:stelaris/feature/build/publish/version_proposal.dart';
@@ -13,6 +14,7 @@ import 'package:stelaris/util/l10n_ext.dart';
 class PublishTab extends StatelessWidget {
   const PublishTab({
     required this.vm,
+    required this.branchSelector,
     required this.onChannel,
     required this.onBump,
     required this.onPublish,
@@ -20,7 +22,13 @@ class PublishTab extends StatelessWidget {
     super.key,
   });
 
+  /// As wide as one card of an edit card grid.
+  static const double _cardWidth = 320;
+
   final BuildViewModel vm;
+
+  /// The shared branch field, at the top of the section.
+  final Widget branchSelector;
   final ValueChanged<ReleaseChannel> onChannel;
   final ValueChanged<BumpPart> onBump;
 
@@ -32,18 +40,17 @@ class PublishTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
     final GeneratorState generator = vm.generator;
+    final Widget? outcome = _outcome(context);
 
-    return GeneratorSection(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(l10n.generator_publish_description),
-          const SizedBox(height: 16),
-          if (vm.usableProject == null)
-            GeneratorNote(l10n.generator_no_project)
-          else ...[
+    return GeneratorTabBody(
+      children: [
+        GeneratorSection(
+          title: l10n.generator_publish_title,
+          children: [
+            GeneratorText(l10n.generator_publish_description),
+            branchSelector,
             Wrap(
-              spacing: 16,
+              spacing: 12,
               runSpacing: 12,
               children: [
                 SegmentedButton<ReleaseChannel>(
@@ -82,58 +89,76 @@ class PublishTab extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            _proposal(context),
-            ..._outcome(context),
+            ..._proposal(context),
           ],
-        ],
-      ),
+        ),
+        if (outcome != null)
+          GeneratorSection(
+            title: l10n.generator_publish_outcome_title,
+            children: [outcome],
+          ),
+      ],
     );
   }
 
-  Widget _proposal(BuildContext context) {
+  List<Widget> _proposal(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
     final RequestState<List<PublishedVersion>> versions = vm.generator.versions;
     final GeneratorFailure? failure = versions.failure;
     if (failure != null) {
-      return GeneratorError(
-        title: l10n.generator_publish_versions_failed,
-        failure: failure,
-        onRetry: onReloadVersions,
-      );
+      return [
+        GeneratorError(
+          title: l10n.generator_publish_versions_failed,
+          failure: failure,
+          onRetry: onReloadVersions,
+        ),
+      ];
     }
-    final VersionProposal? proposal = vm.proposal;
-    return switch (proposal) {
-      null => GeneratorLoading(l10n.generator_publish_versions_loading),
-      UnreadableVersion(:final raw) => GeneratorNote(
-        l10n.generator_publish_unreadable(raw),
-        icon: Icons.warning_amber_rounded,
-      ),
-      ProposedVersion(:final version) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.generator_publish_version(version),
-            style: Theme.of(context).textTheme.headlineSmall,
+    return switch (vm.proposal) {
+      null => [GeneratorLoading(l10n.generator_publish_versions_loading)],
+      UnreadableVersion(:final raw) => [
+        GeneratorNote(
+          l10n.generator_publish_unreadable(raw),
+          icon: Icons.warning_amber_rounded,
+          color: Theme.of(context).colorScheme.error,
+        ),
+      ],
+      ProposedVersion(:final version) => [
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: SizedBox(
+            width: _cardWidth,
+            child: EditCard(
+              icon: vm.generator.channel == ReleaseChannel.release
+                  ? Icons.new_releases_outlined
+                  : Icons.science_outlined,
+              label: vm.generator.channel == ReleaseChannel.release
+                  ? l10n.generator_channel_release
+                  : l10n.generator_channel_snapshot,
+              value: version,
+              footer: switch (vm.latestPublishedRelease) {
+                final String latest => l10n.generator_publish_latest(latest),
+                null => l10n.generator_publish_first,
+              },
+            ),
           ),
-          const SizedBox(height: 12),
-          GeneratorActionButton(
-            icon: Icons.publish,
-            label: l10n.generator_publish_button(version),
-            busy: vm.generator.publish.isLoading,
-            onPressed: vm.publishableVersion == null ? null : onPublish,
-          ),
-        ],
-      ),
+        ),
+        GeneratorActionButton(
+          icon: Icons.publish,
+          label: l10n.generator_publish_button(version),
+          busy: vm.generator.publish.isLoading,
+          onPressed: vm.publishableVersion == null ? null : onPublish,
+        ),
+      ],
     };
   }
 
-  List<Widget> _outcome(BuildContext context) {
+  Widget? _outcome(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
     final RequestState<PublishResult> publish = vm.generator.publish;
     final PublishResult? result = publish.isDone ? publish.value : null;
     final GeneratorFailure? failure = publish.failure;
-    final Widget? view = switch ((result, failure?.kind)) {
+    return switch ((result, failure?.kind)) {
       (final PublishResult result, _) => PublishResultView(result: result),
       (_, GeneratorFailureKind.versionExists) => GeneratorNote(
         l10n.generator_publish_conflict(vm.generator.publishVersion ?? ''),
@@ -149,8 +174,5 @@ class PublishTab extends StatelessWidget {
       ),
       _ => null,
     };
-    return [
-      if (view != null) ...[const SizedBox(height: 20), view],
-    ];
   }
 }

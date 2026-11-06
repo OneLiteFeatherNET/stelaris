@@ -1,22 +1,57 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/service/generator/generator_models.dart';
+import 'package:stelaris/feature/base/edit_card/edit_section_card.dart';
+import 'package:stelaris/feature/base/edit_card/edit_section_heading.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
-/// The outlined frame of each block on the generator page.
-class GeneratorSection extends StatelessWidget {
-  const GeneratorSection({required this.child, super.key});
+/// The body of a generator tab: its sections stacked on the page's 16 inset,
+/// as on a detail page.
+class GeneratorTabBody extends StatelessWidget {
+  const GeneratorTabBody({required this.children, super.key});
 
-  final Widget child;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
-    return Card.outlined(
-      margin: EdgeInsets.zero,
-      child: Padding(padding: const EdgeInsets.all(20), child: child),
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        for (final (index, child) in children.indexed) ...[
+          if (index > 0) const SizedBox(height: 16),
+          child,
+        ],
+      ],
+    );
+  }
+}
+
+/// A section of a generator tab: an [EditSectionCard] with its heading.
+class GeneratorSection extends StatelessWidget {
+  const GeneratorSection({
+    required this.title,
+    required this.children,
+    this.trailing,
+    super.key,
+  });
+
+  final String title;
+  final List<Widget> children;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    return EditSectionCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          EditSectionHeading(title: title, trailing: trailing),
+          for (final child in children) ...[const SizedBox(height: 16), child],
+        ],
+      ),
     );
   }
 }
@@ -27,20 +62,28 @@ class GeneratorDemoBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
-    return Material(
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme colors = theme.colorScheme;
+    return Card.filled(
+      margin: EdgeInsets.zero,
       color: colors.tertiaryContainer,
-      borderRadius: BorderRadius.circular(AppShapes.medium),
+      shape: AppShapes.rounded(AppShapes.medium),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            Icon(Icons.science_outlined, color: colors.onTertiaryContainer),
-            const SizedBox(width: 16),
+            Icon(
+              Icons.science_outlined,
+              size: 20,
+              color: colors.onTertiaryContainer,
+            ),
+            const SizedBox(width: 12),
             Expanded(
               child: Text(
                 context.l10n.generator_demo_banner,
-                style: TextStyle(color: colors.onTertiaryContainer),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colors.onTertiaryContainer,
+                ),
               ),
             ),
           ],
@@ -50,28 +93,57 @@ class GeneratorDemoBanner extends StatelessWidget {
   }
 }
 
-/// A line of muted text, for the "nothing to do here yet" states.
+/// Body text of a section, in the muted colour of the edit cards.
+class GeneratorText extends StatelessWidget {
+  const GeneratorText(this.text, {this.emphasized = false, super.key});
+
+  final String text;
+
+  /// Whether this is the line the user has to act on.
+  final bool emphasized;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    return Text(
+      text,
+      style: emphasized
+          ? theme.textTheme.bodyMedium
+          : theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+    );
+  }
+}
+
+/// A line with an [icon], for results and warnings inside a section.
 class GeneratorNote extends StatelessWidget {
-  const GeneratorNote(this.text, {this.icon = Icons.info_outline, super.key});
+  const GeneratorNote(
+    this.text, {
+    this.icon = Icons.info_outline,
+    this.color,
+    super.key,
+  });
 
   final String text;
   final IconData icon;
+
+  /// The colour of the icon, muted when null.
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 20, color: theme.colorScheme.onSurfaceVariant),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
+        Icon(
+          icon,
+          size: 20,
+          color: color ?? theme.colorScheme.onSurfaceVariant,
         ),
+        const SizedBox(width: 12),
+        Expanded(child: Text(text, style: theme.textTheme.bodyMedium)),
       ],
     );
   }
@@ -92,7 +164,7 @@ class GeneratorLoading extends StatelessWidget {
           child: CircularProgressIndicator(strokeWidth: 2),
         ),
         const SizedBox(width: 12),
-        Expanded(child: Text(text)),
+        Expanded(child: GeneratorText(text)),
       ],
     );
   }
@@ -114,7 +186,8 @@ List<String> failureDetails(AppLocalizations l10n, GeneratorFailure failure) {
   ];
 }
 
-/// A failed request: [title], the details of [failure], and a retry.
+/// A failed request, as the other pages show one: [title] in the error
+/// colour, the details of [failure] below it, and a retry.
 class GeneratorError extends StatelessWidget {
   const GeneratorError({
     required this.title,
@@ -132,48 +205,38 @@ class GeneratorError extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colors = theme.colorScheme;
     final List<String> details = failureDetails(context.l10n, failure);
-    return Material(
-      color: colors.errorContainer,
-      borderRadius: BorderRadius.circular(AppShapes.medium),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
-        child: Row(
-          children: [
-            Icon(Icons.error_outline, color: colors.onErrorContainer),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colors.onErrorContainer,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  for (final line in details)
-                    Text(
-                      line,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colors.onErrorContainer,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            if (onRetry != null)
-              TextButton.icon(
-                onPressed: onRetry,
-                icon: const Icon(Icons.refresh),
-                label: Text(context.l10n.generator_retry),
-                style: TextButton.styleFrom(
-                  foregroundColor: colors.onErrorContainer,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(Icons.error_outline, size: 20, color: colors.error),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colors.error,
                 ),
               ),
-          ],
+              for (final line in details)
+                Text(
+                  line,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colors.onSurfaceVariant,
+                  ),
+                ),
+            ],
+          ),
         ),
-      ),
+        if (onRetry != null)
+          TextButton(
+            onPressed: onRetry,
+            style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+            child: Text(context.l10n.generator_retry),
+          ),
+      ],
     );
   }
 }
@@ -186,7 +249,8 @@ Future<void> copyToClipboard(BuildContext context, String text) async {
   }
 }
 
-/// A filled button that shows a spinner instead of its icon while [busy].
+/// The main button of a section; shows a spinner instead of its icon while
+/// [busy], as the page header's actions do.
 class GeneratorActionButton extends StatelessWidget {
   const GeneratorActionButton({
     required this.icon,
@@ -203,15 +267,18 @@ class GeneratorActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton.icon(
-      onPressed: busy ? null : onPressed,
-      icon: busy
-          ? const SizedBox.square(
-              dimension: 16,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : Icon(icon),
-      label: Text(label),
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: FilledButton.icon(
+        onPressed: busy ? null : onPressed,
+        icon: busy
+            ? const SizedBox.square(
+                dimension: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Icon(icon),
+        label: Text(label),
+      ),
     );
   }
 }

@@ -3,7 +3,8 @@ import 'package:stelaris/api/state/generator_state.dart';
 import 'package:stelaris/feature/build/parts/generator_parts.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
-/// The vulpes-base branch that "Test locally" and "Publish" build against.
+/// The vulpes-base branch that "Test locally" and "Publish" build against,
+/// as a field of their section. Both tabs show the same selection.
 class BranchSelector extends StatelessWidget {
   const BranchSelector({
     required this.branches,
@@ -13,6 +14,9 @@ class BranchSelector extends StatelessWidget {
     super.key,
   });
 
+  /// The widest the field gets; a branch name needs no more.
+  static const double maxWidth = 420;
+
   final RequestState<List<String>> branches;
   final String? selected;
   final ValueChanged<String> onSelected;
@@ -20,10 +24,6 @@ class BranchSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GeneratorSection(child: _content(context));
-  }
-
-  Widget _content(BuildContext context) {
     final failure = branches.failure;
     if (failure != null) {
       return GeneratorError(
@@ -45,33 +45,38 @@ class BranchSelector extends StatelessWidget {
               icon: Icons.warning_amber_rounded,
             ),
           ),
-          IconButton(
+          TextButton(
             onPressed: onRetry,
-            icon: const Icon(Icons.refresh),
-            tooltip: context.l10n.generator_retry,
+            child: Text(context.l10n.generator_retry),
           ),
         ],
       );
     }
-    return DropdownButtonFormField<String>(
-      // A new selection from outside (a reload) must show, which the
-      // field's own state would otherwise keep from it.
-      key: ValueKey(selected),
-      initialValue: selected,
-      isExpanded: true,
-      decoration: InputDecoration(
-        labelText: context.l10n.generator_branch_label,
-        border: const OutlineInputBorder(),
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: maxWidth),
+        child: DropdownButtonFormField<String>(
+          // A new selection from outside (a reload) must show, which the
+          // field's own state would otherwise keep from it.
+          key: ValueKey(selected),
+          initialValue: selected,
+          isExpanded: true,
+          decoration: InputDecoration(
+            labelText: context.l10n.generator_branch_label,
+            prefixIcon: const Icon(Icons.account_tree_outlined),
+          ),
+          items: [
+            for (final name in names)
+              DropdownMenuItem(value: name, child: Text(name)),
+          ],
+          onChanged: branches.isLoading
+              ? null
+              : (value) {
+                  if (value != null) onSelected(value);
+                },
+        ),
       ),
-      items: [
-        for (final name in names)
-          DropdownMenuItem(value: name, child: Text(name)),
-      ],
-      onChanged: branches.isLoading
-          ? null
-          : (value) {
-              if (value != null) onSelected(value);
-            },
     );
   }
 }

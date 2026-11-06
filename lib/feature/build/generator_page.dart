@@ -6,6 +6,9 @@ import 'package:stelaris/api/service/generator/demo_generator_api.dart';
 import 'package:stelaris/api/state/actions/build/build_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/build/build_vm_state.dart';
+import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/base/empty_data_widget.dart';
+import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/build/download/download_helper.dart'
     as download;
 import 'package:stelaris/feature/build/parts/branch_selector.dart';
@@ -14,16 +17,19 @@ import 'package:stelaris/feature/build/publish/publish_outcome.dart';
 import 'package:stelaris/feature/build/tabs/local_build_tab.dart';
 import 'package:stelaris/feature/build/tabs/publish_tab.dart';
 import 'package:stelaris/feature/build/tabs/published_versions_tab.dart';
+import 'package:stelaris/feature/model/model_detail_tab_bar.dart';
+import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// The generator page: test the project's generated code locally, publish
 /// it as a release or snapshot, and list what it has published.
 ///
-/// The vulpes-base branch above the tabs is shared by "Test locally" and
-/// "Publish". Everything the tabs show lives in the store, so switching
-/// tabs keeps it.
-class GeneratorPage extends StatefulWidget {
+/// Built like a detail page: the [PageHeader] on top, the tabs below it.
+/// The vulpes-base branch is a field of "Test locally" and "Publish" and
+/// the same selection in both. Everything the tabs show lives in the store,
+/// so switching tabs keeps it.
+class GeneratorPage extends StatelessWidget {
   const GeneratorPage({this.api, this.saveFile, super.key});
 
   /// The generator to talk to, [ApiService.generatorApi] when null.
@@ -32,32 +38,7 @@ class GeneratorPage extends StatefulWidget {
   /// Saves downloads, the browser download when null.
   final download.FileSaver? saveFile;
 
-  @override
-  State<GeneratorPage> createState() => _GeneratorPageState();
-}
-
-class _GeneratorPageState extends State<GeneratorPage>
-    with SingleTickerProviderStateMixin {
-  /// The tab without the branch selector.
-  static const int _versionsTab = 2;
-
-  /// The width of the page's column, as wide as the forms elsewhere.
-  static const double _maxWidth = 928;
-
-  late final TabController _tabs = TabController(length: 3, vsync: this)
-    ..addListener(_onTabChanged);
-
-  GeneratorApi get _api => widget.api ?? ApiService().generatorApi;
-
-  void _onTabChanged() {
-    if (!_tabs.indexIsChanging) setState(() {});
-  }
-
-  @override
-  void dispose() {
-    _tabs.dispose();
-    super.dispose();
-  }
+  GeneratorApi get _api => api ?? ApiService().generatorApi;
 
   void _loadProject(Store<AppState> store, Project? project) {
     store.dispatchSync(SyncGeneratorProjectAction(project?.id));
@@ -80,79 +61,100 @@ class _GeneratorPageState extends State<GeneratorPage>
           _loadProject(store, next.project);
         }
       },
-      builder: (context, vm) => _build(context, vm),
+      builder: _build,
     );
   }
 
   Widget _build(BuildContext context, BuildViewModel vm) {
-    final bool showBranch = _tabs.index != _versionsTab;
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: _maxWidth),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (_api is DemoGeneratorApi) ...[
-                const GeneratorDemoBanner(),
-                const SizedBox(height: 16),
+    final AppLocalizations l10n = context.l10n;
+    final Project? project = vm.usableProject;
+    final generator = vm.generator;
+
+    return DefaultTabController(
+      length: 3,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: PageHeader(
+              title: BuildNavigationEntry.generator.display,
+              actions: [
+                PageHeaderAction(
+                  icon: const Icon(Icons.refresh),
+                  label: l10n.command_bar_refresh_tooltip,
+                  loading:
+                      generator.branches.isLoading ||
+                      generator.versions.isLoading,
+                  onPressed: () => _refresh(context, project),
+                ),
               ],
-              if (showBranch) ...[
-                BranchSelector(
-                  branches: vm.generator.branches,
-                  selected: vm.generator.selectedBranch,
-                  onSelected: (branch) =>
-                      context.dispatch(SelectBaseBranchAction(branch)),
-                  onRetry: () =>
-                      context.dispatch(LoadBranchesAction(api: _api)),
-                ),
-                const SizedBox(height: 16),
-              ],
-              TabBar(
-                controller: _tabs,
-                tabs: [
-                  Tab(
-                    icon: const Icon(Icons.download),
-                    text: context.l10n.generator_tab_local,
-                  ),
-                  Tab(
-                    icon: const Icon(Icons.publish),
-                    text: context.l10n.generator_tab_publish,
-                  ),
-                  Tab(
-                    icon: const Icon(Icons.history),
-                    text: context.l10n.generator_tab_versions,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              switch (_tabs.index) {
-                0 => LocalBuildTab(
-                  vm: vm,
-                  onDownload: () => _downloadLocalBuild(context, vm),
-                ),
-                1 => PublishTab(
-                  vm: vm,
-                  onChannel: (channel) =>
-                      context.dispatch(SelectReleaseChannelAction(channel)),
-                  onBump: (bump) =>
-                      context.dispatch(SelectBumpPartAction(bump)),
-                  onPublish: () => _publish(context, vm),
-                  onReloadVersions: () => _reloadVersions(context, vm),
-                ),
-                _ => PublishedVersionsTab(
-                  vm: vm,
-                  onReload: () => _reloadVersions(context, vm),
-                  onDownload: (version) =>
-                      _downloadPublished(context, vm, version),
-                ),
-              },
+            ),
+          ),
+          if (_api is DemoGeneratorApi)
+            const Padding(
+              padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+              child: GeneratorDemoBanner(),
+            ),
+          const SizedBox(height: 8),
+          ModelDetailTabBar(
+            tabs: [
+              Tab(text: l10n.generator_tab_local),
+              Tab(text: l10n.generator_tab_publish),
+              Tab(text: l10n.generator_tab_versions),
             ],
           ),
-        ),
+          Expanded(
+            child: TabBarView(
+              children: project == null
+                  ? List.filled(3, const _NoProject())
+                  : [
+                      LocalBuildTab(
+                        vm: vm,
+                        project: project,
+                        branchSelector: _branchSelector(context, vm),
+                        onDownload: () => _downloadLocalBuild(context, vm),
+                      ),
+                      PublishTab(
+                        vm: vm,
+                        branchSelector: _branchSelector(context, vm),
+                        onChannel: (channel) => context.dispatch(
+                          SelectReleaseChannelAction(channel),
+                        ),
+                        onBump: (bump) =>
+                            context.dispatch(SelectBumpPartAction(bump)),
+                        onPublish: () => _publish(context, vm),
+                        onReloadVersions: () => _reloadVersions(context, vm),
+                      ),
+                      PublishedVersionsTab(
+                        vm: vm,
+                        onReload: () => _reloadVersions(context, vm),
+                        onDownload: (version) =>
+                            _downloadPublished(context, vm, version),
+                      ),
+                    ],
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  Widget _branchSelector(BuildContext context, BuildViewModel vm) =>
+      BranchSelector(
+        branches: vm.generator.branches,
+        selected: vm.generator.selectedBranch,
+        onSelected: (branch) =>
+            context.dispatch(SelectBaseBranchAction(branch)),
+        onRetry: () => context.dispatch(LoadBranchesAction(api: _api)),
+      );
+
+  void _refresh(BuildContext context, Project? project) {
+    context.dispatch(LoadBranchesAction(api: _api));
+    final String? id = project?.id;
+    if (project != null && id != null && id.isNotEmpty) {
+      context.dispatch(LoadPublishedVersionsAction(project, api: _api));
+    }
   }
 
   void _downloadLocalBuild(BuildContext context, BuildViewModel vm) {
@@ -160,12 +162,7 @@ class _GeneratorPageState extends State<GeneratorPage>
     final String? branch = vm.baseBranch;
     if (project == null || branch == null) return;
     context.dispatch(
-      DownloadLocalBuildAction(
-        project,
-        branch,
-        api: _api,
-        saveFile: widget.saveFile,
-      ),
+      DownloadLocalBuildAction(project, branch, api: _api, saveFile: saveFile),
     );
   }
 
@@ -181,7 +178,7 @@ class _GeneratorPageState extends State<GeneratorPage>
         project,
         version,
         api: _api,
-        saveFile: widget.saveFile,
+        saveFile: saveFile,
       ),
     );
   }
@@ -206,5 +203,18 @@ class _GeneratorPageState extends State<GeneratorPage>
     );
     if (!confirmed || !context.mounted) return;
     context.dispatch(PublishReleaseAction(project, version, branch, api: _api));
+  }
+}
+
+class _NoProject extends StatelessWidget {
+  const _NoProject();
+
+  @override
+  Widget build(BuildContext context) {
+    return EmptyDataWidget.full(
+      header: context.l10n.generator_no_project,
+      subHeader: context.l10n.generator_no_project_hint,
+      icon: Icons.folder_off_outlined,
+    );
   }
 }

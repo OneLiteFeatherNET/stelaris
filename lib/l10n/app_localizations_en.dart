@@ -2519,11 +2519,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get generator_bump_patch => 'Patch';
 
   @override
-  String generator_publish_version(String version) {
-    return 'Version $version';
-  }
-
-  @override
   String generator_publish_button(String version) {
     return 'Publish $version';
   }
@@ -2633,4 +2628,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get generator_versions_copy => 'Copy the Gradle line';
+
+  @override
+  String get generator_local_title => 'Local build';
+
+  @override
+  String get generator_publish_title => 'Next version';
+
+  @override
+  String generator_publish_latest(String version) {
+    return 'Latest release: $version';
+  }
+
+  @override
+  String get generator_publish_first =>
+      'No release yet, so this is the first one.';
+
+  @override
+  String get generator_publish_outcome_title => 'Last publish';
+
+  @override
+  String get generator_versions_title => 'Published versions';
+
+  @override
+  String get generator_versions_empty_hint =>
+      'Publish a release or snapshot on the Publish tab.';
+
+  @override
+  String get generator_no_project_hint =>
+      'The generator works on the project selected in the top bar.';
 }

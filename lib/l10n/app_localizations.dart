@@ -4504,12 +4504,6 @@ abstract class AppLocalizations {
   /// **'Patch'**
   String get generator_bump_patch;
 
-  /// No description provided for @generator_publish_version.
-  ///
-  /// In en, this message translates to:
-  /// **'Version {version}'**
-  String generator_publish_version(String version);
-
   /// No description provided for @generator_publish_button.
   ///
   /// In en, this message translates to:
@@ -4677,6 +4671,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copy the Gradle line'**
   String get generator_versions_copy;
+
+  /// No description provided for @generator_local_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Local build'**
+  String get generator_local_title;
+
+  /// No description provided for @generator_publish_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Next version'**
+  String get generator_publish_title;
+
+  /// No description provided for @generator_publish_latest.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest release: {version}'**
+  String generator_publish_latest(String version);
+
+  /// No description provided for @generator_publish_first.
+  ///
+  /// In en, this message translates to:
+  /// **'No release yet, so this is the first one.'**
+  String get generator_publish_first;
+
+  /// No description provided for @generator_publish_outcome_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Last publish'**
+  String get generator_publish_outcome_title;
+
+  /// No description provided for @generator_versions_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Published versions'**
+  String get generator_versions_title;
+
+  /// No description provided for @generator_versions_empty_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish a release or snapshot on the Publish tab.'**
+  String get generator_versions_empty_hint;
+
+  /// No description provided for @generator_no_project_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'The generator works on the project selected in the top bar.'**
+  String get generator_no_project_hint;
 }
 
 class _AppLocalizationsDelegate

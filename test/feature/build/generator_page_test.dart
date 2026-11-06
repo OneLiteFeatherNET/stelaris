@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/service/generator/demo_generator_api.dart';
 import 'package:stelaris/api/service/generator/generator_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/build/generator_page.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -78,7 +79,17 @@ void main() {
 
   Finder branchField() => find.byType(DropdownButtonFormField<String>);
 
-  testWidgets('shows the three tabs in order, without a title header', (
+  /// The channel segment labelled [label], not the chips of the versions.
+  Finder channel(String label) => find.descendant(
+    of: find.byType(SegmentedButton<ReleaseChannel>),
+    matching: find.text(label),
+  );
+
+  /// [version] as the proposed next version.
+  Finder proposal(String version) =>
+      find.descendant(of: find.byType(EditCard), matching: find.text(version));
+
+  testWidgets('shows the page header and the three tabs in order', (
     tester,
   ) async {
     await pump(tester);
@@ -89,6 +100,7 @@ void main() {
       'Publish',
       'Published versions',
     ]);
+    expect(find.text('Generator'), findsOneWidget);
     expect(find.text('Build & Download Vulpes'), findsNothing);
     expect(find.textContaining('try it before publishing'), findsOneWidget);
   });
@@ -157,6 +169,19 @@ void main() {
     expect(find.text('Retry'), findsOneWidget);
   });
 
+  testWidgets('refresh reloads the branches and the versions', (tester) async {
+    await pump(tester);
+
+    await tester.tap(find.text('Refresh'));
+    await tester.pumpAndSettle();
+
+    expect(api.calls.where((call) => call == 'branches'), hasLength(2));
+    expect(
+      api.calls.where((call) => call.startsWith('publishedVersions')),
+      hasLength(2),
+    );
+  });
+
   testWidgets('without a project the actions say so', (tester) async {
     await pump(tester, project: null);
 
@@ -218,16 +243,29 @@ void main() {
       await pump(tester);
       await openTab(tester, 'Publish');
 
-      expect(find.text('Version 0.2.13'), findsOneWidget);
+      expect(proposal('0.2.13'), findsOneWidget);
+      expect(find.text('Latest release: 0.2.12'), findsOneWidget);
 
       await tester.tap(find.text('Minor'));
       await tester.pumpAndSettle();
-      expect(find.text('Version 0.3.0'), findsOneWidget);
+      expect(proposal('0.3.0'), findsOneWidget);
 
-      await tester.tap(find.text('Snapshot'));
+      await tester.tap(channel('Snapshot'));
       await tester.pumpAndSettle();
-      expect(find.text('Version 0.3.0-SNAPSHOT'), findsOneWidget);
-      expect(find.text('Version 0.3.0'), findsNothing);
+      expect(proposal('0.3.0-SNAPSHOT'), findsOneWidget);
+      expect(proposal('0.3.0'), findsNothing);
+    });
+
+    testWidgets('the first release is 0.1.0 and says so', (tester) async {
+      api.versions = [];
+      await pump(tester);
+      await openTab(tester, 'Publish');
+
+      expect(proposal('0.1.0'), findsOneWidget);
+      expect(
+        find.text('No release yet, so this is the first one.'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('cancelling the confirmation sends nothing', (tester) async {
@@ -283,7 +321,7 @@ void main() {
       await pump(tester);
       await openTab(tester, 'Publish');
       await tester.tap(find.text('Minor'));
-      await tester.tap(find.text('Snapshot'));
+      await tester.tap(channel('Snapshot'));
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Publish 0.3.0-SNAPSHOT'));
@@ -315,8 +353,14 @@ void main() {
       await tester.tap(find.text('Publish 0.2.13').last);
       await tester.pumpAndSettle();
 
-      expect(find.text('items/Sword.java:12: boom'), findsOneWidget);
-      expect(find.text('items/Bow.java:3: bang'), findsOneWidget);
+      expect(
+        find.textContaining('items/Sword.java:12: boom', findRichText: true),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('items/Bow.java:3: bang', findRichText: true),
+        findsOneWidget,
+      );
       expect(find.text('Published 0.2.13'), findsNothing);
     });
 

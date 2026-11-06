@@ -80,17 +80,12 @@ class PublishResultView extends StatelessWidget {
         : commit;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: [
-            Icon(Icons.check_circle, color: theme.colorScheme.primary),
-            const SizedBox(width: 8),
-            Text(
-              l10n.generator_publish_success(version),
-              style: theme.textTheme.titleMedium,
-            ),
-          ],
+        GeneratorNote(
+          l10n.generator_publish_success(version),
+          icon: Icons.check_circle_outline,
+          color: theme.colorScheme.primary,
         ),
         const SizedBox(height: 12),
         _ResultRow(
@@ -120,6 +115,8 @@ class PublishResultView extends StatelessWidget {
   }
 }
 
+/// One value of the result, labelled as on an edit card, with a copy
+/// button when it is worth copying.
 class _ResultRow extends StatelessWidget {
   const _ResultRow({
     required this.label,
@@ -138,44 +135,43 @@ class _ResultRow extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final String? copy = this.copy;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          SizedBox(
-            width: 160,
-            child: Text(
-              label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ),
           Expanded(
-            child: SelectableText(
-              value,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontFamily: 'monospace',
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                SelectableText(
+                  value,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontFamily: 'monospace',
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(
-            width: 40,
-            child: copy == null
-                ? null
-                : IconButton(
-                    onPressed: () => copyToClipboard(context, copy),
-                    icon: const Icon(Icons.copy, size: 18),
-                    tooltip: tooltip,
-                  ),
-          ),
+          if (copy != null)
+            IconButton(
+              onPressed: () => copyToClipboard(context, copy),
+              icon: const Icon(Icons.copy),
+              tooltip: tooltip,
+            ),
         ],
       ),
     );
   }
 }
 
-/// A publish the service refused because the code does not compile: every
-/// compiler error it returned.
+/// A publish the service refused, most often because the code does not
+/// compile: every compiler error it returned, as source is shown elsewhere.
 class PublishDiagnosticsView extends StatelessWidget {
   const PublishDiagnosticsView({required this.failure, super.key});
 
@@ -186,74 +182,58 @@ class PublishDiagnosticsView extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colors = theme.colorScheme;
     final AppLocalizations l10n = context.l10n;
-    final TextStyle? mono = theme.textTheme.bodySmall?.copyWith(
-      fontFamily: 'monospace',
-      color: colors.onErrorContainer,
-    );
+    const TextStyle mono = TextStyle(fontFamily: 'monospace');
     final String? message = failure.message;
 
-    return Material(
-      color: colors.errorContainer,
-      borderRadius: BorderRadius.circular(AppShapes.medium),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.error_outline, color: colors.onErrorContainer),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    l10n.generator_publish_rejected,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colors.onErrorContainer,
-                      fontWeight: FontWeight.w600,
-                    ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        GeneratorNote(
+          l10n.generator_publish_rejected,
+          icon: Icons.error_outline,
+          color: colors.error,
+        ),
+        if (failure.diagnostics.isEmpty && message != null) ...[
+          const SizedBox(height: 8),
+          GeneratorText(message),
+        ],
+        if (failure.diagnostics.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Card.filled(
+            margin: EdgeInsets.zero,
+            clipBehavior: Clip.antiAlias,
+            color: colors.surfaceContainerHighest,
+            shape: AppShapes.rounded(AppShapes.small),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 320),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(12),
+                child: SelectableText.rich(
+                  TextSpan(
+                    style: mono,
+                    children: [
+                      for (final (index, diagnostic)
+                          in failure.diagnostics.indexed) ...[
+                        if (index > 0) const TextSpan(text: '\n'),
+                        if (diagnostic.location != null)
+                          TextSpan(
+                            text: '${diagnostic.location}: ',
+                            style: TextStyle(color: colors.error),
+                          ),
+                        TextSpan(text: diagnostic.message),
+                      ],
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
-            if (failure.diagnostics.isEmpty && message != null) ...[
-              const SizedBox(height: 8),
-              Text(message, style: mono),
-            ],
-            if (failure.diagnostics.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 320),
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    for (final diagnostic in failure.diagnostics)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: SelectableText(
-                          [
-                            if (diagnostic.location != null)
-                              diagnostic.location!,
-                            diagnostic.message,
-                          ].join(': '),
-                          style: mono,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-            if (failure.truncated) ...[
-              const SizedBox(height: 8),
-              Text(
-                l10n.generator_publish_truncated,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: colors.onErrorContainer,
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
+          ),
+        ],
+        if (failure.truncated) ...[
+          const SizedBox(height: 8),
+          GeneratorText(l10n.generator_publish_truncated),
+        ],
+      ],
     );
   }
 }
