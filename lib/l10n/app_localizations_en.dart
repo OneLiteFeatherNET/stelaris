@@ -2680,4 +2680,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get generator_current_none => 'Nothing published on this channel yet.';
+
+  @override
+  String get generator_channel_label => 'Channel';
+
+  @override
+  String get generator_bump_label => 'Raise';
+
+  @override
+  String get generator_info_title => 'About the generator';
+
+  @override
+  String get generator_info_intro =>
+      'The generator packages the selected project for the Vulpes Gradle plugin. Every build is first compiled against a vulpes-base branch, so code that does not compile is never handed out.';
+
+  @override
+  String get generator_info_local =>
+      'Downloads the current state of the project as a zip. Unzip it into your project root to try it with Gradle before anything is published.';
+
+  @override
+  String get generator_info_publish =>
+      'Publishes the next version to the Maven repository. A release (X.Y.Z) is final and cannot be published twice. A snapshot (X.Y.Z-SNAPSHOT) can be published again and replaces the previous one.';
+
+  @override
+  String get generator_info_versions =>
+      'Lists every release and snapshot of the project. Each one can be downloaded as a local build, or its Gradle line copied into a build script.';
+
+  @override
+  String get generator_info_demo =>
+      'Demo mode is on: nothing on this page reaches the generator. Set \"generatorDemo\": false in config.json to use the real one.';
 }

@@ -15,7 +15,7 @@ class BranchSelector extends StatelessWidget {
   });
 
   /// The widest the field gets; a branch name needs no more.
-  static const double maxWidth = 420;
+  static const double maxWidth = 360;
 
   final RequestState<List<String>> branches;
   final String? selected;

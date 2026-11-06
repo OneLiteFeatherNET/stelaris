@@ -183,6 +183,21 @@ void main() {
     );
   });
 
+  testWidgets('the info button explains the page', (tester) async {
+    await pump(tester);
+
+    await tester.tap(find.text('Info'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('About the generator'), findsOneWidget);
+    expect(find.textContaining('A release (X.Y.Z) is final'), findsOneWidget);
+    expect(find.textContaining('Demo mode is on'), findsNothing);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Close'));
+    await tester.pumpAndSettle();
+    expect(find.text('About the generator'), findsNothing);
+  });
+
   testWidgets('without a project the actions say so', (tester) async {
     await pump(tester, project: null);
 
@@ -490,6 +505,22 @@ void main() {
     );
 
     expect(find.textContaining('Demo data'), findsOneWidget);
+  });
+
+  testWidgets('the info dialog mentions the demo mode', (tester) async {
+    final store = Store<AppState>(
+      initialState: const AppState(selectedProject: _project),
+    );
+    await pumpInApp(
+      tester,
+      store,
+      GeneratorPage(api: DemoGeneratorApi(delay: Duration.zero)),
+    );
+
+    await tester.tap(find.text('Info'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Demo mode is on'), findsOneWidget);
   });
 
   testWidgets('the real generator shows no demo banner', (tester) async {

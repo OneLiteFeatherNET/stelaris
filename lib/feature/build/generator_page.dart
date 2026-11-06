@@ -9,6 +9,7 @@ import 'package:stelaris/api/state/factory/build/build_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/page_header.dart';
+import 'package:stelaris/feature/build/generator_info_dialog.dart';
 import 'package:stelaris/feature/build/download/download_helper.dart'
     as download;
 import 'package:stelaris/feature/build/parts/branch_selector.dart';
@@ -80,6 +81,15 @@ class GeneratorPage extends StatelessWidget {
             child: PageHeader(
               title: BuildNavigationEntry.generator.display,
               actions: [
+                PageHeaderAction(
+                  icon: const Icon(Icons.info_outline),
+                  label: l10n.menu_item_info,
+                  onPressed: () => showDialog<void>(
+                    context: context,
+                    builder: (_) =>
+                        GeneratorInfoDialog(demo: _api is DemoGeneratorApi),
+                  ),
+                ),
                 PageHeaderAction(
                   icon: const Icon(Icons.refresh),
                   label: l10n.command_bar_refresh_tooltip,

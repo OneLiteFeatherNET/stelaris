@@ -4755,6 +4755,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Nothing published on this channel yet.'**
   String get generator_current_none;
+
+  /// No description provided for @generator_channel_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel'**
+  String get generator_channel_label;
+
+  /// No description provided for @generator_bump_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Raise'**
+  String get generator_bump_label;
+
+  /// No description provided for @generator_info_title.
+  ///
+  /// In en, this message translates to:
+  /// **'About the generator'**
+  String get generator_info_title;
+
+  /// No description provided for @generator_info_intro.
+  ///
+  /// In en, this message translates to:
+  /// **'The generator packages the selected project for the Vulpes Gradle plugin. Every build is first compiled against a vulpes-base branch, so code that does not compile is never handed out.'**
+  String get generator_info_intro;
+
+  /// No description provided for @generator_info_local.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads the current state of the project as a zip. Unzip it into your project root to try it with Gradle before anything is published.'**
+  String get generator_info_local;
+
+  /// No description provided for @generator_info_publish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publishes the next version to the Maven repository. A release (X.Y.Z) is final and cannot be published twice. A snapshot (X.Y.Z-SNAPSHOT) can be published again and replaces the previous one.'**
+  String get generator_info_publish;
+
+  /// No description provided for @generator_info_versions.
+  ///
+  /// In en, this message translates to:
+  /// **'Lists every release and snapshot of the project. Each one can be downloaded as a local build, or its Gradle line copied into a build script.'**
+  String get generator_info_versions;
+
+  /// No description provided for @generator_info_demo.
+  ///
+  /// In en, this message translates to:
+  /// **'Demo mode is on: nothing on this page reaches the generator. Set \"generatorDemo\": false in config.json to use the real one.'**
+  String get generator_info_demo;
 }
 
 class _AppLocalizationsDelegate

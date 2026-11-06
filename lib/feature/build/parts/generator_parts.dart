@@ -84,12 +84,16 @@ class GeneratorSection extends StatelessWidget {
     required this.title,
     required this.children,
     this.trailing,
+    this.spacing = 16,
     super.key,
   });
 
   final String title;
   final List<Widget> children;
   final Widget? trailing;
+
+  /// The space between the heading and the children, and between them.
+  final double spacing;
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +102,7 @@ class GeneratorSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           EditSectionHeading(title: title, trailing: trailing),
-          for (final child in children) ...[const SizedBox(height: 16), child],
+          for (final child in children) ...[SizedBox(height: spacing), child],
         ],
       ),
     );
@@ -203,6 +207,34 @@ class GeneratorNote extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         Expanded(child: Text(text, style: theme.textTheme.bodyMedium)),
+      ],
+    );
+  }
+}
+
+/// A control with a small muted [label] above it, for controls such as a
+/// segmented button that carry no label of their own.
+class GeneratorLabeled extends StatelessWidget {
+  const GeneratorLabeled({required this.label, required this.child, super.key});
+
+  final String label;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 6),
+        child,
       ],
     );
   }
@@ -316,6 +348,7 @@ class GeneratorActionButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.busy = false,
+    this.standalone = true,
     super.key,
   });
 
@@ -324,20 +357,23 @@ class GeneratorActionButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool busy;
 
+  /// Whether the button sits on a line of its own, at its start. Off when
+  /// it shares a row with other controls.
+  final bool standalone;
+
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: FilledButton.icon(
-        onPressed: busy ? null : onPressed,
-        icon: busy
-            ? const SizedBox.square(
-                dimension: 18,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : Icon(icon),
-        label: Text(label),
-      ),
+    final Widget button = FilledButton.icon(
+      onPressed: busy ? null : onPressed,
+      icon: busy
+          ? const SizedBox.square(
+              dimension: 18,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Icon(icon),
+      label: Text(label),
     );
+    if (!standalone) return button;
+    return Align(alignment: AlignmentDirectional.centerStart, child: button);
   }
 }

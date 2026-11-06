@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/factory/build/build_vm_state.dart';
 import 'package:stelaris/api/state/generator_state.dart';
+import 'package:stelaris/feature/build/parts/branch_selector.dart';
 import 'package:stelaris/feature/build/parts/generator_parts.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -36,16 +37,29 @@ class LocalBuildTab extends StatelessWidget {
           start: [
             GeneratorSection(
               title: l10n.generator_local_title,
+              spacing: 24,
               children: [
                 GeneratorText(l10n.generator_local_description),
-                branchSelector,
-                GeneratorActionButton(
-                  icon: Icons.download,
-                  label: l10n.generator_local_download(
-                    '${project.key}-local.zip',
-                  ),
-                  busy: download.isLoading,
-                  onPressed: vm.canBuild ? onDownload : null,
+                // The branch and the download on one line while they fit.
+                Wrap(
+                  spacing: 24,
+                  runSpacing: 16,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: BranchSelector.maxWidth,
+                      child: branchSelector,
+                    ),
+                    GeneratorActionButton(
+                      icon: Icons.download,
+                      label: l10n.generator_local_download(
+                        '${project.key}-local.zip',
+                      ),
+                      busy: download.isLoading,
+                      onPressed: vm.canBuild ? onDownload : null,
+                      standalone: false,
+                    ),
+                  ],
                 ),
                 if (failure != null)
                   GeneratorError(

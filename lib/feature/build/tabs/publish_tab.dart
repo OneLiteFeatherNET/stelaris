@@ -3,6 +3,7 @@ import 'package:stelaris/api/service/generator/generator_models.dart';
 import 'package:stelaris/api/state/factory/build/build_vm_state.dart';
 import 'package:stelaris/api/state/generator_state.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
+import 'package:stelaris/feature/build/parts/branch_selector.dart';
 import 'package:stelaris/feature/build/parts/generator_parts.dart';
 import 'package:stelaris/feature/build/publish/publish_outcome.dart';
 import 'package:stelaris/feature/build/publish/version_proposal.dart';
@@ -53,51 +54,64 @@ class PublishTab extends StatelessWidget {
           start: [
             GeneratorSection(
               title: l10n.generator_publish_title,
+              spacing: 24,
               children: [
                 GeneratorText(l10n.generator_publish_description),
-                branchSelector,
+                // The choices on one line while there is room for them.
                 Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
+                  spacing: 24,
+                  runSpacing: 16,
+                  crossAxisAlignment: WrapCrossAlignment.end,
                   children: [
-                    SegmentedButton<ReleaseChannel>(
-                      showSelectedIcon: false,
-                      segments: [
-                        ButtonSegment(
-                          value: ReleaseChannel.release,
-                          label: Text(l10n.generator_channel_release),
-                        ),
-                        ButtonSegment(
-                          value: ReleaseChannel.snapshot,
-                          label: Text(l10n.generator_channel_snapshot),
-                        ),
-                      ],
-                      selected: {generator.channel},
-                      onSelectionChanged: (selected) =>
-                          onChannel(selected.first),
+                    SizedBox(
+                      width: BranchSelector.maxWidth,
+                      child: branchSelector,
                     ),
-                    SegmentedButton<BumpPart>(
-                      showSelectedIcon: false,
-                      segments: [
-                        ButtonSegment(
-                          value: BumpPart.major,
-                          label: Text(l10n.generator_bump_major),
-                        ),
-                        ButtonSegment(
-                          value: BumpPart.minor,
-                          label: Text(l10n.generator_bump_minor),
-                        ),
-                        ButtonSegment(
-                          value: BumpPart.patch,
-                          label: Text(l10n.generator_bump_patch),
-                        ),
-                      ],
-                      selected: {generator.bump},
-                      onSelectionChanged: (selected) => onBump(selected.first),
+                    GeneratorLabeled(
+                      label: l10n.generator_channel_label,
+                      child: SegmentedButton<ReleaseChannel>(
+                        showSelectedIcon: false,
+                        segments: [
+                          ButtonSegment(
+                            value: ReleaseChannel.release,
+                            label: Text(l10n.generator_channel_release),
+                          ),
+                          ButtonSegment(
+                            value: ReleaseChannel.snapshot,
+                            label: Text(l10n.generator_channel_snapshot),
+                          ),
+                        ],
+                        selected: {generator.channel},
+                        onSelectionChanged: (selected) =>
+                            onChannel(selected.first),
+                      ),
+                    ),
+                    GeneratorLabeled(
+                      label: l10n.generator_bump_label,
+                      child: SegmentedButton<BumpPart>(
+                        showSelectedIcon: false,
+                        segments: [
+                          ButtonSegment(
+                            value: BumpPart.major,
+                            label: Text(l10n.generator_bump_major),
+                          ),
+                          ButtonSegment(
+                            value: BumpPart.minor,
+                            label: Text(l10n.generator_bump_minor),
+                          ),
+                          ButtonSegment(
+                            value: BumpPart.patch,
+                            label: Text(l10n.generator_bump_patch),
+                          ),
+                        ],
+                        selected: {generator.bump},
+                        onSelectionChanged: (selected) =>
+                            onBump(selected.first),
+                      ),
                     ),
                   ],
                 ),
-                ..._proposal(context),
+                _proposal(context),
               ],
             ),
           ],
@@ -143,32 +157,31 @@ class PublishTab extends StatelessWidget {
     );
   }
 
-  List<Widget> _proposal(BuildContext context) {
+  /// The proposed version beside its publish button, or why there is none.
+  Widget _proposal(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
     final RequestState<List<PublishedVersion>> versions = vm.generator.versions;
     final GeneratorFailure? failure = versions.failure;
     if (failure != null) {
-      return [
-        GeneratorError(
-          title: l10n.generator_publish_versions_failed,
-          failure: failure,
-          onRetry: onReloadVersions,
-        ),
-      ];
+      return GeneratorError(
+        title: l10n.generator_publish_versions_failed,
+        failure: failure,
+        onRetry: onReloadVersions,
+      );
     }
     return switch (vm.proposal) {
-      null => [GeneratorLoading(l10n.generator_publish_versions_loading)],
-      UnreadableVersion(:final raw) => [
-        GeneratorNote(
-          l10n.generator_publish_unreadable(raw),
-          icon: Icons.warning_amber_rounded,
-          color: Theme.of(context).colorScheme.error,
-        ),
-      ],
-      ProposedVersion(:final version) => [
-        Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: SizedBox(
+      null => GeneratorLoading(l10n.generator_publish_versions_loading),
+      UnreadableVersion(:final raw) => GeneratorNote(
+        l10n.generator_publish_unreadable(raw),
+        icon: Icons.warning_amber_rounded,
+        color: Theme.of(context).colorScheme.error,
+      ),
+      ProposedVersion(:final version) => Wrap(
+        spacing: 24,
+        runSpacing: 16,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          SizedBox(
             width: _cardWidth,
             child: EditCard(
               icon: vm.generator.channel == ReleaseChannel.release
@@ -184,14 +197,15 @@ class PublishTab extends StatelessWidget {
               },
             ),
           ),
-        ),
-        GeneratorActionButton(
-          icon: Icons.publish,
-          label: l10n.generator_publish_button(version),
-          busy: vm.generator.publish.isLoading,
-          onPressed: vm.publishableVersion == null ? null : onPublish,
-        ),
-      ],
+          GeneratorActionButton(
+            icon: Icons.publish,
+            label: l10n.generator_publish_button(version),
+            busy: vm.generator.publish.isLoading,
+            onPressed: vm.publishableVersion == null ? null : onPublish,
+            standalone: false,
+          ),
+        ],
+      ),
     };
   }
 
