@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
@@ -222,9 +222,7 @@ class _DownloadTriggerState extends State<DownloadTrigger> {
                   final (data, filename) = await ApiService().generateApi
                       .download(value, projectId);
 
-                  final content = base64Encode(data);
-
-                  triggerBrowserDownload(content, filename);
+                  saveFile(Uint8List.fromList(data), filename);
                 },
                 label: Text(context.l10n.button_download),
               ),
