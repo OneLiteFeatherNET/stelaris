@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.10.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.9.0...v1.10.0) (2026-11-06)
+
+
+### Features
+
+* **expression:** try values in the preview instead of a separate Test tab ([#301](https://github.com/OneLiteFeatherNET/stelaris/issues/301)) ([910ab4c](https://github.com/OneLiteFeatherNET/stelaris/commit/910ab4c4f104cda894e948c396e8b7a7b4ad01cd))
+* **font:** add texture upload ([#305](https://github.com/OneLiteFeatherNET/stelaris/issues/305)) ([b7885bd](https://github.com/OneLiteFeatherNET/stelaris/commit/b7885bdbc27c6f6ac068d64a15177be173ddea1e))
+* **function:** live preview instead of the Test tab ([#303](https://github.com/OneLiteFeatherNET/stelaris/issues/303)) ([26b9c1b](https://github.com/OneLiteFeatherNET/stelaris/commit/26b9c1b469ff80a1c6f6865169ebc3af86e23132))
+* **meta:** add pack meta tab to the project dialog ([#307](https://github.com/OneLiteFeatherNET/stelaris/issues/307)) ([e3163f2](https://github.com/OneLiteFeatherNET/stelaris/commit/e3163f27330a4cd7bb5e89c67f26a5703765f683))
+* **navigation:** move settings into the rail and switch projects from the badge ([#300](https://github.com/OneLiteFeatherNET/stelaris/issues/300)) ([b3d5fc2](https://github.com/OneLiteFeatherNET/stelaris/commit/b3d5fc2082dff9515de097cbf9f3c158768d8f21))
+* **pack:** add icon upload ([#308](https://github.com/OneLiteFeatherNET/stelaris/issues/308)) ([6a058d4](https://github.com/OneLiteFeatherNET/stelaris/commit/6a058d4a1f284a555f484893f0846f6e02c6bfcf))
+* **pack:** add the pack meta client api ([#306](https://github.com/OneLiteFeatherNET/stelaris/issues/306)) ([e10ad44](https://github.com/OneLiteFeatherNET/stelaris/commit/e10ad44f9b35a3fd107be0cf60cad5bc847f0231))
+
+
+### Bug Fixes
+
+* **base:** fade deferred pages in instead of flashing the placeholder ([#298](https://github.com/OneLiteFeatherNET/stelaris/issues/298)) ([0452611](https://github.com/OneLiteFeatherNET/stelaris/commit/04526112f6d732f928a44b0179981877b9fe3328))
+* **deps:** update dependency go_router to ^18.1.3 ([#311](https://github.com/OneLiteFeatherNET/stelaris/issues/311)) ([99c3dad](https://github.com/OneLiteFeatherNET/stelaris/commit/99c3dad1c989ab1f7a37757b26774eb428b30e0a))
+* **function:** cache regexp values to avoid new references ([bb3876a](https://github.com/OneLiteFeatherNET/stelaris/commit/bb3876ae0bf6e36af612807a4dba507345994e59))
+* **navigation:** make the rail settings entry behave like a destination ([#312](https://github.com/OneLiteFeatherNET/stelaris/issues/312)) ([dfd53a6](https://github.com/OneLiteFeatherNET/stelaris/commit/dfd53a6ef0e408128d58a7adb013883c15e4b9eb))
+
+
+### Performance Improvements
+
+* **expression:** reload the catalog only for a changed signature and don't block the save on it ([#304](https://github.com/OneLiteFeatherNET/stelaris/issues/304)) ([fc6c7a1](https://github.com/OneLiteFeatherNET/stelaris/commit/fc6c7a15e32446a442a5589d3ee8b9019ab017e3))
+
 ## [1.9.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.8.2...v1.9.0) (2026-11-02)
 
 
