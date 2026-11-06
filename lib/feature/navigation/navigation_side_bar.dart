@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/navigation_vm_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
-import 'package:stelaris/feature/base/button/settings_button.dart';
+import 'package:stelaris/feature/settings/settings_dialog.dart';
 import 'package:stelaris/util/color_scheme_ext.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -56,7 +56,7 @@ class NavigationSideBar extends StatelessWidget {
             // Settings are app-wide rather than a page, so they sit apart
             // from the destinations at the bottom of the rail.
             trailingAtBottom: true,
-            trailing: const _RailSettingsButton(),
+            trailing: const _RailSettingsEntry(),
           ),
         );
       },
@@ -203,21 +203,30 @@ class NavigationSideBar extends StatelessWidget {
   }
 }
 
-/// The settings button at the bottom of the rail: an icon button in the
-/// shape of the rail's indicator pill, in the 80 wide icon column, with a
-/// label that fades in with the other labels. The rail centers its trailing
-/// widget, so the button row takes the width of a destination row to keep
-/// the icon under the destination icons while the rail extends and collapses.
-class _RailSettingsButton extends StatelessWidget {
-  const _RailSettingsButton();
+/// The settings entry at the bottom of the rail. It is built like a rail
+/// destination with the default Material 3 rail style, so it behaves like
+/// one: the whole row is the tap target, and the hover and splash ink stay
+/// on the indicator pill around the icon. It is never selected, because the
+/// settings open as a dialog rather than a page.
+///
+/// The rail centers its trailing widget, so the row takes the width of a
+/// destination row to keep the icon under the destination icons while the
+/// rail extends and collapses.
+class _RailSettingsEntry extends StatelessWidget {
+  const _RailSettingsEntry();
 
   static const double _iconColumnWidth = 80;
+
+  /// The rail's spacing above and below a destination icon.
+  static const double _verticalSpacing = 6;
 
   /// The size of the rail's indicator pill behind a destination icon.
   static const Size _pillSize = Size(56, 32);
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     final animation = NavigationRail.extendedAnimation(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -227,37 +236,102 @@ class _RailSettingsButton extends StatelessWidget {
           width: lerpDouble(_iconColumnWidth, maxXOffset, animation.value),
           child: child,
         ),
-        child: Row(
-          children: [
-            SizedBox(
-              width: _iconColumnWidth,
-              child: Center(
-                child: SettingsButton(
-                  style: IconButton.styleFrom(
-                    fixedSize: _pillSize,
-                    minimumSize: _pillSize,
-                    padding: EdgeInsets.zero,
-                    shape: const StadiumBorder(),
-                  ),
+        child: Semantics(
+          button: true,
+          child: Material(
+            type: MaterialType.transparency,
+            child: _PillInkResponse(
+              pillCenterX: _iconColumnWidth / 2,
+              pillTop: _verticalSpacing,
+              pillSize: _pillSize,
+              textDirection: Directionality.of(context),
+              hoverColor: colors.primary.withValues(alpha: 0.04),
+              splashColor: colors.primary.withValues(alpha: 0.12),
+              onTap: () => showDialog(
+                context: context,
+                builder: (context) => const SettingsDialog(),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: _verticalSpacing),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: _iconColumnWidth,
+                      height: _pillSize.height,
+                      child: Icon(
+                        Icons.settings_outlined,
+                        size: 24,
+                        color: colors.onSurfaceVariant,
+                      ),
+                    ),
+                    Flexible(
+                      child: FadeTransition(
+                        alwaysIncludeSemantics: true,
+                        opacity: animation.drive(
+                          CurveTween(curve: const Interval(0.5, 1)),
+                        ),
+                        child: Text(
+                          context.l10n.settings_title,
+                          style: theme.textTheme.labelMedium
+                              ?.copyWith(color: colors.onSurface)
+                              .merge(navigationEntryTextStyle),
+                          softWrap: false,
+                          overflow: TextOverflow.fade,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            Flexible(
-              child: FadeTransition(
-                opacity: animation.drive(
-                  CurveTween(curve: const Interval(0.5, 1)),
-                ),
-                child: Text(
-                  context.l10n.settings_title,
-                  style: navigationEntryTextStyle,
-                  softWrap: false,
-                  overflow: TextOverflow.fade,
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
+  }
+}
+
+/// An ink response over a whole rail row whose hover and splash ink is
+/// confined to the indicator pill around the icon, as on a rail destination.
+class _PillInkResponse extends InkResponse {
+  const _PillInkResponse({
+    required this.pillCenterX,
+    required this.pillTop,
+    required this.pillSize,
+    required this.textDirection,
+    super.child,
+    super.onTap,
+    super.hoverColor,
+    super.splashColor,
+  }) : super(
+         containedInkWell: true,
+         highlightShape: BoxShape.rectangle,
+         customBorder: const StadiumBorder(),
+       );
+
+  /// The horizontal center of the pill, from the start of the row.
+  final double pillCenterX;
+
+  /// The top of the pill, from the top of the row.
+  final double pillTop;
+
+  final Size pillSize;
+
+  /// Mirrors the pill's position in right-to-left layouts.
+  final TextDirection textDirection;
+
+  @override
+  RectCallback? getRectCallback(RenderBox referenceBox) {
+    return () {
+      final centerX = textDirection == TextDirection.rtl
+          ? referenceBox.size.width - pillCenterX
+          : pillCenterX;
+      return Rect.fromLTWH(
+        centerX - pillSize.width / 2,
+        pillTop,
+        pillSize.width,
+        pillSize.height,
+      );
+    };
   }
 }
