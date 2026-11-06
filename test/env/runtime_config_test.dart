@@ -136,6 +136,21 @@ void main() {
       expect(RuntimeConfig.current.backendUrl, RuntimeConfig.compiledIn.backendUrl);
     });
 
+    test('simulates the generator unless switched off', () async {
+      await RuntimeConfig.load(client: _dioServing(jsonEncode({})));
+      expect(RuntimeConfig.current.generatorDemo, isTrue);
+
+      await RuntimeConfig.load(
+        client: _dioServing(jsonEncode({'generatorDemo': 'no'})),
+      );
+      expect(RuntimeConfig.current.generatorDemo, isTrue);
+
+      await RuntimeConfig.load(
+        client: _dioServing(jsonEncode({'generatorDemo': false})),
+      );
+      expect(RuntimeConfig.current.generatorDemo, isFalse);
+    });
+
     test('fetches the document without any credential', () async {
       // The configuration document is served by the app's own web server, not
       // the backend, and it is read before there is a session at all. A token
