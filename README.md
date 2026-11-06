@@ -43,6 +43,10 @@ the app after changing it. Both fields are optional. A missing or empty one
 keeps its default. A deployment provides the same file, see
 [Running it in a container](#running-it-in-a-container).
 
+Until the generator has its release endpoints, the generator page shows
+simulated data and says so in a banner. Add `"generatorDemo": false` to the file
+to talk to the real generator at `generatorUrl` instead.
+
 ### Trying the sign-in locally
 
 Without an `auth` block in `config.json` the app runs without sign-in. To try

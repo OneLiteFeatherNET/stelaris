@@ -23,7 +23,6 @@ RegExp decimalPattern = RegExp(r'^-?\d*\.?\d*$');
 RegExp stringPattern = RegExp('[a-zA-Z]\\w*');
 RegExp dotPattern = RegExp('\\.');
 RegExp minecraftPattern = RegExp('minecraft:');
-RegExp gitCommitPattern = RegExp('[0-9a-fA-F]{10}');
 RegExp versionPattern = RegExp(r'^[0-9.]*$');
 RegExp adventureNamespacePattern = RegExp(r'^(?!.*\.\.)[a-z0-9_.-]+$');
 RegExp adventureKeyPattern = RegExp(r'^(?!.*\.\.)(?:[a-z0-9_.-]+:)?[a-z0-9/._-]+$');

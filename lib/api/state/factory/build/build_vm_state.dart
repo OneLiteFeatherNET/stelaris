@@ -1,10 +1,10 @@
-import 'dart:ui';
-
 import 'package:async_redux/async_redux.dart';
-import 'package:stelaris_models/stelaris_models.dart';
-import 'package:stelaris/api/state/actions/build/build_actions.dart';
+import 'package:stelaris/api/service/generator/generator_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/generator_state.dart';
 import 'package:stelaris/feature/build/generator_page.dart';
+import 'package:stelaris/feature/build/publish/version_proposal.dart';
+import 'package:stelaris_models/stelaris_models.dart';
 
 class BuildStateFactory
     extends VmFactory<AppState, GeneratorPage, BuildViewModel> {
@@ -12,39 +12,51 @@ class BuildStateFactory
 
   @override
   BuildViewModel fromStore() => BuildViewModel(
-    releaseModel: state.releaseModel,
-    branches: state.branches,
-    isLoadingRelease: state.isLoadingRelease,
-    isLoadingBranches: state.isLoadingBranches,
-    projectId: state.selectedProject?.id,
-    onRefreshBranches: () => dispatch(BranchFetchAction()),
+    project: state.selectedProject,
+    generator: state.generator,
   );
 }
 
 class BuildViewModel extends Vm {
-  BuildViewModel({
-    required this.releaseModel,
-    required this.branches,
-    required this.isLoadingRelease,
-    required this.isLoadingBranches,
-    required this.projectId,
-    required this.onRefreshBranches,
-  }) : super(
-         equals: [
-           releaseModel,
-           branches,
-           isLoadingRelease,
-           isLoadingBranches,
-           projectId,
-         ],
-       );
+  BuildViewModel({required this.project, required this.generator})
+    : super(equals: [project, generator]);
 
-  final ReleaseModel? releaseModel;
-  final List<String>? branches;
-  final bool isLoadingRelease;
-  final bool isLoadingBranches;
-  final String? projectId;
-  final VoidCallback onRefreshBranches;
+  final Project? project;
+  final GeneratorState generator;
 
-  String get version => releaseModel == null ? '0.0.1' : releaseModel!.version;
+  /// The selected project, when the generator can address it.
+  Project? get usableProject {
+    final Project? project = this.project;
+    final String? id = project?.id;
+    return id == null || id.isEmpty ? null : project;
+  }
+
+  /// The branch to build against, when the branch list offers one.
+  String? get baseBranch =>
+      generator.branches.isDone ? generator.selectedBranch : null;
+
+  /// The project and branch "Test locally" and "Publish" need.
+  bool get canBuild => usableProject != null && baseBranch != null;
+
+  /// The next version, once the published versions are known.
+  VersionProposal? get proposal {
+    final List<PublishedVersion>? versions = generator.versions.value;
+    if (!generator.versions.isDone || versions == null) return null;
+    return proposeVersion(
+      channel: generator.channel,
+      bump: generator.bump,
+      published: versions.map((it) => it.version),
+    );
+  }
+
+  /// The version publish sends, when one can be sent now.
+  String? get publishableVersion {
+    final VersionProposal? proposal = this.proposal;
+    if (!canBuild || generator.publish.isLoading) return null;
+    return proposal is ProposedVersion ? proposal.version : null;
+  }
+
+  /// Whether [version] is already published, so publishing replaces it.
+  bool isPublished(String version) =>
+      generator.versions.value?.any((it) => it.version == version) ?? false;
 }

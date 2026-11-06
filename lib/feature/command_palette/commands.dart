@@ -38,7 +38,6 @@ List<StelarisCommand> pocCommands() => [
   _openBuild,
   _reloadList,
   _reloadBranches,
-  _reloadRelease,
   _deleteThis(itemDelete, (l10n) => l10n.command_delete_this_item),
   _deleteThis(fontDelete, (l10n) => l10n.command_delete_this_font),
   _deleteThis(soundDelete, (l10n) => l10n.command_delete_this_sound),
@@ -248,9 +247,11 @@ final StelarisCommand _reloadList = StelarisCommand(
   },
 );
 
-/// `BranchFetchAction` swallows its errors and leaves `branches` null instead.
+/// `LoadBranchesAction` keeps its errors in the state instead of throwing.
 BackendOutcome branchReloadOutcome(AppState before, AppState after) =>
-    after.branches == null ? BackendOutcome.failure : BackendOutcome.success;
+    after.generator.branches.isFailed
+    ? BackendOutcome.failure
+    : BackendOutcome.success;
 
 final StelarisCommand _reloadBranches = StelarisCommand(
   id: 'backend.reload-branches',
@@ -262,7 +263,7 @@ final StelarisCommand _reloadBranches = StelarisCommand(
     final AppLocalizations l10n = context.l10n;
     return runBackendCommand(
       context,
-      BranchFetchAction(),
+      LoadBranchesAction(),
       success: l10n.command_reload_branches_success,
       failure: l10n.command_reload_branches_failure,
       outcome: branchReloadOutcome,
@@ -270,30 +271,3 @@ final StelarisCommand _reloadBranches = StelarisCommand(
   },
 );
 
-/// `ReleaseFetchAction` swallows its errors and leaves the state untouched,
-/// which a successful fetch of unchanged data also does. The two cannot be
-/// told apart, so an unchanged model reads as neutral rather than as a success.
-BackendOutcome releaseReloadOutcome(AppState before, AppState after) =>
-    before.releaseModel == after.releaseModel
-    ? BackendOutcome.neutral
-    : BackendOutcome.success;
-
-final StelarisCommand _reloadRelease = StelarisCommand(
-  id: 'backend.reload-release',
-  title: (l10n) => l10n.command_reload_release,
-  keywords: (l10n) => _split(l10n.command_reload_release_keywords),
-  group: CommandGroup.backend,
-  icon: Icons.new_releases_outlined,
-  run: (context) {
-    final AppLocalizations l10n = context.l10n;
-    return runBackendCommand(
-      context,
-      ReleaseFetchAction(),
-      success: l10n.command_reload_release_success,
-      // Never shown: the action cannot fail visibly, see releaseReloadOutcome.
-      failure: l10n.command_reload_release_unchanged,
-      neutral: l10n.command_reload_release_unchanged,
-      outcome: releaseReloadOutcome,
-    );
-  },
-);

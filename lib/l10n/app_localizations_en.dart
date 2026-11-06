@@ -25,9 +25,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get button_download => 'Download';
 
   @override
-  String get button_generate => 'Generate';
-
-  @override
   String get button_back => 'Back';
 
   @override
@@ -354,9 +351,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get input_validation_material =>
       'The material starts not with minecraft:';
-
-  @override
-  String get error_generation_submit => 'Generation submitted to backend';
 
   @override
   String get error_card_empty => 'The value can\'t be empty';
@@ -1194,18 +1188,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command_reload_branches_failure => 'Could not reload the branches';
 
   @override
-  String get command_reload_release => 'Reload release information';
-
-  @override
-  String get command_reload_release_keywords => 'refresh fetch build version';
-
-  @override
-  String get command_reload_release_success => 'Release information reloaded';
-
-  @override
-  String get command_reload_release_unchanged => 'No new release information';
-
-  @override
   String get command_palette_group_entities => 'Entities';
 
   @override
@@ -1627,10 +1609,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enter exactly 4 hex digits (e.g. E000)';
 
   @override
-  String get validation_commit_length =>
-      'The commit must contain 10 characters';
-
-  @override
   String get project_description_hint => 'Brief description of the project';
 
   @override
@@ -1642,85 +1620,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get project_labor_badge => 'Labor';
-
-  @override
-  String get build_service_unavailable => 'Service unavailable';
-
-  @override
-  String build_release_version(String version) {
-    return 'Build: $version';
-  }
-
-  @override
-  String build_release_date(String date) {
-    return 'Release: $date';
-  }
-
-  @override
-  String get build_release_status => 'Status: ';
-
-  @override
-  String get build_release_prerelease => 'Pre-Release';
-
-  @override
-  String get build_release_stable => 'Stable';
-
-  @override
-  String get build_no_commit_info => 'No commit info';
-
-  @override
-  String get build_commit_label => 'Commit: ';
-
-  @override
-  String get build_fetching_release => 'Fetching release info...';
-
-  @override
-  String get build_current_version => 'Current version';
-
-  @override
-  String get build_new_version => 'New Version';
-
-  @override
-  String get build_version_part_prompt =>
-      'Select the part of the version to update:';
-
-  @override
-  String get build_started => 'Build started successfully';
-
-  @override
-  String build_failed(String error) {
-    return 'Build failed: $error';
-  }
-
-  @override
-  String get build_tab_build => 'Build';
-
-  @override
-  String get build_dialog_title => 'Build & Download Vulpes';
-
-  @override
-  String get download_commit_label => 'Git commit';
-
-  @override
-  String get download_commit_tooltip =>
-      'Enter a valid Git commit (Only the first 10 characters)';
-
-  @override
-  String get download_fetching_branches => 'Fetching branches...';
-
-  @override
-  String get download_no_project =>
-      'No project selected! Please select a project first';
-
-  @override
-  String get download_no_branches =>
-      'No branches found! Please create some in the repository';
-
-  @override
-  String get download_refresh_branches => 'Refresh branches';
-
-  @override
-  String get download_search_by_commit => 'Search by Commit';
 
   @override
   String get sound_key => 'Key';
@@ -2544,4 +2443,194 @@ class AppLocalizationsEn extends AppLocalizations {
   String expression_preview_missing_values(String names) {
     return 'Give a test value to $names to see the result.';
   }
+
+  @override
+  String get generator_demo_banner =>
+      'Demo data: the releases, publishes and downloads on this page are simulated, not real.';
+
+  @override
+  String get generator_branch_label => 'vulpes-base branch';
+
+  @override
+  String get generator_branches_loading => 'Loading the vulpes-base branches…';
+
+  @override
+  String get generator_branches_failed =>
+      'The vulpes-base branches could not be loaded.';
+
+  @override
+  String get generator_branches_empty => 'No vulpes-base branch is available.';
+
+  @override
+  String get generator_retry => 'Retry';
+
+  @override
+  String get generator_tab_local => 'Test locally';
+
+  @override
+  String get generator_tab_publish => 'Publish';
+
+  @override
+  String get generator_tab_versions => 'Published versions';
+
+  @override
+  String get generator_no_project => 'Select a project to use the generator.';
+
+  @override
+  String get generator_local_description =>
+      'Download the generated code of this project on the selected vulpes-base branch and try it before publishing.';
+
+  @override
+  String generator_local_instructions(String project) {
+    return 'Unzip the file into the project root. It creates vulpes/$project/, and the Gradle plugin then uses it in place of the published version.';
+  }
+
+  @override
+  String generator_local_download(String filename) {
+    return 'Download $filename';
+  }
+
+  @override
+  String generator_local_saved(String filename) {
+    return 'Saved $filename.';
+  }
+
+  @override
+  String get generator_download_failed =>
+      'The local build could not be downloaded.';
+
+  @override
+  String get generator_publish_description =>
+      'Publish the generated code as a new version, compiled against the selected vulpes-base branch.';
+
+  @override
+  String get generator_channel_release => 'Release';
+
+  @override
+  String get generator_channel_snapshot => 'Snapshot';
+
+  @override
+  String get generator_bump_major => 'Major';
+
+  @override
+  String get generator_bump_minor => 'Minor';
+
+  @override
+  String get generator_bump_patch => 'Patch';
+
+  @override
+  String generator_publish_version(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String generator_publish_button(String version) {
+    return 'Publish $version';
+  }
+
+  @override
+  String get generator_publish_versions_loading =>
+      'Loading the published versions to propose the next one…';
+
+  @override
+  String get generator_publish_versions_failed =>
+      'The next version is proposed from the published versions, which could not be loaded.';
+
+  @override
+  String generator_publish_unreadable(String version) {
+    return 'The published version \"$version\" cannot be read, so no next version can be proposed. Publishing is disabled.';
+  }
+
+  @override
+  String generator_confirm_title(String version) {
+    return 'Publish $version?';
+  }
+
+  @override
+  String generator_confirm_body(String version, String channel, String branch) {
+    return 'This publishes $version as a $channel, compiled against the vulpes-base branch $branch.';
+  }
+
+  @override
+  String generator_confirm_replace(String version) {
+    return '$version is already published. Publishing replaces the existing $version.';
+  }
+
+  @override
+  String generator_publish_success(String version) {
+    return 'Published $version';
+  }
+
+  @override
+  String get generator_result_coordinates => 'Coordinates';
+
+  @override
+  String get generator_result_revision => 'Revision';
+
+  @override
+  String get generator_result_base => 'vulpes-base commit';
+
+  @override
+  String get generator_result_gradle => 'Gradle dependency';
+
+  @override
+  String get generator_copy => 'Copy';
+
+  @override
+  String get generator_copy_commit => 'Copy the full commit';
+
+  @override
+  String get generator_copied => 'Copied to the clipboard.';
+
+  @override
+  String generator_publish_conflict(String version) {
+    return '$version is already published. The published versions have been reloaded, so the proposal moves on to the next free version.';
+  }
+
+  @override
+  String get generator_publish_rejected =>
+      'The generated code does not compile against the selected vulpes-base branch. Nothing was published.';
+
+  @override
+  String get generator_publish_truncated =>
+      'Only the first 100 errors are shown.';
+
+  @override
+  String get generator_publish_failed => 'The version could not be published.';
+
+  @override
+  String generator_error_status(String status) {
+    return 'Status $status';
+  }
+
+  @override
+  String get generator_error_network => 'The generator could not be reached.';
+
+  @override
+  String get generator_error_unavailable =>
+      'The generator could not reach a service it needs: the backend, vulpes-base or the Maven repository.';
+
+  @override
+  String get generator_versions_description =>
+      'The releases and snapshots this project has published, newest first.';
+
+  @override
+  String get generator_versions_empty =>
+      'This project has not published a version yet.';
+
+  @override
+  String get generator_versions_unavailable =>
+      'The Maven repository cannot be read right now.';
+
+  @override
+  String get generator_versions_failed =>
+      'The published versions could not be loaded.';
+
+  @override
+  String generator_versions_download(String version) {
+    return 'Download $version as a local build';
+  }
+
+  @override
+  String get generator_versions_copy => 'Copy the Gradle line';
 }
