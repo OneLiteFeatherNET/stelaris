@@ -3,6 +3,7 @@ import 'package:stelaris/api/base_api.dart';
 import 'package:stelaris/api/service/client/asset_client_api.dart';
 import 'package:stelaris/api/service/client/expression_client_api.dart';
 import 'package:stelaris/api/service/client/expression_function_client_api.dart';
+import 'package:stelaris/api/service/client/generator_client_api.dart';
 import 'package:stelaris/api/service/client/pack_meta_client_api.dart';
 import 'package:stelaris/api/service/client/project_client_api.dart';
 import 'package:stelaris/api/service/client/sound_client_api.dart';
@@ -10,8 +11,8 @@ import 'package:stelaris/api/client_api.dart';
 import 'package:stelaris/auth/auth_sessions.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/service/font_api.dart';
-import 'package:stelaris/api/service/generate_api.dart';
 import 'package:stelaris/api/service/generator/demo_generator_api.dart';
+import 'package:stelaris/api/service/generator/generator_api.dart';
 import 'package:stelaris/api/service/item_api.dart';
 import 'package:stelaris/env/runtime_config.dart';
 
@@ -30,7 +31,7 @@ class ApiService {
   /// The generator, or its simulation when the deployment asks for one.
   late final GeneratorApi generatorApi = RuntimeConfig.current.generatorDemo
       ? DemoGeneratorApi()
-      : GenerateApi(_generatorClient);
+      : GeneratorClientApi(apiClient: _generatorClient);
 
   late final ItemAPI itemApi = ItemAPI(apiClient: _apiClient);
 
