@@ -2514,6 +2514,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get generator_bump_patch => 'Patch';
 
   @override
+  String get generator_bump_custom => 'Custom';
+
+  @override
+  String get generator_custom_label => 'Version';
+
+  @override
+  String get generator_custom_hint => 'X.Y.Z';
+
+  @override
+  String get generator_custom_malformed =>
+      'Enter the version as X.Y.Z, for example 1.2.3.';
+
+  @override
+  String generator_custom_published(String version) {
+    return '$version is already published. A release cannot be published twice.';
+  }
+
+  @override
+  String get generator_publish_custom_button => 'Publish';
+
+  @override
   String generator_publish_button(String version) {
     return 'Publish $version';
   }

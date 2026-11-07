@@ -19,6 +19,23 @@ const Project _project = Project(
   key: 'eldoria',
 );
 
+/// The publish button labelled [label], not the publish tab.
+FilledButton publishButton(WidgetTester tester, String label) =>
+    tester.widget<FilledButton>(
+      find.ancestor(of: find.text(label), matching: find.byType(FilledButton)),
+    );
+
+/// The text typed into the custom version field.
+String fieldText(WidgetTester tester) => tester
+    .widget<EditableText>(
+      find.descendant(
+        of: find.byType(TextFormField),
+        matching: find.byType(EditableText),
+      ),
+    )
+    .controller
+    .text;
+
 void main() {
   late FakeGeneratorApi api;
   late List<String> saved;
@@ -431,6 +448,133 @@ void main() {
       expect(find.textContaining('"1.0" cannot be read'), findsOneWidget);
       expect(find.textContaining('Publish 0.'), findsNothing);
       expect(tester.takeException(), isNull);
+    });
+    group('custom version', () {
+      Finder customField() => find.byType(TextFormField);
+
+      testWidgets('is prefilled with the proposal, without -SNAPSHOT', (
+        tester,
+      ) async {
+        await pump(tester);
+        await openTab(tester, 'Publish');
+        await tester.tap(channel('Snapshot'));
+        await tester.tap(find.text('Minor'));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Custom'));
+        await tester.pumpAndSettle();
+
+        expect(fieldText(tester), '0.3.0');
+      });
+
+      testWidgets('a custom release is published as typed', (tester) async {
+        await pump(tester);
+        await openTab(tester, 'Publish');
+        await tester.tap(find.text('Custom'));
+        await tester.pumpAndSettle();
+
+        await tester.enterText(customField(), '0.5.0');
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Publish 0.5.0'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Publish 0.5.0').last);
+        await tester.pumpAndSettle();
+
+        expect(api.calls.where((call) => call.startsWith('publish ')), [
+          'publish p1 0.5.0 develop',
+        ]);
+      });
+
+      testWidgets('the snapshot channel shows and appends -SNAPSHOT', (
+        tester,
+      ) async {
+        await pump(tester);
+        await openTab(tester, 'Publish');
+        await tester.tap(channel('Snapshot'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Custom'));
+        await tester.pumpAndSettle();
+
+        await tester.enterText(customField(), '0.5.0');
+        await tester.pumpAndSettle();
+
+        expect(find.text('-SNAPSHOT'), findsOneWidget);
+        expect(find.text('Publish 0.5.0-SNAPSHOT'), findsOneWidget);
+      });
+
+      testWidgets('input that is not X.Y.Z shows an error and disables it', (
+        tester,
+      ) async {
+        await pump(tester);
+        await openTab(tester, 'Publish');
+        await tester.tap(find.text('Custom'));
+        await tester.pumpAndSettle();
+
+        await tester.enterText(customField(), '1.2');
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text('Enter the version as X.Y.Z, for example 1.2.3.'),
+          findsOneWidget,
+        );
+        expect(publishButton(tester, 'Publish').onPressed, isNull);
+      });
+
+      testWidgets(
+        'an already published release shows an error and disables it',
+        (tester) async {
+          await pump(tester);
+          await openTab(tester, 'Publish');
+          await tester.tap(find.text('Custom'));
+          await tester.pumpAndSettle();
+
+          await tester.enterText(customField(), '0.2.12');
+          await tester.pumpAndSettle();
+
+          expect(
+            find.text(
+              '0.2.12 is already published. A release cannot be published twice.',
+            ),
+            findsOneWidget,
+          );
+          expect(publishButton(tester, 'Publish').onPressed, isNull);
+        },
+      );
+
+      testWidgets('an already published custom snapshot stays publishable', (
+        tester,
+      ) async {
+        await pump(tester);
+        await openTab(tester, 'Publish');
+        await tester.tap(channel('Snapshot'));
+        await tester.tap(find.text('Custom'));
+        await tester.pumpAndSettle();
+
+        await tester.enterText(customField(), '0.3.0');
+        await tester.pumpAndSettle();
+
+        expect(
+          publishButton(tester, 'Publish 0.3.0-SNAPSHOT').onPressed,
+          isNotNull,
+        );
+        expect(find.textContaining('already published'), findsNothing);
+      });
+
+      testWidgets('an already published proposed snapshot stays publishable', (
+        tester,
+      ) async {
+        await pump(tester);
+        await openTab(tester, 'Publish');
+        await tester.tap(channel('Snapshot'));
+        await tester.tap(find.text('Minor'));
+        await tester.pumpAndSettle();
+
+        expect(proposal('0.3.0-SNAPSHOT'), findsOneWidget);
+        expect(
+          publishButton(tester, 'Publish 0.3.0-SNAPSHOT').onPressed,
+          isNotNull,
+        );
+      });
     });
   });
 

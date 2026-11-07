@@ -19,6 +19,7 @@ class PublishTab extends StatelessWidget {
     required this.branchSelector,
     required this.onChannel,
     required this.onBump,
+    required this.onCustomVersion,
     required this.onPublish,
     required this.onReloadVersions,
     required this.onDownloadVersion,
@@ -34,6 +35,9 @@ class PublishTab extends StatelessWidget {
   final Widget branchSelector;
   final ValueChanged<ReleaseChannel> onChannel;
   final ValueChanged<BumpPart> onBump;
+
+  /// Stores the version typed under Custom.
+  final ValueChanged<String> onCustomVersion;
 
   /// Confirms and publishes the proposed version.
   final VoidCallback onPublish;
@@ -103,6 +107,10 @@ class PublishTab extends StatelessWidget {
                             value: BumpPart.patch,
                             label: Text(l10n.generator_bump_patch),
                           ),
+                          ButtonSegment(
+                            value: BumpPart.custom,
+                            label: Text(l10n.generator_bump_custom),
+                          ),
                         ],
                         selected: {generator.bump},
                         onSelectionChanged: (selected) =>
@@ -169,6 +177,7 @@ class PublishTab extends StatelessWidget {
         onRetry: onReloadVersions,
       );
     }
+    if (vm.generator.bump == BumpPart.custom) return _custom(context);
     return switch (vm.proposal) {
       null => GeneratorLoading(l10n.generator_publish_versions_loading),
       UnreadableVersion(:final raw) => GeneratorNote(
@@ -207,6 +216,53 @@ class PublishTab extends StatelessWidget {
         ],
       ),
     };
+  }
+
+  /// The typed version beside its publish button. A snapshot is published
+  /// as `X.Y.Z-SNAPSHOT`, so the field shows the suffix it adds.
+  Widget _custom(BuildContext context) {
+    final AppLocalizations l10n = context.l10n;
+    final GeneratorState generator = vm.generator;
+    final String? version = vm.customPublishVersion;
+    final String raw = generator.customVersion ?? '';
+    return Wrap(
+      spacing: 24,
+      runSpacing: 16,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        SizedBox(
+          width: _cardWidth,
+          child: TextFormField(
+            initialValue: generator.customVersion,
+            decoration: InputDecoration(
+              labelText: l10n.generator_custom_label,
+              hintText: l10n.generator_custom_hint,
+              errorMaxLines: 2,
+              suffixText: generator.channel == ReleaseChannel.snapshot
+                  ? '-SNAPSHOT'
+                  : null,
+              errorText: switch (vm.customError) {
+                CustomVersionError.malformed => l10n.generator_custom_malformed,
+                CustomVersionError.published => l10n.generator_custom_published(
+                  raw,
+                ),
+                null => null,
+              },
+            ),
+            onChanged: onCustomVersion,
+          ),
+        ),
+        GeneratorActionButton(
+          icon: Icons.publish,
+          label: version == null
+              ? l10n.generator_publish_custom_button
+              : l10n.generator_publish_button(version),
+          busy: generator.publish.isLoading,
+          onPressed: vm.publishableVersion == null ? null : onPublish,
+          standalone: false,
+        ),
+      ],
+    );
   }
 
   Widget? _outcome(BuildContext context) {

@@ -6,6 +6,7 @@ import 'package:stelaris/api/service/generator/generator_models.dart';
 import 'package:stelaris/api/state/actions/build/build_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/generator_state.dart';
+import 'package:stelaris/feature/build/publish/version_proposal.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_generator_api.dart';
@@ -249,6 +250,75 @@ void main() {
       expect(api.calls, ['publish p1 1.5.0 develop']);
       expect(store.state.generator.publish.failure?.diagnostics, hasLength(1));
     });
+  });
+
+  group('SelectBumpPartAction', () {
+    Store<AppState> storeWith({
+      required ReleaseChannel channel,
+      required List<String> versions,
+    }) => Store<AppState>(
+      initialState: AppState(
+        generator: GeneratorState(
+          projectId: 'p1',
+          channel: channel,
+          versions: RequestState.done([
+            for (final version in versions) publishedVersion(version),
+          ]),
+        ),
+      ),
+    );
+
+    test('custom is prefilled with the proposal, without -SNAPSHOT', () {
+      final store = storeWith(
+        channel: ReleaseChannel.snapshot,
+        versions: ['0.2.12'],
+      );
+
+      store.dispatchSync(SelectBumpPartAction(BumpPart.custom));
+
+      expect(store.state.generator.bump, BumpPart.custom);
+      expect(store.state.generator.customVersion, '0.2.13');
+    });
+
+    test('custom on the release channel is prefilled the same way', () {
+      final store = storeWith(
+        channel: ReleaseChannel.release,
+        versions: ['1.4.2'],
+      );
+
+      store.dispatchSync(SelectBumpPartAction(BumpPart.custom));
+
+      expect(store.state.generator.customVersion, '1.4.3');
+    });
+
+    test('custom without a readable proposal is prefilled empty', () {
+      final store = storeWith(
+        channel: ReleaseChannel.release,
+        versions: ['1.0'],
+      );
+
+      store.dispatchSync(SelectBumpPartAction(BumpPart.custom));
+
+      expect(store.state.generator.customVersion, '');
+    });
+
+    test('a bump other than custom keeps the typed version', () {
+      final store = storeWith(channel: ReleaseChannel.release, versions: []);
+      store.dispatchSync(SetCustomVersionAction('9.9.9'));
+
+      store.dispatchSync(SelectBumpPartAction(BumpPart.minor));
+
+      expect(store.state.generator.bump, BumpPart.minor);
+      expect(store.state.generator.customVersion, '9.9.9');
+    });
+  });
+
+  test('SetCustomVersionAction stores the typed text', () {
+    final store = Store<AppState>(initialState: const AppState());
+
+    store.dispatchSync(SetCustomVersionAction('2.0.0'));
+
+    expect(store.state.generator.customVersion, '2.0.0');
   });
 
   test('SyncGeneratorProjectAction clears the results of another project', () {

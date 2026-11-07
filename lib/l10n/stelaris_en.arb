@@ -1342,6 +1342,17 @@
   "generator_bump_major": "Major",
   "generator_bump_minor": "Minor",
   "generator_bump_patch": "Patch",
+  "generator_bump_custom": "Custom",
+  "generator_custom_label": "Version",
+  "generator_custom_hint": "X.Y.Z",
+  "generator_custom_malformed": "Enter the version as X.Y.Z, for example 1.2.3.",
+  "generator_custom_published": "{version} is already published. A release cannot be published twice.",
+  "@generator_custom_published": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "generator_publish_custom_button": "Publish",
   "generator_publish_button": "Publish {version}",
   "@generator_publish_button": {
     "placeholders": {

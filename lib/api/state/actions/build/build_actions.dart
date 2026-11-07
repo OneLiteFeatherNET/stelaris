@@ -128,8 +128,43 @@ class SelectBumpPartAction extends _GeneratorAction {
 
   final BumpPart bump;
 
+  /// Choosing Custom starts from the version the proposal had been, without
+  /// `-SNAPSHOT`, so the field begins where the publish was heading.
   @override
-  AppState reduce() => withGenerator(generator.copyWith(bump: bump));
+  AppState reduce() {
+    final bool starting = bump == BumpPart.custom && generator.bump != bump;
+    return withGenerator(
+      generator.copyWith(
+        bump: bump,
+        customVersion: starting ? _proposedRelease() : null,
+      ),
+    );
+  }
+
+  String _proposedRelease() {
+    final List<PublishedVersion>? versions = generator.versions.value;
+    if (!generator.versions.isDone || versions == null) return '';
+    final VersionProposal proposal = proposeVersion(
+      channel: generator.channel,
+      bump: generator.bump,
+      published: versions.map((it) => it.version),
+    );
+    return switch (proposal) {
+      ProposedVersion(:final version) => releaseNumber(version),
+      UnreadableVersion() => '',
+    };
+  }
+}
+
+/// Stores the version typed under Custom.
+class SetCustomVersionAction extends _GeneratorAction {
+  SetCustomVersionAction(this.version);
+
+  final String version;
+
+  @override
+  AppState reduce() =>
+      withGenerator(generator.copyWith(customVersion: version));
 }
 
 /// Loads the published versions of [project], newest first.

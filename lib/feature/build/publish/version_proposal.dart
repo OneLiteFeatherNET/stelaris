@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:stelaris/api/service/generator/generator_models.dart';
 
-/// Which part of the latest release a publish raises.
-enum BumpPart { major, minor, patch }
+/// Which part of the latest release a publish raises, or [custom] for a
+/// version typed by hand instead of proposed.
+enum BumpPart { major, minor, patch, custom }
 
 /// The version the publish tab offers, or why it offers none.
 sealed class VersionProposal {
@@ -91,6 +92,11 @@ class SemanticVersion implements Comparable<SemanticVersion> {
     BumpPart.major => SemanticVersion(major + 1, 0, 0),
     BumpPart.minor => SemanticVersion(major, minor + 1, 0),
     BumpPart.patch => SemanticVersion(major, minor, patch + 1),
+    BumpPart.custom => throw ArgumentError.value(
+      part,
+      'part',
+      'a custom version is typed, not bumped',
+    ),
   };
 
   /// Newer is greater; a release is newer than the snapshot of its version.
@@ -141,6 +147,19 @@ VersionProposal proposeVersion({
     channel == ReleaseChannel.snapshot ? '$next$_snapshotSuffix' : next,
   );
 }
+
+/// The version a typed [raw] publishes as on [channel]: `X.Y.Z`, with
+/// `-SNAPSHOT` on the snapshot channel. `null` when [raw] is not `X.Y.Z`.
+String? customVersion(String raw, ReleaseChannel channel) {
+  final SemanticVersion? version = SemanticVersion.tryParse(raw);
+  if (version == null || version.snapshot) return null;
+  return channel == ReleaseChannel.snapshot ? '$raw$_snapshotSuffix' : raw;
+}
+
+/// [version] without `-SNAPSHOT`, the `X.Y.Z` a custom version starts from.
+String releaseNumber(String version) => version.endsWith(_snapshotSuffix)
+    ? version.substring(0, version.length - _snapshotSuffix.length)
+    : version;
 
 /// [versions] newest first. Unreadable versions go last, in their order.
 List<PublishedVersion> newestFirst(Iterable<PublishedVersion> versions) {

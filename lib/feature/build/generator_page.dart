@@ -133,6 +133,8 @@ class GeneratorPage extends StatelessWidget {
                         ),
                         onBump: (bump) =>
                             context.dispatch(SelectBumpPartAction(bump)),
+                        onCustomVersion: (version) =>
+                            context.dispatch(SetCustomVersionAction(version)),
                         onPublish: () => _publish(context, vm),
                         onReloadVersions: () => _reloadVersions(context, vm),
                         onDownloadVersion: (version) =>

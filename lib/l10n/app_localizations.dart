@@ -4498,6 +4498,42 @@ abstract class AppLocalizations {
   /// **'Patch'**
   String get generator_bump_patch;
 
+  /// No description provided for @generator_bump_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get generator_bump_custom;
+
+  /// No description provided for @generator_custom_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get generator_custom_label;
+
+  /// No description provided for @generator_custom_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'X.Y.Z'**
+  String get generator_custom_hint;
+
+  /// No description provided for @generator_custom_malformed.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the version as X.Y.Z, for example 1.2.3.'**
+  String get generator_custom_malformed;
+
+  /// No description provided for @generator_custom_published.
+  ///
+  /// In en, this message translates to:
+  /// **'{version} is already published. A release cannot be published twice.'**
+  String generator_custom_published(String version);
+
+  /// No description provided for @generator_publish_custom_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get generator_publish_custom_button;
+
   /// No description provided for @generator_publish_button.
   ///
   /// In en, this message translates to:

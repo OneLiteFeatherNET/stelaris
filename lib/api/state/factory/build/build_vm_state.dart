@@ -17,6 +17,15 @@ class BuildStateFactory
   );
 }
 
+/// Why the typed custom version cannot be published.
+enum CustomVersionError {
+  /// Not `X.Y.Z`.
+  malformed,
+
+  /// A release that is already published; a release is final.
+  published,
+}
+
 class BuildViewModel extends Vm {
   BuildViewModel({required this.project, required this.generator})
     : super(equals: [project, generator]);
@@ -38,10 +47,12 @@ class BuildViewModel extends Vm {
   /// The project and branch "Test locally" and "Publish" need.
   bool get canBuild => usableProject != null && baseBranch != null;
 
-  /// The next version, once the published versions are known.
+  /// The next version, once the published versions are known. Null under
+  /// Custom, which publishes the typed version instead.
   VersionProposal? get proposal {
     final List<PublishedVersion>? versions = generator.versions.value;
     if (!generator.versions.isDone || versions == null) return null;
+    if (generator.bump == BumpPart.custom) return null;
     return proposeVersion(
       channel: generator.channel,
       bump: generator.bump,
@@ -65,10 +76,37 @@ class BuildViewModel extends Vm {
     return versions.where((it) => it.version == latest).firstOrNull;
   }
 
+  /// The typed version as it would be published, or null while it is not
+  /// `X.Y.Z`, or is a release that is already published.
+  String? get customPublishVersion {
+    final String? version = customVersion(
+      generator.customVersion ?? '',
+      generator.channel,
+    );
+    if (version == null) return null;
+    if (generator.channel == ReleaseChannel.release && isPublished(version)) {
+      return null;
+    }
+    return version;
+  }
+
+  /// Why the typed custom version cannot be published; null when it can, or
+  /// when Custom is not selected.
+  CustomVersionError? get customError {
+    if (generator.bump != BumpPart.custom) return null;
+    final String raw = generator.customVersion ?? '';
+    if (customVersion(raw, generator.channel) == null) {
+      return CustomVersionError.malformed;
+    }
+    if (customPublishVersion == null) return CustomVersionError.published;
+    return null;
+  }
+
   /// The version publish sends, when one can be sent now.
   String? get publishableVersion {
-    final VersionProposal? proposal = this.proposal;
     if (!canBuild || generator.publish.isLoading) return null;
+    if (generator.bump == BumpPart.custom) return customPublishVersion;
+    final VersionProposal? proposal = this.proposal;
     return proposal is ProposedVersion ? proposal.version : null;
   }
 

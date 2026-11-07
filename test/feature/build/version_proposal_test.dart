@@ -78,6 +78,45 @@ void main() {
     });
   });
 
+  group('customVersion', () {
+    test('a custom release is the version as typed', () {
+      expect(customVersion('1.2.3', ReleaseChannel.release), '1.2.3');
+    });
+
+    test('a custom snapshot gets -SNAPSHOT appended', () {
+      expect(customVersion('1.2.3', ReleaseChannel.snapshot), '1.2.3-SNAPSHOT');
+    });
+
+    test('anything but X.Y.Z is not a custom version', () {
+      for (final raw in [
+        '',
+        '1.2',
+        '1.2.3.4',
+        '01.2.3',
+        '1.2.03',
+        'v1.2.3',
+        '1.2.3-SNAPSHOT',
+        '1.2.3 ',
+      ]) {
+        expect(
+          customVersion(raw, ReleaseChannel.release),
+          isNull,
+          reason: 'release "$raw"',
+        );
+        expect(
+          customVersion(raw, ReleaseChannel.snapshot),
+          isNull,
+          reason: 'snapshot "$raw"',
+        );
+      }
+    });
+
+    test('the release number drops -SNAPSHOT only', () {
+      expect(releaseNumber('0.3.0-SNAPSHOT'), '0.3.0');
+      expect(releaseNumber('0.3.0'), '0.3.0');
+    });
+  });
+
   test('newestFirst puts a release above its snapshot', () {
     final sorted = newestFirst([
       _version('1.4.2'),

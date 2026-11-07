@@ -59,6 +59,7 @@ class GeneratorState {
     this.versions = const RequestState.idle(),
     this.channel = ReleaseChannel.release,
     this.bump = BumpPart.patch,
+    this.customVersion,
     this.publish = const RequestState.idle(),
     this.publishVersion,
     this.downloadingVersion,
@@ -83,6 +84,10 @@ class GeneratorState {
   final ReleaseChannel channel;
   final BumpPart bump;
 
+  /// The version typed under [BumpPart.custom], as `X.Y.Z` without
+  /// `-SNAPSHOT`. `null` until a custom version is chosen.
+  final String? customVersion;
+
   /// The last publish.
   final RequestState<PublishResult> publish;
 
@@ -102,6 +107,7 @@ class GeneratorState {
     selectedBranch: selectedBranch,
     channel: channel,
     bump: bump,
+    customVersion: customVersion,
   );
 
   GeneratorState copyWith({
@@ -111,6 +117,7 @@ class GeneratorState {
     RequestState<List<PublishedVersion>>? versions,
     ReleaseChannel? channel,
     BumpPart? bump,
+    String? customVersion,
     RequestState<PublishResult>? publish,
     String? publishVersion,
     String? Function()? downloadingVersion,
@@ -125,6 +132,7 @@ class GeneratorState {
     versions: versions ?? this.versions,
     channel: channel ?? this.channel,
     bump: bump ?? this.bump,
+    customVersion: customVersion ?? this.customVersion,
     publish: publish ?? this.publish,
     publishVersion: publishVersion ?? this.publishVersion,
     downloadingVersion: downloadingVersion == null
@@ -145,6 +153,7 @@ class GeneratorState {
       other.versions == versions &&
       other.channel == channel &&
       other.bump == bump &&
+      other.customVersion == customVersion &&
       other.publish == publish &&
       other.publishVersion == publishVersion &&
       other.downloadingVersion == downloadingVersion &&
@@ -159,6 +168,7 @@ class GeneratorState {
     versions,
     channel,
     bump,
+    customVersion,
     publish,
     publishVersion,
     downloadingVersion,
