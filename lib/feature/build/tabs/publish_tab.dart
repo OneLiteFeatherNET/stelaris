@@ -61,16 +61,12 @@ class PublishTab extends StatelessWidget {
               spacing: 24,
               children: [
                 GeneratorText(l10n.generator_publish_description),
-                // The choices on one line while there is room for them.
+                // The channel and the raise on one line while there is room.
                 Wrap(
                   spacing: 24,
                   runSpacing: 16,
                   crossAxisAlignment: WrapCrossAlignment.end,
                   children: [
-                    SizedBox(
-                      width: BranchSelector.maxWidth,
-                      child: branchSelector,
-                    ),
                     GeneratorLabeled(
                       label: l10n.generator_channel_label,
                       child: SegmentedButton<ReleaseChannel>(
@@ -95,6 +91,14 @@ class PublishTab extends StatelessWidget {
                       child: SegmentedButton<BumpPart>(
                         showSelectedIcon: false,
                         segments: [
+                          if (vm.generator.channel == ReleaseChannel.snapshot)
+                            ButtonSegment(
+                              value: BumpPart.current,
+                              label: Text(l10n.generator_bump_current),
+                              enabled:
+                                  vm.latestPublished(ReleaseChannel.snapshot) !=
+                                  null,
+                            ),
                           ButtonSegment(
                             value: BumpPart.major,
                             label: Text(l10n.generator_bump_major),
@@ -119,6 +123,7 @@ class PublishTab extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(width: BranchSelector.maxWidth, child: branchSelector),
                 _proposal(context),
               ],
             ),
@@ -165,7 +170,7 @@ class PublishTab extends StatelessWidget {
     );
   }
 
-  /// The proposed version beside its publish button, or why there is none.
+  /// The proposed version above its publish button, or why there is none.
   Widget _proposal(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
     final RequestState<List<PublishedVersion>> versions = vm.generator.versions;
@@ -185,10 +190,10 @@ class PublishTab extends StatelessWidget {
         icon: Icons.warning_amber_rounded,
         color: Theme.of(context).colorScheme.error,
       ),
-      ProposedVersion(:final version) => Wrap(
-        spacing: 24,
-        runSpacing: 16,
-        crossAxisAlignment: WrapCrossAlignment.center,
+      NoSnapshot() => GeneratorNote(l10n.generator_publish_no_snapshot),
+      ProposedVersion(:final version) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
         children: [
           SizedBox(
             width: _cardWidth,
@@ -200,10 +205,7 @@ class PublishTab extends StatelessWidget {
                   ? l10n.generator_channel_release
                   : l10n.generator_channel_snapshot,
               value: version,
-              footer: switch (vm.latestPublishedRelease) {
-                final String latest => l10n.generator_publish_latest(latest),
-                null => l10n.generator_publish_first,
-              },
+              footer: _footer(l10n, version),
             ),
           ),
           GeneratorActionButton(
@@ -211,24 +213,34 @@ class PublishTab extends StatelessWidget {
             label: l10n.generator_publish_button(version),
             busy: vm.generator.publish.isLoading,
             onPressed: vm.publishableVersion == null ? null : onPublish,
-            standalone: false,
           ),
         ],
       ),
     };
   }
 
-  /// The typed version beside its publish button. A snapshot is published
+  /// What the proposal card says about [version]: the release it raises, or
+  /// the snapshot it republishes.
+  String _footer(AppLocalizations l10n, String version) {
+    if (vm.generator.bump == BumpPart.current) {
+      return l10n.generator_publish_republish(version);
+    }
+    return switch (vm.latestPublishedRelease) {
+      final String latest => l10n.generator_publish_latest(latest),
+      null => l10n.generator_publish_first,
+    };
+  }
+
+  /// The typed version above its publish button. A snapshot is published
   /// as `X.Y.Z-SNAPSHOT`, so the field shows the suffix it adds.
   Widget _custom(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
     final GeneratorState generator = vm.generator;
     final String? version = vm.customPublishVersion;
     final String raw = generator.customVersion ?? '';
-    return Wrap(
-      spacing: 24,
-      runSpacing: 16,
-      crossAxisAlignment: WrapCrossAlignment.center,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 16,
       children: [
         SizedBox(
           width: _cardWidth,
@@ -259,7 +271,6 @@ class PublishTab extends StatelessWidget {
               : l10n.generator_publish_button(version),
           busy: generator.publish.isLoading,
           onPressed: vm.publishableVersion == null ? null : onPublish,
-          standalone: false,
         ),
       ],
     );

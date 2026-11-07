@@ -2505,6 +2505,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get generator_channel_snapshot => 'Snapshot';
 
   @override
+  String get generator_bump_current => 'Current';
+
+  @override
   String get generator_bump_major => 'Major';
 
   @override
@@ -2659,6 +2662,15 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get generator_publish_first =>
       'No release yet, so this is the first one.';
+
+  @override
+  String generator_publish_republish(String version) {
+    return 'Publishes $version again and replaces it.';
+  }
+
+  @override
+  String get generator_publish_no_snapshot =>
+      'No snapshot is published yet, so there is nothing to republish.';
 
   @override
   String get generator_publish_outcome_title => 'Last publish';

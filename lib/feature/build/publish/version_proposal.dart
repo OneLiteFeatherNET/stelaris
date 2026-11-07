@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:stelaris/api/service/generator/generator_models.dart';
 
-/// Which part of the latest release a publish raises, or [custom] for a
-/// version typed by hand instead of proposed.
-enum BumpPart { major, minor, patch, custom }
+/// Which part of the latest release a publish raises. [current] republishes
+/// the newest snapshot unchanged, and [custom] is a version typed by hand.
+enum BumpPart { current, major, minor, patch, custom }
 
 /// The version the publish tab offers, or why it offers none.
 sealed class VersionProposal {
@@ -26,6 +26,22 @@ final class ProposedVersion extends VersionProposal {
 
   @override
   String toString() => 'ProposedVersion($version)';
+}
+
+/// The snapshot channel has no published snapshot, so [BumpPart.current] has
+/// nothing to republish.
+@immutable
+final class NoSnapshot extends VersionProposal {
+  const NoSnapshot();
+
+  @override
+  bool operator ==(Object other) => other is NoSnapshot;
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() => 'NoSnapshot()';
 }
 
 /// A published version, [raw], is neither `X.Y.Z` nor `X.Y.Z-SNAPSHOT`, so
@@ -92,6 +108,11 @@ class SemanticVersion implements Comparable<SemanticVersion> {
     BumpPart.major => SemanticVersion(major + 1, 0, 0),
     BumpPart.minor => SemanticVersion(major, minor + 1, 0),
     BumpPart.patch => SemanticVersion(major, minor, patch + 1),
+    BumpPart.current => throw ArgumentError.value(
+      part,
+      'part',
+      'the current snapshot is republished, not bumped',
+    ),
     BumpPart.custom => throw ArgumentError.value(
       part,
       'part',
@@ -124,6 +145,10 @@ class SemanticVersion implements Comparable<SemanticVersion> {
 /// raised at [bump]. Without a release it is [firstRelease]. A snapshot is
 /// the release proposal with `-SNAPSHOT`.
 ///
+/// [BumpPart.current] proposes the newest snapshot in [published] unchanged,
+/// or [NoSnapshot] when there is none. It is only offered on the snapshot
+/// channel.
+///
 /// Never throws: a published version that cannot be read gives an
 /// [UnreadableVersion] instead of a guess.
 VersionProposal proposeVersion({
@@ -131,14 +156,19 @@ VersionProposal proposeVersion({
   required BumpPart bump,
   required Iterable<String> published,
 }) {
+  final List<String> names = published.toList();
   SemanticVersion? latestRelease;
-  for (final raw in published) {
+  for (final raw in names) {
     final SemanticVersion? version = SemanticVersion.tryParse(raw);
     if (version == null) return UnreadableVersion(raw);
     if (version.snapshot) continue;
     if (latestRelease == null || version.compareTo(latestRelease) > 0) {
       latestRelease = version;
     }
+  }
+  if (bump == BumpPart.current) {
+    final String? snapshot = latestSnapshot(names);
+    return snapshot == null ? const NoSnapshot() : ProposedVersion(snapshot);
   }
   final String next = latestRelease == null
       ? firstRelease

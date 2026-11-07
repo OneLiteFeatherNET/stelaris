@@ -71,10 +71,46 @@ void main() {
       );
     });
 
+    test('current proposes the newest snapshot unchanged', () {
+      expect(
+        _propose(
+          ['1.4.2', '1.5.0-SNAPSHOT', '1.6.0-SNAPSHOT'],
+          channel: ReleaseChannel.snapshot,
+          bump: BumpPart.current,
+        ),
+        const ProposedVersion('1.6.0-SNAPSHOT'),
+      );
+    });
+
+    test('current without a published snapshot has nothing to republish', () {
+      expect(
+        _propose(
+          ['1.4.2'],
+          channel: ReleaseChannel.snapshot,
+          bump: BumpPart.current,
+        ),
+        const NoSnapshot(),
+      );
+    });
+
     test('an unreadable version is reported instead of thrown', () {
       for (final raw in ['1.0', '1.0.0-dev.1', '01.2.3', 'latest', '']) {
         expect(_propose(['1.0.0', raw]), UnreadableVersion(raw), reason: raw);
       }
+    });
+  });
+
+  group('SemanticVersion.bump', () {
+    test('current is republished, not bumped', () {
+      expect(
+        () => const SemanticVersion(
+          1,
+          0,
+          0,
+          snapshot: true,
+        ).bump(BumpPart.current),
+        throwsArgumentError,
+      );
     });
   });
 

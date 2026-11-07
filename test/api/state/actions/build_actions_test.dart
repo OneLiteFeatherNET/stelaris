@@ -313,6 +313,69 @@ void main() {
     });
   });
 
+  group('SelectReleaseChannelAction', () {
+    Store<AppState> storeWith({
+      required ReleaseChannel channel,
+      required BumpPart bump,
+      required List<String> versions,
+    }) => Store<AppState>(
+      initialState: AppState(
+        generator: GeneratorState(
+          projectId: 'p1',
+          channel: channel,
+          bump: bump,
+          versions: RequestState.done([
+            for (final version in versions) publishedVersion(version),
+          ]),
+        ),
+      ),
+    );
+
+    test(
+      'switching to release while Current is selected falls back to Patch',
+      () {
+        final store = storeWith(
+          channel: ReleaseChannel.snapshot,
+          bump: BumpPart.current,
+          versions: ['0.2.12', '0.3.0-SNAPSHOT'],
+        );
+
+        store.dispatchSync(SelectReleaseChannelAction(ReleaseChannel.release));
+
+        expect(store.state.generator.channel, ReleaseChannel.release);
+        expect(store.state.generator.bump, BumpPart.patch);
+      },
+    );
+
+    test(
+      'switching to snapshot with a snapshot published preselects Current',
+      () {
+        final store = storeWith(
+          channel: ReleaseChannel.release,
+          bump: BumpPart.patch,
+          versions: ['0.2.12', '0.3.0-SNAPSHOT'],
+        );
+
+        store.dispatchSync(SelectReleaseChannelAction(ReleaseChannel.snapshot));
+
+        expect(store.state.generator.channel, ReleaseChannel.snapshot);
+        expect(store.state.generator.bump, BumpPart.current);
+      },
+    );
+
+    test('switching to snapshot without a snapshot keeps the chosen raise', () {
+      final store = storeWith(
+        channel: ReleaseChannel.release,
+        bump: BumpPart.minor,
+        versions: ['0.2.12'],
+      );
+
+      store.dispatchSync(SelectReleaseChannelAction(ReleaseChannel.snapshot));
+
+      expect(store.state.generator.bump, BumpPart.minor);
+    });
+  });
+
   test('SetCustomVersionAction stores the typed text', () {
     final store = Store<AppState>(initialState: const AppState());
 

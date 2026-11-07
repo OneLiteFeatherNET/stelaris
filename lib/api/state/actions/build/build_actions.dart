@@ -114,13 +114,28 @@ class SelectBaseBranchAction extends _GeneratorAction {
       withGenerator(generator.copyWith(selectedBranch: () => branch));
 }
 
+/// Switches the channel. Current republishes a snapshot, so it is kept only
+/// on the snapshot channel: leaving it falls back to Patch, and entering it
+/// with a snapshot published selects Current.
 class SelectReleaseChannelAction extends _GeneratorAction {
   SelectReleaseChannelAction(this.channel);
 
   final ReleaseChannel channel;
 
   @override
-  AppState reduce() => withGenerator(generator.copyWith(channel: channel));
+  AppState reduce() {
+    final List<String> published =
+        generator.versions.value?.map((it) => it.version).toList() ?? const [];
+    final BumpPart bump = switch (channel) {
+      ReleaseChannel.release when generator.bump == BumpPart.current =>
+        BumpPart.patch,
+      ReleaseChannel.release => generator.bump,
+      ReleaseChannel.snapshot when latestSnapshot(published) != null =>
+        BumpPart.current,
+      ReleaseChannel.snapshot => generator.bump,
+    };
+    return withGenerator(generator.copyWith(channel: channel, bump: bump));
+  }
 }
 
 class SelectBumpPartAction extends _GeneratorAction {
@@ -151,7 +166,7 @@ class SelectBumpPartAction extends _GeneratorAction {
     );
     return switch (proposal) {
       ProposedVersion(:final version) => releaseNumber(version),
-      UnreadableVersion() => '',
+      UnreadableVersion() || NoSnapshot() => '',
     };
   }
 }

@@ -40,11 +40,9 @@ class LocalBuildTab extends StatelessWidget {
               spacing: 24,
               children: [
                 GeneratorText(l10n.generator_local_description),
-                // The branch and the download on one line while they fit.
-                Wrap(
-                  spacing: 24,
-                  runSpacing: 16,
-                  crossAxisAlignment: WrapCrossAlignment.center,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 16,
                   children: [
                     SizedBox(
                       width: BranchSelector.maxWidth,
@@ -57,7 +55,6 @@ class LocalBuildTab extends StatelessWidget {
                       ),
                       busy: download.isLoading,
                       onPressed: vm.canBuild ? onDownload : null,
-                      standalone: false,
                     ),
                   ],
                 ),

@@ -7,6 +7,7 @@ import 'package:stelaris/api/service/generator/generator_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/build/generator_page.dart';
+import 'package:stelaris/feature/build/publish/version_proposal.dart';
 import 'package:stelaris/feature/build/tabs/published_versions_tab.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -24,6 +25,10 @@ FilledButton publishButton(WidgetTester tester, String label) =>
     tester.widget<FilledButton>(
       find.ancestor(of: find.text(label), matching: find.byType(FilledButton)),
     );
+
+/// The publish button labelled [label], to measure its place on the page.
+Finder publishButtonFinder(String label) =>
+    find.ancestor(of: find.text(label), matching: find.byType(FilledButton));
 
 /// The text typed into the custom version field.
 String fieldText(WidgetTester tester) => tester
@@ -107,6 +112,25 @@ void main() {
   Finder proposal(String version) =>
       find.descendant(of: find.byType(EditCard), matching: find.text(version));
 
+  /// The raise segment labelled [label], not the chips of the versions.
+  Finder raise(String label) => find.descendant(
+    of: find.byType(SegmentedButton<BumpPart>),
+    matching: find.text(label),
+  );
+
+  /// The raise segment for [part], as the page builds it.
+  ButtonSegment<BumpPart> raiseSegment(WidgetTester tester, BumpPart part) =>
+      tester
+          .widget<SegmentedButton<BumpPart>>(
+            find.byType(SegmentedButton<BumpPart>),
+          )
+          .segments
+          .singleWhere((segment) => segment.value == part);
+
+  Set<BumpPart> selectedRaise(WidgetTester tester) => tester
+      .widget<SegmentedButton<BumpPart>>(find.byType(SegmentedButton<BumpPart>))
+      .selected;
+
   testWidgets('shows the page header and the three tabs in order', (
     tester,
   ) async {
@@ -166,6 +190,21 @@ void main() {
     await pump(tester);
 
     expect(find.textContaining('It creates vulpes/eldoria/'), findsOneWidget);
+  });
+
+  testWidgets('the download sits below the branch selector', (tester) async {
+    await pump(tester);
+
+    final double branchTop = tester.getTopLeft(branchField()).dy;
+    final double downloadTop = tester
+        .getTopLeft(
+          find.ancestor(
+            of: find.text('Download eldoria-local.zip'),
+            matching: find.byType(FilledButton),
+          ),
+        )
+        .dy;
+    expect(downloadTop, greaterThan(branchTop));
   });
 
   testWidgets('a failed download shows the error with a retry', (tester) async {
@@ -449,6 +488,131 @@ void main() {
       expect(find.textContaining('Publish 0.'), findsNothing);
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('channel and raise sit above the branch selector', (
+      tester,
+    ) async {
+      await pump(tester);
+      await openTab(tester, 'Publish');
+
+      final double branchTop = tester.getTopLeft(branchField()).dy;
+      expect(
+        tester.getTopLeft(find.byType(SegmentedButton<ReleaseChannel>)).dy,
+        lessThan(branchTop),
+      );
+      expect(
+        tester.getTopLeft(find.byType(SegmentedButton<BumpPart>)).dy,
+        lessThan(branchTop),
+      );
+    });
+
+    testWidgets('the publish button sits below the proposed version', (
+      tester,
+    ) async {
+      await pump(tester);
+      await openTab(tester, 'Publish');
+
+      final double cardTop = tester.getTopLeft(find.byType(EditCard)).dy;
+      expect(
+        tester.getTopLeft(publishButtonFinder('Publish 0.2.13')).dy,
+        greaterThan(cardTop),
+      );
+    });
+
+    testWidgets('Current is offered only on the snapshot channel', (
+      tester,
+    ) async {
+      await pump(tester);
+      await openTab(tester, 'Publish');
+      expect(raise('Current'), findsNothing);
+
+      await tester.tap(channel('Snapshot'));
+      await tester.pumpAndSettle();
+
+      expect(raise('Current'), findsOneWidget);
+    });
+
+    testWidgets('Current is disabled until a snapshot is published', (
+      tester,
+    ) async {
+      api.versions = [publishedVersion('0.1.0')];
+      await pump(tester);
+      await openTab(tester, 'Publish');
+
+      await tester.tap(channel('Snapshot'));
+      await tester.pumpAndSettle();
+
+      expect(raiseSegment(tester, BumpPart.current).enabled, isFalse);
+    });
+
+    testWidgets('switching to snapshot preselects Current when one exists', (
+      tester,
+    ) async {
+      await pump(tester);
+      await openTab(tester, 'Publish');
+
+      await tester.tap(channel('Snapshot'));
+      await tester.pumpAndSettle();
+
+      expect(selectedRaise(tester), {BumpPart.current});
+      expect(proposal('0.3.0-SNAPSHOT'), findsOneWidget);
+    });
+
+    testWidgets('switching to release from Current falls back to Patch', (
+      tester,
+    ) async {
+      await pump(tester);
+      await openTab(tester, 'Publish');
+      await tester.tap(channel('Snapshot'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(channel('Release'));
+      await tester.pumpAndSettle();
+
+      expect(selectedRaise(tester), {BumpPart.patch});
+      expect(proposal('0.2.13'), findsOneWidget);
+    });
+
+    testWidgets('Current proposes the snapshot that is published', (
+      tester,
+    ) async {
+      await pump(tester);
+      await openTab(tester, 'Publish');
+
+      await tester.tap(channel('Snapshot'));
+      await tester.pumpAndSettle();
+
+      expect(proposal('0.3.0-SNAPSHOT'), findsOneWidget);
+      expect(
+        find.text('Publishes 0.3.0-SNAPSHOT again and replaces it.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('publishing Current sends the existing snapshot version', (
+      tester,
+    ) async {
+      await pump(tester);
+      await openTab(tester, 'Publish');
+      await tester.tap(channel('Snapshot'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Publish 0.3.0-SNAPSHOT'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text(
+          '0.3.0-SNAPSHOT is already published. Publishing replaces the '
+          'existing 0.3.0-SNAPSHOT.',
+        ),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Publish 0.3.0-SNAPSHOT').last);
+      await tester.pumpAndSettle();
+
+      expect(api.calls.where((call) => call.startsWith('publish ')), [
+        'publish p1 0.3.0-SNAPSHOT develop',
+      ]);
+    });
     group('custom version', () {
       Finder customField() => find.byType(TextFormField);
 
@@ -540,6 +704,20 @@ void main() {
           expect(publishButton(tester, 'Publish').onPressed, isNull);
         },
       );
+
+      testWidgets('the publish button sits below the typed version', (
+        tester,
+      ) async {
+        await pump(tester);
+        await openTab(tester, 'Publish');
+        await tester.tap(find.text('Custom'));
+        await tester.pumpAndSettle();
+
+        expect(
+          tester.getTopLeft(publishButtonFinder('Publish 0.2.13')).dy,
+          greaterThan(tester.getTopLeft(customField()).dy),
+        );
+      });
 
       testWidgets('an already published custom snapshot stays publishable', (
         tester,

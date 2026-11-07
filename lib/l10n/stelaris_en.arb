@@ -1339,6 +1339,7 @@
   "generator_publish_description": "Publish the generated code as a new version, compiled against the selected vulpes-base branch.",
   "generator_channel_release": "Release",
   "generator_channel_snapshot": "Snapshot",
+  "generator_bump_current": "Current",
   "generator_bump_major": "Major",
   "generator_bump_minor": "Minor",
   "generator_bump_patch": "Patch",
@@ -1437,6 +1438,13 @@
     }
   },
   "generator_publish_first": "No release yet, so this is the first one.",
+  "generator_publish_republish": "Publishes {version} again and replaces it.",
+  "@generator_publish_republish": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "generator_publish_no_snapshot": "No snapshot is published yet, so there is nothing to republish.",
   "generator_publish_outcome_title": "Last publish",
   "generator_versions_title": "Published versions",
   "generator_versions_empty_hint": "Publish a release or snapshot on the Publish tab.",

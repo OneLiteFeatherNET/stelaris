@@ -4480,6 +4480,12 @@ abstract class AppLocalizations {
   /// **'Snapshot'**
   String get generator_channel_snapshot;
 
+  /// No description provided for @generator_bump_current.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get generator_bump_current;
+
   /// No description provided for @generator_bump_major.
   ///
   /// In en, this message translates to:
@@ -4725,6 +4731,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No release yet, so this is the first one.'**
   String get generator_publish_first;
+
+  /// No description provided for @generator_publish_republish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publishes {version} again and replaces it.'**
+  String generator_publish_republish(String version);
+
+  /// No description provided for @generator_publish_no_snapshot.
+  ///
+  /// In en, this message translates to:
+  /// **'No snapshot is published yet, so there is nothing to republish.'**
+  String get generator_publish_no_snapshot;
 
   /// No description provided for @generator_publish_outcome_title.
   ///
