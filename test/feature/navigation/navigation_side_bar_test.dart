@@ -6,6 +6,7 @@ import 'package:stelaris/api/state/actions/app_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/navigation/navigation_side_bar.dart';
+import 'package:stelaris/feature/settings/settings_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 
 /// The route of the expression detail page, nested below its section.
@@ -135,7 +136,7 @@ void main() {
     const railTestWidth = 1200.0;
     const railTestHeight = 800.0;
 
-    // The settings button at the bottom of the rail shares the icon column.
+    // The settings entry at the bottom of the rail shares the icon column.
     final iconOwners = [...railDisplays, 'Settings'];
 
     List<double> iconCentersX(WidgetTester tester) {
@@ -655,6 +656,74 @@ void main() {
 
       expect(find.text('/generator'), findsOneWidget);
       expect(rail(tester).selectedIndex, generatorIndex);
+    });
+  });
+
+  group('settings entry', () {
+    // Width >= 1000 is required for the rail to be allowed to extend.
+    void useWideView(WidgetTester tester) {
+      tester.view.physicalSize = const Size(1200, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+    }
+
+    Future<void> pumpRail(WidgetTester tester) async {
+      final store = Store<AppState>(initialState: AppState.fromJson({}));
+      await tester.pumpWidget(
+        buildTestWidget(createRailTestRouter('/items'), store),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    NavigationRail rail(WidgetTester tester) =>
+        tester.widget<NavigationRail>(find.byType(NavigationRail));
+
+    testWidgets('tapping the icon opens the settings dialog', (tester) async {
+      useWideView(tester);
+      await pumpRail(tester);
+
+      await tester.tap(find.byIcon(Icons.settings_outlined));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SettingsDialog), findsOneWidget);
+    });
+
+    testWidgets('tapping the label opens the settings dialog, like a '
+        'destination', (tester) async {
+      useWideView(tester);
+      await pumpRail(tester);
+
+      await tester.tap(find.text('Settings'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SettingsDialog), findsOneWidget);
+    });
+
+    testWidgets('keeps the current page selected', (tester) async {
+      useWideView(tester);
+      await pumpRail(tester);
+
+      await tester.tap(find.byIcon(Icons.settings_outlined));
+      await tester.pumpAndSettle();
+
+      expect(find.text('/items'), findsOneWidget);
+      expect(rail(tester).selectedIndex, NavigationEntry.items.index);
+    });
+
+    testWidgets('has no tooltip of its own, like the destinations', (
+      tester,
+    ) async {
+      useWideView(tester);
+      await pumpRail(tester);
+
+      expect(
+        find.ancestor(
+          of: find.byIcon(Icons.settings_outlined),
+          matching: find.byType(Tooltip),
+        ),
+        findsNothing,
+      );
     });
   });
 }
