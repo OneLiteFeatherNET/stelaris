@@ -4,7 +4,6 @@
   "button_save": "Save",
   "feedback_save_success": "Changes saved successfully",
   "button_download": "Download",
-  "button_generate": "Generate",
   "button_back": "Back",
   "button_ok": "Ok",
   "button_yes": "Yes",
@@ -160,7 +159,6 @@
 
   "input_validation_material": "The material starts not with minecraft:",
 
-  "error_generation_submit": "Generation submitted to backend",
   "error_card_empty": "The value can't be empty",
 
   "settings_section_account": "Account",
@@ -526,10 +524,6 @@
   "command_reload_branches_keywords": "refresh fetch git branch",
   "command_reload_branches_success": "Branches reloaded",
   "command_reload_branches_failure": "Could not reload the branches",
-  "command_reload_release": "Reload release information",
-  "command_reload_release_keywords": "refresh fetch build version",
-  "command_reload_release_success": "Release information reloaded",
-  "command_reload_release_unchanged": "No new release information",
   "command_palette_group_entities": "Entities",
   "command_palette_group_projects": "Projects",
   "command_palette_group_help": "Syntax",
@@ -789,55 +783,10 @@
   "validation_integer_invalid": "Enter a valid integer",
   "validation_codepoint_required": "Please enter a codepoint",
   "validation_codepoint_invalid": "Enter exactly 4 hex digits (e.g. E000)",
-  "validation_commit_length": "The commit must contain 10 characters",
   "project_description_hint": "Brief description of the project",
   "project_labor_toggle": "Mark as laboratory / experimental project",
   "project_badge_tooltip": "Click to switch project",
   "project_labor_badge": "Labor",
-  "build_service_unavailable": "Service unavailable",
-  "build_release_version": "Build: {version}",
-  "@build_release_version": {
-    "placeholders": {
-      "version": {
-        "type": "String"
-      }
-    }
-  },
-  "build_release_date": "Release: {date}",
-  "@build_release_date": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "build_release_status": "Status: ",
-  "build_release_prerelease": "Pre-Release",
-  "build_release_stable": "Stable",
-  "build_no_commit_info": "No commit info",
-  "build_commit_label": "Commit: ",
-  "build_fetching_release": "Fetching release info...",
-  "build_current_version": "Current version",
-  "build_new_version": "New Version",
-  "build_version_part_prompt": "Select the part of the version to update:",
-  "build_started": "Build started successfully",
-  "build_failed": "Build failed: {error}",
-  "@build_failed": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
-  "build_tab_build": "Build",
-  "build_dialog_title": "Build & Download Vulpes",
-  "download_commit_label": "Git commit",
-  "download_commit_tooltip": "Enter a valid Git commit (Only the first 10 characters)",
-  "download_fetching_branches": "Fetching branches...",
-  "download_no_project": "No project selected! Please select a project first",
-  "download_no_branches": "No branches found! Please create some in the repository",
-  "download_refresh_branches": "Refresh branches",
-  "download_search_by_commit": "Search by Commit",
   "sound_key": "Key",
   "sound_subtitle": "Subtitle",
   "sound_file_delete_title": "Delete file",
@@ -1349,6 +1298,7 @@
   },
   "navigation_group_assets": "Assets",
   "navigation_group_runtime": "Runtime",
+  "navigation_group_build": "Build",
   "expression_preview_title": "Preview",
   "expression_preview_copy": "Copy the full value",
   "expression_preview_reset_values": "Reset to the stored test values",
@@ -1361,5 +1311,172 @@
         "type": "String"
       }
     }
-  }
+  },
+  "generator_demo_banner": "Demo data: the releases, publishes and downloads on this page are simulated, not real.",
+  "generator_branch_label": "vulpes-base branch",
+  "generator_branches_loading": "Loading the vulpes-base branches…",
+  "generator_branches_failed": "The vulpes-base branches could not be loaded.",
+  "generator_branches_empty": "No vulpes-base branch is available.",
+  "generator_retry": "Retry",
+  "generator_tab_local": "Test locally",
+  "generator_tab_publish": "Publish",
+  "generator_tab_versions": "Published versions",
+  "generator_no_project": "Select a project to use the generator.",
+  "generator_local_description": "Download the generated code of this project on the selected vulpes-base branch and try it before publishing.",
+  "generator_local_download": "Download {filename}",
+  "@generator_local_download": {
+    "placeholders": {
+      "filename": {"type": "String"}
+    }
+  },
+  "generator_local_saved": "Saved {filename}.",
+  "@generator_local_saved": {
+    "placeholders": {
+      "filename": {"type": "String"}
+    }
+  },
+  "generator_download_failed": "The local build could not be downloaded.",
+  "generator_publish_description": "Publish the generated code as a new version, compiled against the selected vulpes-base branch.",
+  "generator_channel_release": "Release",
+  "generator_channel_snapshot": "Snapshot",
+  "generator_bump_current": "Current",
+  "generator_bump_major": "Major",
+  "generator_bump_minor": "Minor",
+  "generator_bump_patch": "Patch",
+  "generator_bump_custom": "Custom",
+  "generator_custom_label": "Version",
+  "generator_custom_hint": "X.Y.Z",
+  "generator_custom_malformed": "Enter the version as X.Y.Z, for example 1.2.3.",
+  "generator_custom_published": "{version} is already published. A release cannot be published twice.",
+  "@generator_custom_published": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "generator_publish_custom_button": "Publish",
+  "generator_publish_button": "Publish {version}",
+  "@generator_publish_button": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "generator_publish_versions_loading": "Loading the published versions to propose the next one…",
+  "generator_publish_versions_failed": "The next version is proposed from the published versions, which could not be loaded.",
+  "generator_publish_unreadable": "The published version \"{version}\" cannot be read, so no next version can be proposed. Publishing is disabled.",
+  "@generator_publish_unreadable": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "generator_confirm_title": "Publish {version}?",
+  "@generator_confirm_title": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "generator_confirm_body": "This publishes {version} as a {channel}, compiled against the vulpes-base branch {branch}.",
+  "@generator_confirm_body": {
+    "placeholders": {
+      "version": {"type": "String"},
+      "channel": {"type": "String"},
+      "branch": {"type": "String"}
+    }
+  },
+  "generator_confirm_replace": "{version} is already published. Publishing replaces the existing {version}.",
+  "@generator_confirm_replace": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "generator_publish_success": "Published {version}",
+  "@generator_publish_success": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "generator_result_coordinates": "Coordinates",
+  "generator_result_revision": "Revision",
+  "generator_result_base": "vulpes-base commit",
+  "generator_result_gradle": "Gradle dependency",
+  "generator_copy": "Copy",
+  "generator_copy_commit": "Copy the full commit",
+  "generator_copied": "Copied to the clipboard.",
+  "generator_publish_conflict": "{version} is already published. The published versions have been reloaded, so the proposal moves on to the next free version.",
+  "@generator_publish_conflict": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "generator_publish_rejected": "The generated code does not compile against the selected vulpes-base branch. Nothing was published.",
+  "generator_publish_truncated": "Only the first 100 errors are shown.",
+  "generator_publish_failed": "The version could not be published.",
+  "generator_error_status": "Status {status}",
+  "@generator_error_status": {
+    "placeholders": {
+      "status": {"type": "String"}
+    }
+  },
+  "generator_error_network": "The generator could not be reached.",
+  "generator_error_unavailable": "The generator could not reach a service it needs: the backend, vulpes-base or the Maven repository.",
+  "generator_versions_description": "The releases and snapshots this project has published, newest first.",
+  "generator_versions_empty": "This project has not published a version yet.",
+  "generator_versions_unavailable": "The Maven repository cannot be read right now.",
+  "generator_versions_failed": "The published versions could not be loaded.",
+  "generator_versions_download": "Download {version} as a local build",
+  "@generator_versions_download": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "generator_versions_copy": "Copy the Gradle line",
+  "generator_local_title": "Local build",
+  "generator_publish_title": "Next version",
+  "generator_publish_latest": "Latest release: {version}",
+  "@generator_publish_latest": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "generator_publish_first": "No release yet, so this is the first one.",
+  "generator_publish_republish": "Publishes {version} again and replaces it.",
+  "@generator_publish_republish": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "generator_publish_no_snapshot": "No snapshot is published yet, so there is nothing to republish.",
+  "generator_publish_outcome_title": "Last publish",
+  "generator_versions_title": "Published versions",
+  "generator_versions_empty_hint": "Publish a release or snapshot on the Publish tab.",
+  "generator_no_project_hint": "The generator works on the project selected in the top bar.",
+  "generator_local_howto_title": "How to use it",
+  "generator_local_step_download": "Download the zip for the selected vulpes-base branch.",
+  "generator_local_step_unzip": "Unzip it into the project root. It creates vulpes/{project}/.",
+  "@generator_local_step_unzip": {
+    "placeholders": {
+      "project": {"type": "String"}
+    }
+  },
+  "generator_local_step_build": "Build as usual. The Gradle plugin uses vulpes/{project}/ in place of the published version.",
+  "@generator_local_step_build": {
+    "placeholders": {
+      "project": {"type": "String"}
+    }
+  },
+  "generator_local_step_remove": "Delete vulpes/{project}/ to build against the published version again.",
+  "@generator_local_step_remove": {
+    "placeholders": {
+      "project": {"type": "String"}
+    }
+  },
+  "generator_current_title": "Currently published",
+  "generator_current_none": "Nothing published on this channel yet.",
+  "generator_channel_label": "Channel",
+  "generator_bump_label": "Raise",
+  "generator_info_title": "About the generator",
+  "generator_info_intro": "The generator packages the selected project for the Vulpes Gradle plugin. Every build is first compiled against a vulpes-base branch, so code that does not compile is never handed out.",
+  "generator_info_local": "Downloads the current state of the project as a zip. Unzip it into your project root to try it with Gradle before anything is published.",
+  "generator_info_publish": "Publishes the next version to the Maven repository. A release (X.Y.Z) is final and cannot be published twice. A snapshot (X.Y.Z-SNAPSHOT) can be published again and replaces the previous one.",
+  "generator_info_versions": "Lists every release and snapshot of the project. Each one can be downloaded as a local build, or its Gradle line copied into a build script.",
+  "generator_info_demo": "Demo mode is on: nothing on this page reaches the generator. Set \"generatorDemo\": false in config.json to use the real one."
 }

@@ -2,7 +2,9 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
+import 'package:stelaris/api/service/generator/generator_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/generator_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/command_palette/backend_command.dart';
 import 'package:stelaris/feature/command_palette/command.dart';
@@ -87,21 +89,32 @@ void main() {
   });
 
   group('backend outcomes', () {
-    test('branches reload fails when branches end up null', () {
-      const before = AppState(branches: ['main']);
+    test('branches reload fails when the branch request failed', () {
+      const before = AppState();
       expect(
-        branchReloadOutcome(before, before.copyWith(branches: null)),
+        branchReloadOutcome(
+          before,
+          before.copyWith(
+            generator: const GeneratorState(
+              branches: RequestState.failed(
+                GeneratorFailure(GeneratorFailureKind.network),
+              ),
+            ),
+          ),
+        ),
         BackendOutcome.failure,
       );
       expect(
-        branchReloadOutcome(before, before.copyWith(branches: ['main', 'dev'])),
+        branchReloadOutcome(
+          before,
+          before.copyWith(
+            generator: const GeneratorState(
+              branches: RequestState.done(['main', 'dev']),
+            ),
+          ),
+        ),
         BackendOutcome.success,
       );
-    });
-
-    test('an unchanged release model reads as neutral', () {
-      const state = AppState();
-      expect(releaseReloadOutcome(state, state), BackendOutcome.neutral);
     });
   });
 

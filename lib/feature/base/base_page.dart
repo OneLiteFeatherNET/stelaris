@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
-import 'package:stelaris/feature/base/button/build_button.dart';
 import 'package:stelaris/feature/base/button/toggle_navigation_button.dart';
 import 'package:stelaris/feature/base/search/app_bar_search.dart';
 import 'package:stelaris/feature/command_palette/command_palette.dart';
@@ -61,7 +60,6 @@ class BasePage extends StatelessWidget {
               actions: const [
                 ProjectAppBarBadge(),
                 horizontalSpacing10,
-                BuildButton(),
                 // Renders nothing where no identity provider is configured, so
                 // an unauthenticated deployment's app bar is unchanged.
                 SessionIndicator(),

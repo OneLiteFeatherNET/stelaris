@@ -2,11 +2,14 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/generator_state.dart';
 import 'package:stelaris/feature/command_palette/backend_command.dart';
 
 class _Succeeds extends ReduxAction<AppState> {
   @override
-  Future<AppState?> reduce() async => state.copyWith(branches: ['main']);
+  Future<AppState?> reduce() async => state.copyWith(
+    generator: const GeneratorState(selectedBranch: 'main'),
+  );
 }
 
 class _Throws extends ReduxAction<AppState> {
@@ -16,14 +19,16 @@ class _Throws extends ReduxAction<AppState> {
 
 class _Swallows extends ReduxAction<AppState> {
   @override
-  Future<AppState?> reduce() async => state.copyWith(branches: null);
+  Future<AppState?> reduce() async => state.copyWith(generator: const GeneratorState());
 }
 
 Future<BuildContext> _pump(WidgetTester tester) async {
   late BuildContext context;
   await tester.pumpWidget(
     StoreProvider<AppState>(
-      store: Store<AppState>(initialState: const AppState(branches: ['old'])),
+      store: Store<AppState>(initialState: const AppState(
+        generator: GeneratorState(selectedBranch: 'old'),
+      )),
       child: MaterialApp(
         home: Scaffold(
           body: Builder(
@@ -67,8 +72,11 @@ void main() {
     await runBackendCommand(context, _Throws(), success: 'ok', failure: 'no');
 
     expect(
-      StoreProvider.state<AppState>(context, notify: false).branches,
-      ['old'],
+      StoreProvider.state<AppState>(
+        context,
+        notify: false,
+      ).generator.selectedBranch,
+      'old',
     );
   });
 
@@ -82,7 +90,7 @@ void main() {
       _Swallows(),
       success: 'ok',
       failure: 'no',
-      outcome: (before, after) => after.branches == null
+      outcome: (before, after) => after.generator.selectedBranch == null
           ? BackendOutcome.failure
           : BackendOutcome.success,
     );

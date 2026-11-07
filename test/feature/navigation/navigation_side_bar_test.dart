@@ -52,6 +52,7 @@ GoRouter createRailTestRouter(String initialLocation) {
   final routes = [
     for (final entry in NavigationEntry.values) entry.route,
     for (final entry in AssetNavigationEntry.values) entry.route,
+    for (final entry in BuildNavigationEntry.values) entry.route,
     _expressionDetailRoute,
   ];
   return GoRouter(
@@ -75,11 +76,12 @@ GoRouter createRailTestRouter(String initialLocation) {
 
 void main() {
   // The labels of the rail's destinations: the sections, the asset pages,
-  // then the runtime entries.
+  // the runtime entries, then the build pages.
   final railDisplays = [
     for (final entry in sectionEntries) entry.display,
     for (final entry in AssetNavigationEntry.values) entry.display,
     for (final entry in runtimeNavigationEntries) entry.display,
+    for (final entry in BuildNavigationEntry.values) entry.display,
   ];
 
   testWidgets('stays on the matching entry when on a nested detail route '
@@ -385,7 +387,9 @@ void main() {
               1 +
               AssetNavigationEntry.values.length +
               1 +
-              runtimeNavigationEntries.length,
+              runtimeNavigationEntries.length +
+              1 +
+              BuildNavigationEntry.values.length,
         ),
       );
       expect(destinations[sectionEntries.length].disabled, isTrue);
@@ -487,9 +491,10 @@ void main() {
         hasLength(
           NavigationEntry.values.length +
               AssetNavigationEntry.values.length +
-              2,
+              BuildNavigationEntry.values.length +
+              3,
         ),
-        reason: 'the two headings are destinations beside the pages',
+        reason: 'the three headings are destinations beside the pages',
       );
       expect(destinations[runtimeHeadingIndex].disabled, isTrue);
     });
@@ -536,6 +541,121 @@ void main() {
 
       expect(find.text('/expression'), findsOneWidget);
       expect(rail(tester).selectedIndex, expressionIndex);
+    });
+  });
+
+  group('build heading', () {
+    // Width >= 1000 is required for the rail to be allowed to extend.
+    const railTestWidth = 1200.0;
+    const railTestHeight = 800.0;
+
+    void useWideView(WidgetTester tester) {
+      tester.view.physicalSize = const Size(railTestWidth, railTestHeight);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+    }
+
+    NavigationRail rail(WidgetTester tester) =>
+        tester.widget<NavigationRail>(find.byType(NavigationRail));
+
+    // The Build heading comes after the Runtime heading and its pages.
+    final buildHeadingIndex =
+        sectionEntries.length +
+        1 +
+        AssetNavigationEntry.values.length +
+        1 +
+        runtimeNavigationEntries.length;
+    final generatorIndex =
+        buildHeadingIndex +
+        1 +
+        BuildNavigationEntry.values.indexOf(BuildNavigationEntry.generator);
+
+    testWidgets('shows the Build heading when extended', (tester) async {
+      useWideView(tester);
+      final store = Store<AppState>(initialState: AppState.fromJson({}));
+      await tester.pumpWidget(
+        buildTestWidget(createRailTestRouter('/items'), store),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Build'), findsOneWidget);
+    });
+
+    testWidgets('lists the generator below the runtime entries', (
+      tester,
+    ) async {
+      useWideView(tester);
+      final store = Store<AppState>(initialState: AppState.fromJson({}));
+      await tester.pumpWidget(
+        buildTestWidget(createRailTestRouter('/items'), store),
+      );
+      await tester.pumpAndSettle();
+
+      final headingY = tester.getTopLeft(find.text('Build')).dy;
+      expect(
+        tester.getTopLeft(find.text('Functions')).dy,
+        lessThan(headingY),
+        reason: 'the runtime entries come before the Build heading',
+      );
+      expect(
+        tester.getTopLeft(find.text('Generator')).dy,
+        greaterThan(headingY),
+        reason: 'the generator comes after the Build heading',
+      );
+    });
+
+    testWidgets('the heading is a disabled destination', (tester) async {
+      useWideView(tester);
+      final store = Store<AppState>(initialState: AppState.fromJson({}));
+      await tester.pumpWidget(
+        buildTestWidget(createRailTestRouter('/items'), store),
+      );
+      await tester.pumpAndSettle();
+
+      expect(rail(tester).destinations[buildHeadingIndex].disabled, isTrue);
+    });
+
+    testWidgets('tapping the heading does not navigate', (tester) async {
+      useWideView(tester);
+      final store = Store<AppState>(initialState: AppState.fromJson({}));
+      await tester.pumpWidget(
+        buildTestWidget(createRailTestRouter('/items'), store),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Build'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('/items'), findsOneWidget);
+      expect(find.text('/generator'), findsNothing);
+      expect(rail(tester).selectedIndex, NavigationEntry.items.index);
+    });
+
+    testWidgets('highlights the generator on its route', (tester) async {
+      useWideView(tester);
+      final store = Store<AppState>(initialState: AppState.fromJson({}));
+      await tester.pumpWidget(
+        buildTestWidget(createRailTestRouter('/generator'), store),
+      );
+      await tester.pumpAndSettle();
+
+      expect(rail(tester).selectedIndex, generatorIndex);
+    });
+
+    testWidgets('tapping Generator navigates to /generator', (tester) async {
+      useWideView(tester);
+      final store = Store<AppState>(initialState: AppState.fromJson({}));
+      await tester.pumpWidget(
+        buildTestWidget(createRailTestRouter('/items'), store),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Generator'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('/generator'), findsOneWidget);
+      expect(rail(tester).selectedIndex, generatorIndex);
     });
   });
 

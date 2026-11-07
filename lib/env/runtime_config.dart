@@ -21,6 +21,7 @@ class RuntimeConfig {
     required this.backendUrl,
     required this.generatorUrl,
     this.auth,
+    this.generatorDemo = true,
   });
 
   /// The document the web server serves from its runtime directory.
@@ -51,6 +52,14 @@ class RuntimeConfig {
 
   /// Base URL of the code generator service.
   final String generatorUrl;
+
+  /// Whether the generator page simulates the generator instead of calling
+  /// it. On by default while the generator has no release endpoints yet;
+  /// `"generatorDemo": false` switches to the real one.
+  ///
+  /// TODO: switch the default off once vulpes-generator ships
+  /// `add-editor-release-flow`.
+  final bool generatorDemo;
 
   /// The identity provider to authenticate against, or null to run without
   /// authentication. See [AuthConfig] for why an incomplete block reads as
@@ -111,6 +120,10 @@ class RuntimeConfig {
       // sensible compiled-in default to fall back to, an identity provider does
       // not, so the block is taken whole or not at all.
       auth: AuthConfig.tryParse(decoded['auth']),
+      generatorDemo: switch (decoded['generatorDemo']) {
+        final bool value => value,
+        _ => compiledIn.generatorDemo,
+      },
     );
   }
 

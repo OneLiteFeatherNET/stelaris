@@ -124,12 +124,6 @@ abstract class AppLocalizations {
   /// **'Download'**
   String get button_download;
 
-  /// No description provided for @button_generate.
-  ///
-  /// In en, this message translates to:
-  /// **'Generate'**
-  String get button_generate;
-
   /// No description provided for @button_back.
   ///
   /// In en, this message translates to:
@@ -729,12 +723,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The material starts not with minecraft:'**
   String get input_validation_material;
-
-  /// No description provided for @error_generation_submit.
-  ///
-  /// In en, this message translates to:
-  /// **'Generation submitted to backend'**
-  String get error_generation_submit;
 
   /// No description provided for @error_card_empty.
   ///
@@ -2266,30 +2254,6 @@ abstract class AppLocalizations {
   /// **'Could not reload the branches'**
   String get command_reload_branches_failure;
 
-  /// No description provided for @command_reload_release.
-  ///
-  /// In en, this message translates to:
-  /// **'Reload release information'**
-  String get command_reload_release;
-
-  /// No description provided for @command_reload_release_keywords.
-  ///
-  /// In en, this message translates to:
-  /// **'refresh fetch build version'**
-  String get command_reload_release_keywords;
-
-  /// No description provided for @command_reload_release_success.
-  ///
-  /// In en, this message translates to:
-  /// **'Release information reloaded'**
-  String get command_reload_release_success;
-
-  /// No description provided for @command_reload_release_unchanged.
-  ///
-  /// In en, this message translates to:
-  /// **'No new release information'**
-  String get command_reload_release_unchanged;
-
   /// No description provided for @command_palette_group_entities.
   ///
   /// In en, this message translates to:
@@ -3022,12 +2986,6 @@ abstract class AppLocalizations {
   /// **'Enter exactly 4 hex digits (e.g. E000)'**
   String get validation_codepoint_invalid;
 
-  /// No description provided for @validation_commit_length.
-  ///
-  /// In en, this message translates to:
-  /// **'The commit must contain 10 characters'**
-  String get validation_commit_length;
-
   /// No description provided for @project_description_hint.
   ///
   /// In en, this message translates to:
@@ -3051,144 +3009,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Labor'**
   String get project_labor_badge;
-
-  /// No description provided for @build_service_unavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Service unavailable'**
-  String get build_service_unavailable;
-
-  /// No description provided for @build_release_version.
-  ///
-  /// In en, this message translates to:
-  /// **'Build: {version}'**
-  String build_release_version(String version);
-
-  /// No description provided for @build_release_date.
-  ///
-  /// In en, this message translates to:
-  /// **'Release: {date}'**
-  String build_release_date(String date);
-
-  /// No description provided for @build_release_status.
-  ///
-  /// In en, this message translates to:
-  /// **'Status: '**
-  String get build_release_status;
-
-  /// No description provided for @build_release_prerelease.
-  ///
-  /// In en, this message translates to:
-  /// **'Pre-Release'**
-  String get build_release_prerelease;
-
-  /// No description provided for @build_release_stable.
-  ///
-  /// In en, this message translates to:
-  /// **'Stable'**
-  String get build_release_stable;
-
-  /// No description provided for @build_no_commit_info.
-  ///
-  /// In en, this message translates to:
-  /// **'No commit info'**
-  String get build_no_commit_info;
-
-  /// No description provided for @build_commit_label.
-  ///
-  /// In en, this message translates to:
-  /// **'Commit: '**
-  String get build_commit_label;
-
-  /// No description provided for @build_fetching_release.
-  ///
-  /// In en, this message translates to:
-  /// **'Fetching release info...'**
-  String get build_fetching_release;
-
-  /// No description provided for @build_current_version.
-  ///
-  /// In en, this message translates to:
-  /// **'Current version'**
-  String get build_current_version;
-
-  /// No description provided for @build_new_version.
-  ///
-  /// In en, this message translates to:
-  /// **'New Version'**
-  String get build_new_version;
-
-  /// No description provided for @build_version_part_prompt.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the part of the version to update:'**
-  String get build_version_part_prompt;
-
-  /// No description provided for @build_started.
-  ///
-  /// In en, this message translates to:
-  /// **'Build started successfully'**
-  String get build_started;
-
-  /// No description provided for @build_failed.
-  ///
-  /// In en, this message translates to:
-  /// **'Build failed: {error}'**
-  String build_failed(String error);
-
-  /// No description provided for @build_tab_build.
-  ///
-  /// In en, this message translates to:
-  /// **'Build'**
-  String get build_tab_build;
-
-  /// No description provided for @build_dialog_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Build & Download Vulpes'**
-  String get build_dialog_title;
-
-  /// No description provided for @download_commit_label.
-  ///
-  /// In en, this message translates to:
-  /// **'Git commit'**
-  String get download_commit_label;
-
-  /// No description provided for @download_commit_tooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter a valid Git commit (Only the first 10 characters)'**
-  String get download_commit_tooltip;
-
-  /// No description provided for @download_fetching_branches.
-  ///
-  /// In en, this message translates to:
-  /// **'Fetching branches...'**
-  String get download_fetching_branches;
-
-  /// No description provided for @download_no_project.
-  ///
-  /// In en, this message translates to:
-  /// **'No project selected! Please select a project first'**
-  String get download_no_project;
-
-  /// No description provided for @download_no_branches.
-  ///
-  /// In en, this message translates to:
-  /// **'No branches found! Please create some in the repository'**
-  String get download_no_branches;
-
-  /// No description provided for @download_refresh_branches.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh branches'**
-  String get download_refresh_branches;
-
-  /// No description provided for @download_search_by_commit.
-  ///
-  /// In en, this message translates to:
-  /// **'Search by Commit'**
-  String get download_search_by_commit;
 
   /// No description provided for @sound_key.
   ///
@@ -4516,6 +4336,12 @@ abstract class AppLocalizations {
   /// **'Runtime'**
   String get navigation_group_runtime;
 
+  /// No description provided for @navigation_group_build.
+  ///
+  /// In en, this message translates to:
+  /// **'Build'**
+  String get navigation_group_build;
+
   /// No description provided for @expression_preview_title.
   ///
   /// In en, this message translates to:
@@ -4551,6 +4377,486 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Give a test value to {names} to see the result.'**
   String expression_preview_missing_values(String names);
+
+  /// No description provided for @generator_demo_banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Demo data: the releases, publishes and downloads on this page are simulated, not real.'**
+  String get generator_demo_banner;
+
+  /// No description provided for @generator_branch_label.
+  ///
+  /// In en, this message translates to:
+  /// **'vulpes-base branch'**
+  String get generator_branch_label;
+
+  /// No description provided for @generator_branches_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the vulpes-base branches…'**
+  String get generator_branches_loading;
+
+  /// No description provided for @generator_branches_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The vulpes-base branches could not be loaded.'**
+  String get generator_branches_failed;
+
+  /// No description provided for @generator_branches_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No vulpes-base branch is available.'**
+  String get generator_branches_empty;
+
+  /// No description provided for @generator_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get generator_retry;
+
+  /// No description provided for @generator_tab_local.
+  ///
+  /// In en, this message translates to:
+  /// **'Test locally'**
+  String get generator_tab_local;
+
+  /// No description provided for @generator_tab_publish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get generator_tab_publish;
+
+  /// No description provided for @generator_tab_versions.
+  ///
+  /// In en, this message translates to:
+  /// **'Published versions'**
+  String get generator_tab_versions;
+
+  /// No description provided for @generator_no_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a project to use the generator.'**
+  String get generator_no_project;
+
+  /// No description provided for @generator_local_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the generated code of this project on the selected vulpes-base branch and try it before publishing.'**
+  String get generator_local_description;
+
+  /// No description provided for @generator_local_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download {filename}'**
+  String generator_local_download(String filename);
+
+  /// No description provided for @generator_local_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {filename}.'**
+  String generator_local_saved(String filename);
+
+  /// No description provided for @generator_download_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The local build could not be downloaded.'**
+  String get generator_download_failed;
+
+  /// No description provided for @generator_publish_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish the generated code as a new version, compiled against the selected vulpes-base branch.'**
+  String get generator_publish_description;
+
+  /// No description provided for @generator_channel_release.
+  ///
+  /// In en, this message translates to:
+  /// **'Release'**
+  String get generator_channel_release;
+
+  /// No description provided for @generator_channel_snapshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapshot'**
+  String get generator_channel_snapshot;
+
+  /// No description provided for @generator_bump_current.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get generator_bump_current;
+
+  /// No description provided for @generator_bump_major.
+  ///
+  /// In en, this message translates to:
+  /// **'Major'**
+  String get generator_bump_major;
+
+  /// No description provided for @generator_bump_minor.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor'**
+  String get generator_bump_minor;
+
+  /// No description provided for @generator_bump_patch.
+  ///
+  /// In en, this message translates to:
+  /// **'Patch'**
+  String get generator_bump_patch;
+
+  /// No description provided for @generator_bump_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get generator_bump_custom;
+
+  /// No description provided for @generator_custom_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get generator_custom_label;
+
+  /// No description provided for @generator_custom_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'X.Y.Z'**
+  String get generator_custom_hint;
+
+  /// No description provided for @generator_custom_malformed.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the version as X.Y.Z, for example 1.2.3.'**
+  String get generator_custom_malformed;
+
+  /// No description provided for @generator_custom_published.
+  ///
+  /// In en, this message translates to:
+  /// **'{version} is already published. A release cannot be published twice.'**
+  String generator_custom_published(String version);
+
+  /// No description provided for @generator_publish_custom_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get generator_publish_custom_button;
+
+  /// No description provided for @generator_publish_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish {version}'**
+  String generator_publish_button(String version);
+
+  /// No description provided for @generator_publish_versions_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the published versions to propose the next one…'**
+  String get generator_publish_versions_loading;
+
+  /// No description provided for @generator_publish_versions_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The next version is proposed from the published versions, which could not be loaded.'**
+  String get generator_publish_versions_failed;
+
+  /// No description provided for @generator_publish_unreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'The published version \"{version}\" cannot be read, so no next version can be proposed. Publishing is disabled.'**
+  String generator_publish_unreadable(String version);
+
+  /// No description provided for @generator_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish {version}?'**
+  String generator_confirm_title(String version);
+
+  /// No description provided for @generator_confirm_body.
+  ///
+  /// In en, this message translates to:
+  /// **'This publishes {version} as a {channel}, compiled against the vulpes-base branch {branch}.'**
+  String generator_confirm_body(String version, String channel, String branch);
+
+  /// No description provided for @generator_confirm_replace.
+  ///
+  /// In en, this message translates to:
+  /// **'{version} is already published. Publishing replaces the existing {version}.'**
+  String generator_confirm_replace(String version);
+
+  /// No description provided for @generator_publish_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Published {version}'**
+  String generator_publish_success(String version);
+
+  /// No description provided for @generator_result_coordinates.
+  ///
+  /// In en, this message translates to:
+  /// **'Coordinates'**
+  String get generator_result_coordinates;
+
+  /// No description provided for @generator_result_revision.
+  ///
+  /// In en, this message translates to:
+  /// **'Revision'**
+  String get generator_result_revision;
+
+  /// No description provided for @generator_result_base.
+  ///
+  /// In en, this message translates to:
+  /// **'vulpes-base commit'**
+  String get generator_result_base;
+
+  /// No description provided for @generator_result_gradle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gradle dependency'**
+  String get generator_result_gradle;
+
+  /// No description provided for @generator_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get generator_copy;
+
+  /// No description provided for @generator_copy_commit.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the full commit'**
+  String get generator_copy_commit;
+
+  /// No description provided for @generator_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to the clipboard.'**
+  String get generator_copied;
+
+  /// No description provided for @generator_publish_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'{version} is already published. The published versions have been reloaded, so the proposal moves on to the next free version.'**
+  String generator_publish_conflict(String version);
+
+  /// No description provided for @generator_publish_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'The generated code does not compile against the selected vulpes-base branch. Nothing was published.'**
+  String get generator_publish_rejected;
+
+  /// No description provided for @generator_publish_truncated.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the first 100 errors are shown.'**
+  String get generator_publish_truncated;
+
+  /// No description provided for @generator_publish_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The version could not be published.'**
+  String get generator_publish_failed;
+
+  /// No description provided for @generator_error_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status {status}'**
+  String generator_error_status(String status);
+
+  /// No description provided for @generator_error_network.
+  ///
+  /// In en, this message translates to:
+  /// **'The generator could not be reached.'**
+  String get generator_error_network;
+
+  /// No description provided for @generator_error_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The generator could not reach a service it needs: the backend, vulpes-base or the Maven repository.'**
+  String get generator_error_unavailable;
+
+  /// No description provided for @generator_versions_description.
+  ///
+  /// In en, this message translates to:
+  /// **'The releases and snapshots this project has published, newest first.'**
+  String get generator_versions_description;
+
+  /// No description provided for @generator_versions_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'This project has not published a version yet.'**
+  String get generator_versions_empty;
+
+  /// No description provided for @generator_versions_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The Maven repository cannot be read right now.'**
+  String get generator_versions_unavailable;
+
+  /// No description provided for @generator_versions_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The published versions could not be loaded.'**
+  String get generator_versions_failed;
+
+  /// No description provided for @generator_versions_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download {version} as a local build'**
+  String generator_versions_download(String version);
+
+  /// No description provided for @generator_versions_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the Gradle line'**
+  String get generator_versions_copy;
+
+  /// No description provided for @generator_local_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Local build'**
+  String get generator_local_title;
+
+  /// No description provided for @generator_publish_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Next version'**
+  String get generator_publish_title;
+
+  /// No description provided for @generator_publish_latest.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest release: {version}'**
+  String generator_publish_latest(String version);
+
+  /// No description provided for @generator_publish_first.
+  ///
+  /// In en, this message translates to:
+  /// **'No release yet, so this is the first one.'**
+  String get generator_publish_first;
+
+  /// No description provided for @generator_publish_republish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publishes {version} again and replaces it.'**
+  String generator_publish_republish(String version);
+
+  /// No description provided for @generator_publish_no_snapshot.
+  ///
+  /// In en, this message translates to:
+  /// **'No snapshot is published yet, so there is nothing to republish.'**
+  String get generator_publish_no_snapshot;
+
+  /// No description provided for @generator_publish_outcome_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Last publish'**
+  String get generator_publish_outcome_title;
+
+  /// No description provided for @generator_versions_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Published versions'**
+  String get generator_versions_title;
+
+  /// No description provided for @generator_versions_empty_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish a release or snapshot on the Publish tab.'**
+  String get generator_versions_empty_hint;
+
+  /// No description provided for @generator_no_project_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'The generator works on the project selected in the top bar.'**
+  String get generator_no_project_hint;
+
+  /// No description provided for @generator_local_howto_title.
+  ///
+  /// In en, this message translates to:
+  /// **'How to use it'**
+  String get generator_local_howto_title;
+
+  /// No description provided for @generator_local_step_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the zip for the selected vulpes-base branch.'**
+  String get generator_local_step_download;
+
+  /// No description provided for @generator_local_step_unzip.
+  ///
+  /// In en, this message translates to:
+  /// **'Unzip it into the project root. It creates vulpes/{project}/.'**
+  String generator_local_step_unzip(String project);
+
+  /// No description provided for @generator_local_step_build.
+  ///
+  /// In en, this message translates to:
+  /// **'Build as usual. The Gradle plugin uses vulpes/{project}/ in place of the published version.'**
+  String generator_local_step_build(String project);
+
+  /// No description provided for @generator_local_step_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete vulpes/{project}/ to build against the published version again.'**
+  String generator_local_step_remove(String project);
+
+  /// No description provided for @generator_current_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Currently published'**
+  String get generator_current_title;
+
+  /// No description provided for @generator_current_none.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing published on this channel yet.'**
+  String get generator_current_none;
+
+  /// No description provided for @generator_channel_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel'**
+  String get generator_channel_label;
+
+  /// No description provided for @generator_bump_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Raise'**
+  String get generator_bump_label;
+
+  /// No description provided for @generator_info_title.
+  ///
+  /// In en, this message translates to:
+  /// **'About the generator'**
+  String get generator_info_title;
+
+  /// No description provided for @generator_info_intro.
+  ///
+  /// In en, this message translates to:
+  /// **'The generator packages the selected project for the Vulpes Gradle plugin. Every build is first compiled against a vulpes-base branch, so code that does not compile is never handed out.'**
+  String get generator_info_intro;
+
+  /// No description provided for @generator_info_local.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads the current state of the project as a zip. Unzip it into your project root to try it with Gradle before anything is published.'**
+  String get generator_info_local;
+
+  /// No description provided for @generator_info_publish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publishes the next version to the Maven repository. A release (X.Y.Z) is final and cannot be published twice. A snapshot (X.Y.Z-SNAPSHOT) can be published again and replaces the previous one.'**
+  String get generator_info_publish;
+
+  /// No description provided for @generator_info_versions.
+  ///
+  /// In en, this message translates to:
+  /// **'Lists every release and snapshot of the project. Each one can be downloaded as a local build, or its Gradle line copied into a build script.'**
+  String get generator_info_versions;
+
+  /// No description provided for @generator_info_demo.
+  ///
+  /// In en, this message translates to:
+  /// **'Demo mode is on: nothing on this page reaches the generator. Set \"generatorDemo\": false in config.json to use the real one.'**
+  String get generator_info_demo;
 }
 
 class _AppLocalizationsDelegate

@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:dio/dio.dart';
@@ -21,7 +21,8 @@ import 'package:stelaris/feature/asset/upload/asset_upload_dialog.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
-import 'package:stelaris/feature/build/download/download_helper.dart';
+import 'package:stelaris/feature/build/download/download_helper.dart'
+    as download;
 import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:stelaris/feature/model/model_card_frame.dart';
 import 'package:stelaris/feature/model/model_grid.dart';
@@ -65,7 +66,7 @@ class ModelsPage extends StatelessWidget {
   final void Function(List<int> bytes, String fileName) saveFile;
 
   static void _saveInBrowser(List<int> bytes, String fileName) =>
-      triggerBrowserDownload(base64Encode(bytes), fileName);
+      download.saveFile(Uint8List.fromList(bytes), fileName);
 
   /// Loads the items of a project with their components, for "used by".
   final Future<Map<ItemModel, List<ItemComponentDto>>> Function(

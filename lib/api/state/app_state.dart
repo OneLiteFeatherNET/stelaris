@@ -4,6 +4,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/api/state/expression_validation_state.dart';
+import 'package:stelaris/api/state/generator_state.dart';
 import 'package:stelaris/api/state/model_search_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/command_palette/entity_search_state.dart';
@@ -117,12 +118,6 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingMoreExpressionFunctions,
-    @JsonKey(includeToJson: false, includeFromJson: false)
-    @Default(false)
-    bool isLoadingRelease,
-    @JsonKey(includeToJson: false, includeFromJson: false)
-    @Default(false)
-    bool isLoadingBranches,
 
     // ── Persistierte Einstellungen ──
     @Default(true) bool openNavigation,
@@ -170,10 +165,11 @@ abstract class AppState with _$AppState {
     // until a check has answered, and when the last one failed.
     @JsonKey(includeToJson: false, includeFromJson: false)
     ExpressionValidationState? expressionValidation,
+    // The generator page: branches, local build, publish and the published
+    // versions of the selected project.
     @JsonKey(includeToJson: false, includeFromJson: false)
-    ReleaseModel? releaseModel,
-    @JsonKey(includeToJson: false, includeFromJson: false)
-    List<String>? branches,
+    @Default(GeneratorState())
+    GeneratorState generator,
     @JsonKey(includeToJson: false, includeFromJson: false)
     Project? selectedProject,
     @JsonKey(includeToJson: false, includeFromJson: false)
