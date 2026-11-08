@@ -29,6 +29,10 @@ config:
   backendUrl: ""
   # Base URL of the code generator service.
   generatorUrl: ""
+  # Whether the generator page simulates the generator instead of calling it.
+  # Empty keeps the app's default (simulated); set false where the generator
+  # serves the editor release routes.
+  generatorDemo: ""
 
   # OpenID Connect provider the app authenticates against.
   #
