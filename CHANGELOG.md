@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.10.0...v1.11.0) (2026-11-08)
+
+
+### Features
+
+* **build:** build, test locally and publish versions on the generator page ([#310](https://github.com/OneLiteFeatherNET/stelaris/issues/310)) ([4134196](https://github.com/OneLiteFeatherNET/stelaris/commit/41341966968dae40f8fe9293f1ca9d3a4feafebe))
+* **chart:** let a deployment switch the generator demo off ([#315](https://github.com/OneLiteFeatherNET/stelaris/issues/315)) ([4618a54](https://github.com/OneLiteFeatherNET/stelaris/commit/4618a5482c5a2a47c320d25b141ea2c26c4a0b39))
+
 ## [1.10.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.9.0...v1.10.0) (2026-11-06)
 
 
