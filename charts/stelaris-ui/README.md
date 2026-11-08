@@ -43,6 +43,7 @@ server's runtime directory:
 config:
   backendUrl: https://api.stelaris.example/v1
   generatorUrl: https://gen.stelaris.example
+  generatorDemo: false   # call the generator instead of simulating it
 ```
 
 nginx serves that file from disk on every request, so **changing the Secret

@@ -36,6 +36,22 @@ tests:
           path: stringData["config.json"]
           pattern: '"generatorUrl": "https://gen\.example"'
 
+  - it: renders generatorDemo when it is switched off
+    template: secret.yaml
+    set:
+      config.generatorDemo: false
+    asserts:
+      - matchRegex:
+          path: stringData["config.json"]
+          pattern: '"generatorDemo": false'
+
+  - it: leaves out generatorDemo when it is not set
+    template: secret.yaml
+    asserts:
+      - notMatchRegex:
+          path: stringData["config.json"]
+          pattern: 'generatorDemo'
+
   - it: creates no Secret when an existing one is named
     template: secret.yaml
     set:
