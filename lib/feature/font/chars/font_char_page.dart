@@ -48,7 +48,7 @@ class FontCharPage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
-              FontCharRowWarning(lines: vm.chars.map((char) => char.line)),
+              FontCharRowWarning(lengths: vm.lineLengths),
               Expanded(child: _buildBodyContent(vm)),
             ],
           ),

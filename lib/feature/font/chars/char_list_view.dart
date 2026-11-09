@@ -25,9 +25,8 @@ class _CharListViewState extends State<CharListView>
     with InfiniteScrollMixin<CharListView> {
   @override
   Widget build(BuildContext context) {
-    final expectedLength = expectedRowLength(
-      widget.fontModel.chars.map((char) => char.line).toList(),
-    );
+    final expectedLength = widget.fontModel.expectedLineLength;
+    final cellWidth = codePointCellWidth(context);
     return Scrollbar(
       controller: scrollController,
       thumbVisibility: true,
@@ -43,6 +42,7 @@ class _CharListViewState extends State<CharListView>
             fontString: key,
             index: index,
             expectedLength: expectedLength,
+            codePointWidth: cellWidth,
             onEdit: () => _handleEdit(key),
             onDelete: () => _handleDelete(widget.fontModel.selected.id!, key),
           );

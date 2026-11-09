@@ -4,18 +4,18 @@ import 'package:stelaris/util/font_part.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 /// Warns when the lines of a font differ in length, which Minecraft rejects.
-/// Shows nothing while they are all the same length.
+/// Shows nothing while there is only one length.
 ///
 /// It only sees the loaded lines, a longer font is checked as far as it is
 /// scrolled.
 class FontCharRowWarning extends StatelessWidget {
-  const FontCharRowWarning({required this.lines, super.key});
+  const FontCharRowWarning({required this.lengths, super.key});
 
-  final Iterable<String> lines;
+  /// The distinct lengths of the lines, see [rowLengths].
+  final List<int> lengths;
 
   @override
   Widget build(BuildContext context) {
-    final lengths = rowLengths(lines);
     if (lengths.length < 2) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),

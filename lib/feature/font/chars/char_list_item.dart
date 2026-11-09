@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/auth/roles.dart';
 import 'package:stelaris/feature/auth/role_gate.dart';
+import 'package:stelaris/feature/base/chips/number_badge.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/font_part.dart';
@@ -22,6 +23,7 @@ class CharListItem extends StatefulWidget {
     required this.onEdit,
     required this.onDelete,
     this.expectedLength,
+    this.codePointWidth,
     super.key,
   });
 
@@ -33,6 +35,10 @@ class CharListItem extends StatefulWidget {
   /// The length all lines of the font should have, see [expectedRowLength].
   /// A line of another length marks its count.
   final int? expectedLength;
+
+  /// The width of the cell of a code point, see [codePointCellWidth]. The
+  /// list measures it once for all its cards, measured here when `null`.
+  final double? codePointWidth;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
@@ -69,9 +75,15 @@ class _CharListItemState extends State<CharListItem> {
             padding: const EdgeInsets.fromLTRB(12, 6, 8, 6),
             child: Row(
               children: [
-                _RowNumber(number: widget.index + 1),
+                NumberBadge(number: widget.index + 1),
                 const SizedBox(width: 12),
-                Expanded(child: _CodePoints(line: fontString.line)),
+                Expanded(
+                  child: _CodePoints(
+                    line: fontString.line,
+                    cellWidth:
+                        widget.codePointWidth ?? codePointCellWidth(context),
+                  ),
+                ),
                 const SizedBox(width: 8),
                 _LengthBadge(
                   length: length,
@@ -118,54 +130,36 @@ class _CharListItemState extends State<CharListItem> {
   }
 }
 
-/// The number of the row, in the style of the lore line number.
-class _RowNumber extends StatelessWidget {
-  const _RowNumber({required this.number});
+/// The style of a code point: the body text with digits of the same width.
+TextStyle? _codePointStyle(BuildContext context) =>
+    Theme.of(context).textTheme.bodyLarge
+        ?.copyWith(fontFeatures: const [FontFeature.tabularFigures()]);
 
-  final int number;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    return Container(
-      width: 28,
-      height: 28,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: colorScheme.secondaryContainer,
-        shape: BoxShape.circle,
-      ),
-      child: Text(
-        '$number',
-        style: theme.textTheme.labelMedium?.copyWith(
-          color: colorScheme.onSecondaryContainer,
-        ),
-      ),
-    );
-  }
+/// The width of a cell that holds a code point of four digits like `FFFF`.
+/// The app font has no monospace letters on the web, cells of this width
+/// line the columns of the rows up anyway.
+double codePointCellWidth(BuildContext context) {
+  final painter = TextPainter(
+    text: TextSpan(text: 'FFFF', style: _codePointStyle(context)),
+    textDirection: TextDirection.ltr,
+    textScaler: MediaQuery.textScalerOf(context),
+  )..layout();
+  final width = painter.width;
+  painter.dispose();
+  return width;
 }
 
-/// The code points of a line, each in a cell at least as wide as `FFFF`.
-/// The app font has no monospace digits on the web, the cells line the
-/// columns up anyway. A code point above FFFF widens its cell.
+/// The code points of a line, each in a cell at least [cellWidth] wide. A
+/// code point above FFFF widens its cell.
 class _CodePoints extends StatelessWidget {
-  const _CodePoints({required this.line});
+  const _CodePoints({required this.line, required this.cellWidth});
 
   final String line;
+  final double cellWidth;
 
   @override
   Widget build(BuildContext context) {
-    final style = Theme.of(context).textTheme.bodyLarge
-        ?.copyWith(fontFeatures: const [FontFeature.tabularFigures()]);
-    final painter = TextPainter(
-      text: TextSpan(text: 'FFFF', style: style),
-      textDirection: TextDirection.ltr,
-      textScaler: MediaQuery.textScalerOf(context),
-    )..layout();
-    final cellWidth = painter.width;
-    painter.dispose();
-
+    final style = _codePointStyle(context);
     return Wrap(
       spacing: 12,
       runSpacing: 4,
@@ -190,33 +184,22 @@ class _LengthBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final expected = expectedLength;
     final deviates = expected != null && length != expected;
     return Tooltip(
       message: deviates
           ? context.l10n.font_char_length_deviates(length, expected)
           : context.l10n.font_char_length(length),
-      child: Container(
+      child: NumberBadge(
         key: const Key('font_char_length'),
-        constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: deviates
-              ? colorScheme.errorContainer
-              : colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(AppShapes.full),
-        ),
-        child: Text(
-          '$length',
-          style: theme.textTheme.labelMedium?.copyWith(
-            color: deviates
-                ? colorScheme.onErrorContainer
-                : colorScheme.onSurfaceVariant,
-          ),
-        ),
+        number: length,
+        background: deviates
+            ? colorScheme.errorContainer
+            : colorScheme.surfaceContainerHighest,
+        foreground: deviates
+            ? colorScheme.onErrorContainer
+            : colorScheme.onSurfaceVariant,
       ),
     );
   }
