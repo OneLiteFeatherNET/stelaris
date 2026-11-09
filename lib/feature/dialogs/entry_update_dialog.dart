@@ -59,6 +59,7 @@ class _EntryUpdateDialogState extends State<EntryUpdateDialog> {
           autofocus: true,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: _controller,
+          maxLength: maxTextLength,
           inputFormatters: widget.formatters,
           validator: widget.formFieldValidator,
           decoration: InputDecoration(

@@ -4,6 +4,7 @@ import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/input/registry_autocomplete.dart';
 import 'package:stelaris/feature/sound/modal/section/base_integer_section_field.dart';
 import 'package:stelaris/feature/sound/modal/section/sound_slider.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
 
@@ -156,6 +157,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
       controller: _nameController,
       focusNode: _nameFocus,
       autofocus: widget.create,
+      maxLength: maxTextLength,
       decoration: InputDecoration(
         labelText: l10n.sound_name,
         hintText: l10n.sound_name_hint,

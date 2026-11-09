@@ -117,6 +117,7 @@ class _LorePageState extends State<LorePage> {
           title: context.l10n.button_add_new_line,
           actionLabel: context.l10n.button_add,
           componentContext: ComponentContext.lore,
+          maxLength: maxTextLength,
           onSave: (value) {
             final ItemLoreDto dto = ItemLoreDto(text: value);
             context.dispatch(ItemLoreAddAction(dto));

@@ -85,6 +85,7 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
             TextFormField(
               controller: _nameController,
               autofocus: true,
+              maxLength: maxTextLength,
               decoration: InputDecoration(
                 labelText: '${context.l10n.dialog_model_name_label} *',
                 hintText: widget.nameHint ?? context.l10n.dialog_model_name_hint,
@@ -97,6 +98,7 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
               verticalSpacing10,
               TextFormField(
                 controller: _keyController,
+                maxLength: maxTextLength,
                 inputFormatters: const [lowerCaseFormatter],
                 decoration: InputDecoration(
                   labelText: '${context.l10n.dialog_model_key_label} *',

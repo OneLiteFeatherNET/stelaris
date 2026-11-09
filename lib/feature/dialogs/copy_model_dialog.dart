@@ -161,6 +161,7 @@ class _CopyModelDialogState extends State<CopyModelDialog> {
             TextFormField(
               controller: _nameController,
               autofocus: true,
+              maxLength: maxTextLength,
               decoration: InputDecoration(
                 labelText: '${l10n.dialog_model_name_label} *',
                 hintText: l10n.dialog_model_name_hint,
@@ -172,6 +173,7 @@ class _CopyModelDialogState extends State<CopyModelDialog> {
             verticalSpacing10,
             TextFormField(
               controller: _keyController,
+              maxLength: maxTextLength,
               inputFormatters: const [lowerCaseFormatter],
               decoration: InputDecoration(
                 labelText: '${l10n.dialog_model_key_label} *',

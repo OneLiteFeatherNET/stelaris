@@ -139,6 +139,7 @@ class _ExpressionVariableDialogState extends State<ExpressionVariableDialog> {
             TextFormField(
               controller: _name,
               autofocus: true,
+              maxLength: maxTextLength,
               decoration: InputDecoration(
                 labelText: '${l10n.expression_variable_name_label} *',
                 hintText: l10n.expression_variable_name_hint,

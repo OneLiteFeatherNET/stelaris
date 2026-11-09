@@ -4,6 +4,7 @@ import 'package:stelaris/feature/component/minimessage_editor.dart';
 import 'package:stelaris/util/component_context.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/functions.dart';
+import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 /// Edits one MiniMessage component with a formatting toolbar. Hands the
@@ -16,6 +17,7 @@ class ComponentDialog extends StatefulWidget {
     required this.onSave,
     this.initialValue = emptyString,
     this.required = true,
+    this.maxLength,
     super.key,
   });
 
@@ -29,6 +31,11 @@ class ComponentDialog extends StatefulWidget {
   /// the component, e.g. an advancement's title.
   final bool required;
 
+  /// The most characters the text may have, tags included, unlimited when
+  /// null. Longer text is refused, e.g. a lore line, which the backend stores
+  /// in a column of [maxTextLength] characters.
+  final int? maxLength;
+
   @override
   State<ComponentDialog> createState() => _ComponentDialogState();
 }
@@ -40,6 +47,19 @@ class _ComponentDialogState extends State<ComponentDialog> {
   void _save() {
     if (!_formKey.currentState!.validate()) return;
     widget.onSave(_text);
+  }
+
+  String? _validate(String? value) {
+    final text = value ?? emptyString;
+    if (widget.required) {
+      final empty = checkIfEmptyAndReturnErrorString(text, context);
+      if (empty != null) return empty;
+    }
+    final maxLength = widget.maxLength;
+    if (maxLength != null && text.characters.length > maxLength) {
+      return context.l10n.validation_max_length(maxLength);
+    }
+    return null;
   }
 
   @override
@@ -57,12 +77,7 @@ class _ComponentDialogState extends State<ComponentDialog> {
           onChanged: (text) => _text = text,
           componentContext: widget.componentContext,
           autofocus: true,
-          validator: widget.required
-              ? (value) => checkIfEmptyAndReturnErrorString(
-                  value ?? emptyString,
-                  context,
-                )
-              : null,
+          validator: _validate,
           onSubmitted: (_) => _save(),
         ),
       ),

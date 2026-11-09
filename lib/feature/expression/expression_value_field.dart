@@ -1,5 +1,7 @@
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -61,7 +63,10 @@ class ExpressionValueField extends StatelessWidget {
       keyboardType: number
           ? const TextInputType.numberWithOptions(signed: true, decimal: true)
           : null,
-      inputFormatters: number ? [decimalFormatter] : null,
+      inputFormatters: [
+        if (number) decimalFormatter,
+        LengthLimitingTextInputFormatter(maxTextLength),
+      ],
       autovalidateMode: AutovalidateMode.always,
       validator: (value) => _validate(l10n, value),
     );

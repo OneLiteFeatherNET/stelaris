@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/dispatch_ext.dart';
 
@@ -78,6 +79,7 @@ class _NotesEditDialogState extends State<NotesEditDialog> {
         keyboardType: TextInputType.multiline,
         minLines: 5,
         maxLines: 12,
+        maxLength: maxTextLength,
         decoration: InputDecoration(
           hintText: context.l10n.notes_hint,
         ),

@@ -55,6 +55,7 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
           children: [
             TextFormField(
               controller: _displayNameController,
+              maxLength: maxTextLength,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               decoration: InputDecoration(
                 labelText: '${context.l10n.dialog_project_display_name} *',
@@ -66,6 +67,7 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             verticalSpacing10,
             TextFormField(
               controller: _keyController,
+              maxLength: maxTextLength,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               inputFormatters: const [lowerCaseFormatter],
               decoration: InputDecoration(
@@ -78,6 +80,7 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             verticalSpacing10,
             TextFormField(
               controller: _descriptionController,
+              maxLength: maxTextLength,
               maxLines: 3,
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_description,
@@ -88,6 +91,7 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             verticalSpacing10,
             TextFormField(
               controller: _projectUrlController,
+              maxLength: maxTextLength,
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_url,
                 hintText: 'https://github.com/...',
@@ -97,6 +101,7 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             verticalSpacing10,
             TextFormField(
               controller: _docuUrlController,
+              maxLength: maxTextLength,
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_docu_url,
                 hintText: 'https://docs.example.com/...',
