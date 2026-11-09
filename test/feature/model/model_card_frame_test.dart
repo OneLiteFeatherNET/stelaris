@@ -7,6 +7,7 @@ void main() {
     WidgetTester tester, {
     Widget? trailing,
     String? summary,
+    Widget? body,
     String? footerText,
     VoidCallback? onTap,
   }) => tester.pumpWidget(
@@ -18,6 +19,7 @@ void main() {
             content: const Text('Ruby'),
             trailing: trailing,
             summary: summary,
+            body: body,
             footerIcon: Icons.schedule,
             footerText: footerText,
             onTap: onTap,
@@ -68,5 +70,17 @@ void main() {
     await tester.tap(find.byKey(const Key('model_grid_card_inkwell')));
 
     expect(tapped, isTrue);
+  });
+
+  testWidgets('shows the body between the header and the footer', (
+    tester,
+  ) async {
+    await pumpFrame(tester, body: const Text('Player'), footerText: 'File');
+
+    final header = tester.getTopLeft(find.text('Ruby')).dy;
+    final body = tester.getTopLeft(find.text('Player')).dy;
+    final footer = tester.getTopLeft(find.text('File')).dy;
+    expect(body, greaterThan(header));
+    expect(footer, greaterThan(body));
   });
 }

@@ -6,11 +6,27 @@ import 'package:stelaris/feature/sound/card/sound_file_card.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
+SoundFileSource _source({String type = 'file', String? assetId}) =>
+    SoundFileSource(
+      name: 'vulpes:ui/click',
+      volume: 0.5,
+      pitch: 1,
+      attenuationDistance: 16,
+      preload: false,
+      type: type,
+      weight: 1,
+      assetId: assetId,
+    );
+
 void main() {
   group('SoundFileCard', () {
     Future<void> pumpCard(
       WidgetTester tester, {
-      double width = 400,
+      SoundFileSource? source,
+      Widget? player,
+      String? assetName,
+      bool loading = false,
+      double? height,
       VoidCallback? onEdit,
       VoidCallback? onDelete,
     }) {
@@ -23,17 +39,13 @@ void main() {
             home: Scaffold(
               body: Center(
                 child: SizedBox(
-                  width: width,
+                  width: 300,
+                  height: height,
                   child: SoundFileCard(
-                    source: const SoundFileSource(
-                      name: 'step',
-                      volume: 0.5,
-                      pitch: 1,
-                      attenuationDistance: 16,
-                      preload: false,
-                      type: 'event',
-                      weight: 1,
-                    ),
+                    source: source ?? _source(),
+                    player: player,
+                    assetName: assetName,
+                    loading: loading,
                     onEdit: onEdit ?? () {},
                     onDelete: onDelete ?? () {},
                   ),
@@ -45,43 +57,100 @@ void main() {
       );
     }
 
-    testWidgets('shows the name once with the type, volume and pitch', (
+    testWidgets('shows the name and a footer of type, volume and pitch', (
       tester,
     ) async {
       await pumpCard(tester);
 
-      expect(find.text('step'), findsOneWidget);
-      expect(find.text('Event · Volume 0.5 · Pitch 1.0'), findsOneWidget);
+      expect(find.text('vulpes:ui/click'), findsOneWidget);
+      expect(find.text('File · Volume 0.5 · Pitch 1.0'), findsOneWidget);
+    });
+
+    testWidgets('a linked file is titled with its asset, the key below', (
+      tester,
+    ) async {
+      await pumpCard(
+        tester,
+        source: _source(assetId: 'a-1'),
+        assetName: 'Click',
+      );
+
+      final title = tester.getTopLeft(find.text('Click')).dy;
+      final key = tester.getTopLeft(find.text('vulpes:ui/click')).dy;
+      expect(key, greaterThan(title));
+    });
+
+    testWidgets('while loading shows only a progress indicator', (
+      tester,
+    ) async {
+      await pumpCard(
+        tester,
+        source: _source(assetId: 'a-1'),
+        player: const Text('player'),
+        loading: true,
+      );
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.text('vulpes:ui/click'), findsNothing);
+      expect(find.text('player'), findsNothing);
     });
 
     testWidgets('a tap on the card edits the file', (tester) async {
       var edited = 0;
       await pumpCard(tester, onEdit: () => edited++);
 
-      await tester.tap(find.text('step'));
+      await tester.tap(find.text('vulpes:ui/click'));
 
       expect(edited, 1);
     });
 
-    testWidgets('offers only a delete button', (tester) async {
+    testWidgets('the delete button deletes the file', (tester) async {
       var deleted = 0;
-      await pumpCard(tester, onDelete: () => deleted++);
+      var edited = 0;
+      await pumpCard(tester, onDelete: () => deleted++, onEdit: () => edited++);
 
-      expect(find.byType(FilledButton), findsNothing);
-      expect(find.byType(OutlinedButton), findsNothing);
       await tester.tap(find.byIcon(Icons.delete_forever));
 
       expect(deleted, 1);
+      expect(edited, 0);
     });
 
-    testWidgets('a tap on the narrow card edits the file', (tester) async {
-      var edited = 0;
-      await pumpCard(tester, width: 120, onEdit: () => edited++);
+    testWidgets('shows the player of an uploaded file', (tester) async {
+      await pumpCard(
+        tester,
+        source: _source(assetId: 'a-1'),
+        player: const Text('player'),
+      );
 
-      expect(find.text('step'), findsNothing);
-      await tester.tap(find.byIcon(Icons.folder));
+      expect(find.text('player'), findsOneWidget);
+    });
 
-      expect(edited, 1);
+    testWidgets('fits its height with a player', (tester) async {
+      await pumpCard(
+        tester,
+        source: _source(assetId: 'a-1'),
+        assetName: 'Click',
+        height: SoundFileCard.height,
+        player: const SizedBox(height: 40),
+      );
+
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('a file without upload says it has no audio', (tester) async {
+      await pumpCard(tester);
+
+      expect(
+        find.text('No uploaded sound, e.g. a vanilla one'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('an event says it plays another event', (tester) async {
+      await pumpCard(tester, source: _source(type: 'event'));
+
+      expect(find.text('Plays another sound event'), findsOneWidget);
+      expect(find.text('Event · Volume 0.5 · Pitch 1.0'), findsOneWidget);
     });
   });
 }

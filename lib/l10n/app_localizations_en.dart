@@ -330,6 +330,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tooltip_delete => 'Delete';
 
   @override
+  String get tooltip_sound_play => 'Play';
+
+  @override
+  String get tooltip_sound_stop => 'Stop';
+
+  @override
   String get tooltip_line_count => 'Current line count';
 
   @override
@@ -1687,7 +1693,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sound_type_event => 'Event';
 
   @override
+  String sound_play_unavailable(String key) {
+    return 'There is no audio for $key in this project';
+  }
+
+  @override
+  String get sound_play_failed => 'The sound could not be played';
+
+  @override
   String get sound_asset_choose => 'Choose uploaded sound';
+
+  @override
+  String get sound_file_plays_event => 'Plays another sound event';
 
   @override
   String get sound_asset_linked => 'Linked to the uploaded sound';

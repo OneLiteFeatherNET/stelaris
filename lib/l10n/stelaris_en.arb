@@ -149,6 +149,8 @@
   },
 
   "tooltip_delete": "Delete",
+  "tooltip_sound_play": "Play",
+  "tooltip_sound_stop": "Stop",
   "tooltip_line_count": "Current line count",
   "tooltip_item_group": "Change the group of an item",
   "tooltip_item_enchantment_all_set": "All enchantments has been set for this group!",
@@ -821,7 +823,17 @@
   "sound_edit": "Edit Sound",
   "sound_type_file": "File",
   "sound_type_event": "Event",
+  "sound_play_unavailable": "There is no audio for {key} in this project",
+  "@sound_play_unavailable": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "sound_play_failed": "The sound could not be played",
   "sound_asset_choose": "Choose uploaded sound",
+  "sound_file_plays_event": "Plays another sound event",
   "sound_asset_linked": "Linked to the uploaded sound",
   "sound_asset_none": "No uploaded sound, e.g. a vanilla one",
   "sound_asset_unlink": "Unlink the uploaded sound",

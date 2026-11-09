@@ -682,6 +682,18 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get tooltip_delete;
 
+  /// No description provided for @tooltip_sound_play.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get tooltip_sound_play;
+
+  /// No description provided for @tooltip_sound_stop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get tooltip_sound_stop;
+
   /// No description provided for @tooltip_line_count.
   ///
   /// In en, this message translates to:
@@ -3130,11 +3142,29 @@ abstract class AppLocalizations {
   /// **'Event'**
   String get sound_type_event;
 
+  /// No description provided for @sound_play_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no audio for {key} in this project'**
+  String sound_play_unavailable(String key);
+
+  /// No description provided for @sound_play_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The sound could not be played'**
+  String get sound_play_failed;
+
   /// No description provided for @sound_asset_choose.
   ///
   /// In en, this message translates to:
   /// **'Choose uploaded sound'**
   String get sound_asset_choose;
+
+  /// No description provided for @sound_file_plays_event.
+  ///
+  /// In en, this message translates to:
+  /// **'Plays another sound event'**
+  String get sound_file_plays_event;
 
   /// No description provided for @sound_asset_linked.
   ///
