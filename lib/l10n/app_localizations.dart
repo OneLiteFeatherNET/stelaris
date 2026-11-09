@@ -112,6 +112,12 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get button_save;
 
+  /// No description provided for @button_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get button_help;
+
   /// No description provided for @feedback_save_success.
   ///
   /// In en, this message translates to:

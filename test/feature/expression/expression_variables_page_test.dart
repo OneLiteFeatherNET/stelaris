@@ -23,7 +23,7 @@ Store<AppState> _storeWith(List<ExpressionVariable> variables) =>
       ),
     );
 
-/// Adds a variable named [name] through the Add chip and the dialog's Save.
+/// Adds a variable named [name] through the Add chip and the dialog's Add.
 Future<void> _addVariable(WidgetTester tester, String name) async {
   await tester.tap(find.text('Add'));
   await tester.pumpAndSettle();
@@ -37,7 +37,7 @@ Future<void> _addVariable(WidgetTester tester, String name) async {
     name,
   );
   await tester.tap(
-    find.descendant(of: find.byType(Dialog), matching: find.text('Save')),
+    find.descendant(of: find.byType(Dialog), matching: find.text('Add')),
   );
   await tester.pumpAndSettle();
 }

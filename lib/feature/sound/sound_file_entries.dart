@@ -3,7 +3,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/service/sound/sound_file_loader.dart';
-import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_file_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/sound/selected_sound_state.dart';
@@ -128,12 +127,6 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
               PageHeader.small(
                 title: context.l10n.tab_entries,
                 actions: [
-                  PageHeaderAction(
-                    key: const Key('sound_files_save'),
-                    icon: const Icon(Icons.save_outlined),
-                    label: context.l10n.button_save,
-                    onPressed: () => context.dispatch(SoundDatabaseUpdate()),
-                  ),
                   PageHeaderAction(
                     key: const Key('sound_files_add'),
                     icon: const Icon(Icons.add),
