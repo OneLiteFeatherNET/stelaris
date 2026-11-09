@@ -10,6 +10,7 @@ import 'package:stelaris/feature/component/component_dialog.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/minimessage_json.dart';
+import 'package:stelaris/feature/base/input/length_counter.dart';
 
 /// Opens the dialog of [field] and hands a changed value to it.
 Future<void> editField(BuildContext context, EditField field) async {
@@ -334,6 +335,7 @@ class _TextEditDialogState extends State<_TextEditDialog> {
       focusNode: _focusNode,
       autofocus: true,
       maxLength: field.maxLength,
+      buildCounter: nearLimitCounter,
       keyboardType: field.keyboardType,
       inputFormatters: field.formatters,
       validator: field.validator,

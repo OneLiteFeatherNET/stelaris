@@ -10,6 +10,7 @@ import 'package:stelaris/util/validators.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/dispatch_ext.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
+import 'package:stelaris/feature/base/input/length_counter.dart';
 
 /// Creates a [Project] and selects it. Pops the project as the backend
 /// stored it, with its id.
@@ -56,6 +57,7 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             TextFormField(
               controller: _displayNameController,
               maxLength: maxTextLength,
+              buildCounter: nearLimitCounter,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               decoration: InputDecoration(
                 labelText: '${context.l10n.dialog_project_display_name} *',
@@ -70,6 +72,7 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             TextFormField(
               controller: _keyController,
               maxLength: maxTextLength,
+              buildCounter: nearLimitCounter,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               inputFormatters: const [lowerCaseFormatter],
               decoration: InputDecoration(
@@ -83,6 +86,7 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             TextFormField(
               controller: _descriptionController,
               maxLength: maxTextLength,
+              buildCounter: nearLimitCounter,
               maxLines: 3,
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_description,

@@ -7,6 +7,7 @@ import 'package:stelaris/feature/sound/modal/section/sound_slider.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
+import 'package:stelaris/feature/base/input/length_counter.dart';
 
 /// The client clamps the pitch to this range when it plays a sound.
 const double minPitch = 0.5;
@@ -155,6 +156,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
       focusNode: _nameFocus,
       autofocus: widget.create,
       maxLength: maxTextLength,
+      buildCounter: nearLimitCounter,
       decoration: InputDecoration(
         labelText: l10n.sound_name,
         hintText: l10n.sound_name_hint,

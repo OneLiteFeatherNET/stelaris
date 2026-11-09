@@ -16,6 +16,7 @@ import 'package:stelaris/util/validators.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/dispatch_ext.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
+import 'package:stelaris/feature/base/input/length_counter.dart';
 
 /// The tabs of the [EditProjectDialog].
 enum EditProjectTab { project, pack }
@@ -168,6 +169,7 @@ class _EditProjectDialogState extends State<EditProjectDialog>
         TextFormField(
           controller: _displayNameController,
           maxLength: maxTextLength,
+          buildCounter: nearLimitCounter,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration: InputDecoration(
             labelText: '${context.l10n.dialog_project_display_name} *',
@@ -193,6 +195,7 @@ class _EditProjectDialogState extends State<EditProjectDialog>
         TextFormField(
           controller: _descriptionController,
           maxLength: maxTextLength,
+          buildCounter: nearLimitCounter,
           maxLines: 3,
           decoration: InputDecoration(
             labelText: context.l10n.dialog_project_description,

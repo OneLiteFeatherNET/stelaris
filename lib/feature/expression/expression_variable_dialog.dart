@@ -6,6 +6,7 @@ import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/feature/base/input/length_counter.dart';
 
 /// A variable name as EvalEx reads it: a letter or underscore, then letters,
 /// digits and underscores.
@@ -140,6 +141,7 @@ class _ExpressionVariableDialogState extends State<ExpressionVariableDialog> {
               controller: _name,
               autofocus: true,
               maxLength: maxTextLength,
+              buildCounter: nearLimitCounter,
               decoration: InputDecoration(
                 labelText: '${l10n.expression_variable_name_label} *',
                 hintText: l10n.expression_variable_name_hint,

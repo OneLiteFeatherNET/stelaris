@@ -81,6 +81,19 @@ void main() {
     expect(saved, ['a' * maxTextLength]);
   });
 
+  testWidgets('shows the counter only close to the limit', (tester) async {
+    await pumpDialog(tester);
+    const nearLimit = maxTextLength - 10;
+
+    await tester.enterText(find.byType(TextField), 'sharp');
+    await tester.pump();
+    expect(find.textContaining('/$maxTextLength'), findsNothing);
+
+    await tester.enterText(find.byType(TextField), 'a' * nearLimit);
+    await tester.pump();
+    expect(find.text('$nearLimit/$maxTextLength'), findsOneWidget);
+  });
+
   testWidgets('a failed save shows the error and keeps the dialog open', (
     tester,
   ) async {
