@@ -9,6 +9,11 @@ import 'package:stelaris/util/font_part.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
 
+/// Keeps everything but hex digits and whitespace out of the field.
+final TextInputFormatter _codePointInput = FilteringTextInputFormatter.allow(
+  codePointInputCharacter,
+);
+
 /// Adds a font line, or edits [fontString] when it is given.
 ///
 /// The line is typed as hex code points like `E000 E001` and sent as the
@@ -66,9 +71,7 @@ class _FontCharDialogState extends State<FontCharDialog> {
           controller: _controller,
           autocorrect: false,
           // Keeps a slip like `ß` next to the `0` out of the field.
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9A-Fa-f\s]')),
-          ],
+          inputFormatters: [_codePointInput],
           validator: Validators.fontLine(context.l10n),
           decoration: InputDecoration(
             labelText: context.l10n.font_char_label,

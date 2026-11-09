@@ -12,6 +12,11 @@ const int maxFontLineLength = 255;
 
 final RegExp _hexCodePoint = RegExp(r'^[0-9A-Fa-f]{4,6}$');
 
+final RegExp _whitespace = RegExp(r'\s+');
+
+/// The characters the input of code points takes: hex digits and whitespace.
+final RegExp codePointInputCharacter = RegExp(r'[0-9A-Fa-f\s]');
+
 /// Whether [codePoint] lies in one of the three Private Use Areas:
 /// `E000–F8FF`, `F0000–FFFFD` (plane 15) and `100000–10FFFD` (plane 16).
 bool isFontPart(int codePoint) =>
@@ -24,7 +29,7 @@ bool isFontPart(int codePoint) =>
 /// Returns `null` when [input] is blank or a part is not 4 to 6 hex digits.
 /// It does not check the Private Use Area, see [isFontPart].
 List<int>? parseCodePoints(String input) {
-  final parts = input.trim().split(RegExp(r'\s+'));
+  final parts = input.trim().split(_whitespace);
   if (parts.length == 1 && parts.first.isEmpty) return null;
   final codePoints = <int>[];
   for (final part in parts) {
