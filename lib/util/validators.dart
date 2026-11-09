@@ -33,6 +33,18 @@ class Validators {
     };
   }
 
+  /// Validates that a string has at most [max] characters. Counts UTF-16 code
+  /// units like the backend's `@Size` does, so an emoji counts as two.
+  ///
+  /// Unlike `maxLength` on a field, it doesn't cut longer text, e.g. a pasted
+  /// URL stays whole and the error asks to shorten it.
+  static FormValidator<String> maxLength(AppLocalizations l10n, int max) {
+    return (value) {
+      if (value == null || value.length <= max) return null;
+      return l10n.validation_max_length(max);
+    };
+  }
+
   /// Combines multiple [FormValidator]s in sequential order.
   /// Stops and returns the error of the first failing validator.
   static FormValidator<String> compose(List<FormValidator<String>> validators) {

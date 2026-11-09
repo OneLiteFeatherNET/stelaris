@@ -93,7 +93,8 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             verticalSpacing10,
             TextFormField(
               controller: _projectUrlController,
-              maxLength: maxTextLength,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: Validators.maxLength(context.l10n, maxTextLength),
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_url,
                 hintText: 'https://github.com/...',
@@ -103,7 +104,8 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             verticalSpacing10,
             TextFormField(
               controller: _docuUrlController,
-              maxLength: maxTextLength,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: Validators.maxLength(context.l10n, maxTextLength),
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_docu_url,
                 hintText: 'https://docs.example.com/...',
