@@ -13,17 +13,29 @@ import 'package:stelaris/feature/base/input/length_counter.dart';
 const double minPitch = 0.5;
 const double maxPitch = 2;
 
+/// Lets the user choose or upload a sound asset; [selectedKey] is the key of
+/// the linked one. Resolves to null when nothing was chosen.
+typedef SoundAssetPicker = Future<AssetModel?> Function(
+  BuildContext context,
+  String? selectedKey,
+);
+
 class SoundFileModal extends StatefulWidget {
   const SoundFileModal({
     required this.create,
     required this.onSave,
     this.initialData,
+    this.pickSound,
     super.key,
   });
 
   final void Function(SoundFileSource soundFile)? onSave;
   final bool create;
   final SoundFileSource? initialData;
+
+  /// Chooses the uploaded sound a file plays. Without it a file can only be
+  /// named, not linked.
+  final SoundAssetPicker? pickSound;
 
   @override
   State<SoundFileModal> createState() => _SoundFileModalState();
@@ -39,6 +51,11 @@ class _SoundFileModalState extends State<SoundFileModal> {
   late bool _preload;
   late String _type;
 
+  /// The sound asset the file plays and its key, which the name equals while
+  /// it is linked.
+  String? _assetId;
+  String? _assetKey;
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -52,6 +69,34 @@ class _SoundFileModalState extends State<SoundFileModal> {
     _attenuationDistance = data?.attenuationDistance ?? 16;
     _preload = data?.preload ?? false;
     _type = data?.type ?? 'file';
+    if (data?.assetId case final assetId?) {
+      _assetId = assetId;
+      _assetKey = data!.name;
+    }
+    _nameController.addListener(_onNameChanged);
+  }
+
+  /// The backend links a file only under the key of its sound, so another
+  /// name ends the link.
+  void _onNameChanged() {
+    if (_assetKey != null && _nameController.text.trim() != _assetKey) {
+      setState(_unlink);
+    }
+  }
+
+  void _unlink() {
+    _assetId = null;
+    _assetKey = null;
+  }
+
+  Future<void> _chooseSound(SoundAssetPicker pick) async {
+    final asset = await pick(context, _assetKey);
+    if (asset == null || !mounted) return;
+    setState(() {
+      _assetId = asset.id;
+      _assetKey = asset.key;
+    });
+    _nameController.text = asset.key;
   }
 
   @override
@@ -79,6 +124,10 @@ class _SoundFileModalState extends State<SoundFileModal> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _nameField(context),
+            if (widget.pickSound case final pick? when _type == 'file') ...[
+              const SizedBox(height: 8),
+              _soundRow(context, pick),
+            ],
             const SizedBox(height: 16),
             SegmentedButton<String>(
               segments: [
@@ -178,6 +227,41 @@ class _SoundFileModalState extends State<SoundFileModal> {
     );
   }
 
+  /// Whether the file plays an uploaded sound, and the button to choose one.
+  Widget _soundRow(BuildContext context, SoundAssetPicker pick) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    return Row(
+      children: [
+        Icon(
+          _assetId == null ? Icons.link_off : Icons.audio_file_outlined,
+          size: 20,
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            _assetId == null ? l10n.sound_asset_none : l10n.sound_asset_linked,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+        if (_assetId != null)
+          IconButton(
+            tooltip: l10n.sound_asset_unlink,
+            onPressed: () => setState(_unlink),
+            icon: const Icon(Icons.link_off),
+          ),
+        TextButton.icon(
+          onPressed: () => _chooseSound(pick),
+          icon: const Icon(Icons.library_music_outlined),
+          label: Text(l10n.sound_asset_choose),
+        ),
+      ],
+    );
+  }
+
   void _handleSave() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     widget.onSave?.call(
@@ -190,6 +274,8 @@ class _SoundFileModalState extends State<SoundFileModal> {
         attenuationDistance: _attenuationDistance,
         preload: _preload,
         type: _type,
+        // An event names another sound event, it plays no file of its own.
+        assetId: _type == 'file' ? _assetId : null,
       ),
     );
     Navigator.pop(context);

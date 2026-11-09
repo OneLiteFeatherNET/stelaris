@@ -68,11 +68,11 @@ class AssetLibrary {
         final textures = await _modelTextures(projectId, json);
         final scene = readMinecraftModel(json, texture: (key) => textures[key]);
         return _sceneData(scene);
-      case AssetKind.TEXTURE:
+      case AssetKind.TEXTURE || AssetKind.SOUND:
         throw ArgumentError.value(
           asset.kind,
           'asset.kind',
-          '${asset.key} is a texture, not a model',
+          '${asset.key} is a ${asset.kind.name.toLowerCase()}, not a model',
         );
     }
   }

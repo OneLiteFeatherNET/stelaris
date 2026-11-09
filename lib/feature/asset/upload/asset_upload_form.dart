@@ -189,11 +189,13 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
 
   static const _texture = {AssetKind.TEXTURE};
   static const _models = {AssetKind.MODEL, AssetKind.BBMODEL};
+  static const _sound = {AssetKind.SOUND};
 
   /// The file types [kinds] take, as the drop zone names them.
   static String _formats(AppLocalizations l10n, Set<AssetKind> kinds) {
     if (setEquals(kinds, _texture)) return l10n.asset_upload_formats_texture;
     if (setEquals(kinds, _models)) return l10n.asset_upload_formats_models;
+    if (setEquals(kinds, _sound)) return l10n.asset_upload_formats_sound;
     return l10n.asset_upload_formats;
   }
 
@@ -203,6 +205,7 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
       return l10n.asset_upload_unsupported_texture;
     }
     if (setEquals(kinds, _models)) return l10n.asset_upload_unsupported_models;
+    if (setEquals(kinds, _sound)) return l10n.asset_upload_unsupported_sound;
     return l10n.asset_upload_unsupported_file;
   }
 

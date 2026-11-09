@@ -682,6 +682,18 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get tooltip_delete;
 
+  /// No description provided for @tooltip_sound_play.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get tooltip_sound_play;
+
+  /// No description provided for @tooltip_sound_stop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get tooltip_sound_stop;
+
   /// No description provided for @tooltip_line_count.
   ///
   /// In en, this message translates to:
@@ -3130,6 +3142,48 @@ abstract class AppLocalizations {
   /// **'Event'**
   String get sound_type_event;
 
+  /// No description provided for @sound_play_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no audio for {key} in this project'**
+  String sound_play_unavailable(String key);
+
+  /// No description provided for @sound_play_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The sound could not be played'**
+  String get sound_play_failed;
+
+  /// No description provided for @sound_asset_choose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose uploaded sound'**
+  String get sound_asset_choose;
+
+  /// No description provided for @sound_file_plays_event.
+  ///
+  /// In en, this message translates to:
+  /// **'Plays another sound event'**
+  String get sound_file_plays_event;
+
+  /// No description provided for @sound_asset_linked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked to the uploaded sound'**
+  String get sound_asset_linked;
+
+  /// No description provided for @sound_asset_none.
+  ///
+  /// In en, this message translates to:
+  /// **'No uploaded sound, e.g. a vanilla one'**
+  String get sound_asset_none;
+
+  /// No description provided for @sound_asset_unlink.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink the uploaded sound'**
+  String get sound_asset_unlink;
+
   /// No description provided for @sound_file_card_subtitle.
   ///
   /// In en, this message translates to:
@@ -3958,6 +4012,12 @@ abstract class AppLocalizations {
   /// **'Texture'**
   String get asset_library_kind_texture;
 
+  /// No description provided for @asset_library_kind_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound'**
+  String get asset_library_kind_sound;
+
   /// No description provided for @asset_upload_drop.
   ///
   /// In en, this message translates to:
@@ -4030,6 +4090,18 @@ abstract class AppLocalizations {
   /// **'Only .png files can be uploaded here.'**
   String get asset_upload_unsupported_texture;
 
+  /// No description provided for @asset_upload_formats_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Mono Ogg Vorbis sounds (.ogg)'**
+  String get asset_upload_formats_sound;
+
+  /// No description provided for @asset_upload_unsupported_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Only .ogg files can be uploaded here.'**
+  String get asset_upload_unsupported_sound;
+
   /// No description provided for @asset_upload_read_failed.
   ///
   /// In en, this message translates to:
@@ -4096,6 +4168,12 @@ abstract class AppLocalizations {
   /// **'Choose a texture'**
   String get asset_picker_title_texture;
 
+  /// No description provided for @asset_picker_title_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a sound'**
+  String get asset_picker_title_sound;
+
   /// No description provided for @asset_pick_model_tooltip.
   ///
   /// In en, this message translates to:
@@ -4120,6 +4198,12 @@ abstract class AppLocalizations {
   /// **'This project has no textures yet. Upload one below.'**
   String get asset_picker_empty_texture;
 
+  /// No description provided for @asset_picker_empty_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'This project has no sounds yet. Upload one below.'**
+  String get asset_picker_empty_sound;
+
   /// No description provided for @asset_picker_load_failed.
   ///
   /// In en, this message translates to:
@@ -4131,6 +4215,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The textures could not be loaded.'**
   String get asset_picker_load_failed_texture;
+
+  /// No description provided for @asset_picker_load_failed_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'The sounds could not be loaded.'**
+  String get asset_picker_load_failed_sound;
 
   /// No description provided for @asset_picker_retry.
   ///

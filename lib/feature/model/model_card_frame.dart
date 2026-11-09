@@ -2,14 +2,15 @@ import 'package:material_ui/material_ui.dart';
 
 /// The look of a card in a model grid, without any model behind it: the
 /// [content] and an optional [trailing] widget (e.g. actions or a status
-/// badge) in the header, an optional one-line [summary] below it, and a
-/// footer of [footerIcon] and [footerText] below a divider when the text is
-/// set.
+/// badge) in the header, an optional one-line [summary] below it, an
+/// optional [body] below that, e.g. a player, and a footer of [footerIcon]
+/// and [footerText] below a divider when the text is set.
 class ModelCardFrame extends StatelessWidget {
   const ModelCardFrame({
     required this.content,
     this.trailing,
     this.summary,
+    this.body,
     this.footerIcon,
     this.footerText,
     this.onTap,
@@ -19,9 +20,12 @@ class ModelCardFrame extends StatelessWidget {
   final Widget content;
   final Widget? trailing;
   final String? summary;
+  final Widget? body;
   final IconData? footerIcon;
   final String? footerText;
   final VoidCallback? onTap;
+
+  static const EdgeInsets _spanInset = EdgeInsets.only(right: 8);
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +38,7 @@ class ModelCardFrame extends StatelessWidget {
     final footerText = this.footerText;
     final footerIcon = this.footerIcon;
     final trailing = this.trailing;
+    final body = this.body;
 
     // Fill only, no outline — the content sheet behind it already provides
     // the framing, so fill + border on top of that read as nested boxes.
@@ -65,9 +70,19 @@ class ModelCardFrame extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
+              // The padding right is 8 so the trailing button's own padding
+              // lines it up; what spans the width insets 8 more to end 16 in,
+              // like it starts.
+              if (body != null) ...[
+                const SizedBox(height: 8),
+                Padding(padding: _spanInset, child: body),
+              ],
               if (footerText != null) ...[
                 const SizedBox(height: 8),
-                Divider(height: 1, color: colorScheme.outlineVariant),
+                Padding(
+                  padding: _spanInset,
+                  child: Divider(height: 1, color: colorScheme.outlineVariant),
+                ),
                 const SizedBox(height: 8),
                 Row(
                   children: [

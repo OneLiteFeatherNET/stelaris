@@ -14,6 +14,8 @@ import 'package:stelaris/api/service/font_api.dart';
 import 'package:stelaris/api/service/generator/demo_generator_api.dart';
 import 'package:stelaris/api/service/generator/generator_api.dart';
 import 'package:stelaris/api/service/item_api.dart';
+import 'package:stelaris/api/service/sound/asset_sound_file_loader.dart';
+import 'package:stelaris/api/service/sound/sound_file_loader.dart';
 import 'package:stelaris/env/runtime_config.dart';
 
 /// The [ApiService] class contains all web services which are used in the app to communicate with the backend.
@@ -55,6 +57,9 @@ class ApiService {
     apiClient: _apiClient,
   );
 
+  /// The audio behind the sound files: the sound assets they are linked to.
+  late final SoundFileLoader soundFileLoader = AssetSoundFileLoader(assetApi);
+
   late final ExpressionClientApi expressionApi = ExpressionClientApi(
     apiClient: _apiClient,
   );
@@ -66,9 +71,7 @@ class ApiService {
     apiClient: _apiClient,
   );
 
-  late final AssetClientApi assetApi = AssetClientApi(
-    apiClient: _apiClient,
-  );
+  late final AssetClientApi assetApi = AssetClientApi(apiClient: _apiClient);
 
   late final PackMetaClientApi packMetaApi = PackMetaClientApi(
     apiClient: _apiClient,
