@@ -42,7 +42,10 @@ class ModelCardFrame extends StatelessWidget {
 
     // Fill only, no outline — the content sheet behind it already provides
     // the framing, so fill + border on top of that read as nested boxes.
+    // No margin: the grid's spacing is the only gap, so the outer cards
+    // line up with the header.
     return Card.filled(
+      margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
       color: colorScheme.surfaceContainerLow,
       child: InkWell(
