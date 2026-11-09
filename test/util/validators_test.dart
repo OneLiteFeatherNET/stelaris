@@ -207,4 +207,36 @@ void main() {
       expect(validator('abcd😀'), 'At most 5 characters');
     });
   });
+
+  group('Validators.fontLine', () {
+    final validator = Validators.fontLine(l10n);
+
+    test('code points of the Private Use Area pass', () {
+      expect(validator('E000'), isNull);
+      expect(validator('E000 F8FF F0000 10FFFD'), isNull);
+    });
+
+    test('blank input returns the required message', () {
+      expect(validator(null), l10n.validation_codepoint_required);
+      expect(validator('  '), l10n.validation_codepoint_required);
+    });
+
+    test('malformed hex returns the invalid message', () {
+      expect(validator('E00'), l10n.validation_codepoint_invalid);
+      expect(validator('E000 G000'), l10n.validation_codepoint_invalid);
+    });
+
+    test('a code point outside the Private Use Area is rejected', () {
+      expect(validator('0041'), l10n.validation_codepoint_private_use);
+      expect(validator('E000 0000'), l10n.validation_codepoint_private_use);
+    });
+
+    test('a line longer than its column is rejected', () {
+      final fits = List.filled(255, 'E000').join(' ');
+      final tooLong = List.filled(128, 'F0000').join(' ');
+
+      expect(validator(fits), isNull);
+      expect(validator(tooLong), l10n.validation_font_line_too_long(255));
+    });
+  });
 }

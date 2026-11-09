@@ -26,8 +26,8 @@ void main() {
 
     testWidgets('renders a list item for every char', (tester) async {
       final view = buildView([
-        const FontStringDTO(id: '1', line: 'A'),
-        const FontStringDTO(id: '2', line: 'B'),
+        const FontStringDTO(id: '1', line: '\uE000'),
+        const FontStringDTO(id: '2', line: '\uE001'),
       ]);
 
       await tester.pumpWidget(
@@ -41,8 +41,8 @@ void main() {
         ),
       );
 
-      expect(find.text('A'), findsOneWidget);
-      expect(find.text('B'), findsOneWidget);
+      expect(find.text('E000'), findsOneWidget);
+      expect(find.text('E001'), findsOneWidget);
     });
   });
 }
