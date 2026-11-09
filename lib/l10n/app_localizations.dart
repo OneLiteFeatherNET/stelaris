@@ -2989,8 +2989,20 @@ abstract class AppLocalizations {
   /// No description provided for @validation_codepoint_invalid.
   ///
   /// In en, this message translates to:
-  /// **'Enter exactly 4 hex digits (e.g. E000)'**
+  /// **'Enter code points of 4 to 6 hex digits, separated by spaces (e.g. E000 E001)'**
   String get validation_codepoint_invalid;
+
+  /// No description provided for @validation_codepoint_private_use.
+  ///
+  /// In en, this message translates to:
+  /// **'Only code points of the Private Use Area are allowed (E000–F8FF, F0000–FFFFD, 100000–10FFFD)'**
+  String get validation_codepoint_private_use;
+
+  /// No description provided for @validation_font_line_too_long.
+  ///
+  /// In en, this message translates to:
+  /// **'A line holds at most {max} characters, code points above FFFF count twice'**
+  String validation_font_line_too_long(int max);
 
   /// No description provided for @project_description_hint.
   ///
@@ -3127,8 +3139,80 @@ abstract class AppLocalizations {
   /// No description provided for @font_char_label.
   ///
   /// In en, this message translates to:
-  /// **'Char *'**
+  /// **'Code points *'**
   String get font_char_label;
+
+  /// No description provided for @font_char_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Hex code points separated by spaces, e.g. E000 E001'**
+  String get font_char_helper;
+
+  /// No description provided for @font_char_info_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Font characters'**
+  String get font_char_info_title;
+
+  /// No description provided for @font_char_info_intro.
+  ///
+  /// In en, this message translates to:
+  /// **'A font maps the cells of its texture to characters. Stelaris only allows characters of the Unicode Private Use Area for this. Unicode leaves these characters without meaning, so a custom glyph never replaces a letter, digit or emoji that players type or see in chat.'**
+  String get font_char_info_intro;
+
+  /// No description provided for @font_char_info_areas_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Private Use Areas'**
+  String get font_char_info_areas_title;
+
+  /// No description provided for @font_char_info_areas.
+  ///
+  /// In en, this message translates to:
+  /// **'There are three areas: E000–F8FF with 6,400 characters, and the planes 15 (F0000–FFFFD) and 16 (100000–10FFFD) with about 65,000 characters each. Minecraft supports all three.'**
+  String get font_char_info_areas;
+
+  /// No description provided for @font_char_info_input_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Input'**
+  String get font_char_info_input_title;
+
+  /// No description provided for @font_char_info_input.
+  ///
+  /// In en, this message translates to:
+  /// **'The characters have no visible shape outside the game, so you type and see them as hex code points, separated by spaces: E000 E001 E002. A code point has 4 to 6 hex digits.'**
+  String get font_char_info_input;
+
+  /// No description provided for @font_char_info_rows_title.
+  ///
+  /// In en, this message translates to:
+  /// **'One line per row'**
+  String get font_char_info_rows_title;
+
+  /// No description provided for @font_char_info_rows.
+  ///
+  /// In en, this message translates to:
+  /// **'Each line stands for one row of the texture grid, from left to right, and the lines go from top to bottom. Minecraft cuts the texture into cells by the number of lines and their length, so all lines must have the same length. A texture with 3×2 icons needs 2 lines of 3 code points, a strip of 6 icons on top of each other needs 6 lines of 1 code point.'**
+  String get font_char_info_rows;
+
+  /// No description provided for @font_char_length.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 code point} other{{count} code points}}'**
+  String font_char_length(int count);
+
+  /// No description provided for @font_char_length_deviates.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 code point} other{{count} code points}}, the other lines have {expected}'**
+  String font_char_length_deviates(int count, int expected);
+
+  /// No description provided for @font_char_rows_differ.
+  ///
+  /// In en, this message translates to:
+  /// **'The lines have different lengths ({lengths} code points). Minecraft rejects a font whose lines differ in length, give them all the same number of code points.'**
+  String font_char_rows_differ(String lengths);
 
   /// No description provided for @tab_components.
   ///

@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/base/chips/number_badge.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/auth/roles.dart';
 import 'package:stelaris/feature/auth/role_gate.dart';
@@ -51,7 +52,7 @@ class LoreLineCard extends StatelessWidget {
           child: Row(
             children: [
               _DragHandle(index: index, grabbed: grabbed),
-              _LineNumber(number: index + 1),
+              NumberBadge(number: index + 1),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -115,33 +116,6 @@ class _DragHandle extends StatelessWidget {
       excludeFromSemantics: true,
       onTap: () {},
       child: ReorderableDragStartListener(index: index, child: handle),
-    );
-  }
-}
-
-class _LineNumber extends StatelessWidget {
-  const _LineNumber({required this.number});
-
-  final int number;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    return Container(
-      width: 28,
-      height: 28,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: colorScheme.secondaryContainer,
-        shape: BoxShape.circle,
-      ),
-      child: Text(
-        '$number',
-        style: theme.textTheme.labelMedium?.copyWith(
-          color: colorScheme.onSecondaryContainer,
-        ),
-      ),
     );
   }
 }

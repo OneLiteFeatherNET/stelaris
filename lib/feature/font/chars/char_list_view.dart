@@ -6,8 +6,9 @@ import 'package:stelaris/api/state/actions/font/font_string_actions.dart';
 import 'package:stelaris/api/state/factory/font/selected_font_char_state.dart';
 import 'package:stelaris/feature/base/mixins/infinite_scroll_mixin.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
-import 'package:stelaris/feature/dialogs/entry_update_dialog.dart';
 import 'package:stelaris/feature/font/chars/char_list_item.dart';
+import 'package:stelaris/feature/font/chars/dialog/font_char_dialog.dart';
+import 'package:stelaris/util/font_part.dart';
 import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -24,6 +25,8 @@ class _CharListViewState extends State<CharListView>
     with InfiniteScrollMixin<CharListView> {
   @override
   Widget build(BuildContext context) {
+    final expectedLength = widget.fontModel.expectedLineLength;
+    final cellWidth = codePointCellWidth(context);
     return Scrollbar(
       controller: scrollController,
       thumbVisibility: true,
@@ -37,6 +40,9 @@ class _CharListViewState extends State<CharListView>
           return CharListItem(
             key: ValueKey(key.id),
             fontString: key,
+            index: index,
+            expectedLength: expectedLength,
+            codePointWidth: cellWidth,
             onEdit: () => _handleEdit(key),
             onDelete: () => _handleDelete(widget.fontModel.selected.id!, key),
           );
@@ -51,7 +57,7 @@ class _CharListViewState extends State<CharListView>
       builder: (context) {
         return DeleteDialog<FontStringDTO>(
           title: context.l10n.dialog_font_char_delete,
-          header: createDeleteText(key.line, context),
+          header: createDeleteText(formatCodePoints(key.line), context),
           value: key,
           successfully: (value) {
             Navigator.of(context).pop(true);
@@ -63,27 +69,11 @@ class _CharListViewState extends State<CharListView>
     );
   }
 
-  /// The method handles the edition of an existing char from the given [FontModel].
-  /// For the edition, it opens a dialog with the current char value and allows the user to update it.
-  /// If the user updates the char, the method updates the [FontModel] with the new value.
+  /// Opens the dialog to edit the line [dto].
   void _handleEdit(FontStringDTO dto) {
     showDialog(
       context: context,
-      builder: (context) {
-        return EntryUpdateDialog(
-          title: context.l10n.dialog_font_char_edit,
-          formKey: GlobalKey<FormState>(),
-          data: dto.line,
-          valueUpdate: (value) {
-            final String updatedValue = value;
-            if (updatedValue.isEmpty || updatedValue == dto.line) return;
-            context.dispatch(
-              FontStringEditAction(dto.copyWith(line: updatedValue)),
-            );
-            Navigator.of(context).pop(true);
-          },
-        );
-      },
+      builder: (context) => FontCharDialog(fontString: dto),
     );
   }
 
