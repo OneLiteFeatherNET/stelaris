@@ -162,4 +162,45 @@ void main() {
     expect(find.byIcon(Icons.play_arrow), findsOneWidget);
     expect(find.text('1:02'), findsOneWidget);
   });
+
+  testWidgets('while it plays only the waveform and the second repaint', (
+    tester,
+  ) async {
+    await pumpPlayer(tester);
+    decoder.completer!.complete(waveform);
+    await tester.pump();
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.play_arrow));
+    await tester.pump();
+
+    final button = tester.widget(find.byType(IconButton));
+    player.position = const Duration(milliseconds: 300);
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.pump(const Duration(milliseconds: 16));
+
+    // The frames moved the waveform, the rest of the player stayed built.
+    expect(identical(tester.widget(find.byType(IconButton)), button), isTrue);
+    expect(find.text('0:00 / 1:02'), findsOneWidget);
+
+    player.position = const Duration(seconds: 1);
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(find.text('0:01 / 1:02'), findsOneWidget);
+  });
+
+  testWidgets('another file starting leaves this player as it is', (
+    tester,
+  ) async {
+    await pumpPlayer(tester);
+    decoder.completer!.complete(waveform);
+    await tester.pump();
+    await tester.pump();
+    final button = tester.widget(find.byType(IconButton));
+
+    controller
+        .toggle('p1', _source().copyWith(assetId: 'a-2', name: 'other'))
+        .ignore();
+    await tester.pump();
+
+    expect(identical(tester.widget(find.byType(IconButton)), button), isTrue);
+  });
 }

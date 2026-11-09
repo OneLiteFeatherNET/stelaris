@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/sound/playback/sound_playback_controller.dart';
@@ -33,9 +34,17 @@ class SoundFilePlayer extends StatefulWidget {
 class _SoundFilePlayerState extends State<SoundFilePlayer>
     with SingleTickerProviderStateMixin {
   late Future<SoundWaveform> _waveform;
+  late SoundPlaybackStatus _status = _statusNow;
 
-  /// Repaints every frame while the file plays, so the progress runs smooth.
-  late final Ticker _ticker = createTicker((_) => setState(() {}));
+  /// How far the file has played, set every frame while it plays. Only the
+  /// waveform repaints from it; the player isn't built again.
+  final ValueNotifier<Duration> _position = ValueNotifier(Duration.zero);
+
+  /// The whole seconds played, as they play in the game; the time label
+  /// rebuilds only when it changes.
+  final ValueNotifier<int> _elapsedSeconds = ValueNotifier(0);
+
+  late final Ticker _ticker = createTicker((_) => _syncPosition());
 
   @override
   void initState() {
@@ -55,26 +64,46 @@ class _SoundFilePlayerState extends State<SoundFilePlayer>
         oldWidget.projectId != widget.projectId) {
       _waveform = _readWaveform();
     }
+    _status = _statusNow;
+    _syncTicker();
+    _syncPosition();
   }
 
   @override
   void dispose() {
     widget.controller.removeListener(_onPlayback);
     _ticker.dispose();
+    _position.dispose();
+    _elapsedSeconds.dispose();
     super.dispose();
   }
 
   Future<SoundWaveform> _readWaveform() =>
       widget.controller.waveformOf(widget.projectId, widget.source);
 
+  SoundPlaybackStatus get _statusNow =>
+      widget.controller.statusOf(widget.source);
+
+  /// Builds again only when this file's status changed, not on every change
+  /// of the controller, e.g. another file loading.
   void _onPlayback() {
-    final playing = _status == SoundPlaybackStatus.playing;
-    if (playing && !_ticker.isActive) _ticker.start();
-    if (!playing && _ticker.isActive) _ticker.stop();
-    setState(() {});
+    final status = _statusNow;
+    _syncTicker();
+    _syncPosition();
+    if (status != _status) setState(() => _status = status);
   }
 
-  SoundPlaybackStatus get _status => widget.controller.statusOf(widget.source);
+  void _syncTicker() {
+    final playing = _statusNow == SoundPlaybackStatus.playing;
+    if (playing && !_ticker.isActive) _ticker.start();
+    if (!playing && _ticker.isActive) _ticker.stop();
+  }
+
+  void _syncPosition() {
+    final position = widget.controller.positionOf(widget.source);
+    _position.value = position;
+    _elapsedSeconds.value = (position * (1 / _rate)).inSeconds;
+  }
 
   double get _rate => widget.source.pitch.clamp(0.5, 2.0);
 
@@ -82,6 +111,10 @@ class _SoundFilePlayerState extends State<SoundFilePlayer>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final timeStyle = theme.textTheme.bodySmall?.copyWith(
+      color: colorScheme.onSurfaceVariant,
+      fontFeatures: const [FontFeature.tabularFigures()],
+    );
     return SizedBox(
       height: 40,
       child: FutureBuilder<SoundWaveform>(
@@ -90,36 +123,28 @@ class _SoundFilePlayerState extends State<SoundFilePlayer>
         initialData: widget.controller.readWaveformOf(widget.source),
         builder: (context, snapshot) {
           final waveform = snapshot.data;
-          final status = _status;
-          final position = widget.controller.positionOf(widget.source);
-          final progress =
-              waveform == null || waveform.duration == Duration.zero
-              ? 0.0
-              : (position.inMicroseconds / waveform.duration.inMicroseconds)
-                    .clamp(0.0, 1.0);
           return Row(
             children: [
-              _PlayButton(status: status, onPressed: widget.onToggle),
+              _PlayButton(status: _status, onPressed: widget.onToggle),
               const SizedBox(width: 4),
               Expanded(
-                child: CustomPaint(
-                  size: const Size.fromHeight(28),
-                  painter: _WaveformPainter(
-                    peaks: waveform?.peaks ?? const [],
-                    progress: progress,
-                    played: colorScheme.primary,
-                    unplayed: colorScheme.outlineVariant,
+                // Repaints every frame while playing; kept to its own layer
+                // so the card around it doesn't repaint with it.
+                child: RepaintBoundary(
+                  child: CustomPaint(
+                    size: const Size.fromHeight(28),
+                    painter: _WaveformPainter(
+                      peaks: waveform?.peaks ?? const [],
+                      duration: waveform?.duration,
+                      position: _position,
+                      played: colorScheme.primary,
+                      unplayed: colorScheme.outlineVariant,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(width: 8),
-              Text(
-                _timeLabel(waveform, status, position),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  fontFeatures: const [FontFeature.tabularFigures()],
-                ),
-              ),
+              _timeLabel(waveform, timeStyle),
             ],
           );
         },
@@ -128,15 +153,17 @@ class _SoundFilePlayerState extends State<SoundFilePlayer>
   }
 
   /// The length of the file, and how far it is while it plays.
-  String _timeLabel(
-    SoundWaveform? waveform,
-    SoundPlaybackStatus status,
-    Duration position,
-  ) {
-    if (waveform == null) return '–:––';
+  Widget _timeLabel(SoundWaveform? waveform, TextStyle? style) {
+    if (waveform == null) return Text('–:––', style: style);
     final total = _format(waveform.duration * (1 / _rate));
-    if (status != SoundPlaybackStatus.playing) return total;
-    return '${_format(position * (1 / _rate))} / $total';
+    if (_status != SoundPlaybackStatus.playing) {
+      return Text(total, style: style);
+    }
+    return ValueListenableBuilder<int>(
+      valueListenable: _elapsedSeconds,
+      builder: (context, seconds, _) =>
+          Text('${_format(Duration(seconds: seconds))} / $total', style: style),
+    );
   }
 
   static String _format(Duration duration) {
@@ -178,23 +205,38 @@ class _PlayButton extends StatelessWidget {
   }
 }
 
-/// Bars of the [peaks] across the width, those before [progress] in
-/// [played], the rest in [unplayed]. Without peaks a flat line.
+/// Bars of the [peaks] across the width, those already played in [played],
+/// the rest in [unplayed]. Without peaks a flat line.
+///
+/// Repaints from [position] by itself, without the widget building again.
 class _WaveformPainter extends CustomPainter {
-  const _WaveformPainter({
+  _WaveformPainter({
     required this.peaks,
-    required this.progress,
+    required this.duration,
+    required this.position,
     required this.played,
     required this.unplayed,
-  });
+  }) : super(repaint: position);
 
   final List<double> peaks;
-  final double progress;
+
+  /// The length of the file; null until its waveform is read.
+  final Duration? duration;
+  final ValueListenable<Duration> position;
   final Color played;
   final Color unplayed;
 
   /// The shortest bar, so silence still shows where the file is.
   static const double _minBar = 2;
+
+  double get _progress {
+    final total = duration;
+    if (total == null || total == Duration.zero) return 0;
+    return (position.value.inMicroseconds / total.inMicroseconds).clamp(
+      0.0,
+      1.0,
+    );
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -210,6 +252,7 @@ class _WaveformPainter extends CustomPainter {
       );
       return;
     }
+    final progress = _progress;
     final step = size.width / peaks.length;
     paint.strokeWidth = (step * 0.6).clamp(1.0, 4.0);
     for (var i = 0; i < peaks.length; i++) {
@@ -222,8 +265,9 @@ class _WaveformPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_WaveformPainter old) =>
-      old.progress != progress ||
       old.peaks != peaks ||
+      old.duration != duration ||
+      old.position != position ||
       old.played != played ||
       old.unplayed != unplayed;
 }

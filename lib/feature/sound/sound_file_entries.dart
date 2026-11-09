@@ -165,15 +165,19 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
       hasMore: vm.hasNextPage,
       isLoadingMore: vm.isLoadingFiles,
       onLoadMore: vm.onLoadMoreSoundFiles,
-      // Rebuilt as the waveforms arrive, so each card shows once its own is
-      // there.
-      itemBuilder: (context, source) => ListenableBuilder(
+      // Each card waits for its own waveform; one arriving rebuilds only
+      // the card it belongs to.
+      itemBuilder: (context, source) => _WaveformSettled(
         key: ValueKey(source.id ?? source.name),
-        listenable: _playback,
-        builder: (context, _) => SoundFileCard(
+        controller: _playback,
+        projectId: _isPlayable(source) ? projectId : null,
+        source: source,
+        builder: (context, waveformSettled) => SoundFileCard(
           source: source,
           assetName: _assetNames[source.assetId],
-          loading: projectId != null && _isLoading(projectId, source),
+          loading:
+              projectId != null &&
+              (!waveformSettled || _isAssetNameLoading(source)),
           onEdit: () => _openModal(create: false, source: source),
           onDelete: () => _confirmAndDelete(source),
           // Only an uploaded file has audio: an event names another sound
@@ -198,13 +202,9 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
     showSoundFileModal(context: context, create: create, source: source);
   }
 
-  /// Whether the card of [source] still waits for its waveform or its asset
-  /// name; it starts reading the waveform. A failed read lets the card show.
-  bool _isLoading(String projectId, SoundFileSource source) {
-    if (_isPlayable(source) && !_playback.isWaveformSettled(source)) {
-      _playback.waveformOf(projectId, source).ignore();
-      return true;
-    }
+  /// Whether the card of [source] still waits for its asset name. A failed
+  /// read lets the card show.
+  bool _isAssetNameLoading(SoundFileSource source) {
     final assetId = source.assetId;
     if (assetId == null || _assetNames.containsKey(assetId)) return false;
     return _pendingAssetIds.contains(assetId) ||
@@ -255,4 +255,72 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
       ),
     );
   }
+}
+
+/// Builds [builder] with whether the waveform of [source] is read or failed,
+/// and only again when that changes, not on every change of [controller].
+///
+/// Starts reading the waveform; without a [projectId] there is none to wait
+/// for.
+class _WaveformSettled extends StatefulWidget {
+  const _WaveformSettled({
+    required this.controller,
+    required this.projectId,
+    required this.source,
+    required this.builder,
+    super.key,
+  });
+
+  final SoundPlaybackController controller;
+  final String? projectId;
+  final SoundFileSource source;
+  final Widget Function(BuildContext context, bool settled) builder;
+
+  @override
+  State<_WaveformSettled> createState() => _WaveformSettledState();
+}
+
+class _WaveformSettledState extends State<_WaveformSettled> {
+  late bool _settled;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_onPlayback);
+    _read();
+  }
+
+  @override
+  void didUpdateWidget(_WaveformSettled oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_onPlayback);
+      widget.controller.addListener(_onPlayback);
+    }
+    _read();
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onPlayback);
+    super.dispose();
+  }
+
+  bool get _settledNow =>
+      widget.projectId == null ||
+      widget.controller.isWaveformSettled(widget.source);
+
+  void _read() {
+    _settled = _settledNow;
+    if (_settled) return;
+    widget.controller.waveformOf(widget.projectId!, widget.source).ignore();
+  }
+
+  void _onPlayback() {
+    final settled = _settledNow;
+    if (settled != _settled) setState(() => _settled = settled);
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.builder(context, _settled);
 }
