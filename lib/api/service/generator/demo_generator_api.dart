@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:stelaris/api/service/generate_api.dart';
+import 'package:stelaris/api/service/generator/generator_api.dart';
 import 'package:stelaris/api/service/generator/generator_models.dart';
 import 'package:stelaris/feature/build/publish/version_proposal.dart';
 import 'package:stelaris_models/stelaris_models.dart';

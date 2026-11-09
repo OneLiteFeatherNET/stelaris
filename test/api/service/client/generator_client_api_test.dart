@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_client.dart';
-import 'package:stelaris/api/service/generate_api.dart';
+import 'package:stelaris/api/service/client/generator_client_api.dart';
 import 'package:stelaris/api/service/generator/generator_models.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -18,11 +18,11 @@ const String _commit = '0123456789abcdef0123456789abcdef01234567';
 
 void main() {
   late ApiClient apiClient;
-  late GenerateApi api;
+  late GeneratorClientApi api;
 
   setUp(() {
     apiClient = ApiClient('http://generator.test/api');
-    api = GenerateApi(apiClient);
+    api = GeneratorClientApi(apiClient: apiClient);
   });
 
   _Adapter answer(

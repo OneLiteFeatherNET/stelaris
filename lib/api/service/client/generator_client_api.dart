@@ -3,41 +3,21 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:stelaris/api/api_client.dart';
+import 'package:stelaris/api/service/generator/generator_api.dart';
 import 'package:stelaris/api/service/generator/generator_models.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
-/// The requests of the generator page against the vulpes-generator.
+/// Client API for the vulpes-generator, the service behind the generator page.
 ///
-/// Every endpoint is keyed by the project id. The [Project] is passed whole
-/// so an implementation can also name files after the project key. Every
-/// failure is thrown as a [GeneratorApiException].
-abstract interface class GeneratorApi {
-  /// The branches of vulpes-base.
-  Future<List<String>> branches();
+/// Unlike the backend clients, this one is not left to throw a `DioException`
+/// for the UI to read: the generator's error body (`reason`, `message`,
+/// `diagnostics`) is not a backend problem detail, so every failure is
+/// converted here into a [GeneratorApiException] with the [GeneratorFailure]
+/// the page shows.
+class GeneratorClientApi implements GeneratorApi {
+  final ApiClient apiClient;
 
-  /// The current snapshot of [project] as a local build zip, compiled
-  /// against [baseBranch].
-  Future<LocalBuildFile> localBuild(Project project, String baseBranch);
-
-  /// Publishes [version] of [project], compiled against [baseBranch].
-  Future<PublishResult> publish(
-    Project project,
-    String version,
-    String baseBranch,
-  );
-
-  /// The versions of [project] in the releases and snapshots repositories.
-  Future<List<PublishedVersion>> publishedVersions(Project project);
-
-  /// The local build zip of the published [version] of [project].
-  Future<LocalBuildFile> publishedVersionBuild(Project project, String version);
-}
-
-/// [GeneratorApi] over HTTP.
-class GenerateApi implements GeneratorApi {
-  const GenerateApi(this._apiClient);
-
-  final ApiClient _apiClient;
+  GeneratorClientApi({required this.apiClient});
 
   /// A local build or a publish clones and, for a new vulpes-base commit,
   /// builds the base first, which the service allows up to about twelve
@@ -45,7 +25,7 @@ class GenerateApi implements GeneratorApi {
   static const Duration buildTimeout = Duration(minutes: 15);
 
   Uri _uri(String path, [Map<String, dynamic>? query]) {
-    final Uri base = Uri.parse(_apiClient.baseUrl);
+    final Uri base = Uri.parse(apiClient.baseUrl);
     return base.replace(
       path: '${base.path}$path',
       queryParameters: query == null || query.isEmpty ? null : query,
@@ -54,7 +34,7 @@ class GenerateApi implements GeneratorApi {
 
   @override
   Future<List<String>> branches() => _guard(() async {
-    final response = await _apiClient.dio.getUri(_uri('/git/branches'));
+    final response = await apiClient.dio.getUri(_uri('/git/branches'));
     return (response.data as List<dynamic>).cast<String>();
   });
 
@@ -77,7 +57,7 @@ class GenerateApi implements GeneratorApi {
   ) async {
     final String id = _idOf(project);
     return _guard(() async {
-      final response = await _apiClient.dio.postUri(
+      final response = await apiClient.dio.postUri(
         _uri('/generator/release'),
         data: {'projectId': id, 'version': version, 'baseBranch': baseBranch},
         options: Options(receiveTimeout: buildTimeout),
@@ -90,7 +70,7 @@ class GenerateApi implements GeneratorApi {
   Future<List<PublishedVersion>> publishedVersions(Project project) async {
     final String id = _idOf(project);
     return _guard(() async {
-      final response = await _apiClient.dio.getUri(
+      final response = await apiClient.dio.getUri(
         _uri('/projects/${Uri.encodeComponent(id)}/releases'),
       );
       final Object? data = response.data;
@@ -122,7 +102,7 @@ class GenerateApi implements GeneratorApi {
 
   Future<LocalBuildFile> _download(Uri uri, {required String fallbackName}) =>
       _guard(() async {
-        final response = await _apiClient.dio.getUri<List<int>>(
+        final response = await apiClient.dio.getUri<List<int>>(
           uri,
           options: Options(
             responseType: ResponseType.bytes,

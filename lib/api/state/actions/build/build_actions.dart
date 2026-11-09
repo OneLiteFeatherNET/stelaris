@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/foundation.dart';
 import 'package:stelaris/api/api_service.dart';
-import 'package:stelaris/api/service/generate_api.dart';
+import 'package:stelaris/api/service/generator/generator_api.dart';
 import 'package:stelaris/api/service/generator/generator_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/generator_state.dart';
