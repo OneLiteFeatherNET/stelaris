@@ -333,6 +333,7 @@ class _SkeletonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Card.outlined(
+      margin: EdgeInsets.zero,
       child: Padding(
         padding: EdgeInsets.fromLTRB(16, 16, 16, 14),
         child: Column(
@@ -386,6 +387,7 @@ class _ComponentCard extends StatelessWidget {
     // Outlined like every card that opens a dialog, a filled card opens a
     // page, like a model card.
     return Card.outlined(
+      margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onEdit,

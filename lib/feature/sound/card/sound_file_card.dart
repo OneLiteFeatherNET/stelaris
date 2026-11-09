@@ -47,6 +47,7 @@ class SoundFileCard extends StatelessWidget {
     if (loading) {
       return Card.filled(
         key: const Key('sound_file_card_loading'),
+        margin: EdgeInsets.zero,
         color: theme.colorScheme.surfaceContainerLow,
         child: const Center(child: CircularProgressIndicator()),
       );

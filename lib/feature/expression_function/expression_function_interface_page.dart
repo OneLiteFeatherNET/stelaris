@@ -117,6 +117,7 @@ class _InterfaceSourceState extends State<_InterfaceSource> {
             const SizedBox(height: 8),
             Expanded(
               child: Card.filled(
+                margin: EdgeInsets.zero,
                 clipBehavior: Clip.antiAlias,
                 color: theme.colorScheme.surfaceContainerLow,
                 shape: RoundedRectangleBorder(
