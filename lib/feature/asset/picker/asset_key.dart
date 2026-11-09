@@ -8,6 +8,17 @@ final RegExp _nameSeparators = RegExp(r'[\s_-]+');
 /// The folder the suggested keys start with, the one item models live in.
 const String defaultAssetFolder = 'item';
 
+/// The kinds that are drawn: textures and models. An upload takes them unless
+/// it says otherwise; sounds are uploaded where a sound file is chosen.
+const Set<AssetKind> visualAssetKinds = {
+  AssetKind.TEXTURE,
+  AssetKind.MODEL,
+  AssetKind.BBMODEL,
+};
+
+/// The kinds a picker for a sound file lists and uploads.
+const Set<AssetKind> soundAssetKinds = {AssetKind.SOUND};
+
 /// Suggests the display name of an uploaded [fileName]: the file name without
 /// its extension, its words split at `_`, `-` and spaces and capitalized,
 /// e.g. `Red Ruby` for `red_ruby.png`.
@@ -80,6 +91,7 @@ AssetKind? assetKindOfFileName(String fileName) {
     'png' => AssetKind.TEXTURE,
     'json' => AssetKind.MODEL,
     'bbmodel' => AssetKind.BBMODEL,
+    'ogg' => AssetKind.SOUND,
     _ => null,
   };
 }

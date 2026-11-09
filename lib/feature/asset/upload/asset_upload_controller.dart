@@ -14,7 +14,7 @@ class AssetUploadController extends ChangeNotifier {
     required this.projectId,
     required this.pickFile,
     this.namespace,
-    this.kinds = const {...AssetKind.values},
+    this.kinds = visualAssetKinds,
     this.fixedKey,
     this.keyFolder = defaultAssetFolder,
   }) {

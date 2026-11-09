@@ -23,7 +23,8 @@ const _pageSize = 50;
 /// Lets the user choose an asset of [projectId] or upload a new one.
 ///
 /// Lists the assets of [kinds], the models by default, or [textureAssetKinds]
-/// for a texture. An upload takes the files of [uploadKinds], all by default.
+/// for a texture, or [soundAssetKinds] for a sound. An upload takes the files
+/// of [uploadKinds], the textures and models by default.
 ///
 /// With [hideExtracted] the textures extracted from a Blockbench model are not
 /// listed, e.g. for a font, which can't use them. With [replaceable] a new
@@ -40,7 +41,7 @@ Future<AssetModel?> showAssetPickerDialog(
   String? selectedKey,
   Widget Function(AssetModel asset)? previewBuilder,
   Set<AssetKind> kinds = modelAssetKinds,
-  Set<AssetKind> uploadKinds = const {...AssetKind.values},
+  Set<AssetKind> uploadKinds = visualAssetKinds,
   String keyFolder = defaultAssetFolder,
   bool hideExtracted = false,
   bool replaceable = false,
@@ -122,8 +123,12 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
   /// The name of the asset whose new version was stored last.
   String? _replacedName;
 
-  /// Whether the picker is for a texture, which its texts name.
-  bool get _picksTexture => widget.kinds.contains(AssetKind.TEXTURE);
+  /// What the picker is for, which its texts name.
+  _Picks get _picks => widget.kinds.contains(AssetKind.TEXTURE)
+      ? _Picks.texture
+      : widget.kinds.contains(AssetKind.SOUND)
+      ? _Picks.sound
+      : _Picks.model;
 
   @override
   void initState() {
@@ -275,9 +280,11 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
     return ListenableBuilder(
       listenable: _upload,
       builder: (context, _) => FormDialog(
-        title: _picksTexture
-            ? l10n.asset_picker_title_texture
-            : l10n.asset_picker_title,
+        title: switch (_picks) {
+          _Picks.texture => l10n.asset_picker_title_texture,
+          _Picks.sound => l10n.asset_picker_title_sound,
+          _Picks.model => l10n.asset_picker_title,
+        },
         actionLabel: _upload.file != null
             ? l10n.asset_picker_upload_action
             : l10n.asset_picker_choose,
@@ -348,11 +355,11 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            _picksTexture
-                ? l10n.asset_picker_load_failed_texture
-                : l10n.asset_picker_load_failed,
-          ),
+          Text(switch (_picks) {
+            _Picks.texture => l10n.asset_picker_load_failed_texture,
+            _Picks.sound => l10n.asset_picker_load_failed_sound,
+            _Picks.model => l10n.asset_picker_load_failed,
+          }),
           Text(problem.displayMessage, style: _errorStyle(context)),
           TextButton(onPressed: _load, child: Text(l10n.asset_picker_retry)),
         ],
@@ -361,11 +368,11 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
     if (_assets.isEmpty) {
       // No padding of its own: the divider above and the gap to the upload
       // form below already set it apart.
-      return Text(
-        _picksTexture
-            ? l10n.asset_picker_empty_texture
-            : l10n.asset_picker_empty,
-      );
+      return Text(switch (_picks) {
+        _Picks.texture => l10n.asset_picker_empty_texture,
+        _Picks.sound => l10n.asset_picker_empty_sound,
+        _Picks.model => l10n.asset_picker_empty,
+      });
     }
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -387,12 +394,15 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
     );
   }
 
-  /// The key and kind of [asset], and the size of a texture, which a font
-  /// needs to know.
+  /// The key and kind of [asset], the size of a texture, which a font needs
+  /// to know, and the length of a sound.
   String _subtitle(BuildContext context, AssetModel asset) {
     final parts = [asset.key, assetKindLabel(context.l10n, asset.kind)];
     if ((asset.width, asset.height) case (final width?, final height?)) {
       parts.add('$width × $height');
+    }
+    if (asset.durationMs case final ms?) {
+      parts.add('${(ms / 1000).toStringAsFixed(1)} s');
     }
     return parts.join(' · ');
   }
@@ -401,3 +411,5 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
       Theme.of(context).textTheme.bodySmall
           ?.copyWith(color: Theme.of(context).colorScheme.error);
 }
+
+enum _Picks { model, texture, sound }

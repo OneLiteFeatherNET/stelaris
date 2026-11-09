@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
+import 'package:stelaris/feature/asset/picker/asset_key.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_controller.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
@@ -15,7 +16,7 @@ class AssetUploadDialog extends StatefulWidget {
     required this.namespace,
     required this.title,
     required this.pickFile,
-    this.kinds = const {...AssetKind.values},
+    this.kinds = visualAssetKinds,
     this.fixedKey,
     super.key,
   });

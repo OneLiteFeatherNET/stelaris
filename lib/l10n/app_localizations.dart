@@ -3958,6 +3958,12 @@ abstract class AppLocalizations {
   /// **'Texture'**
   String get asset_library_kind_texture;
 
+  /// No description provided for @asset_library_kind_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound'**
+  String get asset_library_kind_sound;
+
   /// No description provided for @asset_upload_drop.
   ///
   /// In en, this message translates to:
@@ -4030,6 +4036,18 @@ abstract class AppLocalizations {
   /// **'Only .png files can be uploaded here.'**
   String get asset_upload_unsupported_texture;
 
+  /// No description provided for @asset_upload_formats_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Mono Ogg Vorbis sounds (.ogg)'**
+  String get asset_upload_formats_sound;
+
+  /// No description provided for @asset_upload_unsupported_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Only .ogg files can be uploaded here.'**
+  String get asset_upload_unsupported_sound;
+
   /// No description provided for @asset_upload_read_failed.
   ///
   /// In en, this message translates to:
@@ -4096,6 +4114,12 @@ abstract class AppLocalizations {
   /// **'Choose a texture'**
   String get asset_picker_title_texture;
 
+  /// No description provided for @asset_picker_title_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a sound'**
+  String get asset_picker_title_sound;
+
   /// No description provided for @asset_pick_model_tooltip.
   ///
   /// In en, this message translates to:
@@ -4120,6 +4144,12 @@ abstract class AppLocalizations {
   /// **'This project has no textures yet. Upload one below.'**
   String get asset_picker_empty_texture;
 
+  /// No description provided for @asset_picker_empty_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'This project has no sounds yet. Upload one below.'**
+  String get asset_picker_empty_sound;
+
   /// No description provided for @asset_picker_load_failed.
   ///
   /// In en, this message translates to:
@@ -4131,6 +4161,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The textures could not be loaded.'**
   String get asset_picker_load_failed_texture;
+
+  /// No description provided for @asset_picker_load_failed_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'The sounds could not be loaded.'**
+  String get asset_picker_load_failed_sound;
 
   /// No description provided for @asset_picker_retry.
   ///

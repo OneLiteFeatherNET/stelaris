@@ -2193,6 +2193,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_library_kind_texture => 'Texture';
 
   @override
+  String get asset_library_kind_sound => 'Sound';
+
+  @override
   String get asset_upload_drop => 'Drag a file here';
 
   @override
@@ -2236,6 +2239,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Only .png files can be uploaded here.';
 
   @override
+  String get asset_upload_formats_sound => 'Mono Ogg Vorbis sounds (.ogg)';
+
+  @override
+  String get asset_upload_unsupported_sound =>
+      'Only .ogg files can be uploaded here.';
+
+  @override
   String get asset_upload_read_failed => 'The file could not be read.';
 
   @override
@@ -2275,6 +2285,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_picker_title_texture => 'Choose a texture';
 
   @override
+  String get asset_picker_title_sound => 'Choose a sound';
+
+  @override
   String get asset_pick_model_tooltip => 'Choose a model from the project';
 
   @override
@@ -2289,11 +2302,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'This project has no textures yet. Upload one below.';
 
   @override
+  String get asset_picker_empty_sound =>
+      'This project has no sounds yet. Upload one below.';
+
+  @override
   String get asset_picker_load_failed => 'The models could not be loaded.';
 
   @override
   String get asset_picker_load_failed_texture =>
       'The textures could not be loaded.';
+
+  @override
+  String get asset_picker_load_failed_sound =>
+      'The sounds could not be loaded.';
 
   @override
   String get asset_picker_retry => 'Try again';
