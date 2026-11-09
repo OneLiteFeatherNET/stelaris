@@ -39,10 +39,13 @@ void main() {
     }
 
     Color? badgeColor(WidgetTester tester) {
-      final box = tester.widget<Container>(
-        find.byKey(const Key('font_char_length')),
+      final box = tester.widget<DecoratedBox>(
+        find.descendant(
+          of: find.byKey(const Key('font_char_length')),
+          matching: find.byType(DecoratedBox),
+        ),
       );
-      return (box.decoration! as BoxDecoration).color;
+      return (box.decoration as BoxDecoration).color;
     }
 
     testWidgets('shows every code point as hex', (tester) async {
