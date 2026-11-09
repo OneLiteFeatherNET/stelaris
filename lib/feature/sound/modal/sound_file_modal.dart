@@ -81,10 +81,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
             const SizedBox(height: 16),
             SegmentedButton<String>(
               segments: [
-                ButtonSegment(
-                  value: 'file',
-                  label: Text(l10n.sound_type_file),
-                ),
+                ButtonSegment(value: 'file', label: Text(l10n.sound_type_file)),
                 ButtonSegment(
                   value: 'event',
                   label: Text(l10n.sound_type_event),

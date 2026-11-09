@@ -80,9 +80,7 @@ class _NotesEditDialogState extends State<NotesEditDialog> {
         minLines: 5,
         maxLines: 12,
         maxLength: maxTextLength,
-        decoration: InputDecoration(
-          hintText: context.l10n.notes_hint,
-        ),
+        decoration: InputDecoration(hintText: context.l10n.notes_hint),
       ),
     );
   }

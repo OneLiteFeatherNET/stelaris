@@ -88,10 +88,13 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
               maxLength: maxTextLength,
               decoration: InputDecoration(
                 labelText: '${context.l10n.dialog_model_name_label} *',
-                hintText: widget.nameHint ?? context.l10n.dialog_model_name_hint,
+                hintText:
+                    widget.nameHint ?? context.l10n.dialog_model_name_hint,
                 prefixIcon: const Icon(Icons.title),
               ),
-              validator: Validators.required(context.l10n.validation_name_required),
+              validator: Validators.required(
+                context.l10n.validation_name_required,
+              ),
               onFieldSubmitted: (_) => _handleSubmit(),
             ),
             if (widget.askKey) ...[
@@ -102,7 +105,8 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
                 inputFormatters: const [lowerCaseFormatter],
                 decoration: InputDecoration(
                   labelText: '${context.l10n.dialog_model_key_label} *',
-                  hintText: widget.keyHint ?? context.l10n.dialog_model_key_hint,
+                  hintText:
+                      widget.keyHint ?? context.l10n.dialog_model_key_hint,
                   prefixIcon: const Icon(Icons.vpn_key_outlined),
                 ),
                 validator: Validators.adventureKeyPart(context.l10n),

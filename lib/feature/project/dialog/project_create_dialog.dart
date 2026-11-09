@@ -62,7 +62,9 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
                 hintText: 'e.g. My Awesome Project',
                 prefixIcon: const Icon(Icons.title),
               ),
-              validator: Validators.required(context.l10n.validation_display_name_required),
+              validator: Validators.required(
+                context.l10n.validation_display_name_required,
+              ),
             ),
             verticalSpacing10,
             TextFormField(
