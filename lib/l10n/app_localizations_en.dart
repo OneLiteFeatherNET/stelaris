@@ -1611,7 +1611,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get validation_codepoint_invalid =>
-      'Enter exactly 4 hex digits (e.g. E000)';
+      'Enter code points of 4 to 6 hex digits, separated by spaces (e.g. E000 E001)';
+
+  @override
+  String get validation_codepoint_private_use =>
+      'Only code points of the Private Use Area are allowed (E000–F8FF, F0000–FFFFD, 100000–10FFFD)';
+
+  @override
+  String validation_font_line_too_long(int max) {
+    return 'A line holds at most $max characters, code points above FFFF count twice';
+  }
 
   @override
   String get project_description_hint => 'Brief description of the project';
@@ -1683,7 +1692,66 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get font_char_label => 'Char *';
+  String get font_char_label => 'Code points *';
+
+  @override
+  String get font_char_helper =>
+      'Hex code points separated by spaces, e.g. E000 E001';
+
+  @override
+  String get font_char_info_title => 'Font characters';
+
+  @override
+  String get font_char_info_intro =>
+      'A font maps the cells of its texture to characters. Stelaris only allows characters of the Unicode Private Use Area for this. Unicode leaves these characters without meaning, so a custom glyph never replaces a letter, digit or emoji that players type or see in chat.';
+
+  @override
+  String get font_char_info_areas_title => 'Private Use Areas';
+
+  @override
+  String get font_char_info_areas =>
+      'There are three areas: E000–F8FF with 6,400 characters, and the planes 15 (F0000–FFFFD) and 16 (100000–10FFFD) with about 65,000 characters each. Minecraft supports all three.';
+
+  @override
+  String get font_char_info_input_title => 'Input';
+
+  @override
+  String get font_char_info_input =>
+      'The characters have no visible shape outside the game, so you type and see them as hex code points, separated by spaces: E000 E001 E002. A code point has 4 to 6 hex digits.';
+
+  @override
+  String get font_char_info_rows_title => 'One line per row';
+
+  @override
+  String get font_char_info_rows =>
+      'Each line stands for one row of the texture grid, from left to right, and the lines go from top to bottom. Minecraft cuts the texture into cells by the number of lines and their length, so all lines must have the same length. A texture with 3×2 icons needs 2 lines of 3 code points, a strip of 6 icons on top of each other needs 6 lines of 1 code point.';
+
+  @override
+  String font_char_length(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count code points',
+      one: '1 code point',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String font_char_length_deviates(int count, int expected) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count code points',
+      one: '1 code point',
+    );
+    return '$_temp0, the other lines have $expected';
+  }
+
+  @override
+  String font_char_rows_differ(String lengths) {
+    return 'The lines have different lengths ($lengths code points). Minecraft rejects a font whose lines differ in length, give them all the same number of code points.';
+  }
 
   @override
   String get tab_components => 'Components';

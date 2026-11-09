@@ -1,5 +1,6 @@
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/font_part.dart';
 import 'package:stelaris/util/functions.dart';
 
 typedef FormValidator<T> = String? Function(T? value);
@@ -52,6 +53,28 @@ class Validators {
       for (final validator in validators) {
         final error = validator(value);
         if (error != null) return error;
+      }
+      return null;
+    };
+  }
+
+  /// Validates a font line typed as hex code points like `E000 E001`.
+  ///
+  /// Every code point must lie in the Unicode Private Use Area and the line
+  /// must fit into [maxFontLineLength] UTF-16 code units, as the backend
+  /// requires.
+  static FormValidator<String> fontLine(AppLocalizations l10n) {
+    return (value) {
+      if (value == null || value.trim().isEmpty) {
+        return l10n.validation_codepoint_required;
+      }
+      final codePoints = parseCodePoints(value);
+      if (codePoints == null) return l10n.validation_codepoint_invalid;
+      if (!codePoints.every(isFontPart)) {
+        return l10n.validation_codepoint_private_use;
+      }
+      if (String.fromCharCodes(codePoints).length > maxFontLineLength) {
+        return l10n.validation_font_line_too_long(maxFontLineLength);
       }
       return null;
     };

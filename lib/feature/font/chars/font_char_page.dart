@@ -5,9 +5,11 @@ import 'package:stelaris/api/state/actions/font/font_string_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/selected_font_char_state.dart';
 import 'package:stelaris/feature/font/chars/char_list_view.dart';
+import 'package:stelaris/feature/font/chars/font_char_row_warning.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
-import 'package:stelaris/feature/font/chars/dialog/font_char_add_dialog.dart';
-import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/feature/font/chars/dialog/font_char_dialog.dart';
+import 'package:stelaris/feature/font/chars/dialog/font_char_info_dialog.dart';
+import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class FontCharPage extends StatelessWidget {
@@ -20,27 +22,34 @@ class FontCharPage extends StatelessWidget {
       onInit: (store) => store.dispatchAndWait(FontCharFetchAction()),
       builder: (context, vm) {
         return Padding(
-          padding: const EdgeInsets.only(left: 25, right: 25),
+          padding: const EdgeInsets.all(16),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              verticalSpacing25,
-              Align(
-                alignment: Alignment.center,
-                child: ActionChip(
-                  avatar: const Icon(Icons.add),
-                  label: Text(context.l10n.button_add),
-                  onPressed: () => _addDialog(context, vm),
-                ),
+              PageHeader.small(
+                title: context.l10n.tab_characters,
+                actions: [
+                  PageHeaderAction(
+                    key: const Key('font_char_info'),
+                    icon: const Icon(Icons.info_outline),
+                    label: context.l10n.menu_item_info,
+                    onPressed: () => showDialog<void>(
+                      context: context,
+                      builder: (_) => const FontCharInfoDialog(),
+                    ),
+                  ),
+                  PageHeaderAction(
+                    key: const Key('font_char_add'),
+                    icon: const Icon(Icons.add),
+                    label: context.l10n.button_add,
+                    primary: true,
+                    onPressed: () => _addDialog(context),
+                  ),
+                ],
               ),
-              verticalSpacing25,
-              Flexible(
-                flex: 1,
-                fit: FlexFit.loose,
-                child: _buildBodyContent(vm),
-              ),
+              const SizedBox(height: 12),
+              FontCharRowWarning(lines: vm.chars.map((char) => char.line)),
+              Expanded(child: _buildBodyContent(vm)),
             ],
           ),
         );
@@ -63,14 +72,7 @@ class FontCharPage extends StatelessWidget {
   }
 
   /// Shows the dialog to add a new [FontStringDTO].
-  /// [context] the involved context
-  /// [view] the view model
-  void _addDialog(BuildContext context, SelectedFontCharView view) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return FontCharAddDialog(fontModel: view.selected);
-      },
-    );
+  void _addDialog(BuildContext context) {
+    showDialog(context: context, builder: (context) => const FontCharDialog());
   }
 }
