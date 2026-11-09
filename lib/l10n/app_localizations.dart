@@ -3130,6 +3130,30 @@ abstract class AppLocalizations {
   /// **'Event'**
   String get sound_type_event;
 
+  /// No description provided for @sound_asset_choose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose uploaded sound'**
+  String get sound_asset_choose;
+
+  /// No description provided for @sound_asset_linked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked to the uploaded sound'**
+  String get sound_asset_linked;
+
+  /// No description provided for @sound_asset_none.
+  ///
+  /// In en, this message translates to:
+  /// **'No uploaded sound, e.g. a vanilla one'**
+  String get sound_asset_none;
+
+  /// No description provided for @sound_asset_unlink.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink the uploaded sound'**
+  String get sound_asset_unlink;
+
   /// No description provided for @sound_file_card_subtitle.
   ///
   /// In en, this message translates to:

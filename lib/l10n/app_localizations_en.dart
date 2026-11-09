@@ -1687,6 +1687,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sound_type_event => 'Event';
 
   @override
+  String get sound_asset_choose => 'Choose uploaded sound';
+
+  @override
+  String get sound_asset_linked => 'Linked to the uploaded sound';
+
+  @override
+  String get sound_asset_none => 'No uploaded sound, e.g. a vanilla one';
+
+  @override
+  String get sound_asset_unlink => 'Unlink the uploaded sound';
+
+  @override
   String sound_file_card_subtitle(String type, String volume, String pitch) {
     return '$type · Volume $volume · Pitch $pitch';
   }

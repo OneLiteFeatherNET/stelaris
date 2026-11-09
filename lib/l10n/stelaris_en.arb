@@ -821,6 +821,10 @@
   "sound_edit": "Edit Sound",
   "sound_type_file": "File",
   "sound_type_event": "Event",
+  "sound_asset_choose": "Choose uploaded sound",
+  "sound_asset_linked": "Linked to the uploaded sound",
+  "sound_asset_none": "No uploaded sound, e.g. a vanilla one",
+  "sound_asset_unlink": "Unlink the uploaded sound",
   "sound_file_card_subtitle": "{type} · Volume {volume} · Pitch {pitch}",
   "@sound_file_card_subtitle": {
     "placeholders": {
