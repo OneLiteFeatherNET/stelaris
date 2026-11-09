@@ -36,7 +36,14 @@ class SoundFileEntryPage extends StatefulWidget {
 
 /// The sound files of the selected sound event, as cards in the grid of the
 /// model pages, each with a player when it has uploaded audio.
-class _SoundFileEntriesState extends State<SoundFileEntryPage> {
+///
+/// Kept alive in its tab: the downloaded files, their waveforms and the
+/// asset names live here, and switching tabs would read them all again.
+class _SoundFileEntriesState extends State<SoundFileEntryPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   SoundPlaybackController? _ownPlayback;
 
   SoundPlaybackController get _playback =>
@@ -108,6 +115,7 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return StoreConnector<AppState, SelectedSoundView>(
       vm: () => SelectedSoundState(),
       onInit: (store) => store.dispatch(InitSoundFileAction()),
