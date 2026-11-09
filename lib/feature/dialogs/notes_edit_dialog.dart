@@ -3,8 +3,10 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/dispatch_ext.dart';
+import 'package:stelaris/feature/base/input/length_counter.dart';
 
 /// Builds the action that saves [notes] — `null` when cleared — for the
 /// model the dialog was opened on.
@@ -78,9 +80,9 @@ class _NotesEditDialogState extends State<NotesEditDialog> {
         keyboardType: TextInputType.multiline,
         minLines: 5,
         maxLines: 12,
-        decoration: InputDecoration(
-          hintText: context.l10n.notes_hint,
-        ),
+        maxLength: maxTextLength,
+        buildCounter: nearLimitCounter,
+        decoration: InputDecoration(hintText: context.l10n.notes_hint),
       ),
     );
   }

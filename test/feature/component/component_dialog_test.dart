@@ -12,6 +12,7 @@ void main() {
     WidgetTester tester, {
     String initialValue = '',
     ThemeData? theme,
+    int? maxLength,
   }) async {
     final saved = <String>[];
     await tester.pumpWidget(
@@ -25,6 +26,7 @@ void main() {
             actionLabel: 'Save',
             componentContext: ComponentContext.lore,
             initialValue: initialValue,
+            maxLength: maxLength,
             onSave: saved.add,
           ),
         ),
@@ -100,6 +102,29 @@ void main() {
 
     expect(saved, isEmpty);
     expect(find.text("The value can't be empty"), findsOneWidget);
+  });
+
+  testWidgets('does not save a text longer than its max length', (
+    tester,
+  ) async {
+    final saved = await pumpDialog(tester, maxLength: 5);
+
+    await tester.enterText(find.byType(TextField), '<b>Sharp');
+    await tester.tap(find.text('Save'));
+    await tester.pump();
+
+    expect(saved, isEmpty);
+    expect(find.text('At most 5 characters'), findsOneWidget);
+  });
+
+  testWidgets('saves a text as long as its max length', (tester) async {
+    final saved = await pumpDialog(tester, maxLength: 8);
+
+    await tester.enterText(find.byType(TextField), '<b>Sharp');
+    await tester.tap(find.text('Save'));
+    await tester.pump();
+
+    expect(saved, ['<b>Sharp']);
   });
 
   testWidgets('the dialog puts the caret into the field', (tester) async {

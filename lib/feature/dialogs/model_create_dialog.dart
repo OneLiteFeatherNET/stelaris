@@ -6,6 +6,7 @@ import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
+import 'package:stelaris/feature/base/input/length_counter.dart';
 
 /// A dialog for creating models that require a display name and a Kyori Adventure key.
 ///
@@ -85,22 +86,30 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
             TextFormField(
               controller: _nameController,
               autofocus: true,
+              maxLength: maxTextLength,
+              buildCounter: nearLimitCounter,
               decoration: InputDecoration(
                 labelText: '${context.l10n.dialog_model_name_label} *',
-                hintText: widget.nameHint ?? context.l10n.dialog_model_name_hint,
+                hintText:
+                    widget.nameHint ?? context.l10n.dialog_model_name_hint,
                 prefixIcon: const Icon(Icons.title),
               ),
-              validator: Validators.required(context.l10n.validation_name_required),
+              validator: Validators.required(
+                context.l10n.validation_name_required,
+              ),
               onFieldSubmitted: (_) => _handleSubmit(),
             ),
             if (widget.askKey) ...[
               verticalSpacing10,
               TextFormField(
                 controller: _keyController,
+                maxLength: maxTextLength,
+                buildCounter: nearLimitCounter,
                 inputFormatters: const [lowerCaseFormatter],
                 decoration: InputDecoration(
                   labelText: '${context.l10n.dialog_model_key_label} *',
-                  hintText: widget.keyHint ?? context.l10n.dialog_model_key_hint,
+                  hintText:
+                      widget.keyHint ?? context.l10n.dialog_model_key_hint,
                   prefixIcon: const Icon(Icons.vpn_key_outlined),
                 ),
                 validator: Validators.adventureKeyPart(context.l10n),

@@ -9,6 +9,7 @@ import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/feature/base/input/length_counter.dart';
 
 /// A relation that can be copied along with a model, e.g. an item's lore.
 class CopyRelation {
@@ -161,6 +162,8 @@ class _CopyModelDialogState extends State<CopyModelDialog> {
             TextFormField(
               controller: _nameController,
               autofocus: true,
+              maxLength: maxTextLength,
+              buildCounter: nearLimitCounter,
               decoration: InputDecoration(
                 labelText: '${l10n.dialog_model_name_label} *',
                 hintText: l10n.dialog_model_name_hint,
@@ -172,6 +175,8 @@ class _CopyModelDialogState extends State<CopyModelDialog> {
             verticalSpacing10,
             TextFormField(
               controller: _keyController,
+              maxLength: maxTextLength,
+              buildCounter: nearLimitCounter,
               inputFormatters: const [lowerCaseFormatter],
               decoration: InputDecoration(
                 labelText: '${l10n.dialog_model_key_label} *',

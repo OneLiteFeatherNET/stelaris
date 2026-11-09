@@ -4,6 +4,7 @@ import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/typedefs.dart';
+import 'package:stelaris/feature/base/input/length_counter.dart';
 
 class EntryUpdateDialog extends StatefulWidget {
   const EntryUpdateDialog({
@@ -59,6 +60,8 @@ class _EntryUpdateDialogState extends State<EntryUpdateDialog> {
           autofocus: true,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: _controller,
+          maxLength: maxTextLength,
+          buildCounter: nearLimitCounter,
           inputFormatters: widget.formatters,
           validator: widget.formFieldValidator,
           decoration: InputDecoration(

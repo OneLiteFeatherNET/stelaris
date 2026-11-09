@@ -188,4 +188,23 @@ void main() {
       expect(validator('abc'), 'Please enter a valid number');
     });
   });
+
+  group('Validators.maxLength', () {
+    final validator = Validators.maxLength(l10n, 5);
+
+    test('accepts text up to the limit and empty text', () {
+      expect(validator('abcde'), isNull);
+      expect(validator(''), isNull);
+      expect(validator(null), isNull);
+    });
+
+    test('rejects longer text with the limit in the message', () {
+      expect(validator('abcdef'), 'At most 5 characters');
+    });
+
+    test('counts an emoji as two characters like the backend', () {
+      expect(validator('abc😀'), isNull);
+      expect(validator('abcd😀'), 'At most 5 characters');
+    });
+  });
 }

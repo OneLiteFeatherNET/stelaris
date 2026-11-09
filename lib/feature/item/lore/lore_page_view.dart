@@ -9,6 +9,7 @@ import 'package:stelaris/feature/component/component_dialog.dart';
 import 'package:stelaris/feature/item/lore/lore_line_card.dart';
 import 'package:stelaris/feature/item/lore/lore_preview.dart';
 import 'package:stelaris/util/component_context.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class LorePageView extends StatefulWidget {
@@ -168,6 +169,7 @@ class _LorePageViewState extends State<LorePageView>
           title: context.l10n.dialog_item_lore_edit_title,
           actionLabel: context.l10n.button_save,
           componentContext: ComponentContext.lore,
+          maxLength: maxTextLength,
           initialValue: dto.text,
           onSave: (value) {
             final updatedDto = dto.copyWith(text: value);

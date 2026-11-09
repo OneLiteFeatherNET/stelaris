@@ -10,6 +10,7 @@ import 'package:stelaris/util/validators.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/util/dispatch_ext.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
+import 'package:stelaris/feature/base/input/length_counter.dart';
 
 /// Creates a [Project] and selects it. Pops the project as the backend
 /// stored it, with its id.
@@ -55,17 +56,23 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
           children: [
             TextFormField(
               controller: _displayNameController,
+              maxLength: maxTextLength,
+              buildCounter: nearLimitCounter,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               decoration: InputDecoration(
                 labelText: '${context.l10n.dialog_project_display_name} *',
                 hintText: 'e.g. My Awesome Project',
                 prefixIcon: const Icon(Icons.title),
               ),
-              validator: Validators.required(context.l10n.validation_display_name_required),
+              validator: Validators.required(
+                context.l10n.validation_display_name_required,
+              ),
             ),
             verticalSpacing10,
             TextFormField(
               controller: _keyController,
+              maxLength: maxTextLength,
+              buildCounter: nearLimitCounter,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               inputFormatters: const [lowerCaseFormatter],
               decoration: InputDecoration(
@@ -78,6 +85,8 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             verticalSpacing10,
             TextFormField(
               controller: _descriptionController,
+              maxLength: maxTextLength,
+              buildCounter: nearLimitCounter,
               maxLines: 3,
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_description,
@@ -88,6 +97,8 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             verticalSpacing10,
             TextFormField(
               controller: _projectUrlController,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: Validators.maxLength(context.l10n, maxTextLength),
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_url,
                 hintText: 'https://github.com/...',
@@ -97,6 +108,8 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             verticalSpacing10,
             TextFormField(
               controller: _docuUrlController,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: Validators.maxLength(context.l10n, maxTextLength),
               decoration: InputDecoration(
                 labelText: context.l10n.dialog_project_docu_url,
                 hintText: 'https://docs.example.com/...',

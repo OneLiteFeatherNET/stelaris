@@ -2938,6 +2938,12 @@ abstract class AppLocalizations {
   /// **'The maximum is {max}'**
   String validation_maximum(int max);
 
+  /// No description provided for @validation_max_length.
+  ///
+  /// In en, this message translates to:
+  /// **'At most {max} characters'**
+  String validation_max_length(int max);
+
   /// No description provided for @validation_decimal_maximum.
   ///
   /// In en, this message translates to:

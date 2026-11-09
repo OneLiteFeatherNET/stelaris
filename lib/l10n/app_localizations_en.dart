@@ -1576,6 +1576,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String validation_max_length(int max) {
+    return 'At most $max characters';
+  }
+
+  @override
   String validation_decimal_maximum(String max) {
     return 'The maximum is $max';
   }

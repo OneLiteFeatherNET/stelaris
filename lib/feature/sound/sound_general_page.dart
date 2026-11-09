@@ -43,6 +43,7 @@ class SoundGeneralPage extends StatelessWidget {
                   icon: Icons.key,
                   value: sound.keyName ?? emptyString,
                   footer: l10n.sound_hint_key,
+                  maxLength: maxTextLength,
                   validator: (value) =>
                       checkIfEmptyAndReturnErrorString(
                         value ?? emptyString,
@@ -60,6 +61,7 @@ class SoundGeneralPage extends StatelessWidget {
                   icon: Icons.subtitles_outlined,
                   value: sound.subTitle ?? emptyString,
                   footer: l10n.sound_hint_subtitle,
+                  maxLength: maxTextLength,
                   validator: (value) => checkIfEmptyAndReturnErrorString(
                     value ?? emptyString,
                     context,

@@ -50,6 +50,10 @@ final List<TextInputFormatter> enchantmentLevelFormatters = [
 /// Input field
 const double fiftyLength = 50;
 
+/// The most characters the backend stores in a text column, longer text is
+/// rejected with a validation error
+const int maxTextLength = 255;
+
 /// Minecraft related values
 const String emptyString = '';
 const String defaultMaterial = 'minecraft:dirt';

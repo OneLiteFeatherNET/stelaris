@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/dialogs/notes_edit_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/util/constants.dart';
 
 /// Saves the notes, or fails like the backend can.
 class _SaveNotes extends ReduxAction<AppState> {
@@ -66,6 +67,31 @@ void main() {
 
     expect(saved, ['sharp']);
     expect(find.byType(NotesEditDialog), findsNothing);
+  });
+
+  testWidgets('cuts the notes at the length the backend stores', (
+    tester,
+  ) async {
+    final saved = await pumpDialog(tester);
+
+    await tester.enterText(find.byType(TextField), 'a' * (maxTextLength + 1));
+    await tester.tap(saveButton());
+    await tester.pumpAndSettle();
+
+    expect(saved, ['a' * maxTextLength]);
+  });
+
+  testWidgets('shows the counter only close to the limit', (tester) async {
+    await pumpDialog(tester);
+    const nearLimit = maxTextLength - 10;
+
+    await tester.enterText(find.byType(TextField), 'sharp');
+    await tester.pump();
+    expect(find.textContaining('/$maxTextLength'), findsNothing);
+
+    await tester.enterText(find.byType(TextField), 'a' * nearLimit);
+    await tester.pump();
+    expect(find.text('$nearLimit/$maxTextLength'), findsOneWidget);
   });
 
   testWidgets('a failed save shows the error and keeps the dialog open', (

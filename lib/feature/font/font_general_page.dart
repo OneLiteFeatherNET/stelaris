@@ -105,6 +105,7 @@ class FontGeneralPage extends StatelessWidget {
                     icon: Icons.short_text,
                     value: font.provider ?? emptyString,
                     footer: l10n.font_hint_provider,
+                    maxLength: maxTextLength,
                     formatters: [stringPatternFormatter],
                     onChanged: (value) =>
                         _stage(context, font.copyWith(provider: value)),

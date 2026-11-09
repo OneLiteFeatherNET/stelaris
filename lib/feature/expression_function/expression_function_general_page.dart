@@ -15,6 +15,7 @@ import 'package:stelaris/feature/expression/expression_tex.dart';
 import 'package:stelaris/feature/expression/expression_variable_dialog.dart';
 import 'package:stelaris/feature/expression_function/expression_function_preview.dart';
 import 'package:stelaris/feature/expression_function/expression_function_stage.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -60,6 +61,7 @@ class ExpressionFunctionGeneralPage extends StatelessWidget {
                     label: l10n.expression_function_field_name,
                     icon: Icons.functions,
                     value: function.name,
+                    maxLength: maxTextLength,
                     footer:
                         _first(violationsFor(problem, 'name')) ??
                         l10n.expression_function_field_name_hint,

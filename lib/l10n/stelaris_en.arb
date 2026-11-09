@@ -747,6 +747,14 @@
       }
     }
   },
+  "validation_max_length": "At most {max} characters",
+  "@validation_max_length": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "validation_decimal_maximum": "The maximum is {max}",
   "@validation_decimal_maximum": {
     "placeholders": {

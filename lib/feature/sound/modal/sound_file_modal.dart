@@ -4,8 +4,10 @@ import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/input/registry_autocomplete.dart';
 import 'package:stelaris/feature/sound/modal/section/base_integer_section_field.dart';
 import 'package:stelaris/feature/sound/modal/section/sound_slider.dart';
+import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
+import 'package:stelaris/feature/base/input/length_counter.dart';
 
 /// The client clamps the pitch to this range when it plays a sound.
 const double minPitch = 0.5;
@@ -80,10 +82,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
             const SizedBox(height: 16),
             SegmentedButton<String>(
               segments: [
-                ButtonSegment(
-                  value: 'file',
-                  label: Text(l10n.sound_type_file),
-                ),
+                ButtonSegment(value: 'file', label: Text(l10n.sound_type_file)),
                 ButtonSegment(
                   value: 'event',
                   label: Text(l10n.sound_type_event),
@@ -156,6 +155,8 @@ class _SoundFileModalState extends State<SoundFileModal> {
       controller: _nameController,
       focusNode: _nameFocus,
       autofocus: widget.create,
+      maxLength: maxTextLength,
+      buildCounter: nearLimitCounter,
       decoration: InputDecoration(
         labelText: l10n.sound_name,
         hintText: l10n.sound_name_hint,
