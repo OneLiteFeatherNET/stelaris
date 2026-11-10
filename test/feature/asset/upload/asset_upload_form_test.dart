@@ -22,6 +22,7 @@ Future<AssetUploadController> _pump(
   List<PickedAssetFile?> picks = const [],
   Set<AssetKind> kinds = const {...AssetKind.values},
   String? fixedKey,
+  AssetModel? replaces,
 }) async {
   final queue = [...picks];
   final controller = AssetUploadController(
@@ -29,6 +30,7 @@ Future<AssetUploadController> _pump(
     namespace: 'vulpes',
     kinds: kinds,
     fixedKey: fixedKey,
+    replaces: replaces,
     pickFile: () async =>
         queue.removeAt(0) ?? (throw StateError('the file was not readable')),
   );
@@ -320,5 +322,117 @@ void main() {
     expect(formatFileSize(512), '512 B');
     expect(formatFileSize(1536), '1.5 KB');
     expect(formatFileSize(3 * 1024 * 1024), '3.0 MB');
+  });
+
+  group('a new version', () {
+    const ruby = AssetModel(
+      id: 'm-1',
+      projectId: 'p-1',
+      key: 'vulpes:item/ruby',
+      kind: AssetKind.MODEL,
+      displayName: 'Ruby',
+      fileName: 'ruby.json',
+      contentType: 'application/json',
+      size: 3,
+      sha1: 'bbbb',
+    );
+
+    testWidgets('keeps the key and name of the asset, so it asks for neither', (
+      tester,
+    ) async {
+      final controller = await _pump(
+        tester,
+        picks: [_file('ruby_v2.json')],
+        kinds: const {AssetKind.MODEL},
+        replaces: ruby,
+      );
+
+      expect(
+        find.text(
+          'The file replaces the one stored under vulpes:item/ruby, '
+          'wherever it is used.',
+        ),
+        findsOneWidget,
+      );
+      expect(controller.canUpload, isFalse, reason: 'no file yet');
+
+      await _choose(tester);
+
+      expect(find.byKey(const Key('asset_upload_key')), findsNothing);
+      expect(find.byKey(const Key('asset_upload_name')), findsNothing);
+      expect(controller.key, 'vulpes:item/ruby');
+      expect(controller.keyController.text, 'vulpes:item/ruby');
+      expect(controller.nameController.text, isEmpty);
+      expect(controller.canUpload, isTrue);
+    });
+
+    testWidgets('goes up as the content of the asset, guarded by its hash', (
+      tester,
+    ) async {
+      RequestOptions? request;
+      ApiService().assetApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((RequestOptions options) {
+            request = options;
+            return FakeHttpClientAdapter.response({
+              'id': 'm-1',
+              'projectId': 'p-1',
+              'key': 'vulpes:item/ruby',
+              'displayName': 'Ruby',
+              'kind': 'MODEL',
+              'fileName': 'ruby_v2.json',
+              'contentType': 'application/json',
+              'size': 3,
+              'sha1': 'cccc',
+              'derivedAssetIds': <String>[],
+            });
+          });
+      final controller = await _pump(
+        tester,
+        picks: [_file('ruby_v2.json')],
+        kinds: const {AssetKind.MODEL},
+        replaces: ruby,
+      );
+      await _choose(tester);
+
+      final stored = await tester.runAsync(controller.upload);
+
+      expect(stored?.sha1, 'cccc');
+      expect(request?.uri.path, endsWith('/project/p-1/asset/m-1/content'));
+      expect(request?.headers['If-Match'], '"bbbb"');
+      expect(controller.conflict, isFalse);
+    });
+
+    testWidgets('a file changed meanwhile is a conflict until another file is '
+        'chosen', (tester) async {
+      ApiService().assetApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter(
+            (RequestOptions _) => FakeHttpClientAdapter.response({
+              'title': 'Precondition failed',
+              'status': 412,
+            }, statusCode: 412),
+          );
+      final controller = await _pump(
+        tester,
+        picks: [_file('ruby_v2.json'), _file('ruby_v3.json')],
+        kinds: const {AssetKind.MODEL},
+        replaces: ruby,
+      );
+      await _choose(tester);
+
+      expect(await tester.runAsync(controller.upload), isNull);
+      await tester.pump();
+
+      const conflict =
+          'Ruby was changed meanwhile. Go back to see the stored version.';
+      expect(controller.conflict, isTrue);
+      expect(controller.uploadError, isNull);
+      expect(find.text(conflict), findsOneWidget);
+
+      await tester.runAsync(controller.choose);
+      await tester.pump();
+
+      expect(controller.conflict, isFalse);
+      expect(find.text(conflict), findsNothing);
+    });
   });
 }
