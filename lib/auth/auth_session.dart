@@ -70,6 +70,19 @@ class AuthSession implements TokenSource {
   /// Every change to [state], for the store to mirror into [AppState].
   Stream<AuthState> get states => _states.stream;
 
+  /// Marks a sign-out the provider has not confirmed yet.
+  ///
+  /// The package only discards the tokens once the provider sends the browser
+  /// back from its end-session endpoint. A provider that is down, that does not
+  /// know the redirect, or a tab closed on the way never gets there, and the
+  /// tokens would sign the person in again on the next visit. The mark is what
+  /// lets the app finish the sign-out by itself; see [_finishPendingSignOut].
+  ///
+  /// Kept beside the states rather than the session values, which a browser
+  /// drops with the tab.
+  @visibleForTesting
+  static const String signOutPendingKey = 'stelaris.sign_out_pending';
+
   /// Where the provider sends the browser back to, for sign-in and sign-out
   /// alike. A real page in the bundle, not a route: it runs before Flutter
   /// does and hands the response to the app.
@@ -97,6 +110,11 @@ class AuthSession implements TokenSource {
     );
 
     try {
+      // Before the manager reads the store: it would restore the very session
+      // a sign-out was meant to end. Before the provider is asked for anything
+      // too, so an unreachable one cannot keep the tokens alive.
+      await _store.init();
+      await _finishPendingSignOut(manager);
       await manager.init();
 
       final String? unsupported = ProviderSupport.unsupportedReason(
@@ -133,6 +151,10 @@ class AuthSession implements TokenSource {
       return;
     }
     try {
+      // A sign-out that never left this page is finished first. Left pending,
+      // it would be finished on the way back from the provider instead, and
+      // take the verifier of this sign-in with it.
+      await _finishPendingSignOut(manager);
       await manager.loginAuthorizationCodeFlow(
         originalUri: returnUriFor(returnTo),
       );
@@ -147,6 +169,10 @@ class AuthSession implements TokenSource {
   /// The local side goes first and unconditionally: if the provider's
   /// end-session endpoint is unreachable, the person still has to end up signed
   /// out here rather than staying signed in because a remote call failed.
+  ///
+  /// The tokens themselves have to outlive the call - the provider wants the
+  /// id token as a hint - so they are marked as on their way out instead, and
+  /// discarded on the next start at the latest.
   Future<void> signOut() async {
     final OidcUserManager? manager = _manager;
     _emit(const AuthState(status: AuthStatus.signedOut));
@@ -154,13 +180,64 @@ class AuthSession implements TokenSource {
       return;
     }
     try {
+      await _store.set(
+        OidcStoreNamespace.request,
+        key: signOutPendingKey,
+        value: 'true',
+        managerId: manager.id,
+      );
       // The package sends id_token_hint from the user it is forgetting.
       // Keycloak has required it since 18; providers that do not want it
       // ignore it, so there is one path rather than two.
       await manager.logout(originalUri: _baseHref);
     } catch (error) {
       debugPrint('The provider session could not be ended: $error');
+      // Still on this page, so nothing comes back to finish it later.
+      try {
+        await manager.forgetUser();
+        await _finishPendingSignOut(manager);
+      } catch (error) {
+        debugPrint('The local session could not be discarded: $error');
+      }
     }
+  }
+
+  /// Discards the tokens of a sign-out that was started and never confirmed.
+  ///
+  /// The registration of a dynamically registered client stays, as it does
+  /// when the package forgets a user: it identifies the app, not the person.
+  Future<void> _finishPendingSignOut(OidcUserManager manager) async {
+    final String? pending = await _store.get(
+      OidcStoreNamespace.request,
+      key: signOutPendingKey,
+      managerId: manager.id,
+    );
+    if (pending == null) {
+      return;
+    }
+    final Set<String> tokens =
+        (await _store.getAllKeys(
+              OidcStoreNamespace.secureTokens,
+              managerId: manager.id,
+            ))
+            .where(
+              (String key) => !key.startsWith(
+                OidcUserManagerBase.clientRegistrationKeyPrefix,
+              ),
+            )
+            .toSet();
+    if (tokens.isNotEmpty) {
+      await _store.removeMany(
+        OidcStoreNamespace.secureTokens,
+        keys: tokens,
+        managerId: manager.id,
+      );
+    }
+    await _store.remove(
+      OidcStoreNamespace.request,
+      key: signOutPendingKey,
+      managerId: manager.id,
+    );
   }
 
   /// Where to come back to after signing in.
