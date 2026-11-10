@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/asset/asset_kind_label.dart';
 import 'package:stelaris/feature/asset/picker/asset_key.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
+import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/asset/upload/asset_file_drop_target.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_controller.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -11,8 +12,9 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// Shows the upload of [controller]: a drop zone until a file is chosen,
-/// then the file with its kind and size, the name it is shown by and the key
-/// it is stored under.
+/// then the file with its kind and size, a texture as it looks, the name it
+/// is shown by and the key it is stored under. A new version of an asset
+/// keeps its name and key, so it shows neither.
 ///
 /// A file dropped on the page while the form is shown replaces the chosen
 /// one. Enter in the name or key field calls [onSubmitted] when the upload
@@ -64,7 +66,7 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
     final file = widget.controller.file;
     if (identical(file, _shownFile)) return;
     _shownFile = file;
-    if (file != null) {
+    if (file != null && widget.controller.replaces == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _nameFocus.requestFocus();
       });
@@ -81,10 +83,15 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
         onDrop: controller.drop,
         builder: (context, dragging) {
           final file = controller.file;
+          final replaces = controller.replaces;
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (replaces != null) ...[
+                Text(context.l10n.asset_upload_replace_hint(replaces.key)),
+                const SizedBox(height: 16),
+              ],
               if (file == null)
                 _DropZone(
                   formats: _formats(context.l10n, controller.kinds),
@@ -101,14 +108,28 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
                   onChange: controller.choose,
                   onRemove: controller.clear,
                 ),
-                const SizedBox(height: 16),
-                _buildNameField(context),
-                const SizedBox(height: 16),
-                _buildKeyField(context),
+                if (controller.fileKind == AssetKind.TEXTURE) ...[
+                  const SizedBox(height: 16),
+                  TexturePreview.bytes(file.bytes, key: ObjectKey(file)),
+                ],
+                if (replaces == null) ...[
+                  const SizedBox(height: 16),
+                  _buildNameField(context),
+                  const SizedBox(height: 16),
+                  _buildKeyField(context),
+                ],
               ],
               if (_fileProblem(context) case final problem?) ...[
                 const SizedBox(height: 8),
                 _ErrorText(problem),
+              ],
+              if (replaces != null && controller.conflict) ...[
+                const SizedBox(height: 8),
+                _ErrorText(
+                  context.l10n.asset_upload_replace_conflict(
+                    replaces.displayName,
+                  ),
+                ),
               ],
               if (controller.uploadError case final error?) ...[
                 const SizedBox(height: 8),

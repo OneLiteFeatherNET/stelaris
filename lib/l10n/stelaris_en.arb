@@ -1214,9 +1214,9 @@
   "asset_picker_title_sound": "Choose a sound",
   "asset_pick_model_tooltip": "Choose a model from the project",
   "asset_picker_choose": "Choose",
-  "asset_picker_empty": "This project has no models yet. Upload one below.",
-  "asset_picker_empty_texture": "This project has no textures yet. Upload one below.",
-  "asset_picker_empty_sound": "This project has no sounds yet. Upload one below.",
+  "asset_picker_empty": "This project has no models yet.",
+  "asset_picker_empty_texture": "This project has no textures yet.",
+  "asset_picker_empty_sound": "This project has no sounds yet.",
   "asset_picker_load_failed": "The models could not be loaded.",
   "asset_picker_load_failed_texture": "The textures could not be loaded.",
   "asset_picker_load_failed_sound": "The sounds could not be loaded.",
@@ -1231,8 +1231,30 @@
       }
     }
   },
-  "asset_picker_replace_conflict": "{name} was changed meanwhile. The list now shows the stored version.",
-  "@asset_picker_replace_conflict": {
+  "asset_picker_upload_new": "Upload",
+  "asset_picker_back": "Back to the list",
+  "asset_picker_back_out": "Back",
+  "asset_upload_title_model": "Upload a model",
+  "asset_upload_title_texture": "Upload a texture",
+  "asset_upload_title_sound": "Upload a sound",
+  "asset_upload_replace_title": "New version of {name}",
+  "@asset_upload_replace_title": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_upload_replace_hint": "The file replaces the one stored under {key}, wherever it is used.",
+  "@asset_upload_replace_hint": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_upload_replace_conflict": "{name} was changed meanwhile. Go back to see the stored version.",
+  "@asset_upload_replace_conflict": {
     "placeholders": {
       "name": {
         "type": "String"

@@ -751,6 +751,46 @@ void main() {
       expect(find.byKey(const Key('item_model_choose_asset')), findsNothing);
     });
 
+    testWidgets('a tap beside the dialog goes back from the picker to the '
+        'form', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1000);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      serveAssets([
+        assetJson(
+          id: 'm-1',
+          key: 'vulpes:item/ruby',
+          kind: 'MODEL',
+          displayName: 'Ruby',
+        ),
+      ]);
+      await pumpOpener(
+        tester,
+        (context) => showComponentEditDialog(
+          context,
+          spec: _spec('minecraft:item_model'),
+          value: initialValue(_spec('minecraft:item_model').schema),
+          project: vulpes,
+          onSave: (_) async => null,
+        ),
+        (_) {},
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('item_model_choose_asset')));
+      await pumpUntil(
+        tester,
+        action: () async {},
+        done: () => find.text('Ruby').evaluate().isNotEmpty,
+      );
+
+      await tester.tapAt(const Offset(5, 5));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('item_model_choose_asset')), findsOneWidget);
+      expect(find.text('Ruby'), findsNothing);
+    });
+
     testWidgets('a chosen model puts its key into the value and is saved', (
       tester,
     ) async {
@@ -788,6 +828,11 @@ void main() {
         tester,
         action: () async {},
         done: () => find.text('Ruby').evaluate().isNotEmpty,
+      );
+      expect(
+        find.byType(Dialog),
+        findsOneWidget,
+        reason: 'the picker takes the place of the form',
       );
       await tester.tap(find.text('Ruby'));
       await pumpUntil(

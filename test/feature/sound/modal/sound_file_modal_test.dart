@@ -181,17 +181,28 @@ void main() {
         expect(find.text('Choose uploaded sound'), findsNothing);
       });
 
-      testWidgets('a chosen sound names the file and links it', (tester) async {
+      testWidgets('the picker takes the place of the form and a chosen sound '
+          'names the file and links it', (tester) async {
         String? preselected = 'unset';
         await pumpModal(
           tester,
-          pickSound: (context, selectedKey) async {
+          pickSound: (context, selectedKey, onPicked, onBack) {
             preselected = selectedKey;
-            return click;
+            return TextButton(
+              onPressed: () => onPicked(click),
+              child: const Text('pick click'),
+            );
           },
         );
 
         await tester.tap(find.text('Choose uploaded sound'));
+        await tester.pumpAndSettle();
+        expect(
+          find.text('Choose uploaded sound'),
+          findsNothing,
+          reason: 'the picker replaces the form',
+        );
+        await tester.tap(find.text('pick click'));
         await tester.pumpAndSettle();
         await save(tester);
 
@@ -205,7 +216,7 @@ void main() {
         await pumpModal(
           tester,
           source: linked,
-          pickSound: (context, selectedKey) async => null,
+          pickSound: _noPicker,
         );
 
         expect(find.text('Linked to the uploaded sound'), findsOneWidget);
@@ -218,7 +229,7 @@ void main() {
         await pumpModal(
           tester,
           source: linked,
-          pickSound: (context, selectedKey) async => null,
+          pickSound: _noPicker,
         );
 
         await tester.enterText(
@@ -237,7 +248,7 @@ void main() {
         await pumpModal(
           tester,
           source: linked,
-          pickSound: (context, selectedKey) async => null,
+          pickSound: _noPicker,
         );
 
         await tester.tap(find.byTooltip('Unlink the uploaded sound'));
@@ -252,7 +263,7 @@ void main() {
         await pumpModal(
           tester,
           source: linked,
-          pickSound: (context, selectedKey) async => null,
+          pickSound: _noPicker,
         );
 
         await tester.tap(find.text('Event'));
@@ -269,9 +280,9 @@ void main() {
         await pumpModal(
           tester,
           source: linked,
-          pickSound: (context, selectedKey) async {
+          pickSound: (context, selectedKey, onPicked, onBack) {
             preselected = selectedKey;
-            return null;
+            return const SizedBox();
           },
         );
 
@@ -280,6 +291,36 @@ void main() {
 
         expect(preselected, 'vulpes:ui/click');
       });
+
+      testWidgets('going back from the picker keeps the form', (tester) async {
+        await pumpModal(
+          tester,
+          source: linked,
+          pickSound: (context, selectedKey, onPicked, onBack) => TextButton(
+            onPressed: onBack,
+            child: const Text('back'),
+          ),
+        );
+
+        await tester.tap(find.text('Choose uploaded sound'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('back'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Linked to the uploaded sound'), findsOneWidget);
+        await save(tester);
+
+        expect(saved.single.name, 'vulpes:ui/click');
+        expect(saved.single.assetId, 'a-1');
+      });
     });
   });
 }
+
+/// A picker the test never opens.
+Widget _noPicker(
+  BuildContext context,
+  String? selectedKey,
+  ValueChanged<AssetModel> onPicked,
+  VoidCallback onBack,
+) => const SizedBox();

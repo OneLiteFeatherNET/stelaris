@@ -13,11 +13,14 @@ import 'package:stelaris/feature/base/input/length_counter.dart';
 const double minPitch = 0.5;
 const double maxPitch = 2;
 
-/// Lets the user choose or upload a sound asset; [selectedKey] is the key of
-/// the linked one. Resolves to null when nothing was chosen.
-typedef SoundAssetPicker = Future<AssetModel?> Function(
+/// Builds the content that lets the user choose or upload a sound asset,
+/// shown in place of the modal's own; [selectedKey] is the key of the linked
+/// one. [onPicked] gets the chosen sound, [onBack] returns without one.
+typedef SoundAssetPicker = Widget Function(
   BuildContext context,
   String? selectedKey,
+  ValueChanged<AssetModel> onPicked,
+  VoidCallback onBack,
 );
 
 class SoundFileModal extends StatefulWidget {
@@ -56,6 +59,9 @@ class _SoundFileModalState extends State<SoundFileModal> {
   String? _assetId;
   String? _assetKey;
 
+  /// Whether the sound picker is shown in place of the form.
+  bool _picking = false;
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -89,10 +95,9 @@ class _SoundFileModalState extends State<SoundFileModal> {
     _assetKey = null;
   }
 
-  Future<void> _chooseSound(SoundAssetPicker pick) async {
-    final asset = await pick(context, _assetKey);
-    if (asset == null || !mounted) return;
+  void _onSoundPicked(AssetModel asset) {
     setState(() {
+      _picking = false;
       _assetId = asset.id;
       _assetKey = asset.key;
     });
@@ -111,6 +116,15 @@ class _SoundFileModalState extends State<SoundFileModal> {
     final l10n = context.l10n;
     final headingStyle = Theme.of(context).textTheme.titleSmall;
 
+    if (widget.pickSound case final pick? when _picking) {
+      return pick(
+        context,
+        _assetKey,
+        _onSoundPicked,
+        () => setState(() => _picking = false),
+      );
+    }
+
     return FormDialog(
       title: widget.create ? l10n.sound_create : l10n.sound_edit,
       actionIcon: widget.create ? Icons.add : Icons.save_outlined,
@@ -124,9 +138,9 @@ class _SoundFileModalState extends State<SoundFileModal> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _nameField(context),
-            if (widget.pickSound case final pick? when _type == 'file') ...[
+            if (widget.pickSound != null && _type == 'file') ...[
               const SizedBox(height: 8),
-              _soundRow(context, pick),
+              _soundRow(context),
             ],
             const SizedBox(height: 16),
             SegmentedButton<String>(
@@ -228,7 +242,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
   }
 
   /// Whether the file plays an uploaded sound, and the button to choose one.
-  Widget _soundRow(BuildContext context, SoundAssetPicker pick) {
+  Widget _soundRow(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     return Row(
@@ -254,7 +268,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
             icon: const Icon(Icons.link_off),
           ),
         TextButton.icon(
-          onPressed: () => _chooseSound(pick),
+          onPressed: () => setState(() => _picking = true),
           icon: const Icon(Icons.library_music_outlined),
           label: Text(l10n.sound_asset_choose),
         ),

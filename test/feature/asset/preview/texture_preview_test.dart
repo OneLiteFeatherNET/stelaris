@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -113,5 +114,40 @@ void main() {
     );
 
     expect(find.text('The texture could not be shown'), findsOneWidget);
+  });
+
+  testWidgets('shows bytes at hand at once, without loading them', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(body: TexturePreview.bytes(_png)),
+      ),
+    );
+
+    // No pump for a load: the first frame already shows the texture.
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    final image = tester.widget<Image>(find.byType(Image));
+    expect((image.image as MemoryImage).bytes, _png);
+    expect(image.filterQuality, FilterQuality.none);
+  });
+
+  testWidgets('shows the bytes of another file in place of the first', (
+    tester,
+  ) async {
+    Widget preview(Uint8List bytes) => MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: TexturePreview.bytes(bytes)),
+    );
+    final other = Uint8List.fromList(_png);
+    await tester.pumpWidget(preview(_png));
+    await tester.pumpWidget(preview(other));
+    await tester.pump();
+
+    final image = tester.widget<Image>(find.byType(Image));
+    expect(identical((image.image as MemoryImage).bytes, other), isTrue);
   });
 }

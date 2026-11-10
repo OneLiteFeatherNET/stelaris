@@ -49,7 +49,9 @@ Future<AssetModel?> showAssetPickerDialog(
 }) {
   return showDialog<AssetModel>(
     context: context,
-    builder: (_) => _AssetPickerDialog(
+    builder: (dialogContext) => AssetPicker(
+      onPicked: (asset) => Navigator.of(dialogContext).pop(asset),
+      onCancel: () => Navigator.of(dialogContext).pop(),
       projectId: projectId,
       namespace: namespace,
       selectedKey: selectedKey,
@@ -67,20 +69,33 @@ Future<AssetModel?> showAssetPickerDialog(
 List<AssetModel> _sortedByKey(Iterable<AssetModel> assets) =>
     [...assets]..sort((a, b) => a.key.compareTo(b.key));
 
-class _AssetPickerDialog extends StatefulWidget {
-  const _AssetPickerDialog({
+/// The content of [showAssetPickerDialog], to show it in place of another
+/// dialog's content instead of on top of it. [onPicked] gets the chosen
+/// asset, [onCancel] is called when the user goes back without one.
+///
+/// With [embedded] a back button in the title leads to [onCancel], as the
+/// user came from another content of the same dialog.
+class AssetPicker extends StatefulWidget {
+  const AssetPicker({
     required this.projectId,
-    required this.namespace,
-    required this.selectedKey,
-    required this.previewBuilder,
-    required this.kinds,
-    required this.uploadKinds,
-    required this.keyFolder,
-    required this.hideExtracted,
-    required this.replaceable,
-    required this.pickFile,
+    required this.onPicked,
+    required this.onCancel,
+    this.namespace,
+    this.selectedKey,
+    this.previewBuilder,
+    this.kinds = modelAssetKinds,
+    this.uploadKinds = visualAssetKinds,
+    this.keyFolder = defaultAssetFolder,
+    this.hideExtracted = false,
+    this.replaceable = false,
+    this.embedded = false,
+    this.pickFile = pickAssetFile,
+    super.key,
   });
 
+  final ValueChanged<AssetModel> onPicked;
+  final VoidCallback onCancel;
+  final bool embedded;
   final String projectId;
   final String? namespace;
   final String? selectedKey;
@@ -93,18 +108,10 @@ class _AssetPickerDialog extends StatefulWidget {
   final Future<PickedAssetFile?> Function() pickFile;
 
   @override
-  State<_AssetPickerDialog> createState() => _AssetPickerDialogState();
+  State<AssetPicker> createState() => _AssetPickerState();
 }
 
-class _AssetPickerDialogState extends State<_AssetPickerDialog> {
-  late final AssetUploadController _upload = AssetUploadController(
-    projectId: widget.projectId,
-    namespace: widget.namespace,
-    kinds: widget.uploadKinds,
-    keyFolder: widget.keyFolder,
-    pickFile: widget.pickFile,
-  );
-
+class _AssetPickerState extends State<AssetPicker> {
   List<AssetModel> _assets = const [];
   AssetModel? _selected;
   bool _loading = true;
@@ -114,14 +121,11 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
   /// a texture is stored but not listed.
   String? _uploadedTextureKey;
 
-  /// Whether a new version of the selected asset is being uploaded.
-  bool _replacing = false;
-
-  /// What went wrong with the last new version, null after a success.
-  String? _replaceError;
-
   /// The name of the asset whose new version was stored last.
   String? _replacedName;
+
+  /// The upload shown in place of the list, null while the list is shown.
+  AssetUploadController? _upload;
 
   /// What the picker is for, which its texts name.
   _Picks get _picks => widget.kinds.contains(AssetKind.TEXTURE)
@@ -134,12 +138,6 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
   void initState() {
     super.initState();
     _load();
-  }
-
-  @override
-  void dispose() {
-    _upload.dispose();
-    super.dispose();
   }
 
   Future<void> _load() async {
@@ -209,139 +207,197 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
     return null;
   }
 
-  /// Uploads the chosen file and closes the dialog with it. A file of a kind
-  /// the picker does not list, e.g. a texture for an item, is stored and
-  /// reported, and the dialog stays open.
-  Future<void> _submitUpload() async {
-    if (!_upload.canUpload) return;
-    final asset = await _upload.upload();
-    if (asset == null || !mounted) return;
-    if (widget.kinds.contains(asset.kind)) {
-      Navigator.of(context).pop(asset);
-      return;
-    }
-    _upload.clear();
-    setState(() => _uploadedTextureKey = asset.key);
-  }
-
-  /// Uploads a new version of [asset] in place of its file. The backend
-  /// answers 412 if the file changed meanwhile, then the list is loaded anew.
-  Future<void> _replace(AssetModel asset) async {
-    final file = await widget.pickFile();
-    if (file == null || !mounted) return;
+  /// Switches to the upload, of a new asset or, with [replaces], of a new
+  /// version of that one.
+  void _startUpload({AssetModel? replaces}) {
     setState(() {
-      _replacing = true;
-      _replaceError = null;
-      _replacedName = null;
-    });
-    try {
-      final updated = await ApiService().assetApi.replaceContent(
-        asset,
-        fileName: file.name,
-        bytes: file.bytes,
+      _upload = AssetUploadController(
+        projectId: widget.projectId,
+        namespace: widget.namespace,
+        kinds: switch (replaces) {
+          final asset? => {asset.kind},
+          null => widget.uploadKinds,
+        },
+        keyFolder: widget.keyFolder,
+        pickFile: widget.pickFile,
+        replaces: replaces,
       );
-      if (!mounted) return;
-      setState(() {
-        _replacing = false;
-        _replacedName = updated.displayName;
-        _assets = _sortedByKey([
-          ..._assets.where((listed) => listed.id != updated.id),
-          updated,
-        ]);
-        _selected = updated;
-      });
-    } on DioException catch (error) {
-      if (!mounted) return;
-      final conflict = error.response?.statusCode == 412;
-      setState(() {
-        _replacing = false;
-        _replaceError = conflict
-            ? context.l10n.asset_picker_replace_conflict(asset.displayName)
-            : ProblemDetail.fromDioException(error).displayMessage;
-      });
-      if (conflict) await _load();
-    }
+    });
   }
 
-  /// The dialog's action: the upload while a file waits, else choosing the
-  /// selected asset.
-  VoidCallback? _submit(AssetModel? selected) {
-    if (_upload.uploading || _replacing) return null;
-    if (_upload.file != null) return _upload.canUpload ? _submitUpload : null;
-    if (selected == null) return null;
-    return () => Navigator.of(context).pop(selected);
+  /// Leaves the upload for the list. A new version left without being
+  /// stored may have failed on a newer one, so the list is loaded anew.
+  void _endUpload({bool reload = false}) {
+    final upload = _upload;
+    if (upload == null || upload.uploading) return;
+    // The form still listens to the controller until it is gone.
+    WidgetsBinding.instance.addPostFrameCallback((_) => upload.dispose());
+    setState(() => _upload = null);
+    if (reload) _load();
+  }
+
+  /// Lists [asset] in place of its older version and selects it.
+  void _show(AssetModel asset) {
+    _assets = _sortedByKey([
+      ..._assets.where((listed) => listed.id != asset.id),
+      asset,
+    ]);
+    _selected = asset;
+  }
+
+  /// Stores the chosen file and goes back to the list, where it is selected.
+  /// A file of a kind the picker does not list, e.g. a texture for an item,
+  /// is stored and reported.
+  Future<void> _submitUpload() async {
+    final upload = _upload;
+    if (upload == null || !upload.canUpload) return;
+    final replaces = upload.replaces;
+    final asset = await upload.upload();
+    if (asset == null || !mounted) return;
+    _endUpload();
+    setState(() {
+      _uploadedTextureKey = null;
+      _replacedName = replaces == null ? null : asset.displayName;
+      if (widget.kinds.contains(asset.kind)) {
+        _show(asset);
+      } else {
+        _uploadedTextureKey = asset.key;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _upload?.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final upload = _upload;
+    // Escape and a tap beside the dialog go a step back where there is one,
+    // as cancel does. The close icon still closes the dialog.
+    return PopScope(
+      canPop: upload == null && !widget.embedded,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (upload == null) {
+          widget.onCancel();
+        } else {
+          _endUpload(reload: upload.conflict);
+        }
+      },
+      child: upload == null
+          ? _buildPicker(context)
+          : ListenableBuilder(
+              listenable: upload,
+              builder: (context, _) => _buildUpload(context, upload),
+            ),
+    );
+  }
+
+  Widget _buildPicker(BuildContext context) {
     final l10n = context.l10n;
     final selected = _selected;
     final previewBuilder = widget.previewBuilder;
-    return ListenableBuilder(
-      listenable: _upload,
-      builder: (context, _) => FormDialog(
-        title: switch (_picks) {
-          _Picks.texture => l10n.asset_picker_title_texture,
-          _Picks.sound => l10n.asset_picker_title_sound,
-          _Picks.model => l10n.asset_picker_title,
-        },
-        actionLabel: _upload.file != null
-            ? l10n.asset_picker_upload_action
-            : l10n.asset_picker_choose,
-        maxWidth: 560,
-        busy: _upload.uploading || _replacing,
-        onSubmit: _submit(selected),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // The hint to upload one is moot once a file is chosen.
-            if (!_showsOnlyUpload) ...[
-              _buildList(context),
-              const SizedBox(height: 16),
-            ],
-            AssetUploadForm(controller: _upload, onSubmitted: _submitUpload),
-            if (_uploadedTextureKey case final key?) ...[
-              const SizedBox(height: 12),
-              Text(l10n.asset_picker_texture_uploaded(key)),
-            ],
-            if (selected != null && previewBuilder != null) ...[
-              const SizedBox(height: 16),
-              KeyedSubtree(
-                key: ValueKey(selected.id),
-                child: previewBuilder(selected),
-              ),
-            ],
-            if (selected != null && widget.replaceable) ...[
-              const SizedBox(height: 8),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton.icon(
-                  onPressed: _replacing || _upload.uploading
-                      ? null
-                      : () => _replace(selected),
-                  icon: const Icon(Icons.upload_file),
-                  label: Text(l10n.asset_picker_replace),
-                ),
-              ),
-              if (_replaceError case final error?)
-                Text(error, style: _errorStyle(context))
-              else if (_replacedName case final name?)
-                Text(l10n.asset_picker_replaced(name)),
-            ],
+    return FormDialog(
+      title: switch (_picks) {
+        _Picks.texture => l10n.asset_picker_title_texture,
+        _Picks.sound => l10n.asset_picker_title_sound,
+        _Picks.model => l10n.asset_picker_title,
+      },
+      titleActions: [
+        // The empty list offers the upload itself.
+        if (_assets.isNotEmpty)
+          TextButton.icon(
+            key: const Key('asset_picker_upload'),
+            onPressed: _startUpload,
+            icon: const Icon(Icons.upload),
+            label: Text(l10n.asset_picker_upload_new),
+          ),
+      ],
+      actionLabel: l10n.asset_picker_choose,
+      maxWidth: 560,
+      leading: widget.embedded
+          ? IconButton(
+              key: const Key('asset_picker_back'),
+              tooltip: l10n.asset_picker_back_out,
+              onPressed: widget.onCancel,
+              icon: const Icon(Icons.arrow_back),
+            )
+          : null,
+      onCancel: widget.onCancel,
+      onSubmit: selected == null ? null : () => widget.onPicked(selected),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildList(context),
+          if (_uploadedTextureKey case final key?) ...[
+            const SizedBox(height: 12),
+            Text(l10n.asset_picker_texture_uploaded(key)),
           ],
-        ),
+          if (selected != null && previewBuilder != null) ...[
+            const SizedBox(height: 16),
+            KeyedSubtree(
+              key: ValueKey(selected.id),
+              child: previewBuilder(selected),
+            ),
+          ],
+          if (selected != null && widget.replaceable) ...[
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: () => _startUpload(replaces: selected),
+                icon: const Icon(Icons.upload_file),
+                label: Text(l10n.asset_picker_replace),
+              ),
+            ),
+            if (_replacedName case final name?)
+              Text(l10n.asset_picker_replaced(name)),
+          ],
+        ],
       ),
     );
   }
 
-  /// Whether the list is left out: nothing is listed and a file waits for
-  /// upload.
-  bool get _showsOnlyUpload =>
-      !_loading &&
-      _loadError == null &&
-      _assets.isEmpty &&
-      _upload.file != null;
+  /// The upload in place of the list, with a way back to it.
+  Widget _buildUpload(BuildContext context, AssetUploadController upload) {
+    final l10n = context.l10n;
+    final replaces = upload.replaces;
+    return FormDialog(
+      title: switch ((replaces, _picks)) {
+        (final asset?, _) => l10n.asset_upload_replace_title(
+          asset.displayName,
+        ),
+        (null, _Picks.texture) => l10n.asset_upload_title_texture,
+        (null, _Picks.sound) => l10n.asset_upload_title_sound,
+        (null, _Picks.model) => l10n.asset_upload_title_model,
+      },
+      leading: IconButton(
+        key: const Key('asset_picker_back'),
+        tooltip: l10n.asset_picker_back,
+        onPressed: upload.uploading
+            ? null
+            : () => _endUpload(reload: upload.conflict),
+        icon: const Icon(Icons.arrow_back),
+      ),
+      // Cancel drops the upload, as the back button does.
+      onCancel: upload.uploading
+          ? null
+          : () => _endUpload(reload: upload.conflict),
+      actionLabel: l10n.asset_picker_upload_action,
+      actionIcon: Icons.upload,
+      maxWidth: 560,
+      busy: upload.uploading,
+      onSubmit: upload.canUpload ? _submitUpload : null,
+      content: AssetUploadForm(
+        controller: upload,
+        onSubmitted: _submitUpload,
+      ),
+    );
+  }
 
   Widget _buildList(BuildContext context) {
     final l10n = context.l10n;
@@ -366,13 +422,27 @@ class _AssetPickerDialogState extends State<_AssetPickerDialog> {
       );
     }
     if (_assets.isEmpty) {
-      // No padding of its own: the divider above and the gap to the upload
-      // form below already set it apart.
-      return Text(switch (_picks) {
-        _Picks.texture => l10n.asset_picker_empty_texture,
-        _Picks.sound => l10n.asset_picker_empty_sound,
-        _Picks.model => l10n.asset_picker_empty,
-      });
+      // Early in a project uploading is what the picker is opened for.
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(switch (_picks) {
+              _Picks.texture => l10n.asset_picker_empty_texture,
+              _Picks.sound => l10n.asset_picker_empty_sound,
+              _Picks.model => l10n.asset_picker_empty,
+            }, textAlign: TextAlign.center),
+            const SizedBox(height: 16),
+            FilledButton.tonalIcon(
+              key: const Key('asset_picker_upload'),
+              onPressed: _startUpload,
+              icon: const Icon(Icons.upload),
+              label: Text(l10n.asset_picker_upload_new),
+            ),
+          ],
+        ),
+      );
     }
     return Column(
       mainAxisSize: MainAxisSize.min,

@@ -22,6 +22,8 @@ class FormDialog extends StatelessWidget {
     this.showActions = true,
     this.busy = false,
     this.titleActions = const [],
+    this.leading,
+    this.onCancel,
     this.header,
     super.key,
   });
@@ -48,6 +50,13 @@ class FormDialog extends StatelessWidget {
 
   /// Buttons in the title row, before the close icon.
   final List<Widget> titleActions;
+
+  /// Sits before the title, e.g. a back button of a dialog with steps.
+  final Widget? leading;
+
+  /// Replaces closing the dialog on cancel, e.g. to go a step back. The
+  /// close icon still closes it.
+  final VoidCallback? onCancel;
 
   /// Sits between the title row and the content and does not scroll with
   /// it, e.g. a [TabBar].
@@ -89,6 +98,10 @@ class FormDialog extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      if (leading case final leading?) ...[
+                        leading,
+                        const SizedBox(width: 8),
+                      ],
                       Expanded(
                         child: Text(
                           title,
@@ -124,7 +137,9 @@ class FormDialog extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(
-                          onPressed: busy ? null : () => _handleCancel(context),
+                          onPressed: busy
+                              ? null
+                              : onCancel ?? () => _handleCancel(context),
                           child: Text(context.l10n.button_cancel),
                         ),
                         horizontalSpacing10,
