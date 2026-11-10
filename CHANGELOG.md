@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.12.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.11.0...v1.12.0) (2026-11-10)
+
+
+### Features
+
+* **asset:** show the asset picker and its upload as steps of one dialog ([#322](https://github.com/OneLiteFeatherNET/stelaris/issues/322)) ([37ed640](https://github.com/OneLiteFeatherNET/stelaris/commit/37ed640e2d6bf4dc5a229b0b68e7d8b09730310c))
+* **font:** enter font chars as code points of the private use area ([#318](https://github.com/OneLiteFeatherNET/stelaris/issues/318)) ([de392fc](https://github.com/OneLiteFeatherNET/stelaris/commit/de392fcaab667995c794784fd6f2910b95ce2585))
+* **input:** limit text length ([#316](https://github.com/OneLiteFeatherNET/stelaris/issues/316)) ([3508aeb](https://github.com/OneLiteFeatherNET/stelaris/commit/3508aeb12a035ae4399339a011bdcfaa4779faac))
+* **sound:** add upload and play functionality ([#319](https://github.com/OneLiteFeatherNET/stelaris/issues/319)) ([ac64772](https://github.com/OneLiteFeatherNET/stelaris/commit/ac647722b9d45675be162f8c8ce98db98737e195))
+
+
+### Bug Fixes
+
+* **ui:** line up grid cards and text fields with consistent spacing ([#320](https://github.com/OneLiteFeatherNET/stelaris/issues/320)) ([0ce840f](https://github.com/OneLiteFeatherNET/stelaris/commit/0ce840f810d83f30353fe5e6940bc1ccd38b2038))
+* **ui:** unify add, save and help actions across pages ([#324](https://github.com/OneLiteFeatherNET/stelaris/issues/324)) ([9813f95](https://github.com/OneLiteFeatherNET/stelaris/commit/9813f9526c6b521eee214ad65d5b5c62ce8324da))
+
+
+### Performance Improvements
+
+* **sound:** keep the waveform of a sound file instead of its audio ([#323](https://github.com/OneLiteFeatherNET/stelaris/issues/323)) ([d5b7689](https://github.com/OneLiteFeatherNET/stelaris/commit/d5b768948682e644bbf602f7012ff20b14e528bd))
+
 ## [1.11.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.10.0...v1.11.0) (2026-11-08)
 
 
