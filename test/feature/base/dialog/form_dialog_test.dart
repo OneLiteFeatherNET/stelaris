@@ -40,4 +40,88 @@ void main() {
       content.right,
     );
   });
+
+  /// Opens a dialog with [dialog] behind a button, so it can close.
+  Future<void> open(WidgetTester tester, FormDialog dialog) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => TextButton(
+              onPressed: () =>
+                  showDialog<void>(context: context, builder: (_) => dialog),
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('the leading widget sits before the title', (tester) async {
+    await open(
+      tester,
+      FormDialog(
+        title: 'Step',
+        actionLabel: 'Save',
+        onSubmit: () {},
+        leading: const Icon(Icons.arrow_back),
+        content: const SizedBox(),
+      ),
+    );
+
+    expect(
+      tester.getRect(find.byIcon(Icons.arrow_back)).right,
+      lessThan(tester.getRect(find.text('Step')).left),
+    );
+  });
+
+  testWidgets('cancel closes the dialog', (tester) async {
+    await open(
+      tester,
+      FormDialog(
+        title: 'Step',
+        actionLabel: 'Save',
+        onSubmit: () {},
+        content: const SizedBox(),
+      ),
+    );
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(FormDialog), findsNothing);
+  });
+
+  testWidgets('a custom cancel replaces closing, the close icon still closes', (
+    tester,
+  ) async {
+    var cancelled = 0;
+    await open(
+      tester,
+      FormDialog(
+        title: 'Step',
+        actionLabel: 'Save',
+        onSubmit: () {},
+        onCancel: () => cancelled++,
+        content: const SizedBox(),
+      ),
+    );
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    expect(cancelled, 1);
+    expect(find.byType(FormDialog), findsOneWidget);
+
+    await tester.tap(find.widgetWithIcon(IconButton, Icons.close));
+    await tester.pumpAndSettle();
+
+    expect(cancelled, 1);
+    expect(find.byType(FormDialog), findsNothing);
+  });
 }
