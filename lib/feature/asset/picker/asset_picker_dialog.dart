@@ -275,13 +275,25 @@ class _AssetPickerState extends State<AssetPicker> {
   @override
   Widget build(BuildContext context) {
     final upload = _upload;
-    if (upload != null) {
-      return ListenableBuilder(
-        listenable: upload,
-        builder: (context, _) => _buildUpload(context, upload),
-      );
-    }
-    return _buildPicker(context);
+    // Escape and a tap beside the dialog go a step back where there is one,
+    // as cancel does. The close icon still closes the dialog.
+    return PopScope(
+      canPop: upload == null && !widget.embedded,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (upload == null) {
+          widget.onCancel();
+        } else {
+          _endUpload(reload: upload.conflict);
+        }
+      },
+      child: upload == null
+          ? _buildPicker(context)
+          : ListenableBuilder(
+              listenable: upload,
+              builder: (context, _) => _buildUpload(context, upload),
+            ),
+    );
   }
 
   Widget _buildPicker(BuildContext context) {
