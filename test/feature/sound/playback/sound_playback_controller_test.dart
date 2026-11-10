@@ -188,14 +188,14 @@ void main() {
     expect(player.stops, 1);
   });
 
-  test('the waveform and a later play share one download', () async {
+  test('a play during the waveform read shares its download', () async {
     final source = _source('a');
     final waveform = controller.waveformOf('p1', source);
+    final done = controller.toggle('p1', source);
     loader.pending['a']!.complete(_file);
 
     expect((await waveform).duration, const Duration(seconds: 2));
     expect(identical(controller.waveformOf('p1', source), waveform), isTrue);
-    final done = controller.toggle('p1', source);
     await pumpEventQueue();
 
     expect(loader.requests, hasLength(1));
@@ -203,6 +203,65 @@ void main() {
     expect(player.played.single.$1, _file);
     player.finish();
     await done;
+  });
+
+  test('the audio is let go once the waveform is read', () async {
+    final source = _source('a');
+    final waveform = controller.waveformOf('p1', source);
+    loader.pending['a']!.complete(_file);
+    await waveform;
+
+    final done = controller.toggle('p1', source);
+    expect(loader.requests, hasLength(2));
+    loader.pending['a']!.complete(_file);
+    await pumpEventQueue();
+
+    expect(decoder.decoded, hasLength(1));
+    expect(player.played.single.$1, _file);
+    player.finish();
+    await done;
+  });
+
+  test('the file played last is kept for the next play', () async {
+    final source = _source('a');
+    final first = controller.toggle('p1', source);
+    loader.pending['a']!.complete(_file);
+    await pumpEventQueue();
+    player.finish();
+    await first;
+
+    final waveform = controller.waveformOf('p1', source);
+    await waveform;
+    final second = controller.toggle('p1', source);
+    await pumpEventQueue();
+
+    expect(loader.requests, hasLength(1));
+    expect(player.played, hasLength(2));
+    player.finish();
+    await second;
+  });
+
+  test('playing another file lets go of the one played before', () async {
+    final a = _source('a');
+    final b = _source('b');
+    final first = controller.toggle('p1', a);
+    loader.pending['a']!.complete(_file);
+    await pumpEventQueue();
+    player.finish();
+    await first;
+
+    final second = controller.toggle('p1', b);
+    loader.pending['b']!.complete(_file);
+    await pumpEventQueue();
+    player.finish();
+    await second;
+
+    final third = controller.toggle('p1', a);
+    expect(loader.requests, [('p1', 'a'), ('p1', 'b'), ('p1', 'a')]);
+    loader.pending['a']!.complete(_file);
+    await pumpEventQueue();
+    player.finish();
+    await third;
   });
 
   test('a failed download is tried again', () async {
