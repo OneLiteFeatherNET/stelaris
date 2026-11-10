@@ -19,19 +19,30 @@ Future<List<int>> _loadFromBackend(String projectId, String assetId) =>
 /// Shows the texture [asset] of [projectId] as pixel art: scaled by a whole
 /// factor where it fits, without smoothing, on a checkerboard that shows its
 /// transparent pixels.
+///
+/// [TexturePreview.bytes] shows a file that is not stored yet, e.g. one
+/// chosen for an upload.
 class TexturePreview extends StatefulWidget {
   const TexturePreview({
-    required this.projectId,
-    required this.asset,
+    required String this.projectId,
+    required AssetModel this.asset,
     this.loadContent = _loadFromBackend,
     super.key,
-  });
+  }) : bytes = null;
+
+  const TexturePreview.bytes(Uint8List this.bytes, {super.key})
+    : projectId = null,
+      asset = null,
+      loadContent = _loadFromBackend;
 
   /// The height of the area the texture is shown in.
   static const double height = 160;
 
-  final String projectId;
-  final AssetModel asset;
+  final String? projectId;
+  final AssetModel? asset;
+
+  /// The texture itself, shown instead of loading [asset].
+  final Uint8List? bytes;
 
   /// Loads the bytes of the texture, injectable for tests.
   final TextureContentLoader loadContent;
@@ -43,15 +54,19 @@ class TexturePreview extends StatefulWidget {
 class _TexturePreviewState extends State<TexturePreview> {
   late Future<Uint8List> _bytes = _load();
 
-  Future<Uint8List> _load() async => Uint8List.fromList(
-    await widget.loadContent(widget.projectId, widget.asset.id),
-  );
+  Future<Uint8List> _load() async {
+    if (widget.bytes case final bytes?) return bytes;
+    return Uint8List.fromList(
+      await widget.loadContent(widget.projectId!, widget.asset!.id),
+    );
+  }
 
   @override
   void didUpdateWidget(TexturePreview oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.asset.id != widget.asset.id ||
-        oldWidget.asset.sha1 != widget.asset.sha1) {
+    if (!identical(oldWidget.bytes, widget.bytes) ||
+        oldWidget.asset?.id != widget.asset?.id ||
+        oldWidget.asset?.sha1 != widget.asset?.sha1) {
       _bytes = _load();
     }
   }
@@ -70,6 +85,8 @@ class _TexturePreviewState extends State<TexturePreview> {
           ),
           child: FutureBuilder<Uint8List>(
             future: _bytes,
+            // Bytes at hand need no loading indicator.
+            initialData: widget.bytes,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(child: Text(context.l10n.texture_preview_failed));
@@ -100,8 +117,8 @@ class _TexturePreviewState extends State<TexturePreview> {
       errorBuilder: (context, _, _) =>
           Text(context.l10n.texture_preview_failed),
     );
-    final width = widget.asset.width;
-    final height = widget.asset.height;
+    final width = widget.asset?.width;
+    final height = widget.asset?.height;
     if (width == null || height == null || width == 0 || height == 0) {
       return image;
     }
