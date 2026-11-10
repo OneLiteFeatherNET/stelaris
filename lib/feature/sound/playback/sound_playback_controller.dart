@@ -12,8 +12,11 @@ enum SoundPlaybackStatus { idle, loading, playing }
 /// Starting a file stops the one before. A load or playback that a stop or a
 /// newer start has superseded neither plays nor reports its failure.
 ///
-/// A file is downloaded once for its waveform and its playbacks; a failed
-/// download is tried again on the next request.
+/// The waveform of a file is kept, its audio is not: a sound event may hold
+/// many large files, and each card reads a waveform. Only the file played
+/// last stays, so playing it again needs no download. A request that meets a
+/// download under way shares it; a failed download is tried again on the next
+/// request.
 class SoundPlaybackController extends ChangeNotifier {
   SoundPlaybackController({
     required this.loader,
@@ -25,7 +28,11 @@ class SoundPlaybackController extends ChangeNotifier {
   final SoundPlayer player;
   final SoundDecoder decoder;
 
+  /// The downloads under way and the file played last, see [_playedKey].
   final Map<String, Future<SoundFile>> _files = {};
+
+  /// The key of the one file whose audio outlives its use.
+  String? _playedKey;
   final Map<String, Future<SoundWaveform>> _waveforms = {};
 
   /// The waveforms read so far, and the files whose waveform failed, so a
@@ -55,8 +62,9 @@ class SoundPlaybackController extends ChangeNotifier {
   Future<SoundWaveform> waveformOf(String projectId, SoundFileSource source) {
     final key = _keyOf(source);
     return _cached(_waveforms, key, () async {
+      final file = _file(projectId, source);
       try {
-        final waveform = await decoder.waveform(await _file(projectId, source));
+        final waveform = await decoder.waveform(await file);
         _readWaveforms[key] = waveform;
         _failedWaveforms.remove(key);
         return waveform;
@@ -64,9 +72,23 @@ class SoundPlaybackController extends ChangeNotifier {
         _failedWaveforms.add(key);
         rethrow;
       } finally {
+        _release(key, file);
         if (!_disposed) notifyListeners();
       }
     });
+  }
+
+  /// Lets go of the audio the waveform under [key] was read from, unless a
+  /// playback holds on to it or a newer download took its place.
+  void _release(String key, Future<SoundFile> file) {
+    if (key != _playedKey && identical(_files[key], file)) _files.remove(key);
+  }
+
+  /// Makes [key] the one file that is kept, in place of the one before.
+  void _keepForPlayback(String key) {
+    final previous = _playedKey;
+    _playedKey = key;
+    if (previous != null && previous != key) _files.remove(previous);
   }
 
   /// The waveform of [source] once it is read, otherwise null.
@@ -118,6 +140,7 @@ class SoundPlaybackController extends ChangeNotifier {
     stop();
     final generation = _generation;
     _set(source, SoundPlaybackStatus.loading);
+    _keepForPlayback(_keyOf(source));
     try {
       final file = await _file(projectId, source);
       if (generation != _generation) return;
