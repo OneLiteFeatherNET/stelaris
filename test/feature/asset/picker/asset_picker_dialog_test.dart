@@ -463,6 +463,38 @@ void main() {
     );
   });
 
+  testWidgets('a tap beside the dialog goes back from the upload, the next one '
+      'closes the picker', (tester) async {
+    final backend = _Backend(models: models);
+    final outcome = _Outcome();
+    await _open(tester, backend: backend, outcome: outcome);
+
+    await _openUpload(tester);
+    await tester.tapAt(const Offset(5, 5));
+    await tester.pumpAndSettle();
+
+    expect(find.text(_rubyModel), findsOneWidget);
+    expect(outcome.closed, isFalse);
+
+    await tester.tapAt(const Offset(5, 5));
+    await tester.pumpAndSettle();
+
+    expect(outcome.closed, isTrue);
+    expect(outcome.asset, isNull);
+  });
+
+  testWidgets('the close icon closes the picker from the upload', (
+    tester,
+  ) async {
+    final outcome = _Outcome();
+    await _open(tester, backend: _Backend(models: models), outcome: outcome);
+
+    await _openUpload(tester);
+    await _tapFinder(tester, find.widgetWithIcon(IconButton, Icons.close));
+
+    expect(outcome.closed, isTrue);
+  });
+
   testWidgets('an uploaded texture is reported but not chosen', (tester) async {
     final outcome = _Outcome();
     await _open(
