@@ -9,16 +9,21 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// The state of one upload into [projectId]: the chosen file, its name and
 /// key and what went wrong. [AssetUploadForm] shows it, the dialog around it decides
 /// when to [upload].
+///
+/// With [replaces] the file is stored as a new version of that asset, which
+/// keeps its key and name.
 class AssetUploadController extends ChangeNotifier {
   AssetUploadController({
     required this.projectId,
     required this.pickFile,
     this.namespace,
     this.kinds = visualAssetKinds,
-    this.fixedKey,
+    String? fixedKey,
     this.keyFolder = defaultAssetFolder,
-  }) {
-    if (fixedKey case final key?) {
+    this.replaces,
+  }) : fixedKey = replaces?.key ?? fixedKey {
+    // The field, as the parameter lacks the key of [replaces].
+    if (this.fixedKey case final key?) {
       keyController.text = key;
       _lastKey = key;
     }
@@ -37,6 +42,9 @@ class AssetUploadController extends ChangeNotifier {
   /// The key the file must be stored under, e.g. the one a model refers to.
   /// A chosen file keeps it instead of suggesting one from its name.
   final String? fixedKey;
+
+  /// The asset the file is a new version of, null for a new asset.
+  final AssetModel? replaces;
 
   /// The folder the suggested key path starts with, e.g. `font` for a font
   /// texture.
@@ -57,6 +65,7 @@ class AssetUploadController extends ChangeNotifier {
   String? _nameError;
   String? _fileError;
   String? _uploadError;
+  bool _conflict = false;
 
   /// Counts the files taken, so a file read after a newer one is dropped.
   int _takeId = 0;
@@ -95,6 +104,9 @@ class AssetUploadController extends ChangeNotifier {
   /// A reason of the backend that names no field.
   String? get uploadError => _uploadError;
 
+  /// Whether [replaces] changed meanwhile, so its new version was refused.
+  bool get conflict => _conflict;
+
   /// The namespace the typed path is stored under, the project key when it
   /// is a valid one.
   String get keyNamespace => validNamespaceOr(namespace);
@@ -110,8 +122,9 @@ class AssetUploadController extends ChangeNotifier {
     return checkAssetKey(key);
   }
 
-  /// Whether the name is missing, which the upload requires.
-  bool get nameMissing => nameController.text.trim().isEmpty;
+  /// Whether the name is missing, which a new asset requires.
+  bool get nameMissing =>
+      replaces == null && nameController.text.trim().isEmpty;
 
   bool get canUpload =>
       _file != null &&
@@ -145,7 +158,7 @@ class AssetUploadController extends ChangeNotifier {
     if (picked != null) {
       _file = picked;
       _clearProblems();
-      _suggestName(picked.name);
+      if (replaces == null) _suggestName(picked.name);
       if (fixedKey != null) {
         notifyListeners();
         return;
@@ -184,17 +197,26 @@ class AssetUploadController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Uploads [file] under the key. Resolves to the stored asset, or to null
-  /// when the backend rejects it, with its reasons put under the field they
-  /// name.
+  /// Uploads [file] under the key, or as the new version of [replaces].
+  /// Resolves to the stored asset, or to null when the backend rejects it,
+  /// with its reasons put under the field they name.
   Future<AssetModel?> upload() async {
     final picked = _file;
     if (picked == null || !canUpload) return null;
     _uploading = true;
     _clearProblems();
     notifyListeners();
+    final api = ApiService().assetApi;
     try {
-      return await ApiService().assetApi.upload(
+      if (replaces case final asset?) {
+        // The backend answers 412 when the file changed since it was listed.
+        return await api.replaceContent(
+          asset,
+          fileName: picked.name,
+          bytes: picked.bytes,
+        );
+      }
+      return await api.upload(
         projectId,
         key: key,
         displayName: nameController.text.trim(),
@@ -202,7 +224,11 @@ class AssetUploadController extends ChangeNotifier {
         bytes: picked.bytes,
       );
     } on DioException catch (error) {
-      _showProblem(ProblemDetail.fromDioException(error));
+      if (replaces != null && error.response?.statusCode == 412) {
+        _conflict = true;
+      } else {
+        _showProblem(ProblemDetail.fromDioException(error));
+      }
       return null;
     } finally {
       _uploading = false;
@@ -215,6 +241,7 @@ class AssetUploadController extends ChangeNotifier {
     _nameError = null;
     _fileError = null;
     _uploadError = null;
+    _conflict = false;
   }
 
   void _showProblem(ProblemDetail problem) {

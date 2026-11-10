@@ -4189,19 +4189,19 @@ abstract class AppLocalizations {
   /// No description provided for @asset_picker_empty.
   ///
   /// In en, this message translates to:
-  /// **'This project has no models yet. Upload one below.'**
+  /// **'This project has no models yet.'**
   String get asset_picker_empty;
 
   /// No description provided for @asset_picker_empty_texture.
   ///
   /// In en, this message translates to:
-  /// **'This project has no textures yet. Upload one below.'**
+  /// **'This project has no textures yet.'**
   String get asset_picker_empty_texture;
 
   /// No description provided for @asset_picker_empty_sound.
   ///
   /// In en, this message translates to:
-  /// **'This project has no sounds yet. Upload one below.'**
+  /// **'This project has no sounds yet.'**
   String get asset_picker_empty_sound;
 
   /// No description provided for @asset_picker_load_failed.
@@ -4246,11 +4246,59 @@ abstract class AppLocalizations {
   /// **'Stored a new version of {name}.'**
   String asset_picker_replaced(String name);
 
-  /// No description provided for @asset_picker_replace_conflict.
+  /// No description provided for @asset_picker_upload_new.
   ///
   /// In en, this message translates to:
-  /// **'{name} was changed meanwhile. The list now shows the stored version.'**
-  String asset_picker_replace_conflict(String name);
+  /// **'Upload'**
+  String get asset_picker_upload_new;
+
+  /// No description provided for @asset_picker_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the list'**
+  String get asset_picker_back;
+
+  /// No description provided for @asset_picker_back_out.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get asset_picker_back_out;
+
+  /// No description provided for @asset_upload_title_model.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a model'**
+  String get asset_upload_title_model;
+
+  /// No description provided for @asset_upload_title_texture.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a texture'**
+  String get asset_upload_title_texture;
+
+  /// No description provided for @asset_upload_title_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a sound'**
+  String get asset_upload_title_sound;
+
+  /// No description provided for @asset_upload_replace_title.
+  ///
+  /// In en, this message translates to:
+  /// **'New version of {name}'**
+  String asset_upload_replace_title(String name);
+
+  /// No description provided for @asset_upload_replace_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'The file replaces the one stored under {key}, wherever it is used.'**
+  String asset_upload_replace_hint(String key);
+
+  /// No description provided for @asset_upload_replace_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was changed meanwhile. Go back to see the stored version.'**
+  String asset_upload_replace_conflict(String name);
 
   /// No description provided for @asset_picker_texture_uploaded.
   ///

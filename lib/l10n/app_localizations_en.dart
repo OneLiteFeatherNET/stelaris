@@ -2323,16 +2323,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_picker_choose => 'Choose';
 
   @override
-  String get asset_picker_empty =>
-      'This project has no models yet. Upload one below.';
+  String get asset_picker_empty => 'This project has no models yet.';
 
   @override
-  String get asset_picker_empty_texture =>
-      'This project has no textures yet. Upload one below.';
+  String get asset_picker_empty_texture => 'This project has no textures yet.';
 
   @override
-  String get asset_picker_empty_sound =>
-      'This project has no sounds yet. Upload one below.';
+  String get asset_picker_empty_sound => 'This project has no sounds yet.';
 
   @override
   String get asset_picker_load_failed => 'The models could not be loaded.';
@@ -2360,8 +2357,36 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String asset_picker_replace_conflict(String name) {
-    return '$name was changed meanwhile. The list now shows the stored version.';
+  String get asset_picker_upload_new => 'Upload';
+
+  @override
+  String get asset_picker_back => 'Back to the list';
+
+  @override
+  String get asset_picker_back_out => 'Back';
+
+  @override
+  String get asset_upload_title_model => 'Upload a model';
+
+  @override
+  String get asset_upload_title_texture => 'Upload a texture';
+
+  @override
+  String get asset_upload_title_sound => 'Upload a sound';
+
+  @override
+  String asset_upload_replace_title(String name) {
+    return 'New version of $name';
+  }
+
+  @override
+  String asset_upload_replace_hint(String key) {
+    return 'The file replaces the one stored under $key, wherever it is used.';
+  }
+
+  @override
+  String asset_upload_replace_conflict(String name) {
+    return '$name was changed meanwhile. Go back to see the stored version.';
   }
 
   @override
