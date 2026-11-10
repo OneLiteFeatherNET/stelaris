@@ -50,17 +50,17 @@ class _FontCharDialogState extends State<FontCharDialog> {
       title: _isEdit
           ? context.l10n.dialog_font_char_edit
           : context.l10n.dialog_font_char_add,
-      actionIcon: _isEdit ? Icons.check : Icons.add,
+      actionIcon: _isEdit ? Icons.save_outlined : Icons.add,
       actionLabel: _isEdit ? context.l10n.button_save : context.l10n.button_add,
       onSubmit: _handleSubmit,
       titleActions: [
         IconButton(
-          tooltip: context.l10n.menu_item_info,
+          tooltip: context.l10n.button_help,
           onPressed: () => showDialog<void>(
             context: context,
             builder: (_) => const FontCharInfoDialog(),
           ),
-          icon: const Icon(Icons.info_outline),
+          icon: const Icon(Icons.help_outline),
         ),
       ],
       content: Form(

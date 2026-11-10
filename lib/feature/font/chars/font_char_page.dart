@@ -30,9 +30,9 @@ class FontCharPage extends StatelessWidget {
                 title: context.l10n.tab_characters,
                 actions: [
                   PageHeaderAction(
-                    key: const Key('font_char_info'),
-                    icon: const Icon(Icons.info_outline),
-                    label: context.l10n.menu_item_info,
+                    key: const Key('font_char_help'),
+                    icon: const Icon(Icons.help_outline),
+                    label: context.l10n.button_help,
                     onPressed: () => showDialog<void>(
                       context: context,
                       builder: (_) => const FontCharInfoDialog(),

@@ -128,7 +128,7 @@ class _SoundFileModalState extends State<SoundFileModal> {
     return FormDialog(
       title: widget.create ? l10n.sound_create : l10n.sound_edit,
       actionIcon: widget.create ? Icons.add : Icons.save_outlined,
-      actionLabel: l10n.button_save,
+      actionLabel: widget.create ? l10n.button_add : l10n.button_save,
       minWidth: 400,
       onSubmit: _handleSave,
       content: Form(

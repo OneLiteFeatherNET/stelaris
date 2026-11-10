@@ -34,7 +34,7 @@ void main() {
     testWidgets('does not save without a name', (tester) async {
       await pumpModal(tester);
 
-      await tester.tap(find.text('Save'));
+      await tester.tap(find.text('Add'));
       await tester.pumpAndSettle();
 
       expect(saved, isEmpty);
@@ -49,7 +49,7 @@ void main() {
         '  block/ding  ',
       );
       await tester.tap(find.text('Event'));
-      await tester.tap(find.text('Save'));
+      await tester.tap(find.text('Add'));
       await tester.pumpAndSettle();
 
       expect(saved, hasLength(1));
@@ -79,7 +79,7 @@ void main() {
       await tester.pump();
       await tester.tap(find.text('minecraft:entity.zombie.hurt'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Save'));
+      await tester.tap(find.text('Add'));
       await tester.pumpAndSettle();
 
       expect(saved.single.name, 'minecraft:entity.zombie.hurt');
@@ -170,8 +170,10 @@ void main() {
         assetId: 'a-1',
       );
 
+      /// Submits the modal: Add for a new file, Save for a linked one.
       Future<void> save(WidgetTester tester) async {
-        await tester.tap(find.text('Save'));
+        final add = find.text('Add');
+        await tester.tap(add.evaluate().isNotEmpty ? add : find.text('Save'));
         await tester.pumpAndSettle();
       }
 

@@ -19,6 +19,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get button_save => 'Save';
 
   @override
+  String get button_help => 'Help';
+
+  @override
   String get feedback_save_success => 'Changes saved successfully';
 
   @override

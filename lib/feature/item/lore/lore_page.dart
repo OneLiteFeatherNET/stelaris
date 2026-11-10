@@ -116,6 +116,7 @@ class _LorePageState extends State<LorePage> {
         return ComponentDialog(
           title: context.l10n.button_add_new_line,
           actionLabel: context.l10n.button_add,
+          actionIcon: Icons.add,
           componentContext: ComponentContext.lore,
           maxLength: maxTextLength,
           onSave: (value) {

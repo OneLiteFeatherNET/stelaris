@@ -15,6 +15,7 @@ class ComponentDialog extends StatefulWidget {
     required this.actionLabel,
     required this.componentContext,
     required this.onSave,
+    this.actionIcon = Icons.save_outlined,
     this.initialValue = emptyString,
     this.required = true,
     this.maxLength,
@@ -23,6 +24,10 @@ class ComponentDialog extends StatefulWidget {
 
   final String title;
   final String actionLabel;
+
+  /// The icon of the submit button: [Icons.add] when it adds, the save icon
+  /// when it edits.
+  final IconData actionIcon;
   final ComponentContext componentContext;
   final ValueUpdate<String> onSave;
   final String initialValue;
@@ -67,7 +72,7 @@ class _ComponentDialogState extends State<ComponentDialog> {
     return FormDialog(
       title: widget.title,
       maxWidth: 640,
-      actionIcon: Icons.check,
+      actionIcon: widget.actionIcon,
       actionLabel: widget.actionLabel,
       onSubmit: _save,
       content: Form(

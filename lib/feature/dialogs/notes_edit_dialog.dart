@@ -69,7 +69,7 @@ class _NotesEditDialogState extends State<NotesEditDialog> {
   Widget build(BuildContext context) {
     return FormDialog(
       title: context.l10n.dialog_notes_title(widget.name),
-      actionIcon: Icons.check,
+      actionIcon: Icons.save_outlined,
       actionLabel: context.l10n.button_save,
       onSubmit: _saving ? null : _save,
       // A result arriving after the dialog is closed would be lost.

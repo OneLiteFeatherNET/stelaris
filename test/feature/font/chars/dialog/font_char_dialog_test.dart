@@ -115,10 +115,10 @@ void main() {
     expect(find.byType(FontCharDialog), findsNothing);
   });
 
-  testWidgets('the info button explains the Private Use Area', (tester) async {
+  testWidgets('the help button explains the Private Use Area', (tester) async {
     await _pump(tester);
 
-    await tester.tap(find.byIcon(Icons.info_outline));
+    await tester.tap(find.byIcon(Icons.help_outline));
     await tester.pumpAndSettle();
 
     expect(find.byType(FontCharInfoDialog), findsOneWidget);
