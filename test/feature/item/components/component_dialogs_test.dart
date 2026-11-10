@@ -789,6 +789,11 @@ void main() {
         action: () async {},
         done: () => find.text('Ruby').evaluate().isNotEmpty,
       );
+      expect(
+        find.byType(Dialog),
+        findsOneWidget,
+        reason: 'the picker takes the place of the form',
+      );
       await tester.tap(find.text('Ruby'));
       await pumpUntil(
         tester,
