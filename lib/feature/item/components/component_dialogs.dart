@@ -12,6 +12,7 @@ import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/feature/item/components/stelaris_components.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris_models/stelaris_models.dart' show AssetModel;
 import 'package:vulpes_data/component.dart';
 import 'package:stelaris/util/app_shapes.dart';
 
@@ -396,23 +397,32 @@ class _ComponentEditDialogState extends State<_ComponentEditDialog> {
   bool get _isItemModel =>
       widget.spec.key == itemModelComponent && widget.project != null;
 
-  Future<void> _chooseModel() async {
-    final project = widget.project;
-    if (project == null) return;
+  /// Whether the model picker is shown in place of the form.
+  bool _choosingModel = false;
+
+  void _chooseModel() => setState(() => _choosingModel = true);
+
+  void _onModelPicked(AssetModel asset) {
+    setState(() {
+      _choosingModel = false;
+      _value = asset.key;
+      _fieldEpoch++;
+    });
+  }
+
+  /// The model picker in place of the form, so no dialog lies on another.
+  Widget _buildModelPicker(ComponentProject project) {
     final current = _value;
-    final asset = await showAssetPickerDialog(
-      context,
+    return AssetPicker(
       projectId: project.id,
       namespace: project.key,
       selectedKey: current is String ? current : null,
       previewBuilder: (asset) =>
           AssetSceneView(projectId: project.id, asset: asset),
+      embedded: true,
+      onPicked: _onModelPicked,
+      onCancel: () => setState(() => _choosingModel = false),
     );
-    if (asset == null || !mounted) return;
-    setState(() {
-      _value = asset.key;
-      _fieldEpoch++;
-    });
   }
 
   Future<void> _submit() async {
@@ -430,6 +440,9 @@ class _ComponentEditDialogState extends State<_ComponentEditDialog> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.project case final project? when _choosingModel) {
+      return _buildModelPicker(project);
+    }
     final theme = Theme.of(context);
     return FormDialog(
       title: widget.spec.displayName,

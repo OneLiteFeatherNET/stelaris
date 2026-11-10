@@ -33,8 +33,10 @@ void showSoundFileModal({
       create: create,
       pickSound: projectId == null
           ? null
-          : (context, selectedKey) => showAssetPickerDialog(
-              context,
+          : (context, selectedKey, onPicked, onBack) => AssetPicker(
+              onPicked: onPicked,
+              onCancel: onBack,
+              embedded: true,
               projectId: projectId,
               namespace: project!.key,
               selectedKey: selectedKey,
