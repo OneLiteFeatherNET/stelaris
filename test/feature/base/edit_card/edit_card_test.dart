@@ -136,4 +136,43 @@ void main() {
 
     expect(tester.getSize(find.byType(EditCard)).height, height);
   });
+
+  testWidgets('a leading picture stands left of label and value, no icon', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 300,
+              child: EditCard(
+                icon: Icons.tag,
+                leading: SizedBox.square(
+                  key: Key('picture'),
+                  dimension: 40,
+                ),
+                label: 'Ascent',
+                value: '7',
+                footer: 'A rule',
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byIcon(Icons.tag), findsNothing);
+    final picture = tester.getRect(find.byKey(const Key('picture')));
+    final label = tester.getRect(find.text('Ascent'));
+    final value = tester.getRect(find.text('7'));
+    expect(picture.right, lessThan(label.left));
+    expect(picture.right, lessThan(value.left));
+    expect(picture.top, greaterThanOrEqualTo(label.top));
+    expect(picture.bottom, lessThanOrEqualTo(value.bottom));
+    // The footer keeps the full width below the picture.
+    expect(tester.getRect(find.text('A rule')).left, picture.left);
+  });
 }

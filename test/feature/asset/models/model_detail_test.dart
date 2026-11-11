@@ -1,14 +1,18 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/models/model_detail.dart';
 import 'package:stelaris/feature/asset/models/model_textures.dart';
 import 'package:stelaris/feature/asset/preview/asset_scene_view.dart';
+import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_asset_api.dart';
+import '../../../support/pack_icon_pngs.dart';
 import '../../../support/pump_until.dart';
 
 AssetModel _asset(String id, String key, AssetKind kind) => AssetModel(
@@ -34,6 +38,7 @@ Future<void> _pump(
   List<ItemModel> usedBy = const [],
   ValueChanged<ItemModel>? onOpenItem,
   ValueChanged<TextureSlot>? onUploadTexture,
+  Future<Uint8List> Function(AssetModel texture)? textureBytes,
   double width = 1000,
 }) async {
   tester.view.physicalSize = Size(width, 1600);
@@ -53,6 +58,7 @@ Future<void> _pump(
             usedBy: Future.value(usedBy),
             onOpenItem: onOpenItem ?? (_) {},
             onUploadTexture: onUploadTexture,
+            textureBytes: textureBytes,
           ),
         ),
       ),
@@ -211,5 +217,89 @@ void main() {
     );
 
     expect(find.byKey(const Key('model_missing_notice')), findsNothing);
+  });
+
+  testWidgets('shows a texture the project has as a thumbnail', (tester) async {
+    final loaded = <AssetModel>[];
+    final bytes = Future.value(png16);
+    await _pump(
+      tester,
+      textures: ModelTextures(
+        slots: [
+          TextureSlot(key: 'vulpes:block/gem', texture: _gem),
+          const TextureSlot(key: 'vulpes:item/glow'),
+        ],
+      ),
+      onUploadTexture: (_) {},
+      textureBytes: (texture) {
+        loaded.add(texture);
+        return bytes;
+      },
+    );
+
+    final present = find.byKey(const ValueKey('model_texture_vulpes:block/gem'));
+    final thumbnail = find.descendant(
+      of: present,
+      matching: find.byType(TextureThumbnail),
+    );
+    expect(thumbnail, findsOneWidget);
+    expect(tester.widget<TextureThumbnail>(thumbnail).asset, _gem);
+    expect(
+      find.descendant(
+        of: present,
+        matching: find.byIcon(Icons.check_circle_outline),
+      ),
+      findsNothing,
+    );
+    expect(loaded.toSet(), {_gem});
+
+    // A missing texture has nothing to show and keeps its icon.
+    final missing = find.byKey(
+      const ValueKey('model_texture_upload_vulpes:item/glow'),
+    );
+    expect(
+      find.descendant(of: missing, matching: find.byType(TextureThumbnail)),
+      findsNothing,
+    );
+    expect(
+      find.descendant(of: missing, matching: find.byIcon(Icons.cancel_outlined)),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('a present and a missing texture card are equally high', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      textures: ModelTextures(
+        slots: [
+          TextureSlot(key: 'vulpes:block/gem', texture: _gem),
+          const TextureSlot(key: 'vulpes:item/glow'),
+        ],
+      ),
+      textureBytes: (_) => Future.value(png16),
+    );
+
+    expect(
+      tester
+          .getSize(find.byKey(const ValueKey('model_texture_vulpes:block/gem')))
+          .height,
+      tester
+          .getSize(find.byKey(const ValueKey('model_texture_vulpes:item/glow')))
+          .height,
+    );
+  }, variant: TargetPlatformVariant.only(TargetPlatform.macOS));
+
+  testWidgets('keeps the icon of a texture without a loader', (tester) async {
+    await _pump(
+      tester,
+      textures: ModelTextures(
+        slots: [TextureSlot(key: 'vulpes:block/gem', texture: _gem)],
+      ),
+    );
+
+    expect(find.byType(TextureThumbnail), findsNothing);
+    expect(find.byIcon(Icons.check_circle_outline), findsOneWidget);
   });
 }

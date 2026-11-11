@@ -160,6 +160,10 @@ class AssetLibrary {
   @visibleForTesting
   void clearContents() => _contents.clear();
 
+  /// The content of [asset], downloaded once per sha1.
+  Future<List<int>> contentOf(String projectId, AssetModel asset) =>
+      _bytes(projectId, asset);
+
   Future<List<int>> _bytes(String projectId, AssetModel asset) =>
       _memo(_contents, asset.sha1, () => _assets.content(projectId, asset.id));
 

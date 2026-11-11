@@ -117,8 +117,12 @@ final class PickEdit extends EditField {
     required super.icon,
     required this.value,
     required this.pick,
+    this.leading,
     super.footer,
   });
+
+  /// A picture of the current value, shown on the card instead of the icon.
+  final Widget? leading;
 
   /// How the current value reads on the card, empty when none is set.
   final String value;

@@ -99,6 +99,10 @@ class EditCardGrid extends StatelessWidget {
     };
     return EditCard(
       icon: field.icon,
+      leading: switch (field) {
+        PickEdit(:final leading) => leading,
+        _ => null,
+      },
       label: field.label,
       value: text,
       footer: field.footer,

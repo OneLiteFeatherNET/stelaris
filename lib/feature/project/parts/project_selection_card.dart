@@ -4,6 +4,7 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import 'empty_project_view.dart';
+import 'project_pack_icon.dart';
 import 'project_selection_header.dart';
 import 'project_selector_list.dart';
 import 'package:stelaris/util/app_shapes.dart';
@@ -16,6 +17,9 @@ class ProjectSelectionCard extends StatelessWidget {
   final VoidCallback onCreateProject;
   final VoidCallback onProceed;
 
+  /// The pack icon of a project, null shows every project without one.
+  final Future<ProjectPackIcon?>? Function(Project project)? packIconOf;
+
   const ProjectSelectionCard({
     required this.projects,
     required this.selected,
@@ -23,6 +27,7 @@ class ProjectSelectionCard extends StatelessWidget {
     required this.onEditProject,
     required this.onCreateProject,
     required this.onProceed,
+    this.packIconOf,
     super.key,
   });
 
@@ -54,6 +59,7 @@ class ProjectSelectionCard extends StatelessWidget {
                   selected: selected,
                   onSelect: onSelectProject,
                   onEdit: onEditProject,
+                  packIconOf: packIconOf,
                 ),
                 verticalSpacing25,
                 Row(

@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import 'project_list_tile.dart';
+import 'project_pack_icon.dart';
 import 'package:stelaris/util/app_shapes.dart';
 
 class ProjectSelectorList extends StatefulWidget {
@@ -10,11 +11,15 @@ class ProjectSelectorList extends StatefulWidget {
   final ValueChanged<Project> onSelect;
   final ValueChanged<Project> onEdit;
 
+  /// The pack icon of a project, null shows every project without one.
+  final Future<ProjectPackIcon?>? Function(Project project)? packIconOf;
+
   const ProjectSelectorList({
     required this.projects,
     required this.selected,
     required this.onSelect,
     required this.onEdit,
+    this.packIconOf,
     super.key
   });
 
@@ -67,6 +72,7 @@ class _ProjectSelectorListState extends State<ProjectSelectorList> {
                 isSelected: widget.selected?.id == project.id,
                 onSelect: () => widget.onSelect(project),
                 onEdit: () => widget.onEdit(project),
+                packIcon: widget.packIconOf?.call(project),
               );
             },
           ),

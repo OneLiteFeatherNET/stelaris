@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/asset/asset_kind_label.dart';
 import 'package:stelaris/feature/asset/models/model_textures.dart';
 import 'package:stelaris/feature/asset/preview/asset_scene_view.dart';
+import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card_grid.dart';
@@ -26,6 +29,7 @@ class ModelDetail extends StatelessWidget {
     required this.usedBy,
     required this.onOpenItem,
     this.onUploadTexture,
+    this.textureBytes,
     super.key,
   });
 
@@ -39,6 +43,11 @@ class ModelDetail extends StatelessWidget {
 
   /// Uploads the missing texture of a slot, null hides the upload.
   final ValueChanged<TextureSlot>? onUploadTexture;
+
+  /// Loads the bytes of a texture for its thumbnail. It answers with the
+  /// same future for the same texture, so a rebuild doesn't load again.
+  /// Null shows the textures without a thumbnail.
+  final Future<Uint8List> Function(AssetModel texture)? textureBytes;
 
   /// From this width on the preview stands to the right of the cards.
   static const double _sideBySideWidth = 960;
@@ -197,7 +206,8 @@ class ModelDetail extends StatelessWidget {
   }
 
   /// One texture: present, embedded or missing, with the other models using
-  /// it. A tap on a missing texture uploads it.
+  /// it. A texture the project has shows as a thumbnail. A tap on a missing
+  /// texture uploads it.
   Widget _textureCard(BuildContext context, TextureSlot slot) {
     final l10n = context.l10n;
     final upload = onUploadTexture;
@@ -209,6 +219,11 @@ class ModelDetail extends StatelessWidget {
           slot.alsoIn.map((model) => model.key).join(', '),
         ),
     ].join(' · ');
+    final texture = slot.texture;
+    final bytes = textureBytes;
+    final thumbnail = texture != null && bytes != null
+        ? TextureThumbnail(asset: texture, bytes: bytes(texture))
+        : null;
     return EditCard(
       key: ValueKey(
         canUpload
@@ -216,6 +231,7 @@ class ModelDetail extends StatelessWidget {
             : 'model_texture_${slot.key}',
       ),
       icon: slot.missing ? Icons.cancel_outlined : Icons.check_circle_outline,
+      leading: thumbnail,
       label: slot.missing
           ? l10n.asset_model_texture_missing
           : textures.readOnly
