@@ -1232,12 +1232,13 @@
       }
     }
   },
-  "asset_picker_upload_new": "Upload",
+  "asset_picker_tab_existing": "Choose existing",
+  "asset_picker_tab_upload": "Upload new",
+  "asset_picker_search": "Search by name or key",
+  "asset_picker_search_clear": "Clear the search",
+  "asset_picker_no_match": "Nothing matches the search.",
   "asset_picker_back": "Back to the list",
   "asset_picker_back_out": "Back",
-  "asset_upload_title_model": "Upload a model",
-  "asset_upload_title_texture": "Upload a texture",
-  "asset_upload_title_sound": "Upload a sound",
   "asset_upload_replace_title": "New version of {name}",
   "@asset_upload_replace_title": {
     "placeholders": {

@@ -150,4 +150,53 @@ void main() {
     final image = tester.widget<Image>(find.byType(Image));
     expect(identical((image.image as MemoryImage).bytes, other), isTrue);
   });
+
+  group('thumbnail', () {
+    Future<void> pumpThumbnail(
+      WidgetTester tester,
+      Future<Uint8List> bytes,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: TextureThumbnail(
+                asset: _texture(width: 8, height: 8),
+                bytes: bytes,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+    }
+
+    testWidgets('scales the texture by a whole factor, without smoothing', (
+      tester,
+    ) async {
+      await pumpThumbnail(tester, Future.value(Uint8List.fromList(_png)));
+
+      final image = tester.widget<Image>(find.byType(Image));
+      expect(image.filterQuality, FilterQuality.none);
+      // 40 px fit 5 times 8 px.
+      expect(tester.getSize(find.byType(Image)), const Size(40, 40));
+      expect(
+        tester.getSize(find.byType(TextureThumbnail)),
+        const Size(40, 40),
+      );
+    });
+
+    testWidgets('shows an icon for a texture that could not be loaded', (
+      tester,
+    ) async {
+      // Fails once the thumbnail listens, or the test would see the error.
+      final bytes = Completer<Uint8List>();
+      await pumpThumbnail(tester, bytes.future);
+      bytes.completeError(Exception('offline'));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.image_outlined), findsOneWidget);
+      expect(find.byType(Image), findsNothing);
+    });
+  });
 }

@@ -2360,22 +2360,25 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get asset_picker_upload_new => 'Upload';
+  String get asset_picker_tab_existing => 'Choose existing';
+
+  @override
+  String get asset_picker_tab_upload => 'Upload new';
+
+  @override
+  String get asset_picker_search => 'Search by name or key';
+
+  @override
+  String get asset_picker_search_clear => 'Clear the search';
+
+  @override
+  String get asset_picker_no_match => 'Nothing matches the search.';
 
   @override
   String get asset_picker_back => 'Back to the list';
 
   @override
   String get asset_picker_back_out => 'Back';
-
-  @override
-  String get asset_upload_title_model => 'Upload a model';
-
-  @override
-  String get asset_upload_title_texture => 'Upload a texture';
-
-  @override
-  String get asset_upload_title_sound => 'Upload a sound';
 
   @override
   String asset_upload_replace_title(String name) {

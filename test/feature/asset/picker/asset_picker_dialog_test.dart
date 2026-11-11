@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -15,6 +16,11 @@ import '../../../support/pump_until.dart';
 
 const _rubyModel = 'vulpes:item/ruby';
 const _gemKey = 'minecraft:item/ruby_gem';
+
+/// A transparent PNG of one pixel.
+final _png = base64Decode(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+);
 
 Map<String, Object?> _assetJson({
   required String id,
@@ -42,7 +48,8 @@ Map<String, Object?> _assetJson({
   'sourceAssetId': ?sourceAssetId,
 };
 
-/// Answers the picker's requests: the list per kind, and the upload with [upload].
+/// Answers the picker's requests: the list per kind, the bytes of a listed
+/// texture, and the upload with [upload].
 class _Backend {
   _Backend({
     this.models = const [],
@@ -63,6 +70,7 @@ class _Backend {
   ResponseBody handle(RequestOptions options) {
     requests.add(options);
     if (options.method == 'POST') return upload!(options);
+    if (_isContent(options)) return ResponseBody.fromBytes(_png, 200);
     if (listStatus != 200) {
       return FakeHttpClientAdapter.response({
         'title': 'Server error',
@@ -86,9 +94,19 @@ class _Backend {
     });
   }
 
+  static bool _isContent(RequestOptions options) =>
+      options.method == 'GET' && options.uri.path.endsWith('/content');
+
   List<String?> get queriedKinds => [
     for (final request in requests)
-      if (request.method == 'GET') request.uri.queryParameters['kind'],
+      if (request.method == 'GET' && !_isContent(request))
+        request.uri.queryParameters['kind'],
+  ];
+
+  /// The paths the bytes of a texture were requested from.
+  List<String> get contentPaths => [
+    for (final request in requests)
+      if (_isContent(request)) request.uri.path,
   ];
 }
 
@@ -108,12 +126,14 @@ Future<void> _open(
   bool texture = false,
   bool hideExtracted = false,
   bool replaceable = false,
+  ThemeData? theme,
 }) async {
   ApiService().assetApi.apiClient.dio.httpClientAdapter = FakeHttpClientAdapter(
     backend.handle,
   );
   await tester.pumpWidget(
     MaterialApp(
+      theme: theme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
@@ -165,11 +185,13 @@ Future<void> _tapFinder(WidgetTester tester, Finder finder) async {
   await tester.pumpAndSettle();
 }
 
-/// Switches the picker to its upload.
-Future<void> _openUpload(WidgetTester tester) async {
-  await _waitFor(tester, find.byKey(const Key('asset_picker_upload')));
-  await _tapFinder(tester, find.byKey(const Key('asset_picker_upload')));
-}
+/// Switches the picker to its upload tab.
+Future<void> _openUpload(WidgetTester tester) =>
+    _tapFinder(tester, find.byKey(const Key('asset_picker_tab_upload')));
+
+/// Switches the picker to the tab that lists the assets.
+Future<void> _openExisting(WidgetTester tester) =>
+    _tapFinder(tester, find.byKey(const Key('asset_picker_tab_existing')));
 
 /// Confirms the upload.
 Future<void> _confirmUpload(WidgetTester tester) =>
@@ -292,8 +314,8 @@ void main() {
   });
 
   testWidgets(
-    'the upload takes the place of the list, is prefilled with the suggested '
-    'key and selects the new model',
+    'the upload has a tab of its own, is prefilled with the suggested key '
+    'and picks the new model',
     (tester) async {
       final backend = _Backend(
         models: models,
@@ -321,11 +343,10 @@ void main() {
       expect(
         find.text('Choose a file'),
         findsNothing,
-        reason: 'the picker only lists, the upload has its own dialog',
+        reason: 'the list has a tab of its own',
       );
 
       await _openUpload(tester);
-      expect(find.text('Upload a model'), findsOneWidget);
       expect(find.text(_rubyModel), findsNothing, reason: 'the list is gone');
       await _tap(tester, 'Choose a file');
       expect(
@@ -337,7 +358,7 @@ void main() {
       );
 
       await _confirmUpload(tester);
-      await _waitFor(tester, find.text(_gemKey));
+      await _waitFor(tester, find.text('open picker').hitTestable());
 
       final upload = backend.requests.singleWhere((r) => r.method == 'POST');
       expect(upload.uri.path, endsWith('/project/p-1/asset'));
@@ -350,16 +371,11 @@ void main() {
         reason: 'the multipart form carries the edited key',
       );
       expect(form.files.single.value.filename, 'Ruby Gem.bbmodel');
-      expect(find.text('Upload a model'), findsNothing);
-      expect(find.text('Choose a model'), findsOneWidget);
-      expect(outcome.closed, isFalse, reason: 'back in the list');
-
-      await _tap(tester, 'Choose');
-
+      expect(outcome.closed, isTrue);
       expect(
         outcome.asset?.key,
         _gemKey,
-        reason: 'the uploaded model is selected',
+        reason: 'the uploaded model is picked without another Choose',
       );
     },
   );
@@ -397,7 +413,7 @@ void main() {
       await _waitFor(tester, find.text('Key is already in use'));
 
       expect(
-        find.text('Upload a model'),
+        find.byKey(const Key('asset_upload_key')),
         findsOneWidget,
         reason: 'the upload stays open',
       );
@@ -430,10 +446,10 @@ void main() {
     await _confirmUpload(tester);
     await _waitFor(tester, find.text('The file is not a model'));
 
-    expect(find.text('Upload a model'), findsOneWidget);
+    expect(find.byKey(const Key('asset_upload_file')), findsOneWidget);
   });
 
-  testWidgets('going back drops the upload and shows the list again', (
+  testWidgets('the list keeps the file chosen in the upload tab', (
     tester,
   ) async {
     final backend = _Backend(models: models);
@@ -445,10 +461,11 @@ void main() {
       pickFile: () async =>
           PickedAssetFile(name: 'ruby.json', bytes: Uint8List.fromList([1])),
     );
+    await _waitFor(tester, find.text(_rubyModel));
 
     await _openUpload(tester);
     await _tap(tester, 'Choose a file');
-    await _tapFinder(tester, find.byKey(const Key('asset_picker_back')));
+    await _openExisting(tester);
 
     expect(find.text(_rubyModel), findsOneWidget);
     expect(outcome.closed, isFalse);
@@ -456,26 +473,34 @@ void main() {
     expect(backend.queriedKinds, hasLength(2), reason: 'no reload');
 
     await _openUpload(tester);
-    expect(
-      find.text('Choose a file'),
-      findsOneWidget,
-      reason: 'a new upload starts without the dropped file',
-    );
+    expect(find.byKey(const Key('asset_upload_file')), findsOneWidget);
   });
 
-  testWidgets('a tap beside the dialog goes back from the upload, the next one '
-      'closes the picker', (tester) async {
-    final backend = _Backend(models: models);
-    final outcome = _Outcome();
-    await _open(tester, backend: backend, outcome: outcome);
+  testWidgets('the action follows the tab', (tester) async {
+    await _open(
+      tester,
+      backend: _Backend(models: models),
+      outcome: _Outcome(),
+    );
+    await _waitFor(tester, find.text(_rubyModel));
+
+    expect(find.text('Choose'), findsOneWidget);
+    expect(find.text('Upload'), findsNothing);
 
     await _openUpload(tester);
-    await tester.tapAt(const Offset(5, 5));
-    await tester.pumpAndSettle();
 
-    expect(find.text(_rubyModel), findsOneWidget);
-    expect(outcome.closed, isFalse);
+    expect(find.text('Choose'), findsNothing);
+    expect(find.text('Upload'), findsOneWidget);
+  });
 
+  testWidgets('a tap beside the dialog closes the picker from the upload tab', (
+    tester,
+  ) async {
+    final outcome = _Outcome();
+    await _open(tester, backend: _Backend(models: models), outcome: outcome);
+    await _waitFor(tester, find.text(_rubyModel));
+
+    await _openUpload(tester);
     await tester.tapAt(const Offset(5, 5));
     await tester.pumpAndSettle();
 
@@ -488,6 +513,7 @@ void main() {
   ) async {
     final outcome = _Outcome();
     await _open(tester, backend: _Backend(models: models), outcome: outcome);
+    await _waitFor(tester, find.text(_rubyModel));
 
     await _openUpload(tester);
     await _tapFinder(tester, find.widgetWithIcon(IconButton, Icons.close));
@@ -524,6 +550,7 @@ void main() {
         'Uploaded the texture vulpes:item/gem. Only models can be chosen for an item.',
       ),
     );
+    await _openExisting(tester);
     await _tap(tester, 'Choose');
 
     expect(
@@ -575,14 +602,89 @@ void main() {
       expect(calls, ['picked $_rubyModel']);
     });
 
-    testWidgets('Cancel in the upload goes back to the list', (tester) async {
+    testWidgets('Cancel in the upload tab leads back as well', (tester) async {
       final calls = await pumpEmbedded(tester);
 
       await _openUpload(tester);
       await _tap(tester, 'Cancel');
 
-      expect(find.text(_rubyModel), findsOneWidget);
-      expect(calls, isEmpty);
+      expect(calls, ['cancel']);
+    });
+  });
+
+  group('search', () {
+    List<Map<String, Object?>> gems(int count) => [
+      for (var i = 0; i < count; i++)
+        _assetJson(
+          id: 'm-$i',
+          key: 'vulpes:item/gem_$i',
+          displayName: i == 3 ? 'Emerald' : 'Gem $i',
+          kind: 'MODEL',
+        ),
+    ];
+    final search = find.byKey(const Key('asset_picker_search'));
+
+    testWidgets('is left out for a short list', (tester) async {
+      await _open(
+        tester,
+        backend: _Backend(models: gems(7)),
+        outcome: _Outcome(),
+      );
+      await _waitFor(tester, find.text('Gem 0'));
+
+      expect(search, findsNothing);
+    });
+
+    testWidgets('narrows the list down by name or key', (tester) async {
+      await _open(
+        tester,
+        backend: _Backend(models: gems(8)),
+        outcome: _Outcome(),
+      );
+      await _waitFor(tester, find.text('Gem 0'));
+
+      await tester.enterText(search, 'emer');
+      await tester.pumpAndSettle();
+      expect(find.text('Emerald'), findsOneWidget);
+      expect(find.text('Gem 0'), findsNothing);
+
+      await tester.enterText(search, 'GEM_1');
+      await tester.pumpAndSettle();
+      expect(find.text('Gem 1'), findsOneWidget);
+      expect(find.text('Emerald'), findsNothing);
+    });
+
+    testWidgets('says so when nothing matches and keeps the selection', (
+      tester,
+    ) async {
+      final outcome = _Outcome();
+      await _open(
+        tester,
+        backend: _Backend(models: gems(8)),
+        outcome: outcome,
+      );
+      await _waitFor(tester, find.text('Gem 0'));
+      await _tap(tester, 'Gem 0');
+
+      await tester.enterText(search, 'ruby');
+      await tester.pumpAndSettle();
+      expect(find.text('Nothing matches the search.'), findsOneWidget);
+
+      await _tap(tester, 'Choose');
+      expect(outcome.asset?.key, 'vulpes:item/gem_0');
+    });
+
+    testWidgets('scrolls to the asset that is already chosen', (tester) async {
+      await _open(
+        tester,
+        backend: _Backend(models: gems(12)),
+        outcome: _Outcome(),
+        selectedKey: 'vulpes:item/gem_9',
+      );
+      await _waitFor(tester, find.text('Gem 9'));
+
+      expect(find.text('Gem 9'), findsOneWidget);
+      expect(find.text('Gem 0'), findsNothing);
     });
   });
 
@@ -609,6 +711,23 @@ void main() {
       expect(find.text(_rubyModel), findsNothing);
     });
 
+    testWidgets('centers a row in its height at the density of a desktop', (
+      tester,
+    ) async {
+      await _open(
+        tester,
+        backend: _Backend(textures: [ghost]),
+        outcome: _Outcome(),
+        texture: true,
+        theme: ThemeData(visualDensity: VisualDensity.compact),
+      );
+      await _waitFor(tester, find.byType(TextureThumbnail));
+
+      final row = tester.getRect(find.byType(ListTile));
+      final thumbnail = tester.getRect(find.byType(TextureThumbnail));
+      expect(thumbnail.center.dy, row.center.dy);
+    });
+
     testWidgets('hides the textures extracted from a Blockbench model', (
       tester,
     ) async {
@@ -630,7 +749,7 @@ void main() {
       expect(find.textContaining('sapphire_skin'), findsNothing);
     });
 
-    testWidgets('an empty list names the textures and offers the upload', (
+    testWidgets('an empty list opens the upload and names the textures', (
       tester,
     ) async {
       await _open(
@@ -639,9 +758,23 @@ void main() {
         outcome: _Outcome(),
         texture: true,
       );
-      await _waitFor(tester, find.text('This project has no textures yet.'));
+      await _waitFor(tester, find.text('Choose a file'));
 
-      expect(find.byKey(const Key('asset_picker_upload')), findsOneWidget);
+      await _openExisting(tester);
+
+      expect(find.text('This project has no textures yet.'), findsOneWidget);
+    });
+
+    testWidgets('shows each texture in its row, loaded once', (tester) async {
+      final backend = _Backend(textures: [ghost]);
+      await _open(tester, backend: backend, outcome: _Outcome(), texture: true);
+      await _waitFor(tester, find.byType(TextureThumbnail));
+
+      await _tap(tester, 'cygnus:font/ghost');
+
+      expect(find.byType(TextureThumbnail), findsOneWidget);
+      expect(backend.contentPaths, hasLength(1));
+      expect(backend.contentPaths.single, endsWith('/asset/t-1/content'));
     });
 
     testWidgets('suggests the key in the given folder', (tester) async {
@@ -657,7 +790,6 @@ void main() {
       await _openUpload(tester);
       await _tap(tester, 'Choose a file');
 
-      expect(find.text('Upload a texture'), findsOneWidget);
       expect(find.text('font/ghost'), findsOneWidget);
       expect(
         find.text('The path in the resource pack, e.g. font/ruby'),
@@ -682,7 +814,7 @@ void main() {
       expect(find.byType(TexturePreview), findsOneWidget);
     });
 
-    testWidgets('an uploaded texture is selected for Choose', (tester) async {
+    testWidgets('an uploaded texture is picked', (tester) async {
       final outcome = _Outcome();
       await _open(
         tester,
@@ -698,8 +830,7 @@ void main() {
       await _openUpload(tester);
       await _tap(tester, 'Choose a file');
       await _confirmUpload(tester);
-      await _waitFor(tester, find.text('cygnus:font/ghost'));
-      await _tap(tester, 'Choose');
+      await _waitFor(tester, find.text('open picker').hitTestable());
 
       expect(outcome.closed, isTrue);
       expect(outcome.asset?.key, 'cygnus:font/ghost');

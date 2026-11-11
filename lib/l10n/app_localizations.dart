@@ -4252,11 +4252,35 @@ abstract class AppLocalizations {
   /// **'Stored a new version of {name}.'**
   String asset_picker_replaced(String name);
 
-  /// No description provided for @asset_picker_upload_new.
+  /// No description provided for @asset_picker_tab_existing.
   ///
   /// In en, this message translates to:
-  /// **'Upload'**
-  String get asset_picker_upload_new;
+  /// **'Choose existing'**
+  String get asset_picker_tab_existing;
+
+  /// No description provided for @asset_picker_tab_upload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload new'**
+  String get asset_picker_tab_upload;
+
+  /// No description provided for @asset_picker_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or key'**
+  String get asset_picker_search;
+
+  /// No description provided for @asset_picker_search_clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear the search'**
+  String get asset_picker_search_clear;
+
+  /// No description provided for @asset_picker_no_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches the search.'**
+  String get asset_picker_no_match;
 
   /// No description provided for @asset_picker_back.
   ///
@@ -4269,24 +4293,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get asset_picker_back_out;
-
-  /// No description provided for @asset_upload_title_model.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload a model'**
-  String get asset_upload_title_model;
-
-  /// No description provided for @asset_upload_title_texture.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload a texture'**
-  String get asset_upload_title_texture;
-
-  /// No description provided for @asset_upload_title_sound.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload a sound'**
-  String get asset_upload_title_sound;
 
   /// No description provided for @asset_upload_replace_title.
   ///
