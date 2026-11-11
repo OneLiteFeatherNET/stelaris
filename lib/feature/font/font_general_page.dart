@@ -115,6 +115,11 @@ class FontGeneralPage extends StatelessWidget {
                       label: l10n.card_font_texture,
                       icon: Icons.image_outlined,
                       value: _textureLabel(l10n, texture),
+                      leading: switch (texture) {
+                        LoadedFontTexture(:final asset, :final bytes?) =>
+                          TextureThumbnail(asset: asset, bytes: bytes),
+                        _ => null,
+                      },
                       footer: l10n.font_hint_texture,
                       pick: (context) =>
                           _pickTexture(context, project, font, texture, loader),

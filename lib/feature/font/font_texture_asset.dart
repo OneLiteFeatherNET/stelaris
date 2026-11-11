@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// What is known about the texture asset of a font while it loads.
@@ -20,9 +23,13 @@ final class LoadingFontTexture extends FontTextureState {
 
 /// The texture asset is loaded.
 final class LoadedFontTexture extends FontTextureState {
-  const LoadedFontTexture(this.asset);
+  const LoadedFontTexture(this.asset, {this.bytes});
 
   final AssetModel asset;
+
+  /// The bytes of the texture for its thumbnail, the same future for as long
+  /// as the texture stays. Null without a project to load them from.
+  final Future<Uint8List>? bytes;
 }
 
 /// The texture asset could not be loaded, e.g. because it was deleted.
@@ -56,6 +63,7 @@ class FontTextureLoader extends StatefulWidget {
 
 class FontTextureLoaderState extends State<FontTextureLoader> {
   AssetModel? _asset;
+  Future<Uint8List>? _bytes;
   bool _failed = false;
 
   /// Counts the loads, so an answer for an older id is dropped.
@@ -81,8 +89,20 @@ class FontTextureLoaderState extends State<FontTextureLoader> {
     _loadId++;
     setState(() {
       _asset = asset;
+      _bytes = _bytesOf(asset);
       _failed = false;
     });
+  }
+
+  Future<Uint8List>? _bytesOf(AssetModel asset) {
+    final projectId = widget.projectId;
+    if (projectId == null) return null;
+    final bytes = AssetLibrary.shared
+        .contentOf(projectId, asset)
+        .then(Uint8List.fromList);
+    // Shown by the thumbnail once it listens, not reported before that.
+    bytes.ignore();
+    return bytes;
   }
 
   Future<void> _load() async {
@@ -92,12 +112,16 @@ class FontTextureLoaderState extends State<FontTextureLoader> {
     final loadId = ++_loadId;
     setState(() {
       _asset = null;
+      _bytes = null;
       _failed = false;
     });
     try {
       final asset = await ApiService().assetApi.getById(projectId, assetId);
       if (!mounted || loadId != _loadId) return;
-      setState(() => _asset = asset);
+      setState(() {
+        _asset = asset;
+        _bytes = _bytesOf(asset);
+      });
     } on DioException {
       if (!mounted || loadId != _loadId) return;
       setState(() => _failed = true);
@@ -108,7 +132,9 @@ class FontTextureLoaderState extends State<FontTextureLoader> {
     final assetId = widget.assetId;
     if (assetId == null) return const NoFontTexture();
     final asset = _asset;
-    if (asset != null && asset.id == assetId) return LoadedFontTexture(asset);
+    if (asset != null && asset.id == assetId) {
+      return LoadedFontTexture(asset, bytes: _bytes);
+    }
     return _failed ? const MissingFontTexture() : const LoadingFontTexture();
   }
 

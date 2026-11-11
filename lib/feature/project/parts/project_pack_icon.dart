@@ -71,7 +71,13 @@ class ProjectLeading extends StatelessWidget {
               size: 22,
             );
           }
-          return TextureThumbnail(asset: icon.asset, bytes: icon.bytes);
+          // The icon stands for the project here, nobody judges its
+          // transparency.
+          return TextureThumbnail(
+            asset: icon.asset,
+            bytes: icon.bytes,
+            checkerboard: false,
+          );
         },
       ),
     );

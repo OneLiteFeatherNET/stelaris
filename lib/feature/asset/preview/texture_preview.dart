@@ -146,10 +146,14 @@ Widget _pixelArt(
 /// checkerboard of [TexturePreview]. Whoever lists the textures loads their
 /// [bytes], to keep them while the rows come and go. Until they are there
 /// only the checkerboard shows, the icon of a texture if they can't be shown.
+///
+/// Without [checkerboard] the texture stands on what is behind it, for a
+/// place that shows it as a picture and not to judge its transparency.
 class TextureThumbnail extends StatelessWidget {
   const TextureThumbnail({
     required this.asset,
     required this.bytes,
+    this.checkerboard = true,
     super.key,
   });
 
@@ -158,6 +162,9 @@ class TextureThumbnail extends StatelessWidget {
 
   final AssetModel asset;
   final Future<Uint8List> bytes;
+
+  /// Whether the squares that show transparent pixels are painted.
+  final bool checkerboard;
 
   @override
   Widget build(BuildContext context) {
@@ -169,11 +176,13 @@ class TextureThumbnail extends StatelessWidget {
       child: SizedBox.square(
         dimension: size,
         child: CustomPaint(
-          painter: _CheckerboardPainter(
-            light: colorScheme.surfaceContainerLowest,
-            dark: colorScheme.surfaceContainerHigh,
-            square: 5,
-          ),
+          painter: checkerboard
+              ? _CheckerboardPainter(
+                  light: colorScheme.surfaceContainerLowest,
+                  dark: colorScheme.surfaceContainerHigh,
+                  square: 5,
+                )
+              : null,
           child: FutureBuilder<Uint8List>(
             future: bytes,
             builder: (context, snapshot) {
