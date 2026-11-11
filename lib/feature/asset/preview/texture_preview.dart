@@ -108,45 +108,117 @@ class _TexturePreviewState extends State<TexturePreview> {
 
   /// The texture in its scaled size within [space], or fitted into it when
   /// its size is unknown.
-  Widget _texture(Uint8List bytes, Size space) {
-    final image = Image.memory(
-      bytes,
-      filterQuality: FilterQuality.none,
-      fit: BoxFit.contain,
-      gaplessPlayback: true,
-      errorBuilder: (context, _, _) =>
-          Text(context.l10n.texture_preview_failed),
+  Widget _texture(Uint8List bytes, Size space) => _pixelArt(
+    bytes,
+    space,
+    width: widget.asset?.width,
+    height: widget.asset?.height,
+    errorBuilder: (context) => Text(context.l10n.texture_preview_failed),
+  );
+}
+
+/// The texture of [bytes] without smoothing. Of a known size it is scaled
+/// into [space] by a whole factor, which keeps every pixel the same size. A
+/// larger texture is only shrunk to fit, one of unknown size fitted.
+Widget _pixelArt(
+  Uint8List bytes,
+  Size space, {
+  required int? width,
+  required int? height,
+  required WidgetBuilder errorBuilder,
+}) {
+  final image = Image.memory(
+    bytes,
+    filterQuality: FilterQuality.none,
+    fit: BoxFit.contain,
+    gaplessPlayback: true,
+    errorBuilder: (context, _, _) => errorBuilder(context),
+  );
+  if (width == null || height == null || width == 0 || height == 0) {
+    return image;
+  }
+  final fit = math.min(space.width / width, space.height / height);
+  final scale = fit >= 1 ? fit.floorToDouble() : fit;
+  return SizedBox(width: width * scale, height: height * scale, child: image);
+}
+
+/// Shows the texture [asset] small, e.g. in the row of a list, on the
+/// checkerboard of [TexturePreview]. Whoever lists the textures loads their
+/// [bytes], to keep them while the rows come and go. Until they are there
+/// only the checkerboard shows, the icon of a texture if they can't be shown.
+class TextureThumbnail extends StatelessWidget {
+  const TextureThumbnail({
+    required this.asset,
+    required this.bytes,
+    super.key,
+  });
+
+  /// The width and height of the thumbnail.
+  static const double size = 40;
+
+  final AssetModel asset;
+  final Future<Uint8List> bytes;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    Widget failed(BuildContext context) =>
+        Icon(Icons.image_outlined, color: colorScheme.onSurfaceVariant);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppShapes.extraSmall),
+      child: SizedBox.square(
+        dimension: size,
+        child: CustomPaint(
+          painter: _CheckerboardPainter(
+            light: colorScheme.surfaceContainerLowest,
+            dark: colorScheme.surfaceContainerHigh,
+            square: 5,
+          ),
+          child: FutureBuilder<Uint8List>(
+            future: bytes,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) return failed(context);
+              final bytes = snapshot.data;
+              if (bytes == null) return const SizedBox.shrink();
+              return Center(
+                child: _pixelArt(
+                  bytes,
+                  const Size.square(size),
+                  width: asset.width,
+                  height: asset.height,
+                  errorBuilder: failed,
+                ),
+              );
+            },
+          ),
+        ),
+      ),
     );
-    final width = widget.asset?.width;
-    final height = widget.asset?.height;
-    if (width == null || height == null || width == 0 || height == 0) {
-      return image;
-    }
-    final fit = math.min(space.width / width, space.height / height);
-    // A whole factor keeps every pixel the same size, a larger texture is
-    // only shrunk to fit.
-    final scale = fit >= 1 ? fit.floorToDouble() : fit;
-    return SizedBox(width: width * scale, height: height * scale, child: image);
   }
 }
 
 /// Paints squares of [light] and [dark], the usual backdrop of transparency.
 class _CheckerboardPainter extends CustomPainter {
-  const _CheckerboardPainter({required this.light, required this.dark});
-
-  static const double _square = 8;
+  const _CheckerboardPainter({
+    required this.light,
+    required this.dark,
+    this.square = 8,
+  });
 
   final Color light;
   final Color dark;
+
+  /// The side of a square.
+  final double square;
 
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawRect(Offset.zero & size, Paint()..color = light);
     final paint = Paint()..color = dark;
-    for (var y = 0; y * _square < size.height; y++) {
-      for (var x = y.isEven ? 1 : 0; x * _square < size.width; x += 2) {
+    for (var y = 0; y * square < size.height; y++) {
+      for (var x = y.isEven ? 1 : 0; x * square < size.width; x += 2) {
         canvas.drawRect(
-          Rect.fromLTWH(x * _square, y * _square, _square, _square),
+          Rect.fromLTWH(x * square, y * square, square, square),
           paint,
         );
       }
@@ -155,5 +227,7 @@ class _CheckerboardPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_CheckerboardPainter oldDelegate) =>
-      oldDelegate.light != light || oldDelegate.dark != dark;
+      oldDelegate.light != light ||
+      oldDelegate.dark != dark ||
+      oldDelegate.square != square;
 }
