@@ -13,10 +13,17 @@ import 'package:stelaris_models/stelaris_models.dart';
 
 import 'dialog/project_create_dialog.dart';
 import 'dialog/project_edit_dialog.dart';
+import 'parts/project_pack_icon.dart';
 import 'parts/project_selection_card.dart';
 
 class ProjectSelectionPage extends StatefulWidget {
-  const ProjectSelectionPage({super.key});
+  const ProjectSelectionPage({
+    this.loadPackIcon = loadProjectPackIcon,
+    super.key,
+  });
+
+  /// Loads the pack icon shown in front of a project, injectable for tests.
+  final ProjectPackIconLoader loadPackIcon;
 
   @override
   State<ProjectSelectionPage> createState() => _ProjectSelectionPageState();
@@ -24,6 +31,16 @@ class ProjectSelectionPage extends StatefulWidget {
 
 class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
   Project? _selected;
+
+  /// The pack icon of each project by its id, loaded once while the page is
+  /// open and again after the project was edited.
+  final Map<String, Future<ProjectPackIcon?>> _packIcons = {};
+
+  Future<ProjectPackIcon?>? _packIconOf(Project project) {
+    final id = project.id;
+    if (id == null) return null;
+    return _packIcons.putIfAbsent(id, () => widget.loadPackIcon(id));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +100,7 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
                         _openEditDialog(context, project),
                     onCreateProject: () => _openCreateDialog(context),
                     onProceed: () => _proceedWithProject(vm, vm.selected!),
+                    packIconOf: _packIconOf,
                   ),
                 ],
               ),
@@ -124,7 +142,13 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
     _openProjectDialog(
       context,
       (context) => EditProjectDialog(project: project, initialTab: tab),
-    );
+    ).whenComplete(() {
+      // The dialog may have changed the pack icon.
+      if (!mounted) return;
+      setState(() {
+        _packIcons.remove(project.id);
+      });
+    });
   }
 
   Future<Project?> _openProjectDialog(

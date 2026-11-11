@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/project/badge/project_labor_badge.dart';
+import 'package:stelaris/feature/project/parts/project_pack_icon.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -9,11 +10,15 @@ class ProjectListTile extends StatelessWidget {
   final VoidCallback onSelect;
   final VoidCallback onEdit;
 
+  /// The pack icon of the project, shown in front of it once it is loaded.
+  final Future<ProjectPackIcon?>? packIcon;
+
   const ProjectListTile({
     required this.project,
     required this.isSelected,
     required this.onSelect,
     required this.onEdit,
+    this.packIcon,
     super.key,
   });
 
@@ -29,13 +34,7 @@ class ProjectListTile extends StatelessWidget {
       child: ListTile(
         dense: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-        leading: Icon(
-          isSelected ? Icons.folder : Icons.folder_outlined,
-          color: isSelected
-              ? colorScheme.primary
-              : colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-          size: 22,
-        ),
+        leading: ProjectLeading(icon: packIcon, isSelected: isSelected),
         title: Row(
           children: [
             Flexible(

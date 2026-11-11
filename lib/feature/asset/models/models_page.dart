@@ -176,6 +176,10 @@ class _ModelsBodyState extends State<_ModelsBody> {
   /// The items using each model key, so a rebuild keeps the same future.
   final Map<String, Future<List<ItemModel>>> _usedBy = {};
 
+  /// The bytes of the textures shown as thumbnails, by their sha1, so a
+  /// rebuild or another model with the same texture doesn't load them again.
+  final Map<String, Future<Uint8List>> _thumbnails = {};
+
   late String? _selectedId = widget.selectedId;
   bool _loading = true;
   ProblemDetail? _loadError;
@@ -267,6 +271,14 @@ class _ModelsBodyState extends State<_ModelsBody> {
     if (!mounted || loadId != _loadId) return;
     setState(() => _references = references);
   }
+
+  Future<Uint8List> _thumbnailOf(AssetModel texture) =>
+      _thumbnails.putIfAbsent(
+        texture.sha1,
+        () async => Uint8List.fromList(
+          await widget.library.contentOf(widget.projectId, texture),
+        ),
+      );
 
   ModelTextures _texturesOf(AssetModel model) =>
       modelTextures(model, references: _references, textures: _textures);
@@ -441,6 +453,7 @@ class _ModelsBodyState extends State<_ModelsBody> {
       usedBy: _usedByOf(model),
       onOpenItem: _openItem,
       onUploadTexture: _uploadTexture,
+      textureBytes: _thumbnailOf,
     ),
   );
 
