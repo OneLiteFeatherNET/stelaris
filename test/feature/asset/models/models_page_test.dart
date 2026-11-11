@@ -10,12 +10,14 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/models/models_page.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
+import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_asset_api.dart';
 import '../../../support/fake_http_client_adapter.dart';
+import '../../../support/pack_icon_pngs.dart';
 import '../../../support/pump_until.dart';
 
 AssetModel _asset(String id, String key, AssetKind kind) => AssetModel(
@@ -48,9 +50,18 @@ class _Library extends AssetLibrary {
       if (asset.kind == kind) asset,
   ];
 
+  /// The assets whose content was asked for, in order.
+  final List<AssetModel> contents = [];
+
   @override
   Future<Set<String>> textureKeysOf(String projectId, AssetModel asset) async =>
       references[asset.id] ?? const {};
+
+  @override
+  Future<List<int>> contentOf(String projectId, AssetModel asset) async {
+    contents.add(asset);
+    return png16;
+  }
 }
 
 Future<List<String?>> _pump(
@@ -605,5 +616,22 @@ void main() {
 
       expect(find.text('Versions of Name of m1'), findsNothing);
     });
+  });
+
+  testWidgets('loads the thumbnail of a texture once for all its cards', (
+    tester,
+  ) async {
+    final library = _Library(
+      [_ruby, _sword, _gem],
+      {
+        'm1': {'vulpes:block/gem'},
+        'm2': {'vulpes:block/gem'},
+      },
+    );
+    await _pump(tester, library: library, selectedId: 'm1');
+    await _settlePreview(tester);
+
+    expect(find.byType(TextureThumbnail), findsOneWidget);
+    expect(library.contents, [_gem]);
   });
 }
