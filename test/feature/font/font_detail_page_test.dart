@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
@@ -138,9 +139,10 @@ void main() {
       expect(find.text('Texture'), findsNothing);
     });
 
-    testWidgets('the texture card shows the key of the texture asset', (
-      tester,
-    ) async {
+    testWidgets('the texture card shows the key and a thumbnail of the '
+        'texture asset', (tester) async {
+      // A content cached by another test would not be asked for.
+      AssetLibrary.shared.clearContents();
       final requests = <String>[];
       ApiService().assetApi.apiClient.dio.httpClientAdapter =
           FakeHttpClientAdapter((options) {
@@ -156,7 +158,17 @@ void main() {
       );
 
       expect(find.text('cygnus:font/ghost'), findsOneWidget);
-      expect(requests.single, endsWith('/project/p-1/asset/t-1'));
+      expect(requests, hasLength(2));
+      expect(requests.first, endsWith('/project/p-1/asset/t-1'));
+      // The thumbnail on the card loads the file itself.
+      expect(requests.last, endsWith('/project/p-1/asset/t-1/content'));
+      expect(
+        find.descendant(
+          of: find.widgetWithText(EditCard, 'Texture'),
+          matching: find.byType(TextureThumbnail),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('a texture that can not be loaded is named missing', (

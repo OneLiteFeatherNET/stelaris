@@ -54,6 +54,8 @@ void main() {
       find.byType(TextureThumbnail),
     );
     expect(thumbnail.asset, _asset);
+    // The icon stands for the project, without the transparency squares.
+    expect(thumbnail.checkerboard, isFalse);
     expect(find.byIcon(Icons.folder_outlined), findsNothing);
     final image = tester.widget<Image>(find.byType(Image));
     expect((image.image as MemoryImage).bytes, png16);

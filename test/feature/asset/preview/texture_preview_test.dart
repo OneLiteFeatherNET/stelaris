@@ -198,5 +198,42 @@ void main() {
       expect(find.byIcon(Icons.image_outlined), findsOneWidget);
       expect(find.byType(Image), findsNothing);
     });
+
+    CustomPaint backdrop(WidgetTester tester) => tester.widget<CustomPaint>(
+      find
+          .descendant(
+            of: find.byType(TextureThumbnail),
+            matching: find.byType(CustomPaint),
+          )
+          .first,
+    );
+
+    testWidgets('stands on a checkerboard', (tester) async {
+      await pumpThumbnail(tester, Future.value(Uint8List.fromList(_png)));
+
+      expect(backdrop(tester).painter, isNotNull);
+    });
+
+    testWidgets('stands on what is behind it without the checkerboard', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: TextureThumbnail(
+                asset: _texture(width: 8, height: 8),
+                bytes: Future.value(Uint8List.fromList(_png)),
+                checkerboard: false,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(backdrop(tester).painter, isNull);
+      expect(tester.getSize(find.byType(Image)), const Size(40, 40));
+    });
   });
 }
