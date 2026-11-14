@@ -3886,6 +3886,18 @@ abstract class AppLocalizations {
   /// **'Shown to players with subtitles on, e.g. Player hurts'**
   String get sound_hint_subtitle;
 
+  /// No description provided for @sound_source.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get sound_source;
+
+  /// No description provided for @sound_hint_source.
+  ///
+  /// In en, this message translates to:
+  /// **'The volume slider in the sound options that controls it'**
+  String get sound_hint_source;
+
   /// No description provided for @advancement_section_display.
   ///
   /// In en, this message translates to:

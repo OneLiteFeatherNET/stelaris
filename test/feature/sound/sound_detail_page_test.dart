@@ -3,10 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:vulpes_data/sound.dart';
 
 import '../../support/edit_card.dart';
 
@@ -15,7 +17,6 @@ void main() {
     final selected = SoundEventModel(id: 'sound-1', uiName: 'Ding');
 
     late Store<AppState> store;
-
 
     Future<void> pumpPage(WidgetTester tester) async {
       store = Store<AppState>(
@@ -27,7 +28,8 @@ void main() {
         routes: [
           GoRoute(
             path: '/sound',
-            builder: (context, state) => const Scaffold(body: Text('Sound List')),
+            builder: (context, state) =>
+                const Scaffold(body: Text('Sound List')),
             routes: [
               GoRoute(
                 path: 'detail',
@@ -59,9 +61,7 @@ void main() {
         expect(find.byType(PageHeader), findsOneWidget);
         expect(find.text('Ding'), findsOneWidget);
 
-        final backBarPosition = tester.getTopLeft(
-          find.byType(PageHeader),
-        );
+        final backBarPosition = tester.getTopLeft(find.byType(PageHeader));
         final tabBarPosition = tester.getTopLeft(find.byType(TabBar));
         expect(backBarPosition.dy, lessThan(tabBarPosition.dy));
 
@@ -80,6 +80,19 @@ void main() {
 
       expect(store.state.selectedSoundEvent?.keyName, 'entity.player.hurt');
       expect(store.state.selectedSoundEvent?.subTitle, 'Player hurt');
+    });
+
+    testWidgets('the source is picked from the list', (tester) async {
+      await pumpPage(tester);
+
+      final card = find.widgetWithText(EditCard, 'Source');
+      await tester.ensureVisible(card);
+      await tester.tap(card);
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ListTile, 'Weather'));
+      await tester.pumpAndSettle();
+
+      expect(store.state.selectedSoundEvent?.source, SoundSource.weather);
     });
   });
 }

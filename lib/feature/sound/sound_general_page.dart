@@ -12,9 +12,10 @@ import 'package:stelaris/api/state/actions/unsaved_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:vulpes_data/sound.dart';
 
-/// The sound event's General tab: its key and subtitle, each a card that
-/// opens a dialog.
+/// The sound event's General tab: its key, subtitle and source, each a card
+/// that opens a dialog.
 class SoundGeneralPage extends StatelessWidget {
   const SoundGeneralPage({super.key});
 
@@ -68,6 +69,16 @@ class SoundGeneralPage extends StatelessWidget {
                   ),
                   onChanged: (value) =>
                       _stage(context, sound.copyWith(subTitle: value)),
+                ),
+                ChoiceEdit<SoundSource>(
+                  label: l10n.sound_source,
+                  icon: Icons.speaker_outlined,
+                  value: sound.source,
+                  options: SoundSource.values,
+                  display: (source) => source.displayName,
+                  footer: l10n.sound_hint_source,
+                  onChanged: (source) =>
+                      _stage(context, sound.copyWith(source: source)),
                 ),
               ],
             ),

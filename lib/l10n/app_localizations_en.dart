@@ -2150,6 +2150,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Shown to players with subtitles on, e.g. Player hurts';
 
   @override
+  String get sound_source => 'Source';
+
+  @override
+  String get sound_hint_source =>
+      'The volume slider in the sound options that controls it';
+
+  @override
   String get advancement_section_display => 'Display';
 
   @override
