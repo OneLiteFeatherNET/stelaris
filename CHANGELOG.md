@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.13.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.12.0...v1.13.0) (2026-11-14)
+
+
+### Features
+
+* **asset:** choose and upload in tabs of the asset picker ([#328](https://github.com/OneLiteFeatherNET/stelaris/issues/328)) ([0085cbd](https://github.com/OneLiteFeatherNET/stelaris/commit/0085cbdf59ed84bc260a92a918e9c82187acd17e))
+* **asset:** show texture thumbnails in some cases ([#329](https://github.com/OneLiteFeatherNET/stelaris/issues/329)) ([03790bc](https://github.com/OneLiteFeatherNET/stelaris/commit/03790bc311da3d4f2e7db376363188cc8e4786a7))
+* **sound:** edit the minimum value of a sound event ([77d69ad](https://github.com/OneLiteFeatherNET/stelaris/commit/77d69ada41c2c27f2fc5211d76444ffabef693ad))
+* **sound:** pick the source of a sound event ([3883bbf](https://github.com/OneLiteFeatherNET/stelaris/commit/3883bbfbce5e357d182f60e0014d09c7ba98a778))
+
+
+### Bug Fixes
+
+* **auth:** discard the tokens of a sign-out the provider never confirmed ([#325](https://github.com/OneLiteFeatherNET/stelaris/issues/325)) ([bc7b3fb](https://github.com/OneLiteFeatherNET/stelaris/commit/bc7b3fbc84479a839885b86ac44efe0d15807920))
+* **deps:** update dependency go_router to ^18.1.4 ([#327](https://github.com/OneLiteFeatherNET/stelaris/issues/327)) ([3df7d24](https://github.com/OneLiteFeatherNET/stelaris/commit/3df7d2449cb9a5b14d36ad57cf222310a849d1e7))
+
 ## [1.12.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.11.0...v1.12.0) (2026-11-10)
 
 
