@@ -6,6 +6,7 @@ import 'package:stelaris/api/state/factory/sound/selected_sound_state.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card_grid.dart';
 import 'package:stelaris/feature/base/edit_card/edit_field.dart';
 import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/util/formatter/formatters.dart';
 import 'package:stelaris/util/functions.dart';
 import 'package:stelaris/util/validators.dart';
 import 'package:stelaris/api/state/actions/unsaved_actions.dart';
@@ -14,8 +15,8 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:vulpes_data/sound.dart';
 
-/// The sound event's General tab: its key, subtitle and source, each a card
-/// that opens a dialog.
+/// The sound event's General tab: its key, subtitle, source and minimum
+/// value, each a card that opens a dialog.
 class SoundGeneralPage extends StatelessWidget {
   const SoundGeneralPage({super.key});
 
@@ -79,6 +80,19 @@ class SoundGeneralPage extends StatelessWidget {
                   footer: l10n.sound_hint_source,
                   onChanged: (source) =>
                       _stage(context, sound.copyWith(source: source)),
+                ),
+                TextEdit(
+                  label: l10n.sound_minimum_value,
+                  icon: Icons.tag,
+                  value: formatDecimal(sound.minimumValue),
+                  footer: l10n.sound_hint_minimum_value,
+                  keyboardType: decimalInput,
+                  formatters: [decimalFormatter],
+                  validator: Validators.decimalBetween(l10n, min: 0, max: 1),
+                  onChanged: (input) => _stage(
+                    context,
+                    sound.copyWith(minimumValue: double.parse(input.trim())),
+                  ),
                 ),
               ],
             ),

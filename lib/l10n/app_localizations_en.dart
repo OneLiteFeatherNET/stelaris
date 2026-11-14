@@ -2157,6 +2157,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'The volume slider in the sound options that controls it';
 
   @override
+  String get sound_minimum_value => 'Minimum value';
+
+  @override
+  String get sound_hint_minimum_value =>
+      'The lowest value the sound event accepts, from 0 to 1';
+
+  @override
   String get advancement_section_display => 'Display';
 
   @override

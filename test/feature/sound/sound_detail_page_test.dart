@@ -94,5 +94,29 @@ void main() {
 
       expect(store.state.selectedSoundEvent?.source, SoundSource.weather);
     });
+
+    testWidgets('the minimum value is saved as a number', (tester) async {
+      await pumpPage(tester);
+
+      await editCard(tester, 'Minimum value', '0.5');
+
+      expect(store.state.selectedSoundEvent?.minimumValue, 0.5);
+    });
+
+    testWidgets('a negative minimum value is not saved', (tester) async {
+      await pumpPage(tester);
+
+      await editCard(tester, 'Minimum value', '-1');
+
+      expect(store.state.selectedSoundEvent?.minimumValue, 0.0);
+    });
+
+    testWidgets('a minimum value above 1 is not saved', (tester) async {
+      await pumpPage(tester);
+
+      await editCard(tester, 'Minimum value', '1.5');
+
+      expect(store.state.selectedSoundEvent?.minimumValue, 0.0);
+    });
   });
 }

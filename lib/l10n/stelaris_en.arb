@@ -1135,6 +1135,8 @@
   "sound_hint_subtitle": "Shown to players with subtitles on, e.g. Player hurts",
   "sound_source": "Source",
   "sound_hint_source": "The volume slider in the sound options that controls it",
+  "sound_minimum_value": "Minimum value",
+  "sound_hint_minimum_value": "The lowest value the sound event accepts, from 0 to 1",
   "advancement_section_display": "Display",
   "advancement_section_text": "Text",
   "advancement_section_position": "Position",

@@ -3898,6 +3898,18 @@ abstract class AppLocalizations {
   /// **'The volume slider in the sound options that controls it'**
   String get sound_hint_source;
 
+  /// No description provided for @sound_minimum_value.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum value'**
+  String get sound_minimum_value;
+
+  /// No description provided for @sound_hint_minimum_value.
+  ///
+  /// In en, this message translates to:
+  /// **'The lowest value the sound event accepts, from 0 to 1'**
+  String get sound_hint_minimum_value;
+
   /// No description provided for @advancement_section_display.
   ///
   /// In en, this message translates to:
