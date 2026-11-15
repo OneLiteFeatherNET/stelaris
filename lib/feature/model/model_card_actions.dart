@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A row of icon-button actions (delete, and more to come) shown in a
 /// [ModelGridCard]'s header. Each child wraps a plain IconButton. Content
