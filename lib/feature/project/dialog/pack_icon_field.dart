@@ -5,6 +5,7 @@ import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/util/app_shapes.dart';
+import 'package:stelaris/util/png_size.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 /// Opens the file dialog for a pack icon.
@@ -15,25 +16,6 @@ const int packIconMinSize = 16;
 
 /// Why a file can't be the pack icon.
 enum PackIconProblem { notPng, notSquare, notPowerOfTwo, tooSmall }
-
-/// The width and height a PNG declares in its header, or null when [bytes]
-/// are no PNG. Reads only the header, the image isn't decoded.
-({int width, int height})? pngSize(Uint8List bytes) {
-  const signature = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
-  // The signature, then the IHDR chunk: length, type, width, height.
-  if (bytes.length < 24) return null;
-  for (var i = 0; i < signature.length; i++) {
-    if (bytes[i] != signature[i]) return null;
-  }
-  final isHeader =
-      bytes[12] == 0x49 &&
-      bytes[13] == 0x48 &&
-      bytes[14] == 0x44 &&
-      bytes[15] == 0x52;
-  if (!isHeader) return null;
-  final data = ByteData.sublistView(bytes);
-  return (width: data.getUint32(16), height: data.getUint32(20));
-}
 
 /// What keeps [bytes] from being a pack icon, null if they can be one: a
 /// square PNG whose side is a power of two, at least [packIconMinSize].

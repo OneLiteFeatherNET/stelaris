@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/project/dialog/pack_icon_field.dart';
+import 'package:stelaris/util/png_size.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 
 import '../../../support/pack_icon_pngs.dart';
