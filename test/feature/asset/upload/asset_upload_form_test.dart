@@ -16,10 +16,11 @@ PickedAssetFile _file(String name, [int size = 3]) =>
     PickedAssetFile(name: name, bytes: Uint8List(size));
 
 /// Shows the form of a controller whose file dialog answers with the next of
-/// [picks], or fails for a pick that is null.
+/// [picks]: a [PickedAssetFile], or an exception it fails with. A pick that is
+/// null fails as a file that can't be read.
 Future<AssetUploadController> _pump(
   WidgetTester tester, {
-  List<PickedAssetFile?> picks = const [],
+  List<Object?> picks = const [],
   Set<AssetKind> kinds = const {...AssetKind.values},
   String? fixedKey,
   AssetModel? replaces,
@@ -31,8 +32,11 @@ Future<AssetUploadController> _pump(
     kinds: kinds,
     fixedKey: fixedKey,
     replaces: replaces,
-    pickFile: () async =>
-        queue.removeAt(0) ?? (throw StateError('the file was not readable')),
+    pickFile: () async => switch (queue.removeAt(0)) {
+      final PickedAssetFile file => file,
+      final Exception error => throw error,
+      _ => throw StateError('the file was not readable'),
+    },
   );
   addTearDown(controller.dispose);
   await tester.pumpWidget(
@@ -207,6 +211,49 @@ void main() {
 
     expect(find.text('The file could not be read.'), findsOneWidget);
     expect(controller.file, isNull);
+  });
+
+  group('a large file', () {
+    testWidgets('over the limit is turned down and drops the chosen one', (
+      tester,
+    ) async {
+      final controller = await _pump(
+        tester,
+        picks: [_file('small.png'), _file('huge.png', maxAssetFileBytes + 1)],
+      );
+      await _choose(tester);
+
+      await tester.tap(find.byTooltip('Choose another file'));
+      await tester.pumpAndSettle();
+
+      expect(controller.file, isNull);
+      expect(controller.canUpload, isFalse);
+      expect(find.byKey(const Key('asset_upload_drop_zone')), findsOneWidget);
+      expect(
+        find.text('huge.png has 8.0 MB, a file may have at most 8.0 MB.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('too large to read says so', (tester) async {
+      final controller = await _pump(
+        tester,
+        picks: [const AssetFileTooLarge(name: 'big.png', size: 20 << 20)],
+      );
+
+      await _choose(tester);
+
+      expect(controller.tooLarge?.name, 'big.png');
+      expect(
+        find.text('big.png has 20.0 MB, a file may have at most 8.0 MB.'),
+        findsOneWidget,
+      );
+      expect(find.text('The file could not be read.'), findsNothing);
+
+      controller.clear();
+      await tester.pump();
+      expect(controller.tooLarge, isNull);
+    });
   });
 
   testWidgets('only the path is typed and goes up behind the namespace', (
@@ -436,3 +483,4 @@ void main() {
     });
   });
 }
+

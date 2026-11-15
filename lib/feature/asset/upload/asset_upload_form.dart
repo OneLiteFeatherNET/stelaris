@@ -202,6 +202,13 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
     final l10n = context.l10n;
     final controller = widget.controller;
     if (controller.readFailed) return l10n.asset_upload_read_failed;
+    if (controller.tooLarge case final file?) {
+      return l10n.asset_upload_too_large(
+        file.name,
+        formatFileSize(file.size),
+        formatFileSize(maxAssetFileBytes),
+      );
+    }
     if (controller.file != null && controller.fileKind == null) {
       return _unsupported(l10n, controller.kinds);
     }

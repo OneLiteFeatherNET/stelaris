@@ -60,6 +60,7 @@ class AssetUploadController extends ChangeNotifier {
   PickedAssetFile? _file;
   bool _reading = false;
   bool _readFailed = false;
+  AssetFileTooLarge? _tooLarge;
   bool _uploading = false;
   String? _keyError;
   String? _nameError;
@@ -89,6 +90,11 @@ class AssetUploadController extends ChangeNotifier {
 
   /// Whether the file chosen last could not be read.
   bool get readFailed => _readFailed;
+
+  /// The file chosen last when it is larger than [maxAssetFileBytes], or the
+  /// one the backend refused as too large. A file too large to read drops
+  /// the one chosen before, so the form asks for another.
+  AssetFileTooLarge? get tooLarge => _tooLarge;
 
   bool get uploading => _uploading;
 
@@ -129,6 +135,7 @@ class AssetUploadController extends ChangeNotifier {
   bool get canUpload =>
       _file != null &&
       fileKind != null &&
+      _tooLarge == null &&
       keyProblem == null &&
       !nameMissing &&
       !_reading &&
@@ -147,14 +154,29 @@ class AssetUploadController extends ChangeNotifier {
     notifyListeners();
     PickedAssetFile? picked;
     var failed = false;
+    AssetFileTooLarge? tooLarge;
     try {
       picked = await read();
+    } on AssetFileTooLarge catch (error) {
+      tooLarge = error;
     } on Object {
       failed = true;
     }
     if (takeId != _takeId) return;
     _reading = false;
     _readFailed = failed;
+    if (picked != null && picked.bytes.length > maxAssetFileBytes) {
+      tooLarge = AssetFileTooLarge(
+        name: picked.name,
+        size: picked.bytes.length,
+      );
+      picked = null;
+    }
+    _tooLarge = tooLarge;
+    if (tooLarge != null) {
+      _file = null;
+      _clearProblems();
+    }
     if (picked != null) {
       _file = picked;
       _clearProblems();
@@ -193,6 +215,7 @@ class AssetUploadController extends ChangeNotifier {
     _file = null;
     _reading = false;
     _readFailed = false;
+    _tooLarge = null;
     _clearProblems();
     notifyListeners();
   }
@@ -224,8 +247,14 @@ class AssetUploadController extends ChangeNotifier {
         bytes: picked.bytes,
       );
     } on DioException catch (error) {
-      if (replaces != null && error.response?.statusCode == 412) {
+      final status = error.response?.statusCode;
+      if (replaces != null && status == 412) {
         _conflict = true;
+      } else if (status == 413) {
+        _tooLarge = AssetFileTooLarge(
+          name: picked.name,
+          size: picked.bytes.length,
+        );
       } else {
         _showProblem(ProblemDetail.fromDioException(error));
       }

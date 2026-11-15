@@ -34,8 +34,12 @@ Future<PickedAssetFile?> pickAssetFile({
   return completer.future;
 }
 
-/// Reads the name and the bytes of [file].
+/// Reads the name and the bytes of [file]. A file larger than
+/// [maxAssetFileBytes] fails with [AssetFileTooLarge] without being read.
 Future<PickedAssetFile> readAssetFile(web.File file) async {
+  if (file.size > maxAssetFileBytes) {
+    throw AssetFileTooLarge(name: file.name, size: file.size);
+  }
   final buffer = await file.arrayBuffer().toDart;
   return PickedAssetFile(name: file.name, bytes: buffer.toDart.asUint8List());
 }

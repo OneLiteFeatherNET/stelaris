@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
+import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/png_size.dart';
@@ -53,6 +54,9 @@ class PackIconField extends StatefulWidget {
 class _PackIconFieldState extends State<PackIconField> {
   /// Why the last chosen file was turned down.
   PackIconProblem? _problem;
+
+  /// The last chosen file when it was too large to read.
+  AssetFileTooLarge? _tooLarge;
   bool _reading = false;
 
   Future<void> _choose() async {
@@ -60,6 +64,14 @@ class _PackIconFieldState extends State<PackIconField> {
     PickedAssetFile? picked;
     try {
       picked = await widget.pickFile();
+    } on AssetFileTooLarge catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _reading = false;
+        _problem = null;
+        _tooLarge = error;
+      });
+      return;
     } catch (error) {
       if (!mounted) return;
       setState(() => _reading = false);
@@ -70,13 +82,17 @@ class _PackIconFieldState extends State<PackIconField> {
     setState(() {
       _reading = false;
       if (picked == null) return;
+      _tooLarge = null;
       _problem = checkPackIcon(picked.bytes);
       if (_problem == null) widget.onChanged(picked.bytes);
     });
   }
 
   void _remove() {
-    setState(() => _problem = null);
+    setState(() {
+      _problem = null;
+      _tooLarge = null;
+    });
     widget.onChanged(null);
   }
 
@@ -97,7 +113,15 @@ class _PackIconFieldState extends State<PackIconField> {
     final colorScheme = theme.colorScheme;
     final icon = widget.value;
     final size = icon == null ? null : pngSize(icon);
-    final problem = _problem;
+    final problem = switch ((_tooLarge, _problem)) {
+      (final tooLarge?, _) => l10n.asset_upload_too_large(
+        tooLarge.name,
+        formatFileSize(tooLarge.size),
+        formatFileSize(maxAssetFileBytes),
+      ),
+      (null, final problem?) => _problemText(problem),
+      (null, null) => null,
+    };
     return Row(
       children: [
         _IconPreview(
@@ -120,7 +144,7 @@ class _PackIconFieldState extends State<PackIconField> {
               ),
               const SizedBox(height: 4),
               Text(
-                problem == null ? l10n.pack_icon_hint : _problemText(problem),
+                problem ?? l10n.pack_icon_hint,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: problem == null
                       ? colorScheme.onSurfaceVariant
