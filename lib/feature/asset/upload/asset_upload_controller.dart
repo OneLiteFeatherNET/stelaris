@@ -62,6 +62,8 @@ class AssetUploadController extends ChangeNotifier {
   bool _readFailed = false;
   AssetFileTooLarge? _tooLarge;
   bool _uploading = false;
+  double? _progress;
+  CancelToken? _cancelToken;
   String? _keyError;
   String? _nameError;
   String? _fileError;
@@ -97,6 +99,10 @@ class AssetUploadController extends ChangeNotifier {
   AssetFileTooLarge? get tooLarge => _tooLarge;
 
   bool get uploading => _uploading;
+
+  /// How much of the file went up while [uploading], from 0 to 1, null
+  /// before the first bytes are sent.
+  double? get progress => _progress;
 
   /// The reason of the backend against the key.
   String? get keyError => _keyError;
@@ -227,6 +233,8 @@ class AssetUploadController extends ChangeNotifier {
     final picked = _file;
     if (picked == null || !canUpload) return null;
     _uploading = true;
+    _progress = null;
+    final cancelToken = _cancelToken = CancelToken();
     _clearProblems();
     notifyListeners();
     final api = ApiService().assetApi;
@@ -237,6 +245,8 @@ class AssetUploadController extends ChangeNotifier {
           asset,
           fileName: picked.name,
           bytes: picked.bytes,
+          onSendProgress: _onSendProgress,
+          cancelToken: cancelToken,
         );
       }
       return await api.upload(
@@ -245,10 +255,14 @@ class AssetUploadController extends ChangeNotifier {
         displayName: nameController.text.trim(),
         fileName: picked.name,
         bytes: picked.bytes,
+        onSendProgress: _onSendProgress,
+        cancelToken: cancelToken,
       );
     } on DioException catch (error) {
       final status = error.response?.statusCode;
-      if (replaces != null && status == 412) {
+      if (error.type == DioExceptionType.cancel) {
+        // Cancelled by the user, which is no problem to show.
+      } else if (replaces != null && status == 412) {
         _conflict = true;
       } else if (status == 413) {
         _tooLarge = AssetFileTooLarge(
@@ -261,9 +275,20 @@ class AssetUploadController extends ChangeNotifier {
       return null;
     } finally {
       _uploading = false;
-      notifyListeners();
+      _progress = null;
+      _cancelToken = null;
+      if (!_disposed) notifyListeners();
     }
   }
+
+  void _onSendProgress(int sent, int total) {
+    if (_disposed || !_uploading || total <= 0) return;
+    _progress = (sent / total).clamp(0.0, 1.0);
+    notifyListeners();
+  }
+
+  /// Stops the running upload; the file stays chosen to upload it again.
+  void cancelUpload() => _cancelToken?.cancel();
 
   void _clearProblems() {
     _keyError = null;
@@ -326,8 +351,12 @@ class AssetUploadController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _disposed = false;
+
   @override
   void dispose() {
+    _disposed = true;
+    _cancelToken?.cancel();
     keyController.dispose();
     nameController.dispose();
     super.dispose();

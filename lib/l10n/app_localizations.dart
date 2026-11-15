@@ -4144,6 +4144,24 @@ abstract class AppLocalizations {
   /// **'{name} has {size}, a file may have at most {max}.'**
   String asset_upload_too_large(String name, String size, String max);
 
+  /// No description provided for @asset_upload_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading … {percent} %'**
+  String asset_upload_progress(int percent);
+
+  /// No description provided for @asset_upload_starting.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading …'**
+  String get asset_upload_starting;
+
+  /// No description provided for @asset_upload_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel upload'**
+  String get asset_upload_cancel;
+
   /// No description provided for @texture_preview_too_large.
   ///
   /// In en, this message translates to:

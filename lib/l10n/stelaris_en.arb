@@ -1206,6 +1206,16 @@
       }
     }
   },
+  "asset_upload_progress": "Uploading … {percent} %",
+  "@asset_upload_progress": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "asset_upload_starting": "Uploading …",
+  "asset_upload_cancel": "Cancel upload",
   "texture_preview_too_large": "No preview for a texture of {width} × {height} pixels",
   "@texture_preview_too_large": {
     "placeholders": {

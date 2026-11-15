@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import 'dart:typed_data';
 
 import 'package:stelaris/api/api_client.dart';
@@ -67,6 +69,8 @@ class FakeAssetClientApi implements AssetClientApi {
     required String displayName,
     required String fileName,
     required List<int> bytes,
+    ProgressCallback? onSendProgress,
+    CancelToken? cancelToken,
   }) async {
     uploads.add(key);
     final asset = texture(
@@ -83,6 +87,8 @@ class FakeAssetClientApi implements AssetClientApi {
     AssetModel asset, {
     required String fileName,
     required List<int> bytes,
+    ProgressCallback? onSendProgress,
+    CancelToken? cancelToken,
   }) async {
     replaces.add(asset.id);
     final replaced = asset.copyWith(sha1: 'sha-${asset.id}-${replaces.length}');

@@ -135,6 +135,13 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
                 const SizedBox(height: 8),
                 _ErrorText(error),
               ],
+              if (controller.uploading) ...[
+                const SizedBox(height: 16),
+                _UploadProgress(
+                  progress: controller.progress,
+                  onCancel: controller.cancelUpload,
+                ),
+              ],
             ],
           );
         },
@@ -414,6 +421,46 @@ class _FileCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// How much of the file went up, with a button to stop the upload. Before
+/// the first bytes are sent the bar runs without a value.
+class _UploadProgress extends StatelessWidget {
+  const _UploadProgress({required this.progress, required this.onCancel});
+
+  final double? progress;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final progress = this.progress;
+    return Row(
+      key: const Key('asset_upload_progress'),
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              LinearProgressIndicator(value: progress),
+              const SizedBox(height: 4),
+              Text(
+                progress == null
+                    ? l10n.asset_upload_starting
+                    : l10n.asset_upload_progress((progress * 100).floor()),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+        TextButton(onPressed: onCancel, child: Text(l10n.asset_upload_cancel)),
+      ],
     );
   }
 }

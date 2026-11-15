@@ -2300,6 +2300,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String asset_upload_progress(int percent) {
+    return 'Uploading … $percent %';
+  }
+
+  @override
+  String get asset_upload_starting => 'Uploading …';
+
+  @override
+  String get asset_upload_cancel => 'Cancel upload';
+
+  @override
   String texture_preview_too_large(int width, int height) {
     return 'No preview for a texture of $width × $height pixels';
   }

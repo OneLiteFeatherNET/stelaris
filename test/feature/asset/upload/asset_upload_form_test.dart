@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/service/client/asset_client_api.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_controller.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
@@ -254,6 +256,65 @@ void main() {
       await tester.pump();
       expect(controller.tooLarge, isNull);
     });
+
+    testWidgets('goes up without the short timeouts of the client, and '
+        'a 413 of the backend says it is too large', (tester) async {
+      RequestOptions? request;
+      ApiService().assetApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((RequestOptions options) {
+            request = options;
+            return FakeHttpClientAdapter.response({
+              'title': 'Payload too large',
+              'status': 413,
+            }, statusCode: 413);
+          });
+      final controller = await _pump(tester, picks: [_file('gem.png', 2048)]);
+      await _choose(tester);
+
+      final stored = await tester.runAsync(controller.upload);
+      await tester.pump();
+
+      expect(request?.sendTimeout, Duration.zero);
+      expect(request?.receiveTimeout, AssetClientApi.transferTimeout);
+      expect(stored, isNull);
+      expect(controller.canUpload, isFalse);
+      expect(controller.uploadError, isNull);
+      expect(
+        find.text('gem.png has 2.0 KB, a file may have at most 8.0 MB.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('shows how much went up and can be cancelled', (tester) async {
+      final controller = await _pump(tester, picks: [_file('gem.png', 4096)]);
+      await _choose(tester);
+
+      late Future<AssetModel?> upload;
+      await tester.runAsync(() async {
+        // Made here, as its completer has to complete outside the fake
+        // async zone of the test.
+        final adapter = _HangingAdapter();
+        ApiService().assetApi.apiClient.dio.httpClientAdapter = adapter;
+        upload = controller.upload();
+        await adapter.sent.future;
+      });
+      await tester.pump();
+
+      expect(controller.uploading, isTrue);
+      expect(controller.progress, 1);
+      expect(find.text('Uploading … 100 %'), findsOneWidget);
+
+      await tester.tap(find.text('Cancel upload'));
+      final stored = await tester.runAsync(() => upload);
+      await tester.pump();
+
+      expect(stored, isNull);
+      expect(controller.uploading, isFalse);
+      expect(controller.uploadError, isNull);
+      expect(find.byKey(const Key('asset_upload_progress')), findsNothing);
+      expect(controller.file?.name, 'gem.png', reason: 'to upload it again');
+      expect(controller.canUpload, isTrue);
+    });
   });
 
   testWidgets('only the path is typed and goes up behind the namespace', (
@@ -484,3 +545,26 @@ void main() {
   });
 }
 
+/// Reads the whole request, which reports its progress, then answers only
+/// when the request is cancelled.
+class _HangingAdapter implements HttpClientAdapter {
+  final Completer<void> sent = Completer();
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    await requestStream?.drain<void>();
+    sent.complete();
+    await cancelFuture;
+    throw DioException.requestCancelled(
+      requestOptions: options,
+      reason: 'cancelled',
+    );
+  }
+
+  @override
+  void close({bool force = false}) {}
+}
