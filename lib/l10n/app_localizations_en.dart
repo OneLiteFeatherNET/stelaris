@@ -2295,6 +2295,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_upload_read_failed => 'The file could not be read.';
 
   @override
+  String texture_preview_too_large(int width, int height) {
+    return 'No preview for a texture of $width × $height pixels';
+  }
+
+  @override
   String asset_upload_key_helper(String example) {
     return 'The path in the resource pack, e.g. $example';
   }

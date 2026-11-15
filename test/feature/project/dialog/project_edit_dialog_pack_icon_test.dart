@@ -116,7 +116,9 @@ void main() {
     await pumpDialog(tester, FakePackMetaApi(stored: withIcon), storedIcon());
 
     expect(iconImage, findsOneWidget);
-    final image = tester.widget<Image>(iconImage).image as MemoryImage;
+    final image =
+        (tester.widget<Image>(iconImage).image as ResizeImage).imageProvider
+            as MemoryImage;
     expect(image.bytes, png16);
   });
 
@@ -132,7 +134,9 @@ void main() {
     await tapPreview(tester);
 
     expect(iconImage, findsOneWidget);
-    final image = tester.widget<Image>(iconImage).image as MemoryImage;
+    final image =
+        (tester.widget<Image>(iconImage).image as ResizeImage).imageProvider
+            as MemoryImage;
     expect(image.bytes, png32);
     expect(find.text('32 × 32 px'), findsOneWidget);
     expect(find.byTooltip('Remove icon'), findsOneWidget);

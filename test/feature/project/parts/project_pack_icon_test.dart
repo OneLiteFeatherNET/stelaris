@@ -58,7 +58,10 @@ void main() {
     expect(thumbnail.checkerboard, isFalse);
     expect(find.byIcon(Icons.folder_outlined), findsNothing);
     final image = tester.widget<Image>(find.byType(Image));
-    expect((image.image as MemoryImage).bytes, png16);
+    expect(
+      ((image.image as ResizeImage).imageProvider as MemoryImage).bytes,
+      png16,
+    );
     expect(image.filterQuality, FilterQuality.none);
   });
 

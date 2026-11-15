@@ -4138,6 +4138,12 @@ abstract class AppLocalizations {
   /// **'The file could not be read.'**
   String get asset_upload_read_failed;
 
+  /// No description provided for @texture_preview_too_large.
+  ///
+  /// In en, this message translates to:
+  /// **'No preview for a texture of {width} × {height} pixels'**
+  String texture_preview_too_large(int width, int height);
+
   /// No description provided for @asset_upload_key_helper.
   ///
   /// In en, this message translates to:

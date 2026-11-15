@@ -144,6 +144,10 @@ class _PackIconFieldState extends State<PackIconField> {
 /// The side of the icon preview.
 const double packIconPreviewSize = 80;
 
+/// The side in physical pixels the icon preview is decoded to.
+int _decodedSide(BuildContext context) =>
+    (packIconPreviewSize * MediaQuery.devicePixelRatioOf(context)).ceil();
+
 /// The icon filling its box, its pixels kept sharp, or a placeholder asking
 /// for one. Tapping the box opens the file dialog; while hovered or focused
 /// a stored icon is overlaid with an edit mark, while a file is read a
@@ -206,8 +210,16 @@ class _IconPreviewState extends State<_IconPreview> {
                   if (icon == null)
                     Center(child: empty)
                   else
-                    Image.memory(
-                      icon,
+                    Image(
+                      // Decoded no larger than shown: a pack icon may be a
+                      // power of two in the thousands. A smaller one keeps
+                      // its size, an image is never scaled up when decoded.
+                      image: ResizeImage(
+                        MemoryImage(icon),
+                        width: _decodedSide(context),
+                        height: _decodedSide(context),
+                        policy: ResizeImagePolicy.fit,
+                      ),
                       key: const Key('pack_icon_image'),
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.none,

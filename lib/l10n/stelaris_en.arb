@@ -1192,6 +1192,17 @@
   "asset_upload_formats_sound": "Mono Ogg Vorbis sounds (.ogg)",
   "asset_upload_unsupported_sound": "Only .ogg files can be uploaded here.",
   "asset_upload_read_failed": "The file could not be read.",
+  "texture_preview_too_large": "No preview for a texture of {width} × {height} pixels",
+  "@texture_preview_too_large": {
+    "placeholders": {
+      "width": {
+        "type": "int"
+      },
+      "height": {
+        "type": "int"
+      }
+    }
+  },
   "asset_upload_key_helper": "The path in the resource pack, e.g. {example}",
   "@asset_upload_key_helper": {
     "placeholders": {
