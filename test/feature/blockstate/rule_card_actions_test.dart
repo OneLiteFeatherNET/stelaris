@@ -34,18 +34,17 @@ Future<BlockStateModel? Function()> _show(
       ),
     ),
   );
-  // The buttons are in the dialog a tap on the card opens.
-  await tester.tap(find.text('minecraft:block/seat'));
-  await tester.pumpAndSettle();
   return () => changed;
 }
 
 void main() {
-  group('rule dialog buttons', () {
+  group('rule card buttons', () {
     testWidgets('splits the rule into one per facing', (tester) async {
       final changed = await _show(tester, _entry('minecraft:oak_stairs'));
 
-      await tester.tap(find.byTooltip('Split per facing and rotate'));
+      await tester.tap(find.byTooltip('More actions'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Split per facing and rotate'));
       await tester.pumpAndSettle();
 
       final rules = changed()!.rules;
@@ -57,7 +56,8 @@ void main() {
     testWidgets('offers no split for a block without a facing', (tester) async {
       await _show(tester, _entry('minecraft:note_block'));
 
-      expect(find.byTooltip('Split per facing and rotate'), findsNothing);
+      // The split is the only entry of the menu, so there is none.
+      expect(find.byTooltip('More actions'), findsNothing);
       expect(find.byTooltip('Delete'), findsOneWidget);
     });
 

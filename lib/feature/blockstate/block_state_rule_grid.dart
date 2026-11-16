@@ -1,5 +1,7 @@
 // SPIKE: throwaway proof of concept for rule based blockstate editing.
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/base/button/card_actions_menu.dart';
+import 'package:stelaris/feature/base/button/delete_icon_button.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card_grid.dart';
@@ -46,6 +48,15 @@ class BlockStateRuleGrid extends StatelessWidget {
     if (rules != null) _replace(index, rules);
   }
 
+  Future<void> _delete(BuildContext context, int index) async {
+    final confirmed = await confirmRuleDelete(
+      context,
+      context.l10n.blockstate_rule(index + 1),
+      entry.rules[index],
+    );
+    if (confirmed) _replace(index, const []);
+  }
+
   @override
   Widget build(BuildContext context) {
     final spec = specFor(entry.key);
@@ -76,6 +87,10 @@ class BlockStateRuleGrid extends StatelessWidget {
                         spec: spec,
                         overlap: overlaps[index],
                         onTap: () => _edit(context, spec, index),
+                        onSplit: spec.properties.containsKey('facing')
+                            ? () => _replace(index, expandFacing(rule, spec))
+                            : null,
+                        onDelete: () => _delete(context, index),
                       ),
                     ),
                 ],
@@ -90,7 +105,8 @@ class BlockStateRuleGrid extends StatelessWidget {
 
 /// A rule in the card of the edit pages: the model as its value, the
 /// condition and the rotation below, and a warning icon when other contexts
-/// claim some of its states.
+/// claim some of its states. Like a model card it has a menu and a delete
+/// button in its corner.
 class _RuleCard extends StatelessWidget {
   const _RuleCard({
     required this.index,
@@ -98,6 +114,8 @@ class _RuleCard extends StatelessWidget {
     required this.spec,
     required this.overlap,
     required this.onTap,
+    required this.onSplit,
+    required this.onDelete,
   });
 
   final int index;
@@ -105,6 +123,11 @@ class _RuleCard extends StatelessWidget {
   final BlockSpec spec;
   final RuleOverlap overlap;
   final VoidCallback onTap;
+
+  /// Splits the rule per facing, null for a block without one: then the
+  /// menu would be empty and is left out.
+  final VoidCallback? onSplit;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +153,19 @@ class _RuleCard extends StatelessWidget {
         if (rotation.isNotEmpty) rotation.join(' · '),
       ].join('\n'),
       onTap: onTap,
+      actions: [
+        if (onSplit case final onSplit?)
+          CardActionsMenu(
+            entries: [
+              (
+                icon: Icons.rotate_90_degrees_cw_outlined,
+                label: l10n.blockstate_rule_split_facing,
+                onTap: onSplit,
+              ),
+            ],
+          ),
+        DeleteIconButton(tooltip: l10n.tooltip_delete, onPressed: onDelete),
+      ],
     );
   }
 }
