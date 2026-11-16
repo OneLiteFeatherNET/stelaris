@@ -114,6 +114,41 @@ List<Map<String, String>> uncoveredStates(
     if (!rules.any((rule) => rule.matches(state))) state,
 ];
 
+/// The other contexts a rule shares states with, and on how many states.
+typedef RuleOverlap = ({Set<String> names, int count});
+
+/// Per rule in [rules] the [others] of the same block claiming some of its
+/// states. The export writes all of them into one file, so `multipart` would
+/// draw both models on such a state.
+List<RuleOverlap> overlapsOf(
+  List<BlockStateRule> rules,
+  List<BlockStateModel> others,
+  BlockSpec spec,
+) {
+  // Only the states some other context claims, with the names claiming them.
+  final claimed = <(Map<String, String>, List<String>)>[];
+  for (final state in spec.states) {
+    final names = [
+      for (final other in others)
+        if (other.rules.any((rule) => rule.matches(state))) other.uiName,
+    ];
+    if (names.isNotEmpty) claimed.add((state, names));
+  }
+  return [
+    for (final rule in rules)
+      () {
+        final names = <String>{};
+        var count = 0;
+        for (final (state, claimedBy) in claimed) {
+          if (!rule.matches(state)) continue;
+          count++;
+          names.addAll(claimedBy);
+        }
+        return (names: names, count: count);
+      }(),
+  ];
+}
+
 /// The blockstate file for [rules], written as `multipart`.
 Map<String, Object> toMultipart(List<BlockStateRule> rules, BlockSpec spec) => {
   'multipart': [

@@ -5,7 +5,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/blockstate/block_picker_dialog.dart';
 import 'package:stelaris/feature/blockstate/block_state_rules.dart';
-import 'package:stelaris/feature/blockstate/block_state_rules_tab.dart';
+import 'package:stelaris/feature/blockstate/block_state_rule_grid.dart';
 import 'package:stelaris/feature/blockstate/block_state_store.dart';
 import 'package:stelaris/feature/dialogs/model_delete_dialog.dart';
 import 'package:stelaris/feature/dialogs/model_info_dialog.dart';
@@ -294,8 +294,12 @@ class _BlockStateDetail extends StatelessWidget {
     BlockStateStore.shared.remove(entry.id);
   }
 
-  /// Appends the rules of the dialog to the stored entry, which may have
-  /// changed since this page was built.
+  /// Stores a changed [entry], for the rules added here and the rules edited
+  /// in the grid alike.
+  void _update(BlockStateModel entry) => BlockStateStore.shared.update(entry);
+
+  /// Appends the rules of the dialog. It is modal, so [entry] is still the
+  /// stored one when it closes.
   Future<void> _addRule(BuildContext context) async {
     final rules = await showRuleDialog(
       context,
@@ -304,10 +308,8 @@ class _BlockStateDetail extends StatelessWidget {
       rule: const BlockStateRule(),
       existing: false,
     );
-    final store = BlockStateStore.shared;
-    final current = store.byId(entry.id);
-    if (rules == null || current == null) return;
-    store.update(current.copyWith(rules: [...current.rules, ...rules]));
+    if (rules == null) return;
+    _update(entry.copyWith(rules: [...entry.rules, ...rules]));
   }
 
   @override
@@ -362,10 +364,10 @@ class _BlockStateDetail extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: BlockStateRulesTab(
+          child: BlockStateRuleGrid(
             entry: entry,
             others: others,
-            onChanged: BlockStateStore.shared.update,
+            onChanged: _update,
           ),
         ),
       ],

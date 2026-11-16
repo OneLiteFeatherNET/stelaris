@@ -10,14 +10,15 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
-/// The rules of a blockstate as a grid of cards.
+/// The rules of a blockstate as a grid of cards. A tap on a card opens the
+/// rule in a dialog, its result is reported through [onChanged].
 ///
 /// Every blockstate is a context of its own. The [others] are the contexts
 /// of the same block: the export writes all of them into one file, so a
 /// state claimed twice is a conflict, `multipart` would draw both models. A
 /// rule claiming such states is marked.
-class BlockStateRulesTab extends StatefulWidget {
-  const BlockStateRulesTab({
+class BlockStateRuleGrid extends StatelessWidget {
+  const BlockStateRuleGrid({
     required this.entry,
     required this.others,
     required this.onChanged,
@@ -28,61 +29,95 @@ class BlockStateRulesTab extends StatefulWidget {
   final List<BlockStateModel> others;
   final ValueChanged<BlockStateModel> onChanged;
 
-  @override
-  State<BlockStateRulesTab> createState() => _BlockStateRulesTabState();
-}
+  /// Puts [rules] in place of the rule at [index].
+  void _replace(int index, List<BlockStateRule> rules) => onChanged(
+    entry.copyWith(
+      rules: [...entry.rules]..replaceRange(index, index + 1, rules),
+    ),
+  );
 
-class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
-  /// Bumped whenever the rules are replaced as a whole, so the model fields
-  /// pick up their new text.
-  int _generation = 0;
-
-  @override
-  void didUpdateWidget(BlockStateRulesTab oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.entry.key != widget.entry.key) {
-      _generation++;
-    }
-  }
-
-  BlockSpec get _spec => specFor(widget.entry.key);
-  List<BlockStateRule> get _rules => widget.entry.rules;
-
-  void _setRules(List<BlockStateRule> rules) =>
-      widget.onChanged(widget.entry.copyWith(rules: rules));
-
-  void _replace(int index, List<BlockStateRule> rules) {
-    setState(() => _generation++);
-    _setRules([..._rules]..replaceRange(index, index + 1, rules));
-  }
-
-  Future<void> _edit(int index) async {
+  Future<void> _edit(BuildContext context, BlockSpec spec, int index) async {
     final rules = await showRuleDialog(
       context,
       title: context.l10n.blockstate_rule(index + 1),
-      spec: _spec,
-      rule: _rules[index],
+      spec: spec,
+      rule: entry.rules[index],
     );
-    if (rules != null && mounted) _replace(index, rules);
+    if (rules != null) _replace(index, rules);
   }
 
-  /// A rule in the card of the edit pages: the model as its value, the
-  /// condition and the rotation below, and a warning icon when other
-  /// contexts claim some of its states. A tap opens the [_RuleDialog].
-  Widget _ruleCard(
-    int index,
-    BlockStateRule rule,
-    ({Set<String> names, int count}) overlap,
-  ) {
+  @override
+  Widget build(BuildContext context) {
+    final spec = specFor(entry.key);
+    final rules = entry.rules;
+    final overlaps = overlapsOf(rules, others, spec);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final cardWidth = EditCardGrid.cardWidthIn(constraints.maxWidth);
+        return SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              EditSectionHeading(
+                title: context.l10n.blockstate_rules_title(rules.length),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: EditCardGrid.spacing,
+                runSpacing: EditCardGrid.spacing,
+                children: [
+                  for (final (index, rule) in rules.indexed)
+                    SizedBox(
+                      width: cardWidth,
+                      child: _RuleCard(
+                        index: index,
+                        rule: rule,
+                        spec: spec,
+                        overlap: overlaps[index],
+                        onTap: () => _edit(context, spec, index),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// A rule in the card of the edit pages: the model as its value, the
+/// condition and the rotation below, and a warning icon when other contexts
+/// claim some of its states.
+class _RuleCard extends StatelessWidget {
+  const _RuleCard({
+    required this.index,
+    required this.rule,
+    required this.spec,
+    required this.overlap,
+    required this.onTap,
+  });
+
+  final int index;
+  final BlockStateRule rule;
+  final BlockSpec spec;
+  final RuleOverlap overlap;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = context.l10n;
     final rotation = [
       if (rule.x != 0) 'x ${rule.x}°',
       if (rule.y != 0) 'y ${rule.y}°',
       if (rule.uvlock) 'uvlock',
     ];
+    final overlapping = overlap.count > 0;
     return EditCard(
-      icon: overlap.count > 0 ? Icons.warning_amber_rounded : Icons.rule,
-      label: overlap.count > 0
+      icon: overlapping ? Icons.warning_amber_rounded : Icons.rule,
+      label: overlapping
           ? l10n.blockstate_rule_overlap(
               index + 1,
               overlap.count,
@@ -91,70 +126,32 @@ class _BlockStateRulesTabState extends State<BlockStateRulesTab> {
           : l10n.blockstate_rule(index + 1),
       value: rule.model,
       footer: [
-        conditionOf(l10n, rule, _spec),
+        conditionOf(l10n, rule, spec),
         if (rotation.isNotEmpty) rotation.join(' · '),
       ].join('\n'),
-      onTap: () => _edit(index),
-    );
-  }
-
-  /// The names of the other contexts claiming [state].
-  List<String> _claimedBy(Map<String, String> state) => [
-    for (final other in widget.others)
-      if (other.rules.any((rule) => rule.matches(state))) other.uiName,
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final states = _spec.states.toList();
-    final claims = [for (final state in states) _claimedBy(state)];
-
-    /// Per rule the names of the contexts it overlaps and on how many states.
-    ({Set<String> names, int count}) overlapOf(BlockStateRule rule) {
-      final names = <String>{};
-      var count = 0;
-      for (final (index, state) in states.indexed) {
-        if (claims[index].isEmpty || !rule.matches(state)) continue;
-        count++;
-        names.addAll(claims[index]);
-      }
-      return (names: names, count: count);
-    }
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final cardWidth = EditCardGrid.cardWidthIn(constraints.maxWidth);
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                EditSectionHeading(
-                  title: l10n.blockstate_rules_title(_rules.length),
-                ),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: EditCardGrid.spacing,
-                  runSpacing: EditCardGrid.spacing,
-                  children: [
-                    for (final (index, rule) in _rules.indexed)
-                      SizedBox(
-                        key: ValueKey('$_generation-$index'),
-                        width: cardWidth,
-                        child: _ruleCard(index, rule, overlapOf(rule)),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+      onTap: onTap,
     );
   }
 }
+
+/// Asks whether to delete the rule titled [title], e.g. `Rule 2`.
+Future<bool> confirmRuleDelete(
+  BuildContext context,
+  String title,
+  BlockStateRule rule,
+) async =>
+    await showDialog<bool>(
+      context: context,
+      builder: (_) => DeleteDialog<BlockStateRule>(
+        title: context.l10n.blockstate_rule_delete_title,
+        header: [
+          TextSpan(text: context.l10n.blockstate_rule_delete_header(title)),
+        ],
+        value: rule,
+        successfully: (_) => true,
+      ),
+    ) ==
+    true;
 
 /// The condition of [rule] as `property=a|b`, joined by ` · `.
 String conditionOf(AppLocalizations l10n, BlockStateRule rule, BlockSpec spec) {
@@ -210,20 +207,8 @@ class _RuleDialogState extends State<_RuleDialog> {
   void _change(BlockStateRule rule) => setState(() => _rule = rule);
 
   Future<void> _delete() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => DeleteDialog<BlockStateRule>(
-        title: context.l10n.blockstate_rule_delete_title,
-        header: [
-          TextSpan(
-            text: context.l10n.blockstate_rule_delete_header(widget.title),
-          ),
-        ],
-        value: _rule,
-        successfully: (_) => true,
-      ),
-    );
-    if (confirmed == true && mounted) {
+    final confirmed = await confirmRuleDelete(context, widget.title, _rule);
+    if (confirmed && mounted) {
       Navigator.of(context).pop(const <BlockStateRule>[]);
     }
   }

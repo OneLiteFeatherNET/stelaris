@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/blockstate/block_state_rules.dart';
-import 'package:stelaris/feature/blockstate/block_state_rules_tab.dart';
+import 'package:stelaris/feature/blockstate/block_state_rule_grid.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -26,7 +26,7 @@ Future<BlockStateModel? Function()> _show(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
-        body: BlockStateRulesTab(
+        body: BlockStateRuleGrid(
           entry: entry,
           others: const [],
           onChanged: (entry) => changed = entry,
@@ -34,11 +34,14 @@ Future<BlockStateModel? Function()> _show(
       ),
     ),
   );
+  // The buttons are in the dialog a tap on the card opens.
+  await tester.tap(find.text('minecraft:block/seat'));
+  await tester.pumpAndSettle();
   return () => changed;
 }
 
 void main() {
-  group('rule card buttons', () {
+  group('rule dialog buttons', () {
     testWidgets('splits the rule into one per facing', (tester) async {
       final changed = await _show(tester, _entry('minecraft:oak_stairs'));
 
