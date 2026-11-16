@@ -1,7 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 
-/// A row of icon-button actions (delete, and more to come) shown in a
-/// [ModelGridCard]'s header. Each child wraps a plain IconButton. Content
+/// A row of compact icon-button actions in the header of a card, e.g. a
+/// `CardActionsMenu` and a `DeleteIconButton` on a model grid card. Each
+/// child wraps a plain IconButton. Content
 /// below the title (e.g. a key badge) means the header can be taller than
 /// one line, so the row is top-aligned against it rather than centered
 /// against the whole block. 30x30 keeps each button's box close to
@@ -9,12 +10,8 @@ import 'package:material_ui/material_ui.dart';
 /// IconButton's own centering don't share the same top inset, so a small
 /// manual offset closes the remaining gap between the title's glyphs and
 /// the icons.
-class ModelCardActions extends StatelessWidget {
-  const ModelCardActions({
-    required this.color,
-    required this.children,
-    super.key,
-  });
+class CardActions extends StatelessWidget {
+  const CardActions({required this.color, required this.children, super.key});
 
   final Color color;
   final List<Widget> children;

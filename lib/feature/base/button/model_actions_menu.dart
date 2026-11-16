@@ -2,12 +2,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/dialogs/model_info_dialog.dart';
 import 'package:stelaris/feature/model/model_page.dart';
-import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/feature/base/button/card_actions_menu.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
-/// The 3-dot action menu on a model card: "Info", plus "Copy" when
+/// The [CardActionsMenu] of a model card: "Info", plus "Copy" when
 /// [onCopy] is given and "Edit notes" when [onEditNotes] is given.
-/// Further actions can be added as more [PopupMenuItem]s.
 class ModelActionsMenu<E extends DataModel> extends StatelessWidget {
   const ModelActionsMenu({
     required this.value,
@@ -36,87 +35,43 @@ class ModelActionsMenu<E extends DataModel> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<void>(
-      icon: const Icon(Icons.more_vert),
-      // PopupMenuButton doesn't read the ambient IconButtonTheme the way a
-      // plain IconButton does (e.g. DeleteModelButton) — without this it
-      // falls back to the Material default (24), visibly larger than the
-      // 18 the surrounding IconButtonTheme sets for the rest of the header.
-      iconSize: 18,
-      padding: EdgeInsets.zero,
-      tooltip: context.l10n.tooltip_more_actions,
-      itemBuilder: (context) => [
-        PopupMenuItem<void>(
+    final l10n = context.l10n;
+    return CardActionsMenu(
+      entries: [
+        (
+          icon: Icons.info_outline,
+          label: l10n.menu_item_info,
           onTap: () => _openInfoDialog(context),
-          child: _MenuItemContent(
-            icon: Icons.info_outline,
-            label: context.l10n.menu_item_info,
-          ),
         ),
         if (onCopy case final onCopy?)
-          PopupMenuItem<void>(
-            // Like the info dialog: wait for the menu route to pop first.
-            onTap: () => Future.microtask(onCopy),
-            child: _MenuItemContent(
-              icon: Icons.copy_outlined,
-              label: context.l10n.menu_item_copy,
-            ),
+          (
+            icon: Icons.copy_outlined,
+            label: l10n.menu_item_copy,
+            onTap: onCopy,
           ),
         if (onEditNotes case final onEditNotes?)
-          PopupMenuItem<void>(
-            // Like the info dialog: wait for the menu route to pop first.
-            onTap: () => Future.microtask(onEditNotes),
-            child: _MenuItemContent(
-              icon: Icons.sticky_note_2_outlined,
-              label: context.l10n.menu_item_edit_notes,
-            ),
+          (
+            icon: Icons.sticky_note_2_outlined,
+            label: l10n.menu_item_edit_notes,
+            onTap: onEditNotes,
           ),
       ],
     );
   }
 
   void _openInfoDialog(BuildContext context) {
-    final name = nameSelector(value);
-    final key = keySelector(value);
-
-    // PopupMenuItem.onTap fires before its route is popped, so the dialog
-    // must wait a beat or it would be shown (and immediately dismissed by)
-    // the still-closing menu route.
-    Future.microtask(() {
-      if (!context.mounted) return;
-      showDialog(
-        context: context,
-        builder: (context) {
-          return ModelInfoDialog(
-            name: name,
-            namespacedKey: '$projectKey:$key',
-            id: value.id,
-            creationDate: value.creationDate,
-            modificationDate: value.modificationDate,
-          );
-        },
-      );
-    });
-  }
-}
-
-class _MenuItemContent extends StatelessWidget {
-  const _MenuItemContent({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 18, color: colorScheme.onSurfaceVariant),
-        horizontalSpacing10,
-        Text(label),
-      ],
+    if (!context.mounted) return;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return ModelInfoDialog(
+          name: nameSelector(value),
+          namespacedKey: '$projectKey:${keySelector(value)}',
+          id: value.id,
+          creationDate: value.creationDate,
+          modificationDate: value.modificationDate,
+        );
+      },
     );
   }
 }
