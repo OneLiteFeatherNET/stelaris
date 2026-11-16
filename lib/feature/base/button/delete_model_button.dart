@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/dialogs/model_delete_dialog.dart';
-import 'package:stelaris/util/constants.dart';
+import 'package:stelaris/feature/base/button/delete_icon_button.dart';
 import 'package:stelaris/util/typedefs.dart';
 
 class DeleteModelButton<E extends DataModel> extends StatelessWidget {
@@ -24,8 +24,7 @@ class DeleteModelButton<E extends DataModel> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: deleteIcon,
+    return DeleteIconButton(
       onPressed: () {
         showDialog(
           context: context,

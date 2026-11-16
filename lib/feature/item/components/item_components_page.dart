@@ -2,6 +2,8 @@ import 'package:async_redux/async_redux.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/item/item_component_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/base/button/card_actions.dart';
+import 'package:stelaris/feature/base/button/delete_icon_button.dart';
 import 'package:stelaris/feature/dialogs/delete_dialog.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
 import 'package:stelaris/feature/base/page_header.dart';
@@ -13,8 +15,6 @@ import 'package:stelaris/feature/item/components/item_model_preview_slot.dart';
 import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/feature/item/components/stelaris_components.dart';
 import 'package:stelaris/feature/item/item_tab_loader.dart';
-import 'package:stelaris/feature/model/model_card_actions.dart';
-import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:vulpes_data/component.dart';
@@ -412,13 +412,12 @@ class _ComponentCard extends StatelessWidget {
                   // A tap on the card edits, so only removing needs a
                   // button, the same compact one as on a model grid card.
                   if (onRemove != null)
-                    ModelCardActions(
+                    CardActions(
                       color: colorScheme.onSurfaceVariant,
                       children: [
-                        IconButton(
+                        DeleteIconButton(
                           key: const Key('component_card_remove'),
                           tooltip: context.l10n.component_delete_tooltip,
-                          icon: deleteIcon,
                           onPressed: onRemove,
                         ),
                       ],

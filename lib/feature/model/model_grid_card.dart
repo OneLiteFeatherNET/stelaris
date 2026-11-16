@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/base/button/card_actions.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/feature/base/button/delete_model_button.dart';
 import 'package:stelaris/feature/base/button/model_actions_menu.dart';
@@ -10,7 +11,6 @@ import 'package:stelaris/util/notes.dart';
 import 'package:stelaris/util/relative_time.dart';
 import 'package:stelaris/util/typedefs.dart';
 
-import 'model_card_actions.dart';
 import 'model_card_frame.dart';
 import 'model_page.dart';
 
@@ -60,7 +60,7 @@ class ModelGridCard<E extends DataModel> extends StatelessWidget {
 
     return ModelCardFrame(
       content: mapToDataModelItem(rawModel),
-      trailing: ModelCardActions(
+      trailing: CardActions(
         color: Theme.of(context).colorScheme.onSurfaceVariant,
         children: [
           ModelActionsMenu<E>(
