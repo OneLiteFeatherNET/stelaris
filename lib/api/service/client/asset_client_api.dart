@@ -14,6 +14,26 @@ class AssetClientApi {
 
   static const String _endpoint = 'asset';
 
+  /// How long a file may take to go up or come down, the whole request.
+  ///
+  /// The client's own timeouts suit small JSON requests: on the web the
+  /// send timeout ends an upload that runs longer than it in total, and the
+  /// request as a whole may take connect plus receive timeout. Even the
+  /// largest asset of 8 MiB takes longer on a slow line.
+  static const Duration transferTimeout = Duration(minutes: 5);
+
+  /// The options of a request that carries a file, either way. The send
+  /// timeout is off, the receive timeout bounds the whole request.
+  static Options _transfer({
+    ResponseType? responseType,
+    Map<String, Object?>? headers,
+  }) => Options(
+    sendTimeout: Duration.zero,
+    receiveTimeout: transferTimeout,
+    responseType: responseType,
+    headers: headers,
+  );
+
   /// Fetches one page of the project's assets, optionally only of [kind].
   ///
   /// [page] is zero-based, as the backend expects.
@@ -59,6 +79,8 @@ class AssetClientApi {
     required String displayName,
     required String fileName,
     required List<int> bytes,
+    ProgressCallback? onSendProgress,
+    CancelToken? cancelToken,
   }) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(
@@ -69,7 +91,13 @@ class AssetClientApi {
       'displayName': displayName,
       'file': MultipartFile.fromBytes(bytes, filename: fileName),
     });
-    final result = await apiClient.dio.postUri(uri, data: form);
+    final result = await apiClient.dio.postUri(
+      uri,
+      data: form,
+      options: _transfer(),
+      onSendProgress: onSendProgress,
+      cancelToken: cancelToken,
+    );
     return AssetModel.fromJson(result.data as Map<String, dynamic>);
   }
 
@@ -83,6 +111,8 @@ class AssetClientApi {
     AssetModel asset, {
     required String fileName,
     required List<int> bytes,
+    ProgressCallback? onSendProgress,
+    CancelToken? cancelToken,
   }) async {
     final baseUri = Uri.parse(apiClient.baseUrl);
     final uri = baseUri.replace(
@@ -95,7 +125,9 @@ class AssetClientApi {
     final result = await apiClient.dio.postUri(
       uri,
       data: form,
-      options: Options(headers: {'If-Match': '"${asset.sha1}"'}),
+      options: _transfer(headers: {'If-Match': '"${asset.sha1}"'}),
+      onSendProgress: onSendProgress,
+      cancelToken: cancelToken,
     );
     return AssetModel.fromJson(result.data as Map<String, dynamic>);
   }
@@ -130,7 +162,7 @@ class AssetClientApi {
     );
     final result = await apiClient.dio.getUri(
       uri,
-      options: Options(responseType: ResponseType.bytes),
+      options: _transfer(responseType: ResponseType.bytes),
     );
     return result.data! as List<int>;
   }

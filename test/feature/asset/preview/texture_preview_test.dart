@@ -130,7 +130,10 @@ void main() {
     // No pump for a load: the first frame already shows the texture.
     expect(find.byType(CircularProgressIndicator), findsNothing);
     final image = tester.widget<Image>(find.byType(Image));
-    expect((image.image as MemoryImage).bytes, _png);
+    expect(
+      ((image.image as ResizeImage).imageProvider as MemoryImage).bytes,
+      _png,
+    );
     expect(image.filterQuality, FilterQuality.none);
   });
 
@@ -148,7 +151,13 @@ void main() {
     await tester.pump();
 
     final image = tester.widget<Image>(find.byType(Image));
-    expect(identical((image.image as MemoryImage).bytes, other), isTrue);
+    expect(
+      identical(
+        ((image.image as ResizeImage).imageProvider as MemoryImage).bytes,
+        other,
+      ),
+      isTrue,
+    );
   });
 
   group('thumbnail', () {
@@ -180,10 +189,7 @@ void main() {
       expect(image.filterQuality, FilterQuality.none);
       // 40 px fit 5 times 8 px.
       expect(tester.getSize(find.byType(Image)), const Size(40, 40));
-      expect(
-        tester.getSize(find.byType(TextureThumbnail)),
-        const Size(40, 40),
-      );
+      expect(tester.getSize(find.byType(TextureThumbnail)), const Size(40, 40));
     });
 
     testWidgets('shows an icon for a texture that could not be loaded', (

@@ -2295,6 +2295,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_upload_read_failed => 'The file could not be read.';
 
   @override
+  String asset_upload_too_large(String name, String size, String max) {
+    return '$name has $size, a file may have at most $max.';
+  }
+
+  @override
+  String asset_upload_progress(int percent) {
+    return 'Uploading … $percent %';
+  }
+
+  @override
+  String get asset_upload_starting => 'Uploading …';
+
+  @override
+  String get asset_upload_cancel => 'Cancel upload';
+
+  @override
+  String texture_preview_too_large(int width, int height) {
+    return 'No preview for a texture of $width × $height pixels';
+  }
+
+  @override
   String asset_upload_key_helper(String example) {
     return 'The path in the resource pack, e.g. $example';
   }

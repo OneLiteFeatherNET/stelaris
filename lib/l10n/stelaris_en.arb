@@ -1192,6 +1192,41 @@
   "asset_upload_formats_sound": "Mono Ogg Vorbis sounds (.ogg)",
   "asset_upload_unsupported_sound": "Only .ogg files can be uploaded here.",
   "asset_upload_read_failed": "The file could not be read.",
+  "asset_upload_too_large": "{name} has {size}, a file may have at most {max}.",
+  "@asset_upload_too_large": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_upload_progress": "Uploading … {percent} %",
+  "@asset_upload_progress": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "asset_upload_starting": "Uploading …",
+  "asset_upload_cancel": "Cancel upload",
+  "texture_preview_too_large": "No preview for a texture of {width} × {height} pixels",
+  "@texture_preview_too_large": {
+    "placeholders": {
+      "width": {
+        "type": "int"
+      },
+      "height": {
+        "type": "int"
+      }
+    }
+  },
   "asset_upload_key_helper": "The path in the resource pack, e.g. {example}",
   "@asset_upload_key_helper": {
     "placeholders": {

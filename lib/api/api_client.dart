@@ -90,9 +90,7 @@ class ApiClient {
         ),
       );
     if (kDebugMode) {
-      dio.interceptors.add(
-        LogInterceptor(requestBody: true, responseBody: true),
-      );
+      dio.interceptors.add(_DebugLogInterceptor());
     }
   }
 
@@ -142,5 +140,42 @@ class ApiClient {
     } on DioException catch (_) {
       return null;
     }
+  }
+}
+
+/// Logs requests and responses in debug builds, their bodies too, except a
+/// file: textures, sounds and builds come as bytes, and a list of millions of
+/// numbers in the console freezes the app while it is printed. Such a
+/// response is logged with its size instead.
+class _DebugLogInterceptor extends LogInterceptor {
+  _DebugLogInterceptor() : super(requestBody: true, responseBody: true);
+
+  static final LogInterceptor _withoutBody = LogInterceptor(
+    requestBody: true,
+    responseBody: false,
+  );
+
+  static bool _isBinary(RequestOptions options) =>
+      options.responseType == ResponseType.bytes ||
+      options.responseType == ResponseType.stream;
+
+  @override
+  void onResponse(
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) {
+    if (!_isBinary(response.requestOptions)) {
+      return super.onResponse(response, handler);
+    }
+    final data = response.data;
+    final size = data is List ? '${data.length} bytes' : 'a stream';
+    _withoutBody.logPrint('Binary response of $size');
+    _withoutBody.onResponse(response, handler);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    if (!_isBinary(err.requestOptions)) return super.onError(err, handler);
+    _withoutBody.onError(err, handler);
   }
 }

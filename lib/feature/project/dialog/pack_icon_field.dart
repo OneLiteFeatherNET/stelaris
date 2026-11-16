@@ -3,8 +3,10 @@ import 'dart:typed_data';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
+import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/util/app_shapes.dart';
+import 'package:stelaris/util/png_size.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 /// Opens the file dialog for a pack icon.
@@ -15,25 +17,6 @@ const int packIconMinSize = 16;
 
 /// Why a file can't be the pack icon.
 enum PackIconProblem { notPng, notSquare, notPowerOfTwo, tooSmall }
-
-/// The width and height a PNG declares in its header, or null when [bytes]
-/// are no PNG. Reads only the header, the image isn't decoded.
-({int width, int height})? pngSize(Uint8List bytes) {
-  const signature = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
-  // The signature, then the IHDR chunk: length, type, width, height.
-  if (bytes.length < 24) return null;
-  for (var i = 0; i < signature.length; i++) {
-    if (bytes[i] != signature[i]) return null;
-  }
-  final isHeader =
-      bytes[12] == 0x49 &&
-      bytes[13] == 0x48 &&
-      bytes[14] == 0x44 &&
-      bytes[15] == 0x52;
-  if (!isHeader) return null;
-  final data = ByteData.sublistView(bytes);
-  return (width: data.getUint32(16), height: data.getUint32(20));
-}
 
 /// What keeps [bytes] from being a pack icon, null if they can be one: a
 /// square PNG whose side is a power of two, at least [packIconMinSize].
@@ -71,6 +54,9 @@ class PackIconField extends StatefulWidget {
 class _PackIconFieldState extends State<PackIconField> {
   /// Why the last chosen file was turned down.
   PackIconProblem? _problem;
+
+  /// The last chosen file when it was too large to read.
+  AssetFileTooLarge? _tooLarge;
   bool _reading = false;
 
   Future<void> _choose() async {
@@ -78,6 +64,14 @@ class _PackIconFieldState extends State<PackIconField> {
     PickedAssetFile? picked;
     try {
       picked = await widget.pickFile();
+    } on AssetFileTooLarge catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _reading = false;
+        _problem = null;
+        _tooLarge = error;
+      });
+      return;
     } catch (error) {
       if (!mounted) return;
       setState(() => _reading = false);
@@ -88,13 +82,17 @@ class _PackIconFieldState extends State<PackIconField> {
     setState(() {
       _reading = false;
       if (picked == null) return;
+      _tooLarge = null;
       _problem = checkPackIcon(picked.bytes);
       if (_problem == null) widget.onChanged(picked.bytes);
     });
   }
 
   void _remove() {
-    setState(() => _problem = null);
+    setState(() {
+      _problem = null;
+      _tooLarge = null;
+    });
     widget.onChanged(null);
   }
 
@@ -115,7 +113,15 @@ class _PackIconFieldState extends State<PackIconField> {
     final colorScheme = theme.colorScheme;
     final icon = widget.value;
     final size = icon == null ? null : pngSize(icon);
-    final problem = _problem;
+    final problem = switch ((_tooLarge, _problem)) {
+      (final tooLarge?, _) => l10n.asset_upload_too_large(
+        tooLarge.name,
+        formatFileSize(tooLarge.size),
+        formatFileSize(maxAssetFileBytes),
+      ),
+      (null, final problem?) => _problemText(problem),
+      (null, null) => null,
+    };
     return Row(
       children: [
         _IconPreview(
@@ -138,7 +144,7 @@ class _PackIconFieldState extends State<PackIconField> {
               ),
               const SizedBox(height: 4),
               Text(
-                problem == null ? l10n.pack_icon_hint : _problemText(problem),
+                problem ?? l10n.pack_icon_hint,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: problem == null
                       ? colorScheme.onSurfaceVariant
@@ -161,6 +167,10 @@ class _PackIconFieldState extends State<PackIconField> {
 
 /// The side of the icon preview.
 const double packIconPreviewSize = 80;
+
+/// The side in physical pixels the icon preview is decoded to.
+int _decodedSide(BuildContext context) =>
+    (packIconPreviewSize * MediaQuery.devicePixelRatioOf(context)).ceil();
 
 /// The icon filling its box, its pixels kept sharp, or a placeholder asking
 /// for one. Tapping the box opens the file dialog; while hovered or focused
@@ -224,8 +234,16 @@ class _IconPreviewState extends State<_IconPreview> {
                   if (icon == null)
                     Center(child: empty)
                   else
-                    Image.memory(
-                      icon,
+                    Image(
+                      // Decoded no larger than shown: a pack icon may be a
+                      // power of two in the thousands. A smaller one keeps
+                      // its size, an image is never scaled up when decoded.
+                      image: ResizeImage(
+                        MemoryImage(icon),
+                        width: _decodedSide(context),
+                        height: _decodedSide(context),
+                        policy: ResizeImagePolicy.fit,
+                      ),
                       key: const Key('pack_icon_image'),
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.none,

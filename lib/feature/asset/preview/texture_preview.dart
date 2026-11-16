@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/util/app_shapes.dart';
+import 'package:stelaris/util/png_size.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -114,33 +115,86 @@ class _TexturePreviewState extends State<TexturePreview> {
     width: widget.asset?.width,
     height: widget.asset?.height,
     errorBuilder: (context) => Text(context.l10n.texture_preview_failed),
+    tooLargeBuilder: (context, width, height) => Padding(
+      padding: const EdgeInsets.all(16),
+      child: Text(
+        context.l10n.texture_preview_too_large(width, height),
+        textAlign: TextAlign.center,
+      ),
+    ),
   );
 }
+
+/// The most pixels a texture may have to be shown, 4096 × 4096. A larger
+/// one isn't decoded: the full image would take hundreds of megabytes before
+/// it is shrunk, and freeze the page while it is decoded.
+const int maxPreviewPixels = 4096 * 4096;
 
 /// The texture of [bytes] without smoothing. Of a known size it is scaled
 /// into [space] by a whole factor, which keeps every pixel the same size. A
 /// larger texture is only shrunk to fit, one of unknown size fitted.
+///
+/// The image is decoded no larger than it is shown, so a large texture takes
+/// no more memory than the space it fills. One of more than
+/// [maxPreviewPixels], as stated or as its PNG header says, shows
+/// [tooLargeBuilder] instead.
 Widget _pixelArt(
   Uint8List bytes,
   Size space, {
   required int? width,
   required int? height,
   required WidgetBuilder errorBuilder,
-}) {
-  final image = Image.memory(
-    bytes,
-    filterQuality: FilterQuality.none,
-    fit: BoxFit.contain,
-    gaplessPlayback: true,
-    errorBuilder: (context, _, _) => errorBuilder(context),
-  );
-  if (width == null || height == null || width == 0 || height == 0) {
-    return image;
-  }
-  final fit = math.min(space.width / width, space.height / height);
-  final scale = fit >= 1 ? fit.floorToDouble() : fit;
-  return SizedBox(width: width * scale, height: height * scale, child: image);
-}
+  required Widget Function(BuildContext context, int width, int height)
+  tooLargeBuilder,
+}) => Builder(
+  builder: (context) {
+    var pixelsWide = width;
+    var pixelsHigh = height;
+    if (pixelsWide == null ||
+        pixelsHigh == null ||
+        pixelsWide == 0 ||
+        pixelsHigh == 0) {
+      final header = pngSize(bytes);
+      pixelsWide = header?.width;
+      pixelsHigh = header?.height;
+    }
+    if (pixelsWide != null &&
+        pixelsHigh != null &&
+        pixelsWide * pixelsHigh > maxPreviewPixels) {
+      return tooLargeBuilder(context, pixelsWide, pixelsHigh);
+    }
+
+    // The size the texture takes on the screen, from the stated size only:
+    // the header may lie about a file that isn't a PNG after all.
+    Size? shown;
+    if (width != null && height != null && width != 0 && height != 0) {
+      final fit = math.min(space.width / width, space.height / height);
+      final scale = fit >= 1 ? fit.floorToDouble() : fit;
+      shown = Size(width * scale, height * scale);
+    }
+
+    final target = shown ?? space;
+    final pixelRatio = MediaQuery.maybeDevicePixelRatioOf(context) ?? 1;
+    ImageProvider provider = MemoryImage(bytes);
+    if (target.isFinite && !target.isEmpty) {
+      provider = ResizeImage(
+        provider,
+        width: (target.width * pixelRatio).ceil(),
+        height: (target.height * pixelRatio).ceil(),
+        policy: ResizeImagePolicy.fit,
+      );
+    }
+    final image = Image(
+      image: provider,
+      filterQuality: FilterQuality.none,
+      fit: BoxFit.contain,
+      gaplessPlayback: true,
+      errorBuilder: (context, _, _) => errorBuilder(context),
+    );
+    if (shown == null) return image;
+    return SizedBox(width: shown.width, height: shown.height, child: image);
+  },
+);
 
 /// Shows the texture [asset] small, e.g. in the row of a list, on the
 /// checkerboard of [TexturePreview]. Whoever lists the textures loads their
@@ -196,6 +250,7 @@ class TextureThumbnail extends StatelessWidget {
                   width: asset.width,
                   height: asset.height,
                   errorBuilder: failed,
+                  tooLargeBuilder: (context, _, _) => failed(context),
                 ),
               );
             },
