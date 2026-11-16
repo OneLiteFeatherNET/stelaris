@@ -8,18 +8,27 @@ import 'package:material_ui/material_ui.dart';
 /// against the whole block. 30x30 keeps each button's box close to
 /// titleMedium's line-box height (~24px), but Text's font leading and
 /// IconButton's own centering don't share the same top inset, so a small
-/// manual offset closes the remaining gap between the title's glyphs and
+/// manual [offset] closes the remaining gap between the title's glyphs and
 /// the icons.
 class CardActions extends StatelessWidget {
-  const CardActions({required this.color, required this.children, super.key});
+  const CardActions({
+    required this.color,
+    required this.children,
+    this.offset = const Offset(0, -6),
+    super.key,
+  });
 
   final Color color;
   final List<Widget> children;
 
+  /// Moves the row against the title, [Offset.zero] next to a smaller text
+  /// the row is centered on.
+  final Offset offset;
+
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: const Offset(0, -6),
+      offset: offset,
       child: IconButtonTheme(
         data: IconButtonThemeData(
           style: IconButton.styleFrom(
