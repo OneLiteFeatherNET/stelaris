@@ -1,4 +1,3 @@
-// SPIKE: throwaway proof of concept for rule based blockstate editing.
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:vulpes_data/block.dart';
 
@@ -107,15 +106,6 @@ List<BlockStateRule> expandFacing(BlockStateRule rule, BlockSpec spec) {
   ];
 }
 
-/// The states of [spec] no rule gives a model.
-List<Map<String, String>> uncoveredStates(
-  List<BlockStateRule> rules,
-  BlockSpec spec,
-) => [
-  for (final state in spec.states)
-    if (!rules.any((rule) => rule.matches(state))) state,
-];
-
 /// The other contexts a rule shares states with, and on how many states.
 typedef RuleOverlap = ({Set<String> names, int count});
 
@@ -150,31 +140,3 @@ List<RuleOverlap> overlapsOf(
       }(),
   ];
 }
-
-/// The blockstate file for [rules], written as `multipart`.
-Map<String, Object> toMultipart(List<BlockStateRule> rules, BlockSpec spec) => {
-  'multipart': [
-    for (final rule in rules)
-      {
-        if (_when(rule, spec) case final condition when condition.isNotEmpty)
-          'when': condition,
-        'apply': {
-          'model': rule.model.isEmpty ? 'minecraft:block/stone' : rule.model,
-          if (rule.x != 0) 'x': rule.x,
-          if (rule.y != 0) 'y': rule.y,
-          if (rule.uvlock) 'uvlock': true,
-        },
-      },
-  ],
-};
-
-Map<String, String> _when(BlockStateRule rule, BlockSpec spec) => {
-  for (final entry in rule.when.entries)
-    // Selecting every value is the same as selecting none.
-    if (entry.value.isNotEmpty &&
-        entry.value.length < (spec.properties[entry.key]?.length ?? 0))
-      entry.key: [
-        for (final value in spec.properties[entry.key]!)
-          if (entry.value.contains(value)) value,
-      ].join('|'),
-};

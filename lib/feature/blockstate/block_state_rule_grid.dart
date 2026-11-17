@@ -1,4 +1,3 @@
-// SPIKE: throwaway proof of concept for rule based blockstate editing.
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/button/delete_icon_button.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
