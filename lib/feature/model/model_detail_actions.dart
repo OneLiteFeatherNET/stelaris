@@ -32,6 +32,7 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
     this.removeAction,
     this.deleteWarning,
     this.readNotes,
+    this.namespace,
     super.key,
   });
 
@@ -50,8 +51,13 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
   /// from the overview, see [NotesViewDialog].
   final String? Function(E model)? readNotes;
 
+  /// The namespace in front of [keySelector]'s key, the project key when
+  /// null. A model whose key lies outside the project, e.g. the block of a
+  /// blockstate, names its own.
+  final String? namespace;
+
   String _namespacedKey(AppState state, E model) =>
-      '${state.selectedProject?.key ?? ''}:${keySelector(model)}';
+      '${namespace ?? state.selectedProject?.key ?? ''}:${keySelector(model)}';
 
   void _openInfo(BuildContext context) {
     final state = StoreProvider.state<AppState>(context);

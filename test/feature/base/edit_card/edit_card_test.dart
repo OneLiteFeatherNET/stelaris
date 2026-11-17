@@ -175,4 +175,29 @@ void main() {
     // The footer keeps the full width below the picture.
     expect(tester.getRect(find.text('A rule')).left, picture.left);
   });
+
+  testWidgets('without icon or picture the label starts with the value', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 300,
+              child: EditCard(label: 'Ascent', value: '7'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(Icon), findsNothing);
+    expect(
+      tester.getTopLeft(find.text('Ascent')).dx,
+      tester.getTopLeft(find.text('7')).dx,
+    );
+  });
 }

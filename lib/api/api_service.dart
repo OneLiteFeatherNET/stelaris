@@ -53,6 +53,13 @@ class ApiService {
     toJson: (model) => model.toJson(),
   );
 
+  late final ClientAPI<BlockStateModel> blockStateApi = BaseApi(
+    apiClient: _apiClient,
+    endpoint: 'blockstate',
+    fromJson: (p0) => BlockStateModel.fromJson(p0),
+    toJson: (model) => model.toJson(),
+  );
+
   late final ClientAPI<SoundEventModel> soundApi = SoundClientApi(
     apiClient: _apiClient,
   );

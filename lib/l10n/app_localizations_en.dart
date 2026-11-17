@@ -1393,6 +1393,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command_create_attribute => 'New attribute';
 
   @override
+  String get command_create_blockstate => 'New blockstate';
+
+  @override
   String get command_create_keywords => 'create add new';
 
   @override
@@ -2931,4 +2934,207 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get generator_info_demo =>
       'Demo mode is on: nothing on this page reaches the generator. Set \"generatorDemo\": false in config.json to use the real one.';
+
+  @override
+  String get blockstate_picker_title => 'Choose a block';
+
+  @override
+  String get blockstate_picker_search => 'Search blocks';
+
+  @override
+  String blockstate_picker_search_in(String group) {
+    return 'Search in $group';
+  }
+
+  @override
+  String get blockstate_picker_all => 'All blocks';
+
+  @override
+  String get blockstate_picker_filter => 'Filter by block type';
+
+  @override
+  String get blockstate_picker_no_match => 'No block matches the search.';
+
+  @override
+  String blockstate_picker_only_group(String group) {
+    return 'Show only $group';
+  }
+
+  @override
+  String blockstate_states(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count states',
+      one: '1 state',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String blockstate_contexts(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count contexts',
+      one: '1 context',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get blockstate_group_stairs => 'Stairs';
+
+  @override
+  String get blockstate_group_slab => 'Slabs';
+
+  @override
+  String get blockstate_group_fence => 'Fences';
+
+  @override
+  String get blockstate_group_fence_gate => 'Fence gates';
+
+  @override
+  String get blockstate_group_wall => 'Walls';
+
+  @override
+  String get blockstate_group_door => 'Doors';
+
+  @override
+  String get blockstate_group_trapdoor => 'Trapdoors';
+
+  @override
+  String get blockstate_group_button => 'Buttons';
+
+  @override
+  String get blockstate_group_pressure_plate => 'Pressure plates';
+
+  @override
+  String get blockstate_group_sign => 'Signs';
+
+  @override
+  String get blockstate_group_pane => 'Panes and bars';
+
+  @override
+  String get blockstate_group_bed => 'Beds';
+
+  @override
+  String get blockstate_group_candle => 'Candles';
+
+  @override
+  String get blockstate_group_banner => 'Banners';
+
+  @override
+  String get blockstate_group_head => 'Heads';
+
+  @override
+  String get blockstate_group_rail => 'Rails';
+
+  @override
+  String get blockstate_group_leaves => 'Leaves';
+
+  @override
+  String get blockstate_group_pillar => 'Logs and pillars';
+
+  @override
+  String get blockstate_group_other => 'Other';
+
+  @override
+  String get blockstate_group_none => 'Without properties';
+
+  @override
+  String blockstate_list_title(int count) {
+    return 'Blockstates ($count)';
+  }
+
+  @override
+  String get blockstate_empty => 'No blockstates yet.';
+
+  @override
+  String get blockstate_delete_title => 'Delete blockstate';
+
+  @override
+  String get blockstate_delete_warning =>
+      'Its rules are removed from the file of the block, the other contexts stay.';
+
+  @override
+  String get blockstate_create_title => 'Create blockstate';
+
+  @override
+  String get blockstate_create_name => 'Name';
+
+  @override
+  String get blockstate_create_fixed =>
+      'Name and block cannot be changed afterwards.';
+
+  @override
+  String blockstate_create_shared(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'The block already has $count contexts, they share its file.',
+      one: 'The block already has 1 context, they share its file.',
+    );
+    return '$_temp0 Name and block cannot be changed afterwards.';
+  }
+
+  @override
+  String blockstate_rules_title(int count) {
+    return 'Rules ($count)';
+  }
+
+  @override
+  String get blockstate_rule_add => 'Add rule';
+
+  @override
+  String blockstate_rule(int number) {
+    return 'Rule $number';
+  }
+
+  @override
+  String blockstate_rule_overlap(String rule, int count, String names) {
+    return '$rule · $count also in $names';
+  }
+
+  @override
+  String get blockstate_rule_any_state => 'Every state';
+
+  @override
+  String get blockstate_rule_delete_title => 'Delete rule';
+
+  @override
+  String blockstate_rule_delete_header(String rule) {
+    return '$rule will be removed.';
+  }
+
+  @override
+  String get blockstate_rule_split_facing => 'Split per facing and rotate';
+
+  @override
+  String get blockstate_rule_when => 'When';
+
+  @override
+  String get blockstate_rule_then => 'Then';
+
+  @override
+  String get blockstate_rule_no_properties => 'The block has no properties.';
+
+  @override
+  String get blockstate_rule_model => 'Model';
+
+  @override
+  String get blockstate_rule_rename => 'Rename';
+
+  @override
+  String get blockstate_rule_tilt => 'Tilt (x)';
+
+  @override
+  String get blockstate_rule_turn => 'Turn (y)';
+
+  @override
+  String get blockstate_rule_uvlock => 'Texture lock';
+
+  @override
+  String get blockstate_rule_uvlock_hint =>
+      'uvlock: the texture stays in place instead of rotating with the model';
 }

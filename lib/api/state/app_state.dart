@@ -95,6 +95,17 @@ abstract class AppState with _$AppState {
       ),
     )
     PaginatedResult<ExpressionFunctionModel> expressionFunctions,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(
+      PaginatedResult<BlockStateModel>(
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 0,
+      ),
+    )
+    PaginatedResult<BlockStateModel> blockStates,
 
     // ── Transiente Loading-Flags ──
     @JsonKey(includeToJson: false, includeFromJson: false)
@@ -118,6 +129,9 @@ abstract class AppState with _$AppState {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isLoadingMoreExpressionFunctions,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool isLoadingMoreBlockStates,
 
     // ── Persistierte Einstellungen ──
     @Default(true) bool openNavigation,
@@ -151,6 +165,8 @@ abstract class AppState with _$AppState {
     ExpressionModel? selectedExpression,
     @JsonKey(includeToJson: false, includeFromJson: false)
     ExpressionFunctionModel? selectedExpressionFunction,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    BlockStateModel? selectedBlockState,
     // The rejection of the selected function's last save, with the field
     // violations to show at the fields. Null when the save was accepted.
     @JsonKey(includeToJson: false, includeFromJson: false)

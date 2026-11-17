@@ -24,6 +24,8 @@ import 'package:stelaris/feature/advancement/advancement_page.dart'
 import 'package:stelaris/feature/sound/sound_page.dart' deferred as sound_page;
 import 'package:stelaris/feature/asset/models/models_page.dart'
     deferred as models_page;
+import 'package:stelaris/feature/blockstate/block_state_page.dart'
+    deferred as block_state_page;
 import 'package:stelaris/feature/attributes/attribute_detail_page.dart'
     deferred as attribute_detail_page;
 import 'package:stelaris/feature/font/font_detail_page.dart'
@@ -34,6 +36,8 @@ import 'package:stelaris/feature/advancement/advancement_detail_page.dart'
     deferred as advancement_detail_page;
 import 'package:stelaris/feature/sound/sound_detail_page.dart'
     deferred as sound_detail_page;
+import 'package:stelaris/feature/blockstate/block_state_detail_page.dart'
+    deferred as block_state_detail_page;
 import 'package:stelaris/feature/expression/expression_page.dart'
     deferred as expression_page;
 import 'package:stelaris/feature/expression/expression_detail_page.dart'
@@ -152,6 +156,23 @@ String? attributeDetailRedirect(BuildContext context, GoRouterState state) {
 
     if (isAtAttributeDetail && appState.selectedAttribute == null) {
       return NavigationEntry.attributes.route;
+    }
+  } on StoreException catch (_) {}
+  return null;
+}
+
+/// Redirects `/blockstates/detail` back to `/blockstates` when nothing is
+/// selected — reachable by a direct URL visit or a page reload, since the
+/// detail route relies entirely on the already-dispatched Redux selection
+/// rather than a route parameter.
+String? blockStateDetailRedirect(BuildContext context, GoRouterState state) {
+  try {
+    final appState = StoreProvider.state<AppState>(context);
+    final isAtDetail =
+        state.matchedLocation == '${NavigationEntry.blockstates.route}/detail';
+
+    if (isAtDetail && appState.selectedBlockState == null) {
+      return NavigationEntry.blockstates.route;
     }
   } on StoreException catch (_) {}
   return null;
@@ -464,6 +485,37 @@ final GoRouter router = GoRouter(
                 child: DeferredWidget(
                   loader: sound_detail_page.loadLibrary,
                   builder: () => sound_detail_page.SoundDetailPage(),
+                ),
+                key: state.pageKey,
+                transitionsBuilder: buildDetailSlideTransition,
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: NavigationEntry.blockstates.route,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            child: DeferredWidget(
+              loader: block_state_page.loadLibrary,
+              builder: () => block_state_page.BlockStatePage(),
+            ),
+            key: state.pageKey,
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) => FadeTransition(opacity: animation, child: child),
+          ),
+          routes: [
+            GoRoute(
+              path: 'detail',
+              redirect: blockStateDetailRedirect,
+              onExit: detailExitGuard,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                child: DeferredWidget(
+                  loader: block_state_detail_page.loadLibrary,
+                  builder: () => block_state_detail_page.BlockStateDetailPage(),
                 ),
                 key: state.pageKey,
                 transitionsBuilder: buildDetailSlideTransition,

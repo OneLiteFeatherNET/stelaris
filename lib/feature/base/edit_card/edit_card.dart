@@ -1,4 +1,7 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/base/button/card_actions.dart';
+import 'package:stelaris/feature/base/button/card_actions_menu.dart';
+import 'package:stelaris/feature/base/button/delete_icon_button.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 /// A card that shows one value and opens a dialog to change it.
@@ -7,11 +10,13 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// filled, so a grid of fields doesn't read as a list of models. The value
 /// is the large text, the label a small one above it with the [icon] of the
 /// field's kind, and an optional [footer] holds a rule or hint. A [leading]
-/// picture stands left of label and value instead of the icon. The card is
+/// picture stands left of label and value instead of the icon. Without
+/// either the label starts at the edge of the card. The card is
 /// as high as its content, the footer always takes two lines, so cards with
 /// a footer in a row are equally high. On hover and focus a pencil shows in
 /// the corner. Without [onTap] the card only shows the value, e.g. one the
-/// app derives, and has no pencil.
+/// app derives, and has no pencil. [actions], e.g. a delete button for a
+/// card of a list entry, take the pencil's place and always show.
 class EditCard extends StatefulWidget {
   const EditCard({
     required this.label,
@@ -21,8 +26,9 @@ class EditCard extends StatefulWidget {
     this.onTap,
     this.footer,
     this.preview,
+    this.actions,
     super.key,
-  }) : assert(icon != null || leading != null);
+  });
 
   /// The icon of the field's kind, left out when [leading] shows instead.
   final IconData? icon;
@@ -41,6 +47,11 @@ class EditCard extends StatefulWidget {
   /// formatting. It shows its own placeholder, so the card keeps its height
   /// when the value is cleared.
   final Widget? preview;
+
+  /// Icon buttons in place of the pencil, e.g. a [CardActionsMenu] and a
+  /// [DeleteIconButton] like on a model card. The tap on the rest of the
+  /// card still opens the dialog.
+  final List<Widget>? actions;
 
   @override
   State<EditCard> createState() => _EditCardState();
@@ -79,7 +90,10 @@ class _EditCardState extends State<EditCard> {
             ),
             // Kept in the layout, so the row doesn't jump on hover, and
             // a card without a pencil is as high as one with it.
-            if (widget.onTap == null)
+            if (widget.actions case final actions?)
+              // Centered on the label, not moved up to a title.
+              CardActions(color: muted, offset: Offset.zero, children: actions)
+            else if (widget.onTap == null)
               const SizedBox.square(dimension: 18)
             else
               AnimatedOpacity(

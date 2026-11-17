@@ -28,6 +28,12 @@ enum NavigationEntry {
     StelarisIcons.noteBlockOutlined,
     StelarisIcons.noteBlock,
   ),
+  blockstates(
+    'Blockstates',
+    '/blockstates',
+    Icons.grid_view_outlined,
+    Icons.grid_view,
+  ),
   expression(
     'Expressions',
     '/expression',
