@@ -25,6 +25,7 @@ class FormDialog extends StatelessWidget {
     this.leading,
     this.onCancel,
     this.header,
+    this.titleChild,
     super.key,
   });
 
@@ -61,6 +62,10 @@ class FormDialog extends StatelessWidget {
   /// Sits between the title row and the content and does not scroll with
   /// it, e.g. a [TabBar].
   final Widget? header;
+
+  /// Replaces the [title] text in the title row, e.g. with a field to edit
+  /// it in place.
+  final Widget? titleChild;
 
   void _handleCancel(BuildContext context) {
     FocusScope.of(context).unfocus();
@@ -103,13 +108,15 @@ class FormDialog extends StatelessWidget {
                         const SizedBox(width: 8),
                       ],
                       Expanded(
-                        child: Text(
-                          title,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        child:
+                            titleChild ??
+                            Text(
+                              title,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                       ),
                       ...titleActions,
                       IconButton(
