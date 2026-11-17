@@ -63,7 +63,8 @@ class BlockStateRuleGrid extends StatelessWidget {
     final overlaps = overlapsOf(rules, others, spec);
     return LayoutBuilder(
       builder: (context, constraints) {
-        final cardWidth = EditCardGrid.cardWidthIn(constraints.maxWidth);
+        // Without the padding on both sides, like the edit card grid.
+        final cardWidth = EditCardGrid.cardWidthIn(constraints.maxWidth - 32);
         return SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: Column(
