@@ -10,7 +10,8 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// filled, so a grid of fields doesn't read as a list of models. The value
 /// is the large text, the label a small one above it with the [icon] of the
 /// field's kind, and an optional [footer] holds a rule or hint. A [leading]
-/// picture stands left of label and value instead of the icon. The card is
+/// picture stands left of label and value instead of the icon. Without
+/// either the label starts at the edge of the card. The card is
 /// as high as its content, the footer always takes two lines, so cards with
 /// a footer in a row are equally high. On hover and focus a pencil shows in
 /// the corner. Without [onTap] the card only shows the value, e.g. one the
@@ -27,7 +28,7 @@ class EditCard extends StatefulWidget {
     this.preview,
     this.actions,
     super.key,
-  }) : assert(icon != null || leading != null);
+  });
 
   /// The icon of the field's kind, left out when [leading] shows instead.
   final IconData? icon;
