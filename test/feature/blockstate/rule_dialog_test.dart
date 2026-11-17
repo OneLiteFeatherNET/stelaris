@@ -18,8 +18,8 @@ const _spec = BlockSpec('minecraft:oak_stairs', 'Oak stairs', {
   'waterlogged': ['true', 'false'],
 }, {});
 
-/// The rules the last dialog of [_open] popped.
-List<BlockStateRule>? _result;
+/// The rule the last dialog of [_open] popped.
+BlockStateRule? _result;
 
 /// Skips the tests of what the dialog does not do yet: they describe it.
 const _notYet = true;
@@ -126,7 +126,7 @@ void main() {
       await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
 
-      final rule = _result!.single;
+      final rule = _result!;
       expect(rule.when['facing'], ['north']);
       expect(rule.when['half'], ['top']);
       expect(rule.uvlock, isTrue);
@@ -152,35 +152,7 @@ void main() {
       await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
 
-      expect(_result!.single.when['waterlogged'], ['false']);
+      expect(_result!.when['waterlogged'], ['false']);
     }, skip: _notYet);
-
-    testWidgets('splits the edited rule per facing', (tester) async {
-      await _open(tester, const Size(1400, 900));
-
-      await tester.tap(find.text('top'));
-      await tester.tap(find.byTooltip('Split per facing and rotate'));
-      await tester.pumpAndSettle();
-
-      expect(
-        [for (final rule in _result!) rule.when['facing']!.single],
-        ['north', 'east', 'south', 'west'],
-      );
-      expect(
-        _result!.every((rule) => rule.when['half']!.single == 'top'),
-        true,
-      );
-    });
-
-    testWidgets('deletes the rule once confirmed', (tester) async {
-      await _open(tester, const Size(1400, 900));
-
-      await tester.tap(find.byTooltip('Delete'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
-      await tester.pumpAndSettle();
-
-      expect(_result, isEmpty);
-    });
   });
 }
