@@ -5,11 +5,11 @@ import 'package:stelaris/feature/blockstate/block_state_rule_grid.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
-BlockStateModel _entry(String key) => BlockStateModel(
+BlockStateModel _entry(String key, {String? name = 'Seat'}) => BlockStateModel(
   id: '1',
   uiName: 'Test',
   key: key,
-  rules: const [BlockStateRule(name: 'Seat', model: 'minecraft:block/seat')],
+  rules: [BlockStateRule(name: name, model: 'minecraft:block/seat')],
 );
 
 /// Shows the rules of [entry] and returns the last entry it reported.
@@ -54,11 +54,32 @@ void main() {
       ]);
     });
 
-    testWidgets('titles the card with the name of the rule', (tester) async {
+    testWidgets('shows the name large and the model above it', (tester) async {
       await _show(tester, _entry('minecraft:oak_stairs'));
 
-      expect(find.text('Seat'), findsOneWidget);
       expect(find.text('Rule 1'), findsNothing);
+      final name = tester.getRect(find.text('Seat'));
+      final model = tester.getRect(find.text('minecraft:block/seat'));
+      expect(model.bottom, lessThanOrEqualTo(name.top));
+      expect(name.height, greaterThan(model.height));
+    });
+
+    testWidgets('shows the number above the model without a name', (
+      tester,
+    ) async {
+      await _show(tester, _entry('minecraft:oak_stairs', name: null));
+
+      final number = tester.getRect(find.text('Rule 1'));
+      final model = tester.getRect(find.text('minecraft:block/seat'));
+      expect(number.bottom, lessThanOrEqualTo(model.top));
+      expect(model.height, greaterThan(number.height));
+    });
+
+    testWidgets('has no icon without an overlap', (tester) async {
+      await _show(tester, _entry('minecraft:oak_stairs'));
+
+      expect(find.byIcon(Icons.rule), findsNothing);
+      expect(find.byIcon(Icons.warning_amber_rounded), findsNothing);
     });
 
     testWidgets('offers no split for a block without a facing', (tester) async {
