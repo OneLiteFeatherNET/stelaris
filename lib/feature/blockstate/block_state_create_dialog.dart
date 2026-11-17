@@ -19,8 +19,7 @@ Future<bool> openBlockStateCreateDialog(BuildContext context) async =>
     ) ??
     false;
 
-/// How many blockstates of the open project use each block, as far as they
-/// are loaded.
+/// How many of [blockStates] use each block.
 Map<String, int> contextCountsOf(List<BlockStateModel> blockStates) {
   final counts = <String, int>{};
   for (final blockState in blockStates) {
@@ -56,6 +55,13 @@ class _BlockStateCreateDialogState extends State<BlockStateCreateDialog> {
   void initState() {
     super.initState();
     _name.addListener(() => setState(() {}));
+    // The counts need every context of a block, also those on a page the
+    // list hasn't loaded.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      await context.dispatchAndWait(LoadAllBlockStatesAction());
+      if (mounted) setState(() {});
+    });
   }
 
   @override

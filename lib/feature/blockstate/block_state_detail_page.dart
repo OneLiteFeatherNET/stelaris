@@ -48,6 +48,9 @@ class BlockStateDetailPage extends StatelessWidget {
     final l10n = context.l10n;
     return StoreConnector<AppState, _BlockStateTitleView>(
       vm: () => _BlockStateTitleFactory(),
+      // The rules are checked against the other contexts of the block, which
+      // may lie on a page the list hasn't loaded.
+      onInit: (store) => store.dispatch(LoadAllBlockStatesAction()),
       onDispose: (store) =>
           store.dispatch(RemoveSelectBlockStateAction(), notify: false),
       builder: (context, vm) => ModelDetailShell(

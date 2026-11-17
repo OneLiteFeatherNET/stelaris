@@ -93,6 +93,28 @@ class InitBlockStateAction extends ReduxAction<AppState> {
   }
 }
 
+/// Loads the pages of the blockstates that are still missing, so every
+/// context of a block is known: the overlaps between them and their count
+/// would miss the ones on a page not loaded yet.
+///
+/// A project holds few blockstates, so this costs only a few requests. It
+/// stops early when a page brings nothing new, e.g. while a load-more of the
+/// list is still running.
+class LoadAllBlockStatesAction extends ReduxAction<AppState> with NonReentrant {
+  @override
+  Future<AppState?> reduce() async {
+    if (state.blockStates.items.isEmpty) {
+      await dispatchAndWait(InitBlockStateAction());
+    }
+    while (state.blockStates.hasNextPage) {
+      final before = state.blockStates;
+      await dispatchAndWait(InitBlockStateAction());
+      if (identical(state.blockStates, before)) break;
+    }
+    return null;
+  }
+}
+
 /// Keeps a second load-more request out while one is running.
 class _SetBlockStatesLoadMore extends ReduxAction<AppState> {
   final bool value;
