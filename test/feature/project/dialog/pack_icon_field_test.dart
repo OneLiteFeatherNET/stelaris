@@ -9,6 +9,7 @@ import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/project/dialog/pack_icon_field.dart';
 import 'package:stelaris/util/png_size.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 import '../../../support/pack_icon_pngs.dart';
 
@@ -48,7 +49,7 @@ void main() {
       final changes = <Uint8List?>[];
       await tester.pumpWidget(
         MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: StatefulBuilder(

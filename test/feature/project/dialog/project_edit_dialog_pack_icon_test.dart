@@ -9,6 +9,7 @@ import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/component/minimessage_field.dart';
 import 'package:stelaris/feature/project/dialog/project_edit_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_asset_client_api.dart';
@@ -57,7 +58,7 @@ void main() {
           ),
         ),
         child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: Builder(

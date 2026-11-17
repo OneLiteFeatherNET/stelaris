@@ -13,6 +13,7 @@ import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_asset_api.dart';
@@ -90,7 +91,7 @@ Future<List<String?>> _pump(
         ),
       ),
       child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: ModelsPage(

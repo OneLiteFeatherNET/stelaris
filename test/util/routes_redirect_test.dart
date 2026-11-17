@@ -9,6 +9,7 @@ import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris/util/routes.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -67,7 +68,7 @@ Widget _createApp(Store<AppState> store, GoRouter router) {
     store: store,
     child: MaterialApp.router(
       routerConfig: router,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
     ),
   );

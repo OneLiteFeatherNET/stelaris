@@ -6,6 +6,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/unsaved/unsaved_changes_guard.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris/util/routes.dart';
 
 Iterable<GoRoute> _goRoutes(List<RouteBase> routes) sync* {
@@ -56,7 +57,7 @@ void main() {
           store: store,
           child: MaterialApp.router(
             routerConfig: testRouter,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
           ),
         ),

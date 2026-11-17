@@ -10,6 +10,7 @@ import 'package:stelaris/feature/command_palette/command_panel.dart';
 import 'package:stelaris/feature/command_palette/command_registry.dart';
 import 'package:stelaris/feature/command_palette/entity_search_source.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// [items] as the only page of a list.
@@ -82,7 +83,7 @@ Future<GoRouter> pumpPaletteShell(
       store: store,
       child: MaterialApp.router(
         routerConfig: router,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),
     ),

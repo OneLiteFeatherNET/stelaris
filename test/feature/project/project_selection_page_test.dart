@@ -7,6 +7,7 @@ import 'package:stelaris/feature/project/dialog/project_create_dialog.dart';
 import 'package:stelaris/feature/project/parts/project_pack_icon.dart';
 import 'package:stelaris/feature/project/project_selection_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import 'package:stelaris/api/api_service.dart';
@@ -36,7 +37,7 @@ void main() {
         StoreProvider<AppState>(
           store: store,
           child: const MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: ProjectSelectionPage(),
           ),
@@ -85,7 +86,7 @@ void main() {
         StoreProvider<AppState>(
           store: store,
           child: const MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: ProjectSelectionPage(),
           ),
@@ -165,7 +166,7 @@ void main() {
             initialState: const AppState(projects: [projectA, projectB]),
           ),
           child: MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: ProjectSelectionPage(
               loadPackIcon: (projectId) async {
@@ -240,7 +241,7 @@ void main() {
         StoreProvider<AppState>(
           store: store,
           child: const MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: ProjectSelectionPage(),
           ),
@@ -296,7 +297,7 @@ void main() {
         StoreProvider<AppState>(
           store: Store<AppState>(initialState: const AppState()),
           child: const MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: ProjectSelectionPage(),
           ),

@@ -10,6 +10,7 @@ import 'package:stelaris/feature/sound/playback/sound_playback_controller.dart';
 import 'package:stelaris/feature/sound/playback/sound_player.dart';
 import 'package:stelaris/feature/sound/playback/sound_waveform.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 SoundFileSource _source({double pitch = 1}) => SoundFileSource(
@@ -85,7 +86,7 @@ void main() {
     final played = source ?? _source();
     await tester.pumpWidget(
       MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: SizedBox(

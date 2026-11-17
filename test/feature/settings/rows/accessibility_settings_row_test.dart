@@ -6,6 +6,7 @@ import 'package:stelaris/api/state/actions/theme_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/settings/rows/accessibility_settings_row.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 /// Keeps the actions a store is asked to run.
 class _Recorder implements ActionObserver<AppState> {
@@ -44,7 +45,7 @@ void main() {
         StoreProvider<AppState>(
           store: store,
           child: const MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               body: SingleChildScrollView(child: AccessibilitySettingsRow()),

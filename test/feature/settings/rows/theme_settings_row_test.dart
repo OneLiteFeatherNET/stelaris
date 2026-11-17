@@ -7,6 +7,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/app.dart';
 import 'package:stelaris/feature/settings/rows/theme_settings_row.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 void main() {
   group('ThemeSettingsRow Widget Tests', () {
@@ -24,7 +25,7 @@ void main() {
         StoreProvider<AppState>(
           store: store,
           child: const MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               body: SingleChildScrollView(child: ThemeSettingsRow()),

@@ -14,6 +14,7 @@ import 'package:stelaris/feature/asset/preview/asset_preview_placeholder.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/item/components/item_components_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_asset_api.dart';
@@ -46,7 +47,7 @@ void main() {
       StoreProvider<AppState>(
         store: store,
         child: const MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(body: ItemComponentsPage()),
         ),
@@ -246,7 +247,7 @@ void main() {
         StoreProvider<AppState>(
           store: store,
           child: const MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               body: DefaultTabController(
@@ -345,7 +346,7 @@ void main() {
         StoreProvider<AppState>(
           store: store,
           child: MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Builder(
               builder: (context) => TextButton(

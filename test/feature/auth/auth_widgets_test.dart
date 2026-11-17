@@ -8,13 +8,14 @@ import 'package:stelaris/feature/auth/role_gate.dart';
 import 'package:stelaris/feature/auth/session_indicator.dart';
 import 'package:stelaris/feature/auth/sign_in_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 Future<void> pump(WidgetTester tester, Widget child, AuthState auth) =>
     tester.pumpWidget(
       StoreProvider<AppState>(
         store: Store<AppState>(initialState: AppState(auth: auth)),
         child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: child,
         ),

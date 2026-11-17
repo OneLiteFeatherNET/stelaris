@@ -4,6 +4,7 @@ import 'package:stelaris/feature/component/component_toolbar.dart';
 import 'package:stelaris/feature/item/components/schema/schema_field.dart';
 import 'package:stelaris/feature/item/components/schema/schema_value.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris/l10n/app_localizations_en.dart';
 import 'package:vulpes_data/component.dart';
 
@@ -15,7 +16,7 @@ void main() {
   }) {
     return tester.pumpWidget(
       MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: SchemaField(
@@ -66,7 +67,7 @@ void main() {
     Object? value = '';
     await tester.pumpWidget(
       MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: StatefulBuilder(

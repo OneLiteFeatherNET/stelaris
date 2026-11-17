@@ -6,6 +6,7 @@ import 'package:stelaris/auth/auth_state.dart';
 import 'package:stelaris/auth/roles.dart';
 import 'package:stelaris/feature/settings/rows/account_settings_row.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 void main() {
   group('AccountSettingsRow Widget Tests', () {
@@ -19,7 +20,7 @@ void main() {
         StoreProvider<AppState>(
           store: store,
           child: MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               body: SingleChildScrollView(

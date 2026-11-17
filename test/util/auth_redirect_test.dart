@@ -6,6 +6,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/auth/auth_config.dart';
 import 'package:stelaris/auth/auth_sessions.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris/util/routes.dart';
 
 AuthConfig get someProvider => AuthConfig(
@@ -45,7 +46,7 @@ Future<void> pumpAt(WidgetTester tester, String location, {AppState? state}) =>
         store: Store<AppState>(initialState: state ?? const AppState()),
         child: MaterialApp.router(
           routerConfig: routerAt(location),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
         ),
       ),

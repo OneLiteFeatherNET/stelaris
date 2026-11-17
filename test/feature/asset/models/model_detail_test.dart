@@ -9,6 +9,7 @@ import 'package:stelaris/feature/asset/preview/asset_scene_view.dart';
 import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_asset_api.dart';
@@ -47,7 +48,7 @@ Future<void> _pump(
   serveAssets(const []);
   await tester.pumpWidget(
     MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: SingleChildScrollView(

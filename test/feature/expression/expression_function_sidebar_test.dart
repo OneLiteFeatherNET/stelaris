@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/filter/category_filter_menu.dart';
 import 'package:stelaris/feature/expression/expression_function_sidebar.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 const _e =
@@ -28,7 +29,7 @@ final _constant = find.byKey(const ValueKey('expression_constant_E'));
 Future<void> _pump(WidgetTester tester) async {
   await tester.pumpWidget(
     MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: Center(

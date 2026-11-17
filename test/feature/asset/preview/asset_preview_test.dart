@@ -4,6 +4,7 @@ import 'package:stelaris/feature/asset/preview/asset_preview.dart';
 import 'package:stelaris/feature/asset/preview/asset_preview_controller.dart';
 import 'package:stelaris/feature/asset/preview/asset_preview_placeholder.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 // These tests run on the VM, so AssetPreview uses the placeholder viewport.
 const _key = 'vulpes:item/ruby';
@@ -22,7 +23,7 @@ Future<void> _pump(
 }) {
   return tester.pumpWidget(
     MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: AssetPreview(

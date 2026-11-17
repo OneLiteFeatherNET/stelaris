@@ -6,6 +6,7 @@ import 'package:stelaris/feature/model/model_copy.dart';
 import 'package:stelaris/feature/model/model_grid_card.dart';
 import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 import '../../test_model.dart';
 
@@ -24,7 +25,7 @@ void main() {
       ModelCopy<TestModel>? copy,
     }) {
       return MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,

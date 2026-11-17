@@ -8,6 +8,7 @@ import 'package:stelaris/feature/item/lore/lore_line_card.dart';
 import 'package:stelaris/feature/item/lore/lore_page_view.dart';
 import 'package:stelaris/feature/item/lore/lore_preview.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
@@ -51,7 +52,7 @@ void main() {
         StoreProvider<AppState>(
           store: effectiveStore,
           child: MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               body: LorePageView(view: view, showPreview: showPreview),

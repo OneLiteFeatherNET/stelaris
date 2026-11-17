@@ -12,6 +12,7 @@ import 'package:stelaris/feature/model/model_detail_actions.dart';
 import 'package:stelaris/feature/advancement/advancement_detail_page.dart';
 import 'package:stelaris/feature/sound/sound_detail_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/fake_http_client_adapter.dart';
@@ -42,7 +43,7 @@ Future<(String, String?)> _detailPageDelete(
       store: store,
       child: MaterialApp.router(
         routerConfig: router,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),
     ),

@@ -6,13 +6,14 @@ import 'package:stelaris/feature/component/component_preview.dart';
 import 'package:stelaris/feature/component/minimessage_field.dart';
 import 'package:stelaris/feature/component/syntax_guide_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris/util/component_context.dart';
 
 void main() {
   Future<void> pumpDialog(WidgetTester tester, String text) async {
     await tester.pumpWidget(
       MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: ComponentDialog(

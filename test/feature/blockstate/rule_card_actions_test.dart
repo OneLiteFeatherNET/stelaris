@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/blockstate/block_state_rules.dart';
 import 'package:stelaris/feature/blockstate/block_state_rule_grid.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 BlockStateModel _entry(String key, {String? name = 'Seat'}) => BlockStateModel(
@@ -23,7 +24,7 @@ Future<BlockStateModel? Function()> _show(
   BlockStateModel? changed;
   await tester.pumpWidget(
     MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: BlockStateRuleGrid(

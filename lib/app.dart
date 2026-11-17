@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris/util/app_theme.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/routes.dart';
@@ -24,7 +25,7 @@ class StelarisApp extends StatelessWidget {
           title: appName,
           debugShowCheckedModeBanner: false,
           routerConfig: routerConfig ?? router,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           theme: AppTheme.buildLight(settings),
           darkTheme: AppTheme.buildDark(settings),

@@ -8,6 +8,7 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/navigation/navigation_side_bar.dart';
 import 'package:stelaris/feature/settings/settings_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 /// The route of the expression detail page, nested below its section.
 const _expressionDetailRoute = '/expression/detail';
@@ -39,7 +40,7 @@ Widget buildTestWidget(GoRouter router, Store<AppState> store) {
     store: store,
     child: MaterialApp.router(
       routerConfig: router,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
     ),
   );

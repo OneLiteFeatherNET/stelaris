@@ -15,6 +15,7 @@ import 'package:stelaris/feature/command_palette/command_palette.dart';
 import 'package:stelaris/feature/model/filter_option.dart';
 import 'package:stelaris/feature/model/model_sort_option.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 void main() {
   const filterA = FilterOption('a', 'Filter A');
@@ -59,7 +60,7 @@ void main() {
         store: store,
         child: MaterialApp.router(
           routerConfig: router,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
         ),
       ),

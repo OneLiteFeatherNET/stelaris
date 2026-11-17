@@ -11,6 +11,7 @@ import 'package:stelaris/feature/command_palette/command_palette.dart';
 import 'package:stelaris/feature/command_palette/command_panel.dart';
 import 'package:stelaris/feature/settings/settings_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 void main() {
@@ -49,7 +50,7 @@ void main() {
           store: store,
           child: MaterialApp.router(
             routerConfig: testRouter,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
           ),
         ),
@@ -86,7 +87,7 @@ void main() {
           store: store,
           child: MaterialApp.router(
             routerConfig: testRouter,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
           ),
         ),
@@ -143,7 +144,7 @@ void main() {
           store: store,
           child: MaterialApp.router(
             routerConfig: testRouter,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
           ),
         ),
@@ -203,7 +204,7 @@ void main() {
           store: store,
           child: MaterialApp.router(
             routerConfig: router,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
           ),
         ),

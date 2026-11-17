@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/factory/font/selected_font_char_state.dart';
 import 'package:stelaris/feature/font/chars/char_list_view.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 void main() {
@@ -34,7 +35,7 @@ void main() {
         StoreProvider<AppState>(
           store: Store<AppState>(initialState: const AppState()),
           child: MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(body: CharListView(fontModel: view)),
           ),

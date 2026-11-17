@@ -6,6 +6,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/expression/expression_preview_panel.dart';
 import 'package:stelaris/feature/expression_function/expression_function_preview.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/fake_http_client_adapter.dart';
@@ -56,7 +57,7 @@ Future<Store<AppState>> _pumpPreview(
     StoreProvider<AppState>(
       store: store,
       child: const MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(body: ExpressionFunctionPreview()),
       ),

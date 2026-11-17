@@ -10,6 +10,7 @@ import 'package:stelaris/feature/model/model_notes.dart';
 import 'package:stelaris/feature/model/model_page.dart';
 import 'package:stelaris/feature/model/model_sort_option.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 import '../../test_model.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -34,7 +35,7 @@ Widget createModelPage({
   return StoreProvider<AppState>(
     store: store,
     child: MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: ModelPage<TestModel>(

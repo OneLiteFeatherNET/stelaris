@@ -5,6 +5,7 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/project/dialog/project_edit_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
@@ -31,7 +32,7 @@ void main() {
           ),
         ),
         child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: Builder(

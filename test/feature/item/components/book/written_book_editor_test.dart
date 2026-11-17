@@ -4,6 +4,7 @@ import 'package:stelaris/feature/component/component_preview.dart';
 import 'package:stelaris/feature/component/minimessage_editor.dart';
 import 'package:stelaris/feature/item/components/book/written_book_editor.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris/util/component_context.dart';
 
 void main() {
@@ -14,7 +15,7 @@ void main() {
     final changes = <Object?>[];
     await tester.pumpWidget(
       MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: SingleChildScrollView(

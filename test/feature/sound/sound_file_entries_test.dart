@@ -13,6 +13,7 @@ import 'package:stelaris/feature/sound/playback/sound_player.dart';
 import 'package:stelaris/feature/sound/playback/sound_waveform.dart';
 import 'package:stelaris/feature/sound/sound_file_entries.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 class _Loader implements SoundFileLoader {
@@ -134,7 +135,7 @@ void main() {
       StoreProvider<AppState>(
         store: store,
         child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: DefaultTabController(
@@ -204,7 +205,7 @@ void main() {
       StoreProvider<AppState>(
         store: _store([_file('one'), _file('two')]),
         child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: SoundFileEntryPage(

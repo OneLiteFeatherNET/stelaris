@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/dialogs/notes_edit_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris/util/constants.dart';
 
 /// Saves the notes, or fails like the backend can.
@@ -30,7 +31,7 @@ void main() {
       StoreProvider<AppState>(
         store: Store<AppState>(initialState: const AppState()),
         child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Builder(
             builder: (context) => Scaffold(

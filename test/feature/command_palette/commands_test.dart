@@ -11,6 +11,7 @@ import 'package:stelaris/feature/command_palette/command.dart';
 import 'package:stelaris/feature/command_palette/command_registry.dart';
 import 'package:stelaris/feature/command_palette/commands.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 List<String> _availableAt(String location) {
   final registry = CommandRegistry(pocCommands());
@@ -135,7 +136,7 @@ void main() {
         StoreProvider<AppState>(
           store: store,
           child: MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Builder(
               builder: (c) {

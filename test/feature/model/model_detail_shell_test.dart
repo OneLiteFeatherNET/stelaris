@@ -7,6 +7,7 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/model/model_detail_shell.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 void main() {
   late Store<AppState> store;
@@ -44,7 +45,7 @@ void main() {
         store: store,
         child: MaterialApp.router(
           routerConfig: router,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
         ),
       ),

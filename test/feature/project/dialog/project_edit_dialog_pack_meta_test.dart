@@ -9,6 +9,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/component/minimessage_field.dart';
 import 'package:stelaris/feature/project/dialog/project_edit_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris/util/minimessage_json.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -52,7 +53,7 @@ void main() {
           ),
         ),
         child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: Builder(

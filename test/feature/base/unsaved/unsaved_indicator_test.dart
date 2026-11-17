@@ -2,13 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/unsaved/unsaved_indicator.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 void main() {
   const dot = Key('page_header_unsaved_indicator');
   const pulse = Key('unsaved_indicator_pulse');
 
   Widget wrap(bool visible, {bool disableAnimations = false}) => MaterialApp(
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    localizationsDelegates: appLocalizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     home: MediaQuery(
       data: MediaQueryData(disableAnimations: disableAnimations),

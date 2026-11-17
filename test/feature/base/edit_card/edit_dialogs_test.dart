@@ -6,6 +6,7 @@ import 'package:stelaris/feature/base/edit_card/edit_card.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card_grid.dart';
 import 'package:stelaris/feature/base/edit_card/edit_field.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 
 void main() {
   late List<Object?> changes;
@@ -15,7 +16,7 @@ void main() {
   Future<void> pumpGrid(WidgetTester tester, EditField field) {
     return tester.pumpWidget(
       MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: EditCardGrid(

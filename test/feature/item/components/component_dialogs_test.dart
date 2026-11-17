@@ -10,6 +10,7 @@ import 'package:stelaris/feature/item/components/book/written_book_editor.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
 import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris/feature/item/components/stelaris_components.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:vulpes_data/component.dart';
@@ -46,7 +47,7 @@ void main() {
   ) {
     return tester.pumpWidget(
       MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Builder(
           builder: (context) => Scaffold(

@@ -5,6 +5,7 @@ import 'package:stelaris/feature/component/component_toolbar.dart';
 import 'package:stelaris/feature/component/component_preview.dart';
 import 'package:stelaris/feature/component/minimessage_field.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris/util/component_context.dart';
 
 void main() {
@@ -18,7 +19,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         theme: theme,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: ComponentDialog(
