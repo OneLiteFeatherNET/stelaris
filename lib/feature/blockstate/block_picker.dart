@@ -234,21 +234,29 @@ class _BlockPickerState extends State<BlockPicker> {
           padding: const EdgeInsets.only(right: 16),
           itemCount: rows.length,
           findChildIndexCallback: (key) => indexOf[key],
-          itemBuilder: (context, index) => switch (rows[index]) {
-            final _HeaderRow row => _GroupHeader(
+          itemBuilder: (context, index) {
+            final row = rows[index];
+            // Each row holds its own ink. Ink on the Material around the
+            // list, like the hover of the row under the pointer, would
+            // repaint the whole list on every frame of a scroll.
+            return Material(
               key: row.key,
-              row.group,
-              // A filtered list has only this header, so it offers nothing
-              // to click.
-              onTap: group == null ? () => _selectGroup(row.group) : null,
-            ),
-            final _BlockRow row => _BlockTile(
-              key: row.key,
-              block: row.block,
-              contexts: widget.contexts[row.block.key] ?? 0,
-              selected: row.block.key == widget.current,
-              onTap: () => widget.onBlock(row.block),
-            ),
+              type: MaterialType.transparency,
+              child: switch (row) {
+                _HeaderRow() => _GroupHeader(
+                  row.group,
+                  // A filtered list has only this header, so it offers
+                  // nothing to click.
+                  onTap: group == null ? () => _selectGroup(row.group) : null,
+                ),
+                _BlockRow() => _BlockTile(
+                  block: row.block,
+                  contexts: widget.contexts[row.block.key] ?? 0,
+                  selected: row.block.key == widget.current,
+                  onTap: () => widget.onBlock(row.block),
+                ),
+              },
+            );
           },
         ),
       ),
@@ -285,7 +293,7 @@ final class _BlockRow extends _Row {
 /// The header of a group, like the group headers of the function picker: a
 /// click shows only the group.
 class _GroupHeader extends StatelessWidget {
-  const _GroupHeader(this.group, {required this.onTap, super.key});
+  const _GroupHeader(this.group, {required this.onTap});
 
   final _Group group;
 
@@ -331,7 +339,6 @@ class _BlockTile extends StatelessWidget {
     required this.contexts,
     required this.selected,
     required this.onTap,
-    super.key,
   });
 
   final BlockSpec block;
