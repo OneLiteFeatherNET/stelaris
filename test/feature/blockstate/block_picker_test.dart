@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/feature/blockstate/block_picker_dialog.dart';
+import 'package:stelaris/feature/blockstate/block_picker.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 
 void main() {
@@ -15,16 +15,14 @@ void main() {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
-            body: Builder(
-              builder: (context) => TextButton(
-                onPressed: () => showBlockPicker(context),
-                child: const Text('open'),
-              ),
+            body: SizedBox(
+              width: blockPickerWidth,
+              height: blockPickerHeight,
+              child: BlockPicker(onBlock: (_) {}),
             ),
           ),
         ),
       );
-      await tester.tap(find.text('open'));
       await tester.pumpAndSettle();
 
       final list = find.byType(ListView);
