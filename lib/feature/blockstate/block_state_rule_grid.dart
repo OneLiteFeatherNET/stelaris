@@ -249,9 +249,11 @@ class _RuleDialogState extends State<_RuleDialog> {
 
   void _change(BlockStateRule rule) => setState(() => _rule = rule);
 
+  // The text fields keep their text themselves, so typing changes the rule
+  // without a rebuild. The title shows the name once the renaming ends.
   // An empty name falls back to the number of the rule.
   void _rename(String name) =>
-      _change(_rule.copyWith(name: name.trim().isEmpty ? null : name));
+      _rule = _rule.copyWith(name: name.trim().isEmpty ? null : name);
 
   @override
   Widget build(BuildContext context) {
@@ -327,7 +329,7 @@ class _RuleDialogState extends State<_RuleDialog> {
               hintText: 'minecraft:block/footprint_slender',
               prefixIcon: const Icon(Icons.view_in_ar_outlined),
             ),
-            onChanged: (model) => _change(_rule.copyWith(model: model)),
+            onChanged: (model) => _rule = _rule.copyWith(model: model),
           ),
           const SizedBox(height: 8),
           _LabeledRow(
