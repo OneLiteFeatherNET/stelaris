@@ -39,7 +39,7 @@ Future<void> _open(WidgetTester tester, Size size) async {
           body: TextButton(
             onPressed: () async => _result = await showRuleDialog(
               context,
-              title: 'Rule 1',
+              index: 0,
               spec: _spec,
               rule: const BlockStateRule(model: 'minecraft:block/oak_stairs'),
             ),
@@ -130,6 +130,35 @@ void main() {
       expect(rule.when['facing'], ['north']);
       expect(rule.when['half'], ['top']);
       expect(rule.uvlock, isTrue);
+    });
+
+    testWidgets('renames the rule in the title', (tester) async {
+      await _open(tester, const Size(1400, 900));
+      expect(find.text('Rule 1'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Rename'));
+      await tester.pump();
+      await tester.enterText(find.byType(TextField).first, 'Top');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+      expect(find.text('Top'), findsOneWidget);
+      expect(find.byTooltip('Rename'), findsOneWidget);
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(_result!.name, 'Top');
+    });
+
+    testWidgets('saves a blank name as none', (tester) async {
+      await _open(tester, const Size(1400, 900));
+
+      await tester.tap(find.byTooltip('Rename'));
+      await tester.pump();
+      await tester.enterText(find.byType(TextField).first, '  ');
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(_result!.name, isNull);
     });
 
     testWidgets('a yes or no property is a toggle of any, true and false', (

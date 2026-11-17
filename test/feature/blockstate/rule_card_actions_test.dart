@@ -49,6 +49,16 @@ void main() {
       final facings = specFor('minecraft:oak_stairs').properties['facing']!;
       expect(rules, hasLength(facings.length));
       expect([for (final rule in rules) rule.when['facing']!.single], facings);
+      expect([for (final rule in rules) rule.name], [
+        for (final facing in facings) 'Seat · $facing',
+      ]);
+    });
+
+    testWidgets('titles the card with the name of the rule', (tester) async {
+      await _show(tester, _entry('minecraft:oak_stairs'));
+
+      expect(find.text('Seat'), findsOneWidget);
+      expect(find.text('Rule 1'), findsNothing);
     });
 
     testWidgets('offers no split for a block without a facing', (tester) async {
