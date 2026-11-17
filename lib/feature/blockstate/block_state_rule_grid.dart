@@ -104,8 +104,8 @@ class BlockStateRuleGrid extends StatelessWidget {
 }
 
 /// A rule in the card of the edit pages: the model as its value, the
-/// condition and the rotation below, and a warning icon when other contexts
-/// claim some of its states. In its corner it has a split button, for a
+/// condition and the rotation below. It has no icon, only a warning icon
+/// when other contexts claim some of its states. In its corner it has a split button, for a
 /// block with a facing, and a delete button.
 class _RuleCard extends StatelessWidget {
   const _RuleCard({
@@ -140,7 +140,7 @@ class _RuleCard extends StatelessWidget {
     final overlapping = overlap.count > 0;
     final title = ruleTitle(l10n, rule, index);
     return EditCard(
-      icon: overlapping ? Icons.warning_amber_rounded : Icons.rule,
+      icon: overlapping ? Icons.warning_amber_rounded : null,
       label: overlapping
           ? l10n.blockstate_rule_overlap(
               title,
