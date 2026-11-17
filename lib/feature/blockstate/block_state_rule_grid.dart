@@ -1,6 +1,5 @@
 // SPIKE: throwaway proof of concept for rule based blockstate editing.
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/feature/base/button/card_actions_menu.dart';
 import 'package:stelaris/feature/base/button/delete_icon_button.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
@@ -39,13 +38,13 @@ class BlockStateRuleGrid extends StatelessWidget {
   );
 
   Future<void> _edit(BuildContext context, BlockSpec spec, int index) async {
-    final rules = await showRuleDialog(
+    final rule = await showRuleDialog(
       context,
       title: context.l10n.blockstate_rule(index + 1),
       spec: spec,
       rule: entry.rules[index],
     );
-    if (rules != null) _replace(index, rules);
+    if (rule != null) _replace(index, [rule]);
   }
 
   Future<void> _delete(BuildContext context, int index) async {
@@ -105,8 +104,8 @@ class BlockStateRuleGrid extends StatelessWidget {
 
 /// A rule in the card of the edit pages: the model as its value, the
 /// condition and the rotation below, and a warning icon when other contexts
-/// claim some of its states. Like a model card it has a menu and a delete
-/// button in its corner.
+/// claim some of its states. In its corner it has a split button, for a
+/// block with a facing, and a delete button.
 class _RuleCard extends StatelessWidget {
   const _RuleCard({
     required this.index,
@@ -125,7 +124,7 @@ class _RuleCard extends StatelessWidget {
   final VoidCallback onTap;
 
   /// Splits the rule per facing, null for a block without one: then the
-  /// menu would be empty and is left out.
+  /// button is left out.
   final VoidCallback? onSplit;
   final VoidCallback onDelete;
 
@@ -154,15 +153,11 @@ class _RuleCard extends StatelessWidget {
       ].join('\n'),
       onTap: onTap,
       actions: [
-        if (onSplit case final onSplit?)
-          CardActionsMenu(
-            entries: [
-              (
-                icon: Icons.rotate_90_degrees_cw_outlined,
-                label: l10n.blockstate_rule_split_facing,
-                onTap: onSplit,
-              ),
-            ],
+        if (onSplit != null)
+          IconButton(
+            tooltip: l10n.blockstate_rule_split_facing,
+            onPressed: onSplit,
+            icon: const Icon(Icons.rotate_90_degrees_cw_outlined),
           ),
         DeleteIconButton(tooltip: l10n.tooltip_delete, onPressed: onDelete),
       ],
@@ -201,37 +196,29 @@ String conditionOf(AppLocalizations l10n, BlockStateRule rule, BlockSpec spec) {
 }
 
 /// Opens the [_RuleDialog] for [rule] of a block with [spec]. It pops the
-/// rules to put in its place: the edited rule, none when deleted, one per
-/// facing when split. Only an [existing] rule can be deleted.
-Future<List<BlockStateRule>?> showRuleDialog(
+/// edited rule, null when cancelled. Splitting and deleting are on the card.
+Future<BlockStateRule?> showRuleDialog(
   BuildContext context, {
   required String title,
   required BlockSpec spec,
   required BlockStateRule rule,
-  bool existing = true,
-}) => showDialog<List<BlockStateRule>>(
+}) => showDialog<BlockStateRule>(
   context: context,
-  builder: (_) =>
-      _RuleDialog(title: title, spec: spec, rule: rule, existing: existing),
+  builder: (_) => _RuleDialog(title: title, spec: spec, rule: rule),
 );
 
 /// Edits a copy of [rule]: the values per property it applies to, then the
-/// model with its rotation. Pops the rules to put in its place: the edited
-/// rule on save, none on delete, one per facing on a split.
+/// model with its rotation. Pops the edited rule on save.
 class _RuleDialog extends StatefulWidget {
   const _RuleDialog({
     required this.title,
     required this.spec,
     required this.rule,
-    required this.existing,
   });
 
   final String title;
   final BlockSpec spec;
   final BlockStateRule rule;
-
-  /// Whether the rule is already in the list, only then it can be deleted.
-  final bool existing;
 
   @override
   State<_RuleDialog> createState() => _RuleDialogState();
@@ -242,13 +229,6 @@ class _RuleDialogState extends State<_RuleDialog> {
 
   void _change(BlockStateRule rule) => setState(() => _rule = rule);
 
-  Future<void> _delete() async {
-    final confirmed = await confirmRuleDelete(context, widget.title, _rule);
-    if (confirmed && mounted) {
-      Navigator.of(context).pop(const <BlockStateRule>[]);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -258,22 +238,7 @@ class _RuleDialogState extends State<_RuleDialog> {
       title: widget.title,
       actionLabel: l10n.button_save,
       maxWidth: 640,
-      onSubmit: () => Navigator.of(context).pop([_rule]),
-      titleActions: [
-        if (spec.properties.containsKey('facing'))
-          IconButton(
-            tooltip: l10n.blockstate_rule_split_facing,
-            onPressed: () =>
-                Navigator.of(context).pop(expandFacing(_rule, spec)),
-            icon: const Icon(Icons.rotate_90_degrees_cw_outlined),
-          ),
-        if (widget.existing)
-          IconButton(
-            tooltip: l10n.tooltip_delete,
-            onPressed: _delete,
-            icon: const Icon(Icons.delete_forever),
-          ),
-      ],
+      onSubmit: () => Navigator.of(context).pop(_rule),
       content: SingleChildScrollView(
         padding: const EdgeInsets.only(right: 24),
         child: Column(

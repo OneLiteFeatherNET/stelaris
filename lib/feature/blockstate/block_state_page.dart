@@ -298,18 +298,17 @@ class _BlockStateDetail extends StatelessWidget {
   /// in the grid alike.
   void _update(BlockStateModel entry) => BlockStateStore.shared.update(entry);
 
-  /// Appends the rules of the dialog. It is modal, so [entry] is still the
+  /// Appends the rule of the dialog. It is modal, so [entry] is still the
   /// stored one when it closes.
   Future<void> _addRule(BuildContext context) async {
-    final rules = await showRuleDialog(
+    final rule = await showRuleDialog(
       context,
       title: context.l10n.blockstate_rule_add,
       spec: specFor(entry.key),
       rule: const BlockStateRule(),
-      existing: false,
     );
-    if (rules == null) return;
-    _update(entry.copyWith(rules: [...entry.rules, ...rules]));
+    if (rule == null) return;
+    _update(entry.copyWith(rules: [...entry.rules, rule]));
   }
 
   @override
