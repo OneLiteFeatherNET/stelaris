@@ -86,7 +86,8 @@ const Map<String, ({int x, int y})> _facingRotation = {
 };
 
 /// Splits [rule] into one rule per value of `facing`, each rotated so that a
-/// model built facing north points the right way.
+/// model built facing north points the right way. A named rule passes its
+/// name on with the facing appended, e.g. `Torch · north`.
 List<BlockStateRule> expandFacing(BlockStateRule rule, BlockSpec spec) {
   final selected = rule.when['facing'] ?? const [];
   final values = (spec.properties['facing'] ?? const <String>[]).where(
@@ -99,6 +100,7 @@ List<BlockStateRule> expandFacing(BlockStateRule rule, BlockSpec spec) {
           ...rule.when,
           'facing': [value],
         },
+        name: rule.name == null ? null : '${rule.name} · $value',
         x: (rule.x + (_facingRotation[value]?.x ?? 0)) % 360,
         y: (rule.y + (_facingRotation[value]?.y ?? 0)) % 360,
       ),

@@ -3089,8 +3089,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String blockstate_rule_overlap(int number, int count, String names) {
-    return 'Rule $number · $count also in $names';
+  String blockstate_rule_overlap(String rule, int count, String names) {
+    return '$rule · $count also in $names';
   }
 
   @override
@@ -3118,4 +3118,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get blockstate_rule_model => 'Model';
+
+  @override
+  String get blockstate_rule_rename => 'Rename';
 }

@@ -5395,8 +5395,8 @@ abstract class AppLocalizations {
   /// No description provided for @blockstate_rule_overlap.
   ///
   /// In en, this message translates to:
-  /// **'Rule {number} · {count} also in {names}'**
-  String blockstate_rule_overlap(int number, int count, String names);
+  /// **'{rule} · {count} also in {names}'**
+  String blockstate_rule_overlap(String rule, int count, String names);
 
   /// No description provided for @blockstate_rule_any_state.
   ///
@@ -5445,6 +5445,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Model'**
   String get blockstate_rule_model;
+
+  /// No description provided for @blockstate_rule_rename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get blockstate_rule_rename;
 }
 
 class _AppLocalizationsDelegate

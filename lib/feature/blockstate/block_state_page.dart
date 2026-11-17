@@ -303,7 +303,7 @@ class _BlockStateDetail extends StatelessWidget {
   Future<void> _addRule(BuildContext context) async {
     final rule = await showRuleDialog(
       context,
-      title: context.l10n.blockstate_rule_add,
+      index: entry.rules.length,
       spec: specFor(entry.key),
       rule: const BlockStateRule(),
     );

@@ -40,7 +40,7 @@ class BlockStateRuleGrid extends StatelessWidget {
   Future<void> _edit(BuildContext context, BlockSpec spec, int index) async {
     final rule = await showRuleDialog(
       context,
-      title: context.l10n.blockstate_rule(index + 1),
+      index: index,
       spec: spec,
       rule: entry.rules[index],
     );
@@ -50,7 +50,7 @@ class BlockStateRuleGrid extends StatelessWidget {
   Future<void> _delete(BuildContext context, int index) async {
     final confirmed = await confirmRuleDelete(
       context,
-      context.l10n.blockstate_rule(index + 1),
+      ruleTitle(context.l10n, entry.rules[index], index),
       entry.rules[index],
     );
     if (confirmed) _replace(index, const []);
@@ -137,15 +137,16 @@ class _RuleCard extends StatelessWidget {
       if (rule.uvlock) 'uvlock',
     ];
     final overlapping = overlap.count > 0;
+    final title = ruleTitle(l10n, rule, index);
     return EditCard(
       icon: overlapping ? Icons.warning_amber_rounded : Icons.rule,
       label: overlapping
           ? l10n.blockstate_rule_overlap(
-              index + 1,
+              title,
               overlap.count,
               overlap.names.map((name) => '“$name”').join(', '),
             )
-          : l10n.blockstate_rule(index + 1),
+          : title,
       value: rule.model,
       footer: [
         conditionOf(l10n, rule, spec),
@@ -164,6 +165,13 @@ class _RuleCard extends StatelessWidget {
     );
   }
 }
+
+/// The title of [rule] at [index]: its name, or `Rule 2` without one.
+String ruleTitle(AppLocalizations l10n, BlockStateRule rule, int index) =>
+    switch (rule.name) {
+      final name? when name.trim().isNotEmpty => name,
+      _ => l10n.blockstate_rule(index + 1),
+    };
 
 /// Asks whether to delete the rule titled [title], e.g. `Rule 2`.
 Future<bool> confirmRuleDelete(
@@ -195,28 +203,31 @@ String conditionOf(AppLocalizations l10n, BlockStateRule rule, BlockSpec spec) {
   return parts.isEmpty ? l10n.blockstate_rule_any_state : parts.join(' · ');
 }
 
-/// Opens the [_RuleDialog] for [rule] of a block with [spec]. It pops the
-/// edited rule, null when cancelled. Splitting and deleting are on the card.
+/// Opens the [_RuleDialog] for [rule] at [index] of a block with [spec]. It
+/// pops the edited rule, null when cancelled. Splitting and deleting are on
+/// the card.
 Future<BlockStateRule?> showRuleDialog(
   BuildContext context, {
-  required String title,
+  required int index,
   required BlockSpec spec,
   required BlockStateRule rule,
 }) => showDialog<BlockStateRule>(
   context: context,
-  builder: (_) => _RuleDialog(title: title, spec: spec, rule: rule),
+  builder: (_) => _RuleDialog(index: index, spec: spec, rule: rule),
 );
 
 /// Edits a copy of [rule]: the values per property it applies to, then the
-/// model with its rotation. Pops the edited rule on save.
+/// model with its rotation. Its name is the title, renamed in place. Pops
+/// the edited rule on save.
 class _RuleDialog extends StatefulWidget {
   const _RuleDialog({
-    required this.title,
+    required this.index,
     required this.spec,
     required this.rule,
   });
 
-  final String title;
+  /// Where the rule is or will be in the list, for the title without a name.
+  final int index;
   final BlockSpec spec;
   final BlockStateRule rule;
 
@@ -226,16 +237,52 @@ class _RuleDialog extends StatefulWidget {
 
 class _RuleDialogState extends State<_RuleDialog> {
   late BlockStateRule _rule = widget.rule;
+  late final _name = TextEditingController(text: widget.rule.name);
+  bool _renaming = false;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    super.dispose();
+  }
 
   void _change(BlockStateRule rule) => setState(() => _rule = rule);
+
+  // An empty name falls back to the number of the rule.
+  void _rename(String name) =>
+      _change(_rule.copyWith(name: name.trim().isEmpty ? null : name));
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final spec = widget.spec;
+    final titleStyle = theme.textTheme.titleLarge?.copyWith(
+      fontWeight: FontWeight.bold,
+    );
     return FormDialog(
-      title: widget.title,
+      title: ruleTitle(l10n, _rule, widget.index),
+      titleChild: _renaming
+          ? TextField(
+              controller: _name,
+              autofocus: true,
+              style: titleStyle,
+              decoration: InputDecoration(
+                hintText: l10n.blockstate_rule(widget.index + 1),
+                isDense: true,
+              ),
+              onChanged: _rename,
+              onSubmitted: (_) => setState(() => _renaming = false),
+            )
+          : null,
+      titleActions: [
+        if (!_renaming)
+          IconButton(
+            tooltip: l10n.blockstate_rule_rename,
+            onPressed: () => setState(() => _renaming = true),
+            icon: const Icon(Icons.edit_outlined),
+          ),
+      ],
       actionLabel: l10n.button_save,
       maxWidth: 640,
       onSubmit: () => Navigator.of(context).pop(_rule),

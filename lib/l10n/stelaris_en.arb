@@ -1713,11 +1713,11 @@
       }
     }
   },
-  "blockstate_rule_overlap": "Rule {number} · {count} also in {names}",
+  "blockstate_rule_overlap": "{rule} · {count} also in {names}",
   "@blockstate_rule_overlap": {
     "placeholders": {
-      "number": {
-        "type": "int"
+      "rule": {
+        "type": "String"
       },
       "count": {
         "type": "int"
@@ -1741,5 +1741,6 @@
   "blockstate_rule_when": "When",
   "blockstate_rule_then": "Then",
   "blockstate_rule_no_properties": "The block has no properties.",
-  "blockstate_rule_model": "Model"
+  "blockstate_rule_model": "Model",
+  "blockstate_rule_rename": "Rename"
 }
