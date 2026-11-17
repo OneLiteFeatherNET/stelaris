@@ -1393,6 +1393,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command_create_attribute => 'New attribute';
 
   @override
+  String get command_create_blockstate => 'New blockstate';
+
+  @override
   String get command_create_keywords => 'create add new';
 
   @override

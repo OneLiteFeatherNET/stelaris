@@ -2620,6 +2620,12 @@ abstract class AppLocalizations {
   /// **'New attribute'**
   String get command_create_attribute;
 
+  /// No description provided for @command_create_blockstate.
+  ///
+  /// In en, this message translates to:
+  /// **'New blockstate'**
+  String get command_create_blockstate;
+
   /// No description provided for @command_create_keywords.
   ///
   /// In en, this message translates to:

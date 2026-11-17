@@ -8,6 +8,7 @@ import 'package:stelaris/api/state/actions/expression/expression_actions.dart';
 import 'package:stelaris/api/state/actions/expression/expression_function_actions.dart';
 import 'package:stelaris/api/state/actions/sound/sound_actions.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/blockstate/block_state_create_dialog.dart';
 import 'package:stelaris/feature/dialogs/model_create_dialog.dart';
 import 'package:stelaris/feature/expression_function/function_identifier.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -28,6 +29,10 @@ Future<bool> openModelCreateDialog(
   NavigationEntry entry,
   String projectKey,
 ) async {
+  // A blockstate is made for a block, which is picked instead of typed.
+  if (entry == NavigationEntry.blockstates) {
+    return openBlockStateCreateDialog(context);
+  }
   final bool? created = await showDialog<bool>(
     context: context,
     builder: (BuildContext context) {
@@ -41,6 +46,7 @@ Future<bool> openModelCreateDialog(
           NavigationEntry.function => l10n.dialog_expression_function_create,
           NavigationEntry.advancements => l10n.dialog_advancement_create,
           NavigationEntry.attributes => l10n.dialog_attribute_create,
+          NavigationEntry.blockstates => l10n.blockstate_create_title,
         },
         projectNamespace: projectKey,
         // Expressions and functions have no key, so the dialog asks for none.
@@ -91,6 +97,9 @@ Future<bool> openModelCreateDialog(
                 key: key,
                 maximumValue: defaultAttributeMaximum,
               ),
+            ),
+            NavigationEntry.blockstates => throw StateError(
+              'Blockstates are created by openBlockStateCreateDialog.',
             ),
           };
           // Closes only once the model exists, a failure keeps what was

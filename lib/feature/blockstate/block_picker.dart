@@ -1,6 +1,4 @@
-// SPIKE: throwaway proof of concept for rule based blockstate editing.
 import 'package:material_ui/material_ui.dart';
-import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/filter/category_filter_menu.dart';
 import 'package:stelaris/feature/base/hide_tooltips_while_scrolling.dart';
 import 'package:stelaris/feature/base/search/dialog_search_bar.dart';
@@ -10,12 +8,9 @@ import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
-/// Below this width the picker fills the screen instead of floating over it.
-const double _fullScreenWidth = 600;
-
-/// The size of the floating picker, the same as the function picker's.
-const double _maxPickerWidth = 560;
-const double _contentHeight = 480;
+/// The size of the picker, the same as the function picker's.
+const double blockPickerWidth = 560;
+const double blockPickerHeight = 480;
 
 const double _filterButtonSize = 32;
 
@@ -81,64 +76,22 @@ enum _Group {
   }
 }
 
-/// Opens the picker of the blocks, to search and tap one. [contexts] says
-/// per block key how many blockstates already use it, they share its file;
-/// [current] is marked. Floats over the page on a wide screen, fills a narrow one.
-Future<BlockSpec?> showBlockPicker(
-  BuildContext context, {
-  Map<String, int> contexts = const {},
-  String? current,
-}) {
-  final fullScreen = MediaQuery.sizeOf(context).width < _fullScreenWidth;
-  return showDialog<BlockSpec>(
-    context: context,
-    builder: (dialogContext) {
-      final title = dialogContext.l10n.blockstate_picker_title;
-      // Built from the dialog's own context: a tap pops the dialog.
-      final content = _BlockPicker(
-        contexts: contexts,
-        current: current,
-        onBlock: (block) => Navigator.of(dialogContext).pop(block),
-      );
-      if (fullScreen) {
-        return Dialog.fullscreen(
-          child: Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                tooltip: dialogContext.l10n.button_close,
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.of(dialogContext).pop(),
-              ),
-              title: Text(title),
-            ),
-            body: Padding(padding: const EdgeInsets.all(16), child: content),
-          ),
-        );
-      }
-      return FormDialog(
-        title: title,
-        actionLabel: dialogContext.l10n.button_close,
-        onSubmit: null,
-        showActions: false,
-        maxWidth: _maxPickerWidth,
-        // Fixed, so the dialog keeps its size while the user types.
-        content: SizedBox(height: _contentHeight, child: content),
-      );
-    },
-  );
-}
-
 /// The blocks to browse, styled like the function picker: a search bar with
 /// a group filter above a list of the blocks under a header per group.
 ///
 /// The search matches the name and the key of a block ignoring case, and
 /// the name of a group, so typing e.g. `stairs` lists every stair. A click
 /// on a header shows only its group.
-class _BlockPicker extends StatefulWidget {
-  const _BlockPicker({
-    required this.contexts,
-    required this.current,
+///
+/// [contexts] says per block key how many blockstates already use it, they
+/// share its file; [current] is marked. A tap reports the block through
+/// [onBlock].
+class BlockPicker extends StatefulWidget {
+  const BlockPicker({
     required this.onBlock,
+    this.contexts = const {},
+    this.current,
+    super.key,
   });
 
   final Map<String, int> contexts;
@@ -146,10 +99,10 @@ class _BlockPicker extends StatefulWidget {
   final ValueChanged<BlockSpec> onBlock;
 
   @override
-  State<_BlockPicker> createState() => _BlockPickerState();
+  State<BlockPicker> createState() => _BlockPickerState();
 }
 
-class _BlockPickerState extends State<_BlockPicker> {
+class _BlockPickerState extends State<BlockPicker> {
   final FocusNode _focusNode = FocusNode();
 
   /// The search text. Only the list listens to it, so a keystroke leaves the

@@ -650,6 +650,7 @@
   "command_create_expression": "New expression",
   "command_create_advancement": "New advancement",
   "command_create_attribute": "New attribute",
+  "command_create_blockstate": "New blockstate",
   "command_create_keywords": "create add new",
   "command_delete_entry": "Delete\u2026",
   "command_delete_keywords": "delete remove",

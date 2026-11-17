@@ -28,6 +28,12 @@ enum NavigationEntry {
     StelarisIcons.noteBlockOutlined,
     StelarisIcons.noteBlock,
   ),
+  blockstates(
+    'Blockstates',
+    '/blockstates',
+    Icons.grid_view_outlined,
+    Icons.grid_view,
+  ),
   expression(
     'Expressions',
     '/expression',
@@ -65,13 +71,6 @@ enum AssetNavigationEntry {
     '/assets/models',
     Icons.view_in_ar_outlined,
     Icons.view_in_ar,
-  ),
-  // SPIKE: rule based blockstate editor.
-  blockstates(
-    'Blockstates',
-    '/assets/blockstates',
-    Icons.grid_view_outlined,
-    Icons.grid_view,
   );
 
   final String display;

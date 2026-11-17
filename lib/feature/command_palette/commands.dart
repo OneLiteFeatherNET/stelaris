@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/state/actions/attribute_actions.dart';
+import 'package:stelaris/api/state/actions/block_state_actions.dart';
 import 'package:stelaris/api/state/actions/build/build_actions.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
@@ -101,6 +102,7 @@ StelarisCommand _create(NavigationEntry entry) {
       NavigationEntry.advancements => l10n.command_create_advancement,
       NavigationEntry.attributes => l10n.command_create_attribute,
       NavigationEntry.function => l10n.expression_function_command_create,
+      NavigationEntry.blockstates => l10n.command_create_blockstate,
     },
     keywords: (l10n) => _split(l10n.command_create_keywords),
     group: CommandGroup.create,
@@ -221,6 +223,7 @@ ReduxAction<AppState> refreshActionFor(NavigationEntry entry) {
     NavigationEntry.sound => RefreshSoundAction(),
     NavigationEntry.expression => RefreshExpressionAction(),
     NavigationEntry.function => RefreshExpressionFunctionAction(),
+    NavigationEntry.blockstates => RefreshBlockStateAction(),
   };
 }
 
