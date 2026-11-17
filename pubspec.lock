@@ -69,18 +69,18 @@ packages:
     dependency: "direct main"
     description:
       name: async_redux
-      sha256: c1f4478ce145d1d6a8cf3a0ab8b4e73fed4d864410bbabc8bf71c8fc4508fbf0
+      sha256: eac66e67f84d49a99e916b825ac654d9ff451cbf5753c6fa771815ad00ecd55b
       url: "https://pub.dev"
     source: hosted
-    version: "29.3.1"
+    version: "29.3.2"
   async_redux_core:
     dependency: transitive
     description:
       name: async_redux_core
-      sha256: "7c1075bc14304ae23352ccea5fe16515720a6d4d5a8f6d0e65ae63dc4b243c27"
+      sha256: a5092de0f4c5ef0fbb5f6c10c98257cf6c88565929fe8d8422e13806fba096fe
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.0"
+    version: "1.5.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -301,10 +301,10 @@ packages:
     dependency: transitive
     description:
       name: fast_immutable_collections
-      sha256: "293012edcb75c742f39a5cfe184baab8d6382cd478dabca8f2cf264f668494da"
+      sha256: "3b738aeb4241d97bba17f73b47bd57eef970116e2cb9b2b01671dd80f9e60ba5"
       url: "https://pub.dev"
     source: hosted
-    version: "12.0.0"
+    version: "12.0.1"
   ffi:
     dependency: transitive
     description:
@@ -1159,10 +1159,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "611e87fb320b70d1dd721dc46af89c98aceccea9b31fde49e084591414e0c610"
+      sha256: b8073b1e5173d63afe1a18985a75896d72f759d3bc1817eb1ae8d26e8527cceb
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.33"
+    version: "6.3.35"
   url_launcher_ios:
     dependency: transitive
     description:
@@ -1280,10 +1280,10 @@ packages:
     dependency: transitive
     description:
       name: weak_map
-      sha256: "98e092f60921266d0693d7f6d3aee7eebd1a4a8a7b18930534bfd83c70163669"
+      sha256: b8fe65cce1dda36e18a524dd0195cd48226681c4e16928bf9905a4fe87c97faf
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.2"
+    version: "4.1.3"
   web:
     dependency: "direct main"
     description:
