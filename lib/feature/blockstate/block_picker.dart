@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/filter/category_filter_menu.dart';
 import 'package:stelaris/feature/base/hide_tooltips_while_scrolling.dart';
 import 'package:stelaris/feature/base/search/dialog_search_bar.dart';
+import 'package:stelaris/feature/blockstate/block_group.dart';
 import 'package:stelaris/feature/blockstate/block_state_rules.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/app_shapes.dart';
@@ -13,68 +14,6 @@ const double blockPickerWidth = 560;
 const double blockPickerHeight = 480;
 
 const double _filterButtonSize = 32;
-
-/// The groups of the picker in the order they are listed: one per block
-/// family, told apart by the end of the key, then the remaining blocks with
-/// and without properties.
-enum _Group {
-  stairs(['_stairs']),
-  slab(['_slab']),
-  fence(['_fence']),
-  fenceGate(['_fence_gate']),
-  wall(['_wall']),
-  door(['_door']),
-  trapdoor(['_trapdoor']),
-  button(['_button']),
-  pressurePlate(['_pressure_plate']),
-  sign(['_sign']),
-  pane(['_pane', '_bars']),
-  bed(['_bed']),
-  candle(['candle']),
-  banner(['_banner']),
-  head(['_head', '_skull']),
-  rail(['rail']),
-  leaves(['_leaves']),
-  pillar(['_log', '_wood', '_stem', '_hyphae', '_pillar']),
-  other([]),
-  none([]);
-
-  const _Group(this.suffixes);
-
-  final List<String> suffixes;
-
-  String label(AppLocalizations l10n) => switch (this) {
-    stairs => l10n.blockstate_group_stairs,
-    slab => l10n.blockstate_group_slab,
-    fence => l10n.blockstate_group_fence,
-    fenceGate => l10n.blockstate_group_fence_gate,
-    wall => l10n.blockstate_group_wall,
-    door => l10n.blockstate_group_door,
-    trapdoor => l10n.blockstate_group_trapdoor,
-    button => l10n.blockstate_group_button,
-    pressurePlate => l10n.blockstate_group_pressure_plate,
-    sign => l10n.blockstate_group_sign,
-    pane => l10n.blockstate_group_pane,
-    bed => l10n.blockstate_group_bed,
-    candle => l10n.blockstate_group_candle,
-    banner => l10n.blockstate_group_banner,
-    head => l10n.blockstate_group_head,
-    rail => l10n.blockstate_group_rail,
-    leaves => l10n.blockstate_group_leaves,
-    pillar => l10n.blockstate_group_pillar,
-    other => l10n.blockstate_group_other,
-    none => l10n.blockstate_group_none,
-  };
-
-  static _Group of(BlockSpec block) {
-    if (block.properties.isEmpty) return none;
-    final name = block.key.substring(block.key.indexOf(':') + 1);
-    for (final group in values) {
-      if (group.suffixes.any(name.endsWith)) return group;
-    }
-    return other;
-  }
-}
 
 /// The blocks to browse, styled like the function picker: a search bar with
 /// a group filter above a list of the blocks under a header per group.
@@ -110,16 +49,16 @@ class _BlockPickerState extends State<BlockPicker> {
   final ValueNotifier<String> _search = ValueNotifier('');
 
   /// The group picked in the filter. Null shows all.
-  _Group? _group;
+  BlockGroup? _group;
 
   /// The blocks per group, computed once so a keystroke only filters.
   /// Groups without any are left out.
-  late final Map<_Group, List<BlockSpec>> _entries = () {
-    final byGroup = <_Group, List<BlockSpec>>{
-      for (final group in _Group.values) group: [],
+  late final Map<BlockGroup, List<BlockSpec>> _entries = () {
+    final byGroup = <BlockGroup, List<BlockSpec>>{
+      for (final group in BlockGroup.values) group: [],
     };
     for (final block in allBlocks) {
-      byGroup[_Group.of(block)]!.add(block);
+      byGroup[block.group]!.add(block);
     }
     return byGroup..removeWhere((_, blocks) => blocks.isEmpty);
   }();
@@ -131,7 +70,7 @@ class _BlockPickerState extends State<BlockPicker> {
     super.dispose();
   }
 
-  void _selectGroup(_Group? group) {
+  void _selectGroup(BlockGroup? group) {
     setState(() => _group = group);
     _focusNode.requestFocus();
   }
@@ -171,7 +110,7 @@ class _BlockPickerState extends State<BlockPicker> {
               ? l10n.blockstate_picker_search
               : l10n.blockstate_picker_search_in(group.label(l10n)),
           trailing: [
-            CategoryFilterMenu<_Group>(
+            CategoryFilterMenu<BlockGroup>(
               value: group,
               allLabel: l10n.blockstate_picker_all,
               keyPrefix: 'block_group_item',
@@ -275,7 +214,7 @@ sealed class _Row {
 final class _HeaderRow extends _Row {
   const _HeaderRow(this.group);
 
-  final _Group group;
+  final BlockGroup group;
 
   @override
   Key get key => ValueKey('block_group_header_${group.name}');
@@ -295,7 +234,7 @@ final class _BlockRow extends _Row {
 class _GroupHeader extends StatelessWidget {
   const _GroupHeader(this.group, {required this.onTap});
 
-  final _Group group;
+  final BlockGroup group;
 
   /// Filters the list by the group, null when it is already filtered.
   final VoidCallback? onTap;
