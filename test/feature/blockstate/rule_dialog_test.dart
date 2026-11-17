@@ -113,6 +113,28 @@ void main() {
       );
     }, skip: _notYet);
 
+    testWidgets('typing a model rebuilds none of the chips', (tester) async {
+      await _open(tester, const Size(1400, 900));
+
+      final rebuilt = <Type, int>{};
+      debugOnRebuildDirtyWidget = (element, _) => rebuilt.update(
+        element.widget.runtimeType,
+        (count) => count + 1,
+        ifAbsent: () => 1,
+      );
+      addTearDown(() => debugOnRebuildDirtyWidget = null);
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Model'),
+        'minecraft:block/stone',
+      );
+      await tester.pump();
+
+      expect(rebuilt[FilterChip], isNull);
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+      expect(_result!.model, 'minecraft:block/stone');
+    });
+
     testWidgets('saves the values, rotation and uvlock picked', (tester) async {
       await _open(tester, const Size(1400, 900));
 
