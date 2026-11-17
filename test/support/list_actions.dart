@@ -25,7 +25,9 @@ void listActionTests<T extends DataModel>({
   required ReduxAction<AppState> Function() refresh,
   required ReduxAction<AppState> Function(T model) add,
   required ReduxAction<AppState> Function(T model) remove,
-  required ReduxAction<AppState> Function(T model, CopyModelResult result) copy,
+  /// Null for a kind of model that can't be copied, its copy tests are left
+  /// out.
+  ReduxAction<AppState> Function(T model, CopyModelResult result)? copy,
 }) {
   /// Answers every request with [json]. All model APIs share one client.
   void respond(Object json) {
@@ -248,6 +250,7 @@ void listActionTests<T extends DataModel>({
     });
   });
 
+  if (copy == null) return;
   const project = Project(id: 'p1', displayName: 'P1', key: 'p1');
   const other = Project(id: 'p2', displayName: 'P2', key: 'p2');
 
