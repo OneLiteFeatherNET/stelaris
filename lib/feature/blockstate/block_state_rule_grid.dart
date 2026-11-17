@@ -286,127 +286,141 @@ class _RuleDialogState extends State<_RuleDialog> {
       actionLabel: l10n.button_save,
       maxWidth: 640,
       onSubmit: () => Navigator.of(context).pop(_rule),
-      content: SingleChildScrollView(
-        padding: const EdgeInsets.only(right: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l10n.blockstate_rule_when, style: theme.textTheme.labelLarge),
-            if (spec.properties.isEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Text(l10n.blockstate_rule_no_properties),
-              ),
-            for (final MapEntry(key: property, value: values)
-                in spec.properties.entries)
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 110,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 6),
-                        child: Text(property),
-                      ),
-                    ),
-                    Expanded(
-                      child: Wrap(
-                        spacing: 4,
-                        runSpacing: 4,
-                        children: [
-                          for (final value in values)
-                            FilterChip(
-                              visualDensity: VisualDensity.compact,
-                              label: Text(value),
-                              selected:
-                                  _rule.when[property]?.contains(value) ??
-                                  false,
-                              onSelected: (_) =>
-                                  _change(_rule.toggle(property, value)),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            const SizedBox(height: 16),
-            Text(l10n.blockstate_rule_then, style: theme.textTheme.labelLarge),
-            const SizedBox(height: 6),
-            TextFormField(
-              initialValue: _rule.model,
-              decoration: InputDecoration(
-                labelText: l10n.blockstate_rule_model,
-                hintText: 'minecraft:block/footprint_slender',
-                isDense: true,
-              ),
-              onChanged: (model) => _change(_rule.copyWith(model: model)),
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          EditSectionHeading(title: l10n.blockstate_rule_when),
+          if (spec.properties.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(l10n.blockstate_rule_no_properties),
             ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 16,
-              runSpacing: 8,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                _RotationPicker(
-                  axis: 'x',
-                  value: _rule.x,
-                  onChanged: (x) => _change(_rule.copyWith(x: x)),
-                ),
-                _RotationPicker(
-                  axis: 'y',
-                  value: _rule.y,
-                  onChanged: (y) => _change(_rule.copyWith(y: y)),
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('uvlock'),
-                    Switch(
-                      value: _rule.uvlock,
-                      onChanged: (uvlock) =>
-                          _change(_rule.copyWith(uvlock: uvlock)),
+          for (final MapEntry(key: property, value: values)
+              in spec.properties.entries)
+            _LabeledRow(
+              label: property,
+              child: Wrap(
+                spacing: 4,
+                runSpacing: 4,
+                children: [
+                  for (final value in values)
+                    FilterChip(
+                      // A checkmark would widen the chip and push the
+                      // others of the row aside.
+                      showCheckmark: false,
+                      visualDensity: VisualDensity.compact,
+                      label: Text(value),
+                      selected: _rule.when[property]?.contains(value) ?? false,
+                      onSelected: (_) => _change(_rule.toggle(property, value)),
                     ),
-                  ],
+                ],
+              ),
+            ),
+          const SizedBox(height: 24),
+          EditSectionHeading(title: l10n.blockstate_rule_then),
+          const SizedBox(height: 12),
+          TextFormField(
+            initialValue: _rule.model,
+            decoration: InputDecoration(
+              labelText: l10n.blockstate_rule_model,
+              hintText: 'minecraft:block/footprint_slender',
+              prefixIcon: const Icon(Icons.view_in_ar_outlined),
+            ),
+            onChanged: (model) => _change(_rule.copyWith(model: model)),
+          ),
+          const SizedBox(height: 8),
+          _LabeledRow(
+            label: l10n.blockstate_rule_tilt,
+            child: _RotationPicker(
+              value: _rule.x,
+              onChanged: (x) => _change(_rule.copyWith(x: x)),
+            ),
+          ),
+          _LabeledRow(
+            label: l10n.blockstate_rule_turn,
+            child: _RotationPicker(
+              value: _rule.y,
+              onChanged: (y) => _change(_rule.copyWith(y: y)),
+            ),
+          ),
+          _LabeledRow(
+            label: l10n.blockstate_rule_uvlock,
+            child: Row(
+              children: [
+                Switch(
+                  value: _rule.uvlock,
+                  onChanged: (uvlock) =>
+                      _change(_rule.copyWith(uvlock: uvlock)),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    l10n.blockstate_rule_uvlock_hint,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _RotationPicker extends StatelessWidget {
-  const _RotationPicker({
-    required this.axis,
-    required this.value,
-    required this.onChanged,
-  });
+/// A row of the rule dialog: a muted [label] in a fixed column, so the
+/// controls of all rows line up, and the [child] beside it.
+class _LabeledRow extends StatelessWidget {
+  const _LabeledRow({required this.label, required this.child});
 
-  final String axis;
+  final String label;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 8),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 130,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Align(alignment: Alignment.centerLeft, child: child),
+        ),
+      ],
+    ),
+  );
+}
+
+/// The rotation around one axis in steps of 90 degrees.
+class _RotationPicker extends StatelessWidget {
+  const _RotationPicker({required this.value, required this.onChanged});
+
   final int value;
   final ValueChanged<int> onChanged;
 
   @override
-  Widget build(BuildContext context) => Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Text(axis),
-      const SizedBox(width: 8),
-      SegmentedButton<int>(
-        showSelectedIcon: false,
-        style: const ButtonStyle(visualDensity: VisualDensity.compact),
-        segments: [
-          for (final degrees in const [0, 90, 180, 270])
-            ButtonSegment(value: degrees, label: Text('$degrees°')),
-        ],
-        selected: {value},
-        onSelectionChanged: (selection) => onChanged(selection.first),
-      ),
+  Widget build(BuildContext context) => SegmentedButton<int>(
+    showSelectedIcon: false,
+    style: const ButtonStyle(visualDensity: VisualDensity.compact),
+    segments: [
+      for (final degrees in const [0, 90, 180, 270])
+        ButtonSegment(value: degrees, label: Text('$degrees°')),
     ],
+    selected: {value},
+    onSelectionChanged: (selection) => onChanged(selection.first),
   );
 }

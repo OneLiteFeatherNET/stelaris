@@ -3121,4 +3121,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get blockstate_rule_rename => 'Rename';
+
+  @override
+  String get blockstate_rule_tilt => 'Tilt (x)';
+
+  @override
+  String get blockstate_rule_turn => 'Turn (y)';
+
+  @override
+  String get blockstate_rule_uvlock => 'Texture lock';
+
+  @override
+  String get blockstate_rule_uvlock_hint =>
+      'uvlock: the texture stays in place instead of rotating with the model';
 }

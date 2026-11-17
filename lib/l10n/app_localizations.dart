@@ -5451,6 +5451,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rename'**
   String get blockstate_rule_rename;
+
+  /// No description provided for @blockstate_rule_tilt.
+  ///
+  /// In en, this message translates to:
+  /// **'Tilt (x)'**
+  String get blockstate_rule_tilt;
+
+  /// No description provided for @blockstate_rule_turn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn (y)'**
+  String get blockstate_rule_turn;
+
+  /// No description provided for @blockstate_rule_uvlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Texture lock'**
+  String get blockstate_rule_uvlock;
+
+  /// No description provided for @blockstate_rule_uvlock_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'uvlock: the texture stays in place instead of rotating with the model'**
+  String get blockstate_rule_uvlock_hint;
 }
 
 class _AppLocalizationsDelegate

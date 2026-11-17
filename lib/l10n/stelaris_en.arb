@@ -1742,5 +1742,9 @@
   "blockstate_rule_then": "Then",
   "blockstate_rule_no_properties": "The block has no properties.",
   "blockstate_rule_model": "Model",
-  "blockstate_rule_rename": "Rename"
+  "blockstate_rule_rename": "Rename",
+  "blockstate_rule_tilt": "Tilt (x)",
+  "blockstate_rule_turn": "Turn (y)",
+  "blockstate_rule_uvlock": "Texture lock",
+  "blockstate_rule_uvlock_hint": "uvlock: the texture stays in place instead of rotating with the model"
 }
