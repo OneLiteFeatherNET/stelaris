@@ -103,10 +103,12 @@ class BlockStateRuleGrid extends StatelessWidget {
   }
 }
 
-/// A rule in the card of the edit pages: the model as its value, the
-/// condition and the rotation below. It has no icon, only a warning icon
-/// when other contexts claim some of its states. In its corner it has a split button, for a
-/// block with a facing, and a delete button.
+/// A rule in the card of the edit pages: the model as its value with the
+/// number of the rule above, or for a named rule the name as its value with
+/// the model above. The condition and the rotation are below. It has no
+/// icon, only a warning icon when other contexts claim some of its states.
+/// In its corner it has a split button, for a block with a facing, and a
+/// delete button.
 class _RuleCard extends StatelessWidget {
   const _RuleCard({
     required this.index,
@@ -138,17 +140,21 @@ class _RuleCard extends StatelessWidget {
       if (rule.uvlock) 'uvlock',
     ];
     final overlapping = overlap.count > 0;
-    final title = ruleTitle(l10n, rule, index);
+    final name = rule.name?.trim() ?? '';
+    final number = l10n.blockstate_rule(index + 1);
+    // A name is what the rule was given to be told apart, so it is the
+    // large text and the model moves into the label.
+    final label = name.isEmpty || rule.model.isEmpty ? number : rule.model;
     return EditCard(
       icon: overlapping ? Icons.warning_amber_rounded : null,
       label: overlapping
           ? l10n.blockstate_rule_overlap(
-              title,
+              label,
               overlap.count,
-              overlap.names.map((name) => '“$name”').join(', '),
+              overlap.names.map((other) => '“$other”').join(', '),
             )
-          : title,
-      value: rule.model,
+          : label,
+      value: name.isEmpty ? rule.model : name,
       footer: [
         conditionOf(l10n, rule, spec),
         if (rotation.isNotEmpty) rotation.join(' · '),
