@@ -1,14 +1,37 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/base_api.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/blockstate/block_picker.dart';
 import 'package:stelaris/feature/blockstate/block_state_create_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
+import 'package:stelaris_models/stelaris_models.dart';
+
+import '../../support/fake_http_client_adapter.dart';
+
+/// Answers the dialog's load of the blockstates with one page of [items].
+void _respond(List<Map<String, Object?>> items) {
+  (ApiService().blockStateApi as BaseApi<BlockStateModel>)
+      .apiClient
+      .dio
+      .httpClientAdapter = FakeHttpClientAdapter.json({
+    'items': items,
+    'totalItems': items.length,
+    'totalPages': 1,
+    'currentPage': 1,
+    'pageSize': 10,
+  });
+}
 
 void main() {
   group('BlockStateCreateDialog', () {
-    Future<void> open(WidgetTester tester) async {
+    Future<void> open(
+      WidgetTester tester, {
+      List<Map<String, Object?>> stored = const [],
+    }) async {
+      _respond(stored);
       tester.view.physicalSize = const Size(1400, 900);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
@@ -67,6 +90,32 @@ void main() {
 
       expect(find.byType(BlockPicker), findsNothing);
       expect(find.text('Footprints'), findsOneWidget);
+    });
+
+    testWidgets('counts the contexts of the block from the backend, not only '
+        'from the loaded list', (tester) async {
+      await open(
+        tester,
+        stored: [
+          {'id': 'b1', 'uiName': 'Seats', 'key': 'minecraft:oak_stairs'},
+          {'id': 'b2', 'uiName': 'Roof', 'key': 'minecraft:oak_stairs'},
+        ],
+      );
+      await tester.tap(find.text('Choose a block'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.descendant(
+          of: find.byType(BlockPicker),
+          matching: find.byType(TextField),
+        ),
+        'oak_stairs',
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('minecraft:oak_stairs').first);
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('already has 2 contexts'), findsOneWidget);
     });
   });
 }

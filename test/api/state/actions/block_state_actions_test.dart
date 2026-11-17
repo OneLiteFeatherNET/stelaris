@@ -51,6 +51,47 @@ void main() {
     remove: BlockStateRemoveAction.new,
   );
 
+  group('LoadAllBlockStatesAction', () {
+    test('loads the pages the list is still missing', () async {
+      const loaded = BlockStateModel(id: 'b1', uiName: 'Seats');
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(
+          blockStates: const PaginatedResult<BlockStateModel>(
+            items: [loaded],
+            totalItems: 2,
+            totalPages: 2,
+            currentPage: 1,
+            pageSize: 1,
+          ),
+        ),
+      );
+      _respond({
+        'items': [
+          {'id': 'b2', 'uiName': 'Roof'},
+        ],
+        'totalItems': 2,
+        'totalPages': 2,
+        'currentPage': 2,
+        'pageSize': 1,
+      });
+
+      await store.dispatchAndWait(LoadAllBlockStatesAction());
+
+      expect(store.state.blockStates.items.map((m) => m.id), ['b1', 'b2']);
+      expect(store.state.blockStates.hasNextPage, isFalse);
+    });
+
+    test('loads nothing when every page is there', () async {
+      const loaded = BlockStateModel(id: 'b1', uiName: 'Seats');
+      final store = _storeWith(items: [loaded]);
+      final before = store.state;
+
+      await store.dispatchAndWait(LoadAllBlockStatesAction());
+
+      expect(store.state, before);
+    });
+  });
+
   group('UpdateBlockStateAction', () {
     test('stages the blockstate and marks the section unsaved', () async {
       const listed = BlockStateModel(id: 'b1', uiName: 'Petals');
