@@ -32,6 +32,7 @@ Future<({List<AssetModel> models, List<FontModel> fonts})> _pump(
   required TextureUsages? usages,
   bool usagesFailed = false,
   VoidCallback? onRetryUsages,
+  bool links = true,
 }) async {
   tester.view.physicalSize = const Size(1200, 900);
   tester.view.devicePixelRatio = 1;
@@ -50,8 +51,8 @@ Future<({List<AssetModel> models, List<FontModel> fonts})> _pump(
             usagesFailed: usagesFailed,
             onRetryUsages: onRetryUsages,
             loadContent: (_, _) async => png16,
-            onOpenModel: opened.models.add,
-            onOpenFont: opened.fonts.add,
+            onOpenModel: links ? opened.models.add : null,
+            onOpenFont: links ? opened.fonts.add : null,
           ),
         ),
       ),
@@ -67,6 +68,27 @@ Future<({List<AssetModel> models, List<FontModel> fonts})> _pump(
 }
 
 void main() {
+  testWidgets('without open callbacks the uses are plain chips', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      texture: _gem,
+      usages: TextureUsages(models: [_ruby], fonts: const [_icons]),
+      links: false,
+    );
+
+    expect(find.byType(ActionChip), findsNothing);
+    expect(
+      tester.widget(find.byKey(const ValueKey('texture_used_font_f1'))),
+      isA<Chip>(),
+    );
+    expect(
+      tester.widget(find.byKey(const ValueKey('texture_used_model_m1'))),
+      isA<Chip>(),
+    );
+  });
+
   testWidgets('used in lists models, fonts and pack icon', (tester) async {
     final opened = await _pump(
       tester,

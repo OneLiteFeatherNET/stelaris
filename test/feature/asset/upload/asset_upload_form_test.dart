@@ -14,6 +14,7 @@ import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
+import '../../../support/pack_icon_pngs.dart';
 
 PickedAssetFile _file(String name, [int size = 3]) =>
     PickedAssetFile(name: name, bytes: Uint8List(size));
@@ -27,6 +28,7 @@ Future<AssetUploadController> _pump(
   Set<AssetKind> kinds = const {...AssetKind.values},
   String? fixedKey,
   AssetModel? replaces,
+  Widget? currentPreview,
 }) async {
   final queue = [...picks];
   final controller = AssetUploadController(
@@ -46,7 +48,14 @@ Future<AssetUploadController> _pump(
     MaterialApp(
       localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(body: AssetUploadForm(controller: controller)),
+      home: Scaffold(
+        body: SingleChildScrollView(
+          child: AssetUploadForm(
+            controller: controller,
+            currentPreview: currentPreview,
+          ),
+        ),
+      ),
     ),
   );
   return controller;
@@ -73,6 +82,36 @@ void main() {
       findsOneWidget,
     );
     expect(find.byKey(const Key('asset_upload_key')), findsNothing);
+  });
+
+  testWidgets('a new version of a texture shows the current one beside it', (
+    tester,
+  ) async {
+    const ruby = AssetModel(
+      id: 't-1',
+      projectId: 'p-1',
+      displayName: 'Ruby',
+      key: 'vulpes:item/ruby',
+      kind: AssetKind.TEXTURE,
+      fileName: 'ruby.png',
+      contentType: 'image/png',
+      size: 64,
+      sha1: 'sha-1',
+    );
+    await _pump(
+      tester,
+      picks: [PickedAssetFile(name: 'ruby_v2.png', bytes: png16)],
+      kinds: const {AssetKind.TEXTURE},
+      replaces: ruby,
+      currentPreview: const SizedBox(key: Key('current')),
+    );
+
+    await _choose(tester);
+
+    expect(find.byKey(const Key('asset_upload_compare')), findsOneWidget);
+    expect(find.text('Now'), findsOneWidget);
+    expect(find.text('New'), findsOneWidget);
+    expect(find.byKey(const Key('current')), findsOneWidget);
   });
 
   testWidgets('the focused drop zone opens the file dialog on Enter', (
