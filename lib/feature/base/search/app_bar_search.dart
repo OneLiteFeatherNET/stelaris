@@ -367,7 +367,10 @@ class _AppBarSearchState extends State<AppBarSearch> {
     final entry = searchSectionForLocation(location);
     if (entry == null) return const SizedBox.shrink();
     _entry = entry;
-    _onDetail = location != entry.route;
+    // An asset page shows one asset in place of its list, chosen by `?id=`.
+    _onDetail =
+        location != entry.route ||
+        GoRouterState.of(context).uri.queryParameters.containsKey('id');
 
     return StoreConnector<AppState, ModelSearchState>(
       converter: (store) => store.state.modelSearch,
@@ -582,7 +585,7 @@ class _AppBarSearchState extends State<AppBarSearch> {
             );
           },
         ),
-        _buildFilterMenu(context, search),
+        if (entry.sortable) _buildFilterMenu(context, search),
       ],
     );
   }

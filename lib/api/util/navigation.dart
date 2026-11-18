@@ -6,6 +6,10 @@ import 'package:stelaris/util/stelaris_icons.dart';
 abstract interface class SearchSection {
   String get display;
   String get route;
+
+  /// Whether the AppBar offers sorting and filters here; the asset pages
+  /// only search.
+  bool get sortable;
 }
 
 /// The enum class contains all relevant item for the navigation widget.
@@ -67,6 +71,9 @@ enum NavigationEntry implements SearchSection {
   /// Whether the entry holds runtime data rather than resource-pack content.
   /// The sidebar lists these in their own group below the sections.
   bool get isRuntime => runtimeEntries.contains(this);
+
+  @override
+  bool get sortable => true;
 }
 
 /// The enum class contains the project asset pages, listed under the "Assets"
@@ -101,6 +108,9 @@ enum AssetNavigationEntry implements SearchSection {
     this.data,
     this.selected,
   );
+
+  @override
+  bool get sortable => false;
 }
 
 /// The enum class contains the build pages, listed under the "Build" heading

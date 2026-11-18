@@ -370,7 +370,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
     ),
   );
 
-  /// The textures matching the search and the origin filter.
+  /// The textures matching the search and the Unused filter.
   List<AssetModel> get _visible {
     final query = _query.trim().toLowerCase();
     return [
@@ -565,9 +565,9 @@ class _TextureCard extends StatelessWidget {
           ),
         ],
       ),
+      trailing: CardActionsMenu(entries: menu),
       // Only an extracted texture says where it comes from; uploaded is the
       // usual case.
-      trailing: CardActionsMenu(entries: menu),
       footerIcon: texture.sourceAssetId == null
           ? null
           : Icons.view_in_ar_outlined,
