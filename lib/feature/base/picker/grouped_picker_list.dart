@@ -25,7 +25,8 @@ class GroupedPickerList<G extends Object, T extends Object>
   final Map<G, List<T>> groups;
   final String Function(G group) groupLabel;
 
-  /// The tooltip of a clickable header, from the group's label.
+  /// The tooltip of a clickable header, from the group's label. Only asked
+  /// for while the headers are clickable.
   final String Function(String label) groupTooltip;
 
   /// The keys of the rows, unique in the list.
@@ -72,16 +73,22 @@ class GroupedPickerList<G extends Object, T extends Object>
               key: key,
               type: MaterialType.transparency,
               child: group != null
-                  ? PickerGroupHeader(
-                      label: groupLabel(group),
-                      tooltip: groupTooltip(groupLabel(group)),
-                      onTap: onGroup == null ? null : () => onGroup(group),
-                    )
+                  ? _header(group, onGroup)
                   : itemBuilder(context, entry as T),
             );
           },
         ),
       ),
+    );
+  }
+
+  /// The header of [group], the label looked up once.
+  Widget _header(G group, ValueChanged<G>? onGroup) {
+    final label = groupLabel(group);
+    return PickerGroupHeader(
+      label: label,
+      tooltip: onGroup == null ? null : groupTooltip(label),
+      onTap: onGroup == null ? null : () => onGroup(group),
     );
   }
 }
