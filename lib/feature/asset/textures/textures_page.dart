@@ -11,16 +11,18 @@ import 'package:stelaris/api/state/actions/search_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/loading/project_assets.dart';
-import 'package:stelaris/feature/asset/models/asset_model_actions.dart';
+import 'package:stelaris/feature/asset/asset_actions.dart';
 import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/asset/textures/texture_detail.dart';
+import 'package:stelaris/feature/asset/textures/texture_info_dialog.dart';
 import 'package:stelaris/feature/asset/textures/texture_usage_sources.dart';
 import 'package:stelaris/feature/asset/textures/texture_usages.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_dialog.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/dialog/notice_box.dart';
+import 'package:stelaris/feature/base/button/card_actions_menu.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
@@ -41,14 +43,12 @@ const EdgeInsets _pagePadding = EdgeInsets.fromLTRB(16, 12, 16, 0);
 /// Shows the textures of the selected project as a grid of cards, filtered
 /// by the AppBar search (name and key) and, on demand, to the unused ones.
 ///
-/// The selection is [selectedId]; the page reports a new one through
-/// [onSelected], so the route can keep it. [pickFile] opens the file dialog
+/// A card opens the texture's info in a dialog; its menu holds the actions.
+/// [pickFile] opens the file dialog
 /// of the uploads and [saveFile] hands a download to the browser, both
 /// injectable for tests.
 class TexturesPage extends StatelessWidget {
   const TexturesPage({
-    this.selectedId,
-    this.onSelected,
     this.library,
     this.pickFile = pickAssetFile,
     this.saveFile = _saveInBrowser,
@@ -56,9 +56,6 @@ class TexturesPage extends StatelessWidget {
     this.openLocation,
     super.key,
   });
-
-  final String? selectedId;
-  final ValueChanged<String?>? onSelected;
 
   /// The asset library to load from, [AssetLibrary.shared] when null.
   final AssetLibrary? library;
@@ -102,8 +99,6 @@ class TexturesPage extends StatelessWidget {
           key: ValueKey(project.id),
           projectId: project.id,
           namespace: project.key,
-          selectedId: selectedId,
-          onSelected: onSelected,
           library: library ?? AssetLibrary.shared,
           pickFile: pickFile,
           saveFile: saveFile,
@@ -136,8 +131,6 @@ class _TexturesBody extends StatefulWidget {
   const _TexturesBody({
     required this.projectId,
     required this.namespace,
-    required this.selectedId,
-    required this.onSelected,
     required this.library,
     required this.pickFile,
     required this.saveFile,
@@ -148,8 +141,6 @@ class _TexturesBody extends StatefulWidget {
 
   final String projectId;
   final String namespace;
-  final String? selectedId;
-  final ValueChanged<String?>? onSelected;
   final AssetLibrary library;
   final Future<PickedAssetFile?> Function() pickFile;
   final void Function(List<int> bytes, String fileName) saveFile;
@@ -177,7 +168,9 @@ class _TexturesBodyState extends State<_TexturesBody> {
 
   /// Shows only the textures nothing uses, once that is known.
   bool _onlyUnused = false;
-  late String? _selectedId = widget.selectedId;
+
+  /// Notifies when [_sources] changed, for an open info dialog.
+  final ValueNotifier<int> _sourcesVersion = ValueNotifier(0);
 
   /// The fonts and pack metas of the current load, null while they load.
   TextureUsageSources? _sources;
@@ -201,20 +194,13 @@ class _TexturesBodyState extends State<_TexturesBody> {
     });
   }
 
-  @override
-  void didUpdateWidget(_TexturesBody oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.selectedId != widget.selectedId) {
-      _selectedId = widget.selectedId;
-    }
-  }
-
   Future<void> _load() async {
     final loadId = ++_sourcesLoadId;
     setState(() {
       _sources = null;
       _sourcesFailed = false;
     });
+    _sourcesVersion.value++;
     final sources = widget
         .loadUsageSources(widget.projectId)
         .then<TextureUsageSources?>((sources) => sources)
@@ -226,18 +212,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
       _sources = loaded;
       _sourcesFailed = loaded == null;
     });
-  }
-
-  void _select(String? id) {
-    setState(() => _selectedId = id);
-    widget.onSelected?.call(id);
-  }
-
-  AssetModel? get _selected {
-    for (final texture in _assets.textures) {
-      if (texture.id == _selectedId) return texture;
-    }
-    return null;
+    _sourcesVersion.value++;
   }
 
   /// Where [texture] is used, null until everything it needs has loaded.
@@ -298,8 +273,74 @@ class _TexturesBodyState extends State<_TexturesBody> {
     if (usages.fonts.isNotEmpty) {
       context.dispatch(TextureRemovedFromFontsAction(texture.id));
     }
-    _select(null);
     await _load();
+  }
+
+  /// Shows [texture] with where it is used.
+  void _showInfo(AssetModel texture) => showDialog<void>(
+    context: context,
+    builder: (_) => TextureInfoDialog(
+      projectId: widget.projectId,
+      texture: texture,
+      changes: Listenable.merge([_assets, _sourcesVersion]),
+      usages: () => _usagesOf(texture),
+      usagesFailed: () => _sourcesFailed,
+      source: _sourceOf(texture),
+      loadContent: (projectId, _) =>
+          widget.library.contentOf(projectId, texture),
+      onOpenModel: _openModel,
+      onOpenFont: _openFont,
+    ),
+  );
+
+  /// The actions of [texture]'s card menu. An extracted texture belongs to
+  /// its Blockbench model: no Update, no Delete. Delete waits for the uses,
+  /// so its dialog can name them.
+  List<CardMenuEntry> _menuOf(AssetModel texture) {
+    final l10n = context.l10n;
+    final extracted = texture.sourceAssetId != null;
+    final actions = AssetActions(
+      model: texture,
+      pickFile: widget.pickFile,
+      saveFile: widget.saveFile,
+      onChanged: _load,
+      readOnly: extracted,
+    );
+    final usages = _usagesOf(texture);
+    return [
+      (
+        icon: Icons.sticky_note_2_outlined,
+        label: l10n.action_notes,
+        onTap: () => actions.editNotes(context),
+      ),
+      (
+        icon: Icons.info_outline,
+        label: l10n.menu_item_info,
+        onTap: () => actions.openInfo(context),
+      ),
+      (
+        icon: Icons.history,
+        label: l10n.asset_model_revisions,
+        onTap: () => actions.openRevisions(context),
+      ),
+      if (!extracted)
+        (
+          icon: Icons.upload_outlined,
+          label: l10n.asset_model_update,
+          onTap: () => actions.update(context),
+        ),
+      (
+        icon: Icons.download_outlined,
+        label: l10n.button_download,
+        onTap: () => actions.download(context),
+      ),
+      if (!extracted && usages != null)
+        (
+          icon: Icons.delete_outline,
+          label: l10n.asset_textures_delete,
+          onTap: () => _delete(texture, usages),
+        ),
+    ];
   }
 
   @override
@@ -307,6 +348,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
     _assets
       ..removeListener(_onAssetsChanged)
       ..dispose();
+    _sourcesVersion.dispose();
     super.dispose();
   }
 
@@ -364,14 +406,10 @@ class _TexturesBodyState extends State<_TexturesBody> {
     );
     if (asset == null || !mounted) return;
     await _load();
-    if (!mounted) return;
-    _select(asset.id);
   }
 
   @override
   Widget build(BuildContext context) {
-    final selected = _selected;
-    if (selected != null) return _buildDetail(selected);
     return StoreConnector<AppState, String>(
       converter: (store) => store.state.modelSearch.query,
       builder: (context, query) {
@@ -406,62 +444,6 @@ class _TexturesBodyState extends State<_TexturesBody> {
           _buildFilters(),
           verticalSpacing10,
           Expanded(child: _buildGrid()),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDetail(AssetModel texture) {
-    final l10n = context.l10n;
-    final usages = _usagesOf(texture);
-    final extracted = texture.sourceAssetId != null;
-    return Padding(
-      padding: _pagePadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          PageHeader(
-            title: texture.displayName,
-            onBack: () => _select(null),
-            compactBelow: PageHeader.detailCompactThreshold,
-            actions: [
-              if (!extracted) ...[
-                PageHeaderAction(
-                  key: const Key('texture_delete'),
-                  icon: const Icon(Icons.delete_outline),
-                  label: l10n.asset_textures_delete,
-                  onPressed: usages == null
-                      ? null
-                      : () => _delete(texture, usages),
-                ),
-                const SizedBox(width: 8),
-              ],
-              AssetModelActions(
-                model: texture,
-                pickFile: widget.pickFile,
-                saveFile: widget.saveFile,
-                onChanged: _load,
-                readOnly: extracted,
-              ),
-            ],
-          ),
-          verticalSpacing10,
-          Expanded(
-            child: SingleChildScrollView(
-              child: TextureDetail(
-                key: ValueKey(texture.id),
-                projectId: widget.projectId,
-                texture: texture,
-                usages: usages,
-                usagesFailed: _sourcesFailed,
-                source: _sourceOf(texture),
-                loadContent: (projectId, _) =>
-                    widget.library.contentOf(projectId, texture),
-                onOpenModel: _openModel,
-                onOpenFont: _openFont,
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -526,7 +508,8 @@ class _TexturesBodyState extends State<_TexturesBody> {
         texture: texture,
         source: _sourceOf(texture),
         bytes: _thumbnailOf(texture),
-        onTap: () => _select(texture.id),
+        menu: _menuOf(texture),
+        onTap: () => _showInfo(texture),
       ),
     );
   }
@@ -539,11 +522,13 @@ class _TextureCard extends StatelessWidget {
     required this.texture,
     required this.source,
     required this.bytes,
+    required this.menu,
     required this.onTap,
     super.key,
   });
 
   final AssetModel texture;
+  final List<CardMenuEntry> menu;
 
   /// The Blockbench model the texture was extracted from.
   final AssetModel? source;
@@ -582,6 +567,7 @@ class _TextureCard extends StatelessWidget {
       ),
       // Only an extracted texture says where it comes from; uploaded is the
       // usual case.
+      trailing: CardActionsMenu(entries: menu),
       footerIcon: texture.sourceAssetId == null
           ? null
           : Icons.view_in_ar_outlined,

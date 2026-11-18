@@ -555,16 +555,7 @@ final GoRouter router = GoRouter(
           pageBuilder: (context, state) => CustomTransitionPage(
             child: DeferredWidget(
               loader: textures_page.loadLibrary,
-              builder: () => textures_page.TexturesPage(
-                // The selection is in the URL, so a reload keeps it.
-                selectedId: state.uri.queryParameters['id'],
-                onSelected: (id) => context.go(
-                  Uri(
-                    path: AssetNavigationEntry.textures.route,
-                    queryParameters: id == null ? null : {'id': id},
-                  ).toString(),
-                ),
-              ),
+              builder: () => textures_page.TexturesPage(),
             ),
             key: state.pageKey,
             transitionsBuilder: (
