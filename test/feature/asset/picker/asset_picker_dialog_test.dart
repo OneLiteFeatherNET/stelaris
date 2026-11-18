@@ -175,6 +175,9 @@ Future<void> _waitFor(WidgetTester tester, Finder finder) => pumpUntil(
   done: () => finder.evaluate().isNotEmpty,
 );
 
+/// The drop zone of the upload form, which opens the file dialog.
+final _dropZone = find.byKey(const Key('asset_upload_drop_zone'));
+
 Future<void> _tap(WidgetTester tester, String text) =>
     _tapFinder(tester, find.text(text));
 
@@ -342,14 +345,14 @@ void main() {
       );
       await _waitFor(tester, find.text(_rubyModel));
       expect(
-        find.text('Choose a file'),
+        _dropZone,
         findsNothing,
         reason: 'the list has a tab of its own',
       );
 
       await _openUpload(tester);
       expect(find.text(_rubyModel), findsNothing, reason: 'the list is gone');
-      await _tap(tester, 'Choose a file');
+      await _tapFinder(tester, _dropZone);
       expect(
         tester
             .widget<TextField>(find.byKey(const Key('asset_upload_key')))
@@ -409,7 +412,7 @@ void main() {
       );
 
       await _openUpload(tester);
-      await _tap(tester, 'Choose a file');
+      await _tapFinder(tester, _dropZone);
       await _confirmUpload(tester);
       await _waitFor(tester, find.text('Key is already in use'));
 
@@ -443,7 +446,7 @@ void main() {
     );
 
     await _openUpload(tester);
-    await _tap(tester, 'Choose a file');
+    await _tapFinder(tester, _dropZone);
     await _confirmUpload(tester);
     await _waitFor(tester, find.text('The file is not a model'));
 
@@ -465,7 +468,7 @@ void main() {
     await _waitFor(tester, find.text(_rubyModel));
 
     await _openUpload(tester);
-    await _tap(tester, 'Choose a file');
+    await _tapFinder(tester, _dropZone);
     await _openExisting(tester);
 
     expect(find.text(_rubyModel), findsOneWidget);
@@ -551,7 +554,7 @@ void main() {
     );
 
     await _openUpload(tester);
-    await _tap(tester, 'Choose a file');
+    await _tapFinder(tester, _dropZone);
     await _confirmUpload(tester);
     await _waitFor(
       tester,
@@ -767,7 +770,7 @@ void main() {
         outcome: _Outcome(),
         texture: true,
       );
-      await _waitFor(tester, find.text('Choose a file'));
+      await _waitFor(tester, _dropZone);
 
       await _openExisting(tester);
 
@@ -797,7 +800,7 @@ void main() {
       );
 
       await _openUpload(tester);
-      await _tap(tester, 'Choose a file');
+      await _tapFinder(tester, _dropZone);
 
       expect(find.text('font/ghost'), findsOneWidget);
       expect(
@@ -818,7 +821,7 @@ void main() {
 
       await _openUpload(tester);
       expect(find.byType(TexturePreview), findsNothing);
-      await _tap(tester, 'Choose a file');
+      await _tapFinder(tester, _dropZone);
 
       expect(find.byType(TexturePreview), findsOneWidget);
     });
@@ -837,7 +840,7 @@ void main() {
       );
 
       await _openUpload(tester);
-      await _tap(tester, 'Choose a file');
+      await _tapFinder(tester, _dropZone);
       await _confirmUpload(tester);
       await _waitFor(tester, find.text('open picker').hitTestable());
 
@@ -883,7 +886,7 @@ void main() {
 
         await _tap(tester, 'Upload new version');
         expect(find.text('New version of cygnus:font/ghost'), findsOneWidget);
-        await _tap(tester, 'Choose a file');
+        await _tapFinder(tester, _dropZone);
         expect(
           find.byKey(const Key('asset_upload_key')),
           findsNothing,
@@ -911,7 +914,7 @@ void main() {
         await openAndSelect(tester, backend);
 
         await _tap(tester, 'Upload new version');
-        await _tap(tester, 'Choose a file');
+        await _tapFinder(tester, _dropZone);
         await _confirmUpload(tester);
         await _waitFor(
           tester,
