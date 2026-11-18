@@ -96,7 +96,7 @@ class _AppBarSearchState extends State<AppBarSearch> {
   Listenable? _requests;
 
   /// Where the field is, as of the last build.
-  NavigationEntry? _entry;
+  SearchSection? _entry;
   bool _onDetail = false;
 
   /// The width the dropdown follows: the field's.
@@ -262,7 +262,7 @@ class _AppBarSearchState extends State<AppBarSearch> {
   /// "Filter Items by 'sword'" on a list, "Show Items matching 'sword'" on a
   /// detail page - first and highlighted for plain text, so Enter filters.
   List<StelarisCommand> _filterEntry(String text) {
-    final NavigationEntry? entry = _entry;
+    final SearchSection? entry = _entry;
     if (entry == null) return const [];
     final bool onDetail = _onDetail;
     return [
@@ -346,7 +346,7 @@ class _AppBarSearchState extends State<AppBarSearch> {
     context.dispatch(UpdateSearchQueryAction(''));
   }
 
-  Future<void> _leaveDetail(NavigationEntry entry) async {
+  Future<void> _leaveDetail(SearchSection entry) async {
     if (_leavingDetail) return;
     _leavingDetail = true;
     try {
@@ -364,7 +364,7 @@ class _AppBarSearchState extends State<AppBarSearch> {
   @override
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
-    final entry = entryForLocation(location);
+    final entry = searchSectionForLocation(location);
     if (entry == null) return const SizedBox.shrink();
     _entry = entry;
     _onDetail = location != entry.route;
@@ -410,7 +410,7 @@ class _AppBarSearchState extends State<AppBarSearch> {
 
   Widget _buildSearchBar(
     BuildContext context, {
-    required NavigationEntry entry,
+    required SearchSection entry,
     required ModelSearchState search,
     required bool showClose,
   }) {
@@ -487,7 +487,7 @@ class _AppBarSearchState extends State<AppBarSearch> {
 
   Widget _searchBar(
     BuildContext context, {
-    required NavigationEntry entry,
+    required SearchSection entry,
     required ModelSearchState search,
     required bool showClose,
   }) {

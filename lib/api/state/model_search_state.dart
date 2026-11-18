@@ -23,6 +23,6 @@ abstract class ModelSearchState with _$ModelSearchState {
 
     /// The section the search was typed for. Lets the AppBar search notice
     /// a section change however it happens (side bar, browser back, URL).
-    NavigationEntry? section,
+    SearchSection? section,
   }) = _ModelSearchState;
 }

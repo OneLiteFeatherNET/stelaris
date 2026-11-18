@@ -1,8 +1,15 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/stelaris_icons.dart';
 
+/// A page the AppBar search filters: its name titles the hint and the
+/// palette's filter entry, its route is where a search from a detail goes.
+abstract interface class SearchSection {
+  String get display;
+  String get route;
+}
+
 /// The enum class contains all relevant item for the navigation widget.
-enum NavigationEntry {
+enum NavigationEntry implements SearchSection {
   attributes(
     'Attributes',
     '/attributes',
@@ -47,7 +54,9 @@ enum NavigationEntry {
     Icons.data_object,
   );
 
+  @override
   final String display;
+  @override
   final String route;
   final IconData data;
   final IconData selected;
@@ -64,7 +73,7 @@ enum NavigationEntry {
 /// heading of the sidebar. Kept apart from [NavigationEntry]: that enum
 /// drives the model sections' create, search, save and refresh, which assets
 /// lack.
-enum AssetNavigationEntry {
+enum AssetNavigationEntry implements SearchSection {
   models(
     'Models',
     '/assets/models',
@@ -78,7 +87,9 @@ enum AssetNavigationEntry {
     Icons.texture,
   );
 
+  @override
   final String display;
+  @override
   final String route;
   final IconData data;
   final IconData selected;
@@ -152,3 +163,8 @@ BuildNavigationEntry? buildEntryForLocation(String location) {
   }
   return null;
 }
+
+/// The page the AppBar search filters at [location]: a section or an asset
+/// page, null elsewhere.
+SearchSection? searchSectionForLocation(String location) =>
+    entryForLocation(location) ?? assetEntryForLocation(location);
