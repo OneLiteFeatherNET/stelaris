@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
@@ -159,5 +160,26 @@ void main() {
     await assets.load();
 
     expect(assets.references.keys, [_ruby]);
+  });
+
+  testWidgets('resume runs onResume instead of the plain load', (tester) async {
+    var resumed = 0;
+    final library = _Library(assets: [_ruby]);
+    final assets = ProjectAssets(
+      library: library,
+      projectId: 'p-1',
+      onResume: () async => resumed++,
+    );
+    addTearDown(assets.dispose);
+    await assets.load();
+    library.assets = [_sword];
+
+    tester.binding
+      ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+      ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+
+    expect(resumed, 1);
+    expect(assets.models, [_ruby]);
   });
 }

@@ -54,6 +54,14 @@ final _blade = _asset(
   sourceAssetId: 'b1',
 );
 
+const _state = AppState(
+  selectedProject: Project(id: 'p-1', key: 'vulpes', displayName: 'Vulpes'),
+);
+
+void _resume(WidgetTester tester) => tester.binding
+  ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+  ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+
 DioException _failure() => DioException(
   requestOptions: RequestOptions(path: '/asset'),
   type: DioExceptionType.connectionError,
@@ -90,7 +98,9 @@ Future<List<String?>> _pump(
   String? selectedId,
   Future<PickedAssetFile?> Function()? pickFile,
   TextureUsageSources sources = const TextureUsageSources(),
+  Future<TextureUsageSources> Function(String projectId)? loadSources,
   ValueChanged<String>? openLocation,
+  Store<AppState>? store,
 }) async {
   tester.view.physicalSize = const Size(1200, 800);
   tester.view.devicePixelRatio = 1;
@@ -98,15 +108,7 @@ Future<List<String?>> _pump(
   final selections = <String?>[];
   await tester.pumpWidget(
     StoreProvider<AppState>(
-      store: Store<AppState>(
-        initialState: const AppState(
-          selectedProject: Project(
-            id: 'p-1',
-            key: 'vulpes',
-            displayName: 'Vulpes',
-          ),
-        ),
-      ),
+      store: store ?? Store<AppState>(initialState: _state),
       child: MaterialApp(
         localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -115,7 +117,7 @@ Future<List<String?>> _pump(
             library: library,
             selectedId: selectedId,
             onSelected: selections.add,
-            loadUsageSources: (_) async => sources,
+            loadUsageSources: loadSources ?? (_) async => sources,
             openLocation: openLocation ?? (_) {},
             pickFile: pickFile ?? () async => null,
             saveFile: (_, _) {},
@@ -326,5 +328,94 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(_keys(tester), ['vulpes:block/stone']);
+  });
+
+  testWidgets('resume reloads the fonts and pack metas', (tester) async {
+    var sources = const TextureUsageSources();
+    await _pump(
+      tester,
+      library: _Library([_gem]),
+      selectedId: 't1',
+      loadSources: (_) async => sources,
+    );
+    expect(find.text('Not used anywhere yet.'), findsOneWidget);
+
+    sources = const TextureUsageSources(
+      fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
+    );
+    _resume(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Icons'), findsOneWidget);
+  });
+
+  testWidgets('unused filter can be turned off when the usages fail', (
+    tester,
+  ) async {
+    var fail = false;
+    await _pump(
+      tester,
+      library: _Library([_gem, _stone]),
+      loadSources: (_) async {
+        if (fail) throw _failure();
+        return const TextureUsageSources(
+          fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
+        );
+      },
+    );
+    await tester.tap(find.byKey(const Key('textures_unused')));
+    await tester.pumpAndSettle();
+    expect(_keys(tester), ['vulpes:block/stone']);
+
+    fail = true;
+    _resume(tester);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('textures_unused')));
+    await tester.pumpAndSettle();
+
+    expect(_keys(tester), ['vulpes:block/gem', 'vulpes:block/stone']);
+  });
+
+  testWidgets('deleting clears the texture from the fonts in the store', (
+    tester,
+  ) async {
+    const icons = FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1');
+    final store = Store<AppState>(
+      initialState: _state.copyWith(
+        fonts: const PaginatedResult(
+          items: [icons],
+          totalItems: 1,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: 10,
+        ),
+        selectedFont: icons,
+      ),
+    );
+    final selections = await _pump(
+      tester,
+      library: _Library([_gem]),
+      selectedId: 't1',
+      sources: const TextureUsageSources(fonts: [icons]),
+      store: store,
+    );
+    ApiService().assetApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter(
+          (RequestOptions options) =>
+              FakeHttpClientAdapter.response(_gem.toJson()),
+        );
+
+    await tester.tap(find.byKey(const Key('texture_delete')));
+    await tester.pumpAndSettle();
+    await pumpUntil(
+      tester,
+      action: () async {
+        await tester.tap(find.text('Delete').last);
+      },
+      done: () => selections.isNotEmpty,
+    );
+
+    expect(store.state.fonts.items.single.textureAssetId, isNull);
+    expect(store.state.selectedFont?.textureAssetId, isNull);
   });
 }
