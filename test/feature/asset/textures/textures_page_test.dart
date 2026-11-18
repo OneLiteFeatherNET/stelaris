@@ -191,6 +191,59 @@ void main() {
     expect(_keys(tester), ['vulpes:block/gem', 'vulpes:block/stone']);
   });
 
+  testWidgets('sorts the textures by key, whatever order they come in', (
+    tester,
+  ) async {
+    final gemCopy = _asset(
+      't4',
+      'vulpes:block/gem',
+      AssetKind.TEXTURE,
+      name: 'Another Gem',
+    );
+    await _pump(tester, library: _Library([_stone, _blade, _gem, gemCopy]));
+
+    expect(_keys(tester), [
+      'vulpes:block/gem',
+      'vulpes:block/gem',
+      'vulpes:block/stone',
+      'vulpes:item/axe_blade',
+    ]);
+    // The same key goes by name.
+    expect(
+      tester
+          .widgetList<Text>(find.textContaining('Gem'))
+          .map((text) => text.data),
+      ['Another Gem', 'Gem'],
+    );
+  });
+
+  testWidgets('header counts the shown textures while search or filter hide '
+      'some', (tester) async {
+    final store = Store<AppState>(initialState: _state);
+    await _pump(
+      tester,
+      library: _Library([_gem, _stone, _blade]),
+      store: store,
+      sources: const TextureUsageSources(
+        fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
+      ),
+    );
+    expect(find.text('Textures (3)'), findsOneWidget);
+
+    store.dispatch(UpdateSearchQueryAction('block/'));
+    await tester.pumpAndSettle();
+    expect(find.text('Textures (2 of 3)'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('textures_unused')));
+    await tester.pumpAndSettle();
+    expect(find.text('Textures (1 of 3)'), findsOneWidget);
+
+    store.dispatch(UpdateSearchQueryAction(''));
+    await tester.tap(find.byKey(const Key('textures_unused')));
+    await tester.pumpAndSettle();
+    expect(find.text('Textures (3)'), findsOneWidget);
+  });
+
   testWidgets('search from the store filters by key and display name', (
     tester,
   ) async {
