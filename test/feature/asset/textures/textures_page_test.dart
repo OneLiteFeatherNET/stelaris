@@ -103,6 +103,7 @@ Future<void> _pump(
   Future<TextureUsageSources> Function(String projectId)? loadSources,
   ValueChanged<String>? openLocation,
   Store<AppState>? store,
+  ValueNotifier<bool>? showPage,
 }) async {
   tester.view.physicalSize = const Size(1200, 800);
   tester.view.devicePixelRatio = 1;
@@ -114,12 +115,19 @@ Future<void> _pump(
         localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
-          body: TexturesPage(
-            library: library,
-            loadUsageSources: loadSources ?? (_) async => sources,
-            openLocation: openLocation ?? (_) {},
-            pickFile: pickFile ?? () async => null,
-            saveFile: (_, _) {},
+          // Turning it off leaves the page like navigating elsewhere does,
+          // while dialogs stay on the navigator.
+          body: ValueListenableBuilder<bool>(
+            valueListenable: showPage ?? ValueNotifier(true),
+            builder: (context, show, _) => show
+                ? TexturesPage(
+                    library: library,
+                    loadUsageSources: loadSources ?? (_) async => sources,
+                    openLocation: openLocation ?? (_) {},
+                    pickFile: pickFile ?? () async => null,
+                    saveFile: (_, _) {},
+                  )
+                : const SizedBox.shrink(),
           ),
         ),
       ),
@@ -546,6 +554,51 @@ void main() {
 
     expect(find.byType(Dialog), findsNothing);
     expect(locations, ['/assets/models?id=b1']);
+  });
+
+  testWidgets('unused filter without hits says every texture is in use', (
+    tester,
+  ) async {
+    final store = Store<AppState>(initialState: _state);
+    await _pump(
+      tester,
+      library: _Library([_gem]),
+      store: store,
+      sources: const TextureUsageSources(
+        fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('textures_unused')));
+    await tester.pumpAndSettle();
+    expect(find.text('Every texture is in use.'), findsOneWidget);
+    expect(find.text('No texture matches the search.'), findsNothing);
+
+    store.dispatch(UpdateSearchQueryAction('gem'));
+    await tester.pumpAndSettle();
+    expect(find.text('No texture matches the search.'), findsOneWidget);
+  });
+
+  testWidgets('leaving the page closes its info dialog', (tester) async {
+    final showPage = ValueNotifier(true);
+    addTearDown(showPage.dispose);
+    final locations = <String>[];
+    await _pump(
+      tester,
+      library: _Library([_gem]),
+      openLocation: locations.add,
+      showPage: showPage,
+      sources: const TextureUsageSources(
+        fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
+      ),
+    );
+    await _openInfo(tester, 't1');
+
+    showPage.value = false;
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Dialog), findsNothing);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('unused filter shows only textures nobody uses', (tester) async {
