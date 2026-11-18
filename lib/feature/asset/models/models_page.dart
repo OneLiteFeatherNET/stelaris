@@ -10,6 +10,7 @@ import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/asset_kind_label.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
+import 'package:stelaris/feature/asset/loading/project_assets.dart';
 import 'package:stelaris/feature/asset/models/asset_model_actions.dart';
 import 'package:stelaris/feature/asset/models/flat_item_model.dart';
 import 'package:stelaris/feature/asset/models/model_detail.dart';
@@ -163,12 +164,18 @@ class _ModelsBody extends StatefulWidget {
 }
 
 class _ModelsBodyState extends State<_ModelsBody> {
-  List<AssetModel> _models = const [];
-  List<AssetModel> _textures = const [];
+  late final ProjectAssets _assets = ProjectAssets(
+    library: widget.library,
+    projectId: widget.projectId,
+    onReloadFailed: _showReloadFailure,
+  );
+
+  List<AssetModel> get _models => _assets.models;
+  List<AssetModel> get _textures => _assets.textures;
 
   /// The texture keys of every model JSON read so far. Filled after the list
   /// is shown, so the badges come in a moment later.
-  Map<AssetModel, Set<String>> _references = const {};
+  Map<AssetModel, Set<String>> get _references => _assets.references;
 
   /// The items with their components, loaded once a detail asks for them.
   Future<Map<ItemModel, List<ItemComponentDto>>>? _usages;
@@ -181,23 +188,11 @@ class _ModelsBodyState extends State<_ModelsBody> {
   final Map<String, Future<Uint8List>> _thumbnails = {};
 
   late String? _selectedId = widget.selectedId;
-  bool _loading = true;
-  ProblemDetail? _loadError;
-
-  /// Whether the list was loaded once, so a reload keeps it on screen.
-  bool _listed = false;
-
-  /// Counts the loads, so a load that ends after a newer one is ignored.
-  int _loadId = 0;
-
-  /// Reloads when the app resumes, e.g. when the browser tab regains focus,
-  /// so assets saved elsewhere are counted.
-  late final AppLifecycleListener _lifecycle;
 
   @override
   void initState() {
     super.initState();
-    _lifecycle = AppLifecycleListener(onResume: _load);
+    _assets.addListener(_onAssetsChanged);
     _load();
   }
 
@@ -211,65 +206,27 @@ class _ModelsBodyState extends State<_ModelsBody> {
 
   @override
   void dispose() {
-    _lifecycle.dispose();
+    _assets
+      ..removeListener(_onAssetsChanged)
+      ..dispose();
     super.dispose();
   }
 
-  Future<void> _load() async {
-    final loadId = ++_loadId;
+  void _onAssetsChanged() {
+    if (mounted) setState(() {});
+  }
+
+  void _showReloadFailure(ProblemDetail problem) {
+    if (!mounted) return;
+    // A failed reload keeps the list it would have replaced.
+    ScaffoldMessenger.of(context)
+        .showSnackBar(InfoBarFactory().createError(problem));
+  }
+
+  Future<void> _load() {
     _usages = null;
     _usedBy.clear();
-    final library = widget.library;
-    final projectId = widget.projectId;
-    if (!_listed) {
-      setState(() {
-        _loading = true;
-        _loadError = null;
-      });
-    }
-    final List<List<AssetModel>> lists;
-    try {
-      lists = await Future.wait([
-        library.assetsOf(projectId, AssetKind.MODEL),
-        library.assetsOf(projectId, AssetKind.BBMODEL),
-        library.assetsOf(projectId, AssetKind.TEXTURE),
-      ]);
-    } on DioException catch (error) {
-      if (!mounted || loadId != _loadId) return;
-      final problem = ProblemDetail.fromDioException(error);
-      if (_listed) {
-        // A failed reload keeps the list it would have replaced.
-        ScaffoldMessenger.of(context)
-            .showSnackBar(InfoBarFactory().createError(problem));
-      }
-      setState(() {
-        _loading = false;
-        if (!_listed) _loadError = problem;
-      });
-      return;
-    }
-    if (!mounted || loadId != _loadId) return;
-    final models = [...lists[0], ...lists[1]]
-      ..sort((a, b) => a.key.compareTo(b.key));
-    setState(() {
-      _models = models;
-      _textures = lists[2];
-      _loading = false;
-      _listed = true;
-    });
-
-    final references = <AssetModel, Set<String>>{};
-    for (final model in models) {
-      if (model.kind != AssetKind.MODEL) continue;
-      try {
-        references[model] = await library.textureKeysOf(projectId, model);
-      } on Object {
-        // A file that can't be read has no textures to count; its preview
-        // says what is wrong.
-      }
-    }
-    if (!mounted || loadId != _loadId) return;
-    setState(() => _references = references);
+    return _assets.load();
   }
 
   Future<Uint8List> _thumbnailOf(AssetModel texture) =>
@@ -416,7 +373,7 @@ class _ModelsBodyState extends State<_ModelsBody> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PageHeader(
-                title: _listed
+                title: _assets.listed
                     ? '${context.l10n.asset_models_title} (${_models.length})'
                     : context.l10n.asset_models_title,
                 actions: [
@@ -462,10 +419,10 @@ class _ModelsBodyState extends State<_ModelsBody> {
 
   Widget _buildGrid() {
     final l10n = context.l10n;
-    if (_loading) {
+    if (_assets.loading) {
       return const Center(child: CircularProgressIndicator());
     }
-    if (_loadError case final problem?) {
+    if (_assets.loadError case final problem?) {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
