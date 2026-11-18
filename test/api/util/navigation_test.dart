@@ -25,6 +25,15 @@ void main() {
     expect(assetEntryForLocation('/assets/models'), AssetNavigationEntry.models);
   });
 
+  test('finds the search section of list and asset pages', () {
+    expect(
+      searchSectionForLocation('/assets/textures'),
+      AssetNavigationEntry.textures,
+    );
+    expect(searchSectionForLocation('/items/detail'), NavigationEntry.items);
+    expect(searchSectionForLocation('/generator'), isNull);
+  });
+
   test('returns null outside the sections', () {
     expect(entryForLocation('/projects'), isNull);
   });

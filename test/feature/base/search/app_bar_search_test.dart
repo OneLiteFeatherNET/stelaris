@@ -41,6 +41,10 @@ void main() {
       initialLocation: location,
       routes: [
         GoRoute(
+          path: '/assets/textures',
+          builder: (context, state) => page('Texture List'),
+        ),
+        GoRoute(
           path: '/items',
           builder: (context, state) => page('Item List'),
           routes: [
@@ -71,6 +75,11 @@ void main() {
   testWidgets('shows a section-specific hint', (tester) async {
     await pump(tester);
     expect(find.text('Search Items, or ? for more'), findsOneWidget);
+  });
+
+  testWidgets('offers the search on the textures page', (tester) async {
+    await pump(tester, location: '/assets/textures');
+    expect(find.text('Search Textures, or ? for more'), findsOneWidget);
   });
 
   testWidgets('dispatches the query only after the 300ms debounce', (
