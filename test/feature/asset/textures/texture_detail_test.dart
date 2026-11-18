@@ -31,6 +31,7 @@ Future<({List<AssetModel> models, List<FontModel> fonts})> _pump(
   required AssetModel texture,
   required TextureUsages? usages,
   bool usagesFailed = false,
+  VoidCallback? onRetryUsages,
 }) async {
   tester.view.physicalSize = const Size(1200, 900);
   tester.view.devicePixelRatio = 1;
@@ -47,6 +48,7 @@ Future<({List<AssetModel> models, List<FontModel> fonts})> _pump(
             texture: texture,
             usages: usages,
             usagesFailed: usagesFailed,
+            onRetryUsages: onRetryUsages,
             loadContent: (_, _) async => png16,
             onOpenModel: opened.models.add,
             onOpenFont: opened.fonts.add,
@@ -103,6 +105,30 @@ void main() {
       find.text('Where the texture is used could not be loaded.'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('failed usages offer a retry when one is given', (
+    tester,
+  ) async {
+    var retries = 0;
+    await _pump(
+      tester,
+      texture: _gem,
+      usages: null,
+      usagesFailed: true,
+      onRetryUsages: () => retries++,
+    );
+
+    await tester.tap(find.byKey(const Key('texture_usages_retry')));
+    expect(retries, 1);
+  });
+
+  testWidgets('failed usages without a retry callback show no button', (
+    tester,
+  ) async {
+    await _pump(tester, texture: _gem, usages: null, usagesFailed: true);
+
+    expect(find.byKey(const Key('texture_usages_retry')), findsNothing);
   });
 
   testWidgets('font only use is not shown as unused', (tester) async {

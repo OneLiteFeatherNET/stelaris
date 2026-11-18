@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:async_redux/async_redux.dart';
@@ -157,6 +158,22 @@ List<String> _menuLabels(WidgetTester tester) => [
       text.data ?? '',
 ];
 
+/// Whether the item [label] of the open card menu can be tapped.
+bool _menuItemEnabled(WidgetTester tester, String label) => tester
+    .widget<PopupMenuItem<void>>(
+      find.ancestor(
+        of: find.text(label),
+        matching: find.byType(PopupMenuItem<void>),
+      ),
+    )
+    .enabled;
+
+/// The footer text of the card of the texture [id].
+Finder _footer(String id, String text) => find.descendant(
+  of: find.byKey(ValueKey('texture_$id')),
+  matching: find.text(text),
+);
+
 List<String> _keys(WidgetTester tester) => tester
     .widgetList<InfoChip>(find.byType(InfoChip))
     .map((chip) => chip.text)
@@ -296,6 +313,107 @@ void main() {
       'Download',
       'Delete',
     ]);
+  });
+
+  testWidgets('delete is disabled until the usages are known', (tester) async {
+    final sources = Completer<TextureUsageSources>();
+    await _pump(
+      tester,
+      library: _Library([_gem]),
+      loadSources: (_) => sources.future,
+    );
+
+    await _openMenu(tester, 't1');
+    expect(_menuItemEnabled(tester, 'Delete'), isFalse);
+    await tester.tapAt(Offset.zero);
+    await tester.pumpAndSettle();
+
+    sources.complete(const TextureUsageSources());
+    await tester.pumpAndSettle();
+    await _openMenu(tester, 't1');
+    expect(_menuItemEnabled(tester, 'Delete'), isTrue);
+  });
+
+  testWidgets('failed usages offer a retry that enables delete', (
+    tester,
+  ) async {
+    var fail = true;
+    var loads = 0;
+    await _pump(
+      tester,
+      library: _Library([_gem]),
+      loadSources: (_) async {
+        loads++;
+        if (fail) throw _failure();
+        return const TextureUsageSources();
+      },
+    );
+    expect(find.text('Uses could not be loaded'), findsOneWidget);
+    await _openMenu(tester, 't1');
+    expect(_menuItemEnabled(tester, 'Delete'), isFalse);
+    await tester.tapAt(Offset.zero);
+    await tester.pumpAndSettle();
+
+    fail = false;
+    await tester.tap(find.byKey(const Key('textures_usages_retry')));
+    await tester.pumpAndSettle();
+
+    expect(loads, 2);
+    expect(find.byKey(const Key('textures_usages_retry')), findsNothing);
+    await _openMenu(tester, 't1');
+    expect(_menuItemEnabled(tester, 'Delete'), isTrue);
+  });
+
+  testWidgets('retry in the info dialog loads the usages again', (
+    tester,
+  ) async {
+    var fail = true;
+    await _pump(
+      tester,
+      library: _Library([_gem]),
+      loadSources: (_) async {
+        if (fail) throw _failure();
+        return const TextureUsageSources(
+          fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
+        );
+      },
+    );
+    await _openInfo(tester, 't1');
+
+    fail = false;
+    await tester.tap(find.byKey(const Key('texture_usages_retry')));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.descendant(of: find.byType(Dialog), matching: find.text('Icons')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('card footer says how often an uploaded texture is used', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      library: _Library([_axe, _gem, _stone, _blade]),
+      sources: const TextureUsageSources(
+        fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
+      ),
+    );
+
+    expect(_footer('t1', 'Used once'), findsOneWidget);
+    expect(_footer('t2', 'Not used'), findsOneWidget);
+    expect(_footer('t3', 'From Axe'), findsOneWidget);
+  });
+
+  testWidgets('card footer stays empty while the usages load', (tester) async {
+    await _pump(
+      tester,
+      library: _Library([_gem]),
+      loadSources: (_) => Completer<TextureUsageSources>().future,
+    );
+
+    expect(_footer('t1', 'Not used'), findsNothing);
   });
 
   testWidgets('menu of an extracted texture has no update and no delete', (
