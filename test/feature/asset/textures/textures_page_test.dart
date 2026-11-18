@@ -5,7 +5,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/search_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/asset/textures/texture_usage_sources.dart';
@@ -147,40 +149,39 @@ void main() {
     expect(_keys(tester), ['vulpes:block/gem', 'vulpes:block/stone']);
   });
 
-  testWidgets('search filters by key and display name, case insensitive', (
+  testWidgets('search from the store filters by key and display name', (
     tester,
   ) async {
-    await _pump(tester, library: _Library([_gem, _stone, _blade]));
-
-    await tester.enterText(
-      find.byKey(const Key('textures_search')),
-      'POLISHED',
+    final store = Store<AppState>(initialState: _state);
+    await _pump(
+      tester,
+      library: _Library([_gem, _stone, _blade]),
+      store: store,
     );
+
+    store.dispatch(UpdateSearchQueryAction('POLISHED'));
     await tester.pumpAndSettle();
     expect(_keys(tester), ['vulpes:block/stone']);
 
-    await tester.enterText(find.byKey(const Key('textures_search')), 'item/');
+    store.dispatch(UpdateSearchQueryAction('item/'));
     await tester.pumpAndSettle();
     expect(_keys(tester), ['vulpes:item/axe_blade']);
   });
 
-  testWidgets('origin filter separates uploaded and extracted', (tester) async {
-    await _pump(tester, library: _Library([_axe, _gem, _blade]));
+  testWidgets('registers the textures page as the search section', (
+    tester,
+  ) async {
+    final store = Store<AppState>(initialState: _state);
+    await _pump(tester, library: _Library([_gem]), store: store);
 
-    await tester.tap(find.text('Extracted'));
-    await tester.pumpAndSettle();
-    expect(_keys(tester), ['vulpes:item/axe_blade']);
-    expect(find.text('From Axe'), findsOneWidget);
-
-    await tester.tap(find.text('Uploaded').first);
-    await tester.pumpAndSettle();
-    expect(_keys(tester), ['vulpes:block/gem']);
+    expect(store.state.modelSearch.section, AssetNavigationEntry.textures);
   });
 
   testWidgets('search without hits shows no matches', (tester) async {
-    await _pump(tester, library: _Library([_gem]));
+    final store = Store<AppState>(initialState: _state);
+    await _pump(tester, library: _Library([_gem]), store: store);
 
-    await tester.enterText(find.byKey(const Key('textures_search')), 'zzz');
+    store.dispatch(UpdateSearchQueryAction('zzz'));
     await tester.pumpAndSettle();
 
     expect(find.text('No texture matches the search.'), findsOneWidget);

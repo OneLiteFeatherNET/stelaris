@@ -6,7 +6,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
+import 'package:stelaris/api/state/actions/search_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/models/models_page.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
@@ -37,6 +39,10 @@ final _ruby = _asset('m1', 'vulpes:item/ruby', AssetKind.MODEL);
 final _sword = _asset('m2', 'vulpes:item/sword', AssetKind.MODEL);
 final _axe = _asset('b1', 'vulpes:item/axe', AssetKind.BBMODEL);
 final _gem = _asset('t1', 'vulpes:block/gem', AssetKind.TEXTURE);
+
+const _modelsState = AppState(
+  selectedProject: Project(id: 'p-1', key: 'vulpes', displayName: 'Vulpes'),
+);
 
 /// Answers the page's lookups from memory, without requests.
 class _Library extends AssetLibrary {
@@ -72,6 +78,7 @@ Future<List<String?>> _pump(
   Size size = const Size(1200, 800),
   Future<PickedAssetFile?> Function()? pickFile,
   void Function(List<int> bytes, String fileName)? saveFile,
+  Store<AppState>? store,
 }) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
@@ -81,15 +88,7 @@ Future<List<String?>> _pump(
   final selections = <String?>[];
   await tester.pumpWidget(
     StoreProvider<AppState>(
-      store: Store<AppState>(
-        initialState: const AppState(
-          selectedProject: Project(
-            id: 'p-1',
-            key: 'vulpes',
-            displayName: 'Vulpes',
-          ),
-        ),
-      ),
+      store: store ?? Store<AppState>(initialState: _modelsState),
       child: MaterialApp(
         localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -634,5 +633,29 @@ void main() {
 
     expect(find.byType(TextureThumbnail), findsOneWidget);
     expect(library.contents, [_gem]);
+  });
+
+  testWidgets('search from the store filters models by key and name', (
+    tester,
+  ) async {
+    final store = Store<AppState>(initialState: _modelsState);
+    await _pump(
+      tester,
+      library: _Library([_ruby, _sword, _axe], {}),
+      store: store,
+    );
+
+    store.dispatch(UpdateSearchQueryAction('SWORD'));
+    await tester.pumpAndSettle();
+
+    final keys = tester
+        .widgetList<InfoChip>(find.byType(InfoChip))
+        .map((chip) => chip.text);
+    expect(keys, ['vulpes:item/sword']);
+    expect(store.state.modelSearch.section, AssetNavigationEntry.models);
+
+    store.dispatch(UpdateSearchQueryAction('zzz'));
+    await tester.pumpAndSettle();
+    expect(find.text('No model matches the search.'), findsOneWidget);
   });
 }
