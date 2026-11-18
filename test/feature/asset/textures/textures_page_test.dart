@@ -8,6 +8,7 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
+import 'package:stelaris/feature/asset/textures/texture_usage_sources.dart';
 import 'package:stelaris/feature/asset/textures/textures_page.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -86,7 +87,10 @@ class _Library extends AssetLibrary {
 Future<List<String?>> _pump(
   WidgetTester tester, {
   required _Library library,
+  String? selectedId,
   Future<PickedAssetFile?> Function()? pickFile,
+  TextureUsageSources sources = const TextureUsageSources(),
+  ValueChanged<String>? openLocation,
 }) async {
   tester.view.physicalSize = const Size(1200, 800);
   tester.view.devicePixelRatio = 1;
@@ -109,7 +113,10 @@ Future<List<String?>> _pump(
         home: Scaffold(
           body: TexturesPage(
             library: library,
+            selectedId: selectedId,
             onSelected: selections.add,
+            loadUsageSources: (_) async => sources,
+            openLocation: openLocation ?? (_) {},
             pickFile: pickFile ?? () async => null,
             saveFile: (_, _) {},
           ),
@@ -224,5 +231,85 @@ void main() {
     );
 
     expect(selections, ['t2']);
+  });
+
+  testWidgets('extracted texture has no delete and no update', (tester) async {
+    await _pump(tester, library: _Library([_axe, _blade]), selectedId: 't3');
+
+    expect(find.byKey(const Key('model_download')), findsOneWidget);
+    expect(find.byKey(const Key('texture_delete')), findsNothing);
+    expect(find.byKey(const Key('model_update')), findsNothing);
+  });
+
+  testWidgets('delete dialog warns about every use', (tester) async {
+    await _pump(
+      tester,
+      library: _Library([_gem]),
+      selectedId: 't1',
+      sources: const TextureUsageSources(
+        fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('texture_delete')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Delete Gem?'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.textContaining('Icons'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.textContaining('lose this texture'), findsOneWidget);
+  });
+
+  testWidgets('confirming deletes, returns to the grid and reloads', (
+    tester,
+  ) async {
+    final assets = [_gem, _stone];
+    final requests = <RequestOptions>[];
+    final selections = await _pump(
+      tester,
+      library: _Library(assets),
+      selectedId: 't1',
+    );
+    ApiService().assetApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter((RequestOptions options) {
+          requests.add(options);
+          assets.remove(_gem);
+          return FakeHttpClientAdapter.response(_gem.toJson());
+        });
+
+    await tester.tap(find.byKey(const Key('texture_delete')));
+    await tester.pumpAndSettle();
+    await pumpUntil(
+      tester,
+      action: () async {
+        await tester.tap(find.text('Delete').last);
+      },
+      done: () => selections.isNotEmpty,
+    );
+
+    expect(requests.single.method, 'DELETE');
+    expect(requests.single.uri.path, endsWith('/delete/t1'));
+    expect(selections, [null]);
+  });
+
+  testWidgets('tap on a model opens the models page with its id', (
+    tester,
+  ) async {
+    final locations = <String>[];
+    await _pump(
+      tester,
+      library: _Library([_axe, _blade]),
+      selectedId: 't3',
+      openLocation: locations.add,
+    );
+
+    await tester.tap(find.byKey(const ValueKey('texture_used_model_b1')));
+
+    expect(locations, ['/assets/models?id=b1']);
   });
 }
