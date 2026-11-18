@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -7,6 +8,7 @@ import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/preview/asset_preview_placeholder.dart';
 import 'package:stelaris/feature/item/components/book/written_book.dart';
 import 'package:stelaris/feature/item/components/book/written_book_editor.dart';
+import 'package:stelaris/feature/item/components/component_category_menu.dart';
 import 'package:stelaris/feature/item/components/component_dialogs.dart';
 import 'package:stelaris/feature/item/components/schema/schema.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -855,6 +857,67 @@ void main() {
       await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
       expect(saved?.value, 'vulpes:item/ruby');
+    });
+  });
+
+  group('component picker list', () {
+    Future<void> openPicker(WidgetTester tester) async {
+      tester.view.physicalSize = const Size(1200, 1000);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await pumpOpener(
+        tester,
+        (context) => showComponentPickerDialog(
+          context,
+          existing: const {},
+          materialDefaults: const {},
+        ),
+        (_) {},
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('typing keeps the focus and rebuilds only the list', (
+      tester,
+    ) async {
+      await openPicker(tester);
+      final menu = find.byType(ComponentCategoryMenu);
+      final before = tester.widget(menu);
+      final field = find.descendant(
+        of: find.byType(SearchBar),
+        matching: find.byType(EditableText),
+      );
+
+      await tester.enterText(find.byType(SearchBar), 'foo');
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(SearchBar), 'food');
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<EditableText>(field).focusNode.hasFocus, isTrue);
+      expect(find.text('minecraft:food'), findsOneWidget);
+      expect(find.text('minecraft:max_stack_size'), findsNothing);
+      expect(identical(tester.widget(menu), before), isTrue);
+    });
+
+    testWidgets('scrolling does not repaint the whole picker', (tester) async {
+      await openPicker(tester);
+
+      final list = find.byType(ListView);
+      tester.binding.handlePointerEvent(
+        PointerScrollEvent(
+          position: tester.getCenter(list),
+          scrollDelta: const Offset(0, 100),
+        ),
+      );
+
+      // The Material around the list holds the ink of the rows unless each
+      // row has its own: then it would repaint all rows on every frame.
+      final around = find
+          .ancestor(of: list, matching: find.byType(Material))
+          .first;
+      expect(tester.renderObject(around).debugNeedsPaint, isFalse);
+      await tester.pump();
     });
   });
 }
