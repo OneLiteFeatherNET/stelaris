@@ -23,6 +23,7 @@ import 'package:stelaris/feature/settings/settings_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/routes.dart';
+import 'package:stelaris/util/stelaris_icons.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// The commands the palette offers.
@@ -209,7 +210,7 @@ final StelarisCommand _openBuild = StelarisCommand(
   title: (l10n) => l10n.command_open_build,
   keywords: (l10n) => _split(l10n.command_open_build_keywords),
   group: CommandGroup.interface,
-  icon: Icons.build_outlined,
+  icon: StelarisIcons.anvilOutlined,
   run: (context) async => context.go(BuildNavigationEntry.generator.route),
 );
 

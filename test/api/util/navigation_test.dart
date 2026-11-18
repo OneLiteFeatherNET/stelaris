@@ -68,5 +68,10 @@ void main() {
       );
       expect(NavigationEntry.blockstates.selected, StelarisIcons.grassBlock);
     });
+
+    test('the generator uses the anvil icon', () {
+      expect(BuildNavigationEntry.generator.data, StelarisIcons.anvilOutlined);
+      expect(BuildNavigationEntry.generator.selected, StelarisIcons.anvil);
+    });
   });
 }
