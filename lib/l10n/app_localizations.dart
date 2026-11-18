@@ -4058,8 +4058,14 @@ abstract class AppLocalizations {
   /// No description provided for @asset_upload_drop.
   ///
   /// In en, this message translates to:
-  /// **'Drag a file here'**
-  String get asset_upload_drop;
+  /// **'Drag a file here or {browse}'**
+  String asset_upload_drop(String browse);
+
+  /// No description provided for @asset_upload_browse.
+  ///
+  /// In en, this message translates to:
+  /// **'browse'**
+  String get asset_upload_browse;
 
   /// No description provided for @asset_upload_drop_now.
   ///
@@ -4072,12 +4078,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'PNG textures, model JSON or Blockbench models (.bbmodel)'**
   String get asset_upload_formats;
-
-  /// No description provided for @asset_upload_choose.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose a file'**
-  String get asset_upload_choose;
 
   /// No description provided for @asset_upload_change.
   ///

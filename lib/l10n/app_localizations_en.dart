@@ -2247,7 +2247,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_library_kind_sound => 'Sound';
 
   @override
-  String get asset_upload_drop => 'Drag a file here';
+  String asset_upload_drop(String browse) {
+    return 'Drag a file here or $browse';
+  }
+
+  @override
+  String get asset_upload_browse => 'browse';
 
   @override
   String get asset_upload_drop_now => 'Drop to add the file';
@@ -2255,9 +2260,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get asset_upload_formats =>
       'PNG textures, model JSON or Blockbench models (.bbmodel)';
-
-  @override
-  String get asset_upload_choose => 'Choose a file';
 
   @override
   String get asset_upload_change => 'Choose another file';
