@@ -17,6 +17,14 @@ void main() {
     expect(entryForLocation('/itemsfoo'), isNull);
   });
 
+  test('matches the textures page apart from the models page', () {
+    expect(
+      assetEntryForLocation('/assets/textures'),
+      AssetNavigationEntry.textures,
+    );
+    expect(assetEntryForLocation('/assets/models'), AssetNavigationEntry.models);
+  });
+
   test('returns null outside the sections', () {
     expect(entryForLocation('/projects'), isNull);
   });
