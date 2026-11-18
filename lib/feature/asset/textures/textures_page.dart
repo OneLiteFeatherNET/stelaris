@@ -199,6 +199,14 @@ class _TexturesBodyState extends State<_TexturesBody> {
   }
 
   Future<void> _load() async {
+    final sources = _loadSources();
+    await _assets.load();
+    await sources;
+  }
+
+  /// Loads the fonts and pack metas for "used in", also alone after they
+  /// failed.
+  Future<void> _loadSources() async {
     final loadId = ++_sourcesLoadId;
     setState(() {
       _sources = null;
@@ -206,12 +214,12 @@ class _TexturesBodyState extends State<_TexturesBody> {
       _index = null;
     });
     _sourcesVersion.value++;
-    final sources = widget
-        .loadUsageSources(widget.projectId)
-        .then<TextureUsageSources?>((sources) => sources)
-        .catchError((Object _) => null);
-    await _assets.load();
-    final loaded = await sources;
+    TextureUsageSources? loaded;
+    try {
+      loaded = await widget.loadUsageSources(widget.projectId);
+    } on Object {
+      loaded = null;
+    }
     if (!mounted || loadId != _sourcesLoadId) return;
     setState(() {
       _sources = loaded;
@@ -292,6 +300,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
       changes: Listenable.merge([_assets, _sourcesVersion]),
       usages: () => _usagesOf(texture),
       usagesFailed: () => _sourcesFailed,
+      onRetryUsages: _loadSources,
       source: _sourceOf(texture),
       loadContent: (projectId, _) =>
           widget.library.contentOf(projectId, texture),
@@ -301,8 +310,8 @@ class _TexturesBodyState extends State<_TexturesBody> {
   );
 
   /// The actions of [texture]'s card menu. An extracted texture belongs to
-  /// its Blockbench model: no Update, no Delete. Delete waits for the uses,
-  /// so its dialog can name them.
+  /// its Blockbench model: no Update, no Delete. Delete stays disabled until
+  /// the uses are known, so its dialog can name them.
   List<CardMenuEntry> _menuOf(AssetModel texture) {
     final l10n = context.l10n;
     final extracted = texture.sourceAssetId != null;
@@ -341,11 +350,11 @@ class _TexturesBodyState extends State<_TexturesBody> {
         label: l10n.button_download,
         onTap: () => actions.download(context),
       ),
-      if (!extracted && usages != null)
+      if (!extracted)
         (
           icon: Icons.delete_outline,
           label: l10n.asset_textures_delete,
-          onTap: () => _delete(texture, usages),
+          onTap: usages == null ? null : () => _delete(texture, usages),
         ),
     ];
   }
@@ -473,6 +482,26 @@ class _TexturesBodyState extends State<_TexturesBody> {
               ? (selected) => setState(() => _onlyUnused = selected)
               : null,
         ),
+        // Without the uses the Unused filter and Delete stay off; this says
+        // why and loads them again.
+        if (_sourcesFailed)
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 18,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(width: 6),
+              Text(l10n.asset_textures_usages_failed_short),
+              TextButton(
+                key: const Key('textures_usages_retry'),
+                onPressed: _loadSources,
+                child: Text(l10n.asset_textures_usages_retry),
+              ),
+            ],
+          ),
       ],
     );
   }
@@ -514,6 +543,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
         key: ValueKey('texture_${texture.id}'),
         texture: texture,
         source: _sourceOf(texture),
+        usages: _usagesOf(texture),
         bytes: _thumbnailOf(texture),
         menu: _menuOf(texture),
         onTap: () => _showInfo(texture),
@@ -528,6 +558,7 @@ class _TextureCard extends StatelessWidget {
   const _TextureCard({
     required this.texture,
     required this.source,
+    required this.usages,
     required this.bytes,
     required this.menu,
     required this.onTap,
@@ -536,6 +567,9 @@ class _TextureCard extends StatelessWidget {
 
   final AssetModel texture;
   final List<CardMenuEntry> menu;
+
+  /// Where the texture is used, null while that loads.
+  final TextureUsages? usages;
 
   /// The Blockbench model the texture was extracted from.
   final AssetModel? source;
@@ -573,16 +607,21 @@ class _TextureCard extends StatelessWidget {
         ],
       ),
       trailing: CardActionsMenu(entries: menu),
-      // Only an extracted texture says where it comes from; uploaded is the
-      // usual case.
-      footerIcon: texture.sourceAssetId == null
-          ? null
-          : Icons.view_in_ar_outlined,
-      footerText: texture.sourceAssetId == null
-          ? null
-          : l10n.asset_textures_extracted_from(
-              source?.displayName ?? texture.sourceAssetId!,
-            ),
+      // An extracted texture says where it comes from, its model is what
+      // uses it; an uploaded one how often it is used, once that is known.
+      footerIcon: switch ((texture.sourceAssetId, usages)) {
+        (_?, _) => Icons.view_in_ar_outlined,
+        (null, final usages?) when usages.isEmpty => Icons.link_off,
+        (null, _?) => Icons.link,
+        (null, null) => null,
+      },
+      footerText: switch ((texture.sourceAssetId, usages)) {
+        (final sourceId?, _) => l10n.asset_textures_extracted_from(
+          source?.displayName ?? sourceId,
+        ),
+        (null, final usages?) => l10n.asset_textures_usage_count(usages.count),
+        (null, null) => null,
+      },
       onTap: onTap,
     );
   }

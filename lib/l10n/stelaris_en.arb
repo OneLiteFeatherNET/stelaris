@@ -1324,6 +1324,16 @@
   "asset_textures_unused_filter": "Unused",
   "asset_textures_unused": "Not used anywhere yet.",
   "asset_textures_usages_failed": "Where the texture is used could not be loaded.",
+  "asset_textures_usages_failed_short": "Uses could not be loaded",
+  "asset_textures_usages_retry": "Try again",
+  "asset_textures_usage_count": "{count, plural, =0{Not used} =1{Used once} other{Used {count} times}}",
+  "@asset_textures_usage_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "asset_textures_used_resource_icon": "Resource pack icon",
   "asset_textures_used_data_icon": "Data pack icon",
   "asset_textures_same_key": "{name} has the same key, so models use that texture instead of this one.",

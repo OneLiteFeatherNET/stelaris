@@ -19,6 +19,7 @@ class TextureInfoDialog extends StatelessWidget {
     required this.usagesFailed,
     required this.onOpenModel,
     required this.onOpenFont,
+    this.onRetryUsages,
     this.source,
     this.loadContent,
     super.key,
@@ -31,6 +32,9 @@ class TextureInfoDialog extends StatelessWidget {
   final bool Function() usagesFailed;
   final ValueChanged<AssetModel> onOpenModel;
   final ValueChanged<FontModel> onOpenFont;
+
+  /// Loads the uses again after they failed.
+  final VoidCallback? onRetryUsages;
 
   /// The Blockbench model the texture was extracted from.
   final AssetModel? source;
@@ -77,6 +81,7 @@ class TextureInfoDialog extends StatelessWidget {
                       texture: texture,
                       usages: usages(),
                       usagesFailed: usagesFailed(),
+                      onRetryUsages: onRetryUsages,
                       source: source,
                       loadContent: loadContent,
                       onOpenModel: (model) {

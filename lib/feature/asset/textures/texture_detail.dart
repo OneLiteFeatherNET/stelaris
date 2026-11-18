@@ -27,6 +27,7 @@ class TextureDetail extends StatelessWidget {
     required this.onOpenModel,
     required this.onOpenFont,
     this.usagesFailed = false,
+    this.onRetryUsages,
     this.source,
     this.loadContent,
     super.key,
@@ -36,6 +37,9 @@ class TextureDetail extends StatelessWidget {
   final AssetModel texture;
   final TextureUsages? usages;
   final bool usagesFailed;
+
+  /// Loads the uses again after they failed; no retry button when null.
+  final VoidCallback? onRetryUsages;
 
   /// The Blockbench model the texture was extracted from.
   final AssetModel? source;
@@ -100,7 +104,20 @@ class TextureDetail extends StatelessWidget {
     final l10n = context.l10n;
     final textStyle = Theme.of(context).textTheme.bodyMedium;
     if (usagesFailed) {
-      return Text(l10n.asset_textures_usages_failed, style: textStyle);
+      final onRetry = onRetryUsages;
+      return Row(
+        children: [
+          Flexible(
+            child: Text(l10n.asset_textures_usages_failed, style: textStyle),
+          ),
+          if (onRetry != null)
+            TextButton(
+              key: const Key('texture_usages_retry'),
+              onPressed: onRetry,
+              child: Text(l10n.asset_textures_usages_retry),
+            ),
+        ],
+      );
     }
     final usages = this.usages;
     if (usages == null) {

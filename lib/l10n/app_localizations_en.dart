@@ -2483,6 +2483,24 @@ class AppLocalizationsEn extends AppLocalizations {
       'Where the texture is used could not be loaded.';
 
   @override
+  String get asset_textures_usages_failed_short => 'Uses could not be loaded';
+
+  @override
+  String get asset_textures_usages_retry => 'Try again';
+
+  @override
+  String asset_textures_usage_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Used $count times',
+      one: 'Used once',
+      zero: 'Not used',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get asset_textures_used_resource_icon => 'Resource pack icon';
 
   @override

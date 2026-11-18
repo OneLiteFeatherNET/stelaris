@@ -2,8 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
-/// An entry of a [CardActionsMenu].
-typedef CardMenuEntry = ({IconData icon, String label, VoidCallback onTap});
+/// An entry of a [CardActionsMenu], shown disabled when [onTap] is null.
+typedef CardMenuEntry = ({IconData icon, String label, VoidCallback? onTap});
 
 /// The 3-dot action menu on a card, with one item per entry of [entries].
 class CardActionsMenu extends StatelessWidget {
@@ -25,10 +25,14 @@ class CardActionsMenu extends StatelessWidget {
       itemBuilder: (context) => [
         for (final entry in entries)
           PopupMenuItem<void>(
+            enabled: entry.onTap != null,
             // PopupMenuItem.onTap fires before its route is popped, so a
             // dialog it opens must wait a beat or the still-closing menu
             // route would dismiss it right away.
-            onTap: () => Future.microtask(entry.onTap),
+            onTap: switch (entry.onTap) {
+              final onTap? => () => Future.microtask(onTap),
+              null => null,
+            },
             child: _MenuItemContent(icon: entry.icon, label: entry.label),
           ),
       ],

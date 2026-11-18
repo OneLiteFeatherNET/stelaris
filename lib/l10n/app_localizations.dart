@@ -4457,6 +4457,24 @@ abstract class AppLocalizations {
   /// **'Where the texture is used could not be loaded.'**
   String get asset_textures_usages_failed;
 
+  /// No description provided for @asset_textures_usages_failed_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses could not be loaded'**
+  String get asset_textures_usages_failed_short;
+
+  /// No description provided for @asset_textures_usages_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get asset_textures_usages_retry;
+
+  /// No description provided for @asset_textures_usage_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Not used} =1{Used once} other{Used {count} times}}'**
+  String asset_textures_usage_count(int count);
+
   /// No description provided for @asset_textures_used_resource_icon.
   ///
   /// In en, this message translates to:
