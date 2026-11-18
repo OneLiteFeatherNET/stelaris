@@ -56,10 +56,22 @@ class _Library extends AssetLibrary {
     ];
   }
 
+  /// When set, `textureKeysOf` waits for it before answering.
+  Completer<void>? readGate;
+  int reading = 0;
+  int mostReadingAtOnce = 0;
+
   @override
   Future<Set<String>> textureKeysOf(String projectId, AssetModel asset) async {
-    if (unreadable.contains(asset.id)) throw const FormatException('broken');
-    return references[asset.id] ?? const {};
+    reading++;
+    if (reading > mostReadingAtOnce) mostReadingAtOnce = reading;
+    try {
+      await readGate?.future;
+      if (unreadable.contains(asset.id)) throw const FormatException('broken');
+      return references[asset.id] ?? const {};
+    } finally {
+      reading--;
+    }
   }
 }
 
@@ -160,6 +172,33 @@ void main() {
     await assets.load();
 
     expect(assets.references.keys, [_ruby]);
+  });
+
+  test('reads the model files a few at a time', () async {
+    final models = [
+      for (var i = 0; i < ProjectAssets.parallelReads * 2; i++)
+        _asset('m$i', 'vulpes:item/m$i', AssetKind.MODEL),
+    ];
+    final library = _Library(
+      assets: models,
+      references: {
+        for (final model in models) model.id: {'vulpes:block/gem'},
+      },
+    );
+    final gate = library.readGate = Completer<void>();
+    final assets = ProjectAssets(library: library, projectId: 'p-1');
+    addTearDown(assets.dispose);
+
+    final loading = assets.load();
+    await pumpEventQueue();
+
+    expect(library.reading, ProjectAssets.parallelReads);
+    gate.complete();
+    await loading;
+
+    expect(library.mostReadingAtOnce, ProjectAssets.parallelReads);
+    expect(assets.references.keys, unorderedEquals(models));
+    expect(assets.referencesLoaded, isTrue);
   });
 
   testWidgets('resume runs onResume instead of the plain load', (tester) async {

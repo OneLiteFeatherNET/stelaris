@@ -48,14 +48,13 @@ TextureUsages _usages(
   Map<AssetModel, Set<String>> references = const {},
   List<FontModel> fonts = const [],
   List<PackMeta> packMetas = const [],
-}) => textureUsages(
-  texture,
+}) => TextureUsageIndex(
   models: [_axe, _ruby, _sword],
   textures: textures.isEmpty ? [texture] : textures,
   references: references,
   fonts: fonts,
   packMetas: packMetas,
-);
+).of(texture);
 
 void main() {
   test('models referring to the key', () {
@@ -117,6 +116,47 @@ void main() {
       ).sameKeyAs,
       isNull,
     );
+  });
+
+  test('a texture missing from the list still owns its key', () {
+    final usages = TextureUsageIndex(
+      models: [_ruby],
+      textures: const [],
+      references: {
+        _ruby: {'vulpes:block/gem'},
+      },
+      fonts: const [],
+      packMetas: const [],
+    ).of(_gem);
+
+    expect(usages.models, [_ruby]);
+    expect(usages.sameKeyAs, isNull);
+  });
+
+  test('an extracted texture also referred to by key lists both models '
+      'sorted by key', () {
+    final usages = _usages(
+      _blade,
+      references: {
+        _sword: {'vulpes:item/axe_blade'},
+      },
+    );
+
+    expect(usages.models, [_axe, _sword]);
+  });
+
+  test('asking twice returns the same uses', () {
+    final index = TextureUsageIndex(
+      models: [_ruby],
+      textures: [_gem],
+      references: {
+        _ruby: {'vulpes:block/gem'},
+      },
+      fonts: const [],
+      packMetas: const [],
+    );
+
+    expect(identical(index.of(_gem), index.of(_gem)), isTrue);
   });
 
   test('unused texture is empty with count 0', () {
