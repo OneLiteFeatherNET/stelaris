@@ -1324,6 +1324,7 @@
   "asset_textures_origin_extracted": "Extracted",
   "asset_textures_upload_title": "Upload a texture",
   "asset_textures_used_in": "Used in",
+  "asset_textures_unused_filter": "Unused",
   "asset_textures_unused": "Not used anywhere yet.",
   "asset_textures_usages_failed": "Where the texture is used could not be loaded.",
   "asset_textures_used_resource_icon": "Resource pack icon",

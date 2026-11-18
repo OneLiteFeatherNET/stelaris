@@ -190,6 +190,9 @@ class _TexturesBodyState extends State<_TexturesBody> {
 
   String _query = '';
   TextureOrigin _origin = TextureOrigin.all;
+
+  /// Shows only the textures nothing uses, once that is known.
+  bool _onlyUnused = false;
   late String? _selectedId = widget.selectedId;
 
   /// The fonts and pack metas of the current load, null while they load.
@@ -334,6 +337,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
     return [
       for (final texture in _assets.textures)
         if (_origin.matches(texture) &&
+            (!_onlyUnused || (_usagesOf(texture)?.isEmpty ?? false)) &&
             (query.isEmpty ||
                 texture.displayName.toLowerCase().contains(query) ||
                 texture.key.toLowerCase().contains(query)))
@@ -491,6 +495,15 @@ class _TexturesBodyState extends State<_TexturesBody> {
           selected: {_origin},
           onSelectionChanged: (selection) =>
               setState(() => _origin = selection.single),
+        ),
+        FilterChip(
+          key: const Key('textures_unused'),
+          label: Text(l10n.asset_textures_unused_filter),
+          selected: _onlyUnused,
+          // Usable once every use is known, so nothing in use shows up.
+          onSelected: _sources == null || !_assets.referencesLoaded
+              ? null
+              : (selected) => setState(() => _onlyUnused = selected),
         ),
       ],
     );

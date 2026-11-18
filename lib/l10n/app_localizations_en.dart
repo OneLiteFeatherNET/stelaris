@@ -2482,6 +2482,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_textures_used_in => 'Used in';
 
   @override
+  String get asset_textures_unused_filter => 'Unused';
+
+  @override
   String get asset_textures_unused => 'Not used anywhere yet.';
 
   @override

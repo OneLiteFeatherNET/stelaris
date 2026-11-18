@@ -4457,6 +4457,12 @@ abstract class AppLocalizations {
   /// **'Used in'**
   String get asset_textures_used_in;
 
+  /// No description provided for @asset_textures_unused_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Unused'**
+  String get asset_textures_unused_filter;
+
   /// No description provided for @asset_textures_unused.
   ///
   /// In en, this message translates to:
