@@ -71,6 +71,7 @@ List<RequestOptions> _serve({int restoreStatus = 200}) {
 Future<List<RevisionsResult?>> _open(
   WidgetTester tester, {
   void Function(List<int> bytes, String fileName)? saveFile,
+  bool canRestore = true,
 }) async {
   final results = <RevisionsResult?>[];
   await tester.pumpWidget(
@@ -86,6 +87,7 @@ Future<List<RevisionsResult?>> _open(
                 builder: (_) => ModelRevisionsDialog(
                   asset: _ruby,
                   saveFile: saveFile ?? (_, _) {},
+                  canRestore: canRestore,
                 ),
               ),
             ),
@@ -110,6 +112,22 @@ Finder _restoreOf(int number) => find.descendant(
 );
 
 void main() {
+  testWidgets('revisions without restore show no restore button', (
+    tester,
+  ) async {
+    _serve();
+    await _open(tester, canRestore: false);
+
+    expect(_restoreOf(1), findsNothing);
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('model_revision_1')),
+        matching: find.byTooltip('Download this version'),
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('lists the versions newest first with the current marked', (
     tester,
   ) async {
