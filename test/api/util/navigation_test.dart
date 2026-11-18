@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/util/stelaris_icons.dart';
 
 void main() {
   test('matches a section route exactly', () {
@@ -38,14 +39,12 @@ void main() {
     });
 
     test('all icons come from the StelarisIcons font', () {
-      // Expressions, functions and blockstates have no glyph in that font
-      // yet, so they use Material's icons; the font itself is not changed
-      // for them.
+      // Expressions and functions have no glyph in that font yet, so they
+      // use Material's icons.
       for (final entry in NavigationEntry.values.where(
         (entry) =>
             entry != NavigationEntry.expression &&
-            entry != NavigationEntry.function &&
-            entry != NavigationEntry.blockstates,
+            entry != NavigationEntry.function,
       )) {
         expect(entry.data.fontFamily, 'StelarisIcons', reason: entry.name);
         expect(entry.selected.fontFamily, 'StelarisIcons', reason: entry.name);
@@ -62,9 +61,12 @@ void main() {
       expect(NavigationEntry.function.selected, Icons.data_object);
     });
 
-    test('blockstates use the Material grid icon', () {
-      expect(NavigationEntry.blockstates.data, Icons.grid_view_outlined);
-      expect(NavigationEntry.blockstates.selected, Icons.grid_view);
+    test('blockstates use the grass block icon', () {
+      expect(
+        NavigationEntry.blockstates.data,
+        StelarisIcons.grassBlockOutlined,
+      );
+      expect(NavigationEntry.blockstates.selected, StelarisIcons.grassBlock);
     });
   });
 }
