@@ -74,6 +74,24 @@ void main() {
       expect(loaded.openNavigation, isFalse);
     });
 
+    test('openTexturePreview survives a reload', () async {
+      const state = AppState(openTexturePreview: false);
+      await persistor.persistDifference(
+        lastPersistedState: null,
+        newState: state,
+      );
+
+      final loaded = await persistor.readState();
+      expect(loaded.openTexturePreview, isFalse);
+    });
+
+    test('openTexturePreview is on without a stored value', () async {
+      localStorage.setItem(AppPersistor.appState, '{}');
+
+      final loaded = await persistor.readState();
+      expect(loaded.openTexturePreview, isTrue);
+    });
+
     test('readState returns default AppState when localStorage contains malformed JSON', () async {
       localStorage.setItem(AppPersistor.appState, 'this is not valid json{]');
 
