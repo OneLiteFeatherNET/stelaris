@@ -117,6 +117,36 @@ void main() {
       expect(changes, isEmpty);
     });
 
+    testWidgets('a dismissed edit dialog reports nothing', (tester) async {
+      final changes = await _pump(tester, [_radius]);
+
+      await tester.tap(find.text('radius'));
+      await tester.pumpAndSettle();
+      await tester.enterText(_dialogField, 'height');
+      await _submit(tester, l10n.button_cancel);
+
+      expect(find.byType(Dialog), findsNothing);
+      expect(changes, isEmpty);
+    });
+
+    testWidgets('deleting keeps the order of the others', (tester) async {
+      const a = ExpressionVariable(name: 'a');
+      const c = ExpressionVariable(name: 'c');
+      final changes = await _pump(tester, [
+        a,
+        const ExpressionVariable(name: 'b'),
+        c,
+      ]);
+
+      await tester.tap(find.byTooltip(l10n.tooltip_delete).at(1));
+      await tester.pumpAndSettle();
+      await _submit(tester, l10n.tooltip_delete);
+
+      expect(changes, [
+        [a, c],
+      ]);
+    });
+
     testWidgets('deleting asks first', (tester) async {
       final changes = await _pump(tester, [_radius]);
 
