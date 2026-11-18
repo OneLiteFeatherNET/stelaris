@@ -4427,6 +4427,12 @@ abstract class AppLocalizations {
   /// **'No texture matches the search.'**
   String get asset_textures_no_matches;
 
+  /// No description provided for @asset_textures_none_unused.
+  ///
+  /// In en, this message translates to:
+  /// **'Every texture is in use.'**
+  String get asset_textures_none_unused;
+
   /// No description provided for @asset_textures_load_failed.
   ///
   /// In en, this message translates to:

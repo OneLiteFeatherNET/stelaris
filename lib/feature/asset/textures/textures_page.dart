@@ -253,6 +253,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
   );
 
   void _openFont(FontModel font) {
+    if (!mounted) return;
     context.dispatch(SelectFontAction(font));
     widget.openLocation(detailLocation(NavigationEntry.font.route));
   }
@@ -293,21 +294,33 @@ class _TexturesBodyState extends State<_TexturesBody> {
   }
 
   /// Shows [texture] with where it is used.
+  ///
+  /// The dialog lives on the navigator, not in this page, so leaving the page
+  /// (e.g. with the browser's back button) closes it, see [dispose].
   void _showInfo(AssetModel texture) => showDialog<void>(
     context: context,
-    builder: (_) => TextureInfoDialog(
-      projectId: widget.projectId,
-      texture: texture,
-      changes: Listenable.merge([_assets, _sourcesVersion]),
-      usages: () => _usagesOf(texture),
-      usagesFailed: () => _sourcesFailed,
-      onRetryUsages: _loadSources,
-      source: _sourceOf(texture),
-      loadContent: (projectId, _) =>
-          widget.library.contentOf(projectId, texture),
-      onOpenModel: _openModel,
-      onOpenFont: _openFont,
-    ),
+    builder: (dialogContext) {
+      _infoRoute = ModalRoute.of(dialogContext);
+      return _infoDialog(texture);
+    },
+  );
+
+  /// The route of the info dialog opened last; [dispose] closes it when it
+  /// is still open.
+  Route<void>? _infoRoute;
+
+  Widget _infoDialog(AssetModel texture) => TextureInfoDialog(
+    projectId: widget.projectId,
+    texture: texture,
+    changes: Listenable.merge([_assets, _sourcesVersion]),
+    usages: () => _usagesOf(texture),
+    usagesFailed: () => _sourcesFailed,
+    onRetryUsages: _loadSources,
+    source: _sourceOf(texture),
+    loadContent: (projectId, _) =>
+        widget.library.contentOf(projectId, texture),
+    onOpenModel: _openModel,
+    onOpenFont: _openFont,
   );
 
   /// The actions of [texture]'s card menu. An extracted texture belongs to
@@ -362,6 +375,13 @@ class _TexturesBodyState extends State<_TexturesBody> {
 
   @override
   void dispose() {
+    // The navigator is locked while this page is torn down: close the info
+    // dialog right after, before it can jump anywhere from a page that's gone.
+    if (_infoRoute case final route? when route.isActive) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (route.isActive) route.navigator?.removeRoute(route);
+      });
+    }
     _assets
       ..removeListener(_onAssetsChanged)
       ..dispose();
@@ -551,7 +571,15 @@ class _TexturesBodyState extends State<_TexturesBody> {
       );
     }
     if (visible.isEmpty) {
-      return Center(child: Text(l10n.asset_textures_no_matches));
+      // Only the Unused filter hides them: there is no search to blame.
+      final everyUsed = _onlyUnused && _query.trim().isEmpty;
+      return Center(
+        child: Text(
+          everyUsed
+              ? l10n.asset_textures_none_unused
+              : l10n.asset_textures_no_matches,
+        ),
+      );
     }
     return ModelGrid<AssetModel>(
       key: const Key('textures_grid'),

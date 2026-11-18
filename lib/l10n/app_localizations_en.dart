@@ -2469,6 +2469,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_textures_no_matches => 'No texture matches the search.';
 
   @override
+  String get asset_textures_none_unused => 'Every texture is in use.';
+
+  @override
   String get asset_textures_load_failed => 'The textures could not be loaded.';
 
   @override

@@ -1329,6 +1329,7 @@
     }
   },
   "asset_textures_no_matches": "No texture matches the search.",
+  "asset_textures_none_unused": "Every texture is in use.",
   "asset_textures_load_failed": "The textures could not be loaded.",
   "asset_textures_upload_title": "Upload a texture",
   "asset_textures_used_in": "Used in",
