@@ -4391,6 +4391,12 @@ abstract class AppLocalizations {
   /// **'Choose a project to see its models.'**
   String get asset_models_no_project;
 
+  /// No description provided for @asset_models_no_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'No model matches the search.'**
+  String get asset_models_no_matches;
+
   /// No description provided for @asset_textures_title.
   ///
   /// In en, this message translates to:
@@ -4420,30 +4426,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The textures could not be loaded.'**
   String get asset_textures_load_failed;
-
-  /// No description provided for @asset_textures_search.
-  ///
-  /// In en, this message translates to:
-  /// **'Search by name or key'**
-  String get asset_textures_search;
-
-  /// No description provided for @asset_textures_origin_all.
-  ///
-  /// In en, this message translates to:
-  /// **'All'**
-  String get asset_textures_origin_all;
-
-  /// No description provided for @asset_textures_origin_uploaded.
-  ///
-  /// In en, this message translates to:
-  /// **'Uploaded'**
-  String get asset_textures_origin_uploaded;
-
-  /// No description provided for @asset_textures_origin_extracted.
-  ///
-  /// In en, this message translates to:
-  /// **'Extracted'**
-  String get asset_textures_origin_extracted;
 
   /// No description provided for @asset_textures_upload_title.
   ///

@@ -7,6 +7,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
+import 'package:stelaris/api/state/actions/search_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/loading/project_assets.dart';
@@ -22,7 +23,6 @@ import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/dialog/notice_box.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/base/page_header.dart';
-import 'package:stelaris/feature/base/search/dialog_search_bar.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/build/download/download_helper.dart'
     as download;
@@ -38,25 +38,8 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// 12px below the top.
 const EdgeInsets _pagePadding = EdgeInsets.fromLTRB(16, 12, 16, 0);
 
-/// Where a texture comes from.
-enum TextureOrigin {
-  all,
-
-  /// Uploaded on its own.
-  uploaded,
-
-  /// Extracted from a Blockbench model, see [AssetModel.sourceAssetId].
-  extracted;
-
-  bool matches(AssetModel texture) => switch (this) {
-    all => true,
-    uploaded => texture.sourceAssetId == null,
-    extracted => texture.sourceAssetId != null,
-  };
-}
-
-/// Shows the textures of the selected project as a grid of cards, with a
-/// search by name and key and a filter by origin.
+/// Shows the textures of the selected project as a grid of cards, filtered
+/// by the AppBar search (name and key) and, on demand, to the unused ones.
 ///
 /// The selection is [selectedId]; the page reports a new one through
 /// [onSelected], so the route can keep it. [pickFile] opens the file dialog
@@ -189,8 +172,8 @@ class _TexturesBodyState extends State<_TexturesBody> {
   /// rebuild doesn't load them again.
   final Map<String, Future<Uint8List>> _thumbnails = {};
 
+  /// The AppBar search, as of the last build.
   String _query = '';
-  TextureOrigin _origin = TextureOrigin.all;
 
   /// Shows only the textures nothing uses, once that is known.
   bool _onlyUnused = false;
@@ -208,6 +191,14 @@ class _TexturesBodyState extends State<_TexturesBody> {
     super.initState();
     _assets.addListener(_onAssetsChanged);
     _load();
+    // After the first frame: dispatching during initState would notify the
+    // AppBar search mid-build. Also drops a search typed for another page.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.dispatch(
+        RegisterSearchFiltersAction(AssetNavigationEntry.textures, const []),
+      );
+    });
   }
 
   @override
@@ -342,8 +333,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
     final query = _query.trim().toLowerCase();
     return [
       for (final texture in _assets.textures)
-        if (_origin.matches(texture) &&
-            (!_onlyUnused || (_usagesOf(texture)?.isEmpty ?? false)) &&
+        if ((!_onlyUnused || (_usagesOf(texture)?.isEmpty ?? false)) &&
             (query.isEmpty ||
                 texture.displayName.toLowerCase().contains(query) ||
                 texture.key.toLowerCase().contains(query)))
@@ -380,9 +370,19 @@ class _TexturesBodyState extends State<_TexturesBody> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     final selected = _selected;
     if (selected != null) return _buildDetail(selected);
+    return StoreConnector<AppState, String>(
+      converter: (store) => store.state.modelSearch.query,
+      builder: (context, query) {
+        _query = query;
+        return _buildList();
+      },
+    );
+  }
+
+  Widget _buildList() {
+    final l10n = context.l10n;
     return Padding(
       padding: _pagePadding,
       child: Column(
@@ -472,36 +472,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
     return Wrap(
       spacing: 12,
       runSpacing: 8,
-      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        SizedBox(
-          width: 320,
-          child: DialogSearchBar(
-            key: const Key('textures_search'),
-            hintText: l10n.asset_textures_search,
-            onChanged: (query) => setState(() => _query = query),
-          ),
-        ),
-        SegmentedButton<TextureOrigin>(
-          showSelectedIcon: false,
-          segments: [
-            ButtonSegment(
-              value: TextureOrigin.all,
-              label: Text(l10n.asset_textures_origin_all),
-            ),
-            ButtonSegment(
-              value: TextureOrigin.uploaded,
-              label: Text(l10n.asset_textures_origin_uploaded),
-            ),
-            ButtonSegment(
-              value: TextureOrigin.extracted,
-              label: Text(l10n.asset_textures_origin_extracted),
-            ),
-          ],
-          selected: {_origin},
-          onSelectionChanged: (selection) =>
-              setState(() => _origin = selection.single),
-        ),
         FilterChip(
           key: const Key('textures_unused'),
           label: Text(l10n.asset_textures_unused_filter),
@@ -609,11 +580,13 @@ class _TextureCard extends StatelessWidget {
           ),
         ],
       ),
+      // Only an extracted texture says where it comes from; uploaded is the
+      // usual case.
       footerIcon: texture.sourceAssetId == null
-          ? Icons.upload_file
+          ? null
           : Icons.view_in_ar_outlined,
       footerText: texture.sourceAssetId == null
-          ? l10n.asset_textures_origin_uploaded
+          ? null
           : l10n.asset_textures_extracted_from(
               source?.displayName ?? texture.sourceAssetId!,
             ),

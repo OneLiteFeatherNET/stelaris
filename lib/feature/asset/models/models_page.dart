@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
+import 'package:stelaris/api/state/actions/search_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/asset_kind_label.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
@@ -195,6 +196,14 @@ class _ModelsBodyState extends State<_ModelsBody> {
     super.initState();
     _assets.addListener(_onAssetsChanged);
     _load();
+    // After the first frame: dispatching during initState would notify the
+    // AppBar search mid-build. Also drops a search typed for another page.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.dispatch(
+        RegisterSearchFiltersAction(AssetNavigationEntry.models, const []),
+      );
+    });
   }
 
   @override
@@ -394,7 +403,13 @@ class _ModelsBodyState extends State<_ModelsBody> {
                 ],
               ),
               verticalSpacing10,
-              Expanded(child: _buildGrid()),
+              Expanded(
+                // Only the grid listens to the AppBar search.
+                child: StoreConnector<AppState, String>(
+                  converter: (store) => store.state.modelSearch.query,
+                  builder: (context, query) => _buildGrid(query),
+                ),
+              ),
             ],
           );
         },
@@ -418,7 +433,7 @@ class _ModelsBodyState extends State<_ModelsBody> {
   /// Lower than on the other list pages, a model card has no notes line.
   static const double _cardHeight = 132;
 
-  Widget _buildGrid() {
+  Widget _buildGrid(String query) {
     final l10n = context.l10n;
     if (_assets.loading) {
       return const Center(child: CircularProgressIndicator());
@@ -440,9 +455,20 @@ class _ModelsBodyState extends State<_ModelsBody> {
         child: Text(l10n.asset_models_empty, textAlign: TextAlign.center),
       );
     }
+    final needle = query.trim().toLowerCase();
+    final visible = [
+      for (final model in _models)
+        if (needle.isEmpty ||
+            model.displayName.toLowerCase().contains(needle) ||
+            model.key.toLowerCase().contains(needle))
+          model,
+    ];
+    if (visible.isEmpty) {
+      return Center(child: Text(l10n.asset_models_no_matches));
+    }
     return ModelGrid<AssetModel>(
       key: const Key('models_grid'),
-      items: _models,
+      items: visible,
       cardHeight: _cardHeight,
       itemBuilder: (context, model) => _ModelCard(
         key: ValueKey('model_${model.id}'),

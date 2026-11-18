@@ -2447,6 +2447,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_models_no_project => 'Choose a project to see its models.';
 
   @override
+  String get asset_models_no_matches => 'No model matches the search.';
+
+  @override
   String get asset_textures_title => 'Textures';
 
   @override
@@ -2462,18 +2465,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asset_textures_load_failed => 'The textures could not be loaded.';
-
-  @override
-  String get asset_textures_search => 'Search by name or key';
-
-  @override
-  String get asset_textures_origin_all => 'All';
-
-  @override
-  String get asset_textures_origin_uploaded => 'Uploaded';
-
-  @override
-  String get asset_textures_origin_extracted => 'Extracted';
 
   @override
   String get asset_textures_upload_title => 'Upload a texture';
