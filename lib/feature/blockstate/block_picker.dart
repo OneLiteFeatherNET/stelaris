@@ -1,11 +1,10 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/filter/category_filter_menu.dart';
-import 'package:stelaris/feature/base/hide_tooltips_while_scrolling.dart';
+import 'package:stelaris/feature/base/picker/filter_groups.dart';
+import 'package:stelaris/feature/base/picker/grouped_picker_list.dart';
 import 'package:stelaris/feature/base/search/dialog_search_bar.dart';
 import 'package:stelaris/feature/blockstate/block_group.dart';
 import 'package:stelaris/feature/blockstate/block_state_rules.dart';
-import 'package:stelaris/l10n/app_localizations.dart';
-import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
@@ -75,28 +74,6 @@ class _BlockPickerState extends State<BlockPicker> {
     _focusNode.requestFocus();
   }
 
-  /// The rows of the list: a header per group followed by its blocks.
-  List<_Row> _rows(AppLocalizations l10n, String text) {
-    final search = text.trim().toLowerCase();
-    final rows = <_Row>[];
-    for (final MapEntry(key: group, value: blocks) in _entries.entries) {
-      if (_group != null && group != _group) continue;
-      final Iterable<BlockSpec> matches =
-          search.isEmpty || group.label(l10n).toLowerCase().contains(search)
-          ? blocks
-          : blocks.where(
-              (block) =>
-                  block.displayName.toLowerCase().contains(search) ||
-                  block.key.contains(search),
-            );
-      if (matches.isEmpty) continue;
-      rows
-        ..add(_HeaderRow(group))
-        ..addAll(matches.map(_BlockRow.new));
-    }
-    return rows;
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -146,128 +123,35 @@ class _BlockPickerState extends State<BlockPicker> {
         Expanded(
           child: ValueListenableBuilder(
             valueListenable: _search,
-            builder: (context, search, _) => _list(search),
+            builder: (context, search, _) => GroupedPickerList(
+              groups: filterGroups(
+                _entries,
+                search: search,
+                only: group,
+                groupLabel: (group) => group.label(l10n),
+                matches: (block, search) =>
+                    block.displayName.toLowerCase().contains(search) ||
+                    block.key.contains(search),
+              ),
+              groupLabel: (group) => group.label(l10n),
+              groupTooltip: l10n.blockstate_picker_only_group,
+              headerKey: (group) =>
+                  ValueKey('block_group_header_${group.name}'),
+              itemKey: (block) => ValueKey('block_${block.key}'),
+              itemBuilder: (context, block) => _BlockTile(
+                block: block,
+                contexts: widget.contexts[block.key] ?? 0,
+                selected: block.key == widget.current,
+                onTap: () => widget.onBlock(block),
+              ),
+              emptyText: l10n.blockstate_picker_no_match,
+              // A filtered list has only one header, so it offers nothing
+              // to click.
+              onGroup: group == null ? _selectGroup : null,
+            ),
           ),
         ),
       ],
-    );
-  }
-
-  Widget _list(String search) {
-    final l10n = context.l10n;
-    final rows = _rows(l10n, search);
-    if (rows.isEmpty) {
-      return Center(child: Text(l10n.blockstate_picker_no_match));
-    }
-    // Lets a row which the search moved keep its element.
-    final indexOf = <Key, int>{
-      for (final (index, row) in rows.indexed) row.key: index,
-    };
-    final group = _group;
-    return Material(
-      type: MaterialType.transparency,
-      clipBehavior: Clip.hardEdge,
-      child: HideTooltipsWhileScrolling(
-        child: ListView.builder(
-          // Keeps the rows clear of the scrollbar.
-          padding: const EdgeInsets.only(right: 16),
-          itemCount: rows.length,
-          findChildIndexCallback: (key) => indexOf[key],
-          itemBuilder: (context, index) {
-            final row = rows[index];
-            // Each row holds its own ink. Ink on the Material around the
-            // list, like the hover of the row under the pointer, would
-            // repaint the whole list on every frame of a scroll.
-            return Material(
-              key: row.key,
-              type: MaterialType.transparency,
-              child: switch (row) {
-                _HeaderRow() => _GroupHeader(
-                  row.group,
-                  // A filtered list has only this header, so it offers
-                  // nothing to click.
-                  onTap: group == null ? () => _selectGroup(row.group) : null,
-                ),
-                _BlockRow() => _BlockTile(
-                  block: row.block,
-                  contexts: widget.contexts[row.block.key] ?? 0,
-                  selected: row.block.key == widget.current,
-                  onTap: () => widget.onBlock(row.block),
-                ),
-              },
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-/// A row of the list.
-sealed class _Row {
-  const _Row();
-
-  /// The key of the row's widget, unique in the list.
-  Key get key;
-}
-
-final class _HeaderRow extends _Row {
-  const _HeaderRow(this.group);
-
-  final BlockGroup group;
-
-  @override
-  Key get key => ValueKey('block_group_header_${group.name}');
-}
-
-final class _BlockRow extends _Row {
-  const _BlockRow(this.block);
-
-  final BlockSpec block;
-
-  @override
-  Key get key => ValueKey('block_${block.key}');
-}
-
-/// The header of a group, like the group headers of the function picker: a
-/// click shows only the group.
-class _GroupHeader extends StatelessWidget {
-  const _GroupHeader(this.group, {required this.onTap});
-
-  final BlockGroup group;
-
-  /// Filters the list by the group, null when it is already filtered.
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final theme = Theme.of(context);
-    final color = theme.colorScheme.primary;
-    final label = group.label(l10n);
-    final header = Padding(
-      padding: const EdgeInsets.fromLTRB(8, 12, 8, 4),
-      child: Row(
-        children: [
-          Text(
-            label,
-            style: theme.textTheme.labelLarge?.copyWith(color: color),
-          ),
-          if (onTap != null) ...[
-            const SizedBox(width: 4),
-            Icon(Icons.filter_list, size: 16, color: color),
-          ],
-        ],
-      ),
-    );
-    if (onTap == null) return header;
-    return Tooltip(
-      message: l10n.blockstate_picker_only_group(label),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppShapes.small),
-        onTap: onTap,
-        child: header,
-      ),
     );
   }
 }
