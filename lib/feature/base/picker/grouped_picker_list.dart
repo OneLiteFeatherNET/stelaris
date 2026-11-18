@@ -55,29 +55,26 @@ class GroupedPickerList<G extends Object, T extends Object>
       for (final (index, (key, _, _)) in rows.indexed) key: index,
     };
     final onGroup = this.onGroup;
-    return Material(
-      type: MaterialType.transparency,
-      clipBehavior: Clip.hardEdge,
-      child: HideTooltipsWhileScrolling(
-        child: ListView.builder(
-          // Keeps the rows clear of the scrollbar.
-          padding: const EdgeInsets.only(right: 16),
-          itemCount: rows.length,
-          findChildIndexCallback: (key) => indexOf[key],
-          itemBuilder: (context, index) {
-            final (key, group, entry) = rows[index];
-            // Each row holds its own ink. Ink on the Material around the
-            // list, like the hover of the row under the pointer, would
-            // repaint the whole list on every frame of a scroll.
-            return Material(
-              key: key,
-              type: MaterialType.transparency,
-              child: group != null
-                  ? _header(group, onGroup)
-                  : itemBuilder(context, entry as T),
-            );
-          },
-        ),
+    return HideTooltipsWhileScrolling(
+      child: ListView.builder(
+        // Keeps the rows clear of the scrollbar.
+        padding: const EdgeInsets.only(right: 16),
+        itemCount: rows.length,
+        findChildIndexCallback: (key) => indexOf[key],
+        itemBuilder: (context, index) {
+          final (key, group, entry) = rows[index];
+          // Each row holds its own ink, which the list clips at its edges.
+          // Ink on a Material around the list, like the hover of the row
+          // under the pointer, would repaint the whole list on every frame
+          // of a scroll and draw past the list.
+          return Material(
+            key: key,
+            type: MaterialType.transparency,
+            child: group != null
+                ? _header(group, onGroup)
+                : itemBuilder(context, entry as T),
+          );
+        },
       ),
     );
   }
