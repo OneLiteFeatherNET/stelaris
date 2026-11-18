@@ -312,4 +312,19 @@ void main() {
 
     expect(locations, ['/assets/models?id=b1']);
   });
+
+  testWidgets('unused filter shows only textures nobody uses', (tester) async {
+    await _pump(
+      tester,
+      library: _Library([_axe, _gem, _stone, _blade]),
+      sources: const TextureUsageSources(
+        fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('textures_unused')));
+    await tester.pumpAndSettle();
+
+    expect(_keys(tester), ['vulpes:block/stone']);
+  });
 }
