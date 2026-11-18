@@ -511,6 +511,63 @@ void main() {
     expect(find.textContaining('lose this texture'), findsOneWidget);
   });
 
+  testWidgets('delete after the usages arrive names them', (tester) async {
+    final sources = Completer<TextureUsageSources>();
+    await _pump(
+      tester,
+      library: _Library([_gem]),
+      loadSources: (_) => sources.future,
+    );
+
+    sources.complete(
+      const TextureUsageSources(
+        fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _openMenu(tester, 't1');
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Delete Gem?'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.textContaining('Icons'),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('info dialog opened while the usages load fills them in', (
+    tester,
+  ) async {
+    final sources = Completer<TextureUsageSources>();
+    await _pump(
+      tester,
+      library: _Library([_gem]),
+      loadSources: (_) => sources.future,
+    );
+    await tester.tap(find.text('Gem'));
+    // The loading indicator never settles.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byKey(const Key('texture_usages_loading')), findsOneWidget);
+
+    sources.complete(
+      const TextureUsageSources(
+        fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('texture_usages_loading')), findsNothing);
+    expect(
+      find.descendant(of: find.byType(Dialog), matching: find.text('Icons')),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('confirming deletes and reloads the grid', (tester) async {
     final assets = [_gem, _stone];
     final requests = <RequestOptions>[];
