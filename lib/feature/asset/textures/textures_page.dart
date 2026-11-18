@@ -386,7 +386,12 @@ class _TexturesBodyState extends State<_TexturesBody> {
     ),
   );
 
-  /// The textures matching the search and the Unused filter.
+  /// Whether the search or the Unused filter hides textures.
+  bool get _filtered => _onlyUnused || _query.trim().isNotEmpty;
+
+  /// The textures matching the search and the Unused filter, sorted by key
+  /// like the models. Only the shown list is sorted: which of two textures
+  /// with the same key models get still follows the backend's order.
   List<AssetModel> get _visible {
     final query = _query.trim().toLowerCase();
     return [
@@ -396,7 +401,15 @@ class _TexturesBodyState extends State<_TexturesBody> {
                 texture.displayName.toLowerCase().contains(query) ||
                 texture.key.toLowerCase().contains(query)))
           texture,
-    ];
+    ]..sort(_byKey);
+  }
+
+  /// By key, then name and id, so textures with the same key keep one order.
+  static int _byKey(AssetModel a, AssetModel b) {
+    final byKey = a.key.compareTo(b.key);
+    if (byKey != 0) return byKey;
+    final byName = a.displayName.compareTo(b.displayName);
+    return byName != 0 ? byName : a.id.compareTo(b.id);
   }
 
   /// The model [texture] was extracted from, null for an uploaded one.
@@ -437,6 +450,12 @@ class _TexturesBodyState extends State<_TexturesBody> {
 
   Widget _buildList() {
     final l10n = context.l10n;
+    final visible = _visible;
+    final total = _assets.textures.length;
+    // "3 of 12" while the search or the filter hides some.
+    final count = _filtered
+        ? l10n.asset_textures_count_filtered(visible.length, total)
+        : '$total';
     return Padding(
       padding: _pagePadding,
       child: Column(
@@ -444,7 +463,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
         children: [
           PageHeader(
             title: _assets.listed
-                ? '${l10n.asset_textures_title} (${_assets.textures.length})'
+                ? '${l10n.asset_textures_title} ($count)'
                 : l10n.asset_textures_title,
             actions: [
               PageHeaderAction(
@@ -459,7 +478,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
           verticalSpacing10,
           _buildFilters(),
           verticalSpacing10,
-          Expanded(child: _buildGrid()),
+          Expanded(child: _buildGrid(visible)),
         ],
       ),
     );
@@ -509,7 +528,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
   /// Lower than on the other list pages, a texture card has no notes line.
   static const double _cardHeight = 132;
 
-  Widget _buildGrid() {
+  Widget _buildGrid(List<AssetModel> visible) {
     final l10n = context.l10n;
     if (_assets.loading) {
       return const Center(child: CircularProgressIndicator());
@@ -531,7 +550,6 @@ class _TexturesBodyState extends State<_TexturesBody> {
         child: Text(l10n.asset_textures_empty, textAlign: TextAlign.center),
       );
     }
-    final visible = _visible;
     if (visible.isEmpty) {
       return Center(child: Text(l10n.asset_textures_no_matches));
     }

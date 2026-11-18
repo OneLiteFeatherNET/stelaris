@@ -1317,6 +1317,17 @@
   "asset_textures_title": "Textures",
   "asset_textures_no_project": "Choose a project to see its textures.",
   "asset_textures_empty": "This project has no textures yet. Upload one to get started.",
+  "asset_textures_count_filtered": "{shown} of {total}",
+  "@asset_textures_count_filtered": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "asset_textures_no_matches": "No texture matches the search.",
   "asset_textures_load_failed": "The textures could not be loaded.",
   "asset_textures_upload_title": "Upload a texture",

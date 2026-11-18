@@ -4415,6 +4415,12 @@ abstract class AppLocalizations {
   /// **'This project has no textures yet. Upload one to get started.'**
   String get asset_textures_empty;
 
+  /// No description provided for @asset_textures_count_filtered.
+  ///
+  /// In en, this message translates to:
+  /// **'{shown} of {total}'**
+  String asset_textures_count_filtered(int shown, int total);
+
   /// No description provided for @asset_textures_no_matches.
   ///
   /// In en, this message translates to:

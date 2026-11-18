@@ -2461,6 +2461,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'This project has no textures yet. Upload one to get started.';
 
   @override
+  String asset_textures_count_filtered(int shown, int total) {
+    return '$shown of $total';
+  }
+
+  @override
   String get asset_textures_no_matches => 'No texture matches the search.';
 
   @override
