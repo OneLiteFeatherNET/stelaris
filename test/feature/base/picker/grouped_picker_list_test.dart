@@ -8,6 +8,8 @@ Future<void> _pump(
   Map<String, List<String>> groups, {
   ValueChanged<String>? onGroup,
   String emptyText = 'nothing',
+  String Function(String group)? groupLabel,
+  String Function(String label)? groupTooltip,
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -17,8 +19,8 @@ Future<void> _pump(
           height: 480,
           child: GroupedPickerList<String, String>(
             groups: groups,
-            groupLabel: (group) => group,
-            groupTooltip: (label) => 'only $label',
+            groupLabel: groupLabel ?? (group) => group,
+            groupTooltip: groupTooltip ?? (label) => 'only $label',
             headerKey: (group) => ValueKey('h_$group'),
             itemKey: (entry) => ValueKey('i_$entry'),
             itemBuilder: (context, entry) =>
@@ -84,6 +86,29 @@ void main() {
         findsNothing,
       );
       expect(find.byTooltip('only A'), findsNothing);
+    });
+
+    testWidgets('a header looks its label up once and a filtered one '
+        'builds no tooltip', (tester) async {
+      var labels = 0;
+      var tooltips = 0;
+      await _pump(
+        tester,
+        {
+          'A': ['a1'],
+        },
+        groupLabel: (group) {
+          labels++;
+          return group;
+        },
+        groupTooltip: (label) {
+          tooltips++;
+          return 'only $label';
+        },
+      );
+
+      expect(labels, 1);
+      expect(tooltips, 0);
     });
 
     testWidgets('scrolling does not repaint the whole list', (tester) async {
