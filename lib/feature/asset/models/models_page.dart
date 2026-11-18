@@ -168,6 +168,7 @@ class _ModelsBodyState extends State<_ModelsBody> {
     library: widget.library,
     projectId: widget.projectId,
     onReloadFailed: _showReloadFailure,
+    onResume: _load,
   );
 
   List<AssetModel> get _models => _assets.models;

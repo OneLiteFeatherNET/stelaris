@@ -10,14 +10,16 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// The lists come first, the references a moment later: every model file is
 /// read for them. A load that ends after a newer one is ignored. The assets
 /// are loaded again when the app resumes, e.g. when the browser tab regains
-/// focus, so assets saved elsewhere are seen.
+/// focus, so assets saved elsewhere are seen; a page that loads more than the
+/// assets passes its own load as `onResume`.
 class ProjectAssets extends ChangeNotifier {
   ProjectAssets({
     required this.library,
     required this.projectId,
     this.onReloadFailed,
+    Future<void> Function()? onResume,
   }) {
-    _lifecycle = AppLifecycleListener(onResume: load);
+    _lifecycle = AppLifecycleListener(onResume: onResume ?? load);
   }
 
   final AssetLibrary library;

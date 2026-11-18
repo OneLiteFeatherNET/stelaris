@@ -182,6 +182,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
     library: widget.library,
     projectId: widget.projectId,
     onReloadFailed: _showReloadFailure,
+    onResume: _load,
   );
 
   /// The bytes of the textures shown as thumbnails, by their sha1, so a
@@ -301,6 +302,11 @@ class _TexturesBodyState extends State<_TexturesBody> {
       return;
     }
     if (!mounted) return;
+    // The backend drops the texture from fonts; the store follows, so a
+    // font saved later doesn't send the deleted id back.
+    if (usages.fonts.isNotEmpty) {
+      context.dispatch(TextureRemovedFromFontsAction(texture.id));
+    }
     _select(null);
     await _load();
   }
@@ -500,10 +506,12 @@ class _TexturesBodyState extends State<_TexturesBody> {
           key: const Key('textures_unused'),
           label: Text(l10n.asset_textures_unused_filter),
           selected: _onlyUnused,
-          // Usable once every use is known, so nothing in use shows up.
-          onSelected: _sources == null || !_assets.referencesLoaded
-              ? null
-              : (selected) => setState(() => _onlyUnused = selected),
+          // Turned on once every use is known, so nothing in use shows up;
+          // turning it off always works.
+          onSelected:
+              _onlyUnused || (_sources != null && _assets.referencesLoaded)
+              ? (selected) => setState(() => _onlyUnused = selected)
+              : null,
         ),
       ],
     );
