@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
@@ -53,7 +53,7 @@ Future<AssetUploadController> _pump(
 }
 
 Future<void> _choose(WidgetTester tester) async {
-  await tester.tap(find.text('Choose a file'));
+  await tester.tap(find.byKey(const Key('asset_upload_drop_zone')));
   await tester.pumpAndSettle();
 }
 
@@ -68,8 +68,24 @@ void main() {
     await _pump(tester);
 
     expect(find.byKey(const Key('asset_upload_drop_zone')), findsOneWidget);
-    expect(find.text('Drag a file here'), findsOneWidget);
+    expect(
+      find.text('Drag a file here or browse', findRichText: true),
+      findsOneWidget,
+    );
     expect(find.byKey(const Key('asset_upload_key')), findsNothing);
+  });
+
+  testWidgets('the focused drop zone opens the file dialog on Enter', (
+    tester,
+  ) async {
+    await _pump(tester, picks: [_file('ruby.png')]);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+
+    expect(find.text('ruby.png'), findsOneWidget);
+    expect(find.byKey(const Key('asset_upload_drop_zone')), findsNothing);
   });
 
   testWidgets(

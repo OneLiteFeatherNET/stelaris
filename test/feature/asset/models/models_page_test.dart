@@ -212,7 +212,7 @@ void main() {
 
     await tester.tap(find.byKey(const Key('models_upload')));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Choose a file'));
+    await tester.tap(find.byKey(const Key('asset_upload_drop_zone')));
     await tester.pumpAndSettle();
     await pumpUntil(
       tester,
@@ -264,7 +264,7 @@ void main() {
     await tester.ensureVisible(upload);
     await tester.tap(upload);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Choose a file'));
+    await tester.tap(find.byKey(const Key('asset_upload_drop_zone')));
     await tester.pumpAndSettle();
     await pumpUntil(
       tester,
@@ -328,7 +328,7 @@ void main() {
 
       await tester.tap(find.byKey(const Key('models_from_texture')));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Choose a file'));
+      await tester.tap(find.byKey(const Key('asset_upload_drop_zone')));
       await tester.pumpAndSettle();
       await pumpUntil(
         tester,

@@ -326,7 +326,7 @@ void main() {
 
     await tester.tap(find.byKey(const Key('textures_upload')));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Choose a file'));
+    await tester.tap(find.byKey(const Key('asset_upload_drop_zone')));
     await tester.pumpAndSettle();
     await pumpUntil(
       tester,
