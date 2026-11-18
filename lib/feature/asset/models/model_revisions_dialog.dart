@@ -35,10 +35,15 @@ class ModelRevisionsDialog extends StatefulWidget {
   const ModelRevisionsDialog({
     required this.asset,
     required this.saveFile,
+    this.canRestore = true,
     super.key,
   });
 
   final AssetModel asset;
+
+  /// False for an asset whose file belongs to another one, e.g. a texture
+  /// extracted from a Blockbench model: its versions can only be downloaded.
+  final bool canRestore;
 
   /// Saves the downloaded [bytes] of a version as [fileName].
   final void Function(List<int> bytes, String fileName) saveFile;
@@ -147,7 +152,9 @@ class _ModelRevisionsDialogState extends State<ModelRevisionsDialog> {
                   revision: revision,
                   enabled: !_busy,
                   onDownload: () => _download(revision),
-                  onRestore: () => _restore(revision),
+                  onRestore: widget.canRestore
+                      ? () => _restore(revision)
+                      : null,
                 ),
             ],
           );
@@ -164,14 +171,16 @@ class _RevisionTile extends StatelessWidget {
     required this.revision,
     required this.enabled,
     required this.onDownload,
-    required this.onRestore,
+    this.onRestore,
     super.key,
   });
 
   final AssetRevisionModel revision;
   final bool enabled;
   final VoidCallback onDownload;
-  final VoidCallback onRestore;
+
+  /// Null when versions can't be restored.
+  final VoidCallback? onRestore;
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +220,7 @@ class _RevisionTile extends StatelessWidget {
             icon: const Icon(Icons.download_outlined),
             onPressed: enabled ? onDownload : null,
           ),
-          if (!revision.current)
+          if (!revision.current && onRestore != null)
             IconButton(
               tooltip: l10n.asset_model_revision_restore,
               icon: const Icon(Icons.restore),

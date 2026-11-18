@@ -24,8 +24,14 @@ class AssetModelActions extends StatelessWidget {
     required this.pickFile,
     required this.saveFile,
     required this.onChanged,
+    this.readOnly = false,
     super.key,
   });
+
+  /// True for an asset whose file belongs to another one, e.g. a texture
+  /// extracted from a Blockbench model: no Update, and versions can't be
+  /// restored.
+  final bool readOnly;
 
   final AssetModel model;
   final Future<PickedAssetFile?> Function() pickFile;
@@ -70,13 +76,15 @@ class AssetModelActions extends StatelessWidget {
           label: l10n.asset_model_revisions,
           onPressed: () => _openRevisions(context),
         ),
-        const SizedBox(width: 8),
-        PageHeaderAction(
-          key: const Key('model_update'),
-          icon: const Icon(Icons.upload_outlined),
-          label: l10n.asset_model_update,
-          onPressed: () => _update(context),
-        ),
+        if (!readOnly) ...[
+          const SizedBox(width: 8),
+          PageHeaderAction(
+            key: const Key('model_update'),
+            icon: const Icon(Icons.upload_outlined),
+            label: l10n.asset_model_update,
+            onPressed: () => _update(context),
+          ),
+        ],
         const SizedBox(width: 8),
         PageHeaderAction(
           key: const Key('model_download'),
@@ -117,7 +125,11 @@ class AssetModelActions extends StatelessWidget {
   Future<void> _openRevisions(BuildContext context) async {
     final result = await showDialog<RevisionsResult>(
       context: context,
-      builder: (_) => ModelRevisionsDialog(asset: model, saveFile: saveFile),
+      builder: (_) => ModelRevisionsDialog(
+        asset: model,
+        saveFile: saveFile,
+        canRestore: !readOnly,
+      ),
     );
     if (result == null || !context.mounted) return;
     final l10n = context.l10n;
