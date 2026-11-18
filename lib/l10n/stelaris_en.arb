@@ -1168,10 +1168,17 @@
   "asset_picker_kind_bbmodel": "Blockbench model",
   "asset_library_kind_texture": "Texture",
   "asset_library_kind_sound": "Sound",
-  "asset_upload_drop": "Drag a file here",
+  "asset_upload_drop": "Drag a file here or {browse}",
+  "@asset_upload_drop": {
+    "placeholders": {
+      "browse": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_upload_browse": "browse",
   "asset_upload_drop_now": "Drop to add the file",
   "asset_upload_formats": "PNG textures, model JSON or Blockbench models (.bbmodel)",
-  "asset_upload_choose": "Choose a file",
   "asset_upload_change": "Choose another file",
   "asset_upload_remove": "Remove the file",
   "asset_upload_file_details": "{kind} · {size}",
