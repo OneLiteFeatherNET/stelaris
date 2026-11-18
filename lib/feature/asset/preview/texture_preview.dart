@@ -6,6 +6,7 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/png_size.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/bytes.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// Loads the bytes of the asset [assetId] of [projectId].
@@ -57,7 +58,7 @@ class _TexturePreviewState extends State<TexturePreview> {
 
   Future<Uint8List> _load() async {
     if (widget.bytes case final bytes?) return bytes;
-    return Uint8List.fromList(
+    return asUint8List(
       await widget.loadContent(widget.projectId!, widget.asset!.id),
     );
   }

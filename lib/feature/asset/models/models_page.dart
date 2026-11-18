@@ -32,6 +32,7 @@ import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/relative_time.dart';
+import 'package:stelaris/util/bytes.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// Shows the models of the selected project as a grid of cards with how many
@@ -68,7 +69,7 @@ class ModelsPage extends StatelessWidget {
   final void Function(List<int> bytes, String fileName) saveFile;
 
   static void _saveInBrowser(List<int> bytes, String fileName) =>
-      download.saveFile(Uint8List.fromList(bytes), fileName);
+      download.saveFile(asUint8List(bytes), fileName);
 
   /// Loads the items of a project with their components, for "used by".
   final Future<Map<ItemModel, List<ItemComponentDto>>> Function(
@@ -242,7 +243,7 @@ class _ModelsBodyState extends State<_ModelsBody> {
   Future<Uint8List> _thumbnailOf(AssetModel texture) =>
       _thumbnails.putIfAbsent(
         texture.sha1,
-        () async => Uint8List.fromList(
+        () async => asUint8List(
           await widget.library.contentOf(widget.projectId, texture),
         ),
       );

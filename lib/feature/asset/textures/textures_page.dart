@@ -34,6 +34,7 @@ import 'package:stelaris/feature/model/model_card_frame.dart';
 import 'package:stelaris/feature/model/model_grid.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/bytes.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// The insets of the other list pages (see `ModelPage`): the header sits
@@ -65,7 +66,7 @@ class TexturesPage extends StatelessWidget {
   final void Function(List<int> bytes, String fileName) saveFile;
 
   static void _saveInBrowser(List<int> bytes, String fileName) =>
-      download.saveFile(Uint8List.fromList(bytes), fileName);
+      download.saveFile(asUint8List(bytes), fileName);
 
   /// Loads the fonts and pack metas that refer to textures, for "used in".
   final Future<TextureUsageSources> Function(String projectId) loadUsageSources;
@@ -381,9 +382,8 @@ class _TexturesBodyState extends State<_TexturesBody> {
 
   Future<Uint8List> _thumbnailOf(AssetModel texture) => _thumbnails.putIfAbsent(
     texture.sha1,
-    () async => Uint8List.fromList(
-      await widget.library.contentOf(widget.projectId, texture),
-    ),
+    () async =>
+        asUint8List(await widget.library.contentOf(widget.projectId, texture)),
   );
 
   /// Whether the search or the Unused filter hides textures.

@@ -14,6 +14,7 @@ import 'package:stelaris/feature/asset/upload/asset_upload_controller.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/util/l10n_ext.dart';
+import 'package:stelaris/util/bytes.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// The kinds the picker lists by default: the models an item can refer to.
@@ -281,7 +282,7 @@ class _AssetPickerState extends State<AssetPicker>
 
   Future<Uint8List> _thumbnail(AssetModel asset) => _thumbnails.putIfAbsent(
     '${asset.id}:${asset.sha1}',
-    () async => Uint8List.fromList(
+    () async => asUint8List(
       await ApiService().assetApi.content(widget.projectId, asset.id),
     ),
   );
