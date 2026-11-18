@@ -90,7 +90,12 @@ enum AssetNavigationEntry {
 /// The enum class contains the build pages, listed under the "Build" heading
 /// of the sidebar, below the runtime entries.
 enum BuildNavigationEntry {
-  generator('Generator', '/generator', Icons.build_outlined, Icons.build);
+  generator(
+    'Generator',
+    '/generator',
+    StelarisIcons.anvilOutlined,
+    StelarisIcons.anvil,
+  );
 
   final String display;
   final String route;

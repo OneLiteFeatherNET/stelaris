@@ -40,4 +40,8 @@ abstract final class StelarisIcons {
     fontFamily: _family,
   );
   static const IconData grassBlock = IconData(0xe00b, fontFamily: _family);
+
+  /// Generator: an anvil.
+  static const IconData anvilOutlined = IconData(0xe00c, fontFamily: _family);
+  static const IconData anvil = IconData(0xe00d, fontFamily: _family);
 }

@@ -12,6 +12,7 @@ import 'package:stelaris/feature/command_palette/command_registry.dart';
 import 'package:stelaris/feature/command_palette/commands.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/l10n/app_localizations_delegates.dart';
+import 'package:stelaris/util/stelaris_icons.dart';
 
 List<String> _availableAt(String location) {
   final registry = CommandRegistry(pocCommands());
@@ -60,6 +61,12 @@ void main() {
     test('the marked entry uses the filled navigation icon', () {
       final font = pocCommands().firstWhere((c) => c.id == 'nav.font');
       expect(font.currentIcon, NavigationEntry.font.selected);
+    });
+  });
+
+  group('open build command', () {
+    test('shows the same anvil icon as the generator in the rail', () {
+      expect(_byId('ui.open-build').icon, StelarisIcons.anvilOutlined);
     });
   });
 
