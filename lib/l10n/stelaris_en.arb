@@ -1323,6 +1323,29 @@
   "asset_textures_origin_uploaded": "Uploaded",
   "asset_textures_origin_extracted": "Extracted",
   "asset_textures_upload_title": "Upload a texture",
+  "asset_textures_used_in": "Used in",
+  "asset_textures_unused": "Not used anywhere yet.",
+  "asset_textures_usages_failed": "Where the texture is used could not be loaded.",
+  "asset_textures_used_resource_icon": "Resource pack icon",
+  "asset_textures_used_data_icon": "Data pack icon",
+  "asset_textures_same_key": "{name} has the same key, so models use that texture instead of this one.",
+  "@asset_textures_same_key": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_textures_delete": "Delete",
+  "asset_textures_delete_title": "Delete {name}?",
+  "@asset_textures_delete_title": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_textures_delete_warning": "Fonts and pack icons using it lose this texture, and models referring to its key miss it. This can't be undone.",
   "asset_textures_extracted_from": "From {model}",
   "@asset_textures_extracted_from": {
     "placeholders": {

@@ -1,21 +1,33 @@
 import 'dart:typed_data';
 
 import 'package:async_redux/async_redux.dart';
+import 'package:dio/dio.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
+import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/loading/project_assets.dart';
+import 'package:stelaris/feature/asset/models/asset_model_actions.dart';
 import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/asset/preview/texture_preview.dart';
+import 'package:stelaris/feature/asset/textures/texture_detail.dart';
+import 'package:stelaris/feature/asset/textures/texture_usage_sources.dart';
+import 'package:stelaris/feature/asset/textures/texture_usages.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_dialog.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/feature/base/dialog/notice_box.dart';
 import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/search/dialog_search_bar.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/build/download/download_helper.dart'
     as download;
+import 'package:stelaris/api/util/navigation.dart';
+import 'package:stelaris/feature/model/detail_tabs.dart';
 import 'package:stelaris/feature/model/model_card_frame.dart';
 import 'package:stelaris/feature/model/model_grid.dart';
 import 'package:stelaris/util/constants.dart';
@@ -57,6 +69,8 @@ class TexturesPage extends StatelessWidget {
     this.library,
     this.pickFile = pickAssetFile,
     this.saveFile = _saveInBrowser,
+    this.loadUsageSources = loadTextureUsageSources,
+    this.openLocation,
     super.key,
   });
 
@@ -72,6 +86,12 @@ class TexturesPage extends StatelessWidget {
 
   static void _saveInBrowser(List<int> bytes, String fileName) =>
       download.saveFile(Uint8List.fromList(bytes), fileName);
+
+  /// Loads the fonts and pack metas that refer to textures, for "used in".
+  final Future<TextureUsageSources> Function(String projectId) loadUsageSources;
+
+  /// Goes to another page, `context.go` when null; injectable for tests.
+  final ValueChanged<String>? openLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +124,8 @@ class TexturesPage extends StatelessWidget {
           library: library ?? AssetLibrary.shared,
           pickFile: pickFile,
           saveFile: saveFile,
+          loadUsageSources: loadUsageSources,
+          openLocation: openLocation ?? context.go,
         );
       },
     );
@@ -136,6 +158,8 @@ class _TexturesBody extends StatefulWidget {
     required this.library,
     required this.pickFile,
     required this.saveFile,
+    required this.loadUsageSources,
+    required this.openLocation,
     super.key,
   });
 
@@ -146,6 +170,8 @@ class _TexturesBody extends StatefulWidget {
   final AssetLibrary library;
   final Future<PickedAssetFile?> Function() pickFile;
   final void Function(List<int> bytes, String fileName) saveFile;
+  final Future<TextureUsageSources> Function(String projectId) loadUsageSources;
+  final ValueChanged<String> openLocation;
 
   @override
   State<_TexturesBody> createState() => _TexturesBodyState();
@@ -164,13 +190,116 @@ class _TexturesBodyState extends State<_TexturesBody> {
 
   String _query = '';
   TextureOrigin _origin = TextureOrigin.all;
+  late String? _selectedId = widget.selectedId;
+
+  /// The fonts and pack metas of the current load, null while they load.
+  TextureUsageSources? _sources;
+  bool _sourcesFailed = false;
+
+  /// Counts the loads of [_sources], so an older one ending last is ignored.
+  int _sourcesLoadId = 0;
 
   @override
   void initState() {
     super.initState();
-    _assets
-      ..addListener(_onAssetsChanged)
-      ..load();
+    _assets.addListener(_onAssetsChanged);
+    _load();
+  }
+
+  @override
+  void didUpdateWidget(_TexturesBody oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedId != widget.selectedId) {
+      _selectedId = widget.selectedId;
+    }
+  }
+
+  Future<void> _load() async {
+    final loadId = ++_sourcesLoadId;
+    setState(() {
+      _sources = null;
+      _sourcesFailed = false;
+    });
+    final sources = widget
+        .loadUsageSources(widget.projectId)
+        .then<TextureUsageSources?>((sources) => sources)
+        .catchError((Object _) => null);
+    await _assets.load();
+    final loaded = await sources;
+    if (!mounted || loadId != _sourcesLoadId) return;
+    setState(() {
+      _sources = loaded;
+      _sourcesFailed = loaded == null;
+    });
+  }
+
+  void _select(String? id) {
+    setState(() => _selectedId = id);
+    widget.onSelected?.call(id);
+  }
+
+  AssetModel? get _selected {
+    for (final texture in _assets.textures) {
+      if (texture.id == _selectedId) return texture;
+    }
+    return null;
+  }
+
+  /// Where [texture] is used, null until everything it needs has loaded.
+  TextureUsages? _usagesOf(AssetModel texture) {
+    final sources = _sources;
+    if (sources == null || !_assets.referencesLoaded) return null;
+    return textureUsages(
+      texture,
+      models: _assets.models,
+      textures: _assets.textures,
+      references: _assets.references,
+      fonts: sources.fonts,
+      packMetas: sources.packMetas,
+    );
+  }
+
+  void _openModel(AssetModel model) => widget.openLocation(
+    Uri(
+      path: AssetNavigationEntry.models.route,
+      queryParameters: {'id': model.id},
+    ).toString(),
+  );
+
+  void _openFont(FontModel font) {
+    context.dispatch(SelectFontAction(font));
+    widget.openLocation(detailLocation(NavigationEntry.font.route));
+  }
+
+  /// Asks before deleting [texture], naming every use, then deletes it and
+  /// goes back to the grid.
+  Future<void> _delete(AssetModel texture, TextureUsages usages) async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => FormDialog(
+        title: l10n.asset_textures_delete_title(texture.displayName),
+        actionIcon: Icons.delete_outline,
+        actionLabel: l10n.tooltip_delete,
+        destructive: true,
+        maxWidth: 420,
+        onSubmit: () => Navigator.of(context).pop(true),
+        content: _DeleteContent(usages: usages),
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    try {
+      await ApiService().assetApi.delete(widget.projectId, texture.id);
+    } on DioException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        InfoBarFactory().createError(ProblemDetail.fromDioException(error)),
+      );
+      return;
+    }
+    if (!mounted) return;
+    _select(null);
+    await _load();
   }
 
   @override
@@ -234,14 +363,16 @@ class _TexturesBodyState extends State<_TexturesBody> {
       ),
     );
     if (asset == null || !mounted) return;
-    await _assets.load();
+    await _load();
     if (!mounted) return;
-    widget.onSelected?.call(asset.id);
+    _select(asset.id);
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final selected = _selected;
+    if (selected != null) return _buildDetail(selected);
     return Padding(
       padding: _pagePadding,
       child: Column(
@@ -265,6 +396,62 @@ class _TexturesBodyState extends State<_TexturesBody> {
           _buildFilters(),
           verticalSpacing10,
           Expanded(child: _buildGrid()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetail(AssetModel texture) {
+    final l10n = context.l10n;
+    final usages = _usagesOf(texture);
+    final extracted = texture.sourceAssetId != null;
+    return Padding(
+      padding: _pagePadding,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PageHeader(
+            title: texture.displayName,
+            onBack: () => _select(null),
+            compactBelow: PageHeader.detailCompactThreshold,
+            actions: [
+              if (!extracted) ...[
+                PageHeaderAction(
+                  key: const Key('texture_delete'),
+                  icon: const Icon(Icons.delete_outline),
+                  label: l10n.asset_textures_delete,
+                  onPressed: usages == null
+                      ? null
+                      : () => _delete(texture, usages),
+                ),
+                const SizedBox(width: 8),
+              ],
+              AssetModelActions(
+                model: texture,
+                pickFile: widget.pickFile,
+                saveFile: widget.saveFile,
+                onChanged: _load,
+                readOnly: extracted,
+              ),
+            ],
+          ),
+          verticalSpacing10,
+          Expanded(
+            child: SingleChildScrollView(
+              child: TextureDetail(
+                key: ValueKey(texture.id),
+                projectId: widget.projectId,
+                texture: texture,
+                usages: usages,
+                usagesFailed: _sourcesFailed,
+                source: _sourceOf(texture),
+                loadContent: (projectId, _) =>
+                    widget.library.contentOf(projectId, texture),
+                onOpenModel: _openModel,
+                onOpenFont: _openFont,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -324,10 +511,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
           children: [
             Text(l10n.asset_textures_load_failed),
             Text(problem.displayMessage),
-            TextButton(
-              onPressed: _assets.load,
-              child: Text(l10n.asset_picker_retry),
-            ),
+            TextButton(onPressed: _load, child: Text(l10n.asset_picker_retry)),
           ],
         ),
       );
@@ -350,7 +534,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
         texture: texture,
         source: _sourceOf(texture),
         bytes: _thumbnailOf(texture),
-        onTap: () => widget.onSelected?.call(texture.id),
+        onTap: () => _select(texture.id),
       ),
     );
   }
@@ -413,6 +597,47 @@ class _TextureCard extends StatelessWidget {
               source?.displayName ?? texture.sourceAssetId!,
             ),
       onTap: onTap,
+    );
+  }
+}
+
+/// The body of the delete dialog: every use of the texture and what happens
+/// to it.
+class _DeleteContent extends StatelessWidget {
+  const _DeleteContent({required this.usages});
+
+  final TextureUsages usages;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (usages.isEmpty)
+          Text(l10n.asset_textures_unused)
+        else ...[
+          Text(l10n.asset_textures_used_in),
+          const SizedBox(height: 4),
+          for (final model in usages.models) Text('• ${model.displayName}'),
+          for (final font in usages.fonts) Text('• ${font.uiName}'),
+          for (final type in usages.packIcons)
+            Text('• ${packIconLabel(l10n, type)}'),
+        ],
+        verticalSpacing10,
+        NoticeBox(
+          icon: Icons.warning_amber_rounded,
+          color: theme.colorScheme.error,
+          content: Text(
+            usages.isEmpty
+                ? l10n.delete_dialog_irreversible
+                : l10n.asset_textures_delete_warning,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
+      ],
     );
   }
 }

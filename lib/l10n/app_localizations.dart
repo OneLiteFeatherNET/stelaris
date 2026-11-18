@@ -4451,6 +4451,60 @@ abstract class AppLocalizations {
   /// **'Upload a texture'**
   String get asset_textures_upload_title;
 
+  /// No description provided for @asset_textures_used_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Used in'**
+  String get asset_textures_used_in;
+
+  /// No description provided for @asset_textures_unused.
+  ///
+  /// In en, this message translates to:
+  /// **'Not used anywhere yet.'**
+  String get asset_textures_unused;
+
+  /// No description provided for @asset_textures_usages_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the texture is used could not be loaded.'**
+  String get asset_textures_usages_failed;
+
+  /// No description provided for @asset_textures_used_resource_icon.
+  ///
+  /// In en, this message translates to:
+  /// **'Resource pack icon'**
+  String get asset_textures_used_resource_icon;
+
+  /// No description provided for @asset_textures_used_data_icon.
+  ///
+  /// In en, this message translates to:
+  /// **'Data pack icon'**
+  String get asset_textures_used_data_icon;
+
+  /// No description provided for @asset_textures_same_key.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has the same key, so models use that texture instead of this one.'**
+  String asset_textures_same_key(String name);
+
+  /// No description provided for @asset_textures_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get asset_textures_delete;
+
+  /// No description provided for @asset_textures_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}?'**
+  String asset_textures_delete_title(String name);
+
+  /// No description provided for @asset_textures_delete_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Fonts and pack icons using it lose this texture, and models referring to its key miss it. This can\'t be undone.'**
+  String get asset_textures_delete_warning;
+
   /// No description provided for @asset_textures_extracted_from.
   ///
   /// In en, this message translates to:
