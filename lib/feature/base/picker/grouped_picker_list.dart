@@ -44,7 +44,9 @@ class GroupedPickerList<G extends Object, T extends Object>
         for (final entry in entries) (itemKey(entry), null, entry),
       ],
     ];
-    if (rows.isEmpty) return Center(child: Text(emptyText));
+    if (rows.isEmpty) {
+      return Center(child: Text(emptyText, textAlign: TextAlign.center));
+    }
     // Lets a row which the search moved keep its element. Without it the
     // list matches rows by index, and every row at a new index is built
     // from scratch.
