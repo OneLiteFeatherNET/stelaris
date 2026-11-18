@@ -1181,6 +1181,8 @@
   "asset_upload_formats": "PNG textures, model JSON or Blockbench models (.bbmodel)",
   "asset_upload_change": "Choose another file",
   "asset_upload_remove": "Remove the file",
+  "asset_upload_now": "Now",
+  "asset_upload_new": "New",
   "asset_upload_file_details": "{kind} · {size}",
   "@asset_upload_file_details": {
     "placeholders": {

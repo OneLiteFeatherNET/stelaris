@@ -23,11 +23,16 @@ class AssetUploadForm extends StatefulWidget {
   const AssetUploadForm({
     required this.controller,
     this.onSubmitted,
+    this.currentPreview,
     super.key,
   });
 
   final AssetUploadController controller;
   final VoidCallback? onSubmitted;
+
+  /// The texture as it is now. When set, a new version of a texture is shown
+  /// beside it, so the two can be compared before the upload.
+  final Widget? currentPreview;
 
   @override
   State<AssetUploadForm> createState() => _AssetUploadFormState();
@@ -110,7 +115,16 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
                 ),
                 if (controller.fileKind == AssetKind.TEXTURE) ...[
                   const SizedBox(height: 16),
-                  TexturePreview.bytes(file.bytes, key: ObjectKey(file)),
+                  if (widget.currentPreview case final current?)
+                    _Comparison(
+                      current: current,
+                      next: TexturePreview.bytes(
+                        file.bytes,
+                        key: ObjectKey(file),
+                      ),
+                    )
+                  else
+                    TexturePreview.bytes(file.bytes, key: ObjectKey(file)),
                 ],
                 if (replaces == null) ...[
                   const SizedBox(height: 16),
@@ -417,6 +431,48 @@ class _DashedBorderPainter extends CustomPainter {
       color != oldDelegate.color ||
       width != oldDelegate.width ||
       radius != oldDelegate.radius;
+}
+
+/// The texture as it is now beside the chosen new version.
+class _Comparison extends StatelessWidget {
+  const _Comparison({required this.current, required this.next});
+
+  final Widget current;
+  final Widget next;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Row(
+      key: const Key('asset_upload_compare'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: _labelled(context, l10n.asset_upload_now, current)),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(12, 48, 12, 0),
+          child: Icon(Icons.arrow_forward),
+        ),
+        Expanded(child: _labelled(context, l10n.asset_upload_new, next)),
+      ],
+    );
+  }
+
+  Widget _labelled(BuildContext context, String label, Widget child) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 6),
+        child,
+      ],
+    );
+  }
 }
 
 /// The chosen file with its kind and size, to change or remove it.

@@ -4091,6 +4091,18 @@ abstract class AppLocalizations {
   /// **'Remove the file'**
   String get asset_upload_remove;
 
+  /// No description provided for @asset_upload_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get asset_upload_now;
+
+  /// No description provided for @asset_upload_new.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get asset_upload_new;
+
   /// No description provided for @asset_upload_file_details.
   ///
   /// In en, this message translates to:
