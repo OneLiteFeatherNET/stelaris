@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:dio/dio.dart';
@@ -14,23 +13,22 @@ import 'package:stelaris/feature/asset/loading/project_assets.dart';
 import 'package:stelaris/feature/asset/asset_actions.dart';
 import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
-import 'package:stelaris/feature/asset/preview/texture_preview.dart';
+import 'package:stelaris/feature/asset/textures/texture_card.dart';
 import 'package:stelaris/feature/asset/textures/texture_detail.dart';
 import 'package:stelaris/feature/asset/textures/texture_info_dialog.dart';
+import 'package:stelaris/feature/asset/textures/texture_library.dart';
 import 'package:stelaris/feature/asset/textures/texture_usage_sources.dart';
 import 'package:stelaris/feature/asset/textures/texture_usages.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_dialog.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/dialog/notice_box.dart';
 import 'package:stelaris/feature/base/button/card_actions_menu.dart';
-import 'package:stelaris/feature/base/chips/info_chip.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/build/download/download_helper.dart'
     as download;
 import 'package:stelaris/api/util/navigation.dart';
 import 'package:stelaris/feature/model/detail_tabs.dart';
-import 'package:stelaris/feature/model/model_card_frame.dart';
 import 'package:stelaris/feature/model/model_grid.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/l10n_ext.dart';
@@ -153,16 +151,14 @@ class _TexturesBody extends StatefulWidget {
 }
 
 class _TexturesBodyState extends State<_TexturesBody> {
-  late final ProjectAssets _assets = ProjectAssets(
+  late final TextureLibrary _library = TextureLibrary(
     library: widget.library,
     projectId: widget.projectId,
+    loadUsageSources: widget.loadUsageSources,
     onReloadFailed: _showReloadFailure,
-    onResume: _load,
   );
 
-  /// The bytes of the textures shown as thumbnails, by their sha1, so a
-  /// rebuild doesn't load them again.
-  final Map<String, Future<Uint8List>> _thumbnails = {};
+  ProjectAssets get _assets => _library.assets;
 
   /// The AppBar search, as of the last build.
   String _query = '';
@@ -170,24 +166,10 @@ class _TexturesBodyState extends State<_TexturesBody> {
   /// Shows only the textures nothing uses, once that is known.
   bool _onlyUnused = false;
 
-  /// Notifies when [_sources] changed, for an open info dialog.
-  final ValueNotifier<int> _sourcesVersion = ValueNotifier(0);
-
-  /// The fonts and pack metas of the current load, null while they load.
-  TextureUsageSources? _sources;
-  bool _sourcesFailed = false;
-
-  /// Counts the loads of [_sources], so an older one ending last is ignored.
-  int _sourcesLoadId = 0;
-
-  /// Where the textures are used, built once everything it needs has loaded
-  /// and dropped whenever the assets or [_sources] change.
-  TextureUsageIndex? _index;
-
   @override
   void initState() {
     super.initState();
-    _assets.addListener(_onAssetsChanged);
+    _library.addListener(_onLibraryChanged);
     _load();
     // After the first frame: dispatching during initState would notify the
     // AppBar search mid-build. Also drops a search typed for another page.
@@ -199,51 +181,12 @@ class _TexturesBodyState extends State<_TexturesBody> {
     });
   }
 
-  Future<void> _load() async {
-    final sources = _loadSources();
-    await _assets.load();
-    await sources;
-  }
+  Future<void> _load() => _library.load();
 
-  /// Loads the fonts and pack metas for "used in", also alone after they
-  /// failed.
-  Future<void> _loadSources() async {
-    final loadId = ++_sourcesLoadId;
-    setState(() {
-      _sources = null;
-      _sourcesFailed = false;
-      _index = null;
-    });
-    _sourcesVersion.value++;
-    TextureUsageSources? loaded;
-    try {
-      loaded = await widget.loadUsageSources(widget.projectId);
-    } on Object {
-      loaded = null;
-    }
-    if (!mounted || loadId != _sourcesLoadId) return;
-    setState(() {
-      _sources = loaded;
-      _sourcesFailed = loaded == null;
-      _index = null;
-    });
-    _sourcesVersion.value++;
-  }
+  Future<void> _loadSources() => _library.loadSources();
 
   /// Where [texture] is used, null until everything it needs has loaded.
-  TextureUsages? _usagesOf(AssetModel texture) => _usageIndex?.of(texture);
-
-  TextureUsageIndex? get _usageIndex {
-    final sources = _sources;
-    if (sources == null || !_assets.referencesLoaded) return null;
-    return _index ??= TextureUsageIndex(
-      models: _assets.models,
-      textures: _assets.textures,
-      references: _assets.references,
-      fonts: sources.fonts,
-      packMetas: sources.packMetas,
-    );
-  }
+  TextureUsages? _usagesOf(AssetModel texture) => _library.usagesOf(texture);
 
   void _openModel(AssetModel model) => widget.openLocation(
     Uri(
@@ -312,11 +255,11 @@ class _TexturesBodyState extends State<_TexturesBody> {
   Widget _infoDialog(AssetModel texture) => TextureInfoDialog(
     projectId: widget.projectId,
     texture: texture,
-    changes: Listenable.merge([_assets, _sourcesVersion]),
+    changes: _library,
     usages: () => _usagesOf(texture),
-    usagesFailed: () => _sourcesFailed,
+    usagesFailed: () => _library.usagesFailed,
     onRetryUsages: _loadSources,
-    source: _sourceOf(texture),
+    source: _library.sourceOf(texture),
     loadContent: (projectId, _) =>
         widget.library.contentOf(projectId, texture),
     onOpenModel: _openModel,
@@ -382,15 +325,14 @@ class _TexturesBodyState extends State<_TexturesBody> {
         if (route.isActive) route.navigator?.removeRoute(route);
       });
     }
-    _assets
-      ..removeListener(_onAssetsChanged)
+    _library
+      ..removeListener(_onLibraryChanged)
       ..dispose();
-    _sourcesVersion.dispose();
     super.dispose();
   }
 
-  void _onAssetsChanged() {
-    if (mounted) setState(() => _index = null);
+  void _onLibraryChanged() {
+    if (mounted) setState(() {});
   }
 
   void _showReloadFailure(ProblemDetail problem) {
@@ -399,12 +341,6 @@ class _TexturesBodyState extends State<_TexturesBody> {
     ScaffoldMessenger.of(context)
         .showSnackBar(InfoBarFactory().createError(problem));
   }
-
-  Future<Uint8List> _thumbnailOf(AssetModel texture) => _thumbnails.putIfAbsent(
-    texture.sha1,
-    () async =>
-        asUint8List(await widget.library.contentOf(widget.projectId, texture)),
-  );
 
   /// Whether the search or the Unused filter hides textures.
   bool get _filtered => _onlyUnused || _query.trim().isNotEmpty;
@@ -430,16 +366,6 @@ class _TexturesBodyState extends State<_TexturesBody> {
     if (byKey != 0) return byKey;
     final byName = a.displayName.compareTo(b.displayName);
     return byName != 0 ? byName : a.id.compareTo(b.id);
-  }
-
-  /// The model [texture] was extracted from, null for an uploaded one.
-  AssetModel? _sourceOf(AssetModel texture) {
-    final sourceId = texture.sourceAssetId;
-    if (sourceId == null) return null;
-    for (final model in _assets.models) {
-      if (model.id == sourceId) return model;
-    }
-    return null;
   }
 
   Future<void> _upload() async {
@@ -517,13 +443,13 @@ class _TexturesBodyState extends State<_TexturesBody> {
           // Turned on once every use is known, so nothing in use shows up;
           // turning it off always works.
           onSelected:
-              _onlyUnused || _usageIndex != null
+              _onlyUnused || _library.usagesLoaded
               ? (selected) => setState(() => _onlyUnused = selected)
               : null,
         ),
         // Without the uses the Unused filter and Delete stay off; this says
         // why and loads them again.
-        if (_sourcesFailed)
+        if (_library.usagesFailed)
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -585,90 +511,15 @@ class _TexturesBodyState extends State<_TexturesBody> {
       key: const Key('textures_grid'),
       items: visible,
       cardHeight: _cardHeight,
-      itemBuilder: (context, texture) => _TextureCard(
+      itemBuilder: (context, texture) => TextureCard(
         key: ValueKey('texture_${texture.id}'),
         texture: texture,
-        source: _sourceOf(texture),
+        source: _library.sourceOf(texture),
         usages: _usagesOf(texture),
-        bytes: _thumbnailOf(texture),
+        bytes: _library.thumbnailOf(texture),
         menu: _menuOf(texture),
         onTap: () => _showInfo(texture),
       ),
-    );
-  }
-}
-
-/// One texture of the grid: its thumbnail, name and key, and in the footer
-/// where it comes from.
-class _TextureCard extends StatelessWidget {
-  const _TextureCard({
-    required this.texture,
-    required this.source,
-    required this.usages,
-    required this.bytes,
-    required this.menu,
-    required this.onTap,
-    super.key,
-  });
-
-  final AssetModel texture;
-  final List<CardMenuEntry> menu;
-
-  /// Where the texture is used, null while that loads.
-  final TextureUsages? usages;
-
-  /// The Blockbench model the texture was extracted from.
-  final AssetModel? source;
-  final Future<Uint8List> bytes;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final theme = Theme.of(context);
-    final source = this.source;
-    return ModelCardFrame(
-      content: Row(
-        children: [
-          TextureThumbnail(asset: texture, bytes: bytes),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  texture.displayName,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 6),
-                InfoChip(icon: Icons.vpn_key_outlined, text: texture.key),
-              ],
-            ),
-          ),
-        ],
-      ),
-      trailing: CardActionsMenu(entries: menu),
-      // An extracted texture says where it comes from, its model is what
-      // uses it; an uploaded one how often it is used, once that is known.
-      footerIcon: switch ((texture.sourceAssetId, usages)) {
-        (_?, _) => Icons.view_in_ar_outlined,
-        (null, final usages?) when usages.isEmpty => Icons.link_off,
-        (null, _?) => Icons.link,
-        (null, null) => null,
-      },
-      footerText: switch ((texture.sourceAssetId, usages)) {
-        (final sourceId?, _) => l10n.asset_textures_extracted_from(
-          source?.displayName ?? sourceId,
-        ),
-        (null, final usages?) => l10n.asset_textures_usage_count(usages.count),
-        (null, null) => null,
-      },
-      onTap: onTap,
     );
   }
 }
