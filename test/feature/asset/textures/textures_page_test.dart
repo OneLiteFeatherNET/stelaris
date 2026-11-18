@@ -94,10 +94,9 @@ class _Library extends AssetLibrary {
       png16;
 }
 
-Future<List<String?>> _pump(
+Future<void> _pump(
   WidgetTester tester, {
   required _Library library,
-  String? selectedId,
   Future<PickedAssetFile?> Function()? pickFile,
   TextureUsageSources sources = const TextureUsageSources(),
   Future<TextureUsageSources> Function(String projectId)? loadSources,
@@ -107,7 +106,6 @@ Future<List<String?>> _pump(
   tester.view.physicalSize = const Size(1200, 800);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
-  final selections = <String?>[];
   await tester.pumpWidget(
     StoreProvider<AppState>(
       store: store ?? Store<AppState>(initialState: _state),
@@ -117,8 +115,6 @@ Future<List<String?>> _pump(
         home: Scaffold(
           body: TexturesPage(
             library: library,
-            selectedId: selectedId,
-            onSelected: selections.add,
             loadUsageSources: loadSources ?? (_) async => sources,
             openLocation: openLocation ?? (_) {},
             pickFile: pickFile ?? () async => null,
@@ -129,8 +125,37 @@ Future<List<String?>> _pump(
     ),
   );
   await tester.pumpAndSettle();
-  return selections;
 }
+
+/// Opens the info dialog of the texture [id] by tapping its card.
+Future<void> _openInfo(WidgetTester tester, String id) async {
+  await tester.tap(find.text(_names[id]!));
+  await tester.pumpAndSettle();
+}
+
+/// Opens the card menu of the texture [id].
+Future<void> _openMenu(WidgetTester tester, String id) async {
+  await tester.tap(
+    find.descendant(
+      of: find.byKey(ValueKey('texture_$id')),
+      matching: find.byTooltip('More actions'),
+    ),
+  );
+  await tester.pumpAndSettle();
+}
+
+const _names = {'t1': 'Gem', 't2': 'Polished Stone', 't3': 'Blade'};
+
+/// The labels of the open card menu.
+List<String> _menuLabels(WidgetTester tester) => [
+  for (final item in tester.widgetList<PopupMenuItem<void>>(
+    find.byType(PopupMenuItem<void>),
+  ))
+    for (final text in tester.widgetList<Text>(
+      find.descendant(of: find.byWidget(item), matching: find.byType(Text)),
+    ))
+      text.data ?? '',
+];
 
 List<String> _keys(WidgetTester tester) => tester
     .widgetList<InfoChip>(find.byType(InfoChip))
@@ -207,9 +232,9 @@ void main() {
     expect(find.text('Try again'), findsOneWidget);
   });
 
-  testWidgets('upload selects the new texture', (tester) async {
+  testWidgets('an uploaded texture is listed', (tester) async {
     final assets = [_gem];
-    final selections = await _pump(
+    await _pump(
       tester,
       library: _Library(assets),
       pickFile: () async =>
@@ -230,31 +255,70 @@ void main() {
       action: () async {
         await tester.tap(find.text('Upload').last);
       },
-      done: () => selections.isNotEmpty,
+      done: () => find.text('Polished Stone').evaluate().isNotEmpty,
     );
 
-    expect(selections, ['t2']);
+    expect(_keys(tester), ['vulpes:block/gem', 'vulpes:block/stone']);
   });
 
-  testWidgets('extracted texture has no delete and no update', (tester) async {
-    await _pump(tester, library: _Library([_axe, _blade]), selectedId: 't3');
+  testWidgets('tap on a card opens the info dialog with used in', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      library: _Library([_gem]),
+      sources: const TextureUsageSources(
+        fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
+      ),
+    );
 
-    expect(find.byKey(const Key('model_download')), findsOneWidget);
-    expect(find.byKey(const Key('texture_delete')), findsNothing);
-    expect(find.byKey(const Key('model_update')), findsNothing);
+    await _openInfo(tester, 't1');
+
+    expect(find.byType(Dialog), findsOneWidget);
+    expect(
+      find.descendant(of: find.byType(Dialog), matching: find.text('Icons')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('menu of an uploaded texture offers every action', (
+    tester,
+  ) async {
+    await _pump(tester, library: _Library([_gem]));
+
+    await _openMenu(tester, 't1');
+
+    expect(_menuLabels(tester), [
+      'Notes',
+      'Info',
+      'Versions',
+      'Update',
+      'Download',
+      'Delete',
+    ]);
+  });
+
+  testWidgets('menu of an extracted texture has no update and no delete', (
+    tester,
+  ) async {
+    await _pump(tester, library: _Library([_axe, _blade]));
+
+    await _openMenu(tester, 't3');
+
+    expect(_menuLabels(tester), ['Notes', 'Info', 'Versions', 'Download']);
   });
 
   testWidgets('delete dialog warns about every use', (tester) async {
     await _pump(
       tester,
       library: _Library([_gem]),
-      selectedId: 't1',
       sources: const TextureUsageSources(
         fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
       ),
     );
 
-    await tester.tap(find.byKey(const Key('texture_delete')));
+    await _openMenu(tester, 't1');
+    await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
 
     expect(find.text('Delete Gem?'), findsOneWidget);
@@ -268,16 +332,10 @@ void main() {
     expect(find.textContaining('lose this texture'), findsOneWidget);
   });
 
-  testWidgets('confirming deletes, returns to the grid and reloads', (
-    tester,
-  ) async {
+  testWidgets('confirming deletes and reloads the grid', (tester) async {
     final assets = [_gem, _stone];
     final requests = <RequestOptions>[];
-    final selections = await _pump(
-      tester,
-      library: _Library(assets),
-      selectedId: 't1',
-    );
+    await _pump(tester, library: _Library(assets));
     ApiService().assetApi.apiClient.dio.httpClientAdapter =
         FakeHttpClientAdapter((RequestOptions options) {
           requests.add(options);
@@ -285,34 +343,37 @@ void main() {
           return FakeHttpClientAdapter.response(_gem.toJson());
         });
 
-    await tester.tap(find.byKey(const Key('texture_delete')));
+    await _openMenu(tester, 't1');
+    await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
     await pumpUntil(
       tester,
       action: () async {
         await tester.tap(find.text('Delete').last);
       },
-      done: () => selections.isNotEmpty,
+      done: () => find.text('Gem').evaluate().isEmpty,
     );
 
     expect(requests.single.method, 'DELETE');
     expect(requests.single.uri.path, endsWith('/delete/t1'));
-    expect(selections, [null]);
+    expect(_keys(tester), ['vulpes:block/stone']);
   });
 
-  testWidgets('tap on a model opens the models page with its id', (
+  testWidgets('jump to a model closes the dialog and opens the models page', (
     tester,
   ) async {
     final locations = <String>[];
     await _pump(
       tester,
       library: _Library([_axe, _blade]),
-      selectedId: 't3',
       openLocation: locations.add,
     );
 
+    await _openInfo(tester, 't3');
     await tester.tap(find.byKey(const ValueKey('texture_used_model_b1')));
+    await tester.pumpAndSettle();
 
+    expect(find.byType(Dialog), findsNothing);
     expect(locations, ['/assets/models?id=b1']);
   });
 
@@ -336,18 +397,20 @@ void main() {
     await _pump(
       tester,
       library: _Library([_gem]),
-      selectedId: 't1',
       loadSources: (_) async => sources,
     );
-    expect(find.text('Not used anywhere yet.'), findsOneWidget);
 
     sources = const TextureUsageSources(
       fonts: [FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1')],
     );
     _resume(tester);
     await tester.pumpAndSettle();
+    await _openInfo(tester, 't1');
 
-    expect(find.text('Icons'), findsOneWidget);
+    expect(
+      find.descendant(of: find.byType(Dialog), matching: find.text('Icons')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('unused filter can be turned off when the usages fail', (
@@ -393,30 +456,30 @@ void main() {
         selectedFont: icons,
       ),
     );
-    final selections = await _pump(
+    final assets = [_gem];
+    await _pump(
       tester,
-      library: _Library([_gem]),
-      selectedId: 't1',
+      library: _Library(assets),
       sources: const TextureUsageSources(fonts: [icons]),
       store: store,
     );
     ApiService().assetApi.apiClient.dio.httpClientAdapter =
-        FakeHttpClientAdapter(
-          (RequestOptions options) =>
-              FakeHttpClientAdapter.response(_gem.toJson()),
-        );
+        FakeHttpClientAdapter((RequestOptions options) {
+          assets.remove(_gem);
+          return FakeHttpClientAdapter.response(_gem.toJson());
+        });
 
-    await tester.tap(find.byKey(const Key('texture_delete')));
+    await _openMenu(tester, 't1');
+    await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
     await pumpUntil(
       tester,
       action: () async {
         await tester.tap(find.text('Delete').last);
       },
-      done: () => selections.isNotEmpty,
+      done: () => store.state.selectedFont?.textureAssetId == null,
     );
 
     expect(store.state.fonts.items.single.textureAssetId, isNull);
-    expect(store.state.selectedFont?.textureAssetId, isNull);
   });
 }
