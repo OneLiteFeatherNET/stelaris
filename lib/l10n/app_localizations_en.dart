@@ -2268,6 +2268,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_upload_remove => 'Remove the file';
 
   @override
+  String get asset_upload_now => 'Now';
+
+  @override
+  String get asset_upload_new => 'New';
+
+  @override
   String asset_upload_file_details(String kind, String size) {
     return '$kind · $size';
   }

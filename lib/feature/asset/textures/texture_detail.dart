@@ -24,8 +24,8 @@ class TextureDetail extends StatelessWidget {
     required this.projectId,
     required this.texture,
     required this.usages,
-    required this.onOpenModel,
-    required this.onOpenFont,
+    this.onOpenModel,
+    this.onOpenFont,
     this.usagesFailed = false,
     this.onRetryUsages,
     this.source,
@@ -46,8 +46,11 @@ class TextureDetail extends StatelessWidget {
 
   /// Loads the bytes of the preview, the backend when null.
   final TextureContentLoader? loadContent;
-  final ValueChanged<AssetModel> onOpenModel;
-  final ValueChanged<FontModel> onOpenFont;
+
+  /// Opens a model or font the texture is used in; without them the uses
+  /// are only named, e.g. in the texture picker.
+  final ValueChanged<AssetModel>? onOpenModel;
+  final ValueChanged<FontModel>? onOpenFont;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +84,10 @@ class TextureDetail extends StatelessWidget {
                     source?.displayName ?? texture.sourceAssetId!,
                   ),
                 ),
-                onPressed: source == null ? null : () => onOpenModel(source),
+                onPressed: switch ((source, onOpenModel)) {
+                  (final source?, final open?) => () => open(source),
+                  _ => null,
+                },
               ),
           ],
         ),
@@ -138,18 +144,24 @@ class TextureDetail extends StatelessWidget {
       runSpacing: 8,
       children: [
         for (final model in usages.models)
-          ActionChip(
+          _use(
             key: ValueKey('texture_used_model_${model.id}'),
-            avatar: const Icon(Icons.view_in_ar_outlined, size: 16),
-            label: Text(model.displayName),
-            onPressed: () => onOpenModel(model),
+            icon: Icons.view_in_ar_outlined,
+            label: model.displayName,
+            onOpen: switch (onOpenModel) {
+              final open? => () => open(model),
+              null => null,
+            },
           ),
         for (final font in usages.fonts)
-          ActionChip(
+          _use(
             key: ValueKey('texture_used_font_${font.id}'),
-            avatar: const Icon(Icons.text_fields, size: 16),
-            label: Text(font.uiName),
-            onPressed: () => onOpenFont(font),
+            icon: Icons.text_fields,
+            label: font.uiName,
+            onOpen: switch (onOpenFont) {
+              final open? => () => open(font),
+              null => null,
+            },
           ),
         for (final type in usages.packIcons)
           Chip(
@@ -158,6 +170,25 @@ class TextureDetail extends StatelessWidget {
             label: Text(packIconLabel(l10n, type)),
           ),
       ],
+    );
+  }
+
+  /// One use: a chip that opens it, or only names it without [onOpen].
+  static Widget _use({
+    required Key key,
+    required IconData icon,
+    required String label,
+    required VoidCallback? onOpen,
+  }) {
+    final avatar = Icon(icon, size: 16);
+    if (onOpen == null) {
+      return Chip(key: key, avatar: avatar, label: Text(label));
+    }
+    return ActionChip(
+      key: key,
+      avatar: avatar,
+      label: Text(label),
+      onPressed: onOpen,
     );
   }
 }
