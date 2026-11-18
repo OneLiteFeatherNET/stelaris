@@ -1313,6 +1313,67 @@
   },
   "asset_models_title": "Models",
   "asset_models_no_project": "Choose a project to see its models.",
+  "asset_models_no_matches": "No model matches the search.",
+  "asset_textures_title": "Textures",
+  "asset_textures_no_project": "Choose a project to see its textures.",
+  "asset_textures_empty": "This project has no textures yet. Upload one to get started.",
+  "asset_textures_count_filtered": "{shown} of {total}",
+  "@asset_textures_count_filtered": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "asset_textures_no_matches": "No texture matches the search.",
+  "asset_textures_none_unused": "Every texture is in use.",
+  "asset_textures_load_failed": "The textures could not be loaded.",
+  "asset_textures_upload_title": "Upload a texture",
+  "asset_textures_used_in": "Used in",
+  "asset_textures_unused_filter": "Unused",
+  "asset_textures_unused": "Not used anywhere yet.",
+  "asset_textures_usages_failed": "Where the texture is used could not be loaded.",
+  "asset_textures_usages_failed_short": "Uses could not be loaded",
+  "asset_textures_usages_retry": "Try again",
+  "asset_textures_usage_count": "{count, plural, =0{Not used} =1{Used once} other{Used {count} times}}",
+  "@asset_textures_usage_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "asset_textures_used_resource_icon": "Resource pack icon",
+  "asset_textures_used_data_icon": "Data pack icon",
+  "asset_textures_same_key": "{name} has the same key, so models use that texture instead of this one.",
+  "@asset_textures_same_key": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_textures_delete": "Delete",
+  "asset_textures_delete_title": "Delete {name}?",
+  "@asset_textures_delete_title": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_textures_delete_warning": "Fonts and pack icons using it lose this texture, and models referring to its key miss it. This can't be undone.",
+  "asset_textures_extracted_from": "From {model}",
+  "@asset_textures_extracted_from": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
   "asset_models_empty": "This project has no models yet. Upload one to get started.",
   "asset_models_load_failed": "The models could not be loaded.",
   "asset_models_upload_title": "Upload a model",

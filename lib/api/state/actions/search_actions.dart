@@ -95,7 +95,7 @@ class UpdateSearchSortAction extends ReduxAction<AppState> {
 class RegisterSearchFiltersAction extends ReduxAction<AppState> {
   RegisterSearchFiltersAction(this.section, this.filters);
 
-  final NavigationEntry section;
+  final SearchSection section;
   final List<FilterOption> filters;
 
   @override

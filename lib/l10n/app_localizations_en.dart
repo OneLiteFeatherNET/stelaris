@@ -2447,6 +2447,96 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_models_no_project => 'Choose a project to see its models.';
 
   @override
+  String get asset_models_no_matches => 'No model matches the search.';
+
+  @override
+  String get asset_textures_title => 'Textures';
+
+  @override
+  String get asset_textures_no_project =>
+      'Choose a project to see its textures.';
+
+  @override
+  String get asset_textures_empty =>
+      'This project has no textures yet. Upload one to get started.';
+
+  @override
+  String asset_textures_count_filtered(int shown, int total) {
+    return '$shown of $total';
+  }
+
+  @override
+  String get asset_textures_no_matches => 'No texture matches the search.';
+
+  @override
+  String get asset_textures_none_unused => 'Every texture is in use.';
+
+  @override
+  String get asset_textures_load_failed => 'The textures could not be loaded.';
+
+  @override
+  String get asset_textures_upload_title => 'Upload a texture';
+
+  @override
+  String get asset_textures_used_in => 'Used in';
+
+  @override
+  String get asset_textures_unused_filter => 'Unused';
+
+  @override
+  String get asset_textures_unused => 'Not used anywhere yet.';
+
+  @override
+  String get asset_textures_usages_failed =>
+      'Where the texture is used could not be loaded.';
+
+  @override
+  String get asset_textures_usages_failed_short => 'Uses could not be loaded';
+
+  @override
+  String get asset_textures_usages_retry => 'Try again';
+
+  @override
+  String asset_textures_usage_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Used $count times',
+      one: 'Used once',
+      zero: 'Not used',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get asset_textures_used_resource_icon => 'Resource pack icon';
+
+  @override
+  String get asset_textures_used_data_icon => 'Data pack icon';
+
+  @override
+  String asset_textures_same_key(String name) {
+    return '$name has the same key, so models use that texture instead of this one.';
+  }
+
+  @override
+  String get asset_textures_delete => 'Delete';
+
+  @override
+  String asset_textures_delete_title(String name) {
+    return 'Delete $name?';
+  }
+
+  @override
+  String get asset_textures_delete_warning =>
+      'Fonts and pack icons using it lose this texture, and models referring to its key miss it. This can\'t be undone.';
+
+  @override
+  String asset_textures_extracted_from(String model) {
+    return 'From $model';
+  }
+
+  @override
   String get asset_models_empty =>
       'This project has no models yet. Upload one to get started.';
 

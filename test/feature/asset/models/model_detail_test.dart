@@ -238,7 +238,9 @@ void main() {
       },
     );
 
-    final present = find.byKey(const ValueKey('model_texture_vulpes:block/gem'));
+    final present = find.byKey(
+      const ValueKey('model_texture_vulpes:block/gem'),
+    );
     final thumbnail = find.descendant(
       of: present,
       matching: find.byType(TextureThumbnail),
@@ -263,7 +265,10 @@ void main() {
       findsNothing,
     );
     expect(
-      find.descendant(of: missing, matching: find.byIcon(Icons.cancel_outlined)),
+      find.descendant(
+        of: missing,
+        matching: find.byIcon(Icons.cancel_outlined),
+      ),
       findsOneWidget,
     );
   });

@@ -41,6 +41,18 @@ void main() {
       initialLocation: location,
       routes: [
         GoRoute(
+          path: '/assets/textures',
+          builder: (context, state) => page('Texture List'),
+        ),
+        GoRoute(
+          path: '/assets/models',
+          builder: (context, state) => page(
+            state.uri.queryParameters.containsKey('id')
+                ? 'Model Detail'
+                : 'Model List',
+          ),
+        ),
+        GoRoute(
           path: '/items',
           builder: (context, state) => page('Item List'),
           routes: [
@@ -71,6 +83,30 @@ void main() {
   testWidgets('shows a section-specific hint', (tester) async {
     await pump(tester);
     expect(find.text('Search Items, or ? for more'), findsOneWidget);
+  });
+
+  testWidgets('offers the search on the textures page', (tester) async {
+    await pump(tester, location: '/assets/textures');
+    expect(find.text('Search Textures, or ? for more'), findsOneWidget);
+  });
+
+  testWidgets('the asset pages offer no filter or sort menu', (tester) async {
+    await pump(tester, location: '/assets/textures');
+    expect(find.byTooltip('Filter & Sort'), findsNothing);
+  });
+
+  testWidgets('a model opened by id counts as a detail page', (tester) async {
+    await pump(tester, location: '/assets/models?id=m1');
+
+    await tester.enterText(find.byType(TextField), 'ruby');
+    await tester.pumpAndSettle();
+    expect(find.text('Model Detail'), findsOneWidget);
+    expect(find.text('Show Models matching \u201cruby\u201d'), findsOneWidget);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Model List'), findsOneWidget);
   });
 
   testWidgets('dispatches the query only after the 300ms debounce', (

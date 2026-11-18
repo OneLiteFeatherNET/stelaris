@@ -53,7 +53,9 @@ class BasePage extends StatelessWidget {
               // and drops a query still waiting in the debounce.
               title: AppBarSearch(
                 key: ValueKey(
-                  entryForLocation(GoRouterState.of(context).matchedLocation),
+                  searchSectionForLocation(
+                    GoRouterState.of(context).matchedLocation,
+                  ),
                 ),
               ),
               centerTitle: true,

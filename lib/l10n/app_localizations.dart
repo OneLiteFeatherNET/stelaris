@@ -4391,6 +4391,144 @@ abstract class AppLocalizations {
   /// **'Choose a project to see its models.'**
   String get asset_models_no_project;
 
+  /// No description provided for @asset_models_no_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'No model matches the search.'**
+  String get asset_models_no_matches;
+
+  /// No description provided for @asset_textures_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Textures'**
+  String get asset_textures_title;
+
+  /// No description provided for @asset_textures_no_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a project to see its textures.'**
+  String get asset_textures_no_project;
+
+  /// No description provided for @asset_textures_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'This project has no textures yet. Upload one to get started.'**
+  String get asset_textures_empty;
+
+  /// No description provided for @asset_textures_count_filtered.
+  ///
+  /// In en, this message translates to:
+  /// **'{shown} of {total}'**
+  String asset_textures_count_filtered(int shown, int total);
+
+  /// No description provided for @asset_textures_no_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'No texture matches the search.'**
+  String get asset_textures_no_matches;
+
+  /// No description provided for @asset_textures_none_unused.
+  ///
+  /// In en, this message translates to:
+  /// **'Every texture is in use.'**
+  String get asset_textures_none_unused;
+
+  /// No description provided for @asset_textures_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The textures could not be loaded.'**
+  String get asset_textures_load_failed;
+
+  /// No description provided for @asset_textures_upload_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a texture'**
+  String get asset_textures_upload_title;
+
+  /// No description provided for @asset_textures_used_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Used in'**
+  String get asset_textures_used_in;
+
+  /// No description provided for @asset_textures_unused_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Unused'**
+  String get asset_textures_unused_filter;
+
+  /// No description provided for @asset_textures_unused.
+  ///
+  /// In en, this message translates to:
+  /// **'Not used anywhere yet.'**
+  String get asset_textures_unused;
+
+  /// No description provided for @asset_textures_usages_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the texture is used could not be loaded.'**
+  String get asset_textures_usages_failed;
+
+  /// No description provided for @asset_textures_usages_failed_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses could not be loaded'**
+  String get asset_textures_usages_failed_short;
+
+  /// No description provided for @asset_textures_usages_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get asset_textures_usages_retry;
+
+  /// No description provided for @asset_textures_usage_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Not used} =1{Used once} other{Used {count} times}}'**
+  String asset_textures_usage_count(int count);
+
+  /// No description provided for @asset_textures_used_resource_icon.
+  ///
+  /// In en, this message translates to:
+  /// **'Resource pack icon'**
+  String get asset_textures_used_resource_icon;
+
+  /// No description provided for @asset_textures_used_data_icon.
+  ///
+  /// In en, this message translates to:
+  /// **'Data pack icon'**
+  String get asset_textures_used_data_icon;
+
+  /// No description provided for @asset_textures_same_key.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has the same key, so models use that texture instead of this one.'**
+  String asset_textures_same_key(String name);
+
+  /// No description provided for @asset_textures_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get asset_textures_delete;
+
+  /// No description provided for @asset_textures_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}?'**
+  String asset_textures_delete_title(String name);
+
+  /// No description provided for @asset_textures_delete_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Fonts and pack icons using it lose this texture, and models referring to its key miss it. This can\'t be undone.'**
+  String get asset_textures_delete_warning;
+
+  /// No description provided for @asset_textures_extracted_from.
+  ///
+  /// In en, this message translates to:
+  /// **'From {model}'**
+  String asset_textures_extracted_from(String model);
+
   /// No description provided for @asset_models_empty.
   ///
   /// In en, this message translates to:

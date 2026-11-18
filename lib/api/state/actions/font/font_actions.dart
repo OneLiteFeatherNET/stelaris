@@ -40,6 +40,29 @@ class RefreshFontAction extends ReduxAction<AppState> {
   }
 }
 
+/// Drops the deleted texture [textureAssetId] from the fonts in the store,
+/// as the backend did.
+class TextureRemovedFromFontsAction extends ReduxAction<AppState> {
+  TextureRemovedFromFontsAction(this.textureAssetId);
+
+  final String textureAssetId;
+
+  FontModel _without(FontModel font) => font.textureAssetId == textureAssetId
+      ? font.copyWith(textureAssetId: null)
+      : font;
+
+  @override
+  AppState reduce() {
+    final selected = state.selectedFont;
+    return state.copyWith(
+      fonts: state.fonts.copyWith(
+        items: state.fonts.items.map(_without).toList(),
+      ),
+      selectedFont: selected == null ? null : _without(selected),
+    );
+  }
+}
+
 class InitFontAction extends ReduxAction<AppState> {
   InitFontAction();
 

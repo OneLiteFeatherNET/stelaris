@@ -19,7 +19,7 @@ mixin _$ModelSearchState {
 /// the AppBar has no other way to know which ones apply.
  List<FilterOption> get availableFilters; SortField get sortField; SortDirection get sortDirection;/// The section the search was typed for. Lets the AppBar search notice
 /// a section change however it happens (side bar, browser back, URL).
- NavigationEntry? get section;
+ SearchSection? get section;
 /// Create a copy of ModelSearchState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -55,7 +55,7 @@ abstract mixin class $ModelSearchStateCopyWith<$Res>  {
   factory $ModelSearchStateCopyWith(ModelSearchState value, $Res Function(ModelSearchState) _then) = _$ModelSearchStateCopyWithImpl;
 @useResult
 $Res call({
- String query, Set<FilterOption> activeFilters, List<FilterOption> availableFilters, SortField sortField, SortDirection sortDirection, NavigationEntry? section
+ String query, Set<FilterOption> activeFilters, List<FilterOption> availableFilters, SortField sortField, SortDirection sortDirection, SearchSection? section
 });
 
 
@@ -80,7 +80,7 @@ as Set<FilterOption>,availableFilters: null == availableFilters ? _self.availabl
 as List<FilterOption>,sortField: null == sortField ? _self.sortField : sortField // ignore: cast_nullable_to_non_nullable
 as SortField,sortDirection: null == sortDirection ? _self.sortDirection : sortDirection // ignore: cast_nullable_to_non_nullable
 as SortDirection,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
-as NavigationEntry?,
+as SearchSection?,
   ));
 }
 
@@ -165,7 +165,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String query,  Set<FilterOption> activeFilters,  List<FilterOption> availableFilters,  SortField sortField,  SortDirection sortDirection,  NavigationEntry? section)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String query,  Set<FilterOption> activeFilters,  List<FilterOption> availableFilters,  SortField sortField,  SortDirection sortDirection,  SearchSection? section)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ModelSearchState() when $default != null:
 return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sortField,_that.sortDirection,_that.section);case _:
@@ -186,7 +186,7 @@ return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sor
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String query,  Set<FilterOption> activeFilters,  List<FilterOption> availableFilters,  SortField sortField,  SortDirection sortDirection,  NavigationEntry? section)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String query,  Set<FilterOption> activeFilters,  List<FilterOption> availableFilters,  SortField sortField,  SortDirection sortDirection,  SearchSection? section)  $default,) {final _that = this;
 switch (_that) {
 case _ModelSearchState():
 return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sortField,_that.sortDirection,_that.section);case _:
@@ -206,7 +206,7 @@ return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sor
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String query,  Set<FilterOption> activeFilters,  List<FilterOption> availableFilters,  SortField sortField,  SortDirection sortDirection,  NavigationEntry? section)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String query,  Set<FilterOption> activeFilters,  List<FilterOption> availableFilters,  SortField sortField,  SortDirection sortDirection,  SearchSection? section)?  $default,) {final _that = this;
 switch (_that) {
 case _ModelSearchState() when $default != null:
 return $default(_that.query,_that.activeFilters,_that.availableFilters,_that.sortField,_that.sortDirection,_that.section);case _:
@@ -233,7 +233,7 @@ class _ModelSearchState implements ModelSearchState {
 @override@JsonKey() final  SortDirection sortDirection;
 /// The section the search was typed for. Lets the AppBar search notice
 /// a section change however it happens (side bar, browser back, URL).
-@override final  NavigationEntry? section;
+@override final  SearchSection? section;
 
 /// Create a copy of ModelSearchState
 /// with the given fields replaced by the non-null parameter values.
@@ -267,7 +267,7 @@ abstract mixin class _$ModelSearchStateCopyWith<$Res> implements $ModelSearchSta
   factory _$ModelSearchStateCopyWith(_ModelSearchState value, $Res Function(_ModelSearchState) _then) = __$ModelSearchStateCopyWithImpl;
 @override @useResult
 $Res call({
- String query, Set<FilterOption> activeFilters, List<FilterOption> availableFilters, SortField sortField, SortDirection sortDirection, NavigationEntry? section
+ String query, Set<FilterOption> activeFilters, List<FilterOption> availableFilters, SortField sortField, SortDirection sortDirection, SearchSection? section
 });
 
 
@@ -292,7 +292,7 @@ as Set<FilterOption>,availableFilters: null == availableFilters ? _self.availabl
 as List<FilterOption>,sortField: null == sortField ? _self.sortField : sortField // ignore: cast_nullable_to_non_nullable
 as SortField,sortDirection: null == sortDirection ? _self.sortDirection : sortDirection // ignore: cast_nullable_to_non_nullable
 as SortDirection,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
-as NavigationEntry?,
+as SearchSection?,
   ));
 }
 

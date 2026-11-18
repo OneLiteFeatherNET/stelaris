@@ -498,7 +498,11 @@ void main() {
     tester,
   ) async {
     final outcome = _Outcome();
-    await _open(tester, backend: _Backend(models: models), outcome: outcome);
+    await _open(
+      tester,
+      backend: _Backend(models: models),
+      outcome: outcome,
+    );
     await _waitFor(tester, find.text(_rubyModel));
 
     await _openUpload(tester);
@@ -513,7 +517,11 @@ void main() {
     tester,
   ) async {
     final outcome = _Outcome();
-    await _open(tester, backend: _Backend(models: models), outcome: outcome);
+    await _open(
+      tester,
+      backend: _Backend(models: models),
+      outcome: outcome,
+    );
     await _waitFor(tester, find.text(_rubyModel));
 
     await _openUpload(tester);

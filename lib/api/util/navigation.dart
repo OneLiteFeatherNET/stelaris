@@ -1,8 +1,19 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/util/stelaris_icons.dart';
 
+/// A page the AppBar search filters: its name titles the hint and the
+/// palette's filter entry, its route is where a search from a detail goes.
+abstract interface class SearchSection {
+  String get display;
+  String get route;
+
+  /// Whether the AppBar offers sorting and filters here; the asset pages
+  /// only search.
+  bool get sortable;
+}
+
 /// The enum class contains all relevant item for the navigation widget.
-enum NavigationEntry {
+enum NavigationEntry implements SearchSection {
   attributes(
     'Attributes',
     '/attributes',
@@ -47,7 +58,9 @@ enum NavigationEntry {
     Icons.data_object,
   );
 
+  @override
   final String display;
+  @override
   final String route;
   final IconData data;
   final IconData selected;
@@ -58,22 +71,32 @@ enum NavigationEntry {
   /// Whether the entry holds runtime data rather than resource-pack content.
   /// The sidebar lists these in their own group below the sections.
   bool get isRuntime => runtimeEntries.contains(this);
+
+  @override
+  bool get sortable => true;
 }
 
 /// The enum class contains the project asset pages, listed under the "Assets"
-/// heading of the sidebar. Textures have no page of their own, they are shown
-/// with the models that use them. Kept apart from [NavigationEntry]: that enum
+/// heading of the sidebar. Kept apart from [NavigationEntry]: that enum
 /// drives the model sections' create, search, save and refresh, which assets
 /// lack.
-enum AssetNavigationEntry {
+enum AssetNavigationEntry implements SearchSection {
   models(
     'Models',
     '/assets/models',
     Icons.view_in_ar_outlined,
     Icons.view_in_ar,
+  ),
+  textures(
+    'Textures',
+    '/assets/textures',
+    Icons.texture_outlined,
+    Icons.texture,
   );
 
+  @override
   final String display;
+  @override
   final String route;
   final IconData data;
   final IconData selected;
@@ -85,6 +108,9 @@ enum AssetNavigationEntry {
     this.data,
     this.selected,
   );
+
+  @override
+  bool get sortable => false;
 }
 
 /// The enum class contains the build pages, listed under the "Build" heading
@@ -147,3 +173,8 @@ BuildNavigationEntry? buildEntryForLocation(String location) {
   }
   return null;
 }
+
+/// The page the AppBar search filters at [location]: a section or an asset
+/// page, null elsewhere.
+SearchSection? searchSectionForLocation(String location) =>
+    entryForLocation(location) ?? assetEntryForLocation(location);

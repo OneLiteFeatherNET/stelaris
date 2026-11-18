@@ -28,6 +28,25 @@ void main() {
     expect(find.text('Remove'), findsOneWidget);
   });
 
+  testWidgets('an entry without onTap is disabled', (tester) async {
+    await _show(tester, [
+      (icon: Icons.copy, label: 'Copy', onTap: () {}),
+      (icon: Icons.delete, label: 'Remove', onTap: null),
+    ]);
+
+    await tester.tap(find.byTooltip('More actions'));
+    await tester.pumpAndSettle();
+
+    final items = tester
+        .widgetList<PopupMenuItem<void>>(find.byType(PopupMenuItem<void>))
+        .map((item) => item.enabled);
+    expect(items, [true, false]);
+
+    await tester.tap(find.text('Remove'));
+    await tester.pumpAndSettle();
+    expect(find.text('Remove'), findsOneWidget);
+  });
+
   testWidgets('keeps a dialog an entry opens', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
