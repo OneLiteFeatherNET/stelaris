@@ -179,6 +179,10 @@ class _TexturesBodyState extends State<_TexturesBody> {
   /// Counts the loads of [_sources], so an older one ending last is ignored.
   int _sourcesLoadId = 0;
 
+  /// Where the textures are used, built once everything it needs has loaded
+  /// and dropped whenever the assets or [_sources] change.
+  TextureUsageIndex? _index;
+
   @override
   void initState() {
     super.initState();
@@ -199,6 +203,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
     setState(() {
       _sources = null;
       _sourcesFailed = false;
+      _index = null;
     });
     _sourcesVersion.value++;
     final sources = widget
@@ -211,16 +216,18 @@ class _TexturesBodyState extends State<_TexturesBody> {
     setState(() {
       _sources = loaded;
       _sourcesFailed = loaded == null;
+      _index = null;
     });
     _sourcesVersion.value++;
   }
 
   /// Where [texture] is used, null until everything it needs has loaded.
-  TextureUsages? _usagesOf(AssetModel texture) {
+  TextureUsages? _usagesOf(AssetModel texture) => _usageIndex?.of(texture);
+
+  TextureUsageIndex? get _usageIndex {
     final sources = _sources;
     if (sources == null || !_assets.referencesLoaded) return null;
-    return textureUsages(
-      texture,
+    return _index ??= TextureUsageIndex(
       models: _assets.models,
       textures: _assets.textures,
       references: _assets.references,
@@ -353,7 +360,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
   }
 
   void _onAssetsChanged() {
-    if (mounted) setState(() {});
+    if (mounted) setState(() => _index = null);
   }
 
   void _showReloadFailure(ProblemDetail problem) {
@@ -462,7 +469,7 @@ class _TexturesBodyState extends State<_TexturesBody> {
           // Turned on once every use is known, so nothing in use shows up;
           // turning it off always works.
           onSelected:
-              _onlyUnused || (_sources != null && _assets.referencesLoaded)
+              _onlyUnused || _usageIndex != null
               ? (selected) => setState(() => _onlyUnused = selected)
               : null,
         ),

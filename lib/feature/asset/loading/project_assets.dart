@@ -8,10 +8,10 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// model file refers to, for the asset pages.
 ///
 /// The lists come first, the references a moment later: every model file is
-/// read for them. A load that ends after a newer one is ignored. The assets
-/// are loaded again when the app resumes, e.g. when the browser tab regains
-/// focus, so assets saved elsewhere are seen; a page that loads more than the
-/// assets passes its own load as `onResume`.
+/// read for them, a few at a time. A load that ends after a newer one is
+/// ignored. The assets are loaded again when the app resumes, e.g. when the
+/// browser tab regains focus, so assets saved elsewhere are seen; a page that
+/// loads more than the assets passes its own load as `onResume`.
 class ProjectAssets extends ChangeNotifier {
   ProjectAssets({
     required this.library,
@@ -27,6 +27,9 @@ class ProjectAssets extends ChangeNotifier {
 
   /// Told when a reload fails while a list is shown; the list is kept.
   final ValueChanged<ProblemDetail>? onReloadFailed;
+
+  /// How many model files are read at once for the references.
+  static const int parallelReads = 6;
 
   late final AppLifecycleListener _lifecycle;
 
@@ -98,15 +101,24 @@ class ProjectAssets extends ChangeNotifier {
     _notify();
 
     final references = <AssetModel, Set<String>>{};
-    for (final model in _models) {
-      if (model.kind != AssetKind.MODEL) continue;
-      try {
-        references[model] = await library.textureKeysOf(projectId, model);
-      } on Object {
-        // A file that can't be read has no textures to count; its preview
-        // says what is wrong.
+    final pending = _models
+        .where((model) => model.kind == AssetKind.MODEL)
+        .iterator;
+    // A few readers share the queue: one request per model, but no more than
+    // [parallelReads] at once.
+    Future<void> read() async {
+      while (pending.moveNext()) {
+        final model = pending.current;
+        try {
+          references[model] = await library.textureKeysOf(projectId, model);
+        } on Object {
+          // A file that can't be read has no textures to count; its preview
+          // says what is wrong.
+        }
       }
     }
+
+    await Future.wait([for (var i = 0; i < parallelReads; i++) read()]);
     if (_disposed || loadId != _loadId) return;
     _references = references;
     _referencesLoaded = true;
