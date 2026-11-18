@@ -33,4 +33,11 @@ abstract final class StelarisIcons {
     fontFamily: _family,
   );
   static const IconData noteBlock = IconData(0xe009, fontFamily: _family);
+
+  /// Blockstates: a grass block.
+  static const IconData grassBlockOutlined = IconData(
+    0xe00a,
+    fontFamily: _family,
+  );
+  static const IconData grassBlock = IconData(0xe00b, fontFamily: _family);
 }

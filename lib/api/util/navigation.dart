@@ -31,8 +31,8 @@ enum NavigationEntry {
   blockstates(
     'Blockstates',
     '/blockstates',
-    Icons.grid_view_outlined,
-    Icons.grid_view,
+    StelarisIcons.grassBlockOutlined,
+    StelarisIcons.grassBlock,
   ),
   expression(
     'Expressions',
