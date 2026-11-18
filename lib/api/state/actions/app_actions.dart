@@ -12,3 +12,10 @@ class UpdateNavigationAction extends ReduxAction<AppState> {
     return state.copyWith(openNavigation: !state.openNavigation);
   }
 }
+
+/// Shows or hides the preview of the texture picker.
+class ToggleTexturePreviewAction extends ReduxAction<AppState> {
+  @override
+  AppState reduce() =>
+      state.copyWith(openTexturePreview: !state.openTexturePreview);
+}
