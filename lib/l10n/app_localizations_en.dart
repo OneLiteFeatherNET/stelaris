@@ -2447,6 +2447,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_models_no_project => 'Choose a project to see its models.';
 
   @override
+  String get asset_textures_title => 'Textures';
+
+  @override
   String get asset_models_empty =>
       'This project has no models yet. Upload one to get started.';
 

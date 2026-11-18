@@ -61,8 +61,7 @@ enum NavigationEntry {
 }
 
 /// The enum class contains the project asset pages, listed under the "Assets"
-/// heading of the sidebar. Textures have no page of their own, they are shown
-/// with the models that use them. Kept apart from [NavigationEntry]: that enum
+/// heading of the sidebar. Kept apart from [NavigationEntry]: that enum
 /// drives the model sections' create, search, save and refresh, which assets
 /// lack.
 enum AssetNavigationEntry {
@@ -71,6 +70,12 @@ enum AssetNavigationEntry {
     '/assets/models',
     Icons.view_in_ar_outlined,
     Icons.view_in_ar,
+  ),
+  textures(
+    'Textures',
+    '/assets/textures',
+    Icons.texture_outlined,
+    Icons.texture,
   );
 
   final String display;

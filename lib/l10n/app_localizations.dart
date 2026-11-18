@@ -4391,6 +4391,12 @@ abstract class AppLocalizations {
   /// **'Choose a project to see its models.'**
   String get asset_models_no_project;
 
+  /// No description provided for @asset_textures_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Textures'**
+  String get asset_textures_title;
+
   /// No description provided for @asset_models_empty.
   ///
   /// In en, this message translates to:
