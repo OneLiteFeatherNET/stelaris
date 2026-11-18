@@ -2450,6 +2450,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_textures_title => 'Textures';
 
   @override
+  String get asset_textures_no_project =>
+      'Choose a project to see its textures.';
+
+  @override
+  String get asset_textures_empty =>
+      'This project has no textures yet. Upload one to get started.';
+
+  @override
+  String get asset_textures_no_matches => 'No texture matches the search.';
+
+  @override
+  String get asset_textures_load_failed => 'The textures could not be loaded.';
+
+  @override
+  String get asset_textures_search => 'Search by name or key';
+
+  @override
+  String get asset_textures_origin_all => 'All';
+
+  @override
+  String get asset_textures_origin_uploaded => 'Uploaded';
+
+  @override
+  String get asset_textures_origin_extracted => 'Extracted';
+
+  @override
+  String get asset_textures_upload_title => 'Upload a texture';
+
+  @override
+  String asset_textures_extracted_from(String model) {
+    return 'From $model';
+  }
+
+  @override
   String get asset_models_empty =>
       'This project has no models yet. Upload one to get started.';
 

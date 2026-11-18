@@ -4397,6 +4397,66 @@ abstract class AppLocalizations {
   /// **'Textures'**
   String get asset_textures_title;
 
+  /// No description provided for @asset_textures_no_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a project to see its textures.'**
+  String get asset_textures_no_project;
+
+  /// No description provided for @asset_textures_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'This project has no textures yet. Upload one to get started.'**
+  String get asset_textures_empty;
+
+  /// No description provided for @asset_textures_no_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'No texture matches the search.'**
+  String get asset_textures_no_matches;
+
+  /// No description provided for @asset_textures_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The textures could not be loaded.'**
+  String get asset_textures_load_failed;
+
+  /// No description provided for @asset_textures_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or key'**
+  String get asset_textures_search;
+
+  /// No description provided for @asset_textures_origin_all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get asset_textures_origin_all;
+
+  /// No description provided for @asset_textures_origin_uploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded'**
+  String get asset_textures_origin_uploaded;
+
+  /// No description provided for @asset_textures_origin_extracted.
+  ///
+  /// In en, this message translates to:
+  /// **'Extracted'**
+  String get asset_textures_origin_extracted;
+
+  /// No description provided for @asset_textures_upload_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a texture'**
+  String get asset_textures_upload_title;
+
+  /// No description provided for @asset_textures_extracted_from.
+  ///
+  /// In en, this message translates to:
+  /// **'From {model}'**
+  String asset_textures_extracted_from(String model);
+
   /// No description provided for @asset_models_empty.
   ///
   /// In en, this message translates to:
