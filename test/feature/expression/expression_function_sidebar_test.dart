@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/filter/category_filter_menu.dart';
@@ -26,7 +27,10 @@ final _round = find.byKey(const ValueKey('expression_function_ROUND'));
 final _sin = find.byKey(const ValueKey('expression_function_SIN'));
 final _constant = find.byKey(const ValueKey('expression_constant_E'));
 
-Future<void> _pump(WidgetTester tester) async {
+Future<void> _pump(
+  WidgetTester tester, {
+  ExpressionCatalog catalog = _catalog,
+}) async {
   await tester.pumpWidget(
     MaterialApp(
       localizationsDelegates: appLocalizationsDelegates,
@@ -37,7 +41,7 @@ Future<void> _pump(WidgetTester tester) async {
             width: 520,
             height: 600,
             child: ExpressionFunctionSidebar(
-              catalog: _catalog,
+              catalog: catalog,
               onFunction: (_) {},
               onConstant: (_) {},
             ),
@@ -135,5 +139,37 @@ void main() {
 
     expect(_sin, findsNothing);
     expect(identical(tester.widget(menu), before), isTrue);
+  });
+
+  testWidgets('scrolling does not repaint the whole sidebar', (tester) async {
+    await _pump(
+      tester,
+      catalog: ExpressionCatalog(
+        functions: [
+          for (var i = 0; i < 100; i++)
+            CatalogFunction(
+              name: 'F$i',
+              category: CatalogFunctionCategory.basic,
+            ),
+        ],
+        constants: const [],
+      ),
+    );
+
+    final list = find.byType(ListView);
+    tester.binding.handlePointerEvent(
+      PointerScrollEvent(
+        position: tester.getCenter(list),
+        scrollDelta: const Offset(0, 100),
+      ),
+    );
+
+    // The Material around the list holds the ink of the rows unless each
+    // row has its own: then it would repaint all rows on every frame.
+    final around = find
+        .ancestor(of: list, matching: find.byType(Material))
+        .first;
+    expect(tester.renderObject(around).debugNeedsPaint, isFalse);
+    await tester.pump();
   });
 }
