@@ -2,7 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/asset/picker/asset_picker_dialog.dart';
 import 'package:stelaris/feature/asset/preview/asset_scene_view.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
-import 'package:stelaris/feature/base/hide_tooltips_while_scrolling.dart';
+import 'package:stelaris/feature/base/picker/filter_groups.dart';
+import 'package:stelaris/feature/base/picker/grouped_picker_list.dart';
 import 'package:stelaris/feature/base/search/dialog_search_bar.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/item/components/book/written_book.dart';
@@ -91,7 +92,9 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
-  String _search = '';
+  /// The search text. Only the list listens to it, so a keystroke leaves the
+  /// search bar and the filter alone.
+  final ValueNotifier<String> _search = ValueNotifier('');
 
   /// The category picked in the filter menu. Null shows all.
   ComponentCategory? _category;
@@ -115,6 +118,7 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
+    _search.dispose();
     super.dispose();
   }
 
@@ -129,34 +133,8 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
       category: specs.length,
   };
 
-  /// The rows of the list: a header per category followed by its components.
-  ///
-  /// The search matches the name and key of a component, and the name of its
-  /// category, so typing e.g. `combat` lists every combat component.
-  List<_Row> _rows() {
-    final search = _search.trim().toLowerCase();
-    final rows = <_Row>[];
-    for (final MapEntry(key: category, value: specs) in _addable.entries) {
-      if (_category != null && category != _category) continue;
-      final Iterable<ComponentSpec> matches =
-          search.isEmpty || category.displayName.toLowerCase().contains(search)
-          ? specs
-          : specs.where(
-              (spec) =>
-                  spec.displayName.toLowerCase().contains(search) ||
-                  spec.key.contains(search),
-            );
-      if (matches.isEmpty) continue;
-      rows
-        ..add(_HeaderRow(category))
-        ..addAll(matches.map(_SpecRow.new));
-    }
-    return rows;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final rows = _rows();
     final category = _category;
     return FormDialog(
       title: context.l10n.component_add_title,
@@ -197,104 +175,41 @@ class _ComponentPickerDialogState extends State<_ComponentPickerDialog> {
                   ),
                 ),
               ],
-              onChanged: (value) => setState(() => _search = value),
+              onChanged: (value) => _search.value = value,
             ),
             verticalSpacing10,
             Expanded(
-              child: rows.isEmpty
-                  ? Center(child: Text(context.l10n.component_search_empty))
-                  // The rows paint their ink on this material, which clips
-                  // it to the list. On the dialog's material the highlight
-                  // of a row scrolled half out drew past the list.
-                  : Material(
-                      type: MaterialType.transparency,
-                      clipBehavior: Clip.hardEdge,
-                      child: HideTooltipsWhileScrolling(
-                        child: ListView.builder(
-                          // Keeps the rows clear of the scrollbar.
-                          padding: const EdgeInsets.only(right: 16),
-                          itemCount: rows.length,
-                          itemBuilder: (context, index) =>
-                              switch (rows[index]) {
-                                _HeaderRow(:final category) => _CategoryHeader(
-                                  category,
-                                  // A filtered list has only this header, so it
-                                  // offers nothing to click.
-                                  onTap: _category == null
-                                      ? () => _selectCategory(category)
-                                      : null,
-                                ),
-                                _SpecRow(:final spec) => _ComponentRow(
-                                  spec: spec,
-                                  isDefault: widget.materialDefaults.contains(
-                                    spec.key,
-                                  ),
-                                  onTap: () => Navigator.of(context).pop(spec),
-                                ),
-                              },
-                        ),
-                      ),
-                    ),
+              child: ValueListenableBuilder(
+                valueListenable: _search,
+                builder: (context, search, _) => GroupedPickerList(
+                  groups: filterGroups(
+                    _addable,
+                    search: search,
+                    only: category,
+                    groupLabel: (category) => category.displayName,
+                    matches: (spec, search) =>
+                        spec.displayName.toLowerCase().contains(search) ||
+                        spec.key.contains(search),
+                  ),
+                  groupLabel: (category) => category.displayName,
+                  groupTooltip: context.l10n.component_category_only,
+                  headerKey: (category) =>
+                      Key('component_category_header_${category.key}'),
+                  itemKey: (spec) => ValueKey('component_${spec.key}'),
+                  itemBuilder: (context, spec) => _ComponentRow(
+                    spec: spec,
+                    isDefault: widget.materialDefaults.contains(spec.key),
+                    onTap: () => Navigator.of(context).pop(spec),
+                  ),
+                  emptyText: context.l10n.component_search_empty,
+                  // A filtered list has only one header, so it offers
+                  // nothing to click.
+                  onGroup: category == null ? _selectCategory : null,
+                ),
+              ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-/// A row of the component list.
-sealed class _Row {
-  const _Row();
-}
-
-final class _HeaderRow extends _Row {
-  const _HeaderRow(this.category);
-
-  final ComponentCategory category;
-}
-
-final class _SpecRow extends _Row {
-  const _SpecRow(this.spec);
-
-  final ComponentSpec spec;
-}
-
-class _CategoryHeader extends StatelessWidget {
-  const _CategoryHeader(this.category, {required this.onTap});
-
-  final ComponentCategory category;
-
-  /// Filters the list by the category, null when it is already filtered.
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final color = theme.colorScheme.primary;
-    final header = Padding(
-      padding: const EdgeInsets.fromLTRB(8, 12, 8, 4),
-      child: Row(
-        children: [
-          Text(
-            category.displayName,
-            style: theme.textTheme.labelLarge?.copyWith(color: color),
-          ),
-          if (onTap != null) ...[
-            const SizedBox(width: 4),
-            Icon(Icons.filter_list, size: 16, color: color),
-          ],
-        ],
-      ),
-    );
-    if (onTap == null) return header;
-    return Tooltip(
-      message: context.l10n.component_category_only(category.displayName),
-      child: InkWell(
-        key: Key('component_category_header_${category.key}'),
-        borderRadius: BorderRadius.circular(AppShapes.small),
-        onTap: onTap,
-        child: header,
       ),
     );
   }
