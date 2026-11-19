@@ -14,7 +14,8 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// where it comes from.
 ///
 /// [menu] adds the card's ⋮ menu, none when empty. A [selected] card is
-/// framed in the primary color, e.g. in the texture picker.
+/// framed in the primary color, e.g. in the texture picker. A [compact] card
+/// shows only the thumbnail, name and key, so a picker fits more of them.
 class TextureCard extends StatelessWidget {
   const TextureCard({
     required this.texture,
@@ -24,6 +25,7 @@ class TextureCard extends StatelessWidget {
     required this.onTap,
     this.menu = const [],
     this.selected = false,
+    this.compact = false,
     super.key,
   });
 
@@ -38,56 +40,69 @@ class TextureCard extends StatelessWidget {
   final Future<Uint8List> bytes;
   final VoidCallback onTap;
   final bool selected;
+  final bool compact;
+
+  /// The height of a [compact] card.
+  static const double compactHeight = 64;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final source = this.source;
-    final card = ModelCardFrame(
-      content: Row(
-        children: [
-          TextureThumbnail(asset: texture, bytes: bytes),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+    final card = compact
+        ? _compact(context)
+        : ModelCardFrame(
+            content: Row(
               children: [
-                Text(
-                  texture.displayName,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
+                TextureThumbnail(asset: texture, bytes: bytes),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        texture.displayName,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 6),
+                      InfoChip(icon: Icons.vpn_key_outlined, text: texture.key),
+                    ],
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 6),
-                InfoChip(icon: Icons.vpn_key_outlined, text: texture.key),
               ],
             ),
-          ),
-        ],
-      ),
-      trailing: menu.isEmpty ? null : CardActionsMenu(entries: menu),
-      // An extracted texture says where it comes from, its model is what
-      // uses it; an uploaded one how often it is used, once that is known.
-      footerIcon: switch ((texture.sourceAssetId, usages)) {
-        (_?, _) => Icons.view_in_ar_outlined,
-        (null, final usages?) when usages.isEmpty => Icons.link_off,
-        (null, _?) => Icons.link,
-        (null, null) => null,
-      },
-      footerText: switch ((texture.sourceAssetId, usages)) {
-        (final sourceId?, _) => l10n.asset_textures_extracted_from(
-          source?.displayName ?? sourceId,
-        ),
-        (null, final usages?) => l10n.asset_textures_usage_count(usages.count),
-        (null, null) => null,
-      },
-      onTap: onTap,
-    );
+            trailing: menu.isEmpty ? null : CardActionsMenu(entries: menu),
+            // An extracted texture says where it comes from, its model is what
+            // uses it; an uploaded one how often it is used, once that is known.
+            footerIcon: switch ((texture.sourceAssetId, usages)) {
+              (_?, _) => Icons.view_in_ar_outlined,
+              (null, final usages?) when usages.isEmpty => Icons.link_off,
+              (null, _?) => Icons.link,
+              (null, null) => null,
+            },
+            footerText: switch ((texture.sourceAssetId, usages)) {
+              (final sourceId?, _) => l10n.asset_textures_extracted_from(
+                source?.displayName ?? sourceId,
+              ),
+              (null, final usages?) => l10n.asset_textures_usage_count(
+                usages.count,
+              ),
+              (null, null) => null,
+            },
+            onTap: onTap,
+          );
     if (!selected) return card;
+    return _framed(context, card);
+  }
+
+  Widget _framed(BuildContext context, Widget card) {
+    final theme = Theme.of(context);
     return DecoratedBox(
       position: DecorationPosition.foreground,
       decoration: BoxDecoration(
@@ -95,6 +110,52 @@ class TextureCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppShapes.medium),
       ),
       child: card,
+    );
+  }
+
+  Widget _compact(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card.filled(
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      color: theme.colorScheme.surfaceContainerLow,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              TextureThumbnail(asset: texture, bytes: bytes),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      texture.displayName,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      texture.key,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
