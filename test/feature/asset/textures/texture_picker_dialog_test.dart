@@ -123,9 +123,18 @@ class _Library extends AssetLibrary {
   final List<AssetModel> assets;
   int listings = 0;
 
+  /// How long a listing takes, e.g. to answer after the next frame like the
+  /// backend does.
+  Duration delay = Duration.zero;
+
+  /// The texture listings that have answered.
+  int answered = 0;
+
   @override
   Future<List<AssetModel>> assetsOf(String projectId, AssetKind kind) async {
     if (kind == AssetKind.TEXTURE) listings++;
+    if (delay > Duration.zero) await Future<void>.delayed(delay);
+    if (kind == AssetKind.TEXTURE) answered++;
     return [
       for (final asset in assets)
         if (asset.kind == kind) asset,
@@ -407,7 +416,46 @@ void main() {
     expect(find.byKey(const ValueKey('texture_used_font_f1')), findsOneWidget);
   });
 
+  /// Enough textures that the grid scrolls, sorted before `vulpes:zz/`.
+  List<AssetModel> many() => [
+    for (var i = 0; i < 60; i++)
+      _asset('m$i', 'vulpes:block/m${i.toString().padLeft(2, '0')}'),
+  ];
+
+  testWidgets('scrolls to the texture selected on opening', (tester) async {
+    final last = _asset('t9', 'vulpes:zz/last', name: 'Last');
+    await _open(tester, assets: [...many(), last], selectedId: last.id);
+
+    expect(_card(last).hitTestable(), findsOneWidget);
+  });
+
   group('upload', () {
+    testWidgets('scrolls to the new texture', (tester) async {
+      final ember = _asset('t9', 'vulpes:zz/ember', name: 'Ember');
+      final library = _Library(many());
+      _backend((options) {
+        library.assets.add(ember);
+        return FakeHttpClientAdapter.response(_json(ember));
+      });
+      await _open(tester, library: library, pickFile: _pickPng);
+      final answered = library.answered;
+      // The list comes after the grid is back, as from the backend.
+      library.delay = const Duration(milliseconds: 100);
+
+      await _tapAndSettle(
+        tester,
+        find.byKey(const Key('texture_picker_upload')),
+      );
+      await _tapAndSettle(
+        tester,
+        find.byKey(const Key('asset_upload_drop_zone')),
+      );
+      await _submit(tester, 'Upload', () => library.answered > answered);
+      await tester.pumpAndSettle();
+
+      expect(_card(ember).hitTestable(), findsOneWidget);
+    });
+
     testWidgets('stores a texture and selects it', (tester) async {
       final ember = _asset('t9', 'vulpes:font/ember', name: 'Ember');
       final library = _Library([_gem, _ruby]);
