@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
+
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -14,7 +17,9 @@ import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
+import '../../../support/fake_http_client_adapter.dart';
 import '../../../support/pack_icon_pngs.dart';
+import '../../../support/pump_until.dart';
 
 AssetModel _asset(
   String id,
@@ -54,6 +59,62 @@ final _blade = _asset(
 );
 
 const _icons = FontModel(uiName: 'Icons', id: 'f1', textureAssetId: 't1');
+const _glyphs = FontModel(uiName: 'Glyphs', id: 'f2', textureAssetId: 't1');
+
+const _resourceIcon = PackMeta(
+  id: 'pm-resource',
+  projectId: 'p-1',
+  packType: PackType.resource,
+  description: '',
+  minFormatMajor: 64,
+  maxFormatMajor: 69,
+  iconAssetId: 't1',
+);
+
+Map<String, Object?> _json(AssetModel asset) => {
+  'id': asset.id,
+  'projectId': asset.projectId,
+  'key': asset.key,
+  'displayName': asset.displayName,
+  'kind': asset.kind.name,
+  'fileName': asset.fileName,
+  'contentType': asset.contentType,
+  'size': asset.size,
+  'sha1': asset.sha1,
+  'derivedAssetIds': <String>[],
+  'width': asset.width,
+  'height': asset.height,
+};
+
+/// Answers every upload with [answer].
+void _backend(ResponseBody Function(RequestOptions options) answer) {
+  ApiService().assetApi.apiClient.dio.httpClientAdapter = FakeHttpClientAdapter(
+    answer,
+  );
+}
+
+Future<PickedAssetFile?> _pickPng() async =>
+    PickedAssetFile(name: 'ember.png', bytes: png16);
+
+Future<void> _tapAndSettle(WidgetTester tester, Finder finder) async {
+  await tester.ensureVisible(finder);
+  await tester.pumpAndSettle();
+  await tester.tap(finder);
+  await tester.pumpAndSettle();
+}
+
+/// Opens the update of the selected texture and chooses a file for it.
+Future<void> _startUpdate(WidgetTester tester) async {
+  await _tapAndSettle(tester, find.byKey(const Key('texture_picker_update')));
+  await _tapAndSettle(tester, find.byKey(const Key('asset_upload_drop_zone')));
+}
+
+Future<void> _submit(WidgetTester tester, String label, bool Function() done) =>
+    pumpUntil(
+      tester,
+      action: () async => tester.tap(find.widgetWithText(FilledButton, label)),
+      done: done,
+    );
 
 /// Answers the picker's lookups from memory, without requests.
 class _Library extends AssetLibrary {
@@ -303,5 +364,171 @@ void main() {
 
     expect(find.byKey(const Key('texture_usages_loading')), findsNothing);
     expect(find.byKey(const ValueKey('texture_used_font_f1')), findsOneWidget);
+  });
+
+  group('upload', () {
+    testWidgets('stores a texture and selects it', (tester) async {
+      final ember = _asset('t9', 'vulpes:font/ember', name: 'Ember');
+      final library = _Library([_gem, _ruby]);
+      _backend((options) {
+        library.assets.add(ember);
+        return FakeHttpClientAdapter.response(_json(ember));
+      });
+      final outcome = await _open(tester, library: library, pickFile: _pickPng);
+
+      await _tapAndSettle(
+        tester,
+        find.byKey(const Key('texture_picker_upload')),
+      );
+      expect(find.text('Upload a texture'), findsOneWidget);
+      await _tapAndSettle(
+        tester,
+        find.byKey(const Key('asset_upload_drop_zone')),
+      );
+      await _submit(tester, 'Upload', () => _card(ember).evaluate().isNotEmpty);
+      await tester.pumpAndSettle();
+
+      expect(_cardOf(tester, ember).selected, isTrue);
+      expect(outcome.closed, isFalse);
+    });
+  });
+
+  group('update', () {
+    testWidgets('names the other uses but not the current font', (
+      tester,
+    ) async {
+      await _open(
+        tester,
+        selectedId: _gem.id,
+        currentFontId: _icons.id,
+        pickFile: _pickPng,
+        loadSources: (_) async => const TextureUsageSources(
+          fonts: [_icons, _glyphs],
+          packMetas: [_resourceIcon],
+        ),
+      );
+
+      await _startUpdate(tester);
+
+      final notice = find.byKey(const Key('texture_picker_also_used'));
+      expect(notice, findsOneWidget);
+      expect(
+        find.descendant(
+          of: notice,
+          matching: find.textContaining('Glyphs, Resource pack icon'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: notice, matching: find.textContaining('Icons')),
+        findsNothing,
+      );
+    });
+
+    testWidgets('without other uses shows no notice', (tester) async {
+      await _open(
+        tester,
+        selectedId: _gem.id,
+        currentFontId: _icons.id,
+        pickFile: _pickPng,
+      );
+
+      await _startUpdate(tester);
+
+      expect(find.text('New version of Gem'), findsOneWidget);
+      expect(find.byKey(const Key('texture_picker_also_used')), findsNothing);
+    });
+
+    testWidgets('works while the uses could not be loaded', (tester) async {
+      await _open(
+        tester,
+        selectedId: _gem.id,
+        pickFile: _pickPng,
+        loadSources: (_) async => throw StateError('offline'),
+      );
+
+      await _startUpdate(tester);
+
+      expect(find.text('Uses could not be loaded'), findsOneWidget);
+      expect(find.text('Try again'), findsOneWidget);
+      expect(
+        tester
+            .widget<FilledButton>(find.widgetWithText(FilledButton, 'Update'))
+            .onPressed,
+        isNotNull,
+      );
+    });
+
+    testWidgets('stores the new version, reports it and keeps it selected', (
+      tester,
+    ) async {
+      final newGem = _gem.copyWith(sha1: 'sha-new');
+      _backend((_) => FakeHttpClientAdapter.response(_json(newGem)));
+      final outcome = await _open(
+        tester,
+        selectedId: _gem.id,
+        pickFile: _pickPng,
+      );
+
+      await _startUpdate(tester);
+      await _submit(tester, 'Update', () => outcome.updated.isNotEmpty);
+      await pumpUntil(
+        tester,
+        action: () async {},
+        done: () => _card(_gem).evaluate().isNotEmpty,
+      );
+      await tester.pumpAndSettle();
+
+      expect(outcome.updated.single.sha1, 'sha-new');
+      expect(_cardOf(tester, _gem).selected, isTrue);
+      expect(outcome.closed, isFalse);
+    });
+
+    testWidgets('a conflict shows the error and going back reloads', (
+      tester,
+    ) async {
+      _backend(
+        (_) => FakeHttpClientAdapter.response({
+          'title': 'Precondition failed',
+          'status': 412,
+        }, statusCode: 412),
+      );
+      final library = _Library([_gem, _ruby]);
+      await _open(
+        tester,
+        selectedId: _gem.id,
+        pickFile: _pickPng,
+        library: library,
+      );
+      final listings = library.listings;
+
+      await _startUpdate(tester);
+      const conflict =
+          'Gem was changed meanwhile. Go back to see the stored version.';
+      await _submit(
+        tester,
+        'Update',
+        () => find.text(conflict).evaluate().isNotEmpty,
+      );
+      await _tapAndSettle(tester, find.byKey(const Key('texture_picker_back')));
+
+      expect(find.byKey(const Key('texture_picker_grid')), findsOneWidget);
+      expect(library.listings, greaterThan(listings));
+    });
+
+    testWidgets('escape goes back to the grid', (tester) async {
+      final outcome = await _open(
+        tester,
+        selectedId: _gem.id,
+        pickFile: _pickPng,
+      );
+
+      await _startUpdate(tester);
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('texture_picker_grid')), findsOneWidget);
+      expect(outcome.closed, isFalse);
+    });
   });
 }
