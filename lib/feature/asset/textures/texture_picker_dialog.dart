@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/gestures.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/api/state/actions/app_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
@@ -19,6 +20,7 @@ import 'package:stelaris/feature/asset/upload/asset_upload_controller.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/dialog/notice_box.dart';
+import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -134,6 +136,7 @@ class _TexturePickerState extends State<TexturePicker> {
     library: _assetLibrary,
     projectId: widget.projectId,
     loadUsageSources: widget.loadUsageSources,
+    onReloadFailed: _showReloadFailure,
   );
   final TextEditingController _search = TextEditingController();
   final ScrollController _grid = ScrollController();
@@ -179,6 +182,15 @@ class _TexturePickerState extends State<TexturePicker> {
   }
 
   void _onSearchChanged() => setState(() {});
+
+  /// A failed reload, e.g. after an upload, keeps the grid it would have
+  /// replaced.
+  void _showReloadFailure(ProblemDetail problem) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(InfoBarFactory().createError(problem));
+  }
 
   /// The uploaded textures; an extracted one belongs to its model.
   List<AssetModel> get _uploaded => [
