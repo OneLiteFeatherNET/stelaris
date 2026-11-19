@@ -38,6 +38,9 @@ class AssetLibrary {
 
   final Map<String, Future<List<int>>> _contents = {};
 
+  /// The texture keys of the model files read so far, by their sha1.
+  final Map<String, Future<Set<String>>> _textureKeys = {};
+
   /// Returns the MODEL or BBMODEL asset of [projectId] whose key equals [key] exactly, or null.
   ///
   /// A TEXTURE with the same key does not count.
@@ -112,12 +115,19 @@ class AssetLibrary {
     }
   }
 
-  /// The texture keys the model JSON [asset] refers to.
+  /// The texture keys the model JSON [asset] refers to, read once per
+  /// sha1.
   ///
   /// Throws a [FormatException] when the stored file is not a JSON object.
-  Future<Set<String>> textureKeysOf(String projectId, AssetModel asset) async =>
-      referencedTextureKeys(
-        _decodeModel(asset, await _bytes(projectId, asset)),
+  Future<Set<String>> textureKeysOf(String projectId, AssetModel asset) =>
+      _memo(
+        _textureKeys,
+        asset.sha1,
+        () async => Set.unmodifiable(
+          referencedTextureKeys(
+            _decodeModel(asset, await _bytes(projectId, asset)),
+          ),
+        ),
       );
 
   Future<Map<String, AssetModel>> _textureIndex(String projectId) async {
@@ -158,7 +168,10 @@ class AssetLibrary {
   /// Drops every downloaded content, so a test does not see the contents of
   /// another test through [shared].
   @visibleForTesting
-  void clearContents() => _contents.clear();
+  void clearContents() {
+    _contents.clear();
+    _textureKeys.clear();
+  }
 
   /// The content of [asset], downloaded once per sha1.
   Future<List<int>> contentOf(String projectId, AssetModel asset) =>
