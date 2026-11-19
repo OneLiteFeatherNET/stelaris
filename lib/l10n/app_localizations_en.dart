@@ -2498,6 +2498,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_textures_picker_preview_hide => 'Hide preview';
 
   @override
+  String asset_textures_picker_also_used(String uses) {
+    return 'Also used in $uses. They show the new version too.';
+  }
+
+  @override
   String get asset_textures_used_in => 'Used in';
 
   @override

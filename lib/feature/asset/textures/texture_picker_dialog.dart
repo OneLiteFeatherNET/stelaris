@@ -10,11 +10,15 @@ import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/picker/asset_key.dart';
 import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
+import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/asset/textures/texture_card.dart';
 import 'package:stelaris/feature/asset/textures/texture_detail.dart';
 import 'package:stelaris/feature/asset/textures/texture_library.dart';
 import 'package:stelaris/feature/asset/textures/texture_usage_sources.dart';
+import 'package:stelaris/feature/asset/upload/asset_upload_controller.dart';
+import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
+import 'package:stelaris/feature/base/dialog/notice_box.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -110,6 +114,10 @@ const double _besideFrom = 720;
 /// The height of the content, so the dialog keeps it while searching.
 const double _contentHeight = 440;
 
+/// What the dialog shows: the grid, the upload of a new texture or a new
+/// version of the selected one. The steps swap the content of the dialog.
+enum _Step { choose, upload, update }
+
 class _TexturePickerState extends State<TexturePicker> {
   late final AssetLibrary _assetLibrary = widget.library ?? AssetLibrary.shared;
   late final TextureLibrary _library = TextureLibrary(
@@ -130,6 +138,11 @@ class _TexturePickerState extends State<TexturePicker> {
   String? _armedId;
   Timer? _armTimer;
 
+  _Step _step = _Step.choose;
+
+  /// The upload of the current step, null while choosing.
+  AssetUploadController? _upload;
+
   @override
   void initState() {
     super.initState();
@@ -142,6 +155,7 @@ class _TexturePickerState extends State<TexturePicker> {
   @override
   void dispose() {
     _armTimer?.cancel();
+    _upload?.dispose();
     _library
       ..removeListener(_onLibraryChanged)
       ..dispose();
@@ -206,15 +220,188 @@ class _TexturePickerState extends State<TexturePicker> {
     _armTimer = Timer(kDoubleTapTimeout, () => _armedId = null);
   }
 
-  void _startUpload() {}
+  void _startUpload() => setState(() {
+    _upload = AssetUploadController(
+      projectId: widget.projectId,
+      namespace: widget.namespace,
+      pickFile: widget.pickFile,
+      kinds: const {AssetKind.TEXTURE},
+      keyFolder: widget.keyFolder,
+    );
+    _step = _Step.upload;
+  });
 
-  void _startUpdate(AssetModel texture) {}
+  void _startUpdate(AssetModel texture) => setState(() {
+    _upload = AssetUploadController(
+      projectId: widget.projectId,
+      namespace: widget.namespace,
+      pickFile: widget.pickFile,
+      kinds: const {AssetKind.TEXTURE},
+      replaces: texture,
+    );
+    _step = _Step.update;
+  });
+
+  /// Goes back to the grid, unless an upload runs. After a conflict the
+  /// textures are loaded again, so the stored version shows.
+  void _back() {
+    final upload = _upload;
+    if (upload == null || upload.uploading) return;
+    // The form still listens to the controller until it is gone.
+    WidgetsBinding.instance.addPostFrameCallback((_) => upload.dispose());
+    setState(() {
+      _upload = null;
+      _step = _Step.choose;
+    });
+    if (upload.conflict) _library.load();
+  }
+
+  /// Stores the new texture, selects it and shows it in the grid.
+  Future<void> _submitUpload() async {
+    final upload = _upload;
+    if (upload == null || !upload.canUpload) return;
+    final texture = await upload.upload();
+    if (texture == null || !mounted) return;
+    _selectedId = texture.id;
+    _revealed = false;
+    _back();
+    await _library.load();
+  }
+
+  /// Stores the new version and goes back to the grid with it selected.
+  Future<void> _submitUpdate() async {
+    final upload = _upload;
+    if (upload == null || !upload.canUpload) return;
+    final texture = await upload.upload();
+    if (texture == null || !mounted) return;
+    widget.onUpdated?.call(texture);
+    _back();
+    await _library.load();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, bool>(
-      converter: (store) => store.state.openTexturePreview,
-      builder: (context, open) => _buildChoose(context, open),
+    final upload = _upload;
+    // Escape and a tap beside the dialog go back from a step, as its back
+    // button does; while choosing they close the dialog.
+    return PopScope(
+      canPop: upload == null,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _back();
+      },
+      child: switch ((_step, upload)) {
+        (_Step.upload, final upload?) => ListenableBuilder(
+          listenable: upload,
+          builder: (context, _) => _buildUpload(context, upload),
+        ),
+        (_Step.update, final upload?) => ListenableBuilder(
+          listenable: upload,
+          builder: (context, _) => _buildUpdate(context, upload),
+        ),
+        _ => StoreConnector<AppState, bool>(
+          converter: (store) => store.state.openTexturePreview,
+          builder: (context, open) => _buildChoose(context, open),
+        ),
+      },
+    );
+  }
+
+  Widget _backButton(BuildContext context, AssetUploadController upload) =>
+      IconButton(
+        key: const Key('texture_picker_back'),
+        tooltip: context.l10n.asset_picker_back,
+        onPressed: upload.uploading ? null : _back,
+        icon: const Icon(Icons.arrow_back),
+      );
+
+  Widget _buildUpload(BuildContext context, AssetUploadController upload) {
+    final l10n = context.l10n;
+    return FormDialog(
+      title: l10n.asset_textures_upload_title,
+      leading: _backButton(context, upload),
+      onCancel: upload.uploading ? null : _back,
+      actionLabel: l10n.asset_picker_upload_action,
+      actionIcon: Icons.upload,
+      maxWidth: 560,
+      busy: upload.uploading,
+      onSubmit: upload.canUpload ? _submitUpload : null,
+      content: AssetUploadForm(controller: upload, onSubmitted: _submitUpload),
+    );
+  }
+
+  Widget _buildUpdate(BuildContext context, AssetUploadController upload) {
+    final l10n = context.l10n;
+    final texture = upload.replaces!;
+    final otherUses = _otherUses(context, texture);
+    return FormDialog(
+      title: l10n.asset_upload_replace_title(texture.displayName),
+      leading: _backButton(context, upload),
+      onCancel: upload.uploading ? null : _back,
+      actionLabel: l10n.asset_model_update,
+      actionIcon: Icons.upload,
+      maxWidth: 640,
+      busy: upload.uploading,
+      onSubmit: upload.canUpload ? _submitUpdate : null,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (otherUses != null) ...[otherUses, const SizedBox(height: 16)],
+          AssetUploadForm(
+            controller: upload,
+            onSubmitted: _submitUpdate,
+            currentPreview: TexturePreview(
+              projectId: widget.projectId,
+              asset: texture,
+              loadContent: (projectId, _) =>
+                  _assetLibrary.contentOf(projectId, texture),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Where else [texture] is used, which the new version changes too; the
+  /// font it is chosen for is left out. Null when nothing else uses it.
+  Widget? _otherUses(BuildContext context, AssetModel texture) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    if (_library.usagesFailed) {
+      return Row(
+        children: [
+          Icon(Icons.error_outline, size: 18, color: theme.colorScheme.error),
+          const SizedBox(width: 6),
+          Flexible(child: Text(l10n.asset_textures_usages_failed_short)),
+          TextButton(
+            onPressed: _library.loadSources,
+            child: Text(l10n.asset_textures_usages_retry),
+          ),
+        ],
+      );
+    }
+    final usages = _library.usagesOf(texture);
+    if (usages == null) {
+      return const Align(
+        key: Key('texture_picker_uses_loading'),
+        alignment: AlignmentDirectional.centerStart,
+        child: SizedBox.square(
+          dimension: 16,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      );
+    }
+    final names = [
+      for (final model in usages.models) model.displayName,
+      for (final font in usages.fonts)
+        if (font.id != widget.currentFontId) font.uiName,
+      for (final type in usages.packIcons) packIconLabel(l10n, type),
+    ];
+    if (names.isEmpty) return null;
+    return NoticeBox(
+      key: const Key('texture_picker_also_used'),
+      icon: Icons.warning_amber_outlined,
+      content: Text(l10n.asset_textures_picker_also_used(names.join(', '))),
     );
   }
 
@@ -414,7 +601,8 @@ class _TexturePickerState extends State<TexturePicker> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextureDetail(
-            key: ValueKey(selected.id),
+            // A new version shows its own file.
+            key: ValueKey('${selected.id}/${selected.sha1}'),
             projectId: widget.projectId,
             texture: selected,
             usages: _library.usagesOf(selected),

@@ -1345,6 +1345,14 @@
   "asset_textures_picker_update": "Update…",
   "asset_textures_picker_preview_show": "Show preview",
   "asset_textures_picker_preview_hide": "Hide preview",
+  "asset_textures_picker_also_used": "Also used in {uses}. They show the new version too.",
+  "@asset_textures_picker_also_used": {
+    "placeholders": {
+      "uses": {
+        "type": "String"
+      }
+    }
+  },
   "asset_textures_used_in": "Used in",
   "asset_textures_unused_filter": "Unused",
   "asset_textures_unused": "Not used anywhere yet.",
