@@ -268,24 +268,39 @@ void main() {
     expect(large.height, greaterThan(small.height + 200));
   });
 
-  testWidgets('search, upload and preview toggle are equally high', (
-    tester,
-  ) async {
+  testWidgets('upload and preview toggle sit in the title row', (tester) async {
     await _open(tester);
 
-    final search = tester.getSize(
+    final title = tester.getCenter(find.text('Choose a texture'));
+    final search = tester.getRect(
       find.byKey(const Key('texture_picker_search')),
     );
-    final upload = tester.getSize(
-      find.byKey(const Key('texture_picker_upload')),
+    for (final key in [
+      'texture_picker_upload',
+      'texture_picker_preview_toggle',
+    ]) {
+      final button = tester.getCenter(find.byKey(Key(key)));
+      expect(button.dy, moreOrLessEquals(title.dy, epsilon: 1));
+      expect(button.dy, lessThan(search.top));
+    }
+  });
+
+  testWidgets('the clear button empties the search', (tester) async {
+    await _open(tester);
+
+    await tester.enterText(
+      find.byKey(const Key('texture_picker_search')),
+      'ruby',
     );
-    final toggle = tester.getSize(
-      find.byKey(const Key('texture_picker_preview_toggle')),
-    );
-    expect(search.height, upload.height);
-    expect(toggle.height, upload.height);
-    expect(toggle.width, toggle.height);
-  }, variant: TargetPlatformVariant.desktop());
+    await tester.pumpAndSettle();
+    expect(_card(_gem), findsNothing);
+
+    await tester.tap(find.byTooltip('Clear the search'));
+    await tester.pumpAndSettle();
+
+    expect(_card(_gem), findsOneWidget);
+    expect(find.byTooltip('Clear the search'), findsNothing);
+  });
 
   testWidgets('preselects the given texture and shows it in the preview', (
     tester,
