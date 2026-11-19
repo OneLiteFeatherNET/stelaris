@@ -130,10 +130,16 @@ class _Library extends AssetLibrary {
   /// The texture listings that have answered.
   int answered = 0;
 
+  /// Whether the listings fail, as when the backend is gone.
+  bool offline = false;
+
   @override
   Future<List<AssetModel>> assetsOf(String projectId, AssetKind kind) async {
     if (kind == AssetKind.TEXTURE) listings++;
     if (delay > Duration.zero) await Future<void>.delayed(delay);
+    if (offline) {
+      throw DioException(requestOptions: RequestOptions(path: '/assets'));
+    }
     if (kind == AssetKind.TEXTURE) answered++;
     return [
       for (final asset in assets)
@@ -479,6 +485,50 @@ void main() {
 
       expect(_cardOf(tester, ember).selected, isTrue);
       expect(outcome.closed, isFalse);
+    });
+
+    testWidgets('a failed reload afterwards shows an error', (tester) async {
+      final ember = _asset('t9', 'vulpes:font/ember', name: 'Ember');
+      final library = _Library([_gem, _ruby]);
+      _backend((options) {
+        library.offline = true;
+        return FakeHttpClientAdapter.response(_json(ember));
+      });
+      await _open(tester, library: library, pickFile: _pickPng);
+      final listings = library.listings;
+
+      await _tapAndSettle(
+        tester,
+        find.byKey(const Key('texture_picker_upload')),
+      );
+      await _tapAndSettle(
+        tester,
+        find.byKey(const Key('asset_upload_drop_zone')),
+      );
+      await _submit(tester, 'Upload', () => library.listings > listings);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(_card(_gem), findsOneWidget);
+    });
+
+    testWidgets('going back while the file is read', (tester) async {
+      final file = Completer<PickedAssetFile?>();
+      await _open(tester, pickFile: () => file.future);
+
+      await _tapAndSettle(
+        tester,
+        find.byKey(const Key('texture_picker_upload')),
+      );
+      await tester.tap(find.byKey(const Key('asset_upload_drop_zone')));
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('texture_picker_back')));
+      await tester.pumpAndSettle();
+      file.complete(PickedAssetFile(name: 'ember.png', bytes: png16));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byKey(const Key('texture_picker_grid')), findsOneWidget);
     });
   });
 
