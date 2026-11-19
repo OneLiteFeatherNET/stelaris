@@ -6,8 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/state/factory/font/selected_font_state.dart';
-import 'package:stelaris/feature/asset/picker/asset_picker_dialog.dart';
+import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
+import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/asset/preview/texture_preview.dart';
+import 'package:stelaris/feature/asset/textures/texture_picker_dialog.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card_grid.dart';
 import 'package:stelaris/feature/base/edit_card/edit_field.dart';
 import 'package:stelaris/feature/font/font_texture_asset.dart';
@@ -24,7 +26,10 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// (texture, ascent, height), each field a card that opens a dialog. The
 /// texture is a texture asset of the project, chosen or uploaded in a picker.
 class FontGeneralPage extends StatelessWidget {
-  const FontGeneralPage({super.key});
+  const FontGeneralPage({this.pickFile = pickAssetFile, super.key});
+
+  /// Opens the file dialog for a texture upload; injectable for tests.
+  final Future<PickedAssetFile?> Function() pickFile;
 
   /// The folder of a project the textures of its fonts are uploaded into.
   static const String _textureFolder = 'font';
@@ -37,32 +42,29 @@ class FontGeneralPage extends StatelessWidget {
       ..dispatch(MarkUnsavedChangesAction(NavigationEntry.font));
   }
 
-  /// Lets the user choose or upload a texture of [project] for [font] and
-  /// stages the chosen one.
+  /// Lets the user choose, upload or update a texture of [project] for
+  /// [font] and stages the chosen one. A new version of the font's texture
+  /// shows on its card, also when the picker is closed without a choice.
   static Future<void> _pickTexture(
     BuildContext context,
     Project project,
     FontModel font,
-    FontTextureState texture,
     FontTextureLoaderState loader,
+    Future<PickedAssetFile?> Function() pickFile,
   ) async {
     final projectId = project.id;
     if (projectId == null) return;
-    final asset = await showAssetPickerDialog(
+    final asset = await showTexturePickerDialog(
       context,
       projectId: projectId,
       namespace: project.key,
-      selectedKey: switch (texture) {
-        LoadedFontTexture(:final asset) => asset.key,
-        _ => null,
-      },
-      kinds: textureAssetKinds,
-      uploadKinds: textureAssetKinds,
+      selectedId: font.textureAssetId,
+      currentFontId: font.id,
       keyFolder: _textureFolder,
-      hideExtracted: true,
-      replaceable: true,
-      previewBuilder: (asset) =>
-          TexturePreview(projectId: projectId, asset: asset),
+      pickFile: pickFile,
+      onUpdated: (asset) {
+        if (asset.id == font.textureAssetId) loader.remember(asset);
+      },
     );
     if (asset == null || asset.id == font.textureAssetId) return;
     loader.remember(asset);
@@ -122,7 +124,7 @@ class FontGeneralPage extends StatelessWidget {
                       },
                       footer: l10n.font_hint_texture,
                       pick: (context) =>
-                          _pickTexture(context, project, font, texture, loader),
+                          _pickTexture(context, project, font, loader, pickFile),
                     ),
                 ],
               ),
