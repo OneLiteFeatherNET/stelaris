@@ -573,13 +573,17 @@ class _TexturePickerState extends State<TexturePicker> {
   void _reveal(List<AssetModel> matching, double width) {
     if (_revealed) return;
     final index = matching.indexWhere((texture) => texture.id == _selectedId);
+    // Not listed yet, e.g. a new texture before the list is loaded again.
+    if (index < 0) return;
     _revealed = true;
-    if (index <= 0) return;
+    if (index == 0) return;
     final columns = math.max(1, (width / (_maxCardExtent + _spacing)).ceil());
     final offset = (index ~/ columns) * (_cardHeight + _spacing);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_grid.hasClients) return;
-      _grid.jumpTo(math.min(offset, _grid.position.maxScrollExtent));
+      // Not clamped to the max extent: until the grid has built its end
+      // that is only an estimate. A jump past the end settles at the end.
+      _grid.jumpTo(offset);
     });
   }
 
