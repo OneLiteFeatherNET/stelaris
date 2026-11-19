@@ -4457,6 +4457,30 @@ abstract class AppLocalizations {
   /// **'Upload a texture'**
   String get asset_textures_upload_title;
 
+  /// No description provided for @asset_textures_picker_upload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload…'**
+  String get asset_textures_picker_upload;
+
+  /// No description provided for @asset_textures_picker_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update…'**
+  String get asset_textures_picker_update;
+
+  /// No description provided for @asset_textures_picker_preview_show.
+  ///
+  /// In en, this message translates to:
+  /// **'Show preview'**
+  String get asset_textures_picker_preview_show;
+
+  /// No description provided for @asset_textures_picker_preview_hide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide preview'**
+  String get asset_textures_picker_preview_hide;
+
   /// No description provided for @asset_textures_used_in.
   ///
   /// In en, this message translates to:
