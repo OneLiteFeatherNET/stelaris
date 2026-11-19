@@ -221,6 +221,28 @@ void main() {
       expect(second, first);
       expect(backend.requestsTo('/content'), 1);
     });
+
+    test('parses a model file once per sha1', () async {
+      final backend = _FakeBackend(
+        assets: const [],
+        contents: {
+          'm-ruby': _utf8(
+            _json({
+              'textures': {'layer0': 'vulpes:item/ruby'},
+            }),
+          ),
+        },
+      );
+      final library = _library(backend);
+      final model = AssetModel.fromJson(
+        _asset(id: 'm-ruby', key: 'vulpes:item/ruby', kind: 'MODEL'),
+      );
+
+      final first = await library.textureKeysOf(_projectId, model);
+      final second = await library.textureKeysOf(_projectId, model);
+
+      expect(identical(first, second), isTrue);
+    });
   });
 
   group('loadScene', () {

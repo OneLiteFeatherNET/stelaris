@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
@@ -30,11 +31,17 @@ class _Library extends AssetLibrary {
   final List<AssetModel> assets;
   int contentLoads = 0;
 
+  /// The texture listings asked for.
+  int listings = 0;
+
   @override
-  Future<List<AssetModel>> assetsOf(String projectId, AssetKind kind) async => [
-    for (final asset in assets)
-      if (asset.kind == kind) asset,
-  ];
+  Future<List<AssetModel>> assetsOf(String projectId, AssetKind kind) async {
+    if (kind == AssetKind.TEXTURE) listings++;
+    return [
+      for (final asset in assets)
+        if (asset.kind == kind) asset,
+    ];
+  }
 
   @override
   Future<Set<String>> textureKeysOf(String projectId, AssetModel asset) async =>
@@ -116,6 +123,63 @@ void main() {
     await load;
 
     expect(textures.usagesOf(_gem)!.fonts, [_font]);
+  });
+
+  test('a reload keeps the uses until its sources are in', () async {
+    final answers = [
+      Completer<TextureUsageSources>()
+        ..complete(const TextureUsageSources(fonts: [_font])),
+      Completer<TextureUsageSources>(),
+    ];
+    final textures = _textures([_gem], (_) => answers.removeAt(0).future);
+    await textures.load();
+    final reloading = answers.first;
+
+    final reload = textures.load();
+    await Future<void>.delayed(Duration.zero);
+    expect(textures.usagesOf(_gem)!.fonts, [_font]);
+
+    reloading.complete(const TextureUsageSources());
+    await reload;
+    expect(textures.usagesOf(_gem)!.fonts, isEmpty);
+  });
+
+  test('a failed reload keeps the uses', () async {
+    var calls = 0;
+    final textures = _textures([_gem], (_) async {
+      if (++calls == 2) throw StateError('offline');
+      return const TextureUsageSources(fonts: [_font]);
+    });
+    await textures.load();
+
+    await textures.load();
+
+    expect(textures.usagesFailed, isFalse);
+    expect(textures.usagesOf(_gem)!.fonts, [_font]);
+  });
+
+  testWidgets('resume loads again unless loadOnResume is off', (tester) async {
+    final library = _Library([_gem]);
+    final textures = _textures(
+      [_gem],
+      (_) async => const TextureUsageSources(),
+      library: library,
+    );
+    await textures.load();
+    Future<void> resume() async {
+      tester.binding
+        ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pump();
+    }
+
+    textures.loadOnResume = false;
+    await resume();
+    expect(library.listings, 1);
+
+    textures.loadOnResume = true;
+    await resume();
+    expect(library.listings, 2);
   });
 
   test('thumbnailOf loads each sha1 once', () async {

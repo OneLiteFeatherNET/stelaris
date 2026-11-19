@@ -201,6 +201,30 @@ void main() {
     expect(assets.referencesLoaded, isTrue);
   });
 
+  test('a reload keeps the references until its own are read', () async {
+    final library = _Library(
+      assets: [_ruby, _gem],
+      references: {
+        'm1': {'vulpes:block/gem'},
+      },
+    );
+    final assets = ProjectAssets(library: library, projectId: 'p-1');
+    addTearDown(assets.dispose);
+    await assets.load();
+
+    final gate = library.readGate = Completer<void>();
+    library.references = {'m1': const {}};
+    final reload = assets.load();
+    await Future<void>.delayed(Duration.zero);
+
+    expect(assets.referencesLoaded, isTrue);
+    expect(assets.references[_ruby], {'vulpes:block/gem'});
+
+    gate.complete();
+    await reload;
+    expect(assets.references[_ruby], isEmpty);
+  });
+
   testWidgets('resume runs onResume instead of the plain load', (tester) async {
     var resumed = 0;
     final library = _Library(assets: [_ruby]);
