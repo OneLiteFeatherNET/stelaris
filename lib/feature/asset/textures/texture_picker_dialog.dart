@@ -97,10 +97,10 @@ class TexturePicker extends StatefulWidget {
 }
 
 /// The widest a card gets before another column fits.
-const double _maxCardExtent = 280;
+const double _maxCardExtent = 200;
 
-/// The height of a card, as on the textures page.
-const double _cardHeight = 132;
+/// The height of a card, the compact one of [TextureCard].
+const double _cardHeight = TextureCard.compactHeight;
 
 /// The space between two cards, across and down.
 const double _spacing = 12;
@@ -111,8 +111,18 @@ const double _previewWidth = 280;
 /// From this width on the preview sits beside the grid, below it before.
 const double _besideFrom = 720;
 
-/// The height of the content, so the dialog keeps it while searching.
-const double _contentHeight = 440;
+/// The share of the window the dialog takes at most, so a larger window
+/// shows more rows.
+const double _heightShare = 0.85;
+
+/// The height of the dialog around its content: title, bar and buttons.
+const double _chromeHeight = 260;
+
+/// The lowest the content gets, on a small window.
+const double _minContentHeight = 300;
+
+/// The height of the bar's search field and buttons.
+const double _barHeight = 40;
 
 /// What the dialog shows: the grid, the upload of a new texture or a new
 /// version of the selected one. The steps swap the content of the dialog.
@@ -409,15 +419,23 @@ class _TexturePickerState extends State<TexturePicker> {
     final l10n = context.l10n;
     final uploaded = _uploaded;
     final selected = _selectedIn(uploaded);
+    final maxHeight = MediaQuery.sizeOf(context).height * _heightShare;
+    // Fixed, so the dialog keeps its height while the search narrows the
+    // grid down.
+    final contentHeight = math.max(
+      _minContentHeight,
+      maxHeight - _chromeHeight,
+    );
     return FormDialog(
       title: l10n.asset_picker_title_texture,
       maxWidth: 900,
+      maxHeight: maxHeight,
       header: _buildBar(context, open),
       onCancel: widget.onCancel,
       actionLabel: l10n.asset_picker_choose,
       onSubmit: selected == null ? null : () => widget.onPicked(selected),
       content: SizedBox(
-        height: _contentHeight,
+        height: contentHeight,
         child: _buildBody(context, open, uploaded, selected),
       ),
     );
@@ -433,6 +451,9 @@ class _TexturePickerState extends State<TexturePicker> {
             controller: _search,
             decoration: InputDecoration(
               hintText: l10n.asset_picker_search,
+              isDense: true,
+              constraints: const BoxConstraints.tightFor(height: _barHeight),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12),
               prefixIcon: const Icon(Icons.search),
               suffixIcon: _search.text.isEmpty
                   ? null
@@ -445,22 +466,34 @@ class _TexturePickerState extends State<TexturePicker> {
           ),
         ),
         const SizedBox(width: 12),
-        OutlinedButton.icon(
-          key: const Key('texture_picker_upload'),
-          onPressed: _startUpload,
-          icon: const Icon(Icons.upload_file),
-          label: Text(l10n.asset_textures_picker_upload),
+        SizedBox(
+          height: _barHeight,
+          child: OutlinedButton.icon(
+            key: const Key('texture_picker_upload'),
+            onPressed: _startUpload,
+            icon: const Icon(Icons.upload_file),
+            label: Text(l10n.asset_textures_picker_upload),
+          ),
         ),
         const SizedBox(width: 8),
-        IconButton(
-          key: const Key('texture_picker_preview_toggle'),
-          isSelected: open,
-          tooltip: open
-              ? l10n.asset_textures_picker_preview_hide
-              : l10n.asset_textures_picker_preview_show,
-          onPressed: () => context.dispatch(ToggleTexturePreviewAction()),
-          icon: const Icon(Icons.info_outline),
-          selectedIcon: const Icon(Icons.info),
+        // Outlined like the upload button, filled while the preview shows.
+        SizedBox.square(
+          dimension: _barHeight,
+          child: open
+              ? IconButton.filledTonal(
+                  key: const Key('texture_picker_preview_toggle'),
+                  tooltip: l10n.asset_textures_picker_preview_hide,
+                  onPressed: () =>
+                      context.dispatch(ToggleTexturePreviewAction()),
+                  icon: const Icon(Icons.view_sidebar),
+                )
+              : IconButton.outlined(
+                  key: const Key('texture_picker_preview_toggle'),
+                  tooltip: l10n.asset_textures_picker_preview_show,
+                  onPressed: () =>
+                      context.dispatch(ToggleTexturePreviewAction()),
+                  icon: const Icon(Icons.view_sidebar_outlined),
+                ),
         ),
       ],
     );
@@ -570,6 +603,7 @@ class _TexturePickerState extends State<TexturePicker> {
           source: null,
           bytes: _library.thumbnailOf(texture),
           selected: texture.id == selected?.id,
+          compact: true,
           onTap: () => _tap(texture),
         );
       },
