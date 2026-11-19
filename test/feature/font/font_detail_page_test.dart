@@ -1,10 +1,12 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
+import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/font/font_detail_page.dart';
 import 'package:stelaris/feature/base/edit_card/edit_card.dart';
@@ -16,6 +18,8 @@ import 'package:stelaris/api/util/navigation.dart';
 
 import '../../support/edit_card.dart';
 import '../../support/fake_http_client_adapter.dart';
+import '../../support/pack_icon_pngs.dart';
+import '../../support/pump_until.dart';
 
 void main() {
   group('FontDetailPage', () {
@@ -35,6 +39,7 @@ void main() {
       String location = '/fonts/detail',
       FontModel font = selected,
       Project? project,
+      Future<PickedAssetFile?> Function()? pickFile,
     }) async {
       store = Store<AppState>(
         initialState: AppState(selectedFont: font, selectedProject: project),
@@ -51,8 +56,11 @@ void main() {
                 path: 'detail',
                 // In the app the shell's Scaffold sits above; the Chars tab
                 // needs its Material once a test opens on it.
-                builder: (context, state) =>
-                    const Scaffold(body: FontDetailPage()),
+                builder: (context, state) => Scaffold(
+                  body: pickFile == null
+                      ? const FontDetailPage()
+                      : FontDetailPage(pickFile: pickFile),
+                ),
               ),
             ],
           ),
@@ -119,7 +127,11 @@ void main() {
       expect(selectedTab(tester), 0);
     });
 
-    Map<String, Object?> textureJson(String id, String key) => {
+    Map<String, Object?> textureJson(
+      String id,
+      String key, {
+      String sha1 = 'aaaa',
+    }) => {
       'id': id,
       'projectId': 'p-1',
       'key': key,
@@ -128,7 +140,7 @@ void main() {
       'fileName': 'ghost.png',
       'contentType': 'image/png',
       'size': 1,
-      'sha1': 'aaaa',
+      'sha1': sha1,
       'derivedAssetIds': <String>[],
     };
 
@@ -192,8 +204,13 @@ void main() {
     testWidgets('choosing a texture stages its id and shows its key', (
       tester,
     ) async {
+      // A content cached by another test would never load in this one.
+      AssetLibrary.shared.clearContents();
       ApiService().assetApi.apiClient.dio.httpClientAdapter =
           FakeHttpClientAdapter((options) {
+            if (options.uri.path.contains('pack')) {
+              return FakeHttpClientAdapter.response([]);
+            }
             final kind = options.uri.queryParameters['kind'];
             return FakeHttpClientAdapter.response({
               'items': [
@@ -210,8 +227,10 @@ void main() {
       await tester.tap(find.text('Texture'));
       await tester.pumpAndSettle();
       expect(find.text('Choose a texture'), findsOneWidget);
-      await tester.tap(find.text('cygnus:font/clock'));
-      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('texture_picker_grid')), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('texture_t-2')));
+      // Past the double tap time, so the next tap doesn't pick the card.
+      await tester.pumpAndSettle(const Duration(milliseconds: 400));
       expect(find.byType(TexturePreview), findsOneWidget);
       await tester.tap(find.text('Choose'));
       await tester.pumpAndSettle();
@@ -220,6 +239,77 @@ void main() {
       expect(store.state.unsavedChanges, NavigationEntry.font);
       expect(find.byType(Dialog), findsNothing);
       expect(find.text('cygnus:font/clock'), findsOneWidget);
+    });
+
+    testWidgets('updating the current texture refreshes the card even when '
+        'the picker is cancelled', (tester) async {
+      AssetLibrary.shared.clearContents();
+      tester.view.physicalSize = const Size(1400, 1000);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      ApiService().assetApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            final path = options.uri.path;
+            if (options.method == 'POST') {
+              return FakeHttpClientAdapter.response(
+                textureJson('t-1', 'cygnus:font/ghost_v2', sha1: 'bbbb'),
+              );
+            }
+            if (path.endsWith('/content')) {
+              return ResponseBody.fromBytes(png16, 200);
+            }
+            if (path.endsWith('/asset/t-1')) {
+              return FakeHttpClientAdapter.response(
+                textureJson('t-1', 'cygnus:font/ghost'),
+              );
+            }
+            if (path.contains('pack')) return FakeHttpClientAdapter.response([]);
+            final kind = options.uri.queryParameters['kind'];
+            return FakeHttpClientAdapter.response({
+              'items': [
+                if (kind == 'TEXTURE') textureJson('t-1', 'cygnus:font/ghost'),
+              ],
+              'totalItems': kind == 'TEXTURE' ? 1 : 0,
+              'totalPages': 1,
+              'currentPage': 0,
+              'pageSize': 50,
+            });
+          });
+      await pumpPage(
+        tester,
+        font: selected.copyWith(textureAssetId: 't-1'),
+        project: project,
+        pickFile: () async => PickedAssetFile(name: 'ghost.png', bytes: png16),
+      );
+
+      await tester.tap(find.text('cygnus:font/ghost'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('texture_picker_update')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('asset_upload_drop_zone')));
+      // Reading the picked PNG takes real time.
+      await pumpUntil(
+        tester,
+        action: () async {},
+        done: () =>
+            find.byKey(const Key('asset_upload_compare')).evaluate().isNotEmpty,
+      );
+      await pumpUntil(
+        tester,
+        action: () async =>
+            tester.tap(find.widgetWithText(FilledButton, 'Update')),
+        // Back on the grid once the textures and their uses loaded again.
+        done: () =>
+            find.byKey(const Key('texture_picker_grid')).evaluate().isNotEmpty &&
+            find.byType(CircularProgressIndicator).evaluate().isEmpty,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Dialog), findsNothing);
+      expect(find.text('cygnus:font/ghost_v2'), findsOneWidget);
+      expect(store.state.selectedFont?.textureAssetId, 't-1');
     });
 
     testWidgets('a number field takes only digits', (tester) async {
