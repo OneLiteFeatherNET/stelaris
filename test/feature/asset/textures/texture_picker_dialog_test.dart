@@ -527,6 +527,31 @@ void main() {
       expect(_card(_gem), findsOneWidget);
     });
 
+    testWidgets('the file dialog taking the focus loads nothing again', (
+      tester,
+    ) async {
+      final library = _Library([_gem, _ruby]);
+      await _open(tester, library: library);
+      Future<void> resume() async {
+        tester.binding
+          ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+          ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+        await tester.pumpAndSettle();
+      }
+
+      await _tapAndSettle(
+        tester,
+        find.byKey(const Key('texture_picker_upload')),
+      );
+      final listings = library.listings;
+      await resume();
+      expect(library.listings, listings);
+
+      await _tapAndSettle(tester, find.byKey(const Key('texture_picker_back')));
+      await resume();
+      expect(library.listings, greaterThan(listings));
+    });
+
     testWidgets('going back while the file is read', (tester) async {
       final file = Completer<PickedAssetFile?>();
       await _open(tester, pickFile: () => file.future);
