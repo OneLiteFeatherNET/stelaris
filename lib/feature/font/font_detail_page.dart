@@ -1,4 +1,6 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
+import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/actions/font/font_actions.dart';
@@ -19,7 +21,10 @@ import 'package:stelaris/util/l10n_ext.dart';
 /// one of [FontGeneralPage]/[FontCharPage], which read the selected font
 /// from Redux themselves.
 class FontDetailPage extends StatelessWidget {
-  const FontDetailPage({super.key});
+  const FontDetailPage({this.pickFile = pickAssetFile, super.key});
+
+  /// Opens the file dialog for a texture upload; injectable for tests.
+  final Future<PickedAssetFile?> Function() pickFile;
 
   /// The tabs in order. Their ids are what `?tab=` and the command palette
   /// refer to.
@@ -65,11 +70,11 @@ class FontDetailPage extends StatelessWidget {
               ModelDetailTabBar(
                 tabs: [for (final tab in tabs) Tab(text: tab.label(context.l10n))],
               ),
-              const Expanded(
+              Expanded(
                 child: TabBarView(
                   children: [
-                    FontGeneralPage(),
-                    FontCharPage(),
+                    FontGeneralPage(pickFile: pickFile),
+                    const FontCharPage(),
                   ],
                 ),
               ),
