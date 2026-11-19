@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
@@ -9,19 +8,14 @@ import 'package:stelaris/feature/asset/asset_kind_label.dart';
 import 'package:stelaris/feature/asset/picker/asset_key.dart';
 import 'package:stelaris/feature/asset/picker/pick_asset_file.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
-import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_controller.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/util/l10n_ext.dart';
-import 'package:stelaris/util/bytes.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// The kinds the picker lists by default: the models an item can refer to.
 const Set<AssetKind> modelAssetKinds = {AssetKind.MODEL, AssetKind.BBMODEL};
-
-/// The kinds a picker for a texture lists, e.g. the one of a font.
-const Set<AssetKind> textureAssetKinds = {AssetKind.TEXTURE};
 
 const _pageSize = 50;
 
@@ -41,12 +35,11 @@ const double _visibleRows = 4.5;
 /// Lets the user choose an asset of [projectId] or upload a new one, each in
 /// a tab of its own.
 ///
-/// Lists the assets of [kinds], the models by default, or [textureAssetKinds]
-/// for a texture, or [soundAssetKinds] for a sound. An upload takes the files
+/// Lists the assets of [kinds], the models by default, or [soundAssetKinds]
+/// for a sound; textures are chosen with the texture picker. An upload takes the files
 /// of [uploadKinds], the textures and models by default.
 ///
-/// With [hideExtracted] the textures extracted from a Blockbench model are not
-/// listed, e.g. for a font, which can't use them. With [replaceable] a new
+/// With [replaceable] a new
 /// version of the selected asset can be uploaded in place of its file.
 ///
 /// Resolves to the chosen asset, or null when the dialog is closed. [namespace]
@@ -62,7 +55,6 @@ Future<AssetModel?> showAssetPickerDialog(
   Set<AssetKind> kinds = modelAssetKinds,
   Set<AssetKind> uploadKinds = visualAssetKinds,
   String keyFolder = defaultAssetFolder,
-  bool hideExtracted = false,
   bool replaceable = false,
   Future<PickedAssetFile?> Function() pickFile = pickAssetFile,
 }) {
@@ -78,7 +70,6 @@ Future<AssetModel?> showAssetPickerDialog(
       kinds: kinds,
       uploadKinds: uploadKinds,
       keyFolder: keyFolder,
-      hideExtracted: hideExtracted,
       replaceable: replaceable,
       pickFile: pickFile,
     ),
@@ -105,7 +96,6 @@ class AssetPicker extends StatefulWidget {
     this.kinds = modelAssetKinds,
     this.uploadKinds = visualAssetKinds,
     this.keyFolder = defaultAssetFolder,
-    this.hideExtracted = false,
     this.replaceable = false,
     this.embedded = false,
     this.pickFile = pickAssetFile,
@@ -122,7 +112,6 @@ class AssetPicker extends StatefulWidget {
   final Set<AssetKind> kinds;
   final Set<AssetKind> uploadKinds;
   final String keyFolder;
-  final bool hideExtracted;
   final bool replaceable;
   final Future<PickedAssetFile?> Function() pickFile;
 
@@ -161,14 +150,8 @@ class _AssetPickerState extends State<AssetPicker>
   /// Whether the user chose a tab, which an empty list then leaves alone.
   bool _tabChosen = false;
 
-  /// The bytes of the listed textures by id and hash, so a row scrolled back
-  /// into view does not load its texture again.
-  final Map<String, Future<Uint8List>> _thumbnails = {};
-
   /// What the picker is for, which its texts name.
-  _Picks get _picks => widget.kinds.contains(AssetKind.TEXTURE)
-      ? _Picks.texture
-      : widget.kinds.contains(AssetKind.SOUND)
+  _Picks get _picks => widget.kinds.contains(AssetKind.SOUND)
       ? _Picks.sound
       : _Picks.model;
 
@@ -220,13 +203,7 @@ class _AssetPickerState extends State<AssetPicker>
         for (final kind in widget.kinds) _fetchAll(kind),
       ]);
       if (!mounted) return;
-      final assets = _sortedByKey(
-        lists
-            .expand((list) => list)
-            .where(
-              (asset) => !widget.hideExtracted || asset.sourceAssetId == null,
-            ),
-      );
+      final assets = _sortedByKey(lists.expand((list) => list));
       final preselected = widget.selectedKey;
       setState(() {
         _assets = assets;
@@ -279,13 +256,6 @@ class _AssetPickerState extends State<AssetPicker>
     }
     return null;
   }
-
-  Future<Uint8List> _thumbnail(AssetModel asset) => _thumbnails.putIfAbsent(
-    '${asset.id}:${asset.sha1}',
-    () async => asUint8List(
-      await ApiService().assetApi.content(widget.projectId, asset.id),
-    ),
-  );
 
   /// Scrolls the list to the selected asset where it is out of view.
   void _revealSelected() {
@@ -419,7 +389,6 @@ class _AssetPickerState extends State<AssetPicker>
     final uploads = _tabs.index == _uploadTab;
     return FormDialog(
       title: switch (_picks) {
-        _Picks.texture => l10n.asset_picker_title_texture,
         _Picks.sound => l10n.asset_picker_title_sound,
         _Picks.model => l10n.asset_picker_title,
       },
@@ -557,7 +526,6 @@ class _AssetPickerState extends State<AssetPicker>
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(switch (_picks) {
-            _Picks.texture => l10n.asset_picker_load_failed_texture,
             _Picks.sound => l10n.asset_picker_load_failed_sound,
             _Picks.model => l10n.asset_picker_load_failed,
           }),
@@ -570,7 +538,6 @@ class _AssetPickerState extends State<AssetPicker>
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Text(switch (_picks) {
-          _Picks.texture => l10n.asset_picker_empty_texture,
           _Picks.sound => l10n.asset_picker_empty_sound,
           _Picks.model => l10n.asset_picker_empty,
         }, textAlign: TextAlign.center),
@@ -625,9 +592,7 @@ class _AssetPickerState extends State<AssetPicker>
       // middle of the row.
       minTileHeight: _rowHeight,
       selected: selected,
-      leading: asset.kind == AssetKind.TEXTURE
-          ? TextureThumbnail(asset: asset, bytes: _thumbnail(asset))
-          : Icon(assetKindIcon(asset.kind)),
+      leading: Icon(assetKindIcon(asset.kind)),
       title: Text(
         asset.displayName,
         maxLines: 1,
@@ -661,4 +626,4 @@ class _AssetPickerState extends State<AssetPicker>
           ?.copyWith(color: Theme.of(context).colorScheme.error);
 }
 
-enum _Picks { model, texture, sound }
+enum _Picks { model, sound }
