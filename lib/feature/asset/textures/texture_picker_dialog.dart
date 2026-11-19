@@ -253,6 +253,7 @@ class _TexturePickerState extends State<TexturePicker> {
       keyFolder: widget.keyFolder,
     );
     _step = _Step.upload;
+    _library.loadOnResume = false;
   });
 
   void _startUpdate(AssetModel texture) => setState(() {
@@ -264,6 +265,7 @@ class _TexturePickerState extends State<TexturePicker> {
       replaces: texture,
     );
     _step = _Step.update;
+    _library.loadOnResume = false;
   });
 
   /// Goes back to the grid, unless an upload runs. After a conflict the
@@ -277,6 +279,7 @@ class _TexturePickerState extends State<TexturePicker> {
       _upload = null;
       _step = _Step.choose;
     });
+    _library.loadOnResume = true;
     if (upload.conflict) _library.load();
   }
 
