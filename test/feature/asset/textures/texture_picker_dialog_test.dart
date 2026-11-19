@@ -231,6 +231,47 @@ void main() {
     expect(_card(_blade), findsNothing);
   }, variant: TargetPlatformVariant.desktop());
 
+  testWidgets('shows three compact cards per row beside the preview', (
+    tester,
+  ) async {
+    await _open(tester, selectedId: _gem.id);
+
+    expect(_cardOf(tester, _gem).compact, isTrue);
+    final top = tester.getTopLeft(_card(_gem)).dy;
+    expect(tester.getTopLeft(_card(_ruby)).dy, top);
+    expect(tester.getTopLeft(_card(_stone)).dy, top);
+  });
+
+  testWidgets('the grid grows with the window', (tester) async {
+    await _open(tester);
+    final small = tester.getSize(find.byKey(const Key('texture_picker_grid')));
+
+    tester.view.physicalSize = const Size(1400, 1300);
+    await tester.pumpAndSettle();
+    final large = tester.getSize(find.byKey(const Key('texture_picker_grid')));
+
+    expect(large.height, greaterThan(small.height + 200));
+  });
+
+  testWidgets('search, upload and preview toggle are equally high', (
+    tester,
+  ) async {
+    await _open(tester);
+
+    final search = tester.getSize(
+      find.byKey(const Key('texture_picker_search')),
+    );
+    final upload = tester.getSize(
+      find.byKey(const Key('texture_picker_upload')),
+    );
+    final toggle = tester.getSize(
+      find.byKey(const Key('texture_picker_preview_toggle')),
+    );
+    expect(search.height, upload.height);
+    expect(toggle.height, upload.height);
+    expect(toggle.width, toggle.height);
+  }, variant: TargetPlatformVariant.desktop());
+
   testWidgets('preselects the given texture and shows it in the preview', (
     tester,
   ) async {
