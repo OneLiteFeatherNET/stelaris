@@ -54,7 +54,8 @@ class ProjectAssets extends ChangeNotifier {
   /// The texture keys of every MODEL asset whose file could be read.
   Map<AssetModel, Set<String>> get references => _references;
 
-  /// Whether [references] belong to the current load.
+  /// Whether [references] were read. A reload keeps those of the load
+  /// before until its own are read.
   bool get referencesLoaded => _referencesLoaded;
 
   bool get loading => _loading;
@@ -67,7 +68,6 @@ class ProjectAssets extends ChangeNotifier {
 
   Future<void> load() async {
     final loadId = ++_loadId;
-    _referencesLoaded = false;
     if (!_listed) {
       _loading = true;
       _loadError = null;

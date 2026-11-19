@@ -27,7 +27,7 @@ class TextureLibrary extends ChangeNotifier {
       library: library,
       projectId: projectId,
       onReloadFailed: onReloadFailed,
-      onResume: load,
+      onResume: _loadOnResume,
     )..addListener(_onAssetsChanged);
   }
 
@@ -57,6 +57,11 @@ class TextureLibrary extends ChangeNotifier {
 
   bool _disposed = false;
 
+  /// Whether the app regaining focus loads everything again. Off while a
+  /// file is chosen: the file dialog takes the focus, and the upload loads
+  /// again anyway.
+  bool loadOnResume = true;
+
   /// The TEXTURE assets, in the order the backend lists them.
   List<AssetModel> get textures => assets.textures;
 
@@ -70,14 +75,19 @@ class TextureLibrary extends ChangeNotifier {
     await sources;
   }
 
+  Future<void> _loadOnResume() async {
+    if (loadOnResume) await load();
+  }
+
   /// Loads the fonts and pack metas for the uses, also alone after they
-  /// failed.
+  /// failed. A reload keeps the uses shown until its own sources are in,
+  /// and keeps them when it fails.
   Future<void> loadSources() async {
     final loadId = ++_sourcesLoadId;
-    _sources = null;
-    _sourcesFailed = false;
-    _index = null;
-    _notify();
+    if (_sources == null) {
+      _sourcesFailed = false;
+      _notify();
+    }
     TextureUsageSources? loaded;
     try {
       loaded = await loadUsageSources(projectId);
@@ -85,6 +95,7 @@ class TextureLibrary extends ChangeNotifier {
       loaded = null;
     }
     if (_disposed || loadId != _sourcesLoadId) return;
+    if (loaded == null && _sources != null) return;
     _sources = loaded;
     _sourcesFailed = loaded == null;
     _index = null;
