@@ -4481,6 +4481,12 @@ abstract class AppLocalizations {
   /// **'Hide preview'**
   String get asset_textures_picker_preview_hide;
 
+  /// No description provided for @asset_textures_picker_also_used.
+  ///
+  /// In en, this message translates to:
+  /// **'Also used in {uses}. They show the new version too.'**
+  String asset_textures_picker_also_used(String uses);
+
   /// No description provided for @asset_textures_used_in.
   ///
   /// In en, this message translates to:
