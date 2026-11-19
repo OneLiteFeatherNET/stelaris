@@ -2486,6 +2486,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_textures_upload_title => 'Upload a texture';
 
   @override
+  String get asset_textures_picker_upload => 'Upload…';
+
+  @override
+  String get asset_textures_picker_update => 'Update…';
+
+  @override
+  String get asset_textures_picker_preview_show => 'Show preview';
+
+  @override
+  String get asset_textures_picker_preview_hide => 'Hide preview';
+
+  @override
   String get asset_textures_used_in => 'Used in';
 
   @override
