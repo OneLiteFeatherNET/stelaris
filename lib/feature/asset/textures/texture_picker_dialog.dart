@@ -20,6 +20,7 @@ import 'package:stelaris/feature/asset/upload/asset_upload_controller.dart';
 import 'package:stelaris/feature/asset/upload/asset_upload_form.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/dialog/notice_box.dart';
+import 'package:stelaris/feature/base/search/dialog_search_bar.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -123,9 +124,6 @@ const double _chromeHeight = 260;
 /// The lowest the content gets, on a small window.
 const double _minContentHeight = 300;
 
-/// The height of the bar's search field and buttons.
-const double _barHeight = 40;
-
 /// What the dialog shows: the grid, the upload of a new texture or a new
 /// version of the selected one. The steps swap the content of the dialog.
 enum _Step { choose, upload, update }
@@ -161,7 +159,6 @@ class _TexturePickerState extends State<TexturePicker> {
     super.initState();
     _selectedId = widget.selectedId;
     _library.addListener(_onLibraryChanged);
-    _search.addListener(_onSearchChanged);
     _library.load();
   }
 
@@ -181,15 +178,20 @@ class _TexturePickerState extends State<TexturePicker> {
     if (mounted) setState(() {});
   }
 
-  void _onSearchChanged() => setState(() {});
+  /// Called on a changed text only, not when the cursor moves.
+  void _onSearchChanged(String _) => setState(() {});
+
+  void _clearSearch() {
+    _search.clear();
+    _onSearchChanged('');
+  }
 
   /// A failed reload, e.g. after an upload, keeps the grid it would have
   /// replaced.
   void _showReloadFailure(ProblemDetail problem) {
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(InfoBarFactory().createError(problem));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(InfoBarFactory().createError(problem));
   }
 
   /// The uploaded textures; an extracted one belongs to its model.
@@ -442,7 +444,8 @@ class _TexturePickerState extends State<TexturePicker> {
       title: l10n.asset_picker_title_texture,
       maxWidth: 900,
       maxHeight: maxHeight,
-      header: _buildBar(context, open),
+      titleActions: _titleActions(context, open),
+      header: _buildSearch(context),
       onCancel: widget.onCancel,
       actionLabel: l10n.asset_picker_choose,
       onSubmit: selected == null ? null : () => widget.onPicked(selected),
@@ -453,62 +456,44 @@ class _TexturePickerState extends State<TexturePicker> {
     );
   }
 
-  Widget _buildBar(BuildContext context, bool open) {
+  Widget _buildSearch(BuildContext context) {
     final l10n = context.l10n;
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            key: const Key('texture_picker_search'),
-            controller: _search,
-            decoration: InputDecoration(
-              hintText: l10n.asset_picker_search,
-              isDense: true,
-              constraints: const BoxConstraints.tightFor(height: _barHeight),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: _search.text.isEmpty
-                  ? null
-                  : IconButton(
-                      tooltip: l10n.asset_picker_search_clear,
-                      onPressed: _search.clear,
-                      icon: const Icon(Icons.close),
-                    ),
-            ),
+    return DialogSearchBar(
+      key: const Key('texture_picker_search'),
+      controller: _search,
+      hintText: l10n.asset_picker_search,
+      trailing: [
+        if (_search.text.isNotEmpty)
+          IconButton(
+            tooltip: l10n.asset_picker_search_clear,
+            onPressed: _clearSearch,
+            icon: const Icon(Icons.close),
           ),
-        ),
-        const SizedBox(width: 12),
-        SizedBox(
-          height: _barHeight,
-          child: OutlinedButton.icon(
-            key: const Key('texture_picker_upload'),
-            onPressed: _startUpload,
-            icon: const Icon(Icons.upload_file),
-            label: Text(l10n.asset_textures_picker_upload),
-          ),
-        ),
-        const SizedBox(width: 8),
-        // Outlined like the upload button, filled while the preview shows.
-        SizedBox.square(
-          dimension: _barHeight,
-          child: open
-              ? IconButton.filledTonal(
-                  key: const Key('texture_picker_preview_toggle'),
-                  tooltip: l10n.asset_textures_picker_preview_hide,
-                  onPressed: () =>
-                      context.dispatch(ToggleTexturePreviewAction()),
-                  icon: const Icon(Icons.view_sidebar),
-                )
-              : IconButton.outlined(
-                  key: const Key('texture_picker_preview_toggle'),
-                  tooltip: l10n.asset_textures_picker_preview_show,
-                  onPressed: () =>
-                      context.dispatch(ToggleTexturePreviewAction()),
-                  icon: const Icon(Icons.view_sidebar_outlined),
-                ),
-        ),
       ],
+      onChanged: _onSearchChanged,
     );
+  }
+
+  List<Widget> _titleActions(BuildContext context, bool open) {
+    final l10n = context.l10n;
+    return [
+      IconButton(
+        key: const Key('texture_picker_upload'),
+        tooltip: l10n.asset_textures_picker_upload,
+        onPressed: _startUpload,
+        icon: const Icon(Icons.upload_file),
+      ),
+      IconButton(
+        key: const Key('texture_picker_preview_toggle'),
+        tooltip: open
+            ? l10n.asset_textures_picker_preview_hide
+            : l10n.asset_textures_picker_preview_show,
+        isSelected: open,
+        onPressed: () => context.dispatch(ToggleTexturePreviewAction()),
+        icon: const Icon(Icons.view_sidebar_outlined),
+        selectedIcon: const Icon(Icons.view_sidebar),
+      ),
+    ];
   }
 
   Widget _buildBody(
