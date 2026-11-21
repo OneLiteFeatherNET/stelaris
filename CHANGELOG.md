@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.13.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.12.0...v1.13.0) (2026-11-21)
+
+
+### Features
+
+* **asset:** add textures page ([#339](https://github.com/OneLiteFeatherNET/stelaris/issues/339)) ([dcc3a87](https://github.com/OneLiteFeatherNET/stelaris/commit/dcc3a876e4b2ff0036422b95dbff3eda05572ee4))
+* **asset:** choose and upload in tabs of the asset picker ([#328](https://github.com/OneLiteFeatherNET/stelaris/issues/328)) ([0085cbd](https://github.com/OneLiteFeatherNET/stelaris/commit/0085cbdf59ed84bc260a92a918e9c82187acd17e))
+* **asset:** show texture thumbnails in some cases ([#329](https://github.com/OneLiteFeatherNET/stelaris/issues/329)) ([03790bc](https://github.com/OneLiteFeatherNET/stelaris/commit/03790bc311da3d4f2e7db376363188cc8e4786a7))
+* **blockstate:** add the rule based blockstate editor ([#332](https://github.com/OneLiteFeatherNET/stelaris/issues/332)) ([696b360](https://github.com/OneLiteFeatherNET/stelaris/commit/696b360b626b45d1af535aeff0a3def8f01370e1))
+* **navigation:** give blockstates a grass block icon ([#334](https://github.com/OneLiteFeatherNET/stelaris/issues/334)) ([8496881](https://github.com/OneLiteFeatherNET/stelaris/commit/84968818dd281575d8eda5f0180a06f2c1fb9ad2))
+* **navigation:** give the generator an anvil icon ([#336](https://github.com/OneLiteFeatherNET/stelaris/issues/336)) ([79b7737](https://github.com/OneLiteFeatherNET/stelaris/commit/79b77375a87b3eacfe0761646afd73876eec96dc))
+* **sound:** edit the minimum value of a sound event ([77d69ad](https://github.com/OneLiteFeatherNET/stelaris/commit/77d69ada41c2c27f2fc5211d76444ffabef693ad))
+* **sound:** pick the source of a sound event ([3883bbf](https://github.com/OneLiteFeatherNET/stelaris/commit/3883bbfbce5e357d182f60e0014d09c7ba98a778))
+
+
+### Bug Fixes
+
+* **asset:** handle large files on upload ([#330](https://github.com/OneLiteFeatherNET/stelaris/issues/330)) ([64d2cc9](https://github.com/OneLiteFeatherNET/stelaris/commit/64d2cc97d11d6fe8c4ab5119063a72b8c0c8f448))
+* **auth:** discard the tokens of a sign-out the provider never confirmed ([#325](https://github.com/OneLiteFeatherNET/stelaris/issues/325)) ([bc7b3fb](https://github.com/OneLiteFeatherNET/stelaris/commit/bc7b3fbc84479a839885b86ac44efe0d15807920))
+* **blockstate:** keep the hover ink of the block picker rows per row ([55640b3](https://github.com/OneLiteFeatherNET/stelaris/commit/55640b3ab78b14045f628687cd129f3a2cb1270b))
+* cleanup deprecated import statement ([d7d3739](https://github.com/OneLiteFeatherNET/stelaris/commit/d7d3739de1ad97147711c757b7e3994e2823329c))
+* **deps:** update dependency go_router to ^18.1.4 ([#327](https://github.com/OneLiteFeatherNET/stelaris/issues/327)) ([3df7d24](https://github.com/OneLiteFeatherNET/stelaris/commit/3df7d2449cb9a5b14d36ad57cf222310a849d1e7))
+* **l10n:** register the material_ui localization delegates ([dc14649](https://github.com/OneLiteFeatherNET/stelaris/commit/dc146494ef5d7849b6be2145d4f75a5b78ab5f63))
+
 ## [1.12.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.11.0...v1.12.0) (2026-11-10)
 
 
