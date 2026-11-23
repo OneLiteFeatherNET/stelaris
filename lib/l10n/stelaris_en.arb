@@ -1168,12 +1168,21 @@
   "asset_picker_kind_bbmodel": "Blockbench model",
   "asset_library_kind_texture": "Texture",
   "asset_library_kind_sound": "Sound",
-  "asset_upload_drop": "Drag a file here",
+  "asset_upload_drop": "Drag a file here or {browse}",
+  "@asset_upload_drop": {
+    "placeholders": {
+      "browse": {
+        "type": "String"
+      }
+    }
+  },
+  "asset_upload_browse": "browse",
   "asset_upload_drop_now": "Drop to add the file",
   "asset_upload_formats": "PNG textures, model JSON or Blockbench models (.bbmodel)",
-  "asset_upload_choose": "Choose a file",
   "asset_upload_change": "Choose another file",
   "asset_upload_remove": "Remove the file",
+  "asset_upload_now": "Now",
+  "asset_upload_new": "New",
   "asset_upload_file_details": "{kind} · {size}",
   "@asset_upload_file_details": {
     "placeholders": {
@@ -1332,6 +1341,21 @@
   "asset_textures_none_unused": "Every texture is in use.",
   "asset_textures_load_failed": "The textures could not be loaded.",
   "asset_textures_upload_title": "Upload a texture",
+  "asset_textures_picker_upload": "Upload…",
+  "asset_textures_picker_filter": "Filter & sort",
+  "asset_textures_picker_sort_key": "Key (A–Z)",
+  "asset_textures_picker_sort_edited": "Edited (newest first)",
+  "asset_textures_picker_update": "Update…",
+  "asset_textures_picker_preview_show": "Show preview",
+  "asset_textures_picker_preview_hide": "Hide preview",
+  "asset_textures_picker_also_used": "Also used in {uses}. They show the new version too.",
+  "@asset_textures_picker_also_used": {
+    "placeholders": {
+      "uses": {
+        "type": "String"
+      }
+    }
+  },
   "asset_textures_used_in": "Used in",
   "asset_textures_unused_filter": "Unused",
   "asset_textures_unused": "Not used anywhere yet.",

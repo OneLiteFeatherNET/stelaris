@@ -32,6 +32,7 @@ Future<({List<AssetModel> models, List<FontModel> fonts})> _pump(
   required TextureUsages? usages,
   bool usagesFailed = false,
   VoidCallback? onRetryUsages,
+  bool links = true,
 }) async {
   tester.view.physicalSize = const Size(1200, 900);
   tester.view.devicePixelRatio = 1;
@@ -50,8 +51,8 @@ Future<({List<AssetModel> models, List<FontModel> fonts})> _pump(
             usagesFailed: usagesFailed,
             onRetryUsages: onRetryUsages,
             loadContent: (_, _) async => png16,
-            onOpenModel: opened.models.add,
-            onOpenFont: opened.fonts.add,
+            onOpenModel: links ? opened.models.add : null,
+            onOpenFont: links ? opened.fonts.add : null,
           ),
         ),
       ),
@@ -67,6 +68,27 @@ Future<({List<AssetModel> models, List<FontModel> fonts})> _pump(
 }
 
 void main() {
+  testWidgets('without open callbacks the uses are plain chips', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      texture: _gem,
+      usages: TextureUsages(models: [_ruby], fonts: const [_icons]),
+      links: false,
+    );
+
+    expect(find.byType(ActionChip), findsNothing);
+    expect(
+      tester.widget(find.byKey(const ValueKey('texture_used_font_f1'))),
+      isA<Chip>(),
+    );
+    expect(
+      tester.widget(find.byKey(const ValueKey('texture_used_model_m1'))),
+      isA<Chip>(),
+    );
+  });
+
   testWidgets('used in lists models, fonts and pack icon', (tester) async {
     final opened = await _pump(
       tester,
@@ -81,7 +103,7 @@ void main() {
     expect(find.text('Ruby'), findsOneWidget);
     expect(find.text('Icons'), findsOneWidget);
     expect(find.text('Resource pack icon'), findsOneWidget);
-    expect(find.text('Not used anywhere yet.'), findsNothing);
+    expect(find.byKey(const Key('texture_unused')), findsNothing);
 
     await tester.tap(find.text('Ruby'));
     await tester.tap(find.text('Icons'));
@@ -95,7 +117,7 @@ void main() {
     await _pump(tester, texture: _gem, usages: null);
 
     expect(find.byKey(const Key('texture_usages_loading')), findsOneWidget);
-    expect(find.text('Not used anywhere yet.'), findsNothing);
+    expect(find.byKey(const Key('texture_unused')), findsNothing);
   });
 
   testWidgets('says when the usages could not be loaded', (tester) async {
@@ -139,13 +161,20 @@ void main() {
     );
 
     expect(find.text('Icons'), findsOneWidget);
-    expect(find.text('Not used anywhere yet.'), findsNothing);
+    expect(find.byKey(const Key('texture_unused')), findsNothing);
   });
 
-  testWidgets('unused texture says so', (tester) async {
+  testWidgets('unused texture shows a red tag', (tester) async {
     await _pump(tester, texture: _gem, usages: const TextureUsages());
 
-    expect(find.text('Not used anywhere yet.'), findsOneWidget);
+    final tag = find.byKey(const Key('texture_unused'));
+    expect(
+      find.descendant(of: tag, matching: find.text('Not used')),
+      findsOneWidget,
+    );
+    final chip = tester.widget<Chip>(tag);
+    final colorScheme = Theme.of(tester.element(tag)).colorScheme;
+    expect(chip.backgroundColor, colorScheme.errorContainer);
   });
 
   testWidgets('same key hint names the other texture', (tester) async {

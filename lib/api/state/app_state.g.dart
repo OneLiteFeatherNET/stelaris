@@ -8,6 +8,7 @@ part of 'app_state.dart';
 
 _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
   openNavigation: json['openNavigation'] as bool? ?? true,
+  openTexturePreview: json['openTexturePreview'] as bool? ?? true,
   themeSettings: json['themeSettings'] == null
       ? const ThemeSettings(
           isDarkMode: false,
@@ -26,6 +27,7 @@ _AppState _$AppStateFromJson(Map<String, dynamic> json) => _AppState(
 
 Map<String, dynamic> _$AppStateToJson(_AppState instance) => <String, dynamic>{
   'openNavigation': instance.openNavigation,
+  'openTexturePreview': instance.openTexturePreview,
   'themeSettings': instance.themeSettings,
   'projects': instance.projects,
 };

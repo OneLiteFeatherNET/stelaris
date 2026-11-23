@@ -135,6 +135,8 @@ abstract class AppState with _$AppState {
 
     // ── Persistierte Einstellungen ──
     @Default(true) bool openNavigation,
+    // Whether the texture picker shows the preview of the chosen texture.
+    @Default(true) bool openTexturePreview,
     @Default(
       ThemeSettings(
         isDarkMode: false,

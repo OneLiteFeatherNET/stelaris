@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
+import 'package:stelaris/feature/asset/picker/file_dialog_focus.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 /// Loads the models and textures of one project, and the texture keys each
@@ -11,7 +12,8 @@ import 'package:stelaris_models/stelaris_models.dart';
 /// read for them, a few at a time. A load that ends after a newer one is
 /// ignored. The assets are loaded again when the app resumes, e.g. when the
 /// browser tab regains focus, so assets saved elsewhere are seen; a page that
-/// loads more than the assets passes its own load as `onResume`.
+/// loads more than the assets passes its own load as `onResume`. A file
+/// dialog giving the focus back is no such return and loads nothing.
 class ProjectAssets extends ChangeNotifier {
   ProjectAssets({
     required this.library,
@@ -19,7 +21,12 @@ class ProjectAssets extends ChangeNotifier {
     this.onReloadFailed,
     Future<void> Function()? onResume,
   }) {
-    _lifecycle = AppLifecycleListener(onResume: onResume ?? load);
+    final resume = onResume ?? load;
+    _lifecycle = AppLifecycleListener(
+      onResume: () {
+        if (!FileDialogFocus.hadFocus) resume();
+      },
+    );
   }
 
   final AssetLibrary library;
@@ -54,7 +61,8 @@ class ProjectAssets extends ChangeNotifier {
   /// The texture keys of every MODEL asset whose file could be read.
   Map<AssetModel, Set<String>> get references => _references;
 
-  /// Whether [references] belong to the current load.
+  /// Whether [references] were read. A reload keeps those of the load
+  /// before until its own are read.
   bool get referencesLoaded => _referencesLoaded;
 
   bool get loading => _loading;
@@ -67,7 +75,6 @@ class ProjectAssets extends ChangeNotifier {
 
   Future<void> load() async {
     final loadId = ++_loadId;
-    _referencesLoaded = false;
     if (!_listed) {
       _loading = true;
       _loadError = null;

@@ -2247,7 +2247,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_library_kind_sound => 'Sound';
 
   @override
-  String get asset_upload_drop => 'Drag a file here';
+  String asset_upload_drop(String browse) {
+    return 'Drag a file here or $browse';
+  }
+
+  @override
+  String get asset_upload_browse => 'browse';
 
   @override
   String get asset_upload_drop_now => 'Drop to add the file';
@@ -2257,13 +2262,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'PNG textures, model JSON or Blockbench models (.bbmodel)';
 
   @override
-  String get asset_upload_choose => 'Choose a file';
-
-  @override
   String get asset_upload_change => 'Choose another file';
 
   @override
   String get asset_upload_remove => 'Remove the file';
+
+  @override
+  String get asset_upload_now => 'Now';
+
+  @override
+  String get asset_upload_new => 'New';
 
   @override
   String asset_upload_file_details(String kind, String size) {
@@ -2476,6 +2484,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asset_textures_upload_title => 'Upload a texture';
+
+  @override
+  String get asset_textures_picker_upload => 'Upload…';
+
+  @override
+  String get asset_textures_picker_filter => 'Filter & sort';
+
+  @override
+  String get asset_textures_picker_sort_key => 'Key (A–Z)';
+
+  @override
+  String get asset_textures_picker_sort_edited => 'Edited (newest first)';
+
+  @override
+  String get asset_textures_picker_update => 'Update…';
+
+  @override
+  String get asset_textures_picker_preview_show => 'Show preview';
+
+  @override
+  String get asset_textures_picker_preview_hide => 'Hide preview';
+
+  @override
+  String asset_textures_picker_also_used(String uses) {
+    return 'Also used in $uses. They show the new version too.';
+  }
 
   @override
   String get asset_textures_used_in => 'Used in';

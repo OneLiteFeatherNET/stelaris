@@ -23,11 +23,16 @@ class AssetUploadForm extends StatefulWidget {
   const AssetUploadForm({
     required this.controller,
     this.onSubmitted,
+    this.currentPreview,
     super.key,
   });
 
   final AssetUploadController controller;
   final VoidCallback? onSubmitted;
+
+  /// The texture as it is now. When set, a new version of a texture is shown
+  /// beside it, so the two can be compared before the upload.
+  final Widget? currentPreview;
 
   @override
   State<AssetUploadForm> createState() => _AssetUploadFormState();
@@ -110,7 +115,16 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
                 ),
                 if (controller.fileKind == AssetKind.TEXTURE) ...[
                   const SizedBox(height: 16),
-                  TexturePreview.bytes(file.bytes, key: ObjectKey(file)),
+                  if (widget.currentPreview case final current?)
+                    _Comparison(
+                      current: current,
+                      next: TexturePreview.bytes(
+                        file.bytes,
+                        key: ObjectKey(file),
+                      ),
+                    )
+                  else
+                    TexturePreview.bytes(file.bytes, key: ObjectKey(file)),
                 ],
                 if (replaces == null) ...[
                   const SizedBox(height: 16),
@@ -258,7 +272,8 @@ class _AssetUploadFormState extends State<AssetUploadForm> {
   };
 }
 
-/// Asks for a file: dropped on the page or chosen in the file dialog.
+/// Asks for a file: dropped on the page or chosen in the file dialog, which
+/// a click anywhere on the zone opens, like Enter or Space when it has focus.
 class _DropZone extends StatelessWidget {
   const _DropZone({
     required this.formats,
@@ -273,63 +288,191 @@ class _DropZone extends StatelessWidget {
   final bool reading;
   final VoidCallback onChoose;
 
+  /// Stands in for the browse link while the sentence around it is split.
+  static const _browseMarker = '\u{E000}';
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    return AnimatedContainer(
-      key: const Key('asset_upload_drop_zone'),
-      duration: const Duration(milliseconds: 150),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      decoration: BoxDecoration(
-        color: dragging
-            ? colorScheme.primaryContainer
-            : colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(AppShapes.medium),
-        border: Border.all(
-          color: dragging ? colorScheme.primary : colorScheme.outlineVariant,
-          width: dragging ? 2 : 1,
+    final radius = BorderRadius.circular(AppShapes.medium);
+    final [before, after] = l10n
+        .asset_upload_drop(_browseMarker)
+        .split(_browseMarker);
+    return Semantics(
+      button: true,
+      enabled: !reading,
+      label: '${l10n.asset_upload_drop(l10n.asset_upload_browse)}, $formats',
+      excludeSemantics: true,
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          key: const Key('asset_upload_drop_zone'),
+          borderRadius: radius,
+          onTap: reading ? null : onChoose,
+          child: CustomPaint(
+            painter: _DashedBorderPainter(
+              color: dragging || reading
+                  ? colorScheme.primary
+                  : colorScheme.outline,
+              width: dragging ? 2 : 1,
+              radius: AppShapes.medium,
+            ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+              decoration: BoxDecoration(
+                color: dragging
+                    ? colorScheme.primaryContainer
+                    : colorScheme.surfaceContainerLow,
+                borderRadius: radius,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox.square(
+                    dimension: 36,
+                    child: reading
+                        ? const Padding(
+                            padding: EdgeInsets.all(6),
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Icon(
+                            Icons.upload_file,
+                            size: 36,
+                            color: dragging
+                                ? colorScheme.onPrimaryContainer
+                                : colorScheme.onSurfaceVariant,
+                          ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (dragging)
+                    Text(
+                      l10n.asset_upload_drop_now,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: colorScheme.onPrimaryContainer,
+                      ),
+                    )
+                  else
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(text: before),
+                          TextSpan(
+                            text: l10n.asset_upload_browse,
+                            style: TextStyle(
+                              color: colorScheme.primary,
+                              decoration: TextDecoration.underline,
+                              decorationColor: colorScheme.primary,
+                            ),
+                          ),
+                          TextSpan(text: after),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  const SizedBox(height: 4),
+                  Text(
+                    formats,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.upload_file,
-            size: 36,
-            color: dragging
-                ? colorScheme.primary
-                : colorScheme.onSurfaceVariant,
+    );
+  }
+}
+
+/// A dashed rounded border, which marks a place to drop a file on.
+class _DashedBorderPainter extends CustomPainter {
+  const _DashedBorderPainter({
+    required this.color,
+    required this.width,
+    required this.radius,
+  });
+
+  final Color color;
+  final double width;
+  final double radius;
+
+  static const double _dash = 6;
+  static const double _gap = 4;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final inset = width / 2;
+    final border = Path()
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          (Offset.zero & size).deflate(inset),
+          Radius.circular(radius - inset),
+        ),
+      );
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = width
+      ..style = PaintingStyle.stroke;
+    for (final metric in border.computeMetrics()) {
+      for (var start = 0.0; start < metric.length; start += _dash + _gap) {
+        canvas.drawPath(metric.extractPath(start, start + _dash), paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DashedBorderPainter oldDelegate) =>
+      color != oldDelegate.color ||
+      width != oldDelegate.width ||
+      radius != oldDelegate.radius;
+}
+
+/// The texture as it is now beside the chosen new version.
+class _Comparison extends StatelessWidget {
+  const _Comparison({required this.current, required this.next});
+
+  final Widget current;
+  final Widget next;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Row(
+      key: const Key('asset_upload_compare'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: _labelled(context, l10n.asset_upload_now, current)),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(12, 48, 12, 0),
+          child: Icon(Icons.arrow_forward),
+        ),
+        Expanded(child: _labelled(context, l10n.asset_upload_new, next)),
+      ],
+    );
+  }
+
+  Widget _labelled(BuildContext context, String label, Widget child) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
           ),
-          const SizedBox(height: 8),
-          Text(
-            dragging ? l10n.asset_upload_drop_now : l10n.asset_upload_drop,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.titleSmall,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            formats,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 12),
-          if (reading)
-            const SizedBox.square(
-              dimension: 24,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          else
-            OutlinedButton.icon(
-              icon: const Icon(Icons.folder_open_outlined),
-              label: Text(l10n.asset_upload_choose),
-              onPressed: onChoose,
-            ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 6),
+        child,
+      ],
     );
   }
 }

@@ -4058,8 +4058,14 @@ abstract class AppLocalizations {
   /// No description provided for @asset_upload_drop.
   ///
   /// In en, this message translates to:
-  /// **'Drag a file here'**
-  String get asset_upload_drop;
+  /// **'Drag a file here or {browse}'**
+  String asset_upload_drop(String browse);
+
+  /// No description provided for @asset_upload_browse.
+  ///
+  /// In en, this message translates to:
+  /// **'browse'**
+  String get asset_upload_browse;
 
   /// No description provided for @asset_upload_drop_now.
   ///
@@ -4073,12 +4079,6 @@ abstract class AppLocalizations {
   /// **'PNG textures, model JSON or Blockbench models (.bbmodel)'**
   String get asset_upload_formats;
 
-  /// No description provided for @asset_upload_choose.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose a file'**
-  String get asset_upload_choose;
-
   /// No description provided for @asset_upload_change.
   ///
   /// In en, this message translates to:
@@ -4090,6 +4090,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove the file'**
   String get asset_upload_remove;
+
+  /// No description provided for @asset_upload_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get asset_upload_now;
+
+  /// No description provided for @asset_upload_new.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get asset_upload_new;
 
   /// No description provided for @asset_upload_file_details.
   ///
@@ -4444,6 +4456,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Upload a texture'**
   String get asset_textures_upload_title;
+
+  /// No description provided for @asset_textures_picker_upload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload…'**
+  String get asset_textures_picker_upload;
+
+  /// No description provided for @asset_textures_picker_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter & sort'**
+  String get asset_textures_picker_filter;
+
+  /// No description provided for @asset_textures_picker_sort_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Key (A–Z)'**
+  String get asset_textures_picker_sort_key;
+
+  /// No description provided for @asset_textures_picker_sort_edited.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited (newest first)'**
+  String get asset_textures_picker_sort_edited;
+
+  /// No description provided for @asset_textures_picker_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update…'**
+  String get asset_textures_picker_update;
+
+  /// No description provided for @asset_textures_picker_preview_show.
+  ///
+  /// In en, this message translates to:
+  /// **'Show preview'**
+  String get asset_textures_picker_preview_show;
+
+  /// No description provided for @asset_textures_picker_preview_hide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide preview'**
+  String get asset_textures_picker_preview_hide;
+
+  /// No description provided for @asset_textures_picker_also_used.
+  ///
+  /// In en, this message translates to:
+  /// **'Also used in {uses}. They show the new version too.'**
+  String asset_textures_picker_also_used(String uses);
 
   /// No description provided for @asset_textures_used_in.
   ///

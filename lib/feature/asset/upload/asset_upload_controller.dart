@@ -168,7 +168,8 @@ class AssetUploadController extends ChangeNotifier {
     } on Object {
       failed = true;
     }
-    if (takeId != _takeId) return;
+    // Gone when the user left the upload while the file was read.
+    if (_disposed || takeId != _takeId) return;
     _reading = false;
     _readFailed = failed;
     if (picked != null && picked.bytes.length > maxAssetFileBytes) {

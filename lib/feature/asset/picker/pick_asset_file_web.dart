@@ -3,6 +3,7 @@ import 'dart:js_interop';
 
 import 'package:web/web.dart' as web;
 
+import 'file_dialog_focus.dart';
 import 'picked_asset_file.dart';
 
 /// Opens the browser's file dialog for an asset file, offering the file
@@ -18,7 +19,9 @@ Future<PickedAssetFile?> pickAssetFile({
     ..style.display = 'none';
 
   void finish(Future<PickedAssetFile?> picked) {
-    if (!completer.isCompleted) completer.complete(picked);
+    if (completer.isCompleted) return;
+    FileDialogFocus.closed();
+    completer.complete(picked);
     input.remove();
   }
 
@@ -30,6 +33,7 @@ Future<PickedAssetFile?> pickAssetFile({
 
   // Some browsers only open the dialog for an input that is in the page.
   web.document.body?.append(input);
+  FileDialogFocus.opened();
   input.click();
   return completer.future;
 }
