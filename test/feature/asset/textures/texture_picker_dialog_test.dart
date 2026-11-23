@@ -340,6 +340,103 @@ void main() {
     expect(_chooseButton(tester).onPressed, isNull);
   });
 
+  group('filter menu', () {
+    List<String> shown(WidgetTester tester) => [
+      for (final card in tester.widgetList<TextureCard>(
+        find.byType(TextureCard),
+      ))
+        card.texture.id,
+    ];
+
+    Future<void> choose(WidgetTester tester, String item) async {
+      await _tapAndSettle(
+        tester,
+        find.byKey(const Key('texture_picker_filter')),
+      );
+      await _tapAndSettle(tester, find.byKey(Key(item)));
+    }
+
+    final dated = [
+      _gem.copyWith(
+        creationDate: DateTime(2026, 3),
+        modificationDate: DateTime(2026, 7),
+      ),
+      _ruby.copyWith(
+        creationDate: DateTime(2026, 5),
+        modificationDate: DateTime(2026, 6),
+      ),
+      _stone.copyWith(creationDate: DateTime(2026, 2)),
+    ];
+
+    testWidgets('sorts by key until another order is chosen', (tester) async {
+      await _open(tester, assets: dated);
+      expect(shown(tester), ['t1', 't3', 't2']);
+
+      await choose(tester, 'texture_picker_sort_newest');
+      expect(shown(tester), ['t2', 't1', 't3']);
+
+      await choose(tester, 'texture_picker_sort_oldest');
+      expect(shown(tester), ['t3', 't1', 't2']);
+
+      // Stone was never edited, so it comes last.
+      await choose(tester, 'texture_picker_sort_edited');
+      expect(shown(tester), ['t1', 't2', 't3']);
+
+      await choose(tester, 'texture_picker_sort_key');
+      expect(shown(tester), ['t1', 't3', 't2']);
+    });
+
+    testWidgets('shows only the unused textures', (tester) async {
+      await _open(tester);
+      expect(
+        tester
+            .widget<IconButton>(find.byKey(const Key('texture_picker_filter')))
+            .isSelected,
+        isFalse,
+      );
+
+      await choose(tester, 'texture_picker_unused');
+      expect(shown(tester), ['t3', 't2']);
+      expect(
+        tester
+            .widget<IconButton>(find.byKey(const Key('texture_picker_filter')))
+            .isSelected,
+        isTrue,
+      );
+
+      await choose(tester, 'texture_picker_unused');
+      expect(shown(tester), ['t1', 't3', 't2']);
+    });
+
+    testWidgets('says when every texture is in use', (tester) async {
+      await _open(tester, assets: [_gem]);
+
+      await choose(tester, 'texture_picker_unused');
+
+      expect(find.text('Every texture is in use.'), findsOneWidget);
+    });
+
+    testWidgets('offers Unused only once the uses are known', (tester) async {
+      await _open(
+        tester,
+        loadSources: (_) => Completer<TextureUsageSources>().future,
+        settle: false,
+      );
+
+      await tester.tap(find.byKey(const Key('texture_picker_filter')));
+      await tester.pump();
+
+      expect(
+        tester
+            .widget<MenuItemButton>(
+              find.byKey(const Key('texture_picker_unused')),
+            )
+            .onPressed,
+        isNull,
+      );
+    });
+  });
+
   testWidgets('the search filters by name and key', (tester) async {
     await _open(tester);
 
