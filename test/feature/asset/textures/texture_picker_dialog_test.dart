@@ -316,6 +316,21 @@ void main() {
     );
   });
 
+  testWidgets('tells screen readers which card is selected', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await _open(tester, selectedId: _ruby.id);
+
+    expect(
+      tester.getSemantics(_card(_ruby)),
+      isSemantics(isSelected: true, hasSelectedState: true),
+    );
+    expect(
+      tester.getSemantics(_card(_gem)),
+      isSemantics(isSelected: false, hasSelectedState: true),
+    );
+    semantics.dispose();
+  });
+
   testWidgets('an unknown selected id selects nothing', (tester) async {
     await _open(tester, selectedId: 'gone');
 
