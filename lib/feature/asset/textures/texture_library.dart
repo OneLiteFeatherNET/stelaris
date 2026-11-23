@@ -121,11 +121,19 @@ class TextureLibrary extends ChangeNotifier {
     return null;
   }
 
-  /// The bytes of [texture], loaded once per file.
-  Future<Uint8List> thumbnailOf(AssetModel texture) => _thumbnails.putIfAbsent(
-    texture.sha1,
-    () async => asUint8List(await library.contentOf(projectId, texture)),
-  );
+  /// The bytes of [texture], loaded once per file. A failed load is
+  /// forgotten, so the next build after a reload tries again.
+  Future<Uint8List> thumbnailOf(AssetModel texture) {
+    final sha1 = texture.sha1;
+    return _thumbnails.putIfAbsent(sha1, () async {
+      try {
+        return asUint8List(await library.contentOf(projectId, texture));
+      } on Object {
+        _thumbnails.remove(sha1);
+        rethrow;
+      }
+    });
+  }
 
   void _onAssetsChanged() {
     _index = null;
