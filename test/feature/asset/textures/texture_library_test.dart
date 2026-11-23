@@ -31,6 +31,9 @@ class _Library extends AssetLibrary {
   final List<AssetModel> assets;
   int contentLoads = 0;
 
+  /// Whether a content load fails.
+  bool contentFails = false;
+
   /// The texture listings asked for.
   int listings = 0;
 
@@ -50,6 +53,7 @@ class _Library extends AssetLibrary {
   @override
   Future<List<int>> contentOf(String projectId, AssetModel asset) async {
     contentLoads++;
+    if (contentFails) throw StateError('offline');
     return const [1, 2, 3];
   }
 }
@@ -190,5 +194,21 @@ void main() {
     await textures.thumbnailOf(_texture('t2', sha1: 'sha-t1'));
 
     expect(library.contentLoads, 1);
+  });
+
+  test('thumbnailOf loads a failed thumbnail again', () async {
+    final library = _Library([_gem])..contentFails = true;
+    final textures = _textures(
+      [_gem],
+      (_) async => const TextureUsageSources(),
+      library: library,
+    );
+
+    await expectLater(textures.thumbnailOf(_gem), throwsStateError);
+    library.contentFails = false;
+    await textures.thumbnailOf(_gem);
+    await textures.thumbnailOf(_gem);
+
+    expect(library.contentLoads, 2);
   });
 }
