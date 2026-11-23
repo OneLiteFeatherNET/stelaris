@@ -27,7 +27,7 @@ class TextureLibrary extends ChangeNotifier {
       library: library,
       projectId: projectId,
       onReloadFailed: onReloadFailed,
-      onResume: _loadOnResume,
+      onResume: load,
     )..addListener(_onAssetsChanged);
   }
 
@@ -57,11 +57,6 @@ class TextureLibrary extends ChangeNotifier {
 
   bool _disposed = false;
 
-  /// Whether the app regaining focus loads everything again. Off while a
-  /// file is chosen: the file dialog takes the focus, and the upload loads
-  /// again anyway.
-  bool loadOnResume = true;
-
   /// The TEXTURE assets, in the order the backend lists them.
   List<AssetModel> get textures => assets.textures;
 
@@ -73,10 +68,6 @@ class TextureLibrary extends ChangeNotifier {
     final sources = loadSources();
     await assets.load();
     await sources;
-  }
-
-  Future<void> _loadOnResume() async {
-    if (loadOnResume) await load();
   }
 
   /// Loads the fonts and pack metas for the uses, also alone after they
