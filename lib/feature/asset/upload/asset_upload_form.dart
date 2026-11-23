@@ -342,7 +342,7 @@ class _DropZone extends StatelessWidget {
                             Icons.upload_file,
                             size: 36,
                             color: dragging
-                                ? colorScheme.primary
+                                ? colorScheme.onPrimaryContainer
                                 : colorScheme.onSurfaceVariant,
                           ),
                   ),
@@ -351,7 +351,9 @@ class _DropZone extends StatelessWidget {
                     Text(
                       l10n.asset_upload_drop_now,
                       textAlign: TextAlign.center,
-                      style: theme.textTheme.titleSmall,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: colorScheme.onPrimaryContainer,
+                      ),
                     )
                   else
                     Text.rich(

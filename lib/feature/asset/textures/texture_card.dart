@@ -97,8 +97,11 @@ class TextureCard extends StatelessWidget {
             },
             onTap: onTap,
           );
-    if (!selected) return card;
-    return _framed(context, card);
+    // Screen readers hear the selection the frame shows.
+    return Semantics(
+      selected: selected,
+      child: selected ? _framed(context, card) : card,
+    );
   }
 
   Widget _framed(BuildContext context, Widget card) {

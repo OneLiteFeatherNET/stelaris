@@ -621,7 +621,7 @@ class _TexturePickerState extends State<TexturePicker> {
           child: Icon(
             Icons.image_outlined,
             size: 48,
-            color: theme.colorScheme.outlineVariant,
+            color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
       );
