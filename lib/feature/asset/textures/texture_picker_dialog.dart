@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:async_redux/async_redux.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
@@ -131,6 +132,10 @@ enum _Step { choose, upload, update }
 /// How the grid of the picker is ordered.
 enum _Sort { key, newest, oldest, edited }
 
+/// What the grid shows: the search, the order and the Unused filter. A
+/// record, so setting the same values again notifies nobody.
+typedef _GridView = ({String query, _Sort sort, bool onlyUnused});
+
 class _TexturePickerState extends State<TexturePicker> {
   late final AssetLibrary _assetLibrary = widget.library ?? AssetLibrary.shared;
   late final TextureLibrary _library = TextureLibrary(
@@ -143,7 +148,19 @@ class _TexturePickerState extends State<TexturePicker> {
   final ScrollController _grid = ScrollController();
 
   /// The id of the selected texture, also before the textures are loaded.
-  String? _selectedId;
+  /// Only the cards, the preview and the Choose button listen, so a tap
+  /// rebuilds neither the dialog nor the other cards.
+  late final ValueNotifier<String?> _selection = ValueNotifier(
+    widget.selectedId,
+  );
+
+  /// Only the grid and the search bar's buttons listen, so typing rebuilds
+  /// neither the dialog nor the preview.
+  final ValueNotifier<_GridView> _view = ValueNotifier((
+    query: '',
+    sort: _Sort.key,
+    onlyUnused: false,
+  ));
 
   /// Whether the grid was scrolled to the texture selected on opening.
   bool _revealed = false;
@@ -154,18 +171,12 @@ class _TexturePickerState extends State<TexturePicker> {
 
   _Step _step = _Step.choose;
 
-  _Sort _sort = _Sort.key;
-
-  /// Whether the grid shows only the textures nothing uses.
-  bool _onlyUnused = false;
-
   /// The upload of the current step, null while choosing.
   AssetUploadController? _upload;
 
   @override
   void initState() {
     super.initState();
-    _selectedId = widget.selectedId;
     _library.addListener(_onLibraryChanged);
     _library.load();
   }
@@ -178,21 +189,41 @@ class _TexturePickerState extends State<TexturePicker> {
       ..removeListener(_onLibraryChanged)
       ..dispose();
     _search.dispose();
+    _selection.dispose();
+    _view.dispose();
     _grid.dispose();
     super.dispose();
   }
 
+  /// The upload of a new texture shows nothing of the library, the grid
+  /// is built again when it goes back.
   void _onLibraryChanged() {
-    if (mounted) setState(() {});
+    if (mounted && _step != _Step.upload) setState(() {});
   }
 
   /// Called on a changed text only, not when the cursor moves.
-  void _onSearchChanged(String _) => setState(() {});
+  void _onSearchChanged(String text) => _view.value = (
+    query: text.trim().toLowerCase(),
+    sort: _view.value.sort,
+    onlyUnused: _view.value.onlyUnused,
+  );
 
   void _clearSearch() {
     _search.clear();
     _onSearchChanged('');
   }
+
+  void _setSort(_Sort sort) => _view.value = (
+    query: _view.value.query,
+    sort: sort,
+    onlyUnused: _view.value.onlyUnused,
+  );
+
+  void _toggleUnused() => _view.value = (
+    query: _view.value.query,
+    sort: _view.value.sort,
+    onlyUnused: !_view.value.onlyUnused,
+  );
 
   /// A failed reload, e.g. after an upload, keeps the grid it would have
   /// replaced.
@@ -208,18 +239,18 @@ class _TexturePickerState extends State<TexturePicker> {
       if (texture.sourceAssetId == null) texture,
   ];
 
-  /// The uploaded textures matching the search and the filter, in the
-  /// chosen order.
-  List<AssetModel> _matching(List<AssetModel> uploaded) {
-    final query = _search.text.trim().toLowerCase();
+  /// The uploaded textures matching the search and the filter of [view],
+  /// in its order.
+  List<AssetModel> _matching(List<AssetModel> uploaded, _GridView view) {
+    final query = view.query;
     return [
       for (final texture in uploaded)
         if ((query.isEmpty ||
                 texture.displayName.toLowerCase().contains(query) ||
                 texture.key.toLowerCase().contains(query)) &&
-            (!_onlyUnused || _library.usagesOf(texture)?.isEmpty == true))
+            (!view.onlyUnused || _library.usagesOf(texture)?.isEmpty == true))
           texture,
-    ]..sort(switch (_sort) {
+    ]..sort(switch (view.sort) {
       _Sort.key => _byKey,
       _Sort.newest => _byDate((texture) => texture.creationDate),
       _Sort.oldest => _byDate(
@@ -256,7 +287,7 @@ class _TexturePickerState extends State<TexturePicker> {
 
   /// The selected texture as last loaded, null when it isn't listed.
   AssetModel? _selectedIn(List<AssetModel> uploaded) {
-    final id = _selectedId;
+    final id = _selection.value;
     if (id == null) return null;
     for (final texture in uploaded) {
       if (texture.id == id) return texture;
@@ -272,7 +303,9 @@ class _TexturePickerState extends State<TexturePicker> {
       widget.onPicked(texture);
       return;
     }
-    setState(() => _selectedId = texture.id);
+    // The Choose button turns on with the first listed selection.
+    if (_selectedIn(_uploaded) == null) setState(() {});
+    _selection.value = texture.id;
     _armedId = texture.id;
     _armTimer?.cancel();
     _armTimer = Timer(kDoubleTapTimeout, () => _armedId = null);
@@ -320,7 +353,7 @@ class _TexturePickerState extends State<TexturePicker> {
     if (upload == null || !upload.canUpload) return;
     final texture = await upload.upload();
     if (texture == null || !mounted) return;
-    _selectedId = texture.id;
+    _selection.value = texture.id;
     _revealed = false;
     _back();
     await _library.load();
@@ -482,10 +515,13 @@ class _TexturePickerState extends State<TexturePicker> {
       header: _buildSearch(context),
       onCancel: widget.onCancel,
       actionLabel: l10n.asset_picker_choose,
-      onSubmit: selected == null ? null : () => widget.onPicked(selected),
+      // Read on the press: a tap selects without building the dialog again.
+      onSubmit: selected == null
+          ? null
+          : () => widget.onPicked(_selectedIn(_uploaded) ?? selected),
       content: SizedBox(
         height: contentHeight,
-        child: _buildBody(context, open, uploaded, selected),
+        child: _buildBody(context, open, uploaded),
       ),
     );
   }
@@ -497,27 +533,35 @@ class _TexturePickerState extends State<TexturePicker> {
       controller: _search,
       hintText: l10n.asset_picker_search,
       trailing: [
-        if (_search.text.isNotEmpty)
-          IconButton(
-            tooltip: l10n.asset_picker_search_clear,
-            onPressed: _clearSearch,
-            icon: const Icon(Icons.close),
+        ValueListenableBuilder(
+          valueListenable: _view,
+          builder: (context, view, _) => Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (view.query.isNotEmpty)
+                IconButton(
+                  tooltip: l10n.asset_picker_search_clear,
+                  onPressed: _clearSearch,
+                  icon: const Icon(Icons.close),
+                ),
+              _buildFilterMenu(context, view),
+            ],
           ),
-        _buildFilterMenu(context),
+        ),
       ],
       onChanged: _onSearchChanged,
     );
   }
 
   /// The order of the grid and the Unused filter, like the app bar search.
-  Widget _buildFilterMenu(BuildContext context) {
+  Widget _buildFilterMenu(BuildContext context, _GridView view) {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
     Widget sortItem(_Sort sort, String label) {
-      final active = sort == _sort;
+      final active = sort == view.sort;
       return MenuItemButton(
         key: Key('texture_picker_sort_${sort.name}'),
-        onPressed: () => setState(() => _sort = sort),
+        onPressed: () => _setSort(sort),
         leadingIcon: Icon(
           active ? Icons.radio_button_checked : Icons.radio_button_unchecked,
           color: active ? colorScheme.primary : null,
@@ -537,12 +581,12 @@ class _TexturePickerState extends State<TexturePicker> {
           key: const Key('texture_picker_unused'),
           // Turned on once every use is known, so nothing in use shows up;
           // turning it off always works.
-          onPressed: _onlyUnused || _library.usagesLoaded
-              ? () => setState(() => _onlyUnused = !_onlyUnused)
+          onPressed: view.onlyUnused || _library.usagesLoaded
+              ? _toggleUnused
               : null,
           leadingIcon: Icon(
-            _onlyUnused ? Icons.check_box : Icons.check_box_outline_blank,
-            color: _onlyUnused ? colorScheme.primary : null,
+            view.onlyUnused ? Icons.check_box : Icons.check_box_outline_blank,
+            color: view.onlyUnused ? colorScheme.primary : null,
           ),
           child: Text(l10n.asset_textures_unused_filter),
         ),
@@ -554,7 +598,7 @@ class _TexturePickerState extends State<TexturePicker> {
         child: IconButton(
           key: const Key('texture_picker_filter'),
           padding: EdgeInsets.zero,
-          isSelected: _onlyUnused || _sort != _Sort.key,
+          isSelected: view.onlyUnused || view.sort != _Sort.key,
           icon: const Icon(Icons.filter_list),
           tooltip: l10n.asset_textures_picker_filter,
           onPressed: () =>
@@ -590,7 +634,6 @@ class _TexturePickerState extends State<TexturePicker> {
     BuildContext context,
     bool open,
     List<AssetModel> uploaded,
-    AssetModel? selected,
   ) {
     final l10n = context.l10n;
     final assets = _library.assets;
@@ -620,25 +663,33 @@ class _TexturePickerState extends State<TexturePicker> {
         ),
       );
     }
-    final matching = _matching(uploaded);
     return LayoutBuilder(
       builder: (context, constraints) {
         final beside = constraints.maxWidth >= _besideFrom;
         final gridWidth = open && beside
             ? constraints.maxWidth - _previewWidth - 20
             : constraints.maxWidth;
-        _reveal(matching, gridWidth);
-        final grid = matching.isEmpty
-            ? Center(
-                child: Text(
-                  _onlyUnused && _search.text.trim().isEmpty
-                      ? l10n.asset_textures_none_unused
-                      : l10n.asset_picker_no_match,
-                ),
-              )
-            : _buildGrid(matching, selected);
+        final grid = ValueListenableBuilder(
+          valueListenable: _view,
+          builder: (context, view, _) {
+            final matching = _matching(uploaded, view);
+            _reveal(matching, gridWidth);
+            if (matching.isNotEmpty) return _buildGrid(matching);
+            return Center(
+              child: Text(
+                view.onlyUnused && view.query.isEmpty
+                    ? l10n.asset_textures_none_unused
+                    : l10n.asset_picker_no_match,
+              ),
+            );
+          },
+        );
         if (!open) return grid;
-        final preview = _buildPreview(context, selected);
+        final preview = ValueListenableBuilder(
+          valueListenable: _selection,
+          builder: (context, _, _) =>
+              _buildPreview(context, _selectedIn(uploaded)),
+        );
         if (beside) {
           return Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -665,7 +716,8 @@ class _TexturePickerState extends State<TexturePicker> {
   /// is in worked out from the columns of a grid [width] wide.
   void _reveal(List<AssetModel> matching, double width) {
     if (_revealed) return;
-    final index = matching.indexWhere((texture) => texture.id == _selectedId);
+    final id = _selection.value;
+    final index = matching.indexWhere((texture) => texture.id == id);
     // Not listed yet, e.g. a new texture before the list is loaded again.
     if (index < 0) return;
     _revealed = true;
@@ -680,7 +732,7 @@ class _TexturePickerState extends State<TexturePicker> {
     });
   }
 
-  Widget _buildGrid(List<AssetModel> matching, AssetModel? selected) {
+  Widget _buildGrid(List<AssetModel> matching) {
     return GridView.builder(
       key: const Key('texture_picker_grid'),
       controller: _grid,
@@ -693,15 +745,20 @@ class _TexturePickerState extends State<TexturePicker> {
       itemCount: matching.length,
       itemBuilder: (context, index) {
         final texture = matching[index];
-        return TextureCard(
-          key: ValueKey('texture_${texture.id}'),
-          texture: texture,
-          usages: _library.usagesOf(texture),
-          source: null,
-          bytes: _library.thumbnailOf(texture),
-          selected: texture.id == selected?.id,
-          compact: true,
-          onTap: () => _tap(texture),
+        return _SelectionBuilder(
+          selection: _selection,
+          id: texture.id,
+          builder: (context, selected) => TextureCard(
+            key: ValueKey('texture_${texture.id}'),
+            texture: texture,
+            // A compact card doesn't show them.
+            usages: null,
+            source: null,
+            bytes: _library.thumbnailOf(texture),
+            selected: selected,
+            compact: true,
+            onTap: () => _tap(texture),
+          ),
         );
       },
     );
@@ -765,4 +822,57 @@ class _TexturePickerState extends State<TexturePicker> {
       ),
     );
   }
+}
+
+/// Builds a card again only when whether [id] is the [selection] changes,
+/// so a tap rebuilds the card it leaves and the one it selects.
+class _SelectionBuilder extends StatefulWidget {
+  const _SelectionBuilder({
+    required this.selection,
+    required this.id,
+    required this.builder,
+  });
+
+  final ValueListenable<String?> selection;
+  final String id;
+  final Widget Function(BuildContext context, bool selected) builder;
+
+  @override
+  State<_SelectionBuilder> createState() => _SelectionBuilderState();
+}
+
+class _SelectionBuilderState extends State<_SelectionBuilder> {
+  late bool _selected = _isSelected;
+
+  bool get _isSelected => widget.selection.value == widget.id;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.selection.addListener(_onSelectionChanged);
+  }
+
+  @override
+  void didUpdateWidget(_SelectionBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selection != widget.selection) {
+      oldWidget.selection.removeListener(_onSelectionChanged);
+      widget.selection.addListener(_onSelectionChanged);
+    }
+    // A reused state may stand for another texture now.
+    _selected = _isSelected;
+  }
+
+  @override
+  void dispose() {
+    widget.selection.removeListener(_onSelectionChanged);
+    super.dispose();
+  }
+
+  void _onSelectionChanged() {
+    if (_isSelected != _selected) setState(() => _selected = _isSelected);
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.builder(context, _selected);
 }
