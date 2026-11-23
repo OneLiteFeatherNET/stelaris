@@ -4463,6 +4463,24 @@ abstract class AppLocalizations {
   /// **'Upload…'**
   String get asset_textures_picker_upload;
 
+  /// No description provided for @asset_textures_picker_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter & sort'**
+  String get asset_textures_picker_filter;
+
+  /// No description provided for @asset_textures_picker_sort_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Key (A–Z)'**
+  String get asset_textures_picker_sort_key;
+
+  /// No description provided for @asset_textures_picker_sort_edited.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited (newest first)'**
+  String get asset_textures_picker_sort_edited;
+
   /// No description provided for @asset_textures_picker_update.
   ///
   /// In en, this message translates to:

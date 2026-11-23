@@ -2489,6 +2489,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asset_textures_picker_upload => 'Upload…';
 
   @override
+  String get asset_textures_picker_filter => 'Filter & sort';
+
+  @override
+  String get asset_textures_picker_sort_key => 'Key (A–Z)';
+
+  @override
+  String get asset_textures_picker_sort_edited => 'Edited (newest first)';
+
+  @override
   String get asset_textures_picker_update => 'Update…';
 
   @override

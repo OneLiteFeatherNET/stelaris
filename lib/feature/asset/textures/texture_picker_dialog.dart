@@ -128,6 +128,9 @@ const double _minContentHeight = 300;
 /// version of the selected one. The steps swap the content of the dialog.
 enum _Step { choose, upload, update }
 
+/// How the grid of the picker is ordered.
+enum _Sort { key, newest, oldest, edited }
+
 class _TexturePickerState extends State<TexturePicker> {
   late final AssetLibrary _assetLibrary = widget.library ?? AssetLibrary.shared;
   late final TextureLibrary _library = TextureLibrary(
@@ -150,6 +153,11 @@ class _TexturePickerState extends State<TexturePicker> {
   Timer? _armTimer;
 
   _Step _step = _Step.choose;
+
+  _Sort _sort = _Sort.key;
+
+  /// Whether the grid shows only the textures nothing uses.
+  bool _onlyUnused = false;
 
   /// The upload of the current step, null while choosing.
   AssetUploadController? _upload;
@@ -200,17 +208,43 @@ class _TexturePickerState extends State<TexturePicker> {
       if (texture.sourceAssetId == null) texture,
   ];
 
-  /// The uploaded textures matching the search, sorted by key.
+  /// The uploaded textures matching the search and the filter, in the
+  /// chosen order.
   List<AssetModel> _matching(List<AssetModel> uploaded) {
     final query = _search.text.trim().toLowerCase();
     return [
       for (final texture in uploaded)
-        if (query.isEmpty ||
-            texture.displayName.toLowerCase().contains(query) ||
-            texture.key.toLowerCase().contains(query))
+        if ((query.isEmpty ||
+                texture.displayName.toLowerCase().contains(query) ||
+                texture.key.toLowerCase().contains(query)) &&
+            (!_onlyUnused || _library.usagesOf(texture)?.isEmpty == true))
           texture,
-    ]..sort(_byKey);
+    ]..sort(switch (_sort) {
+      _Sort.key => _byKey,
+      _Sort.newest => _byDate((texture) => texture.creationDate),
+      _Sort.oldest => _byDate(
+        (texture) => texture.creationDate,
+        newestFirst: false,
+      ),
+      _Sort.edited => _byDate((texture) => texture.modificationDate),
+    });
   }
+
+  /// By the date [dateOf] gives, a texture without one last, the same
+  /// dates by key.
+  static Comparator<AssetModel> _byDate(
+    DateTime? Function(AssetModel texture) dateOf, {
+    bool newestFirst = true,
+  }) => (a, b) {
+    final byDate = switch ((dateOf(a), dateOf(b))) {
+      (final first?, final second?) =>
+        newestFirst ? second.compareTo(first) : first.compareTo(second),
+      (null, null) => 0,
+      (null, _) => 1,
+      (_, null) => -1,
+    };
+    return byDate != 0 ? byDate : _byKey(a, b);
+  };
 
   /// By key, then name and id, like the textures page.
   static int _byKey(AssetModel a, AssetModel b) {
@@ -469,8 +503,64 @@ class _TexturePickerState extends State<TexturePicker> {
             onPressed: _clearSearch,
             icon: const Icon(Icons.close),
           ),
+        _buildFilterMenu(context),
       ],
       onChanged: _onSearchChanged,
+    );
+  }
+
+  /// The order of the grid and the Unused filter, like the app bar search.
+  Widget _buildFilterMenu(BuildContext context) {
+    final l10n = context.l10n;
+    final colorScheme = Theme.of(context).colorScheme;
+    Widget sortItem(_Sort sort, String label) {
+      final active = sort == _sort;
+      return MenuItemButton(
+        key: Key('texture_picker_sort_${sort.name}'),
+        onPressed: () => setState(() => _sort = sort),
+        leadingIcon: Icon(
+          active ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+          color: active ? colorScheme.primary : null,
+        ),
+        child: Text(label),
+      );
+    }
+
+    return MenuAnchor(
+      menuChildren: [
+        sortItem(_Sort.key, l10n.asset_textures_picker_sort_key),
+        sortItem(_Sort.newest, l10n.sort_created_newest_first),
+        sortItem(_Sort.oldest, l10n.sort_created_oldest_first),
+        sortItem(_Sort.edited, l10n.asset_textures_picker_sort_edited),
+        const Divider(height: 1),
+        MenuItemButton(
+          key: const Key('texture_picker_unused'),
+          // Turned on once every use is known, so nothing in use shows up;
+          // turning it off always works.
+          onPressed: _onlyUnused || _library.usagesLoaded
+              ? () => setState(() => _onlyUnused = !_onlyUnused)
+              : null,
+          leadingIcon: Icon(
+            _onlyUnused ? Icons.check_box : Icons.check_box_outline_blank,
+            color: _onlyUnused ? colorScheme.primary : null,
+          ),
+          child: Text(l10n.asset_textures_unused_filter),
+        ),
+      ],
+      builder: (context, controller, _) => SizedBox(
+        // The anchor would stretch the button to the bar's height otherwise.
+        width: 32,
+        height: 32,
+        child: IconButton(
+          key: const Key('texture_picker_filter'),
+          padding: EdgeInsets.zero,
+          isSelected: _onlyUnused || _sort != _Sort.key,
+          icon: const Icon(Icons.filter_list),
+          tooltip: l10n.asset_textures_picker_filter,
+          onPressed: () =>
+              controller.isOpen ? controller.close() : controller.open(),
+        ),
+      ),
     );
   }
 
@@ -539,7 +629,13 @@ class _TexturePickerState extends State<TexturePicker> {
             : constraints.maxWidth;
         _reveal(matching, gridWidth);
         final grid = matching.isEmpty
-            ? Center(child: Text(l10n.asset_picker_no_match))
+            ? Center(
+                child: Text(
+                  _onlyUnused && _search.text.trim().isEmpty
+                      ? l10n.asset_textures_none_unused
+                      : l10n.asset_picker_no_match,
+                ),
+              )
             : _buildGrid(matching, selected);
         if (!open) return grid;
         final preview = _buildPreview(context, selected);
