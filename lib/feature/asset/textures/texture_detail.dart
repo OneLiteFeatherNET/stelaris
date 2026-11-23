@@ -137,7 +137,23 @@ class TextureDetail extends StatelessWidget {
       );
     }
     if (usages.isEmpty) {
-      return Text(l10n.asset_textures_unused, style: textStyle);
+      // Red like an error, in the shape of the uses it lacks.
+      final colorScheme = Theme.of(context).colorScheme;
+      return Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: Chip(
+          key: const Key('texture_unused'),
+          avatar: Icon(
+            Icons.link_off,
+            size: 16,
+            color: colorScheme.onErrorContainer,
+          ),
+          label: Text(l10n.asset_textures_usage_count(0)),
+          labelStyle: TextStyle(color: colorScheme.onErrorContainer),
+          backgroundColor: colorScheme.errorContainer,
+          side: BorderSide(color: colorScheme.errorContainer),
+        ),
+      );
     }
     return Wrap(
       spacing: 8,
