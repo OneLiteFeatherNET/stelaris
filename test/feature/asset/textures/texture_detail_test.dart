@@ -103,7 +103,7 @@ void main() {
     expect(find.text('Ruby'), findsOneWidget);
     expect(find.text('Icons'), findsOneWidget);
     expect(find.text('Resource pack icon'), findsOneWidget);
-    expect(find.text('Not used anywhere yet.'), findsNothing);
+    expect(find.byKey(const Key('texture_unused')), findsNothing);
 
     await tester.tap(find.text('Ruby'));
     await tester.tap(find.text('Icons'));
@@ -117,7 +117,7 @@ void main() {
     await _pump(tester, texture: _gem, usages: null);
 
     expect(find.byKey(const Key('texture_usages_loading')), findsOneWidget);
-    expect(find.text('Not used anywhere yet.'), findsNothing);
+    expect(find.byKey(const Key('texture_unused')), findsNothing);
   });
 
   testWidgets('says when the usages could not be loaded', (tester) async {
@@ -161,13 +161,20 @@ void main() {
     );
 
     expect(find.text('Icons'), findsOneWidget);
-    expect(find.text('Not used anywhere yet.'), findsNothing);
+    expect(find.byKey(const Key('texture_unused')), findsNothing);
   });
 
-  testWidgets('unused texture says so', (tester) async {
+  testWidgets('unused texture shows a red tag', (tester) async {
     await _pump(tester, texture: _gem, usages: const TextureUsages());
 
-    expect(find.text('Not used anywhere yet.'), findsOneWidget);
+    final tag = find.byKey(const Key('texture_unused'));
+    expect(
+      find.descendant(of: tag, matching: find.text('Not used')),
+      findsOneWidget,
+    );
+    final chip = tester.widget<Chip>(tag);
+    final colorScheme = Theme.of(tester.element(tag)).colorScheme;
+    expect(chip.backgroundColor, colorScheme.errorContainer);
   });
 
   testWidgets('same key hint names the other texture', (tester) async {
