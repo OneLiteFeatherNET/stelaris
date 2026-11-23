@@ -7,6 +7,7 @@ import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/model/problem_detail.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/loading/project_assets.dart';
+import 'package:stelaris/feature/asset/picker/file_dialog_focus.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 AssetModel _asset(String id, String key, AssetKind kind) => AssetModel(
@@ -244,5 +245,36 @@ void main() {
 
     expect(resumed, 1);
     expect(assets.models, [_ruby]);
+  });
+
+  testWidgets('a file dialog giving the focus back loads nothing', (
+    tester,
+  ) async {
+    addTearDown(FileDialogFocus.reset);
+    var time = DateTime(2026);
+    FileDialogFocus.now = () => time;
+    var resumed = 0;
+    final assets = ProjectAssets(
+      library: _Library(),
+      projectId: 'p-1',
+      onResume: () async => resumed++,
+    );
+    addTearDown(assets.dispose);
+    Future<void> resume() async {
+      tester.binding
+        ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pump();
+    }
+
+    FileDialogFocus.opened();
+    await resume();
+    FileDialogFocus.closed();
+    await resume();
+    expect(resumed, 0);
+
+    time = time.add(FileDialogFocus.grace);
+    await resume();
+    expect(resumed, 1);
   });
 }

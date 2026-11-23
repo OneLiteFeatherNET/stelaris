@@ -158,28 +158,24 @@ void main() {
     expect(textures.usagesOf(_gem)!.fonts, [_font]);
   });
 
-  testWidgets('resume loads again unless loadOnResume is off', (tester) async {
+  testWidgets('resume loads the assets and the sources again', (
+    tester,
+  ) async {
     final library = _Library([_gem]);
-    final textures = _textures(
-      [_gem],
-      (_) async => const TextureUsageSources(),
-      library: library,
-    );
+    var sourceLoads = 0;
+    final textures = _textures([_gem], (_) async {
+      sourceLoads++;
+      return const TextureUsageSources();
+    }, library: library);
     await textures.load();
-    Future<void> resume() async {
-      tester.binding
-        ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
-        ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
-      await tester.pump();
-    }
 
-    textures.loadOnResume = false;
-    await resume();
-    expect(library.listings, 1);
+    tester.binding
+      ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+      ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
 
-    textures.loadOnResume = true;
-    await resume();
     expect(library.listings, 2);
+    expect(sourceLoads, 2);
   });
 
   test('thumbnailOf loads each sha1 once', () async {
