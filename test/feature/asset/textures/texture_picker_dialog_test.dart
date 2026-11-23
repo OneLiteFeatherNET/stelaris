@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
 import 'package:async_redux/async_redux.dart';
@@ -11,6 +12,7 @@ import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/asset/picker/picked_asset_file.dart';
 import 'package:stelaris/feature/asset/textures/texture_card.dart';
+import 'package:stelaris/feature/asset/textures/texture_detail.dart';
 import 'package:stelaris/feature/asset/textures/texture_picker_dialog.dart';
 import 'package:stelaris/feature/asset/textures/texture_usage_sources.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -338,6 +340,45 @@ void main() {
       expect(_cardOf(tester, texture).selected, isFalse);
     }
     expect(_chooseButton(tester).onPressed, isNull);
+  });
+
+  group('rebuilds', () {
+    testWidgets('typing builds the grid again, not the preview', (
+      tester,
+    ) async {
+      await _open(tester, selectedId: _ruby.id);
+      final preview = tester.widget(find.byType(TextureDetail));
+
+      await tester.enterText(
+        find.byKey(const Key('texture_picker_search')),
+        'r',
+      );
+      await tester.pumpAndSettle();
+
+      expect(_card(_gem), findsNothing);
+      expect(
+        identical(tester.widget(find.byType(TextureDetail)), preview),
+        isTrue,
+      );
+    });
+
+    testWidgets('a tap builds only the cards whose selection changes', (
+      tester,
+    ) async {
+      await _open(tester, selectedId: _ruby.id);
+      final gem = _cardOf(tester, _gem);
+      final ruby = _cardOf(tester, _ruby);
+      final stone = _cardOf(tester, _stone);
+
+      await tester.tap(_card(_gem));
+      await tester.pump(kDoubleTapTimeout);
+
+      expect(_cardOf(tester, _gem).selected, isTrue);
+      expect(_cardOf(tester, _ruby).selected, isFalse);
+      expect(identical(_cardOf(tester, _gem), gem), isFalse);
+      expect(identical(_cardOf(tester, _ruby), ruby), isFalse);
+      expect(identical(_cardOf(tester, _stone), stone), isTrue);
+    });
   });
 
   group('filter menu', () {
