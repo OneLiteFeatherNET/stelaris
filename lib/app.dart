@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/model/theme/theme_settings.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/feature/base/unsaved/unsaved_browser_tab.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris/util/app_theme.dart';
@@ -30,6 +31,8 @@ class StelarisApp extends StatelessWidget {
           theme: AppTheme.buildLight(settings),
           darkTheme: AppTheme.buildDark(settings),
           themeMode: settings.themeMode,
+          builder: (context, child) =>
+              UnsavedBrowserTab(child: child ?? const SizedBox.shrink()),
         );
       },
     );
