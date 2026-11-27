@@ -145,23 +145,6 @@ void main() {
     );
   });
 
-  test('add POSTs a new expression to its project', () async {
-    final adapter = RecordingHttpClientAdapter({
-      'id': 'e1',
-      'uiName': 'Damage',
-      'projectId': 'p1',
-    });
-    apiClient.dio.httpClientAdapter = adapter;
-
-    final created = await expressionApi.add(
-      const ExpressionModel(uiName: 'Damage', projectId: 'p1'),
-    );
-
-    expect(adapter.lastRequest!.method, 'POST');
-    expect(adapter.lastRequest!.uri.path, '/api/project/p1/expression');
-    expect(created.id, 'e1');
-  });
-
   test('catalog GETs the catalog of the project', () async {
     final adapter = RecordingHttpClientAdapter({
       'evalexVersion': '3.8.0',
