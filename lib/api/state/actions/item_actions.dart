@@ -47,52 +47,26 @@ class UpdateItemAction extends ReduxAction<AppState> {
   }
 }
 
-/// Always refetches page 1 and replaces the current list, regardless of
-/// how many pages were already loaded — used by the grid's manual refresh
-/// button, as opposed to [InitItemAction] which only ever loads the next
-/// page or the very first page.
-class RefreshItemAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    return state.copyWith(items: await _firstPage(state));
-  }
+final _modelList = ModelList<ItemModel>(
+  of: (state) => state.items,
+  withList: (state, list) => state.copyWith(items: list),
+  api: () => ApiService().itemApi,
+);
+
+/// Refetches the first page of the items and replaces what was loaded.
+class RefreshItemAction extends RefreshListAction<ItemModel> {
+  RefreshItemAction() : super(_modelList);
 }
 
-/// Loads the first page of items when none are loaded, and the next page
-/// otherwise. The overview dispatches it when it opens.
-class InitItemAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    if (state.items.items.isEmpty) {
-      return state.copyWith(items: await _firstPage(state));
-    }
-    await dispatchAndWait(LoadMoreItemsAction());
-    return null;
-  }
+/// Loads the first page of the items, or the next one when some are loaded.
+class InitItemAction extends InitListAction<ItemModel> {
+  InitItemAction() : super(_modelList, LoadMoreItemsAction.new);
 }
 
-/// Appends the next page of items, if there is one.
-///
-/// While it loads, `isWaiting(LoadMoreItemsAction)` is true, and another one
-/// dispatched meanwhile is dropped.
-class LoadMoreItemsAction extends ReduxAction<AppState> with NonReentrant {
-  @override
-  Future<AppState?> reduce() async {
-    final current = state.items;
-    if (!current.hasNextPage) return null;
-
-    final next = await ApiService().itemApi.getPage(
-      page: current.currentPage + 1,
-      size: current.requestSize,
-      projectId: state.selectedProject?.id,
-    );
-
-    // A project switch or refresh replaced the list while the page
-    // loaded, so the page no longer continues it.
-    if (!identical(state.items, current)) return null;
-
-    return state.copyWith(items: current.append(next));
-  }
+/// Appends the next page of the items. While it loads,
+/// `isWaiting(LoadMoreItemsAction)` is true.
+class LoadMoreItemsAction extends LoadMoreListAction<ItemModel> {
+  LoadMoreItemsAction() : super(_modelList);
 }
 
 class ItemAddAction extends ReduxAction<AppState> with NonReentrant {
@@ -218,12 +192,3 @@ class ItemNotesUpdateAction extends ReduxAction<AppState> with NonReentrant {
     );
   }
 }
-
-/// Page 1 of the items of the open project, in the size of the
-/// loaded pages.
-Future<PaginatedResult<ItemModel>> _firstPage(AppState state) =>
-    ApiService().itemApi.getPage(
-      page: 1,
-      size: state.items.requestSize,
-      projectId: state.selectedProject?.id,
-    );

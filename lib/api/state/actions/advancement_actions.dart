@@ -29,52 +29,27 @@ class RemoveSelectAdvancementAction extends ReduxAction<AppState> {
   }
 }
 
-/// Always refetches page 1 and replaces the current list, regardless of
-/// how many pages were already loaded — used by the grid's manual refresh
-/// button, as opposed to [InitAdvancementAction] which only ever loads the
-/// next page or the very first page.
-class RefreshAdvancementAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    return state.copyWith(advancements: await _firstPage(state));
-  }
+final _modelList = ModelList<AdvancementModel>(
+  of: (state) => state.advancements,
+  withList: (state, list) => state.copyWith(advancements: list),
+  api: () => ApiService().advancementApi,
+);
+
+/// Refetches the first page of the advancements and replaces what was loaded.
+class RefreshAdvancementAction extends RefreshListAction<AdvancementModel> {
+  RefreshAdvancementAction() : super(_modelList);
 }
 
-/// Loads the first page of advancements when none are loaded, and the next page
-/// otherwise. The overview dispatches it when it opens.
-class InitAdvancementAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    if (state.advancements.items.isEmpty) {
-      return state.copyWith(advancements: await _firstPage(state));
-    }
-    await dispatchAndWait(LoadMoreAdvancementsAction());
-    return null;
-  }
+/// Loads the first page of the advancements, or the next one when some are
+/// loaded.
+class InitAdvancementAction extends InitListAction<AdvancementModel> {
+  InitAdvancementAction() : super(_modelList, LoadMoreAdvancementsAction.new);
 }
 
-/// Appends the next page of advancements, if there is one.
-///
-/// While it loads, `isWaiting(LoadMoreAdvancementsAction)` is true, and another one
-/// dispatched meanwhile is dropped.
-class LoadMoreAdvancementsAction extends ReduxAction<AppState> with NonReentrant {
-  @override
-  Future<AppState?> reduce() async {
-    final current = state.advancements;
-    if (!current.hasNextPage) return null;
-
-    final next = await ApiService().advancementApi.getPage(
-      page: current.currentPage + 1,
-      size: current.requestSize,
-      projectId: state.selectedProject?.id,
-    );
-
-    // A project switch or refresh replaced the list while the page
-    // loaded, so the page no longer continues it.
-    if (!identical(state.advancements, current)) return null;
-
-    return state.copyWith(advancements: current.append(next));
-  }
+/// Appends the next page of the advancements. While it loads,
+/// `isWaiting(LoadMoreAdvancementsAction)` is true.
+class LoadMoreAdvancementsAction extends LoadMoreListAction<AdvancementModel> {
+  LoadMoreAdvancementsAction() : super(_modelList);
 }
 
 class UpdateAdvancementAction extends ReduxAction<AppState> {
@@ -208,12 +183,3 @@ class AdvancementNotesUpdateAction extends ReduxAction<AppState>
     );
   }
 }
-
-/// Page 1 of the advancements of the open project, in the size of the
-/// loaded pages.
-Future<PaginatedResult<AdvancementModel>> _firstPage(AppState state) =>
-    ApiService().advancementApi.getPage(
-      page: 1,
-      size: state.advancements.requestSize,
-      projectId: state.selectedProject?.id,
-    );

@@ -46,52 +46,27 @@ class UpdateAttributeAction extends ReduxAction<AppState> {
   );
 }
 
-/// Always refetches page 1 and replaces the current list, regardless of
-/// how many pages were already loaded — used by the grid's manual refresh
-/// button, as opposed to [InitAttributeAction] which only ever loads the
-/// next page or the very first page.
-class RefreshAttributeAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    return state.copyWith(attributes: await _firstPage(state));
-  }
+final _modelList = ModelList<AttributeModel>(
+  of: (state) => state.attributes,
+  withList: (state, list) => state.copyWith(attributes: list),
+  api: () => ApiService().attributeApi,
+);
+
+/// Refetches the first page of the attributes and replaces what was loaded.
+class RefreshAttributeAction extends RefreshListAction<AttributeModel> {
+  RefreshAttributeAction() : super(_modelList);
 }
 
-/// Loads the first page of attributes when none are loaded, and the next page
-/// otherwise. The overview dispatches it when it opens.
-class InitAttributeAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    if (state.attributes.items.isEmpty) {
-      return state.copyWith(attributes: await _firstPage(state));
-    }
-    await dispatchAndWait(LoadMoreAttributesAction());
-    return null;
-  }
+/// Loads the first page of the attributes, or the next one when some are
+/// loaded.
+class InitAttributeAction extends InitListAction<AttributeModel> {
+  InitAttributeAction() : super(_modelList, LoadMoreAttributesAction.new);
 }
 
-/// Appends the next page of attributes, if there is one.
-///
-/// While it loads, `isWaiting(LoadMoreAttributesAction)` is true, and another one
-/// dispatched meanwhile is dropped.
-class LoadMoreAttributesAction extends ReduxAction<AppState> with NonReentrant {
-  @override
-  Future<AppState?> reduce() async {
-    final current = state.attributes;
-    if (!current.hasNextPage) return null;
-
-    final next = await ApiService().attributeApi.getPage(
-      page: current.currentPage + 1,
-      size: current.requestSize,
-      projectId: state.selectedProject?.id,
-    );
-
-    // A project switch or refresh replaced the list while the page
-    // loaded, so the page no longer continues it.
-    if (!identical(state.attributes, current)) return null;
-
-    return state.copyWith(attributes: current.append(next));
-  }
+/// Appends the next page of the attributes. While it loads,
+/// `isWaiting(LoadMoreAttributesAction)` is true.
+class LoadMoreAttributesAction extends LoadMoreListAction<AttributeModel> {
+  LoadMoreAttributesAction() : super(_modelList);
 }
 
 /// Adds a new attribute to both the database and application state.
@@ -234,12 +209,3 @@ class AttributeNotesUpdateAction extends ReduxAction<AppState>
     );
   }
 }
-
-/// Page 1 of the attributes of the open project, in the size of the
-/// loaded pages.
-Future<PaginatedResult<AttributeModel>> _firstPage(AppState state) =>
-    ApiService().attributeApi.getPage(
-      page: 1,
-      size: state.attributes.requestSize,
-      projectId: state.selectedProject?.id,
-    );
