@@ -22,7 +22,9 @@ jobs:
         run: flutter analyze
 
   # The whole suite on the Dart VM: no per-file compile to JavaScript and no
-  # browser, which is what made the run take this long.
+  # browser, which is what made the run take this long. The test files are
+  # bundled into a few entry points, as compiling and loading each file on its
+  # own took longer than the tests (see tool/test_bundled.sh).
   test:
     if: github.repository_owner == 'OneLiteFeatherNET'
     name: Tests (VM)
@@ -39,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       - name: Run tests
-        run: flutter test
+        run: tool/test_bundled.sh
 
   # Only the tests tagged `web` (see dart_test.yaml): the ones driving text
   # input and keyboard handling, which Flutter treats differently in a
