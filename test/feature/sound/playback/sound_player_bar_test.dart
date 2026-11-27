@@ -178,7 +178,23 @@ void main() {
 
     expect(find.byKey(const Key('sound_player_bar')), findsOneWidget);
     expect(find.text('Step b'), findsOneWidget);
-    expect(find.text('vulpes:step/b'), findsOneWidget);
+    expect(find.text('vulpes:step/b'), findsNothing);
+  });
+
+  testWidgets('keeps the waveform in the middle', (tester) async {
+    await pumpBar(tester);
+    await start(tester, a);
+
+    final bar = tester.getRect(find.byKey(const Key('sound_player_bar')));
+    final waveform = tester.getRect(
+      find
+          .ancestor(
+            of: find.byKey(const Key('sound_player_waveform')),
+            matching: find.byType(ConstrainedBox),
+          )
+          .first,
+    );
+    expect(waveform.center.dx, closeTo(bar.center.dx, 1));
   });
 
   testWidgets('pauses and plays on', (tester) async {

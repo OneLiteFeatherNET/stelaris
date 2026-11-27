@@ -237,87 +237,89 @@ class _SoundPlayerBarState extends State<SoundPlayerBar>
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           child: Row(
+            // The sides take as much room each, so the waveform stays in the
+            // middle; what it leaves goes to both of its sides alike.
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
-                key: const Key('sound_player_previous'),
-                tooltip: l10n.sound_player_previous,
-                onPressed: index > 0 ? () => _step(-1) : null,
-                icon: const Icon(Icons.skip_previous),
-              ),
-              _PlayPauseButton(
-                status: _controller.status,
-                onPressed: () => _playPause(current),
-              ),
-              IconButton(
-                key: const Key('sound_player_next'),
-                tooltip: l10n.sound_player_next,
-                onPressed: index < widget.sources.length - 1
-                    ? () => _step(1)
-                    : null,
-                icon: const Icon(Icons.skip_next),
-              ),
-              const SizedBox(width: 8),
-              SizedBox(
-                width: 220,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+              Expanded(
+                child: Row(
                   children: [
-                    Text(
-                      widget.titleOf(current),
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    IconButton(
+                      key: const Key('sound_player_previous'),
+                      tooltip: l10n.sound_player_previous,
+                      onPressed: index > 0 ? () => _step(-1) : null,
+                      icon: const Icon(Icons.skip_previous),
                     ),
-                    Text(
-                      current.name,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    _PlayPauseButton(
+                      status: _controller.status,
+                      onPressed: () => _playPause(current),
                     ),
+                    IconButton(
+                      key: const Key('sound_player_next'),
+                      tooltip: l10n.sound_player_next,
+                      onPressed: index < widget.sources.length - 1
+                          ? () => _step(1)
+                          : null,
+                      icon: const Icon(Icons.skip_next),
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 260),
+                        child: Text(
+                          widget.titleOf(current),
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
                   ],
                 ),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  // Wider, the bars of the waveform would stand apart.
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 640),
-                    child: _SeekableWaveform(
-                      future: _controller.waveformOf(widget.projectId, current),
-                      initial: _controller.readWaveformOf(current),
-                      position: _position,
-                      pitch: _controller.pitchOf(current),
-                      onSeek: (waveform, fraction, {start = true}) =>
-                          _seek(current, waveform, fraction, start: start),
-                    ),
+              Flexible(
+                flex: 2,
+                // Wider, the bars of the waveform would stand apart.
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 640),
+                  child: _SeekableWaveform(
+                    future: _controller.waveformOf(widget.projectId, current),
+                    initial: _controller.readWaveformOf(current),
+                    position: _position,
+                    pitch: _controller.pitchOf(current),
+                    onSeek: (waveform, fraction, {start = true}) =>
+                        _seek(current, waveform, fraction, start: start),
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
-              _TuneMenu(
-                controller: _controller,
-                current: current,
-                applying: _applying,
-                onApply: () => _apply(current),
-              ),
-              IconButton(
-                key: const Key('sound_player_random'),
-                tooltip: l10n.sound_player_random,
-                onPressed: widget.sources.isEmpty ? null : _playRandom,
-                icon: const Icon(Icons.casino_outlined),
-              ),
-              IconButton(
-                key: const Key('sound_player_close'),
-                tooltip: l10n.sound_player_close,
-                onPressed: _controller.close,
-                icon: const Icon(Icons.close),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const SizedBox(width: 16),
+                    _TuneMenu(
+                      controller: _controller,
+                      current: current,
+                      applying: _applying,
+                      onApply: () => _apply(current),
+                    ),
+                    IconButton(
+                      key: const Key('sound_player_random'),
+                      tooltip: l10n.sound_player_random,
+                      onPressed: widget.sources.isEmpty ? null : _playRandom,
+                      icon: const Icon(Icons.casino_outlined),
+                    ),
+                    IconButton(
+                      key: const Key('sound_player_close'),
+                      tooltip: l10n.sound_player_close,
+                      onPressed: _controller.close,
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
