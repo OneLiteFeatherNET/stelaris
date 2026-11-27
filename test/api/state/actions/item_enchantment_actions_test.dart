@@ -55,7 +55,21 @@ void main() {
         'e2',
       ]);
       expect(store.state.selectedItem!.enchantments.currentPage, 2);
-      expect(store.state.selectedItem!.isLoadingMoreEnchantments, isFalse);
+    });
+
+    test('counts as waiting while the next enchantments load', () async {
+      final store = storeWith(item);
+      bool? waitingDuringRequest;
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            waitingDuringRequest = store.isWaiting(ItemEnchantmentLoadMoreAction);
+            return FakeHttpClientAdapter.response(nextPage);
+          });
+
+      await store.dispatchAndWait(ItemEnchantmentLoadMoreAction());
+
+      expect(waitingDuringRequest, isTrue);
+      expect(store.isWaiting(ItemEnchantmentLoadMoreAction), isFalse);
     });
 
     test('loads the next page only once when asked twice in a row '
@@ -101,7 +115,6 @@ void main() {
         'e1',
         'e2',
       ]);
-      expect(store.state.selectedItem!.isLoadingMoreEnchantments, isFalse);
     });
 
     test('drops the next enchantments when another item is selected while '

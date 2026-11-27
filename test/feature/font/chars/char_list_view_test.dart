@@ -22,6 +22,7 @@ void main() {
             pageSize: 10,
           ),
         ),
+        isLoadingMore: false,
       );
     }
 

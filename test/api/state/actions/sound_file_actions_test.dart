@@ -185,7 +185,44 @@ void main() {
 
       expect(fileIds(store), ['f1', 'f2']);
       expect(store.state.selectedSoundEvent!.files.currentPage, 2);
-      expect(store.state.selectedSoundEvent!.isLoading, isFalse);
+    });
+
+    test('loads the next files only once when asked twice in a row',
+        () async {
+      final store = storeWith(sound);
+      var requests = 0;
+      (ApiService().soundApi as SoundClientApi)
+          .apiClient
+          .dio
+          .httpClientAdapter = FakeHttpClientAdapter((options) {
+        requests++;
+        return FakeHttpClientAdapter.response(nextPage);
+      });
+
+      await Future.wait([
+        store.dispatchAndWait(loadMore()),
+        store.dispatchAndWait(loadMore()),
+      ]);
+
+      expect(requests, 1);
+      expect(fileIds(store), ['f1', 'f2']);
+    });
+
+    test('counts as waiting while the next files load', () async {
+      final store = storeWith(sound);
+      bool? waitingDuringRequest;
+      (ApiService().soundApi as SoundClientApi)
+          .apiClient
+          .dio
+          .httpClientAdapter = FakeHttpClientAdapter((options) {
+        waitingDuringRequest = store.isWaiting(LoadMoreSoundFiles);
+        return FakeHttpClientAdapter.response(nextPage);
+      });
+
+      await store.dispatchAndWait(loadMore());
+
+      expect(waitingDuringRequest, isTrue);
+      expect(store.isWaiting(LoadMoreSoundFiles), isFalse);
     });
 
     test('keeps form edits made while the next files load '
@@ -197,7 +234,6 @@ void main() {
 
       expect(store.state.selectedSoundEvent!.uiName, 'Renamed');
       expect(fileIds(store), ['f1', 'f2']);
-      expect(store.state.selectedSoundEvent!.isLoading, isFalse);
     });
 
     test('drops the next files when another sound event is selected '

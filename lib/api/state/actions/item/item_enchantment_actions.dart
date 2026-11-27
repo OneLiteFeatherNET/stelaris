@@ -28,59 +28,48 @@ class ItemEnchantmentFetchAction extends ReduxAction<AppState> {
   }
 }
 
-class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState> {
+/// Appends the next page of enchantments to the selected item, if there is
+/// one.
+///
+/// While it loads, `isWaiting(ItemEnchantmentLoadMoreAction)` is true, and
+/// another one dispatched meanwhile is dropped.
+class ItemEnchantmentLoadMoreAction extends ReduxAction<AppState>
+    with NonReentrant {
   @override
   Future<AppState?> reduce() async {
     final selectedItem = state.selectedItem;
     if (selectedItem == null) return null;
 
     final enchantments = selectedItem.enchantments;
-    if (selectedItem.isLoadingMoreEnchantments ||
-        !enchantments.hasItems ||
-        !enchantments.hasNextPage) {
+    if (!enchantments.hasItems || !enchantments.hasNextPage) return null;
+
+    final next = await ApiService().itemApi.getEnchantments(
+      selectedItem.id!,
+      page: enchantments.currentPage + 1,
+      size: enchantments.pageSize,
+    );
+
+    // Another item was selected, or the enchantments of this one changed,
+    // while the page loaded, so the page no longer continues them.
+    final item = state.selectedItem;
+    if (item == null ||
+        item.id != selectedItem.id ||
+        !identical(item.enchantments, enchantments)) {
       return null;
     }
 
-    dispatchSync(_SetMoreEnchantmentLoad(true));
-    try {
-      final nextPage = enchantments.currentPage + 1;
+    final updatedEnchantments = enchantments.copyWith(
+      items: [...enchantments.items, ...next.items],
+      totalItems: next.totalItems,
+      totalPages: next.totalPages,
+      currentPage: next.currentPage,
+    );
 
-      final next = await ApiService().itemApi.getEnchantments(
-        selectedItem.id!,
-        page: nextPage,
-        size: enchantments.pageSize,
-      );
-
-      // Another item was selected, or the enchantments of this one changed,
-      // while the page loaded, so the page no longer continues them.
-      final item = state.selectedItem;
-      if (item == null ||
-          item.id != selectedItem.id ||
-          !identical(item.enchantments, enchantments)) {
-        return null;
-      }
-
-      final mergedItems = [...enchantments.items, ...next.items]; // safe clone
-
-      final updatedEnchantments = enchantments.copyWith(
-        items: mergedItems,
-        totalItems: next.totalItems,
-        totalPages: next.totalPages,
-        currentPage: next.currentPage,
-      );
-
-      // Built on the current item, so form edits made while the page loaded
-      // are kept. The flag is cleared here as well: this state is applied
-      // after the `finally` below and would otherwise set it back to true.
-      return state.copyWith(
-        selectedItem: item.copyWith(
-          enchantments: updatedEnchantments,
-          isLoadingMoreEnchantments: false,
-        ),
-      );
-    } finally {
-      dispatchSync(_SetMoreEnchantmentLoad(false));
-    }
+    // Built on the current item, so form edits made while the page loaded
+    // are kept.
+    return state.copyWith(
+      selectedItem: item.copyWith(enchantments: updatedEnchantments),
+    );
   }
 }
 
@@ -185,28 +174,5 @@ class ItemEnchantmentUpdateAction extends ReduxAction<AppState> {
     );
 
     return state.copyWith(selectedItem: updated);
-  }
-}
-
-/// Internal action to manage the loading state for enchantment pagination.
-///
-/// This private action toggles the `isLoadingMoreEnchantments` flag on the
-/// selected item, preventing multiple parallel fetches of additional pages.
-///
-/// It is used internally by the enchantment fetch action during pagination.
-class _SetMoreEnchantmentLoad extends ReduxAction<AppState> {
-  _SetMoreEnchantmentLoad(this.value);
-
-  /// Whether additional enchantments are currently being loaded.
-  final bool value;
-
-  @override
-  AppState? reduce() {
-    if (state.selectedItem == null) return null;
-
-    final item = state.selectedItem!;
-    final updatedItem = item.copyWith(isLoadingMoreEnchantments: value);
-
-    return state.copyWith(selectedItem: updatedItem);
   }
 }
