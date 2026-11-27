@@ -36,6 +36,9 @@ class _SoundFilePlayerState extends State<SoundFilePlayer>
   late Future<SoundWaveform> _waveform;
   late SoundPlaybackStatus _status = _statusNow;
 
+  /// The rate the times are shown at, so a tried-out pitch shows in them.
+  late double _shownRate = _rate;
+
   /// How far the file has played, set every frame while it plays. Only the
   /// waveform repaints from it; the player isn't built again.
   final ValueNotifier<Duration> _position = ValueNotifier(Duration.zero);
@@ -65,6 +68,7 @@ class _SoundFilePlayerState extends State<SoundFilePlayer>
       _waveform = _readWaveform();
     }
     _status = _statusNow;
+    _shownRate = _rate;
     _syncTicker();
     _syncPosition();
   }
@@ -84,13 +88,19 @@ class _SoundFilePlayerState extends State<SoundFilePlayer>
   SoundPlaybackStatus get _statusNow =>
       widget.controller.statusOf(widget.source);
 
-  /// Builds again only when this file's status changed, not on every change
-  /// of the controller, e.g. another file loading.
+  /// Builds again only when this file's status or pitch changed, not on
+  /// every change of the controller, e.g. another file loading.
   void _onPlayback() {
     final status = _statusNow;
+    final rate = _rate;
     _syncTicker();
     _syncPosition();
-    if (status != _status) setState(() => _status = status);
+    if (status != _status || rate != _shownRate) {
+      setState(() {
+        _status = status;
+        _shownRate = rate;
+      });
+    }
   }
 
   void _syncTicker() {
@@ -105,7 +115,8 @@ class _SoundFilePlayerState extends State<SoundFilePlayer>
     _elapsedSeconds.value = (position * (1 / _rate)).inSeconds;
   }
 
-  double get _rate => widget.source.pitch.clamp(0.5, 2.0);
+  /// The pitch it plays with, which may be tried out in the player bar.
+  double get _rate => widget.controller.pitchOf(widget.source).clamp(0.5, 2.0);
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +167,8 @@ class _SoundFilePlayerState extends State<SoundFilePlayer>
   Widget _timeLabel(SoundWaveform? waveform, TextStyle? style) {
     if (waveform == null) return Text('–:––', style: style);
     final total = _format(waveform.duration * (1 / _rate));
-    if (_status != SoundPlaybackStatus.playing) {
+    if (_status != SoundPlaybackStatus.playing &&
+        _status != SoundPlaybackStatus.paused) {
       return Text(total, style: style);
     }
     return ValueListenableBuilder<int>(
@@ -172,7 +184,7 @@ class _SoundFilePlayerState extends State<SoundFilePlayer>
   }
 }
 
-/// Play while idle; stop while the file loads or plays.
+/// Play while idle or paused; stop while the file loads or plays.
 class _PlayButton extends StatelessWidget {
   const _PlayButton({required this.status, required this.onPressed});
 
@@ -183,7 +195,8 @@ class _PlayButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return switch (status) {
-      SoundPlaybackStatus.idle => IconButton.filledTonal(
+      SoundPlaybackStatus.idle ||
+      SoundPlaybackStatus.paused => IconButton.filledTonal(
         tooltip: l10n.tooltip_sound_play,
         onPressed: onPressed,
         icon: const Icon(Icons.play_arrow),
