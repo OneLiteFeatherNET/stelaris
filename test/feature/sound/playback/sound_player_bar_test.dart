@@ -1,7 +1,10 @@
+@Tags(['web'])
+library;
+
 import 'dart:async';
 import 'dart:math';
-import 'dart:typed_data';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/service/sound/sound_file_loader.dart';
@@ -117,7 +120,12 @@ void main() {
 
   tearDown(() => controller.dispose());
 
-  Future<void> pumpBar(WidgetTester tester, {Random? random}) async {
+  Future<void> pumpBar(
+    WidgetTester tester, {
+    Random? random,
+    bool shortcutsEnabled = true,
+    Widget? above,
+  }) async {
     tester.view.physicalSize = const Size(1400, 800);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -126,18 +134,22 @@ void main() {
         localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
-          body: Align(
-            alignment: Alignment.bottomCenter,
-            child: SoundPlayerBar(
-              controller: controller,
-              projectId: 'p1',
-              sources: [a, b, c],
-              titleOf: (source) => 'Step ${source.id}',
-              onPlay: (source, {from = Duration.zero}) =>
-                  controller.play('p1', source, from: from),
-              onApply: (updated) async => applied.add(updated),
-              random: random,
-            ),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ?above,
+              SoundPlayerBar(
+                controller: controller,
+                projectId: 'p1',
+                sources: [a, b, c],
+                titleOf: (source) => 'Step ${source.id}',
+                onPlay: (source, {from = Duration.zero}) =>
+                    controller.play('p1', source, from: from),
+                onApply: (updated) async => applied.add(updated),
+                random: random,
+                shortcutsEnabled: shortcutsEnabled,
+              ),
+            ],
           ),
         ),
       ),
@@ -308,5 +320,81 @@ void main() {
 
     expect(controller.current, isNull);
     expect(find.byKey(const Key('sound_player_bar')), findsNothing);
+  });
+
+  group('keys', () {
+    testWidgets('space starts the first file, then pauses it', (tester) async {
+      await pumpBar(tester);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await settle(tester);
+      expect(controller.current, a);
+      expect(controller.status, SoundPlaybackStatus.playing);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pump();
+      expect(controller.status, SoundPlaybackStatus.paused);
+    });
+
+    testWidgets('the arrows step through the files', (tester) async {
+      await pumpBar(tester);
+      await start(tester, a);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await settle(tester);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await settle(tester);
+      expect(controller.current, c);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+      await settle(tester);
+      expect(controller.current, b);
+    });
+
+    testWidgets('do nothing while turned off', (tester) async {
+      await pumpBar(tester, shortcutsEnabled: false);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await settle(tester);
+
+      expect(controller.current, isNull);
+    });
+
+    testWidgets('do nothing while typing in a text field', (tester) async {
+      await pumpBar(tester, above: const TextField());
+      await tester.tap(find.byType(TextField));
+      await tester.pump();
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await settle(tester);
+
+      expect(controller.current, isNull);
+    });
+
+    testWidgets('do nothing with a modifier held', (tester) async {
+      await pumpBar(tester);
+
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+      await settle(tester);
+
+      expect(controller.current, isNull);
+    });
+
+    testWidgets('do nothing under a dialog', (tester) async {
+      await pumpBar(tester);
+      final context = tester.element(find.byType(SoundPlayerBar));
+      showDialog<void>(
+        context: context,
+        builder: (_) => const AlertDialog(content: Text('dialog')),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await settle(tester);
+
+      expect(controller.current, isNull);
+    });
   });
 }

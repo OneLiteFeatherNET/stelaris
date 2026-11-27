@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/sound/playback/pick_by_weight.dart';
 import 'package:stelaris/feature/sound/playback/sound_playback_controller.dart';
@@ -20,6 +21,11 @@ typedef PlaySoundFile = Future<void> Function(
 /// in, its time, a file picked by weight like in the game, and closing.
 /// Below that, volume and pitch to try out, and to apply to the file.
 ///
+/// While [shortcutsEnabled], the space bar plays or pauses and the arrow
+/// keys step through the files, unless a dialog is open or a text field or
+/// slider has the keyboard. Before any file was played, they start the
+/// first one.
+///
 /// Times are shown as they play in the game, like in the cards.
 class SoundPlayerBar extends StatefulWidget {
   const SoundPlayerBar({
@@ -30,6 +36,7 @@ class SoundPlayerBar extends StatefulWidget {
     required this.onPlay,
     required this.onApply,
     this.random,
+    this.shortcutsEnabled = true,
     super.key,
   });
 
@@ -50,6 +57,9 @@ class SoundPlayerBar extends StatefulWidget {
   /// Picks the file played like in the game; a new one when null.
   final Random? random;
 
+  /// Whether the keys play, e.g. only while the tab of the files shows.
+  final bool shortcutsEnabled;
+
   @override
   State<SoundPlayerBar> createState() => _SoundPlayerBarState();
 }
@@ -67,6 +77,7 @@ class _SoundPlayerBarState extends State<SoundPlayerBar>
   void initState() {
     super.initState();
     _controller.addListener(_onPlayback);
+    HardwareKeyboard.instance.addHandler(_onKey);
     _onPlayback();
   }
 
@@ -82,6 +93,7 @@ class _SoundPlayerBarState extends State<SoundPlayerBar>
   @override
   void dispose() {
     _controller.removeListener(_onPlayback);
+    HardwareKeyboard.instance.removeHandler(_onKey);
     _ticker.dispose();
     _position.dispose();
     super.dispose();
@@ -123,6 +135,43 @@ class _SoundPlayerBarState extends State<SoundPlayerBar>
       case SoundPlaybackStatus.idle:
         _play(current);
     }
+  }
+
+  /// Handles the space bar and the arrow keys, see [SoundPlayerBar].
+  bool _onKey(KeyEvent event) {
+    if (!widget.shortcutsEnabled || event is! KeyDownEvent) return false;
+    if (widget.sources.isEmpty || !_hasKeyboard) return false;
+    final keyboard = HardwareKeyboard.instance;
+    if (keyboard.isControlPressed ||
+        keyboard.isMetaPressed ||
+        keyboard.isAltPressed ||
+        keyboard.isShiftPressed) {
+      return false;
+    }
+
+    final current = _controller.current;
+    switch (event.logicalKey) {
+      case LogicalKeyboardKey.space:
+        current == null ? _play(widget.sources.first) : _playPause(current);
+      case LogicalKeyboardKey.arrowLeft:
+        current == null ? _play(widget.sources.first) : _step(-1);
+      case LogicalKeyboardKey.arrowRight:
+        current == null ? _play(widget.sources.first) : _step(1);
+      default:
+        return false;
+    }
+    return true;
+  }
+
+  /// Whether the keys are meant for the page: no dialog over it, and no text
+  /// field or slider that takes them.
+  bool get _hasKeyboard {
+    if (!mounted || ModalRoute.of(context)?.isCurrent == false) return false;
+    final focused = FocusManager.instance.primaryFocus?.context;
+    if (focused == null) return true;
+    return focused.widget is! EditableText &&
+        focused.findAncestorWidgetOfExactType<EditableText>() == null &&
+        focused.findAncestorWidgetOfExactType<Slider>() == null;
   }
 
   void _step(int by) {

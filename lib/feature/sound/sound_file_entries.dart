@@ -22,7 +22,12 @@ import 'package:stelaris/util/dispatch_ext.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class SoundFileEntryPage extends StatefulWidget {
-  const SoundFileEntryPage({this.playback, this.soundAssetNames, super.key});
+  const SoundFileEntryPage({
+    this.playback,
+    this.soundAssetNames,
+    this.shortcutsEnabled = true,
+    super.key,
+  });
 
   /// Plays the files; when null the page keeps its own over
   /// [ApiService.soundFileLoader] and the browser's audio.
@@ -31,6 +36,9 @@ class SoundFileEntryPage extends StatefulWidget {
   /// The display names of the sound assets of a project by their id; when
   /// null they are read from [AssetLibrary.shared].
   final Future<Map<String, String>> Function(String projectId)? soundAssetNames;
+
+  /// Whether the keys play the files, see [SoundPlayerBar.shortcutsEnabled].
+  final bool shortcutsEnabled;
 
   @override
   State<SoundFileEntryPage> createState() => _SoundFileEntriesState();
@@ -155,6 +163,7 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
                         _playback.play(projectId, source, from: from),
                   ),
                   onApply: _apply,
+                  shortcutsEnabled: widget.shortcutsEnabled,
                 ),
             ],
           ),
