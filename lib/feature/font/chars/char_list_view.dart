@@ -87,6 +87,6 @@ class _CharListViewState extends State<CharListView>
 
   @override
   void onLoadMore() {
-    context.dispatch(FontCharFetchAction());
+    context.dispatch(FontCharLoadMoreAction());
   }
 }

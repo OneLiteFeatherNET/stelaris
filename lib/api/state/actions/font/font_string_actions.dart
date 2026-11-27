@@ -6,60 +6,58 @@ import 'package:stelaris/api/state/actions/paginated_loading.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 import 'package:stelaris/api/state/app_state.dart';
 
-/// Fetches additional characters for the selected font and updates the state.
-/// Requires the id of the [FontModel] to fetch the characters for it.
+/// Loads the chars of the selected font: the first page when none is loaded,
+/// and the next page otherwise. The chars tab dispatches it when it opens.
 class FontCharFetchAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     if (state.selectedFont == null) return null;
     final FontModel selected = state.selectedFont!;
 
-    // If we already have items and more pages, treat this as load-more.
-    final hasExisting = selected.chars.hasItems;
-    final canLoadMore = selected.chars.hasNextPage;
-
-    if (hasExisting && canLoadMore) {
-      if (selected.isLoadingChars) return null;
-      dispatchSync(_SetLoreCharModelLoad(true));
-      try {
-        final current = selected.chars;
-        final next = await ApiService().fontApi.getChars(
-          selected.id!,
-          page: current.currentPage + 1,
-          size: current.requestSize,
-        );
-
-        // Another font was selected, or the chars of this one changed, while
-        // the page loaded, so the page no longer continues them.
-        final font = state.selectedFont;
-        if (font == null ||
-            font.id != selected.id ||
-            !identical(font.chars, current)) {
-          return null;
-        }
-
-        // Built on the current font, so form edits made while the page
-        // loaded are kept.
-        final updated = font.copyWith(
-          isLoadingChars: false,
-          chars: current.append(next),
-        );
-
-        return state.copyWith(selectedFont: updated);
-      } finally {
-        dispatchSync(_SetLoreCharModelLoad(false));
-      }
-    } else {
-      // Initial load (or refresh)
-      final PaginatedResult<FontStringDTO> result = await ApiService().fontApi
-          .getChars(
-            selected.id!,
-            page: 1,
-            size: selected.chars.requestSize,
-          );
-      final FontModel updated = selected.copyWith(chars: result);
-      return state.copyWith(selectedFont: updated);
+    if (selected.chars.hasItems && selected.chars.hasNextPage) {
+      await dispatchAndWait(FontCharLoadMoreAction());
+      return null;
     }
+
+    final PaginatedResult<FontStringDTO> result = await ApiService().fontApi
+        .getChars(selected.id!, page: 1, size: selected.chars.requestSize);
+    return state.copyWith(selectedFont: selected.copyWith(chars: result));
+  }
+}
+
+/// Appends the next page of chars to the selected font, if there is one.
+///
+/// While it loads, `isWaiting(FontCharLoadMoreAction)` is true, and another
+/// one dispatched meanwhile is dropped.
+class FontCharLoadMoreAction extends ReduxAction<AppState> with NonReentrant {
+  @override
+  Future<AppState?> reduce() async {
+    final FontModel? selected = state.selectedFont;
+    if (selected == null) return null;
+
+    final current = selected.chars;
+    if (!current.hasItems || !current.hasNextPage) return null;
+
+    final next = await ApiService().fontApi.getChars(
+      selected.id!,
+      page: current.currentPage + 1,
+      size: current.requestSize,
+    );
+
+    // Another font was selected, or the chars of this one changed, while
+    // the page loaded, so the page no longer continues them.
+    final font = state.selectedFont;
+    if (font == null ||
+        font.id != selected.id ||
+        !identical(font.chars, current)) {
+      return null;
+    }
+
+    // Built on the current font, so form edits made while the page loaded
+    // are kept.
+    return state.copyWith(
+      selectedFont: font.copyWith(chars: current.append(next)),
+    );
   }
 }
 
@@ -141,22 +139,5 @@ class FontStringDelete extends ReduxAction<AppState> {
     );
 
     return state.copyWith(selectedFont: updated);
-  }
-}
-
-/// Sets the `isLoadingChars` flag of the selected font, which keeps the chars
-/// from loading their next page twice at once.
-class _SetLoreCharModelLoad extends ReduxAction<AppState> {
-  final bool value;
-
-  _SetLoreCharModelLoad(this.value);
-
-  @override
-  AppState? reduce() {
-    if (state.selectedFont == null) return null;
-
-    final font = state.selectedFont!;
-    final updatedStateFont = font.copyWith(isLoadingChars: value);
-    return state.copyWith(selectedFont: updatedStateFont);
   }
 }

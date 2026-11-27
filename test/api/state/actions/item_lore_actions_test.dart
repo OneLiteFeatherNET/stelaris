@@ -55,7 +55,21 @@ void main() {
         'l2',
       ]);
       expect(store.state.selectedItem!.lore.currentPage, 2);
-      expect(store.state.selectedItem!.isLoadingMoreLoreLines, isFalse);
+    });
+
+    test('counts as waiting while the next lore lines load', () async {
+      final store = storeWith(item);
+      bool? waitingDuringRequest;
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            waitingDuringRequest = store.isWaiting(ItemLoreLoadNextPageAction);
+            return FakeHttpClientAdapter.response(nextPage);
+          });
+
+      await store.dispatchAndWait(ItemLoreLoadNextPageAction());
+
+      expect(waitingDuringRequest, isTrue);
+      expect(store.isWaiting(ItemLoreLoadNextPageAction), isFalse);
     });
 
     test('keeps form edits made while the next lore lines load '
@@ -79,7 +93,6 @@ void main() {
         'l1',
         'l2',
       ]);
-      expect(store.state.selectedItem!.isLoadingMoreLoreLines, isFalse);
     });
 
     test('drops the next lore lines when another item is selected while '

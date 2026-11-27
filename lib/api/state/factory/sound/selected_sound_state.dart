@@ -14,14 +14,16 @@ class SelectedSoundState
   @override
   SelectedSoundView fromStore() {
     final selectedEvent = state.selectedSoundEvent;
+    final bool isLoadingFiles = isWaiting(LoadMoreSoundFiles);
 
     return SelectedSoundView(
       selected: state.selectedSoundEvent!,
+      isLoadingFiles: isLoadingFiles,
       onLoadMoreSoundFiles: () {
         if (selectedEvent != null &&
             selectedEvent.id != null &&
             selectedEvent.files.hasNextPage &&
-            !selectedEvent.isLoading) {
+            !isLoadingFiles) {
           dispatch(
             LoadMoreSoundFiles(
               pageToLoad: selectedEvent.files.currentPage + 1,
@@ -43,8 +45,9 @@ class SelectedSoundState
 class SelectedSoundView extends Vm {
   SelectedSoundView({
     required this.selected,
+    required this.isLoadingFiles,
     required this.onLoadMoreSoundFiles,
-  }) : super(equals: [selected, selected.files.items.length]);
+  }) : super(equals: [selected, selected.files.items.length, isLoadingFiles]);
 
   final SoundEventModel selected;
   final VoidCallback onLoadMoreSoundFiles;
@@ -64,8 +67,8 @@ class SelectedSoundView extends Vm {
   /// Indication if there are more pages of sound files to load
   bool get hasNextPage => _fileResults.hasNextPage;
 
-  /// Returns the current page of sound files associated with the selected sound event.
-  bool get isLoadingFiles => selected.isLoading;
+  /// Whether the next page of sound files is loading.
+  final bool isLoadingFiles;
 
   /// Provides access to a specific sound file source by its index.
   /// If the index is out of bounds, it throws a [RangeError].

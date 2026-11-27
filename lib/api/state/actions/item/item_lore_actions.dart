@@ -26,62 +26,45 @@ class ItemLoreFetchAction extends ReduxAction<AppState> {
   }
 }
 
-/// Action to fetch the next page of lore for pagination.
-class ItemLoreLoadNextPageAction extends ReduxAction<AppState> {
+/// Appends the next page of lore lines to the selected item, if there is one.
+///
+/// While it loads, `isWaiting(ItemLoreLoadNextPageAction)` is true, and
+/// another one dispatched meanwhile is dropped.
+class ItemLoreLoadNextPageAction extends ReduxAction<AppState>
+    with NonReentrant {
   @override
   Future<AppState?> reduce() async {
     final selectedItem = state.selectedItem;
     if (selectedItem == null) return null;
 
     final lore = selectedItem.lore;
-    final isLoading = selectedItem.isLoadingMoreLoreLines;
+    if (!lore.hasItems || !lore.hasNextPage) return null;
 
-    // Guards: Exit if already loading, or if there are no items, or no more pages.
-    if (isLoading || !lore.hasItems || !lore.hasNextPage) {
+    final nextResult = await ApiService().itemApi.getLore(
+      selectedItem.id!,
+      page: lore.currentPage + 1,
+      size: lore.pageSize,
+    );
+
+    // Another item was selected, or the lore of this one changed, while
+    // the page loaded, so the page no longer continues it.
+    final item = state.selectedItem;
+    if (item == null ||
+        item.id != selectedItem.id ||
+        !identical(item.lore, lore)) {
       return null;
     }
 
-    dispatchSync(_SetIsLoadingLore(true));
+    final updatedLore = lore.copyWith(
+      items: [...lore.items, ...nextResult.items],
+      totalItems: nextResult.totalItems,
+      totalPages: nextResult.totalPages,
+      currentPage: nextResult.currentPage,
+    );
 
-    try {
-      final nextPage = lore.currentPage + 1;
-
-      final nextResult = await ApiService().itemApi.getLore(
-        selectedItem.id!,
-        page: nextPage,
-        size: lore.pageSize,
-      );
-
-      // Another item was selected, or the lore of this one changed, while
-      // the page loaded, so the page no longer continues it.
-      final item = state.selectedItem;
-      if (item == null ||
-          item.id != selectedItem.id ||
-          !identical(item.lore, lore)) {
-        return null;
-      }
-
-      final mergedItems = [...lore.items, ...nextResult.items];
-
-      final updatedLore = lore.copyWith(
-        items: mergedItems,
-        totalItems: nextResult.totalItems,
-        totalPages: nextResult.totalPages,
-        currentPage: nextResult.currentPage,
-      );
-
-      // Built on the current item, so form edits made while the page loaded
-      // are kept. The flag is cleared here as well: this state is applied
-      // after the `finally` below and would otherwise set it back to true.
-      final updatedItem = item.copyWith(
-        lore: updatedLore,
-        isLoadingMoreLoreLines: false,
-      );
-
-      return state.copyWith(selectedItem: updatedItem);
-    } finally {
-      dispatchSync(_SetIsLoadingLore(false));
-    }
+    // Built on the current item, so form edits made while the page loaded
+    // are kept.
+    return state.copyWith(selectedItem: item.copyWith(lore: updatedLore));
   }
 }
 
@@ -180,10 +163,7 @@ class ItemLoreUpdateAction extends ReduxAction<AppState> with NonReentrant {
 }
 
 class ItemLoreReorderAction extends ReduxAction<AppState> with Sequential {
-  ItemLoreReorderAction({
-    required this.oldIndex,
-    required this.newIndex,
-  });
+  ItemLoreReorderAction({required this.oldIndex, required this.newIndex});
 
   final int oldIndex;
   final int newIndex;
@@ -234,23 +214,6 @@ class ItemLoreReorderAction extends ReduxAction<AppState> with Sequential {
     final updatedModel = current.copyWith(lore: updatedLore);
 
     return state.copyWith(selectedItem: updatedModel);
-  }
-}
-
-
-class _SetIsLoadingLore extends ReduxAction<AppState> {
-  final bool isLoading;
-
-  _SetIsLoadingLore(this.isLoading);
-
-  @override
-  AppState reduce() {
-    final currentItem = state.selectedItem;
-    if (currentItem == null) return state;
-
-    final updatedItem = currentItem.copyWith(isLoadingMoreLoreLines: isLoading);
-
-    return state.copyWith(selectedItem: updatedItem);
   }
 }
 

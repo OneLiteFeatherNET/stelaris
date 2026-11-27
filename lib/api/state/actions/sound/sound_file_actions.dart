@@ -127,21 +127,15 @@ class SoundFileSourceDeleteAction extends ReduxAction<AppState> {
   }
 }
 
-class LoadMoreSoundFiles extends ReduxAction<AppState> {
+/// Appends the page [pageToLoad] of files to the selected sound event.
+///
+/// While it loads, `isWaiting(LoadMoreSoundFiles)` is true, and another one
+/// dispatched meanwhile is dropped.
+class LoadMoreSoundFiles extends ReduxAction<AppState> with NonReentrant {
   LoadMoreSoundFiles({required this.pageToLoad, this.pageSize = 1});
 
   final int pageToLoad;
   final int pageSize;
-
-  @override
-  void before() {
-    dispatch(SetSelectedSoundLoading(true));
-  }
-
-  @override
-  void after() {
-    dispatch(SetSelectedSoundLoading(false));
-  }
 
   @override
   Future<AppState?> reduce() async {
@@ -174,21 +168,6 @@ class LoadMoreSoundFiles extends ReduxAction<AppState> {
     );
 
     return state.copyWith(selectedSoundEvent: updatedSoundEvent);
-  }
-}
-
-class SetSelectedSoundLoading extends ReduxAction<AppState> {
-  SetSelectedSoundLoading(this.isLoading);
-
-  final bool isLoading;
-
-  @override
-  AppState? reduce() {
-    final sel = state.selectedSoundEvent;
-    if (sel == null) return null;
-    return state.copyWith(
-      selectedSoundEvent: sel.copyWith(isLoading: isLoading),
-    );
   }
 }
 

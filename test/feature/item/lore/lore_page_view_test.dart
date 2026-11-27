@@ -33,6 +33,7 @@ void main() {
             pageSize: 10,
           ),
         ),
+        isLoadingMore: false,
       );
     }
 
@@ -207,7 +208,7 @@ void main() {
 
       await pumpLorePageView(
         tester,
-        view: ItemLoreView(selected: item),
+        view: ItemLoreView(selected: item, isLoadingMore: false),
         showPreview: true,
       );
 

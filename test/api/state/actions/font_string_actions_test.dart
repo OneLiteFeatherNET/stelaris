@@ -20,33 +20,6 @@ class _SelectFont extends ReduxAction<AppState> {
 
 void main() {
   group('FontCharFetchAction', () {
-    test(
-      'does not fetch more chars while the font is already loading them',
-      () async {
-        const loadingFont = FontModel(
-          uiName: 'font',
-          isLoadingChars: true,
-          chars: PaginatedResult(
-            items: [FontStringDTO(line: 'a')],
-            totalItems: 20,
-            totalPages: 2,
-            currentPage: 1,
-            pageSize: 10,
-          ),
-        );
-
-        final store = Store<AppState>(
-          initialState: const AppState().copyWith(selectedFont: loadingFont),
-        );
-
-        final status = await store.dispatchAndWait(FontCharFetchAction());
-
-        expect(status.isCompletedOk, isTrue);
-        // State is untouched: no API call was attempted, no dispatch happened.
-        expect(store.state.selectedFont, same(loadingFont));
-      },
-    );
-
     const font = FontModel(
       id: 'font-1',
       uiName: 'font',
@@ -81,7 +54,47 @@ void main() {
         'c1',
         'c2',
       ]);
-      expect(store.state.selectedFont!.isLoadingChars, isFalse);
+    });
+
+    test('loads the next chars only once when asked twice in a row '
+        '(regression)', () async {
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(selectedFont: font),
+      );
+      var requests = 0;
+      ApiService().fontApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            requests++;
+            return FakeHttpClientAdapter.response(nextPage);
+          });
+
+      await Future.wait([
+        store.dispatchAndWait(FontCharLoadMoreAction()),
+        store.dispatchAndWait(FontCharFetchAction()),
+      ]);
+
+      expect(requests, 1);
+      expect(store.state.selectedFont!.chars.items.map((c) => c.id), [
+        'c1',
+        'c2',
+      ]);
+    });
+
+    test('counts as waiting while the next chars load', () async {
+      final store = Store<AppState>(
+        initialState: const AppState().copyWith(selectedFont: font),
+      );
+      bool? waitingDuringRequest;
+      ApiService().fontApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            waitingDuringRequest = store.isWaiting(FontCharLoadMoreAction);
+            return FakeHttpClientAdapter.response(nextPage);
+          });
+
+      await store.dispatchAndWait(FontCharFetchAction());
+
+      expect(waitingDuringRequest, isTrue);
+      expect(store.isWaiting(FontCharLoadMoreAction), isFalse);
     });
 
     test('loads the next chars in the size of the loaded pages', () async {
@@ -117,7 +130,6 @@ void main() {
         'c1',
         'c2',
       ]);
-      expect(store.state.selectedFont!.isLoadingChars, isFalse);
     });
 
     test('drops the next chars when another font is selected while they '
