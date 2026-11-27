@@ -44,51 +44,27 @@ class UpdateBlockStateAction extends ReduxAction<AppState> {
   );
 }
 
-/// Always refetches page 1 and replaces the current list, used by the
-/// grid's manual refresh, as opposed to [InitBlockStateAction] which only
-/// loads the next page or the very first one.
-class RefreshBlockStateAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    return state.copyWith(blockStates: await _firstPage(state));
-  }
+final _modelList = ModelList<BlockStateModel>(
+  of: (state) => state.blockStates,
+  withList: (state, list) => state.copyWith(blockStates: list),
+  api: () => ApiService().blockStateApi,
+);
+
+/// Refetches the first page of the blockstates and replaces what was loaded.
+class RefreshBlockStateAction extends RefreshListAction<BlockStateModel> {
+  RefreshBlockStateAction() : super(_modelList);
 }
 
-/// Loads the first page of blockstates when none are loaded, and the next page
-/// otherwise. The overview dispatches it when it opens.
-class InitBlockStateAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    if (state.blockStates.items.isEmpty) {
-      return state.copyWith(blockStates: await _firstPage(state));
-    }
-    await dispatchAndWait(LoadMoreBlockStatesAction());
-    return null;
-  }
+/// Loads the first page of the blockstates, or the next one when some are
+/// loaded.
+class InitBlockStateAction extends InitListAction<BlockStateModel> {
+  InitBlockStateAction() : super(_modelList, LoadMoreBlockStatesAction.new);
 }
 
-/// Appends the next page of blockstates, if there is one.
-///
-/// While it loads, `isWaiting(LoadMoreBlockStatesAction)` is true, and another one
-/// dispatched meanwhile is dropped.
-class LoadMoreBlockStatesAction extends ReduxAction<AppState> with NonReentrant {
-  @override
-  Future<AppState?> reduce() async {
-    final current = state.blockStates;
-    if (!current.hasNextPage) return null;
-
-    final next = await ApiService().blockStateApi.getPage(
-      page: current.currentPage + 1,
-      size: current.requestSize,
-      projectId: state.selectedProject?.id,
-    );
-
-    // A project switch or refresh replaced the list while the page
-    // loaded, so the page no longer continues it.
-    if (!identical(state.blockStates, current)) return null;
-
-    return state.copyWith(blockStates: current.append(next));
-  }
+/// Appends the next page of the blockstates. While it loads,
+/// `isWaiting(LoadMoreBlockStatesAction)` is true.
+class LoadMoreBlockStatesAction extends LoadMoreListAction<BlockStateModel> {
+  LoadMoreBlockStatesAction() : super(_modelList);
 }
 
 /// Loads the pages of the blockstates that are still missing, so every
@@ -205,12 +181,3 @@ class BlockStateNotesUpdateAction extends ReduxAction<AppState>
     );
   }
 }
-
-/// Page 1 of the blockstates of the open project, in the size of the loaded
-/// pages.
-Future<PaginatedResult<BlockStateModel>> _firstPage(AppState state) =>
-    ApiService().blockStateApi.getPage(
-      page: 1,
-      size: state.blockStates.requestSize,
-      projectId: state.selectedProject?.id,
-    );

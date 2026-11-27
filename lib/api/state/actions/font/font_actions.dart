@@ -29,15 +29,26 @@ class RemoveSelectedFont extends ReduxAction<AppState> {
   }
 }
 
-/// Always refetches page 1 and replaces the current list, regardless of
-/// how many pages were already loaded — used by the grid's manual refresh
-/// button, as opposed to [InitFontAction] which only ever loads the next
-/// page or the very first page.
-class RefreshFontAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    return state.copyWith(fonts: await _firstPage(state));
-  }
+final _modelList = ModelList<FontModel>(
+  of: (state) => state.fonts,
+  withList: (state, list) => state.copyWith(fonts: list),
+  api: () => ApiService().fontApi,
+);
+
+/// Refetches the first page of the fonts and replaces what was loaded.
+class RefreshFontAction extends RefreshListAction<FontModel> {
+  RefreshFontAction() : super(_modelList);
+}
+
+/// Loads the first page of the fonts, or the next one when some are loaded.
+class InitFontAction extends InitListAction<FontModel> {
+  InitFontAction() : super(_modelList, LoadMoreFontsAction.new);
+}
+
+/// Appends the next page of the fonts. While it loads,
+/// `isWaiting(LoadMoreFontsAction)` is true.
+class LoadMoreFontsAction extends LoadMoreListAction<FontModel> {
+  LoadMoreFontsAction() : super(_modelList);
 }
 
 /// Drops the deleted texture [textureAssetId] from the fonts in the store,
@@ -60,43 +71,6 @@ class TextureRemovedFromFontsAction extends ReduxAction<AppState> {
       ),
       selectedFont: selected == null ? null : _without(selected),
     );
-  }
-}
-
-/// Loads the first page of fonts when none are loaded, and the next page
-/// otherwise. The overview dispatches it when it opens.
-class InitFontAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    if (state.fonts.items.isEmpty) {
-      return state.copyWith(fonts: await _firstPage(state));
-    }
-    await dispatchAndWait(LoadMoreFontsAction());
-    return null;
-  }
-}
-
-/// Appends the next page of fonts, if there is one.
-///
-/// While it loads, `isWaiting(LoadMoreFontsAction)` is true, and another one
-/// dispatched meanwhile is dropped.
-class LoadMoreFontsAction extends ReduxAction<AppState> with NonReentrant {
-  @override
-  Future<AppState?> reduce() async {
-    final current = state.fonts;
-    if (!current.hasNextPage) return null;
-
-    final next = await ApiService().fontApi.getPage(
-      page: current.currentPage + 1,
-      size: current.requestSize,
-      projectId: state.selectedProject?.id,
-    );
-
-    // A project switch or refresh replaced the list while the page
-    // loaded, so the page no longer continues it.
-    if (!identical(state.fonts, current)) return null;
-
-    return state.copyWith(fonts: current.append(next));
   }
 }
 
@@ -243,12 +217,3 @@ class FontNotesUpdateAction extends ReduxAction<AppState> with NonReentrant {
     );
   }
 }
-
-/// Page 1 of the fonts of the open project, in the size of the
-/// loaded pages.
-Future<PaginatedResult<FontModel>> _firstPage(AppState state) =>
-    ApiService().fontApi.getPage(
-      page: 1,
-      size: state.fonts.requestSize,
-      projectId: state.selectedProject?.id,
-    );

@@ -38,50 +38,30 @@ class RemoveSelectedExpressionFunction extends ReduxAction<AppState> {
   }
 }
 
-/// Always refetches page 1 and replaces the current list, regardless of how
-/// many pages were already loaded. Used by the grid's manual refresh button.
-class RefreshExpressionFunctionAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    return state.copyWith(expressionFunctions: await _firstPage(state));
-  }
+final _modelList = ModelList<ExpressionFunctionModel>(
+  of: (state) => state.expressionFunctions,
+  withList: (state, list) => state.copyWith(expressionFunctions: list),
+  api: () => ApiService().expressionFunctionApi,
+);
+
+/// Refetches the first page of the functions and replaces what was loaded.
+class RefreshExpressionFunctionAction
+    extends RefreshListAction<ExpressionFunctionModel> {
+  RefreshExpressionFunctionAction() : super(_modelList);
 }
 
-/// Loads the first page of functions when none are loaded, and the next page
-/// otherwise. The overview dispatches it when it opens.
-class InitExpressionFunctionAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    if (state.expressionFunctions.items.isEmpty) {
-      return state.copyWith(expressionFunctions: await _firstPage(state));
-    }
-    await dispatchAndWait(LoadMoreExpressionFunctionsAction());
-    return null;
-  }
+/// Loads the first page of the functions, or the next one when some are loaded.
+class InitExpressionFunctionAction
+    extends InitListAction<ExpressionFunctionModel> {
+  InitExpressionFunctionAction()
+    : super(_modelList, LoadMoreExpressionFunctionsAction.new);
 }
 
-/// Appends the next page of functions, if there is one.
-///
-/// While it loads, `isWaiting(LoadMoreExpressionFunctionsAction)` is true, and another one
-/// dispatched meanwhile is dropped.
-class LoadMoreExpressionFunctionsAction extends ReduxAction<AppState> with NonReentrant {
-  @override
-  Future<AppState?> reduce() async {
-    final current = state.expressionFunctions;
-    if (!current.hasNextPage) return null;
-
-    final next = await ApiService().expressionFunctionApi.getPage(
-      page: current.currentPage + 1,
-      size: current.requestSize,
-      projectId: state.selectedProject?.id,
-    );
-
-    // A project switch or refresh replaced the list while the page
-    // loaded, so the page no longer continues it.
-    if (!identical(state.expressionFunctions, current)) return null;
-
-    return state.copyWith(expressionFunctions: current.append(next));
-  }
+/// Appends the next page of the functions. While it loads,
+/// `isWaiting(LoadMoreExpressionFunctionsAction)` is true.
+class LoadMoreExpressionFunctionsAction
+    extends LoadMoreListAction<ExpressionFunctionModel> {
+  LoadMoreExpressionFunctionsAction() : super(_modelList);
 }
 
 class ExpressionFunctionRemoveAction extends ReduxAction<AppState> {
@@ -232,15 +212,6 @@ bool _changesCatalog(
   }
   return false;
 }
-
-/// Page 1 of the functions of the open project, in the size of the loaded
-/// pages.
-Future<PaginatedResult<ExpressionFunctionModel>> _firstPage(AppState state) =>
-    ApiService().expressionFunctionApi.getPage(
-      page: 1,
-      size: state.expressionFunctions.requestSize,
-      projectId: state.selectedProject?.id,
-    );
 
 class _SetExpressionFunctionProblem extends ReduxAction<AppState> {
   final ProblemDetail problem;

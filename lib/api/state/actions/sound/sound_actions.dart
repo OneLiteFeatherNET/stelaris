@@ -29,52 +29,27 @@ class RemoveSelectedSoundEvent extends ReduxAction<AppState> {
   }
 }
 
-/// Always refetches page 1 and replaces the current list, regardless of
-/// how many pages were already loaded — used by the grid's manual refresh
-/// button, as opposed to [InitSoundAction] which only ever loads the next
-/// page or the very first page.
-class RefreshSoundAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    return state.copyWith(soundEvents: await _firstPage(state));
-  }
+final _modelList = ModelList<SoundEventModel>(
+  of: (state) => state.soundEvents,
+  withList: (state, list) => state.copyWith(soundEvents: list),
+  api: () => ApiService().soundApi,
+);
+
+/// Refetches the first page of the sound events and replaces what was loaded.
+class RefreshSoundAction extends RefreshListAction<SoundEventModel> {
+  RefreshSoundAction() : super(_modelList);
 }
 
-/// Loads the first page of sound events when none are loaded, and the next page
-/// otherwise. The overview dispatches it when it opens.
-class InitSoundAction extends ReduxAction<AppState> {
-  @override
-  Future<AppState?> reduce() async {
-    if (state.soundEvents.items.isEmpty) {
-      return state.copyWith(soundEvents: await _firstPage(state));
-    }
-    await dispatchAndWait(LoadMoreSoundEventsAction());
-    return null;
-  }
+/// Loads the first page of the sound events, or the next one when some are
+/// loaded.
+class InitSoundAction extends InitListAction<SoundEventModel> {
+  InitSoundAction() : super(_modelList, LoadMoreSoundEventsAction.new);
 }
 
-/// Appends the next page of sound events, if there is one.
-///
-/// While it loads, `isWaiting(LoadMoreSoundEventsAction)` is true, and another one
-/// dispatched meanwhile is dropped.
-class LoadMoreSoundEventsAction extends ReduxAction<AppState> with NonReentrant {
-  @override
-  Future<AppState?> reduce() async {
-    final current = state.soundEvents;
-    if (!current.hasNextPage) return null;
-
-    final next = await ApiService().soundApi.getPage(
-      page: current.currentPage + 1,
-      size: current.requestSize,
-      projectId: state.selectedProject?.id,
-    );
-
-    // A project switch or refresh replaced the list while the page
-    // loaded, so the page no longer continues it.
-    if (!identical(state.soundEvents, current)) return null;
-
-    return state.copyWith(soundEvents: current.append(next));
-  }
+/// Appends the next page of the sound events. While it loads,
+/// `isWaiting(LoadMoreSoundEventsAction)` is true.
+class LoadMoreSoundEventsAction extends LoadMoreListAction<SoundEventModel> {
+  LoadMoreSoundEventsAction() : super(_modelList);
 }
 
 /// Copies [source] as described by [result]. The copy joins the list only
@@ -214,12 +189,3 @@ class SoundNotesUpdateAction extends ReduxAction<AppState> with NonReentrant {
     );
   }
 }
-
-/// Page 1 of the sound events of the open project, in the size of the
-/// loaded pages.
-Future<PaginatedResult<SoundEventModel>> _firstPage(AppState state) =>
-    ApiService().soundApi.getPage(
-      page: 1,
-      size: state.soundEvents.requestSize,
-      projectId: state.selectedProject?.id,
-    );
