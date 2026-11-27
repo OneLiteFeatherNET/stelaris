@@ -11,7 +11,6 @@ class AdvancementVmFactory
   AdvancementViewModel fromStore() => AdvancementViewModel(
     models: state.advancements.items,
     hasNextPage: state.advancements.hasNextPage,
-    isLoadingMore: state.isLoadingMoreAdvancements,
     currentItems: state.advancements.totalItems,
     projectKey: state.selectedProject!.key,
   );
@@ -21,16 +20,14 @@ class AdvancementViewModel extends Vm {
   final List<AdvancementModel> models;
   final int currentItems;
   final bool hasNextPage;
-  final bool isLoadingMore;
   final String projectKey;
 
   AdvancementViewModel({
     required this.models,
     required this.hasNextPage,
-    required this.isLoadingMore,
     required this.currentItems,
     required this.projectKey,
   }) : super(
-         equals: [models, currentItems, hasNextPage, isLoadingMore, projectKey],
+         equals: [models, currentItems, hasNextPage, projectKey],
        );
 }

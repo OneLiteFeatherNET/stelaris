@@ -24,6 +24,7 @@ class ExpressionPage extends StatelessWidget {
       vm: () => ExpressionVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitExpressionAction()),
       builder: (context, vm) {
+        final isLoadingMore = context.isWaiting(LoadMoreExpressionsAction);
         return ModelPage<ExpressionModel>(
           entry: NavigationEntry.expression,
           mapToDataModelItem: (value) => ModelCardContent(
@@ -56,9 +57,9 @@ class ExpressionPage extends StatelessWidget {
           },
           onRefresh: () => context.dispatch(RefreshExpressionAction()),
           hasMore: vm.hasNextPage,
-          isLoadingMore: vm.isLoadingMore,
-          onLoadMore: vm.hasNextPage && !vm.isLoadingMore
-              ? () => context.dispatch(InitExpressionAction())
+          isLoadingMore: isLoadingMore,
+          onLoadMore: vm.hasNextPage && !isLoadingMore
+              ? () => context.dispatch(LoadMoreExpressionsAction())
               : null,
         );
       },

@@ -60,7 +60,7 @@ void main() {
       await store.dispatchAndWait(InitExpressionAction());
 
       expect(store.state.expressions.items.map((e) => e.id), ['e1']);
-      expect(store.state.isLoadingMoreExpressions, isFalse);
+      expect(store.isWaiting(LoadMoreExpressionsAction), isFalse);
     },
   );
 
@@ -90,7 +90,7 @@ void main() {
       await store.dispatchAndWait(InitExpressionAction());
 
       expect(store.state.expressions.items.map((e) => e.id), ['e1', 'e2']);
-      expect(store.state.isLoadingMoreExpressions, isFalse);
+      expect(store.isWaiting(LoadMoreExpressionsAction), isFalse);
     },
   );
 

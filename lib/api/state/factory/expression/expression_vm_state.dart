@@ -11,7 +11,6 @@ class ExpressionVmFactory
   ExpressionViewModel fromStore() => ExpressionViewModel(
     models: state.expressions.items,
     hasNextPage: state.expressions.hasNextPage,
-    isLoadingMore: state.isLoadingMoreExpressions,
     projectKey: state.selectedProject!.key,
   );
 }
@@ -20,12 +19,10 @@ class ExpressionViewModel extends Vm {
   ExpressionViewModel({
     required this.models,
     required this.hasNextPage,
-    required this.isLoadingMore,
     required this.projectKey,
-  }) : super(equals: [models, hasNextPage, isLoadingMore, projectKey]);
+  }) : super(equals: [models, hasNextPage, projectKey]);
 
   final List<ExpressionModel> models;
   final bool hasNextPage;
-  final bool isLoadingMore;
   final String projectKey;
 }

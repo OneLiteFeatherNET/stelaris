@@ -31,6 +31,7 @@ class AttributePage extends StatelessWidget {
       vm: () => AttributeVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitAttributeAction()),
       builder: (context, vm) {
+        final isLoadingMore = context.isWaiting(LoadMoreAttributesAction);
         final hasDefaultValueFilter = FilterOption(
           'has_default_value',
           context.l10n.filter_attribute_has_default_value,
@@ -90,9 +91,9 @@ class AttributePage extends StatelessWidget {
           },
           onRefresh: () => context.dispatch(RefreshAttributeAction()),
           hasMore: vm.hasNextPage,
-          isLoadingMore: vm.isLoadingMore,
-          onLoadMore: vm.hasNextPage && !vm.isLoadingMore
-              ? () => context.dispatch(InitAttributeAction())
+          isLoadingMore: isLoadingMore,
+          onLoadMore: vm.hasNextPage && !isLoadingMore
+              ? () => context.dispatch(LoadMoreAttributesAction())
               : null,
         );
       },

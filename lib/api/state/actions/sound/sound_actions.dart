@@ -40,46 +40,40 @@ class RefreshSoundAction extends ReduxAction<AppState> {
   }
 }
 
+/// Loads the first page of sound events when none are loaded, and the next page
+/// otherwise. The overview dispatches it when it opens.
 class InitSoundAction extends ReduxAction<AppState> {
-  InitSoundAction();
-
   @override
   Future<AppState?> reduce() async {
-    // If we already have items and more pages, treat this as load-more.
-    final hasExisting = state.soundEvents.items.isNotEmpty;
-    final canLoadMore = state.soundEvents.hasNextPage;
-
-    if (hasExisting && !canLoadMore) return null;
-
-    if (hasExisting && canLoadMore) {
-      if (state.isLoadingMoreSoundEvents) return null;
-      dispatchSync(_SetLoadMoreSoundEventModels(true));
-      try {
-        final current = state.soundEvents;
-        final next = await ApiService().soundApi.getPage(
-          page: current.currentPage + 1,
-          size: current.requestSize,
-          projectId: state.selectedProject?.id,
-        );
-
-        // A project switch or refresh replaced the list while the page
-        // loaded, so the page no longer continues it.
-        if (!identical(state.soundEvents, current)) return null;
-
-        final updated = current.append(next);
-        // The flag is cleared here as well: this state is applied after the
-        // `finally` below and would otherwise set the flag back to true.
-        return state.copyWith(
-          soundEvents: updated,
-          isLoadingMoreSoundEvents: false,
-        );
-      } finally {
-        dispatchSync(_SetLoadMoreSoundEventModels(false));
-      }
-    } else {
-      // Initial load (or refresh)
+    if (state.soundEvents.items.isEmpty) {
       return state.copyWith(soundEvents: await _firstPage(state));
     }
+    await dispatchAndWait(LoadMoreSoundEventsAction());
+    return null;
+  }
+}
+
+/// Appends the next page of sound events, if there is one.
+///
+/// While it loads, `isWaiting(LoadMoreSoundEventsAction)` is true, and another one
+/// dispatched meanwhile is dropped.
+class LoadMoreSoundEventsAction extends ReduxAction<AppState> with NonReentrant {
+  @override
+  Future<AppState?> reduce() async {
+    final current = state.soundEvents;
+    if (!current.hasNextPage) return null;
+
+    final next = await ApiService().soundApi.getPage(
+      page: current.currentPage + 1,
+      size: current.requestSize,
+      projectId: state.selectedProject?.id,
+    );
+
+    // A project switch or refresh replaced the list while the page
+    // loaded, so the page no longer continues it.
+    if (!identical(state.soundEvents, current)) return null;
+
+    return state.copyWith(soundEvents: current.append(next));
   }
 }
 
@@ -219,20 +213,6 @@ class SoundNotesUpdateAction extends ReduxAction<AppState> with NonReentrant {
           : selected,
     );
   }
-}
-
-/// Internal action to manage the loading state for sound pagination.
-///
-/// This private action controls the `isLoadingMoreSoundEvents` flag in the state,
-/// preventing multiple simultaneous load-more requests. It's used internally
-/// by InitSoundAction during pagination operations.
-class _SetLoadMoreSoundEventModels extends ReduxAction<AppState> {
-  final bool value;
-
-  _SetLoadMoreSoundEventModels(this.value);
-
-  @override
-  AppState reduce() => state.copyWith(isLoadingMoreSoundEvents: value);
 }
 
 /// Page 1 of the sound events of the open project, in the size of the

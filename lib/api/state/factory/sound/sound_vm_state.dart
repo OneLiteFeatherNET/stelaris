@@ -10,7 +10,6 @@ class SoundVmFactory extends VmFactory<AppState, SoundPage, SoundViewModel> {
   SoundViewModel fromStore() => SoundViewModel(
     models: state.soundEvents.items,
     hasNextPage: state.soundEvents.hasNextPage,
-    isLoadingMore: state.isLoadingMoreSoundEvents,
     projectKey: state.selectedProject!.key,
   );
 }
@@ -19,19 +18,16 @@ class SoundViewModel extends Vm {
   SoundViewModel({
     required this.models,
     required this.hasNextPage,
-    required this.isLoadingMore,
     required this.projectKey,
   }) : super(
          equals: [
            models,
            hasNextPage,
-           isLoadingMore,
            projectKey,
          ],
        );
 
   final List<SoundEventModel> models;
   final bool hasNextPage;
-  final bool isLoadingMore;
   final String projectKey;
 }

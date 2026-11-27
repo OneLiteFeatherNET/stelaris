@@ -29,6 +29,7 @@ class SoundPage extends StatelessWidget {
       vm: () => SoundVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitSoundAction()),
       builder: (context, vm) {
+        final isLoadingMore = context.isWaiting(LoadMoreSoundEventsAction);
         return ModelPage<SoundEventModel>(
           entry: NavigationEntry.sound,
           mapToDataModelItem: (value) => ModelCardContent(
@@ -67,9 +68,9 @@ class SoundPage extends StatelessWidget {
           },
           onRefresh: () => context.dispatch(RefreshSoundAction()),
           hasMore: vm.hasNextPage,
-          isLoadingMore: vm.isLoadingMore,
-          onLoadMore: vm.hasNextPage && !vm.isLoadingMore
-              ? () => context.dispatch(InitSoundAction())
+          isLoadingMore: isLoadingMore,
+          onLoadMore: vm.hasNextPage && !isLoadingMore
+              ? () => context.dispatch(LoadMoreSoundEventsAction())
               : null,
         );
       },

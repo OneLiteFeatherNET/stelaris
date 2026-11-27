@@ -38,6 +38,7 @@ class BlockStatePage extends StatelessWidget {
       vm: () => BlockStateVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitBlockStateAction()),
       builder: (context, vm) {
+        final isLoadingMore = context.isWaiting(LoadMoreBlockStatesAction);
         final l10n = context.l10n;
         return ModelPage<BlockStateModel>(
           entry: NavigationEntry.blockstates,
@@ -68,9 +69,9 @@ class BlockStatePage extends StatelessWidget {
           },
           onRefresh: () => context.dispatch(RefreshBlockStateAction()),
           hasMore: vm.hasNextPage,
-          isLoadingMore: vm.isLoadingMore,
-          onLoadMore: vm.hasNextPage && !vm.isLoadingMore
-              ? () => context.dispatch(InitBlockStateAction())
+          isLoadingMore: isLoadingMore,
+          onLoadMore: vm.hasNextPage && !isLoadingMore
+              ? () => context.dispatch(LoadMoreBlockStatesAction())
               : null,
         );
       },

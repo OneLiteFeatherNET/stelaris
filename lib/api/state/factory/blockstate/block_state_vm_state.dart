@@ -11,18 +11,15 @@ class BlockStateVmFactory
   BlockStateViewModel fromStore() => BlockStateViewModel(
     models: state.blockStates.items,
     hasNextPage: state.blockStates.hasNextPage,
-    isLoadingMore: state.isLoadingMoreBlockStates,
   );
 }
 
 class BlockStateViewModel extends Vm {
   final List<BlockStateModel> models;
   final bool hasNextPage;
-  final bool isLoadingMore;
 
   BlockStateViewModel({
     required this.models,
     required this.hasNextPage,
-    required this.isLoadingMore,
-  }) : super(equals: [models, hasNextPage, isLoadingMore]);
+  }) : super(equals: [models, hasNextPage]);
 }

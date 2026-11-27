@@ -90,7 +90,7 @@ void listActionTests<T extends DataModel>({
       'pageSize': 2,
     };
 
-    test('clears the load-more flag after loading the next page, so the '
+    test('is done loading after the next page, so the '
         'page after it loads too (regression)', () async {
       final store = storeWith(
         [model('page1-0'), model('page1-1')],
