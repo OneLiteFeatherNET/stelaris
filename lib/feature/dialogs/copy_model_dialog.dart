@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/dialog/notice_box.dart';
 import 'package:stelaris/feature/base/snackbar/info_bar.dart';
+import 'package:stelaris/feature/dialogs/key_follows_name.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/copy_model_result.dart';
@@ -23,7 +24,8 @@ class CopyRelation {
 /// Asks where to copy a model to and what to call the copy.
 ///
 /// Like [ModelCreateDialog] plus a target project and, for models that have
-/// them, a checkbox per relation, all checked. Submitting waits for
+/// them, a checkbox per relation, all checked. The prefilled key follows the
+/// name, as there, until it is typed by hand. Submitting waits for
 /// [onSubmit]: on an error the dialog stays open and shows it, otherwise it
 /// closes with the [CopyModelResult].
 class CopyModelDialog extends StatefulWidget {
@@ -60,6 +62,7 @@ class _CopyModelDialogState extends State<CopyModelDialog> {
   late String _targetProjectId;
   late final Set<String> _relations;
   bool _copying = false;
+  KeyFollowsName? _keyFollowsName;
 
   @override
   void initState() {
@@ -87,11 +90,16 @@ class _CopyModelDialogState extends State<CopyModelDialog> {
           '${widget.initialName}${l10n.dialog_model_copy_name_suffix}';
       _keyController.text =
           '${widget.initialKey}${l10n.dialog_model_copy_key_suffix}';
+      _keyFollowsName = KeyFollowsName(
+        name: _nameController,
+        key: _keyController,
+      );
     }
   }
 
   @override
   void dispose() {
+    _keyFollowsName?.dispose();
     _nameController.dispose();
     _keyController.dispose();
     super.dispose();
