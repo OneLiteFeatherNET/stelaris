@@ -39,15 +39,22 @@ class _FakeLoader implements SoundFileLoader {
 class _FakePlayer implements SoundPlayer {
   Completer<void>? playing;
   final List<(SoundFile, double, double)> played = [];
+  final List<Duration> playedFrom = [];
+  final List<Duration> seeks = [];
+  final List<(double, double)> adjusts = [];
   int stops = 0;
+  int pauses = 0;
+  int resumes = 0;
 
   @override
   Future<void> play(
     SoundFile file, {
     required double volume,
     required double pitch,
+    Duration from = Duration.zero,
   }) {
     played.add((file, volume, pitch));
+    playedFrom.add(from);
     return (playing = Completer<void>()).future;
   }
 
@@ -60,6 +67,19 @@ class _FakePlayer implements SoundPlayer {
   }
 
   void finish() => playing?.complete();
+
+  @override
+  void pause() => pauses++;
+
+  @override
+  void resume() => resumes++;
+
+  @override
+  void seek(Duration position) => seeks.add(position);
+
+  @override
+  void adjust({required double volume, required double pitch}) =>
+      adjusts.add((volume, pitch));
 
   @override
   Duration position = Duration.zero;

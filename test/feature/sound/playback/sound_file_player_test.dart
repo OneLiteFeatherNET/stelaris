@@ -51,6 +51,7 @@ class _Player implements SoundPlayer {
     SoundFile file, {
     required double volume,
     required double pitch,
+    Duration from = Duration.zero,
   }) => (playing = Completer<void>()).future;
 
   @override
@@ -59,6 +60,18 @@ class _Player implements SoundPlayer {
     playing = null;
     if (current != null && !current.isCompleted) current.complete();
   }
+
+  @override
+  void pause() {}
+
+  @override
+  void resume() {}
+
+  @override
+  void seek(Duration position) {}
+
+  @override
+  void adjust({required double volume, required double pitch}) {}
 }
 
 void main() {

@@ -7,7 +7,8 @@ abstract interface class SoundPlayer {
   /// The player of the platform: the browser's audio outside of tests.
   factory SoundPlayer() => createPlatformSoundPlayer();
 
-  /// Plays [file] and completes when it ends or [stop] cuts it off.
+  /// Plays [file] from [from], in the file's own time, and completes when it
+  /// ends or [stop] cuts it off. A pause doesn't complete it.
   ///
   /// [volume] and [pitch] are those of the sound file. As in Minecraft, a
   /// pitch changes the speed and the pitch together and is clamped to
@@ -17,10 +18,25 @@ abstract interface class SoundPlayer {
     SoundFile file, {
     required double volume,
     required double pitch,
+    Duration from = Duration.zero,
   });
 
   /// Stops the file that plays, if any.
   void stop();
+
+  /// Holds the file that plays where it is.
+  void pause();
+
+  /// Plays the held file on from where [pause] held it.
+  void resume();
+
+  /// Moves the file that plays, or is held, to [position], in the file's own
+  /// time.
+  void seek(Duration position);
+
+  /// Changes the volume and pitch of the file that plays, or is held, as
+  /// [play] takes them.
+  void adjust({required double volume, required double pitch});
 
   /// How far the file that plays is, in the file's own time; zero when none
   /// plays.
