@@ -478,7 +478,8 @@ void main() {
       },
     );
 
-    testWidgets('the heading is a disabled destination', (tester) async {
+    // The headings share one builder, so the Assets group taps one of them.
+    testWidgets('the three headings are disabled destinations', (tester) async {
       useWideView(tester);
       final store = Store<AppState>(initialState: AppState.fromJson({}));
       await tester.pumpWidget(
@@ -497,23 +498,15 @@ void main() {
         ),
         reason: 'the three headings are destinations beside the pages',
       );
-      expect(destinations[runtimeHeadingIndex].disabled, isTrue);
-    });
-
-    testWidgets('tapping the heading does not navigate', (tester) async {
-      useWideView(tester);
-      final store = Store<AppState>(initialState: AppState.fromJson({}));
-      await tester.pumpWidget(
-        buildTestWidget(createRailTestRouter('/items'), store),
-      );
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Runtime'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('/items'), findsOneWidget);
-      expect(find.text('/expression'), findsNothing);
-      expect(rail(tester).selectedIndex, NavigationEntry.items.index);
+      final buildHeadingIndex =
+          runtimeHeadingIndex + 1 + runtimeNavigationEntries.length;
+      for (final index in [
+        sectionEntries.length,
+        runtimeHeadingIndex,
+        buildHeadingIndex,
+      ]) {
+        expect(destinations[index].disabled, isTrue, reason: 'index $index');
+      }
     });
 
     testWidgets('highlights the expression tile on its detail route', (
@@ -604,33 +597,6 @@ void main() {
         greaterThan(headingY),
         reason: 'the generator comes after the Build heading',
       );
-    });
-
-    testWidgets('the heading is a disabled destination', (tester) async {
-      useWideView(tester);
-      final store = Store<AppState>(initialState: AppState.fromJson({}));
-      await tester.pumpWidget(
-        buildTestWidget(createRailTestRouter('/items'), store),
-      );
-      await tester.pumpAndSettle();
-
-      expect(rail(tester).destinations[buildHeadingIndex].disabled, isTrue);
-    });
-
-    testWidgets('tapping the heading does not navigate', (tester) async {
-      useWideView(tester);
-      final store = Store<AppState>(initialState: AppState.fromJson({}));
-      await tester.pumpWidget(
-        buildTestWidget(createRailTestRouter('/items'), store),
-      );
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Build'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('/items'), findsOneWidget);
-      expect(find.text('/generator'), findsNothing);
-      expect(rail(tester).selectedIndex, NavigationEntry.items.index);
     });
 
     testWidgets('highlights the generator on its route', (tester) async {
