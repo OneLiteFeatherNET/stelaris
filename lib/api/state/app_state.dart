@@ -107,32 +107,6 @@ abstract class AppState with _$AppState {
     )
     PaginatedResult<BlockStateModel> blockStates,
 
-    // ── Transiente Loading-Flags ──
-    @JsonKey(includeToJson: false, includeFromJson: false)
-    @Default(false)
-    bool isLoadingAttributesMore,
-    @JsonKey(includeToJson: false, includeFromJson: false)
-    @Default(false)
-    bool isLoadingMoreItems,
-    @JsonKey(includeToJson: false, includeFromJson: false)
-    @Default(false)
-    bool isLoadingMoreAdvancements,
-    @JsonKey(includeToJson: false, includeFromJson: false)
-    @Default(false)
-    bool isLoadingMoreFonts,
-    @JsonKey(includeToJson: false, includeFromJson: false)
-    @Default(false)
-    bool isLoadingMoreSoundEvents,
-    @JsonKey(includeToJson: false, includeFromJson: false)
-    @Default(false)
-    bool isLoadingMoreExpressions,
-    @JsonKey(includeToJson: false, includeFromJson: false)
-    @Default(false)
-    bool isLoadingMoreExpressionFunctions,
-    @JsonKey(includeToJson: false, includeFromJson: false)
-    @Default(false)
-    bool isLoadingMoreBlockStates,
-
     // ── Persistierte Einstellungen ──
     @Default(true) bool openNavigation,
     // Whether the texture picker shows the preview of the chosen texture.

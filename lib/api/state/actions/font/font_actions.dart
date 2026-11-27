@@ -63,43 +63,40 @@ class TextureRemovedFromFontsAction extends ReduxAction<AppState> {
   }
 }
 
+/// Loads the first page of fonts when none are loaded, and the next page
+/// otherwise. The overview dispatches it when it opens.
 class InitFontAction extends ReduxAction<AppState> {
-  InitFontAction();
-
   @override
   Future<AppState?> reduce() async {
-    // If we already have items and more pages, treat this as load-more.
-    final hasExisting = state.fonts.items.isNotEmpty;
-    final canLoadMore = state.fonts.hasNextPage;
-
-    if (hasExisting && !canLoadMore) return null;
-
-    if (hasExisting && canLoadMore) {
-      if (state.isLoadingMoreFonts) return null;
-      dispatchSync(_SetLoadMoreFontModels(true));
-      try {
-        final current = state.fonts;
-        final next = await ApiService().fontApi.getPage(
-          page: current.currentPage + 1,
-          size: current.requestSize,
-          projectId: state.selectedProject?.id,
-        );
-
-        // A project switch or refresh replaced the list while the page
-        // loaded, so the page no longer continues it.
-        if (!identical(state.fonts, current)) return null;
-
-        final updated = current.append(next);
-        // The flag is cleared here as well: this state is applied after the
-        // `finally` below and would otherwise set the flag back to true.
-        return state.copyWith(fonts: updated, isLoadingMoreFonts: false);
-      } finally {
-        dispatchSync(_SetLoadMoreFontModels(false));
-      }
-    } else {
-      // Initial load (or refresh)
+    if (state.fonts.items.isEmpty) {
       return state.copyWith(fonts: await _firstPage(state));
     }
+    await dispatchAndWait(LoadMoreFontsAction());
+    return null;
+  }
+}
+
+/// Appends the next page of fonts, if there is one.
+///
+/// While it loads, `isWaiting(LoadMoreFontsAction)` is true, and another one
+/// dispatched meanwhile is dropped.
+class LoadMoreFontsAction extends ReduxAction<AppState> with NonReentrant {
+  @override
+  Future<AppState?> reduce() async {
+    final current = state.fonts;
+    if (!current.hasNextPage) return null;
+
+    final next = await ApiService().fontApi.getPage(
+      page: current.currentPage + 1,
+      size: current.requestSize,
+      projectId: state.selectedProject?.id,
+    );
+
+    // A project switch or refresh replaced the list while the page
+    // loaded, so the page no longer continues it.
+    if (!identical(state.fonts, current)) return null;
+
+    return state.copyWith(fonts: current.append(next));
   }
 }
 
@@ -213,15 +210,6 @@ class FontDatabaseUpdate extends ReduxAction<AppState> with Throttle {
         )
         .clearUnsavedChanges(NavigationEntry.font);
   }
-}
-
-class _SetLoadMoreFontModels extends ReduxAction<AppState> {
-  final bool value;
-
-  _SetLoadMoreFontModels(this.value);
-
-  @override
-  AppState reduce() => state.copyWith(isLoadingMoreFonts: value);
 }
 
 /// Saves new [notes] for [model] straight from the overview, without going

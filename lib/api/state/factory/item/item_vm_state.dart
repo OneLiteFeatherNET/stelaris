@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/item/item_page.dart';
 
@@ -10,7 +11,7 @@ class ItemVmFactory extends VmFactory<AppState, ItemPage, ItemViewModel> {
   ItemViewModel fromStore() => ItemViewModel(
     itemModels: state.items.items,
     hasNextPage: state.items.hasNextPage,
-    isLoadingMore: state.isLoadingMoreItems,
+    isLoadingMore: isWaiting(LoadMoreItemsAction),
     projectKey: state.selectedProject!.key,
   );
 }

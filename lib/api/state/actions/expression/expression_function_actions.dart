@@ -47,43 +47,40 @@ class RefreshExpressionFunctionAction extends ReduxAction<AppState> {
   }
 }
 
-/// Loads the next page of the functions, or the first page when none is
-/// loaded yet.
+/// Loads the first page of functions when none are loaded, and the next page
+/// otherwise. The overview dispatches it when it opens.
 class InitExpressionFunctionAction extends ReduxAction<AppState> {
-  InitExpressionFunctionAction();
-
   @override
   Future<AppState?> reduce() async {
-    final hasExisting = state.expressionFunctions.items.isNotEmpty;
-    final canLoadMore = state.expressionFunctions.hasNextPage;
-
-    if (hasExisting && !canLoadMore) return null;
-
-    if (hasExisting && canLoadMore) {
-      if (state.isLoadingMoreExpressionFunctions) return null;
-      dispatchSync(_SetLoadMoreExpressionFunctions(true));
-      try {
-        final current = state.expressionFunctions;
-        final next = await ApiService().expressionFunctionApi.getPage(
-          page: current.currentPage + 1,
-          size: current.requestSize,
-          projectId: state.selectedProject?.id,
-        );
-
-        // A project switch or refresh replaced the list while the page
-        // loaded, so the page no longer continues it.
-        if (!identical(state.expressionFunctions, current)) return null;
-
-        return state.copyWith(
-          expressionFunctions: current.append(next),
-          isLoadingMoreExpressionFunctions: false,
-        );
-      } finally {
-        dispatchSync(_SetLoadMoreExpressionFunctions(false));
-      }
-    } else {
+    if (state.expressionFunctions.items.isEmpty) {
       return state.copyWith(expressionFunctions: await _firstPage(state));
     }
+    await dispatchAndWait(LoadMoreExpressionFunctionsAction());
+    return null;
+  }
+}
+
+/// Appends the next page of functions, if there is one.
+///
+/// While it loads, `isWaiting(LoadMoreExpressionFunctionsAction)` is true, and another one
+/// dispatched meanwhile is dropped.
+class LoadMoreExpressionFunctionsAction extends ReduxAction<AppState> with NonReentrant {
+  @override
+  Future<AppState?> reduce() async {
+    final current = state.expressionFunctions;
+    if (!current.hasNextPage) return null;
+
+    final next = await ApiService().expressionFunctionApi.getPage(
+      page: current.currentPage + 1,
+      size: current.requestSize,
+      projectId: state.selectedProject?.id,
+    );
+
+    // A project switch or refresh replaced the list while the page
+    // loaded, so the page no longer continues it.
+    if (!identical(state.expressionFunctions, current)) return null;
+
+    return state.copyWith(expressionFunctions: current.append(next));
   }
 }
 
@@ -244,15 +241,6 @@ Future<PaginatedResult<ExpressionFunctionModel>> _firstPage(AppState state) =>
       size: state.expressionFunctions.requestSize,
       projectId: state.selectedProject?.id,
     );
-
-class _SetLoadMoreExpressionFunctions extends ReduxAction<AppState> {
-  final bool value;
-
-  _SetLoadMoreExpressionFunctions(this.value);
-
-  @override
-  AppState reduce() => state.copyWith(isLoadingMoreExpressionFunctions: value);
-}
 
 class _SetExpressionFunctionProblem extends ReduxAction<AppState> {
   final ProblemDetail problem;

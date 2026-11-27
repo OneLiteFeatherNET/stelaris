@@ -42,7 +42,7 @@ void main() {
         BlockStateModel(uiName: id, id: id, projectId: projectId),
     listOf: (state) => state.blockStates,
     withList: (state, list) => state.copyWith(blockStates: list),
-    isLoadingMore: (state) => state.isLoadingMoreBlockStates,
+    isLoadingMore: (store) => store.isWaiting(LoadMoreBlockStatesAction),
     selectedOf: (state) => state.selectedBlockState,
     withSelected: (state, model) => state.copyWith(selectedBlockState: model),
     init: InitBlockStateAction.new,

@@ -97,7 +97,7 @@ void main() {
       await store.dispatchAndWait(InitExpressionFunctionAction());
 
       expect(store.state.expressionFunctions.items.map((f) => f.id), ['f1']);
-      expect(store.state.isLoadingMoreExpressionFunctions, isFalse);
+      expect(store.isWaiting(LoadMoreExpressionFunctionsAction), isFalse);
     },
   );
 

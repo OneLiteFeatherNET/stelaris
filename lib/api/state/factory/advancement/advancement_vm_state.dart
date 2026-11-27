@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/api/state/actions/advancement_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/advancement/advancement_page.dart';
 
@@ -11,7 +12,7 @@ class AdvancementVmFactory
   AdvancementViewModel fromStore() => AdvancementViewModel(
     models: state.advancements.items,
     hasNextPage: state.advancements.hasNextPage,
-    isLoadingMore: state.isLoadingMoreAdvancements,
+    isLoadingMore: isWaiting(LoadMoreAdvancementsAction),
     currentItems: state.advancements.totalItems,
     projectKey: state.selectedProject!.key,
   );

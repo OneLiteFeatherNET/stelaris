@@ -40,46 +40,40 @@ class RefreshExpressionAction extends ReduxAction<AppState> {
   }
 }
 
+/// Loads the first page of expressions when none are loaded, and the next page
+/// otherwise. The overview dispatches it when it opens.
 class InitExpressionAction extends ReduxAction<AppState> {
-  InitExpressionAction();
-
   @override
   Future<AppState?> reduce() async {
-    // If we already have items and more pages, treat this as load-more.
-    final hasExisting = state.expressions.items.isNotEmpty;
-    final canLoadMore = state.expressions.hasNextPage;
-
-    if (hasExisting && !canLoadMore) return null;
-
-    if (hasExisting && canLoadMore) {
-      if (state.isLoadingMoreExpressions) return null;
-      dispatchSync(_SetLoadMoreExpressions(true));
-      try {
-        final current = state.expressions;
-        final next = await ApiService().expressionApi.getPage(
-          page: current.currentPage + 1,
-          size: current.requestSize,
-          projectId: state.selectedProject?.id,
-        );
-
-        // A project switch or refresh replaced the list while the page
-        // loaded, so the page no longer continues it.
-        if (!identical(state.expressions, current)) return null;
-
-        final updated = current.append(next);
-        // The flag is cleared here as well: this state is applied after the
-        // `finally` below and would otherwise set the flag back to true.
-        return state.copyWith(
-          expressions: updated,
-          isLoadingMoreExpressions: false,
-        );
-      } finally {
-        dispatchSync(_SetLoadMoreExpressions(false));
-      }
-    } else {
-      // Initial load (or refresh)
+    if (state.expressions.items.isEmpty) {
       return state.copyWith(expressions: await _firstPage(state));
     }
+    await dispatchAndWait(LoadMoreExpressionsAction());
+    return null;
+  }
+}
+
+/// Appends the next page of expressions, if there is one.
+///
+/// While it loads, `isWaiting(LoadMoreExpressionsAction)` is true, and another one
+/// dispatched meanwhile is dropped.
+class LoadMoreExpressionsAction extends ReduxAction<AppState> with NonReentrant {
+  @override
+  Future<AppState?> reduce() async {
+    final current = state.expressions;
+    if (!current.hasNextPage) return null;
+
+    final next = await ApiService().expressionApi.getPage(
+      page: current.currentPage + 1,
+      size: current.requestSize,
+      projectId: state.selectedProject?.id,
+    );
+
+    // A project switch or refresh replaced the list while the page
+    // loaded, so the page no longer continues it.
+    if (!identical(state.expressions, current)) return null;
+
+    return state.copyWith(expressions: current.append(next));
   }
 }
 
@@ -309,16 +303,6 @@ Future<ExpressionCatalog?> _fetchCatalog(String projectId) async {
     debugPrint('Error loading the expression catalog: $error');
     return null;
   }
-}
-
-/// Internal action to manage the loading state for expression pagination.
-class _SetLoadMoreExpressions extends ReduxAction<AppState> {
-  final bool value;
-
-  _SetLoadMoreExpressions(this.value);
-
-  @override
-  AppState reduce() => state.copyWith(isLoadingMoreExpressions: value);
 }
 
 /// Page 1 of the expressions of the open project, in the size of the loaded

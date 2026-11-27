@@ -19,7 +19,7 @@ void main() {
         ItemModel(uiName: id, id: id, projectId: projectId),
     listOf: (state) => state.items,
     withList: (state, list) => state.copyWith(items: list),
-    isLoadingMore: (state) => state.isLoadingMoreItems,
+    isLoadingMore: (store) => store.isWaiting(LoadMoreItemsAction),
     selectedOf: (state) => state.selectedItem,
     withSelected: (state, model) => state.copyWith(selectedItem: model),
     init: InitItemAction.new,
@@ -28,6 +28,50 @@ void main() {
     remove: ItemRemoveAction.new,
     copy: ItemCopyAction.new,
   );
+
+  group('LoadMoreItemsAction', () {
+    test('is waited for while the next page loads, and another one '
+        'dispatched meanwhile is dropped', () async {
+      final store = Store<AppState>(
+        initialState: const AppState(
+          items: PaginatedResult(
+            items: [ItemModel(uiName: 'first', id: 'first')],
+            totalItems: 2,
+            totalPages: 2,
+            currentPage: 1,
+            pageSize: 1,
+          ),
+        ),
+      );
+      var requests = 0;
+      bool? waiting;
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            requests++;
+            waiting = store.isWaiting(LoadMoreItemsAction);
+            store.dispatch(LoadMoreItemsAction());
+            return FakeHttpClientAdapter.response({
+              'items': [
+                const ItemModel(uiName: 'second', id: 'second').toJson(),
+              ],
+              'totalItems': 2,
+              'totalPages': 2,
+              'currentPage': 2,
+              'pageSize': 1,
+            });
+          });
+
+      await store.dispatchAndWait(LoadMoreItemsAction());
+
+      expect(waiting, isTrue);
+      expect(requests, 1);
+      expect(store.isWaiting(LoadMoreItemsAction), isFalse);
+      expect(store.state.items.items.map((item) => item.id), [
+        'first',
+        'second',
+      ]);
+    });
+  });
 
   group('ItemAddAction', () {
     test('selects the added item', () async {

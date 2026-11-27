@@ -15,7 +15,7 @@ void main() {
         FontModel(uiName: id, id: id, projectId: projectId),
     listOf: (state) => state.fonts,
     withList: (state, list) => state.copyWith(fonts: list),
-    isLoadingMore: (state) => state.isLoadingMoreFonts,
+    isLoadingMore: (store) => store.isWaiting(LoadMoreFontsAction),
     selectedOf: (state) => state.selectedFont,
     withSelected: (state, model) => state.copyWith(selectedFont: model),
     init: InitFontAction.new,

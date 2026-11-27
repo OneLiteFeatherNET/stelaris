@@ -67,7 +67,7 @@ class AdvancementPage extends StatelessWidget {
           hasMore: vm.hasNextPage,
           isLoadingMore: vm.isLoadingMore,
           onLoadMore: vm.hasNextPage && !vm.isLoadingMore
-              ? () => context.dispatch(InitAdvancementAction())
+              ? () => context.dispatch(LoadMoreAdvancementsAction())
               : null,
         );
       },

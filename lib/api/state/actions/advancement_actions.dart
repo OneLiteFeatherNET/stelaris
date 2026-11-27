@@ -40,61 +40,41 @@ class RefreshAdvancementAction extends ReduxAction<AppState> {
   }
 }
 
+/// Loads the first page of advancements when none are loaded, and the next page
+/// otherwise. The overview dispatches it when it opens.
 class InitAdvancementAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
-    // If we already have items and more pages, treat this as load-more.
-    final hasExisting = state.advancements.items.isNotEmpty;
-    final canLoadMore = state.advancements.hasNextPage;
-
-    if (hasExisting && !canLoadMore) return null;
-
-    if (hasExisting && canLoadMore) {
-      if (state.isLoadingMoreAdvancements) return null;
-      dispatchSync(_SetAdvancementsLoadMore(true));
-      try {
-        final current = state.advancements;
-        final next = await ApiService().advancementApi.getPage(
-          page: current.currentPage + 1,
-          size: current.requestSize,
-          projectId: state.selectedProject?.id,
-        );
-
-        // A project switch or refresh replaced the list while the page
-        // loaded, so the page no longer continues it.
-        if (!identical(state.advancements, current)) return null;
-
-        final updated = current.append(next);
-        // The flag is cleared here as well: this state is applied after the
-        // `finally` below and would otherwise set the flag back to true.
-        return state.copyWith(
-          advancements: updated,
-          isLoadingMoreAdvancements: false,
-        );
-      } finally {
-        dispatchSync(_SetAdvancementsLoadMore(false));
-      }
-    } else {
-      // Initial load (or refresh)
+    if (state.advancements.items.isEmpty) {
       return state.copyWith(advancements: await _firstPage(state));
     }
+    await dispatchAndWait(LoadMoreAdvancementsAction());
+    return null;
   }
-
-  InitAdvancementAction();
 }
 
-/// Internal action to manage the loading state for advancements pagination.
+/// Appends the next page of advancements, if there is one.
 ///
-/// This private action controls the `isLoadingMoreAdvancements` flag in the state,
-/// preventing multiple simultaneous load-more requests. It's used internally
-/// by InitAdvancementAction during pagination operations.
-class _SetAdvancementsLoadMore extends ReduxAction<AppState> {
-  final bool value;
-
-  _SetAdvancementsLoadMore(this.value);
-
+/// While it loads, `isWaiting(LoadMoreAdvancementsAction)` is true, and another one
+/// dispatched meanwhile is dropped.
+class LoadMoreAdvancementsAction extends ReduxAction<AppState> with NonReentrant {
   @override
-  AppState reduce() => state.copyWith(isLoadingMoreAdvancements: value);
+  Future<AppState?> reduce() async {
+    final current = state.advancements;
+    if (!current.hasNextPage) return null;
+
+    final next = await ApiService().advancementApi.getPage(
+      page: current.currentPage + 1,
+      size: current.requestSize,
+      projectId: state.selectedProject?.id,
+    );
+
+    // A project switch or refresh replaced the list while the page
+    // loaded, so the page no longer continues it.
+    if (!identical(state.advancements, current)) return null;
+
+    return state.copyWith(advancements: current.append(next));
+  }
 }
 
 class UpdateAdvancementAction extends ReduxAction<AppState> {

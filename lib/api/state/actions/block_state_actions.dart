@@ -54,42 +54,40 @@ class RefreshBlockStateAction extends ReduxAction<AppState> {
   }
 }
 
-/// Loads the first page of the blockstates, or the next one when some are
-/// loaded already and more are left.
+/// Loads the first page of blockstates when none are loaded, and the next page
+/// otherwise. The overview dispatches it when it opens.
 class InitBlockStateAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
-    final hasExisting = state.blockStates.items.isNotEmpty;
-    final canLoadMore = state.blockStates.hasNextPage;
-
-    if (hasExisting && !canLoadMore) return null;
-
-    if (hasExisting && canLoadMore) {
-      if (state.isLoadingMoreBlockStates) return null;
-      dispatchSync(_SetBlockStatesLoadMore(true));
-      try {
-        final current = state.blockStates;
-        final next = await ApiService().blockStateApi.getPage(
-          page: current.currentPage + 1,
-          size: current.requestSize,
-          projectId: state.selectedProject?.id,
-        );
-
-        // A project switch or refresh replaced the list while the page
-        // loaded, so the page no longer continues it.
-        if (!identical(state.blockStates, current)) return null;
-
-        // The flag is cleared here as well: this state is applied after the
-        // `finally` below and would otherwise set the flag back to true.
-        return state.copyWith(
-          blockStates: current.append(next),
-          isLoadingMoreBlockStates: false,
-        );
-      } finally {
-        dispatchSync(_SetBlockStatesLoadMore(false));
-      }
+    if (state.blockStates.items.isEmpty) {
+      return state.copyWith(blockStates: await _firstPage(state));
     }
-    return state.copyWith(blockStates: await _firstPage(state));
+    await dispatchAndWait(LoadMoreBlockStatesAction());
+    return null;
+  }
+}
+
+/// Appends the next page of blockstates, if there is one.
+///
+/// While it loads, `isWaiting(LoadMoreBlockStatesAction)` is true, and another one
+/// dispatched meanwhile is dropped.
+class LoadMoreBlockStatesAction extends ReduxAction<AppState> with NonReentrant {
+  @override
+  Future<AppState?> reduce() async {
+    final current = state.blockStates;
+    if (!current.hasNextPage) return null;
+
+    final next = await ApiService().blockStateApi.getPage(
+      page: current.currentPage + 1,
+      size: current.requestSize,
+      projectId: state.selectedProject?.id,
+    );
+
+    // A project switch or refresh replaced the list while the page
+    // loaded, so the page no longer continues it.
+    if (!identical(state.blockStates, current)) return null;
+
+    return state.copyWith(blockStates: current.append(next));
   }
 }
 
@@ -108,21 +106,11 @@ class LoadAllBlockStatesAction extends ReduxAction<AppState> with NonReentrant {
     }
     while (state.blockStates.hasNextPage) {
       final before = state.blockStates;
-      await dispatchAndWait(InitBlockStateAction());
+      await dispatchAndWait(LoadMoreBlockStatesAction());
       if (identical(state.blockStates, before)) break;
     }
     return null;
   }
-}
-
-/// Keeps a second load-more request out while one is running.
-class _SetBlockStatesLoadMore extends ReduxAction<AppState> {
-  final bool value;
-
-  _SetBlockStatesLoadMore(this.value);
-
-  @override
-  AppState reduce() => state.copyWith(isLoadingMoreBlockStates: value);
 }
 
 /// Adds [model] to the backend and selects what it answers, with the id it

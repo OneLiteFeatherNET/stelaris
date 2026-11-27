@@ -69,7 +69,7 @@ class SoundPage extends StatelessWidget {
           hasMore: vm.hasNextPage,
           isLoadingMore: vm.isLoadingMore,
           onLoadMore: vm.hasNextPage && !vm.isLoadingMore
-              ? () => context.dispatch(InitSoundAction())
+              ? () => context.dispatch(LoadMoreSoundEventsAction())
               : null,
         );
       },

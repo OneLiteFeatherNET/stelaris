@@ -144,11 +144,8 @@ class FontStringDelete extends ReduxAction<AppState> {
   }
 }
 
-/// Internal action to manage the loading state for item pagination.
-///
-/// This private action controls the `isLoadingMoreItems` flag in the state,
-/// preventing multiple simultaneous load-more requests. It's used internally
-/// by InitItemAction during pagination operations.
+/// Sets the `isLoadingChars` flag of the selected font, which keeps the chars
+/// from loading their next page twice at once.
 class _SetLoreCharModelLoad extends ReduxAction<AppState> {
   final bool value;
 

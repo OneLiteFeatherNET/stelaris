@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/api/state/actions/font/font_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/font/font_page.dart';
 
@@ -10,7 +11,7 @@ class FontVmFactory extends VmFactory<AppState, FontPage, FontViewModel> {
   FontViewModel fromStore() => FontViewModel(
     models: state.fonts.items,
     hasNextPage: state.fonts.hasNextPage,
-    isLoadingMore: state.isLoadingMoreFonts,
+    isLoadingMore: isWaiting(LoadMoreFontsAction),
     projectKey: state.selectedProject!.key,
   );
 }

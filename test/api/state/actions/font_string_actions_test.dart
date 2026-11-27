@@ -21,8 +21,7 @@ class _SelectFont extends ReduxAction<AppState> {
 void main() {
   group('FontCharFetchAction', () {
     test(
-      'does not fetch more chars while the font is already loading them, '
-      'even if an unrelated global loading flag is set',
+      'does not fetch more chars while the font is already loading them',
       () async {
         const loadingFont = FontModel(
           uiName: 'font',
@@ -37,11 +36,7 @@ void main() {
         );
 
         final store = Store<AppState>(
-          initialState: const AppState().copyWith(
-            selectedFont: loadingFont,
-            // Regression guard: this must NOT influence font-chars pagination.
-            isLoadingMoreItems: true,
-          ),
+          initialState: const AppState().copyWith(selectedFont: loadingFont),
         );
 
         final status = await store.dispatchAndWait(FontCharFetchAction());

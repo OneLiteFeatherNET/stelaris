@@ -69,7 +69,7 @@ class ItemPage extends StatelessWidget {
           hasMore: vm.hasNextPage,
           isLoadingMore: vm.isLoadingMore,
           onLoadMore: vm.hasNextPage && !vm.isLoadingMore
-              ? () => context.dispatch(InitItemAction())
+              ? () => context.dispatch(LoadMoreItemsAction())
               : null,
         );
       },

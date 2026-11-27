@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:stelaris/api/state/actions/expression/expression_function_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/expression_function/expression_function_page.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -17,7 +18,7 @@ class ExpressionFunctionVmFactory
   ExpressionFunctionViewModel fromStore() => ExpressionFunctionViewModel(
     models: state.expressionFunctions.items,
     hasNextPage: state.expressionFunctions.hasNextPage,
-    isLoadingMore: state.isLoadingMoreExpressionFunctions,
+    isLoadingMore: isWaiting(LoadMoreExpressionFunctionsAction),
     projectKey: state.selectedProject!.key,
   );
 }

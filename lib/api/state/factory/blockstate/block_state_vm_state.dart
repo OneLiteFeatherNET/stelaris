@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:stelaris/api/state/actions/block_state_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/blockstate/block_state_page.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -11,7 +12,7 @@ class BlockStateVmFactory
   BlockStateViewModel fromStore() => BlockStateViewModel(
     models: state.blockStates.items,
     hasNextPage: state.blockStates.hasNextPage,
-    isLoadingMore: state.isLoadingMoreBlockStates,
+    isLoadingMore: isWaiting(LoadMoreBlockStatesAction),
   );
 }
 

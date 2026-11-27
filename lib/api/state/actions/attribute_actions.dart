@@ -57,66 +57,41 @@ class RefreshAttributeAction extends ReduxAction<AppState> {
   }
 }
 
-/// Initializes or loads more attributes from the API.
-///
-/// This action handles both initial loading and pagination of attributes:
-/// - If attributes already exist and more pages are available, it loads the next page
-/// - If no attributes exist or pagination is complete, it performs an initial load
-///
-/// During load-more operations, it sets a loading flag to prevent duplicate requests
-/// and merges new results with existing data. The action maintains pagination metadata
-/// including current page, total items, and page size information.
+/// Loads the first page of attributes when none are loaded, and the next page
+/// otherwise. The overview dispatches it when it opens.
 class InitAttributeAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
-    // If we already have items and more pages, treat this as load-more.
-    final hasExisting = state.attributes.items.isNotEmpty;
-    final canLoadMore = state.attributes.hasNextPage;
-
-    if (hasExisting && !canLoadMore) return null;
-
-    if (hasExisting && canLoadMore) {
-      if (state.isLoadingAttributesMore) return null;
-      dispatchSync(_SetAttributesLoadMore(true));
-      try {
-        final current = state.attributes;
-        final next = await ApiService().attributeApi.getPage(
-          page: current.currentPage + 1,
-          size: current.requestSize,
-          projectId: state.selectedProject?.id,
-        );
-
-        // A project switch or refresh replaced the list while the page
-        // loaded, so the page no longer continues it.
-        if (!identical(state.attributes, current)) return null;
-
-        final updated = current.append(next);
-        // The flag is cleared here as well: this state is applied after the
-        // `finally` below and would otherwise set the flag back to true.
-        return state.copyWith(
-          attributes: updated,
-          isLoadingAttributesMore: false,
-        );
-      } finally {
-        dispatchSync(_SetAttributesLoadMore(false));
-      }
-    } else {
-      // Initial load (or refresh)
+    if (state.attributes.items.isEmpty) {
       return state.copyWith(attributes: await _firstPage(state));
     }
+    await dispatchAndWait(LoadMoreAttributesAction());
+    return null;
   }
 }
 
-/// Internal action to manage the loading state for attribute pagination.
+/// Appends the next page of attributes, if there is one.
 ///
-/// This private action controls the `isLoadingAttributesMore` flag in the state,
-/// preventing multiple simultaneous load-more requests. It's used internally
-/// by InitAttributeAction during pagination operations.
-class _SetAttributesLoadMore extends ReduxAction<AppState> {
-  final bool value;
-  _SetAttributesLoadMore(this.value);
+/// While it loads, `isWaiting(LoadMoreAttributesAction)` is true, and another one
+/// dispatched meanwhile is dropped.
+class LoadMoreAttributesAction extends ReduxAction<AppState> with NonReentrant {
   @override
-  AppState reduce() => state.copyWith(isLoadingAttributesMore: value);
+  Future<AppState?> reduce() async {
+    final current = state.attributes;
+    if (!current.hasNextPage) return null;
+
+    final next = await ApiService().attributeApi.getPage(
+      page: current.currentPage + 1,
+      size: current.requestSize,
+      projectId: state.selectedProject?.id,
+    );
+
+    // A project switch or refresh replaced the list while the page
+    // loaded, so the page no longer continues it.
+    if (!identical(state.attributes, current)) return null;
+
+    return state.copyWith(attributes: current.append(next));
+  }
 }
 
 /// Adds a new attribute to both the database and application state.

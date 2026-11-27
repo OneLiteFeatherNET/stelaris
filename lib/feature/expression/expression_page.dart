@@ -58,7 +58,7 @@ class ExpressionPage extends StatelessWidget {
           hasMore: vm.hasNextPage,
           isLoadingMore: vm.isLoadingMore,
           onLoadMore: vm.hasNextPage && !vm.isLoadingMore
-              ? () => context.dispatch(InitExpressionAction())
+              ? () => context.dispatch(LoadMoreExpressionsAction())
               : null,
         );
       },

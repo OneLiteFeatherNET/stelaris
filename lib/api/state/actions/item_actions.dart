@@ -58,54 +58,41 @@ class RefreshItemAction extends ReduxAction<AppState> {
   }
 }
 
+/// Loads the first page of items when none are loaded, and the next page
+/// otherwise. The overview dispatches it when it opens.
 class InitItemAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
-    // If we already have items and more pages, treat this as load-more.
-    final hasExisting = state.items.items.isNotEmpty;
-    final canLoadMore = state.items.hasNextPage;
-
-    if (hasExisting && !canLoadMore) return null;
-
-    if (hasExisting && canLoadMore) {
-      if (state.isLoadingMoreItems) return null;
-      dispatchSync(_SetLoadMoreItemModels(true));
-      try {
-        final current = state.items;
-        final next = await ApiService().itemApi.getPage(
-          page: current.currentPage + 1,
-          size: current.requestSize,
-          projectId: state.selectedProject?.id,
-        );
-
-        // A project switch or refresh replaced the list while the page
-        // loaded, so the page no longer continues it.
-        if (!identical(state.items, current)) return null;
-
-        final updated = current.append(next);
-        // The flag is cleared here as well: this state is applied after the
-        // `finally` below and would otherwise set the flag back to true.
-        return state.copyWith(items: updated, isLoadingMoreItems: false);
-      } finally {
-        dispatchSync(_SetLoadMoreItemModels(false));
-      }
-    } else {
-      // Initial load (or refresh)
+    if (state.items.items.isEmpty) {
       return state.copyWith(items: await _firstPage(state));
     }
+    await dispatchAndWait(LoadMoreItemsAction());
+    return null;
   }
 }
 
-/// Internal action to manage the loading state for item pagination.
+/// Appends the next page of items, if there is one.
 ///
-/// This private action controls the `isLoadingMoreItems` flag in the state,
-/// preventing multiple simultaneous load-more requests. It's used internally
-/// by InitItemAction during pagination operations.
-class _SetLoadMoreItemModels extends ReduxAction<AppState> {
-  final bool value;
-  _SetLoadMoreItemModels(this.value);
+/// While it loads, `isWaiting(LoadMoreItemsAction)` is true, and another one
+/// dispatched meanwhile is dropped.
+class LoadMoreItemsAction extends ReduxAction<AppState> with NonReentrant {
   @override
-  AppState reduce() => state.copyWith(isLoadingMoreItems: value);
+  Future<AppState?> reduce() async {
+    final current = state.items;
+    if (!current.hasNextPage) return null;
+
+    final next = await ApiService().itemApi.getPage(
+      page: current.currentPage + 1,
+      size: current.requestSize,
+      projectId: state.selectedProject?.id,
+    );
+
+    // A project switch or refresh replaced the list while the page
+    // loaded, so the page no longer continues it.
+    if (!identical(state.items, current)) return null;
+
+    return state.copyWith(items: current.append(next));
+  }
 }
 
 class ItemAddAction extends ReduxAction<AppState> with NonReentrant {
