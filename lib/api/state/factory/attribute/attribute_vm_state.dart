@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+import 'package:stelaris/api/state/actions/attribute_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/attributes/attribute_page.dart';
 
@@ -12,6 +13,7 @@ class AttributeVmFactory
     models: state.attributes.items,
     totalItems: state.attributes.totalItems,
     hasNextPage: state.attributes.hasNextPage,
+    isLoadingMore: isWaiting(LoadMoreAttributesAction),
     projectKey: state.selectedProject!.key,
   );
 }
@@ -20,18 +22,21 @@ class AttributeViewModel extends Vm {
   final List<AttributeModel> models;
   final int totalItems;
   final bool hasNextPage;
+  final bool isLoadingMore;
   final String projectKey;
 
   AttributeViewModel({
     required this.models,
     required this.totalItems,
     required this.hasNextPage,
+    required this.isLoadingMore,
     required this.projectKey,
   }) : super(
          equals: [
            models,
            totalItems,
            hasNextPage,
+           isLoadingMore,
            projectKey,
          ],
        );

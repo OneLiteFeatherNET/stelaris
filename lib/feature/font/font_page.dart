@@ -29,7 +29,6 @@ class FontPage extends StatelessWidget {
       vm: () => FontVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitFontAction()),
       builder: (context, vm) {
-        final isLoadingMore = context.isWaiting(LoadMoreFontsAction);
         return ModelPage<FontModel>(
           entry: NavigationEntry.font,
           mapToDataModelItem: (value) => ModelCardContent(
@@ -68,8 +67,8 @@ class FontPage extends StatelessWidget {
           },
           onRefresh: () => context.dispatch(RefreshFontAction()),
           hasMore: vm.hasNextPage,
-          isLoadingMore: isLoadingMore,
-          onLoadMore: vm.hasNextPage && !isLoadingMore
+          isLoadingMore: vm.isLoadingMore,
+          onLoadMore: vm.hasNextPage && !vm.isLoadingMore
               ? () => context.dispatch(LoadMoreFontsAction())
               : null,
         );

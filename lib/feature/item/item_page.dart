@@ -29,7 +29,6 @@ class ItemPage extends StatelessWidget {
       vm: () => ItemVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitItemAction()),
       builder: (context, vm) {
-        final isLoadingMore = context.isWaiting(LoadMoreItemsAction);
         return ModelPage<ItemModel>(
           entry: NavigationEntry.items,
           mapToDataModelItem: (value) => ModelCardContent(
@@ -68,8 +67,8 @@ class ItemPage extends StatelessWidget {
           },
           onRefresh: () => context.dispatch(RefreshItemAction()),
           hasMore: vm.hasNextPage,
-          isLoadingMore: isLoadingMore,
-          onLoadMore: vm.hasNextPage && !isLoadingMore
+          isLoadingMore: vm.isLoadingMore,
+          onLoadMore: vm.hasNextPage && !vm.isLoadingMore
               ? () => context.dispatch(LoadMoreItemsAction())
               : null,
         );

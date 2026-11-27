@@ -29,7 +29,6 @@ class AdvancementPage extends StatelessWidget {
       vm: () => AdvancementVmFactory(),
       onInit: (store) => store.dispatchAndWait(InitAdvancementAction()),
       builder: (context, vm) {
-        final isLoadingMore = context.isWaiting(LoadMoreAdvancementsAction);
         return ModelPage<AdvancementModel>(
           entry: NavigationEntry.advancements,
           mapToDataModelItem: (value) => ModelCardContent(
@@ -66,8 +65,8 @@ class AdvancementPage extends StatelessWidget {
           },
           onRefresh: () => context.dispatch(RefreshAdvancementAction()),
           hasMore: vm.hasNextPage,
-          isLoadingMore: isLoadingMore,
-          onLoadMore: vm.hasNextPage && !isLoadingMore
+          isLoadingMore: vm.isLoadingMore,
+          onLoadMore: vm.hasNextPage && !vm.isLoadingMore
               ? () => context.dispatch(LoadMoreAdvancementsAction())
               : null,
         );
