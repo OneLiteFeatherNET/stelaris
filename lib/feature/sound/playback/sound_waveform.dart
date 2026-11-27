@@ -52,3 +52,14 @@ class SoundWaveform {
   /// How long the file plays at pitch 1.
   final Duration duration;
 }
+
+/// How long a file of [duration] at pitch 1 plays at [pitch]: as in the
+/// game, the pitch changes the speed too and is clamped to 0.5..2.
+Duration playTimeAt(Duration duration, double pitch) =>
+    duration * (1 / pitch.clamp(0.5, 2.0));
+
+/// [duration] as minutes and seconds, e.g. `1:02`.
+String formatPlayTime(Duration duration) {
+  final seconds = duration.inSeconds;
+  return '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';
+}

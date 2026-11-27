@@ -3254,8 +3254,13 @@ abstract class AppLocalizations {
   /// No description provided for @sound_file_card_subtitle.
   ///
   /// In en, this message translates to:
-  /// **'{type} · Volume {volume} · Pitch {pitch}'**
-  String sound_file_card_subtitle(String type, String volume, String pitch);
+  /// **'{type} · Volume {volume} · Pitch {pitch} · Weight {weight}'**
+  String sound_file_card_subtitle(
+    String type,
+    String volume,
+    String pitch,
+    int weight,
+  );
 
   /// No description provided for @font_char_label.
   ///

@@ -1,10 +1,12 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/util/app_shapes.dart';
 
 /// The look of a card in a model grid, without any model behind it: the
 /// [content] and an optional [trailing] widget (e.g. actions or a status
 /// badge) in the header, an optional one-line [summary] below it, an
 /// optional [body] below that, e.g. a player, and a footer of [footerIcon]
-/// and [footerText] below a divider when the text is set.
+/// and [footerText] below a divider when the text is set. A [highlighted]
+/// card is outlined in the primary color, e.g. the one that plays.
 class ModelCardFrame extends StatelessWidget {
   const ModelCardFrame({
     required this.content,
@@ -14,6 +16,7 @@ class ModelCardFrame extends StatelessWidget {
     this.footerIcon,
     this.footerText,
     this.onTap,
+    this.highlighted = false,
     super.key,
   });
 
@@ -24,6 +27,7 @@ class ModelCardFrame extends StatelessWidget {
   final IconData? footerIcon;
   final String? footerText;
   final VoidCallback? onTap;
+  final bool highlighted;
 
   static const EdgeInsets _spanInset = EdgeInsets.only(right: 8);
 
@@ -48,6 +52,12 @@ class ModelCardFrame extends StatelessWidget {
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
       color: colorScheme.surfaceContainerLow,
+      shape: highlighted
+          ? RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppShapes.medium),
+              side: BorderSide(color: colorScheme.primary, width: 1.5),
+            )
+          : null,
       child: InkWell(
         key: const Key('model_grid_card_inkwell'),
         onTap: onTap,

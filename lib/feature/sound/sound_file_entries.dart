@@ -14,7 +14,7 @@ import 'package:stelaris/feature/model/model_grid.dart';
 import 'package:stelaris/feature/sound/card/sound_file_card.dart';
 import 'package:stelaris/feature/sound/modal/sound_file_modal_helper.dart';
 import 'package:stelaris/feature/sound/playback/sound_decoder.dart';
-import 'package:stelaris/feature/sound/playback/sound_file_player.dart';
+import 'package:stelaris/feature/sound/playback/sound_file_play_button.dart';
 import 'package:stelaris/feature/sound/playback/sound_playback_controller.dart';
 import 'package:stelaris/feature/sound/playback/sound_player.dart';
 import 'package:stelaris/feature/sound/playback/sound_player_bar.dart';
@@ -191,9 +191,11 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
         controller: _playback,
         projectId: _isPlayable(source) ? projectId : null,
         source: source,
-        builder: (context, waveformSettled) => SoundFileCard(
+        builder: (context, waveformSettled, isCurrent) => SoundFileCard(
           source: source,
           assetName: _assetNames[source.assetId],
+          length: _playback.readWaveformOf(source)?.duration,
+          highlighted: isCurrent,
           loading:
               projectId != null &&
               (!waveformSettled || _isAssetNameLoading(source)),
@@ -201,12 +203,11 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
           onDelete: () => _confirmAndDelete(source),
           // Only an uploaded file has audio: an event names another sound
           // event, a file without asset e.g. a vanilla sound.
-          player: projectId != null && _isPlayable(source)
-              ? SoundFilePlayer(
+          playButton: projectId != null && _isPlayable(source)
+              ? SoundFilePlayButton(
                   controller: _playback,
-                  projectId: projectId,
                   source: source,
-                  onToggle: () => _togglePlay(source),
+                  onPressed: () => _togglePlay(source),
                 )
               : null,
         ),
@@ -300,8 +301,9 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
   }
 }
 
-/// Builds [builder] with whether the waveform of [source] is read or failed,
-/// and only again when that changes, not on every change of [controller].
+/// Builds [builder] with whether the waveform of [source] is read or failed
+/// and whether it is the file in the player bar, and only again when one of
+/// them changes, not on every change of [controller].
 ///
 /// Starts reading the waveform; without a [projectId] there is none to wait
 /// for.
@@ -317,7 +319,8 @@ class _WaveformSettled extends StatefulWidget {
   final SoundPlaybackController controller;
   final String? projectId;
   final SoundFileSource source;
-  final Widget Function(BuildContext context, bool settled) builder;
+  final Widget Function(BuildContext context, bool settled, bool isCurrent)
+  builder;
 
   @override
   State<_WaveformSettled> createState() => _WaveformSettledState();
@@ -325,6 +328,7 @@ class _WaveformSettled extends StatefulWidget {
 
 class _WaveformSettledState extends State<_WaveformSettled> {
   late bool _settled;
+  late bool _isCurrent;
 
   @override
   void initState() {
@@ -353,7 +357,10 @@ class _WaveformSettledState extends State<_WaveformSettled> {
       widget.projectId == null ||
       widget.controller.isWaveformSettled(widget.source);
 
+  bool get _isCurrentNow => widget.controller.current == widget.source;
+
   void _read() {
+    _isCurrent = _isCurrentNow;
     _settled = _settledNow;
     if (_settled) return;
     widget.controller.waveformOf(widget.projectId!, widget.source).ignore();
@@ -361,9 +368,16 @@ class _WaveformSettledState extends State<_WaveformSettled> {
 
   void _onPlayback() {
     final settled = _settledNow;
-    if (settled != _settled) setState(() => _settled = settled);
+    final isCurrent = _isCurrentNow;
+    if (settled != _settled || isCurrent != _isCurrent) {
+      setState(() {
+        _settled = settled;
+        _isCurrent = isCurrent;
+      });
+    }
   }
 
   @override
-  Widget build(BuildContext context) => widget.builder(context, _settled);
+  Widget build(BuildContext context) =>
+      widget.builder(context, _settled, _isCurrent);
 }

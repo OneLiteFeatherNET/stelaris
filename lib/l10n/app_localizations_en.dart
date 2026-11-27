@@ -1754,8 +1754,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sound_asset_unlink => 'Unlink the uploaded sound';
 
   @override
-  String sound_file_card_subtitle(String type, String volume, String pitch) {
-    return '$type · Volume $volume · Pitch $pitch';
+  String sound_file_card_subtitle(
+    String type,
+    String volume,
+    String pitch,
+    int weight,
+  ) {
+    return '$type · Volume $volume · Pitch $pitch · Weight $weight';
   }
 
   @override
