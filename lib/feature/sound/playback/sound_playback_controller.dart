@@ -162,17 +162,17 @@ class SoundPlaybackController extends ChangeNotifier {
     return future;
   }
 
-  /// Plays [source] of [projectId], plays it on if it is paused, or stops it
-  /// if it loads or plays.
+  /// Plays [source] of [projectId], pauses it while it plays, plays it on
+  /// while it is paused, or stops it while it loads.
   ///
   /// Completes when the playback ends. Throws what the load or the player
   /// threw, e.g. a [SoundFileUnavailableException].
   Future<void> toggle(String projectId, SoundFileSource source) async {
     if (source != _active) return play(projectId, source);
-    if (_status == SoundPlaybackStatus.paused) {
-      togglePause();
-    } else {
+    if (_status == SoundPlaybackStatus.loading) {
       stop();
+    } else {
+      togglePause();
     }
   }
 

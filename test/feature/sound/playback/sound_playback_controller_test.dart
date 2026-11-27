@@ -134,16 +134,30 @@ void main() {
     },
   );
 
-  test('a second toggle of the playing source stops it', () async {
+  test('a second toggle of the playing source pauses it', () async {
     final source = _source('a');
     final done = controller.toggle('p1', source);
     loader.pending['a']!.complete(_file);
     await pumpEventQueue();
 
     await controller.toggle('p1', source);
+
+    expect(player.pauses, 1);
+    expect(player.stops, 0);
+    expect(controller.statusOf(source), SoundPlaybackStatus.paused);
+    controller.stop();
+    await done;
+  });
+
+  test('a toggle of the loading source stops it', () async {
+    final source = _source('a');
+    final done = controller.toggle('p1', source);
+
+    await controller.toggle('p1', source);
+    loader.pending['a']!.complete(_file);
     await done;
 
-    expect(player.stops, 1);
+    expect(player.played, isEmpty);
     expect(controller.statusOf(source), SoundPlaybackStatus.idle);
   });
 
