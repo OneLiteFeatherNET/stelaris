@@ -4,6 +4,7 @@ import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/dialog/notice_box.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/formatter/formatters.dart';
+import 'package:stelaris/feature/dialogs/key_follows_name.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
 import 'package:stelaris/feature/base/input/length_counter.dart';
@@ -12,7 +13,8 @@ import 'package:stelaris/feature/base/input/length_counter.dart';
 ///
 /// Features:
 /// - Display name field (`uiName`)
-/// - Key field with Adventure key-part validation
+/// - Key field with Adventure key-part validation, filled from the name
+///   (`My Sword` → `my_sword`) until it is edited by hand
 /// - Live preview of the resulting `namespace:key`
 ///
 /// Models without a key, such as expressions, pass `askKey: false`. The key
@@ -55,8 +57,22 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
   final _nameController = TextEditingController();
   final _keyController = TextEditingController();
 
+  KeyFollowsName? _keyFollowsName;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.askKey) {
+      _keyFollowsName = KeyFollowsName(
+        name: _nameController,
+        key: _keyController,
+      );
+    }
+  }
+
   @override
   void dispose() {
+    _keyFollowsName?.dispose();
     _nameController.dispose();
     _keyController.dispose();
     super.dispose();

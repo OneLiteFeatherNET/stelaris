@@ -131,16 +131,52 @@ void main() {
         find.widgetWithText(TextFormField, 'Sword (Copy)'),
         '  Blade  ',
       );
-      await tester.enterText(
-        find.widgetWithText(TextFormField, 'sword-copy'),
-        'blade',
-      );
+      await tester.enterText(find.byType(TextFormField).at(1), 'blade');
       await submit(tester);
 
       expect(submitted.single.name, 'Blade');
       expect(submitted.single.key, 'blade');
       expect(popped?.key, 'blade');
       expect(find.byType(CopyModelDialog), findsNothing);
+    });
+
+    testWidgets('renaming the copy fills the key from the new name', (
+      tester,
+    ) async {
+      await pump(tester);
+
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Sword (Copy)'),
+        'Fire Sword',
+      );
+      await tester.pump();
+
+      expect(find.widgetWithText(TextFormField, 'fire_sword'), findsOneWidget);
+      expect(find.text('lobby:fire_sword'), findsOneWidget);
+    });
+
+    testWidgets('focusing the name keeps the prefilled key', (tester) async {
+      await pump(tester);
+
+      await tester.tap(find.widgetWithText(TextFormField, 'Sword (Copy)'));
+      await tester.pump();
+
+      expect(find.widgetWithText(TextFormField, 'sword-copy'), findsOneWidget);
+    });
+
+    testWidgets('a key typed by hand stays when the name changes', (
+      tester,
+    ) async {
+      await pump(tester);
+
+      await tester.enterText(find.byType(TextFormField).at(1), 'blade');
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Sword (Copy)'),
+        'Fire Sword',
+      );
+      await tester.pump();
+
+      expect(find.widgetWithText(TextFormField, 'blade'), findsOneWidget);
     });
 
     testWidgets('an invalid key blocks submitting', (tester) async {
