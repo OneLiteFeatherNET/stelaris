@@ -38,6 +38,37 @@ void main() {
       throwsA(isA<DioException>()),
     );
   });
+  group('send timeout', () {
+    Future<Duration?> sendTimeoutOf(
+      Future<Object?> Function(Dio dio) request,
+    ) async {
+      final apiClient = ApiClient('http://backend.test/api');
+      Duration? sent;
+      apiClient.dio.httpClientAdapter = FakeHttpClientAdapter((options) {
+        sent = options.sendTimeout;
+        return FakeHttpClientAdapter.response({'ok': true});
+      });
+      await request(apiClient.dio);
+      return sent;
+    }
+
+    test('is off for a request without a body, which the browser cannot '
+        'time', () async {
+      expect(await sendTimeoutOf((dio) => dio.get('/ping')), Duration.zero);
+      expect(
+        await sendTimeoutOf((dio) => dio.delete('/items/1')),
+        Duration.zero,
+      );
+    });
+
+    test('stays for a request with a body', () async {
+      expect(
+        await sendTimeoutOf((dio) => dio.post('/items', data: {'a': 1})),
+        const Duration(seconds: 10),
+      );
+    });
+  });
+
   test('configures dio with default timeouts and allows custom timeouts', () {
     final defaultClient = ApiClient('http://backend.test/api');
     expect(
