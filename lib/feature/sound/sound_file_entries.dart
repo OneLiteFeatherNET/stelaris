@@ -9,6 +9,7 @@ import 'package:stelaris/api/state/factory/sound/selected_sound_state.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
+import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/model/model_grid.dart';
 import 'package:stelaris/feature/sound/card/sound_file_card.dart';
 import 'package:stelaris/feature/sound/modal/sound_file_modal_helper.dart';
@@ -16,6 +17,8 @@ import 'package:stelaris/feature/sound/playback/sound_decoder.dart';
 import 'package:stelaris/feature/sound/playback/sound_file_player.dart';
 import 'package:stelaris/feature/sound/playback/sound_playback_controller.dart';
 import 'package:stelaris/feature/sound/playback/sound_player.dart';
+import 'package:stelaris/feature/sound/playback/sound_player_bar.dart';
+import 'package:stelaris/util/dispatch_ext.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class SoundFileEntryPage extends StatefulWidget {
@@ -140,6 +143,19 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
               vm.hasNoFiles
                   ? const Flexible(child: EmptyDataWidget())
                   : Expanded(child: _buildGrid(vm)),
+              if (_projectId case final projectId?)
+                SoundPlayerBar(
+                  controller: _playback,
+                  projectId: projectId,
+                  sources: vm.sources.where(_isPlayable).toList(),
+                  titleOf: (source) =>
+                      _assetNames[source.assetId] ?? source.name,
+                  onPlay: (source, {from = Duration.zero}) => _runPlayback(
+                    (projectId) =>
+                        _playback.play(projectId, source, from: from),
+                  ),
+                  onApply: _apply,
+                ),
             ],
           ),
         );
@@ -147,10 +163,11 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
     );
   }
 
+  String? get _projectId =>
+      StoreProvider.state<AppState>(context).selectedProject?.id;
+
   Widget _buildGrid(SelectedSoundView vm) {
-    final projectId = StoreProvider.state<AppState>(context)
-        .selectedProject
-        ?.id;
+    final projectId = _projectId;
     _loadAssetNamesFor(projectId, vm.sources);
     return ModelGrid<SoundFileSource>(
       items: vm.sources,
@@ -207,15 +224,19 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
   static bool _isPlayable(SoundFileSource source) =>
       source.type == 'file' && source.assetId != null;
 
-  Future<void> _togglePlay(SoundFileSource source) async {
-    final projectId = StoreProvider.state<AppState>(context)
-        .selectedProject
-        ?.id;
+  Future<void> _togglePlay(SoundFileSource source) =>
+      _runPlayback((projectId) => _playback.toggle(projectId, source));
+
+  /// Runs [playback] in the selected project and reports what goes wrong.
+  Future<void> _runPlayback(
+    Future<void> Function(String projectId) playback,
+  ) async {
+    final projectId = _projectId;
     if (projectId == null) return;
     final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     try {
-      await _playback.toggle(projectId, source);
+      await playback(projectId);
     } on SoundFileUnavailableException catch (e) {
       messenger.showSnackBar(
         SnackBar(content: Text(l10n.sound_play_unavailable(e.key))),
@@ -224,6 +245,26 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
       debugPrint('Sound playback failed: $e');
       messenger.showSnackBar(SnackBar(content: Text(l10n.sound_play_failed)));
     }
+  }
+
+  /// Saves the volume and pitch tried out in the player bar to the file.
+  Future<void> _apply(SoundFileSource updated) async {
+    final (:ok, :error) = await context.dispatchAndCatch(
+      SoundFileUpdateAction(updated),
+    );
+    if (!mounted) return;
+    if (error != null) {
+      context.showErrorSnackBar(error);
+      return;
+    }
+    if (!ok) return;
+    final saved = StoreProvider.state<AppState>(context)
+        .selectedSoundEvent
+        ?.files
+        .items
+        .where((file) => file.id == updated.id)
+        .firstOrNull;
+    _playback.replaceCurrent(saved ?? updated);
   }
 
   Future<void> _confirmAndDelete(SoundFileSource source) async {
