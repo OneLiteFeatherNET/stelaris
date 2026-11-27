@@ -89,6 +89,7 @@ class ApiClient {
           },
         ),
       );
+    dio.interceptors.add(const _SendTimeoutOnlyWithBody());
     if (kDebugMode) {
       dio.interceptors.add(_DebugLogInterceptor());
     }
@@ -177,5 +178,22 @@ class _DebugLogInterceptor extends LogInterceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (!_isBinary(err.requestOptions)) return super.onError(err, handler);
     _withoutBody.onError(err, handler);
+  }
+}
+
+/// Sends a request without a body without a send timeout.
+///
+/// A send timeout bounds the upload of a body. In the browser dio can only
+/// measure it while a body is uploaded, and logs a warning for every request
+/// without one, which are most of them. Requests with a body keep it.
+class _SendTimeoutOnlyWithBody extends Interceptor {
+  const _SendTimeoutOnlyWithBody();
+
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    if (options.data == null) {
+      options.sendTimeout = Duration.zero;
+    }
+    handler.next(options);
   }
 }
