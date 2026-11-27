@@ -113,9 +113,6 @@ abstract class AppState with _$AppState {
     bool isLoadingAttributesMore,
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
-    bool isLoadingMoreItems,
-    @JsonKey(includeToJson: false, includeFromJson: false)
-    @Default(false)
     bool isLoadingMoreAdvancements,
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)

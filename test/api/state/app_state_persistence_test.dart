@@ -122,7 +122,7 @@ void main() {
 
       await persistor.persistDifference(
         lastPersistedState: state,
-        newState: state.copyWith(isLoadingMoreItems: true),
+        newState: state.copyWith(isLoadingMoreFonts: true),
       );
 
       expect(localStorage.getItem(AppPersistor.appState), 'untouched');

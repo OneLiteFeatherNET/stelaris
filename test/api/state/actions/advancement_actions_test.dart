@@ -9,7 +9,7 @@ void main() {
         AdvancementModel(uiName: id, id: id, projectId: projectId),
     listOf: (state) => state.advancements,
     withList: (state, list) => state.copyWith(advancements: list),
-    isLoadingMore: (state) => state.isLoadingMoreAdvancements,
+    isLoadingMore: (store) => store.state.isLoadingMoreAdvancements,
     selectedOf: (state) => state.selectedAdvancement,
     withSelected: (state, model) => state.copyWith(selectedAdvancement: model),
     init: InitAdvancementAction.new,

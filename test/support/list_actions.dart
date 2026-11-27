@@ -12,13 +12,13 @@ import 'fake_http_client_adapter.dart';
 /// adding to it, removing from it and copying into it.
 ///
 /// [model] builds a model of the kind, [listOf] and [withList] read and
-/// write its list in the state, [isLoadingMore] reads its load-more flag,
+/// write its list in the state, [isLoadingMore] tells whether the next page is loading,
 /// [selectedOf] and [withSelected] read and write its selection.
 void listActionTests<T extends DataModel>({
   required T Function(String id, {String? projectId}) model,
   required PaginatedResult<T> Function(AppState state) listOf,
   required AppState Function(AppState state, PaginatedResult<T> list) withList,
-  required bool Function(AppState state) isLoadingMore,
+  required bool Function(Store<AppState> store) isLoadingMore,
   required T? Function(AppState state) selectedOf,
   required AppState Function(AppState state, T model) withSelected,
   required ReduxAction<AppState> Function() init,
@@ -101,11 +101,11 @@ void listActionTests<T extends DataModel>({
 
       respond(page(2));
       await store.dispatchAndWait(init());
-      expect(isLoadingMore(store.state), isFalse);
+      expect(isLoadingMore(store), isFalse);
 
       respond(page(3));
       await store.dispatchAndWait(init());
-      expect(isLoadingMore(store.state), isFalse);
+      expect(isLoadingMore(store), isFalse);
       expect(listOf(store.state).items.map((m) => m.id), [
         'page1-0',
         'page1-1',
@@ -156,7 +156,7 @@ void listActionTests<T extends DataModel>({
 
       expect(store.state.selectedProject, other);
       expect(listOf(store.state).items, isEmpty);
-      expect(isLoadingMore(store.state), isFalse);
+      expect(isLoadingMore(store), isFalse);
     });
   });
 
