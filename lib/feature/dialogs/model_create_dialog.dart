@@ -4,6 +4,7 @@ import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/base/dialog/notice_box.dart';
 import 'package:stelaris/util/constants.dart';
 import 'package:stelaris/util/formatter/formatters.dart';
+import 'package:stelaris/util/key_from_name.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris/util/validators.dart';
 import 'package:stelaris/feature/base/input/length_counter.dart';
@@ -12,7 +13,8 @@ import 'package:stelaris/feature/base/input/length_counter.dart';
 ///
 /// Features:
 /// - Display name field (`uiName`)
-/// - Key field with Adventure key-part validation
+/// - Key field with Adventure key-part validation, filled from the name
+///   (`My Sword` → `my_sword`) until it is edited by hand
 /// - Live preview of the resulting `namespace:key`
 ///
 /// Models without a key, such as expressions, pass `askKey: false`. The key
@@ -54,6 +56,23 @@ class _ModelCreateDialogState extends State<ModelCreateDialog> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _keyController = TextEditingController();
+
+  /// The key last made from the name. While the key field still holds it, or
+  /// is empty, the key follows the name; a key typed by hand is left alone.
+  String _keyFromName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.askKey) _nameController.addListener(_followName);
+  }
+
+  void _followName() {
+    final current = _keyController.text;
+    if (current.isNotEmpty && current != _keyFromName) return;
+    _keyFromName = keyFromName(_nameController.text);
+    if (current != _keyFromName) _keyController.text = _keyFromName;
+  }
 
   @override
   void dispose() {

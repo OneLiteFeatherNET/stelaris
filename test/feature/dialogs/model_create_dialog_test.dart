@@ -100,6 +100,55 @@ void main() {
       expect(find.text('my_project:ruby_sword'), findsOneWidget);
     });
 
+    testWidgets('the key follows the typed name', (tester) async {
+      String? submittedKey;
+      await pumpDialog(
+        tester,
+        onSubmit: (name, key) => submittedKey = key,
+      );
+
+      await tester.enterText(find.byType(TextFormField).at(0), 'My Sword');
+      await tester.pump();
+
+      expect(find.text('my_project:my_sword'), findsOneWidget);
+
+      await tester.tap(find.text('Create'));
+      await tester.pump();
+
+      expect(submittedKey, 'my_sword');
+    });
+
+    testWidgets('a key typed by hand is no longer overwritten by the name', (
+      tester,
+    ) async {
+      await pumpDialog(tester, onSubmit: (name, key) {});
+
+      final nameField = find.byType(TextFormField).at(0);
+      final keyField = find.byType(TextFormField).at(1);
+
+      await tester.enterText(nameField, 'My Sword');
+      await tester.enterText(keyField, 'blade');
+      await tester.enterText(nameField, 'My Great Sword');
+      await tester.pump();
+
+      expect(find.text('my_project:blade'), findsOneWidget);
+    });
+
+    testWidgets('a cleared key follows the name again', (tester) async {
+      await pumpDialog(tester, onSubmit: (name, key) {});
+
+      final nameField = find.byType(TextFormField).at(0);
+      final keyField = find.byType(TextFormField).at(1);
+
+      await tester.enterText(nameField, 'My Sword');
+      await tester.enterText(keyField, 'blade');
+      await tester.enterText(keyField, '');
+      await tester.enterText(nameField, 'My Bow');
+      await tester.pump();
+
+      expect(find.text('my_project:my_bow'), findsOneWidget);
+    });
+
     testWidgets('validates required fields on create click', (tester) async {
       String? submittedName;
       String? submittedKey;
