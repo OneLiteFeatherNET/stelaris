@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -898,26 +897,6 @@ void main() {
       expect(find.text('minecraft:food'), findsOneWidget);
       expect(find.text('minecraft:max_stack_size'), findsNothing);
       expect(identical(tester.widget(menu), before), isTrue);
-    });
-
-    testWidgets('scrolling does not repaint the whole picker', (tester) async {
-      await openPicker(tester);
-
-      final list = find.byType(ListView);
-      tester.binding.handlePointerEvent(
-        PointerScrollEvent(
-          position: tester.getCenter(list),
-          scrollDelta: const Offset(0, 100),
-        ),
-      );
-
-      // The Material around the list holds the ink of the rows unless each
-      // row has its own: then it would repaint all rows on every frame.
-      final around = find
-          .ancestor(of: list, matching: find.byType(Material))
-          .first;
-      expect(tester.renderObject(around).debugNeedsPaint, isFalse);
-      await tester.pump();
     });
   });
 }

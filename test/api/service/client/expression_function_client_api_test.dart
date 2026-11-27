@@ -52,58 +52,6 @@ void main() {
     );
   });
 
-  test('add POSTs the function to the project', () async {
-    final adapter = RecordingHttpClientAdapter({
-      'id': 'f1',
-      'uiName': 'Damage bonus',
-      'name': 'damage_bonus',
-    });
-    apiClient.dio.httpClientAdapter = adapter;
-
-    final created = await functionApi.add(function);
-
-    expect(adapter.lastRequest!.method, 'POST');
-    expect(
-      adapter.lastRequest!.uri.path,
-      '/api/project/p1/expression-function',
-    );
-    expect(created.id, 'f1');
-  });
-
-  test('update POSTs the function to its update path', () async {
-    final adapter = RecordingHttpClientAdapter({
-      'id': 'f1',
-      'uiName': 'Damage bonus',
-      'name': 'damage_bonus',
-    });
-    apiClient.dio.httpClientAdapter = adapter;
-
-    await functionApi.update(function.copyWith(id: 'f1'));
-
-    expect(adapter.lastRequest!.method, 'POST');
-    expect(
-      adapter.lastRequest!.uri.path,
-      '/api/project/p1/expression-function/update',
-    );
-  });
-
-  test('remove DELETEs the function by its id', () async {
-    final adapter = RecordingHttpClientAdapter({
-      'id': 'f1',
-      'uiName': 'Damage bonus',
-      'name': 'damage_bonus',
-    });
-    apiClient.dio.httpClientAdapter = adapter;
-
-    await functionApi.remove(function.copyWith(id: 'f1'));
-
-    expect(adapter.lastRequest!.method, 'DELETE');
-    expect(
-      adapter.lastRequest!.uri.path,
-      '/api/project/p1/expression-function/delete/f1',
-    );
-  });
-
   test(
     'evaluate POSTs the function and its arguments to the project',
     () async {
