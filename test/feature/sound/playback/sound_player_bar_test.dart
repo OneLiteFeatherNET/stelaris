@@ -284,6 +284,9 @@ void main() {
     await pumpBar(tester);
     await start(tester, a);
 
+    await tester.tap(find.byKey(const Key('sound_player_tune')));
+    await settle(tester);
+
     FilledButton applyButton() => tester.widget<FilledButton>(
       find.byKey(const Key('sound_player_apply')),
     );

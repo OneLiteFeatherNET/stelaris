@@ -843,6 +843,7 @@
   "sound_player_apply_tooltip": "Save this volume and pitch to the file",
   "sound_player_reset": "Reset",
   "sound_player_reset_tooltip": "Back to the volume and pitch of the file",
+  "sound_player_tune": "Try out volume and pitch",
   "sound_asset_choose": "Choose uploaded sound",
   "sound_file_plays_event": "Plays another sound event",
   "sound_asset_linked": "Linked to the uploaded sound",

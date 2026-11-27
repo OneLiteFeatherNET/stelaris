@@ -1739,6 +1739,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Back to the volume and pitch of the file';
 
   @override
+  String get sound_player_tune => 'Try out volume and pitch';
+
+  @override
   String get sound_asset_choose => 'Choose uploaded sound';
 
   @override

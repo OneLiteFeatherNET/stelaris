@@ -3221,6 +3221,12 @@ abstract class AppLocalizations {
   /// **'Back to the volume and pitch of the file'**
   String get sound_player_reset_tooltip;
 
+  /// No description provided for @sound_player_tune.
+  ///
+  /// In en, this message translates to:
+  /// **'Try out volume and pitch'**
+  String get sound_player_tune;
+
   /// No description provided for @sound_asset_choose.
   ///
   /// In en, this message translates to:

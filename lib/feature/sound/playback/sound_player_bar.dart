@@ -7,6 +7,7 @@ import 'package:stelaris/feature/sound/playback/pick_by_weight.dart';
 import 'package:stelaris/feature/sound/playback/sound_playback_controller.dart';
 import 'package:stelaris/feature/sound/playback/sound_waveform.dart';
 import 'package:stelaris/feature/sound/playback/sound_waveform_painter.dart';
+import 'package:stelaris/util/app_shapes.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
@@ -219,9 +220,6 @@ class _SoundPlayerBarState extends State<SoundPlayerBar>
     }
   }
 
-  /// Slider values keep to two decimals, as typed into the file's dialog.
-  static double _round(double value) => (value * 100).roundToDouble() / 100;
-
   @override
   Widget build(BuildContext context) {
     final current = _controller.current;
@@ -229,148 +227,203 @@ class _SoundPlayerBarState extends State<SoundPlayerBar>
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final index = _index;
-    final status = _controller.status;
-    final rate = _controller.pitchOf(current).clamp(0.5, 2.0);
 
     return Padding(
       padding: const EdgeInsets.only(top: 12),
       child: Material(
         key: const Key('sound_player_bar'),
         color: theme.colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppShapes.large),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: Row(
             children: [
-              Row(
-                children: [
-                  IconButton(
-                    key: const Key('sound_player_previous'),
-                    tooltip: l10n.sound_player_previous,
-                    onPressed: index > 0 ? () => _step(-1) : null,
-                    icon: const Icon(Icons.skip_previous),
-                  ),
-                  _PlayPauseButton(
-                    status: status,
-                    onPressed: () => _playPause(current),
-                  ),
-                  IconButton(
-                    key: const Key('sound_player_next'),
-                    tooltip: l10n.sound_player_next,
-                    onPressed: index < widget.sources.length - 1
-                        ? () => _step(1)
-                        : null,
-                    icon: const Icon(Icons.skip_next),
-                  ),
-                  const SizedBox(width: 8),
-                  SizedBox(
-                    width: 180,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          widget.titleOf(current),
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          current.name,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+              IconButton(
+                key: const Key('sound_player_previous'),
+                tooltip: l10n.sound_player_previous,
+                onPressed: index > 0 ? () => _step(-1) : null,
+                icon: const Icon(Icons.skip_previous),
+              ),
+              _PlayPauseButton(
+                status: _controller.status,
+                onPressed: () => _playPause(current),
+              ),
+              IconButton(
+                key: const Key('sound_player_next'),
+                tooltip: l10n.sound_player_next,
+                onPressed: index < widget.sources.length - 1
+                    ? () => _step(1)
+                    : null,
+                icon: const Icon(Icons.skip_next),
+              ),
+              const SizedBox(width: 8),
+              SizedBox(
+                width: 220,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      widget.titleOf(current),
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
+                    Text(
+                      current.name,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  // Wider, the bars of the waveform would stand apart.
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 640),
                     child: _SeekableWaveform(
                       future: _controller.waveformOf(widget.projectId, current),
                       initial: _controller.readWaveformOf(current),
                       position: _position,
-                      rate: rate,
+                      pitch: _controller.pitchOf(current),
                       onSeek: (waveform, fraction, {start = true}) =>
                           _seek(current, waveform, fraction, start: start),
                     ),
                   ),
-                  IconButton(
-                    key: const Key('sound_player_random'),
-                    tooltip: l10n.sound_player_random,
-                    onPressed: widget.sources.isEmpty ? null : _playRandom,
-                    icon: const Icon(Icons.casino_outlined),
-                  ),
-                  IconButton(
-                    key: const Key('sound_player_close'),
-                    tooltip: l10n.sound_player_close,
-                    onPressed: _controller.close,
-                    icon: const Icon(Icons.close),
-                  ),
-                ],
+                ),
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: _ValueSlider(
-                      key: const Key('sound_player_pitch'),
-                      label: l10n.sound_pitch,
-                      value: _controller.pitchOf(current),
-                      min: 0.5,
-                      max: 2,
-                      divisions: 30,
-                      onChanged: (value) =>
-                          _controller.preview(pitch: _round(value)),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _ValueSlider(
-                      key: const Key('sound_player_volume'),
-                      label: l10n.sound_volume,
-                      value: _controller.volumeOf(current),
-                      min: 0,
-                      // A volume above 1 only widens the range in the game.
-                      max: max(1, current.volume),
-                      divisions: (max(1, current.volume) * 20).round(),
-                      onChanged: (value) =>
-                          _controller.preview(volume: _round(value)),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Tooltip(
-                    message: l10n.sound_player_reset_tooltip,
-                    child: TextButton.icon(
-                      key: const Key('sound_player_reset'),
-                      onPressed: _controller.hasPreview
-                          ? _controller.resetPreview
-                          : null,
-                      icon: const Icon(Icons.restart_alt),
-                      label: Text(l10n.sound_player_reset),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Tooltip(
-                    message: l10n.sound_player_apply_tooltip,
-                    child: FilledButton.tonalIcon(
-                      key: const Key('sound_player_apply'),
-                      onPressed: _controller.hasPreview && !_applying
-                          ? () => _apply(current)
-                          : null,
-                      icon: const Icon(Icons.check),
-                      label: Text(l10n.sound_player_apply),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                ],
+              const SizedBox(width: 8),
+              _TuneMenu(
+                controller: _controller,
+                current: current,
+                applying: _applying,
+                onApply: () => _apply(current),
+              ),
+              IconButton(
+                key: const Key('sound_player_random'),
+                tooltip: l10n.sound_player_random,
+                onPressed: widget.sources.isEmpty ? null : _playRandom,
+                icon: const Icon(Icons.casino_outlined),
+              ),
+              IconButton(
+                key: const Key('sound_player_close'),
+                tooltip: l10n.sound_player_close,
+                onPressed: _controller.close,
+                icon: const Icon(Icons.close),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The button that opens volume and pitch to try out, with a dot while they
+/// differ from the file's, and the menu of the sliders, apply and reset.
+class _TuneMenu extends StatelessWidget {
+  const _TuneMenu({
+    required this.controller,
+    required this.current,
+    required this.applying,
+    required this.onApply,
+  });
+
+  final SoundPlaybackController controller;
+  final SoundFileSource current;
+  final bool applying;
+  final VoidCallback onApply;
+
+  /// Slider values keep to two decimals, as typed into the file's dialog.
+  static double _round(double value) => (value * 100).roundToDouble() / 100;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    // A volume above 1 only widens the range in the game.
+    final maxVolume = max<double>(1, current.volume);
+    return MenuAnchor(
+      alignmentOffset: const Offset(0, 8),
+      menuChildren: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          child: SizedBox(
+            width: 320,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                _ValueSlider(
+                  key: const Key('sound_player_pitch'),
+                  label: l10n.sound_pitch,
+                  value: controller.pitchOf(current),
+                  min: 0.5,
+                  max: 2,
+                  divisions: 30,
+                  onChanged: (value) =>
+                      controller.preview(pitch: _round(value)),
+                ),
+                _ValueSlider(
+                  key: const Key('sound_player_volume'),
+                  label: l10n.sound_volume,
+                  value: controller.volumeOf(current),
+                  min: 0,
+                  max: maxVolume,
+                  divisions: (maxVolume * 20).round(),
+                  onChanged: (value) =>
+                      controller.preview(volume: _round(value)),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Tooltip(
+                      message: l10n.sound_player_reset_tooltip,
+                      child: TextButton.icon(
+                        key: const Key('sound_player_reset'),
+                        onPressed: controller.hasPreview
+                            ? controller.resetPreview
+                            : null,
+                        icon: const Icon(Icons.restart_alt),
+                        label: Text(l10n.sound_player_reset),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Tooltip(
+                      message: l10n.sound_player_apply_tooltip,
+                      child: FilledButton.tonalIcon(
+                        key: const Key('sound_player_apply'),
+                        onPressed: controller.hasPreview && !applying
+                            ? onApply
+                            : null,
+                        icon: const Icon(Icons.check),
+                        label: Text(l10n.sound_player_apply),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+      builder: (context, menu, _) => IconButton(
+        key: const Key('sound_player_tune'),
+        tooltip: l10n.sound_player_tune,
+        isSelected: menu.isOpen,
+        onPressed: () => menu.isOpen ? menu.close() : menu.open(),
+        icon: Badge(
+          isLabelVisible: controller.hasPreview,
+          smallSize: 8,
+          child: const Icon(Icons.tune),
         ),
       ),
     );
@@ -426,20 +479,17 @@ class _SeekableWaveform extends StatelessWidget {
     required this.future,
     required this.initial,
     required this.position,
-    required this.rate,
+    required this.pitch,
     required this.onSeek,
   });
 
   final Future<SoundWaveform> future;
   final SoundWaveform? initial;
   final ValueNotifier<Duration> position;
-  final double rate;
-  final _OnSeek onSeek;
 
-  static String _format(Duration duration) {
-    final seconds = duration.inSeconds;
-    return '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';
-  }
+  /// The pitch it plays with, for the times as they play in the game.
+  final double pitch;
+  final _OnSeek onSeek;
 
   @override
   Widget build(BuildContext context) {
@@ -483,7 +533,7 @@ class _SeekableWaveform extends StatelessWidget {
                             ),
                       child: RepaintBoundary(
                         child: CustomPaint(
-                          size: const Size.fromHeight(36),
+                          size: const Size.fromHeight(32),
                           painter: SoundWaveformPainter(
                             peaks: waveform?.peaks ?? const [],
                             duration: waveform?.duration,
@@ -504,8 +554,8 @@ class _SeekableWaveform extends StatelessWidget {
               builder: (context, played, _) => Text(
                 waveform == null
                     ? '–:––'
-                    : '${_format(played * (1 / rate))} / '
-                          '${_format(waveform.duration * (1 / rate))}',
+                    : '${formatPlayTime(playTimeAt(played, pitch))} / '
+                          '${formatPlayTime(playTimeAt(waveform.duration, pitch))}',
                 key: const Key('sound_player_time'),
                 style: timeStyle,
               ),
