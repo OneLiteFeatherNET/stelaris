@@ -83,7 +83,7 @@ void main() {
       await tester.tap(find.text('b'));
       await tester.pumpAndSettle();
       await tester.enterText(_dialogField, 'bb');
-      await _submit(tester, l10n.button_save);
+      await _submit(tester, l10n.button_apply);
 
       expect(changes, hasLength(1));
       expect(_names(changes.single), ['a', 'bb', 'c']);
@@ -96,7 +96,7 @@ void main() {
 
       await tester.tap(find.text('radius'));
       await tester.pumpAndSettle();
-      await _submit(tester, l10n.button_save);
+      await _submit(tester, l10n.button_apply);
 
       expect(
         find.text(l10n.expression_variable_name_duplicate('radius')),

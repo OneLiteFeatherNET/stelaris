@@ -131,7 +131,7 @@ void main() {
 
     expect(find.text(l10n.expression_function_name_invalid), findsOneWidget);
 
-    await tester.tap(find.text(l10n.button_save));
+    await tester.tap(find.text(l10n.button_apply));
     await tester.pumpAndSettle();
 
     expect(
@@ -163,7 +163,7 @@ void main() {
       ),
       'crit_bonus',
     );
-    await tester.tap(find.text(l10n.button_save));
+    await tester.tap(find.text(l10n.button_apply));
     await tester.pumpAndSettle();
 
     expect(store.state.selectedExpressionFunction?.name, 'crit_bonus');

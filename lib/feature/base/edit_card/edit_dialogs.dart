@@ -30,7 +30,7 @@ Future<void> editField(BuildContext context, EditField field) async {
         context: context,
         builder: (dialogContext) => ComponentDialog(
           title: field.label,
-          actionLabel: context.l10n.button_save,
+          actionLabel: context.l10n.button_apply,
           componentContext: field.componentContext,
           initialValue: textComponentSource(field.value),
           required: false,
@@ -113,7 +113,7 @@ class _ChoiceEditDialogState<T> extends State<_ChoiceEditDialog<T>> {
     final theme = Theme.of(context);
     return FormDialog(
       title: field.label,
-      actionLabel: context.l10n.button_save,
+      actionLabel: context.l10n.button_apply,
       maxWidth: 440,
       onSubmit: null,
       showActions: false,
@@ -360,7 +360,7 @@ class _TextEditDialogState extends State<_TextEditDialog> {
     return FormDialog(
       title: field.label,
       actionIcon: Icons.check,
-      actionLabel: context.l10n.button_save,
+      actionLabel: context.l10n.button_apply,
       maxWidth: 440,
       onSubmit: _save,
       content: Form(

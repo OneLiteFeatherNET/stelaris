@@ -84,7 +84,7 @@ void main() {
       await open(tester);
 
       await type(tester, 'mymod:custom_item');
-      await tester.tap(find.text('Save'));
+      await tester.tap(find.text('Apply'));
       await tester.pumpAndSettle();
 
       expect(changes, ['mymod:custom_item']);

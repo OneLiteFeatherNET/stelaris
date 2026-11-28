@@ -131,7 +131,7 @@ void main() {
       await tester.pump();
 
       expect(rebuilt[FilterChip], isNull);
-      await tester.tap(find.text('Save'));
+      await tester.tap(find.text('Apply'));
       await tester.pumpAndSettle();
       expect(_result!.model, 'minecraft:block/stone');
     });
@@ -146,7 +146,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byType(Switch));
       await tester.pump();
-      await tester.tap(find.text('Save'));
+      await tester.tap(find.text('Apply'));
       await tester.pumpAndSettle();
 
       final rule = _result!;
@@ -166,7 +166,7 @@ void main() {
       await tester.pump();
       expect(find.text('Top'), findsOneWidget);
       expect(find.byTooltip('Rename'), findsOneWidget);
-      await tester.tap(find.text('Save'));
+      await tester.tap(find.text('Apply'));
       await tester.pumpAndSettle();
 
       expect(_result!.name, 'Top');
@@ -178,7 +178,7 @@ void main() {
       await tester.tap(find.byTooltip('Rename'));
       await tester.pump();
       await tester.enterText(find.byType(TextField).first, '  ');
-      await tester.tap(find.text('Save'));
+      await tester.tap(find.text('Apply'));
       await tester.pumpAndSettle();
 
       expect(_result!.name, isNull);
@@ -201,7 +201,7 @@ void main() {
       expect(tester.widget<SegmentedButton<String?>>(toggle).selected, {
         'false',
       });
-      await tester.tap(find.text('Save'));
+      await tester.tap(find.text('Apply'));
       await tester.pumpAndSettle();
 
       expect(_result!.when['waterlogged'], ['false']);
