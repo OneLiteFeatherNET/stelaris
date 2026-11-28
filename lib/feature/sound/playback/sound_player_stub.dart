@@ -1,7 +1,7 @@
 import 'package:stelaris/api/service/sound/sound_file_loader.dart';
 import 'package:stelaris/feature/sound/playback/sound_player.dart';
 
-/// Outside the web build there is no audio element to play with.
+/// Outside the web build there is no Web Audio to play with.
 SoundPlayer createPlatformSoundPlayer() => _UnsupportedSoundPlayer();
 
 class _UnsupportedSoundPlayer implements SoundPlayer {
@@ -27,6 +27,9 @@ class _UnsupportedSoundPlayer implements SoundPlayer {
 
   @override
   void adjust({required double volume, required double pitch}) {}
+
+  @override
+  void dispose() {}
 
   @override
   Duration get position => Duration.zero;

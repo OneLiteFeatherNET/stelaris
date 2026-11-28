@@ -38,6 +38,10 @@ abstract interface class SoundPlayer {
   /// [play] takes them.
   void adjust({required double volume, required double pitch});
 
+  /// Stops what plays and frees what the player holds, such as the
+  /// browser's audio. The player is not used afterwards.
+  void dispose();
+
   /// How far the file that plays is, in the file's own time; zero when none
   /// plays.
   Duration get position;

@@ -45,6 +45,9 @@ class _Decoder implements SoundDecoder {
 }
 
 class _Player implements SoundPlayer {
+  @override
+  void dispose() {}
+
   Completer<void>? playing;
   final List<double> pitches = [];
   final List<Duration> seeks = [];
