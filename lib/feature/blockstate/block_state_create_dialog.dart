@@ -44,7 +44,6 @@ class BlockStateCreateDialog extends StatefulWidget {
 class _BlockStateCreateDialogState extends State<BlockStateCreateDialog> {
   final _name = TextEditingController();
   BlockSpec? _block;
-  bool _busy = false;
   bool _picking = false;
 
   Map<String, int> get _contexts => contextCountsOf(
@@ -81,8 +80,8 @@ class _BlockStateCreateDialogState extends State<BlockStateCreateDialog> {
 
   Future<void> _create() async {
     final block = _block;
-    if (!_complete || block == null || _busy) return;
-    setState(() => _busy = true);
+    // A second tap while it adds is dropped: the action is NonReentrant.
+    if (!_complete || block == null) return;
     final (:ok, :error) = await context.dispatchAndCatch(
       BlockStateAddAction(
         BlockStateModel(
@@ -93,7 +92,6 @@ class _BlockStateCreateDialogState extends State<BlockStateCreateDialog> {
       ),
     );
     if (!mounted) return;
-    setState(() => _busy = false);
     if (error != null) {
       context.showErrorSnackBar(error);
       return;
@@ -134,7 +132,7 @@ class _BlockStateCreateDialogState extends State<BlockStateCreateDialog> {
     return FormDialog(
       title: l10n.blockstate_create_title,
       actionLabel: l10n.button_add,
-      busy: _busy,
+      busy: context.isWaiting(BlockStateAddAction),
       onSubmit: _complete ? _create : null,
       content: Column(
         mainAxisSize: MainAxisSize.min,
