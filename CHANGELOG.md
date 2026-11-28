@@ -1,5 +1,42 @@
 # Changelog
 
+## [1.13.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.12.0...v1.13.0) (2026-11-28)
+
+
+### Features
+
+* **asset:** add textures page ([#339](https://github.com/OneLiteFeatherNET/stelaris/issues/339)) ([dcc3a87](https://github.com/OneLiteFeatherNET/stelaris/commit/dcc3a876e4b2ff0036422b95dbff3eda05572ee4))
+* **asset:** choose and upload in tabs of the asset picker ([#328](https://github.com/OneLiteFeatherNET/stelaris/issues/328)) ([0085cbd](https://github.com/OneLiteFeatherNET/stelaris/commit/0085cbdf59ed84bc260a92a918e9c82187acd17e))
+* **asset:** choose font textures from a texture picker ([#341](https://github.com/OneLiteFeatherNET/stelaris/issues/341)) ([bf2ebb6](https://github.com/OneLiteFeatherNET/stelaris/commit/bf2ebb6fe49d07f8831af48668ead4da92043149))
+* **asset:** show texture thumbnails in some cases ([#329](https://github.com/OneLiteFeatherNET/stelaris/issues/329)) ([03790bc](https://github.com/OneLiteFeatherNET/stelaris/commit/03790bc311da3d4f2e7db376363188cc8e4786a7))
+* **blockstate:** add the rule based blockstate editor ([#332](https://github.com/OneLiteFeatherNET/stelaris/issues/332)) ([696b360](https://github.com/OneLiteFeatherNET/stelaris/commit/696b360b626b45d1af535aeff0a3def8f01370e1))
+* **dialog:** fill the key from the name in the create dialog ([#350](https://github.com/OneLiteFeatherNET/stelaris/issues/350)) ([dae0f2e](https://github.com/OneLiteFeatherNET/stelaris/commit/dae0f2e632ad89c58ebd4c9454c02e612c7f35a0))
+* **dialog:** rename Save to Apply where nothing is saved yet ([#353](https://github.com/OneLiteFeatherNET/stelaris/issues/353)) ([b8798bf](https://github.com/OneLiteFeatherNET/stelaris/commit/b8798bf038f7077f77f9e52b62f5300cde5d4b6a))
+* **navigation:** give blockstates a grass block icon ([#334](https://github.com/OneLiteFeatherNET/stelaris/issues/334)) ([8496881](https://github.com/OneLiteFeatherNET/stelaris/commit/84968818dd281575d8eda5f0180a06f2c1fb9ad2))
+* **navigation:** give the generator an anvil icon ([#336](https://github.com/OneLiteFeatherNET/stelaris/issues/336)) ([79b7737](https://github.com/OneLiteFeatherNET/stelaris/commit/79b77375a87b3eacfe0761646afd73876eec96dc))
+* **project:** add a refresh button to the project selection ([#356](https://github.com/OneLiteFeatherNET/stelaris/issues/356)) ([7ff26bc](https://github.com/OneLiteFeatherNET/stelaris/commit/7ff26bc320f8175e5bb9c9471bba266839f3cabe))
+* **sound:** add a player bar and slim down the sound file cards ([#352](https://github.com/OneLiteFeatherNET/stelaris/issues/352)) ([e3a6977](https://github.com/OneLiteFeatherNET/stelaris/commit/e3a697775fc84513aef29a26b000238a735b25ad))
+* **sound:** edit the minimum value of a sound event ([77d69ad](https://github.com/OneLiteFeatherNET/stelaris/commit/77d69ada41c2c27f2fc5211d76444ffabef693ad))
+* **sound:** pick the source of a sound event ([3883bbf](https://github.com/OneLiteFeatherNET/stelaris/commit/3883bbfbce5e357d182f60e0014d09c7ba98a778))
+* **unsaved:** show unsaved edits on the browser tab ([#351](https://github.com/OneLiteFeatherNET/stelaris/issues/351)) ([d6c4e81](https://github.com/OneLiteFeatherNET/stelaris/commit/d6c4e81af038f723b8aed7b42415f5db95b53eae))
+
+
+### Bug Fixes
+
+* **api:** send requests without a body without a send timeout ([#348](https://github.com/OneLiteFeatherNET/stelaris/issues/348)) ([bf5b342](https://github.com/OneLiteFeatherNET/stelaris/commit/bf5b34220f414ead5292d0e824156561621f11a8))
+* **asset:** handle large files on upload ([#330](https://github.com/OneLiteFeatherNET/stelaris/issues/330)) ([64d2cc9](https://github.com/OneLiteFeatherNET/stelaris/commit/64d2cc97d11d6fe8c4ab5119063a72b8c0c8f448))
+* **auth:** discard the tokens of a sign-out the provider never confirmed ([#325](https://github.com/OneLiteFeatherNET/stelaris/issues/325)) ([bc7b3fb](https://github.com/OneLiteFeatherNET/stelaris/commit/bc7b3fbc84479a839885b86ac44efe0d15807920))
+* **blockstate:** keep the hover ink of the block picker rows per row ([55640b3](https://github.com/OneLiteFeatherNET/stelaris/commit/55640b3ab78b14045f628687cd129f3a2cb1270b))
+* cleanup deprecated import statement ([d7d3739](https://github.com/OneLiteFeatherNET/stelaris/commit/d7d3739de1ad97147711c757b7e3994e2823329c))
+* **deps:** update dependency async_redux to v30 ([#342](https://github.com/OneLiteFeatherNET/stelaris/issues/342)) ([508d726](https://github.com/OneLiteFeatherNET/stelaris/commit/508d726006d6ee67f4a68d1c05d7fd0a5a887aa9))
+* **deps:** update dependency go_router to ^18.1.4 ([#327](https://github.com/OneLiteFeatherNET/stelaris/issues/327)) ([3df7d24](https://github.com/OneLiteFeatherNET/stelaris/commit/3df7d2449cb9a5b14d36ad57cf222310a849d1e7))
+* **l10n:** register the material_ui localization delegates ([dc14649](https://github.com/OneLiteFeatherNET/stelaris/commit/dc146494ef5d7849b6be2145d4f75a5b78ab5f63))
+* **list:** load only the first page on open and drop it after a project switch ([#357](https://github.com/OneLiteFeatherNET/stelaris/issues/357)) ([b034afd](https://github.com/OneLiteFeatherNET/stelaris/commit/b034afdff01b3b59d5b776978d973dfafdc84122))
+* **project:** show a skeleton while projects load and a retry page without a backend ([#355](https://github.com/OneLiteFeatherNET/stelaris/issues/355)) ([1bf5d21](https://github.com/OneLiteFeatherNET/stelaris/commit/1bf5d21932d76dd136f19ebb01ecb5f6f07e7c63))
+* **sound:** play sounds through Web Audio and fade on start, pause, seek and stop ([#359](https://github.com/OneLiteFeatherNET/stelaris/issues/359)) ([6604baa](https://github.com/OneLiteFeatherNET/stelaris/commit/6604baad0f49651a8ccbac9cf41f1a1d41c6b7f1))
+* **sound:** space out back, play and next in the player bar ([#358](https://github.com/OneLiteFeatherNET/stelaris/issues/358)) ([9a4a186](https://github.com/OneLiteFeatherNET/stelaris/commit/9a4a18685e5d9c1a7b7f86425a0de1f7e7aa1eac))
+* **ui:** draw icons instead of glyphs that load an extra font ([#354](https://github.com/OneLiteFeatherNET/stelaris/issues/354)) ([5017bcb](https://github.com/OneLiteFeatherNET/stelaris/commit/5017bcb5bf52ffdab74dbc222ba37516d30ee1b1))
+
 ## [1.12.0](https://github.com/OneLiteFeatherNET/stelaris/compare/v1.11.0...v1.12.0) (2026-11-10)
 
 
