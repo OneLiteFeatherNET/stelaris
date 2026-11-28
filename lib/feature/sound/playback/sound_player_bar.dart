@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/sound/playback/pick_by_weight.dart';
+import 'package:stelaris/feature/sound/playback/play_button_content.dart';
 import 'package:stelaris/feature/sound/playback/sound_playback_controller.dart';
 import 'package:stelaris/feature/sound/playback/sound_waveform.dart';
 import 'package:stelaris/feature/sound/playback/sound_waveform_painter.dart';
@@ -487,24 +488,7 @@ class _PlayPauseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final (tooltip, icon) = switch (status) {
-      SoundPlaybackStatus.playing => (
-        l10n.sound_player_pause,
-        const Icon(Icons.pause),
-      ),
-      SoundPlaybackStatus.loading => (
-        l10n.tooltip_sound_stop,
-        const SizedBox.square(
-          dimension: 18,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        ),
-      ),
-      SoundPlaybackStatus.idle || SoundPlaybackStatus.paused => (
-        l10n.tooltip_sound_play,
-        const Icon(Icons.play_arrow),
-      ),
-    };
+    final (tooltip, icon) = playButtonContent(status, context.l10n);
     return IconButton.filled(
       key: const Key('sound_player_play_pause'),
       tooltip: tooltip,

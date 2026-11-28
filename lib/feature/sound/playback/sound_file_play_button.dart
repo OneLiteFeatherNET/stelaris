@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/feature/sound/playback/play_button_content.dart';
 import 'package:stelaris/feature/sound/playback/sound_playback_controller.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -62,24 +63,7 @@ class _SoundFilePlayButtonState extends State<SoundFilePlayButton> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final (tooltip, icon) = switch (_status) {
-      SoundPlaybackStatus.idle || SoundPlaybackStatus.paused => (
-        l10n.tooltip_sound_play,
-        const Icon(Icons.play_arrow),
-      ),
-      SoundPlaybackStatus.playing => (
-        l10n.sound_player_pause,
-        const Icon(Icons.pause),
-      ),
-      SoundPlaybackStatus.loading => (
-        l10n.tooltip_sound_stop,
-        const SizedBox.square(
-          dimension: 18,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        ),
-      ),
-    };
+    final (tooltip, icon) = playButtonContent(_status, context.l10n);
     return IconButton.filledTonal(
       key: const Key('sound_file_play'),
       tooltip: tooltip,
