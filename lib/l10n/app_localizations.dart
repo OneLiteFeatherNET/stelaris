@@ -947,11 +947,11 @@ abstract class AppLocalizations {
   /// **'Explore the wiki for assistance'**
   String get settings_about_help_body;
 
-  /// No description provided for @settings_end_tile_footer.
+  /// {heart} is replaced by a heart icon.
   ///
   /// In en, this message translates to:
-  /// **'© {year} Onelitefeather • Made with ❤ by the team'**
-  String settings_end_tile_footer(String year);
+  /// **'© {year} Onelitefeather • Made with {heart} by the team'**
+  String settings_end_tile_footer(String year, String heart);
 
   /// No description provided for @welcome_to_stelaris.
   ///
@@ -2063,11 +2063,11 @@ abstract class AppLocalizations {
   /// **'Switch project'**
   String get copy_switch_project;
 
-  /// No description provided for @notes_edit_in_overview.
+  /// {menu} is replaced by the icon of the card's menu button.
   ///
   /// In en, this message translates to:
-  /// **'To edit the notes, use ⋯ → Edit notes on the overview card.'**
-  String get notes_edit_in_overview;
+  /// **'To edit the notes, open {menu} on the overview card and choose Edit notes.'**
+  String notes_edit_in_overview(String menu);
 
   /// No description provided for @tooltip_notes_present.
   ///

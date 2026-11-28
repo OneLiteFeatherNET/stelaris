@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/feature/settings/settings_end_tile.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/l10n/app_localizations_delegates.dart';
+import 'package:stelaris/util/stelaris_icons.dart';
 
 void main() {
   group('SettingsEndTile Widget Tests', () {
@@ -28,6 +29,20 @@ void main() {
 
       expect(find.textContaining('Made with'), findsOneWidget);
       expect(find.textContaining('by the team'), findsOneWidget);
+    });
+
+    testWidgets('draws the heart as an icon, not as a text glyph', (
+      tester,
+    ) async {
+      await pumpTile(tester, Clock.fixed(DateTime(2031)));
+
+      final heart = tester.widget<Icon>(
+        find.byKey(const Key('settings_end_tile_heart')),
+      );
+      expect(heart.icon, StelarisIcons.heart);
+      expect(heart.color, Colors.red);
+      expect(find.textContaining('❤'), findsNothing);
+      expect(find.textContaining('\u0000'), findsNothing);
     });
   });
 }

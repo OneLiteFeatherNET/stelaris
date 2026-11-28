@@ -13,6 +13,37 @@ class NotesViewDialog extends StatelessWidget {
   final String name;
   final String notes;
 
+  /// The hint pointing to the card menu, with the menu's own icon in place
+  /// of `{menu}`. A text glyph like ⋯ isn't in the app font and would make
+  /// the web build fetch a fallback font just for this line.
+  Widget _editHint(BuildContext context, ThemeData theme) {
+    final style = theme.textTheme.bodySmall?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
+    // Split around the placeholder, so it works wherever a language puts it.
+    final [before, after] = context.l10n
+        .notes_edit_in_overview('\u0000')
+        .split('\u0000');
+    return Text.rich(
+      TextSpan(
+        style: style,
+        children: [
+          TextSpan(text: before),
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: Icon(
+              Icons.more_vert,
+              key: const Key('notes_edit_hint_menu_icon'),
+              size: (style?.fontSize ?? 12) + 2,
+              color: style?.color,
+            ),
+          ),
+          TextSpan(text: after),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -35,14 +66,7 @@ class NotesViewDialog extends StatelessWidget {
                 color: theme.colorScheme.onSurfaceVariant,
               ),
               const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  context.l10n.notes_edit_in_overview,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
+              Expanded(child: _editHint(context, theme)),
             ],
           ),
         ],
