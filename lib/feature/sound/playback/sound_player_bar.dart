@@ -356,7 +356,10 @@ class _SoundPlayerBarState extends State<SoundPlayerBar>
 
 /// The button that opens volume and pitch to try out, with a dot while they
 /// differ from the file's, and the menu of the sliders, apply and reset.
-class _TuneMenu extends StatelessWidget {
+///
+/// The menu opens above the bar with some room to it, its end lined up with
+/// the end of the button, so it opens towards the page.
+class _TuneMenu extends StatefulWidget {
   const _TuneMenu({
     required this.controller,
     required this.current,
@@ -369,18 +372,72 @@ class _TuneMenu extends StatelessWidget {
   final bool applying;
   final VoidCallback onApply;
 
+  @override
+  State<_TuneMenu> createState() => _TuneMenuState();
+}
+
+class _TuneMenuState extends State<_TuneMenu> {
+  final MenuController _menu = MenuController();
+
   /// Slider values keep to two decimals, as typed into the file's dialog.
   static double _round(double value) => (value * 100).roundToDouble() / 100;
 
-  static const EdgeInsets _padding = EdgeInsets.fromLTRB(16, 8, 16, 8);
+  static const EdgeInsets _padding = EdgeInsets.all(16);
   static const double _contentWidth = 320;
 
-  /// The menu is as wide as its content, with no padding of its own sideways.
-  static const double _menuWidth = _contentWidth + 32;
+  /// The room between the top of the button and the menu: the padding of the
+  /// bar above the button, and a gap above the bar.
+  static const double _gap = 6 + 8;
+
+  void _toggle() => _menu.isOpen ? _menu.close() : _menu.open();
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final colorScheme = Theme.of(context).colorScheme;
+    return RawMenuAnchor(
+      controller: _menu,
+      overlayBuilder: (context, info) => Positioned(
+        right: info.overlaySize.width - info.anchorRect.right,
+        bottom: info.overlaySize.height - info.anchorRect.top + _gap,
+        child: TapRegion(
+          // The button is in the group too, so its tap toggles instead.
+          groupId: info.tapRegionGroupId,
+          onTapOutside: (_) => _menu.close(),
+          child: CallbackShortcuts(
+            bindings: {
+              const SingleActivator(LogicalKeyboardKey.escape): _menu.close,
+            },
+            child: FocusScope(
+              autofocus: true,
+              child: Material(
+                color: colorScheme.surfaceContainer,
+                elevation: 3,
+                shape: AppShapes.rounded(AppShapes.extraSmall),
+                clipBehavior: Clip.antiAlias,
+                child: _content(context),
+              ),
+            ),
+          ),
+        ),
+      ),
+      builder: (context, menu, _) => IconButton(
+        key: const Key('sound_player_tune'),
+        tooltip: l10n.sound_player_tune,
+        isSelected: menu.isOpen,
+        onPressed: _toggle,
+        icon: Badge(
+          isLabelVisible: widget.controller.hasPreview,
+          smallSize: 8,
+          child: const Icon(Icons.tune),
+        ),
+      ),
+    );
+  }
+
+  Widget _content(BuildContext context) {
+    final l10n = context.l10n;
+    final current = widget.current;
     // A volume above 1 only widens the range in the game.
     final maxVolume = max<double>(1, current.volume);
     final labelStyle = Theme.of(context).textTheme.labelMedium;
@@ -388,89 +445,67 @@ class _TuneMenu extends StatelessWidget {
     final labelWidth = [l10n.sound_pitch, l10n.sound_volume]
         .map((label) => _textWidth(context, label, labelStyle))
         .reduce(max);
-    return MenuAnchor(
-      // Its end lines up with the end of the button, so it opens towards the
-      // page instead of being pushed against the edge of the window.
-      style: const MenuStyle(
-        alignment: AlignmentDirectional.bottomEnd,
-        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 8)),
-      ),
-      alignmentOffset: const Offset(-_menuWidth, 8),
-      menuChildren: [
-        Padding(
-          key: const Key('sound_player_tune_menu'),
-          padding: _padding,
-          child: SizedBox(
-            width: _contentWidth,
-            child: Column(
+    return Padding(
+      key: const Key('sound_player_tune_menu'),
+      padding: _padding,
+      child: SizedBox(
+        width: _contentWidth,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            _ValueSlider(
+              key: const Key('sound_player_pitch'),
+              label: l10n.sound_pitch,
+              labelWidth: labelWidth,
+              value: widget.controller.pitchOf(current),
+              min: 0.5,
+              max: 2,
+              divisions: 30,
+              onChanged: (value) =>
+                  widget.controller.preview(pitch: _round(value)),
+            ),
+            _ValueSlider(
+              key: const Key('sound_player_volume'),
+              label: l10n.sound_volume,
+              labelWidth: labelWidth,
+              value: widget.controller.volumeOf(current),
+              min: 0,
+              max: maxVolume,
+              divisions: (maxVolume * 20).round(),
+              onChanged: (value) =>
+                  widget.controller.preview(volume: _round(value)),
+            ),
+            const SizedBox(height: 8),
+            Row(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                _ValueSlider(
-                  key: const Key('sound_player_pitch'),
-                  label: l10n.sound_pitch,
-                  labelWidth: labelWidth,
-                  value: controller.pitchOf(current),
-                  min: 0.5,
-                  max: 2,
-                  divisions: 30,
-                  onChanged: (value) =>
-                      controller.preview(pitch: _round(value)),
+                Tooltip(
+                  message: l10n.sound_player_reset_tooltip,
+                  child: TextButton.icon(
+                    key: const Key('sound_player_reset'),
+                    onPressed: widget.controller.hasPreview
+                        ? widget.controller.resetPreview
+                        : null,
+                    icon: const Icon(Icons.restart_alt),
+                    label: Text(l10n.sound_player_reset),
+                  ),
                 ),
-                _ValueSlider(
-                  key: const Key('sound_player_volume'),
-                  label: l10n.sound_volume,
-                  labelWidth: labelWidth,
-                  value: controller.volumeOf(current),
-                  min: 0,
-                  max: maxVolume,
-                  divisions: (maxVolume * 20).round(),
-                  onChanged: (value) =>
-                      controller.preview(volume: _round(value)),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Tooltip(
-                      message: l10n.sound_player_reset_tooltip,
-                      child: TextButton.icon(
-                        key: const Key('sound_player_reset'),
-                        onPressed: controller.hasPreview
-                            ? controller.resetPreview
-                            : null,
-                        icon: const Icon(Icons.restart_alt),
-                        label: Text(l10n.sound_player_reset),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Tooltip(
-                      message: l10n.sound_player_apply_tooltip,
-                      child: FilledButton.tonalIcon(
-                        key: const Key('sound_player_apply'),
-                        onPressed: controller.hasPreview && !applying
-                            ? onApply
-                            : null,
-                        icon: const Icon(Icons.check),
-                        label: Text(l10n.sound_player_apply),
-                      ),
-                    ),
-                  ],
+                const SizedBox(width: 8),
+                Tooltip(
+                  message: l10n.sound_player_apply_tooltip,
+                  child: FilledButton.tonalIcon(
+                    key: const Key('sound_player_apply'),
+                    onPressed: widget.controller.hasPreview && !widget.applying
+                        ? widget.onApply
+                        : null,
+                    icon: const Icon(Icons.check),
+                    label: Text(l10n.sound_player_apply),
+                  ),
                 ),
               ],
             ),
-          ),
-        ),
-      ],
-      builder: (context, menu, _) => IconButton(
-        key: const Key('sound_player_tune'),
-        tooltip: l10n.sound_player_tune,
-        isSelected: menu.isOpen,
-        onPressed: () => menu.isOpen ? menu.close() : menu.open(),
-        icon: Badge(
-          isLabelVisible: controller.hasPreview,
-          smallSize: 8,
-          child: const Icon(Icons.tune),
+          ],
         ),
       ),
     );
