@@ -29,7 +29,7 @@ class SettingsEndTile extends StatelessWidget {
                 StelarisIcons.heart,
                 key: const Key('settings_end_tile_heart'),
                 size: style?.fontSize,
-                color: style?.color,
+                color: Colors.red,
               ),
             ),
             TextSpan(text: after),
