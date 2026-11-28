@@ -126,8 +126,8 @@ class _ExpressionVariableDialogState extends State<ExpressionVariableDialog> {
           : (widget.variable == null
                 ? l10n.expression_variable_add_title
                 : l10n.expression_variable_edit_title),
-      actionIcon: widget.variable == null ? Icons.add : Icons.save_outlined,
-      actionLabel: widget.variable == null ? l10n.button_add : l10n.button_save,
+      actionIcon: widget.variable == null ? Icons.add : Icons.check,
+      actionLabel: widget.variable == null ? l10n.button_add : l10n.button_apply,
       maxWidth: 440,
       onSubmit: _save,
       content: Form(

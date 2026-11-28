@@ -21,6 +21,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get button_save => 'Save';
 
   @override
+  String get button_apply => 'Apply';
+
+  @override
   String get button_help => 'Help';
 
   @override

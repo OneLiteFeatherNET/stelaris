@@ -291,7 +291,7 @@ class _RuleDialogState extends State<_RuleDialog> {
             icon: const Icon(Icons.edit_outlined),
           ),
       ],
-      actionLabel: l10n.button_save,
+      actionLabel: l10n.button_apply,
       maxWidth: 640,
       onSubmit: () => Navigator.of(context).pop(_rule),
       content: Column(

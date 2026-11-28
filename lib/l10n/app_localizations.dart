@@ -113,6 +113,12 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get button_save;
 
+  /// No description provided for @button_apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get button_apply;
+
   /// No description provided for @button_help.
   ///
   /// In en, this message translates to:
