@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:js_interop';
 
 import 'package:stelaris/api/service/sound/sound_file_loader.dart';
+import 'package:stelaris/feature/sound/playback/idle_watch.dart';
 import 'package:stelaris/feature/sound/playback/playback_timeline.dart';
 import 'package:stelaris/feature/sound/playback/sound_player.dart';
 import 'package:web/web.dart' as web;
@@ -12,6 +13,11 @@ SoundPlayer createPlatformSoundPlayer() => _WebSoundPlayer();
 /// swing clicks; this is too short to hear as a fade.
 const double _fade = 0.015;
 
+/// How long nothing has to play before the audio context is suspended, and
+/// the decoded file dropped. Short enough to free the audio device and the
+/// memory soon, long enough that playing the file again is instant.
+const Duration _restAfter = Duration(seconds: 15);
+
 /// Plays with Web Audio: the whole file is decoded once and played from
 /// memory, so it ends exactly where the file ends, whatever its container
 /// claims. Start, pause, seek and stop fade in or out instead of cutting
@@ -19,8 +25,14 @@ const double _fade = 0.015;
 ///
 /// Each start, resume or seek plays a new voice, a buffer source with a
 /// gain of its own, so the voice it replaces can fade out meanwhile.
+///
+/// Once nothing has played for [_restAfter], the context is suspended so it
+/// lets go of the audio device, and the decoded file is dropped unless a
+/// paused playback still holds it.
 class _WebSoundPlayer implements SoundPlayer {
   web.AudioContext? _context;
+
+  late final IdleWatch _idle = IdleWatch(after: _restAfter, onIdle: _rest);
 
   /// The file decoded last and its audio, so playing it again or seeking in
   /// it needs no second decode.
@@ -47,10 +59,7 @@ class _WebSoundPlayer implements SoundPlayer {
       from: _seconds(from),
     );
     _playback = playback;
-    final context = _audio;
-    // Not awaited: the browser holds a context back until the page was
-    // clicked, and the voice then starts as soon as it may.
-    if (context.state == 'suspended') context.resume().toDart.ignore();
+    final context = _wake();
     try {
       final buffer = await _decode(file);
       // Unless stopped, or superseded, while it decoded.
@@ -65,7 +74,10 @@ class _WebSoundPlayer implements SoundPlayer {
         _startVoice(playback);
       }
     } catch (error) {
-      if (identical(_playback, playback)) _playback = null;
+      if (identical(_playback, playback)) {
+        _playback = null;
+        _idle.idle();
+      }
       if (!playback.done.isCompleted) {
         playback.done.completeError(
           StateError('The browser cannot play this file: $error'),
@@ -73,6 +85,26 @@ class _WebSoundPlayer implements SoundPlayer {
       }
     }
     return playback.done.future;
+  }
+
+  /// Keeps the context awake and returns it. The resume is not awaited: the
+  /// browser holds a context back until the page was clicked, and the voice
+  /// then starts as soon as it may.
+  web.AudioContext _wake() {
+    _idle.busy();
+    final context = _audio;
+    context.resume().toDart.ignore();
+    return context;
+  }
+
+  /// Suspends the context, and drops the decoded file unless a paused
+  /// playback still holds it.
+  void _rest() {
+    _context?.suspend().toDart.ignore();
+    if (_playback == null) {
+      _decodedFile = null;
+      _decoded = null;
+    }
   }
 
   Future<web.AudioBuffer> _decode(SoundFile file) async {
@@ -104,6 +136,7 @@ class _WebSoundPlayer implements SoundPlayer {
     _playback = null;
     _fadeOut(playback.voice);
     playback.voice = null;
+    _idle.idle();
     if (!playback.done.isCompleted) playback.done.complete();
   }
 
@@ -115,6 +148,7 @@ class _WebSoundPlayer implements SoundPlayer {
     timeline.pause(at: _audio.currentTime);
     _fadeOut(playback.voice);
     playback.voice = null;
+    _idle.idle();
   }
 
   @override
@@ -122,8 +156,7 @@ class _WebSoundPlayer implements SoundPlayer {
     final playback = _playback;
     final timeline = playback?.timeline;
     if (playback == null || timeline == null || !timeline.isPaused) return;
-    final context = _audio;
-    if (context.state == 'suspended') context.resume().toDart.ignore();
+    final context = _wake();
     timeline.resume(at: context.currentTime);
     _startVoice(playback);
   }
@@ -179,7 +212,10 @@ class _WebSoundPlayer implements SoundPlayer {
     // playback; one faded out has its handler replaced.
     source.onended = ((web.Event _) {
       if (!identical(playback.voice, voice)) return;
-      if (identical(_playback, playback)) _playback = null;
+      if (identical(_playback, playback)) {
+        _playback = null;
+        _idle.idle();
+      }
       voice.disconnect();
       playback.voice = null;
       if (!playback.done.isCompleted) playback.done.complete();
