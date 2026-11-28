@@ -505,6 +505,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get project_selection_loading_label => 'Loading projects';
 
   @override
+  String get project_selection_refresh_tooltip => 'Refresh projects';
+
+  @override
   String get dialog_project_create_title => 'Create new project';
 
   @override

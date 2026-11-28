@@ -37,6 +37,9 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
   /// unavailable view up meanwhile instead of flashing the selection.
   bool _retrying = false;
 
+  /// Whether the projects are loaded again on request while they are shown.
+  bool _refreshing = false;
+
   /// The pack icon of each project by its id, loaded once while the page is
   /// open and again after the project was edited.
   final Map<String, Future<ProjectPackIcon?>> _packIcons = {};
@@ -117,6 +120,8 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
                         _openEditDialog(context, project),
                     onCreateProject: () => _openCreateDialog(context),
                     onProceed: () => _proceedWithProject(vm, vm.selected!),
+                    onRefresh: _refresh,
+                    isRefreshing: _refreshing,
                     packIconOf: _packIconOf,
                   ),
                 ],
@@ -145,6 +150,18 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
     await _loadProjects((action) => context.dispatchAndWait(action));
     if (!mounted) return;
     setState(() => _retrying = false);
+  }
+
+  /// Loads the projects again, for example after someone else created one.
+  /// The pack icons load again as well, they may have changed meanwhile.
+  Future<void> _refresh() async {
+    setState(() {
+      _refreshing = true;
+      _packIcons.clear();
+    });
+    await _loadProjects((action) => context.dispatchAndWait(action));
+    if (!mounted) return;
+    setState(() => _refreshing = false);
   }
 
   /// Opens the create dialog. A created project is selected, and a snackbar

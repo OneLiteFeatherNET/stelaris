@@ -18,6 +18,12 @@ class ProjectSelectionCard extends StatelessWidget {
   final VoidCallback onCreateProject;
   final VoidCallback onProceed;
 
+  /// Loads the projects again, null hides the refresh button.
+  final VoidCallback? onRefresh;
+
+  /// Whether a refresh is under way.
+  final bool isRefreshing;
+
   /// Whether the projects are still loading, which shows a placeholder in
   /// place of the list.
   final bool isLoading;
@@ -33,6 +39,8 @@ class ProjectSelectionCard extends StatelessWidget {
     required this.onCreateProject,
     required this.onProceed,
     this.isLoading = false,
+    this.onRefresh,
+    this.isRefreshing = false,
     this.packIconOf,
     super.key,
   });
@@ -55,7 +63,10 @@ class ProjectSelectionCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const ProjectSelectionHeader(),
+              ProjectSelectionHeader(
+                onRefresh: isLoading ? null : onRefresh,
+                isRefreshing: isRefreshing,
+              ),
               const Divider(height: 32),
               if (isLoading) ...[
                 const ProjectListSkeleton(),
