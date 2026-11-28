@@ -22,6 +22,7 @@ void listActionTests<T extends DataModel>({
   required T? Function(AppState state) selectedOf,
   required AppState Function(AppState state, T model) withSelected,
   required ReduxAction<AppState> Function() init,
+  required ReduxAction<AppState> Function() loadMore,
   required ReduxAction<AppState> Function() refresh,
   required ReduxAction<AppState> Function(T model) add,
   required ReduxAction<AppState> Function(T model) remove,
@@ -63,33 +64,82 @@ void listActionTests<T extends DataModel>({
     ),
   );
 
+  const project = Project(id: 'p1', displayName: 'P1', key: 'p1');
+  const other = Project(id: 'p2', displayName: 'P2', key: 'p2');
+
+  /// The page [currentPage] of three pages of two.
+  Map<String, Object?> page(int currentPage) => {
+    'items': [json('page$currentPage-0'), json('page$currentPage-1')],
+    'totalItems': 6,
+    'totalPages': 3,
+    'currentPage': currentPage,
+    'pageSize': 2,
+  };
+
+  /// Answers the next request with [json], after opening [other] in [store]
+  /// as if the user switched projects while the request was underway.
+  void respondAfterSwitch(Store<AppState> store, Object json) {
+    ApiService().itemApi.apiClient.dio.httpClientAdapter =
+        FakeHttpClientAdapter((options) {
+          store.dispatchSync(SelectProjectAction(other));
+          return FakeHttpClientAdapter.response(json);
+        });
+  }
+
   group('${init().runtimeType}', () {
-    test('does nothing when all pages are already loaded, instead of '
-        'resetting the list back to page 1 (regression)', () async {
-      final loaded = [for (var i = 0; i < 4; i++) model('existing-$i')];
+    test('loads the first page when the list is empty', () async {
+      final store = storeWith(const [], totalPages: 0, pageSize: 0);
+      respond(page(1));
+
+      await store.dispatchAndWait(init());
+
+      expect(listOf(store.state).items.map((m) => m.id), [
+        'page1-0',
+        'page1-1',
+      ]);
+    });
+
+    test('does nothing when a page is already loaded, instead of loading '
+        'the next one each time the overview opens', () async {
+      final loaded = [model('page1-0'), model('page1-1')];
       final store = storeWith(
         loaded,
-        totalPages: 2,
-        currentPage: 2,
+        totalItems: 6,
+        totalPages: 3,
         pageSize: 2,
       );
+      var requests = 0;
+      ApiService().itemApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter((options) {
+            requests++;
+            return FakeHttpClientAdapter.response(page(2));
+          });
       final before = store.state;
 
       await store.dispatchAndWait(init());
 
+      expect(requests, 0);
       expect(identical(store.state, before), isTrue);
-      expect(listOf(store.state).items, loaded);
     });
 
-    /// The page [currentPage] of three pages of two.
-    Map<String, Object?> page(int currentPage) => {
-      'items': [json('page$currentPage-0'), json('page$currentPage-1')],
-      'totalItems': 6,
-      'totalPages': 3,
-      'currentPage': currentPage,
-      'pageSize': 2,
-    };
+    test('drops the first page when the project changes while it '
+        'loads', () async {
+      final store = storeWith(
+        const [],
+        totalPages: 0,
+        pageSize: 0,
+        project: project,
+      );
+      respondAfterSwitch(store, page(1));
 
+      await store.dispatchAndWait(init());
+
+      expect(store.state.selectedProject, other);
+      expect(listOf(store.state).items, isEmpty);
+    });
+  });
+
+  group('${loadMore().runtimeType}', () {
     test('is done loading after the next page, so the '
         'page after it loads too (regression)', () async {
       final store = storeWith(
@@ -100,11 +150,11 @@ void listActionTests<T extends DataModel>({
       );
 
       respond(page(2));
-      await store.dispatchAndWait(init());
+      await store.dispatchAndWait(loadMore());
       expect(isLoadingMore(store), isFalse);
 
       respond(page(3));
-      await store.dispatchAndWait(init());
+      await store.dispatchAndWait(loadMore());
       expect(isLoadingMore(store), isFalse);
       expect(listOf(store.state).items.map((m) => m.id), [
         'page1-0',
@@ -130,15 +180,13 @@ void listActionTests<T extends DataModel>({
             return FakeHttpClientAdapter.response(page(2));
           });
 
-      await store.dispatchAndWait(init());
+      await store.dispatchAndWait(loadMore());
 
       expect(size, '2');
     });
 
     test('drops the next page when the project changes while it '
         'loads', () async {
-      const project = Project(id: 'p1', displayName: 'P1', key: 'p1');
-      const other = Project(id: 'p2', displayName: 'P2', key: 'p2');
       final store = storeWith(
         [model('page1-0'), model('page1-1')],
         totalItems: 6,
@@ -146,13 +194,9 @@ void listActionTests<T extends DataModel>({
         pageSize: 2,
         project: project,
       );
-      ApiService().itemApi.apiClient.dio.httpClientAdapter =
-          FakeHttpClientAdapter((options) {
-            store.dispatchSync(SelectProjectAction(other));
-            return FakeHttpClientAdapter.response(page(2));
-          });
+      respondAfterSwitch(store, page(2));
 
-      await store.dispatchAndWait(init());
+      await store.dispatchAndWait(loadMore());
 
       expect(store.state.selectedProject, other);
       expect(listOf(store.state).items, isEmpty);
@@ -181,6 +225,20 @@ void listActionTests<T extends DataModel>({
 
       expect(listOf(store.state).items.map((e) => e.id), ['fresh-0']);
       expect(listOf(store.state).currentPage, 1);
+    });
+
+    test('drops the refetched page when the project changes while it '
+        'loads', () async {
+      final store = storeWith(
+        [model('stale-0')],
+        project: project,
+      );
+      respondAfterSwitch(store, page(1));
+
+      await store.dispatchAndWait(refresh());
+
+      expect(store.state.selectedProject, other);
+      expect(listOf(store.state).items, isEmpty);
     });
   });
 
@@ -251,8 +309,6 @@ void listActionTests<T extends DataModel>({
   });
 
   if (copy == null) return;
-  const project = Project(id: 'p1', displayName: 'P1', key: 'p1');
-  const other = Project(id: 'p2', displayName: 'P2', key: 'p2');
 
   group(
     '${copy(model('x'), const CopyModelResult(targetProject: project, name: 'x', key: 'x')).runtimeType}',

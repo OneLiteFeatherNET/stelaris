@@ -65,7 +65,7 @@ void main() {
   );
 
   test(
-    'InitExpressionAction loads the next page after the loaded ones',
+    'LoadMoreExpressionsAction loads the next page after the loaded ones',
     () async {
       final store = Store<AppState>(
         initialState: AppState(
@@ -87,7 +87,7 @@ void main() {
         ),
       );
 
-      await store.dispatchAndWait(InitExpressionAction());
+      await store.dispatchAndWait(LoadMoreExpressionsAction());
 
       expect(store.state.expressions.items.map((e) => e.id), ['e1', 'e2']);
       expect(store.isWaiting(LoadMoreExpressionsAction), isFalse);

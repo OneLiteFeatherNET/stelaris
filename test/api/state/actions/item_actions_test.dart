@@ -23,6 +23,7 @@ void main() {
     selectedOf: (state) => state.selectedItem,
     withSelected: (state, model) => state.copyWith(selectedItem: model),
     init: InitItemAction.new,
+    loadMore: LoadMoreItemsAction.new,
     refresh: RefreshItemAction.new,
     add: ItemAddAction.new,
     remove: ItemRemoveAction.new,
