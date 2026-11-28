@@ -56,6 +56,7 @@ class SelectProjectAction extends ReduxAction<AppState> {
         pageSize: 0,
       ),
       selectedItem: null,
+      selectedItemComponents: const [],
       selectedFont: null,
       selectedAdvancement: null,
       selectedAttribute: null,
@@ -80,6 +81,7 @@ class SelectProjectAction extends ReduxAction<AppState> {
       expressionFunctionProblem: null,
       expressionCatalog: null,
       expressionCatalogProjectId: null,
+      expressionValidation: null,
       unsavedChanges: null,
     );
   }
