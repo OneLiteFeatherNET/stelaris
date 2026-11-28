@@ -160,36 +160,35 @@ class ModelDetailActions<E extends DataModel> extends StatelessWidget {
 
 /// Saves the selected model of [entry]; enabled only while it has unsaved
 /// edits. Replaces the floating save button the detail tabs used to carry.
-class DetailSaveAction extends StatefulWidget {
+///
+/// It shows that it saves while the save action of [entry] runs, also when
+/// the unsaved changes dialog started it.
+class DetailSaveAction extends StatelessWidget {
   const DetailSaveAction({required this.entry, super.key});
 
   final NavigationEntry entry;
 
-  @override
-  State<DetailSaveAction> createState() => _DetailSaveActionState();
-}
-
-class _DetailSaveActionState extends State<DetailSaveAction> {
-  bool _saving = false;
-
-  Future<void> _save() async {
-    setState(() => _saving = true);
-    final saved = await saveUnsavedChanges(context, widget.entry);
-    if (!mounted) return;
-    setState(() => _saving = false);
-    if (saved) context.showSuccessSnackBar(context.l10n.feedback_save_success);
+  Future<void> _save(BuildContext context) async {
+    final saved = await saveUnsavedChanges(context, entry);
+    if (saved && context.mounted) {
+      context.showSuccessSnackBar(context.l10n.feedback_save_success);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, bool>(
-      converter: (store) => store.state.unsavedChanges == widget.entry,
-      builder: (context, hasUnsavedChanges) => PageHeaderAction(
+    final saveType = saveActionFor(entry)?.runtimeType;
+    return StoreConnector<AppState, ({bool unsaved, bool saving})>(
+      converter: (store) => (
+        unsaved: store.state.unsavedChanges == entry,
+        saving: saveType != null && store.isWaiting(saveType),
+      ),
+      builder: (context, vm) => PageHeaderAction(
         icon: saveIcon,
         label: context.l10n.button_save,
         primary: true,
-        loading: _saving,
-        onPressed: hasUnsavedChanges ? _save : null,
+        loading: vm.saving,
+        onPressed: vm.unsaved ? () => _save(context) : null,
       ),
     );
   }

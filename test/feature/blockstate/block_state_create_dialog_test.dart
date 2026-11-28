@@ -4,6 +4,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/base_api.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/actions/block_state_actions.dart';
+import 'package:stelaris/feature/base/dialog/form_dialog.dart';
 import 'package:stelaris/feature/blockstate/block_picker.dart';
 import 'package:stelaris/feature/blockstate/block_state_create_dialog.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -11,6 +13,7 @@ import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../support/fake_http_client_adapter.dart';
+import '../../support/held_http_client_adapter.dart';
 
 /// Answers the dialog's load of the blockstates with one page of [items].
 void _respond(List<Map<String, Object?>> items) {
@@ -28,17 +31,20 @@ void _respond(List<Map<String, Object?>> items) {
 
 void main() {
   group('BlockStateCreateDialog', () {
+    late Store<AppState> store;
+
     Future<void> open(
       WidgetTester tester, {
       List<Map<String, Object?>> stored = const [],
     }) async {
       _respond(stored);
+      store = Store<AppState>(initialState: const AppState());
       tester.view.physicalSize = const Size(1400, 900);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       await tester.pumpWidget(
         StoreProvider<AppState>(
-          store: Store<AppState>(initialState: const AppState()),
+          store: store,
           child: MaterialApp(
             localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
@@ -118,5 +124,34 @@ void main() {
 
       expect(find.textContaining('already has 2 contexts'), findsOneWidget);
     });
-  });
+  
+    testWidgets('is busy while a blockstate is added', (tester) async {
+      await open(tester);
+      final backend = HeldHttpClientAdapter();
+      (ApiService().blockStateApi as BaseApi<BlockStateModel>)
+              .apiClient
+              .dio
+              .httpClientAdapter =
+          backend;
+      bool busy() => tester.widget<FormDialog>(find.byType(FormDialog)).busy;
+
+      store.dispatch(
+        BlockStateAddAction(
+          const BlockStateModel(uiName: 'Footprints', key: 'minecraft:stone'),
+        ),
+      );
+      // The dialog hears of the store through a stream, a frame later.
+      await tester.pump();
+      await tester.pump();
+      expect(busy(), isTrue);
+
+      backend.release({
+        'id': 'b1',
+        'uiName': 'Footprints',
+        'key': 'minecraft:stone',
+      });
+      await tester.pumpAndSettle();
+      expect(busy(), isFalse);
+    });
+});
 }
