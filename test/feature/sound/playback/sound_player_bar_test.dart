@@ -294,6 +294,49 @@ void main() {
     expect(player.playedFrom.last, const Duration(seconds: 2));
   });
 
+  testWidgets('a drag along the waveform seeks once where it lets go', (
+    tester,
+  ) async {
+    await pumpBar(tester);
+    await start(tester, a);
+
+    final box = tester.getRect(find.byKey(const Key('sound_player_waveform')));
+    final gesture = await tester.startGesture(
+      Offset(box.left + box.width * 0.25, box.center.dy),
+    );
+    for (final at in [0.4, 0.5, 0.6, 0.75]) {
+      await gesture.moveTo(Offset(box.left + box.width * at, box.center.dy));
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    expect(player.seeks, isEmpty);
+    expect(find.text('0:03 / 0:04'), findsOneWidget);
+
+    await gesture.up();
+    await tester.pump();
+
+    expect(player.seeks, [const Duration(seconds: 3)]);
+  });
+
+  testWidgets('the sliders of the tune menu start at the same place', (
+    tester,
+  ) async {
+    await pumpBar(tester);
+    await start(tester, a);
+
+    await tester.tap(find.byKey(const Key('sound_player_tune')));
+    await settle(tester);
+
+    double sliderLeft(String key) => tester
+        .getRect(
+          find.descendant(
+            of: find.byKey(Key(key)),
+            matching: find.byType(Slider),
+          ),
+        )
+        .left;
+    expect(sliderLeft('sound_player_pitch'), sliderLeft('sound_player_volume'));
+  });
+
   testWidgets('the pitch is tried out live, then applied or reset', (
     tester,
   ) async {
