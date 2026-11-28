@@ -2063,11 +2063,11 @@ abstract class AppLocalizations {
   /// **'Switch project'**
   String get copy_switch_project;
 
-  /// No description provided for @notes_edit_in_overview.
+  /// {menu} is replaced by the icon of the card's menu button.
   ///
   /// In en, this message translates to:
-  /// **'To edit the notes, use ⋯ → Edit notes on the overview card.'**
-  String get notes_edit_in_overview;
+  /// **'To edit the notes, open {menu} on the overview card and choose Edit notes.'**
+  String notes_edit_in_overview(String menu);
 
   /// No description provided for @tooltip_notes_present.
   ///

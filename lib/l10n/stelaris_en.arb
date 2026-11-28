@@ -476,7 +476,15 @@
     }
   },
   "copy_switch_project": "Switch project",
-  "notes_edit_in_overview": "To edit the notes, use \u22ef \u2192 Edit notes on the overview card.",
+  "notes_edit_in_overview": "To edit the notes, open {menu} on the overview card and choose Edit notes.",
+  "@notes_edit_in_overview": {
+    "description": "{menu} is replaced by the icon of the card's menu button.",
+    "placeholders": {
+      "menu": {
+        "type": "String"
+      }
+    }
+  },
   "tooltip_notes_present": "Has notes",
   "dialog_notes_title": "Notes for {name}",
   "@dialog_notes_title": {

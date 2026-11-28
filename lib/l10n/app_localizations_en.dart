@@ -1086,8 +1086,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copy_switch_project => 'Switch project';
 
   @override
-  String get notes_edit_in_overview =>
-      'To edit the notes, use ⋯ → Edit notes on the overview card.';
+  String notes_edit_in_overview(String menu) {
+    return 'To edit the notes, open $menu on the overview card and choose Edit notes.';
+  }
 
   @override
   String get tooltip_notes_present => 'Has notes';
