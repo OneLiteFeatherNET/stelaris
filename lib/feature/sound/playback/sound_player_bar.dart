@@ -19,6 +19,9 @@ typedef PlaySoundFile = Future<void> Function(
   Duration from,
 });
 
+/// The gap between back, play and next.
+const double _transportGap = 8;
+
 /// The bar below the sound files that plays the [SoundPlaybackController]'s
 /// current file: back, play or pause, next, its name, the waveform to jump
 /// in, its time, a file picked by weight like in the game, and closing.
@@ -272,10 +275,14 @@ class _SoundPlayerBarState extends State<SoundPlayerBar>
                       onPressed: index > 0 ? () => _step(-1) : null,
                       icon: const Icon(Icons.skip_previous),
                     ),
+                    // Without a gap the hover circles of the three buttons
+                    // touch, in the compact density of the desktop.
+                    const SizedBox(width: _transportGap),
                     _PlayPauseButton(
                       status: _controller.status,
                       onPressed: () => _playPause(current),
                     ),
+                    const SizedBox(width: _transportGap),
                     IconButton(
                       key: const Key('sound_player_next'),
                       tooltip: l10n.sound_player_next,
