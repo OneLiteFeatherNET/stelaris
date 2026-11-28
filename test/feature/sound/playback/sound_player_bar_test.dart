@@ -184,6 +184,24 @@ void main() {
     expect(find.text('vulpes:step/b'), findsNothing);
   });
 
+  testWidgets(
+    'keeps a gap between back, play and next, so their highlights do not '
+    'touch in the compact desktop density',
+    (tester) async {
+      await pumpBar(tester);
+      await start(tester, a);
+
+      Rect rectOf(String key) => tester.getRect(find.byKey(Key(key)));
+      final previous = rectOf('sound_player_previous');
+      final play = rectOf('sound_player_play_pause');
+      final next = rectOf('sound_player_next');
+
+      expect(play.left - previous.right, greaterThanOrEqualTo(8));
+      expect(next.left - play.right, greaterThanOrEqualTo(8));
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+  );
+
   testWidgets('keeps the waveform in the middle', (tester) async {
     await pumpBar(tester);
     await start(tester, a);
