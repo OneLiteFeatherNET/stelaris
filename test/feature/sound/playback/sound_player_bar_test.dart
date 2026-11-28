@@ -385,6 +385,46 @@ void main() {
     );
   });
 
+  SoundWaveformPainter waveformPainter(WidgetTester tester) =>
+      tester
+              .widget<CustomPaint>(
+                find.descendant(
+                  of: find.byKey(const Key('sound_player_waveform')),
+                  matching: find.byType(CustomPaint),
+                ),
+              )
+              .painter!
+          as SoundWaveformPainter;
+
+  testWidgets('the bars grow out of the flat line once they are read', (
+    tester,
+  ) async {
+    await pumpBar(tester);
+    await start(tester, a);
+
+    final growing = waveformPainter(tester).shownPeaks;
+    expect(growing, hasLength(3));
+    for (final (i, peak) in growing.indexed) {
+      expect(peak, lessThan([0.2, 1.0, 0.5][i]));
+    }
+
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(waveformPainter(tester).shownPeaks, [0.2, 1, 0.5]);
+  });
+
+  testWidgets('the bars show at once with animations turned off', (
+    tester,
+  ) async {
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    await pumpBar(tester);
+    await start(tester, a);
+
+    expect(waveformPainter(tester).shownPeaks, [0.2, 1, 0.5]);
+  });
+
   testWidgets('the time and the slider values fit their room in one line', (
     tester,
   ) async {
