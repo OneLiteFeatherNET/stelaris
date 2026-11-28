@@ -27,10 +27,20 @@ class ProjectListTile extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    // A tinted background alone is easy to miss, and a pack icon hides the
+    // filled folder that marks the selection otherwise. The bar on the left
+    // makes it clear which project Open Project opens. Unselected tiles keep
+    // a transparent bar, so their content doesn't shift on selection.
     return Material(
       color: isSelected
-          ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+          ? colorScheme.primaryContainer.withValues(alpha: 0.35)
           : Colors.transparent,
+      shape: Border(
+        left: BorderSide(
+          color: isSelected ? colorScheme.primary : Colors.transparent,
+          width: 3,
+        ),
+      ),
       child: ListTile(
         dense: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),

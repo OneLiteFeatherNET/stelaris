@@ -350,6 +350,108 @@ void main() {
     });
   });
 
+  group('ProjectSelectionPage refresh', () {
+    const projectA = Project(
+      id: 'test_id_a',
+      displayName: 'Test Project A',
+      key: 'test_key_a',
+    );
+    const projectB = Project(
+      id: 'test_id_b',
+      displayName: 'Test Project B',
+      key: 'test_key_b',
+    );
+
+    void serveProjects(List<Project> projects) {
+      ApiService().projectApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json(
+        PaginatedResult<Project>(
+          items: projects,
+          totalItems: projects.length,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: 50,
+        ).toJson((p) => p.toJson()),
+      );
+    }
+
+    Future<void> pumpPage(
+      WidgetTester tester, {
+      ProjectPackIconLoader? loadPackIcon,
+    }) async {
+      await tester.pumpWidget(
+        StoreProvider<AppState>(
+          store: Store<AppState>(initialState: const AppState()),
+          child: MaterialApp(
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: ProjectSelectionPage(
+              loadPackIcon: loadPackIcon ?? (_) async => null,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('shows a project created elsewhere meanwhile', (tester) async {
+      serveProjects([projectA]);
+      final loaded = <String>[];
+      await pumpPage(
+        tester,
+        loadPackIcon: (id) async {
+          loaded.add(id);
+          return null;
+        },
+      );
+      expect(find.text('Test Project B'), findsNothing);
+
+      serveProjects([projectA, projectB]);
+      await tester.tap(find.byTooltip('Refresh projects'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Test Project A'), findsOneWidget);
+      expect(find.text('Test Project B'), findsOneWidget);
+      expect(
+        loaded,
+        ['test_id_a', 'test_id_a', 'test_id_b'],
+        reason: 'the pack icons load again',
+      );
+    });
+
+    testWidgets('is offered on the empty page too', (tester) async {
+      serveProjects([]);
+      await pumpPage(tester);
+      expect(find.text('No projects found'), findsOneWidget);
+
+      serveProjects([projectA]);
+      await tester.tap(find.byTooltip('Refresh projects'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('No projects found'), findsNothing);
+      expect(find.text('Test Project A'), findsOneWidget);
+    });
+
+    testWidgets('shows the unavailable page when the refresh fails', (
+      tester,
+    ) async {
+      serveProjects([projectA]);
+      await pumpPage(tester);
+
+      ApiService().projectApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter(
+        (options) => throw DioException.connectionError(
+          requestOptions: options,
+          reason: 'Connection refused',
+        ),
+      );
+      await tester.tap(find.byTooltip('Refresh projects'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Server not reachable'), findsOneWidget);
+    });
+  });
+
   group('ProjectSelectionPage without a backend', () {
     const project = Project(
       id: 'test_id_a',

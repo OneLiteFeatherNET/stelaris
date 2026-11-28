@@ -1007,6 +1007,12 @@ abstract class AppLocalizations {
   /// **'Loading projects'**
   String get project_selection_loading_label;
 
+  /// No description provided for @project_selection_refresh_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh projects'**
+  String get project_selection_refresh_tooltip;
+
   /// No description provided for @dialog_project_create_title.
   ///
   /// In en, this message translates to:
