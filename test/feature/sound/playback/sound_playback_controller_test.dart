@@ -45,6 +45,10 @@ class _FakePlayer implements SoundPlayer {
   int stops = 0;
   int pauses = 0;
   int resumes = 0;
+  int disposals = 0;
+
+  @override
+  void dispose() => disposals++;
 
   @override
   Future<void> play(
@@ -220,6 +224,16 @@ void main() {
     );
     other.dispose();
     expect(player.stops, 1);
+  });
+
+  test('dispose lets go of the player, so it frees what it holds', () {
+    final other = SoundPlaybackController(
+      loader: loader,
+      player: player,
+      decoder: decoder,
+    );
+    other.dispose();
+    expect(player.disposals, 1);
   });
 
   test('a play during the waveform read shares its download', () async {

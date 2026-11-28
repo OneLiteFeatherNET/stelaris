@@ -75,6 +75,9 @@ Store<AppState> _store(List<SoundFileSource> files) => Store<AppState>(
 
 class _Player implements SoundPlayer {
   @override
+  void dispose() {}
+
+  @override
   Duration get position => Duration.zero;
 
   @override
