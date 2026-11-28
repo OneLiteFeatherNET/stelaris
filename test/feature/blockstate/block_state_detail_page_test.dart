@@ -82,7 +82,7 @@ void main() {
       await tester.pumpAndSettle();
       // The dialog's save, the header has one as well.
       await tester.tap(
-        find.descendant(of: find.byType(Dialog), matching: find.text('Save')),
+        find.descendant(of: find.byType(Dialog), matching: find.text('Apply')),
       );
       await tester.pumpAndSettle();
 
