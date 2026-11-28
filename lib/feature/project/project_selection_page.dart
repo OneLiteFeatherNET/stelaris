@@ -13,6 +13,7 @@ import 'package:stelaris_models/stelaris_models.dart';
 
 import 'dialog/project_create_dialog.dart';
 import 'dialog/project_edit_dialog.dart';
+import 'parts/backend_unavailable_view.dart';
 import 'parts/project_pack_icon.dart';
 import 'parts/project_selection_card.dart';
 
@@ -31,6 +32,10 @@ class ProjectSelectionPage extends StatefulWidget {
 
 class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
   Project? _selected;
+
+  /// Whether the projects are loaded again after they failed. Keeps the
+  /// unavailable view up meanwhile instead of flashing the selection.
+  bool _retrying = false;
 
   /// The pack icon of each project by its id, loaded once while the page is
   /// open and again after the project was edited.
@@ -61,9 +66,20 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
             child: SafeArea(child: SessionIndicator()),
           ),
           StoreConnector<AppState, ProjectViewModel>(
-        onInit: (store) => store.dispatchAndWait(InitProjectAction()),
+        onInit: (store) => _loadProjects(store.dispatchAndWait),
         vm: () => ProjectVmFactory(localSelection: _selected),
         builder: (context, vm) {
+          if (vm.isUnavailable || _retrying) {
+            return Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: BackendUnavailableView(
+                  isRetrying: _retrying,
+                  onRetry: _retry,
+                ),
+              ),
+            );
+          }
           return Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24),
@@ -94,6 +110,7 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
                   ProjectSelectionCard(
                     projects: vm.projects,
                     selected: vm.selected,
+                    isLoading: vm.isLoading,
                     onSelectProject: (project) =>
                         setState(() => _selected = project),
                     onEditProject: (project) =>
@@ -111,6 +128,23 @@ class _ProjectSelectionPageState extends State<ProjectSelectionPage> {
         ],
       ),
     );
+  }
+
+  /// Loads the projects. A failure is not thrown on: the store remembers
+  /// it, and the page shows the unavailable view for it.
+  Future<void> _loadProjects(
+    Future<ActionStatus> Function(ReduxAction<AppState> action) dispatch,
+  ) async {
+    try {
+      await dispatch(InitProjectAction());
+    } catch (_) {}
+  }
+
+  Future<void> _retry() async {
+    setState(() => _retrying = true);
+    await _loadProjects((action) => context.dispatchAndWait(action));
+    if (!mounted) return;
+    setState(() => _retrying = false);
   }
 
   /// Opens the create dialog. A created project is selected, and a snackbar

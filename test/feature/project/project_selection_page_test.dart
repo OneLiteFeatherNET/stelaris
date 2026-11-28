@@ -1,9 +1,15 @@
+import 'dart:async';
+import 'dart:typed_data';
+
 import 'package:async_redux/async_redux.dart';
+import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/feature/asset/preview/texture_preview.dart';
 import 'package:stelaris/feature/project/dialog/project_create_dialog.dart';
+import 'package:stelaris/feature/project/parts/project_list_skeleton.dart';
 import 'package:stelaris/feature/project/parts/project_pack_icon.dart';
 import 'package:stelaris/feature/project/project_selection_page.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
@@ -343,4 +349,174 @@ void main() {
       expect(tabs.controller!.index, 1, reason: 'the pack tab is shown');
     });
   });
+
+  group('ProjectSelectionPage without a backend', () {
+    const project = Project(
+      id: 'test_id_a',
+      displayName: 'Test Project A',
+      key: 'test_key_a',
+    );
+    final projectPage = const PaginatedResult<Project>(
+      items: [project],
+      totalItems: 1,
+      totalPages: 1,
+      currentPage: 1,
+      pageSize: 50,
+    ).toJson((p) => p.toJson());
+
+    void backendDown() {
+      ApiService().projectApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter(
+        (options) => throw DioException.connectionError(
+          requestOptions: options,
+          reason: 'Connection refused',
+        ),
+      );
+    }
+
+    Future<void> pumpPage(WidgetTester tester, Store<AppState> store) async {
+      await tester.pumpWidget(
+        StoreProvider<AppState>(
+          store: store,
+          child: const MaterialApp(
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: ProjectSelectionPage(),
+          ),
+        ),
+      );
+    }
+
+    testWidgets('shows a placeholder while the projects load', (tester) async {
+      final response = Completer<void>();
+      ApiService().projectApi.apiClient.dio.httpClientAdapter =
+          _DelayedAdapter(response.future, projectPage);
+      final store = Store<AppState>(initialState: const AppState());
+
+      await pumpPage(tester, store);
+      await tester.pump();
+
+      expect(find.byType(ProjectListSkeleton), findsOneWidget);
+      expect(find.text('No projects found'), findsNothing);
+
+      response.complete();
+      await settleRequests(
+        tester,
+        () => store.isWaiting(InitProjectAction),
+      );
+
+      expect(find.byType(ProjectListSkeleton), findsNothing);
+      expect(find.text('Test Project A'), findsOneWidget);
+    });
+
+    testWidgets('keeps known projects instead of a placeholder', (
+      tester,
+    ) async {
+      final response = Completer<void>();
+      ApiService().projectApi.apiClient.dio.httpClientAdapter =
+          _DelayedAdapter(response.future, projectPage);
+      final store = Store<AppState>(
+        initialState: const AppState(projects: [project]),
+      );
+
+      await pumpPage(tester, store);
+      await tester.pump();
+
+      expect(find.byType(ProjectListSkeleton), findsNothing);
+      expect(find.text('Test Project A'), findsOneWidget);
+
+      response.complete();
+      await settleRequests(
+        tester,
+        () => store.isWaiting(InitProjectAction),
+      );
+    });
+
+    testWidgets('shows the unavailable page when the backend is down', (
+      tester,
+    ) async {
+      backendDown();
+      final store = Store<AppState>(initialState: const AppState());
+
+      await pumpPage(tester, store);
+      await settleRequests(
+        tester,
+        () => store.isWaiting(InitProjectAction),
+      );
+
+      expect(find.text('Server not reachable'), findsOneWidget);
+      expect(find.text('Try again'), findsOneWidget);
+      expect(find.text('No projects found'), findsNothing);
+      expect(find.text('Select Project'), findsNothing);
+    });
+
+    testWidgets('try again loads the projects once the backend is back', (
+      tester,
+    ) async {
+      backendDown();
+      final store = Store<AppState>(initialState: const AppState());
+
+      await pumpPage(tester, store);
+      await settleRequests(
+        tester,
+        () => store.isWaiting(InitProjectAction),
+      );
+      expect(find.text('Server not reachable'), findsOneWidget);
+
+      ApiService().projectApi.apiClient.dio.httpClientAdapter =
+          FakeHttpClientAdapter.json(projectPage);
+      await tester.tap(find.text('Try again'));
+      await settleRequests(
+        tester,
+        () => store.isWaiting(InitProjectAction),
+      );
+
+      expect(find.text('Server not reachable'), findsNothing);
+      expect(find.text('Test Project A'), findsOneWidget);
+    });
+
+    testWidgets('try again stays on the unavailable page while it fails', (
+      tester,
+    ) async {
+      backendDown();
+      final store = Store<AppState>(initialState: const AppState());
+
+      await pumpPage(tester, store);
+      await settleRequests(
+        tester,
+        () => store.isWaiting(InitProjectAction),
+      );
+
+      await tester.tap(find.text('Try again'));
+      await tester.pump();
+
+      expect(find.text('Server not reachable'), findsOneWidget);
+      expect(find.byType(ProjectListSkeleton), findsNothing);
+
+      await settleRequests(
+        tester,
+        () => store.isWaiting(InitProjectAction),
+      );
+
+      expect(find.text('Server not reachable'), findsOneWidget);
+    });
+  });
+}
+
+/// Answers every request with [json] once [release] completes.
+class _DelayedAdapter extends FakeHttpClientAdapter {
+  _DelayedAdapter(this.release, Object? json)
+    : super((_) => FakeHttpClientAdapter.response(json));
+
+  final Future<void> release;
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    await release;
+    return super.fetch(options, requestStream, cancelFuture);
+  }
 }

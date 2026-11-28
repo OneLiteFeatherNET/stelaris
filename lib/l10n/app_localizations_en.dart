@@ -492,6 +492,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get project_selection_open_button => 'Open Project';
 
   @override
+  String get project_selection_unavailable_title => 'Server not reachable';
+
+  @override
+  String get project_selection_unavailable_message =>
+      'Stelaris could not reach its server. Check that the backend is running, then try again.';
+
+  @override
+  String get project_selection_unavailable_retry => 'Try again';
+
+  @override
+  String get project_selection_loading_label => 'Loading projects';
+
+  @override
   String get dialog_project_create_title => 'Create new project';
 
   @override

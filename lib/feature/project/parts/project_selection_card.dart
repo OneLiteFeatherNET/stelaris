@@ -4,6 +4,7 @@ import 'package:stelaris/util/l10n_ext.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import 'empty_project_view.dart';
+import 'project_list_skeleton.dart';
 import 'project_pack_icon.dart';
 import 'project_selection_header.dart';
 import 'project_selector_list.dart';
@@ -17,6 +18,10 @@ class ProjectSelectionCard extends StatelessWidget {
   final VoidCallback onCreateProject;
   final VoidCallback onProceed;
 
+  /// Whether the projects are still loading, which shows a placeholder in
+  /// place of the list.
+  final bool isLoading;
+
   /// The pack icon of a project, null shows every project without one.
   final Future<ProjectPackIcon?>? Function(Project project)? packIconOf;
 
@@ -27,6 +32,7 @@ class ProjectSelectionCard extends StatelessWidget {
     required this.onEditProject,
     required this.onCreateProject,
     required this.onProceed,
+    this.isLoading = false,
     this.packIconOf,
     super.key,
   });
@@ -51,7 +57,9 @@ class ProjectSelectionCard extends StatelessWidget {
             children: [
               const ProjectSelectionHeader(),
               const Divider(height: 32),
-              if (projects.isEmpty) ...[
+              if (isLoading) ...[
+                const ProjectListSkeleton(),
+              ] else if (projects.isEmpty) ...[
                 EmptyProjectView(onCreateProject: onCreateProject),
               ] else ...[
                 ProjectSelectorList(

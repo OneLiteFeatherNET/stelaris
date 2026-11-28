@@ -18,6 +18,10 @@ class ProjectVmFactory
       state.projects,
       localSelection ?? state.selectedProject,
     ),
+    // Projects from an earlier visit are shown while they refresh, a
+    // placeholder only stands in when there is nothing to show yet.
+    isLoading: isWaiting(InitProjectAction) && state.projects.isEmpty,
+    isUnavailable: isFailed(InitProjectAction),
     onSelectProject: (project) => dispatch(SelectProjectAction(project)),
   );
 
@@ -40,9 +44,18 @@ class ProjectViewModel extends Vm {
   final Project? selected;
   final ValueChanged<Project?> onSelectProject;
 
+  /// Whether the projects are loading and none are known yet.
+  final bool isLoading;
+
+  /// Whether the last attempt to load the projects failed, which mostly
+  /// means the backend is not reachable.
+  final bool isUnavailable;
+
   ProjectViewModel({
     required this.projects,
     required this.selected,
     required this.onSelectProject,
-  }) : super(equals: [projects, selected]);
+    this.isLoading = false,
+    this.isUnavailable = false,
+  }) : super(equals: [projects, selected, isLoading, isUnavailable]);
 }
