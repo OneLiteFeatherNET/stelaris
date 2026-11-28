@@ -29,5 +29,8 @@ class _UnsupportedSoundPlayer implements SoundPlayer {
   void adjust({required double volume, required double pitch}) {}
 
   @override
+  void dispose() {}
+
+  @override
   Duration get position => Duration.zero;
 }

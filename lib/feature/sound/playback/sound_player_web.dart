@@ -141,6 +141,16 @@ class _WebSoundPlayer implements SoundPlayer {
   }
 
   @override
+  void dispose() {
+    stop();
+    _idle.dispose();
+    _decodedFile = null;
+    _decoded = null;
+    _context?.close().toDart.ignore();
+    _context = null;
+  }
+
+  @override
   void pause() {
     final playback = _playback;
     final timeline = playback?.timeline;

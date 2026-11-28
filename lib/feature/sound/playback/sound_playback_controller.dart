@@ -307,7 +307,9 @@ class SoundPlaybackController extends ChangeNotifier {
   void dispose() {
     _disposed = true;
     _generation++;
-    player.stop();
+    player
+      ..stop()
+      ..dispose();
     super.dispose();
   }
 }
