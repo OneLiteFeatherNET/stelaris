@@ -3167,6 +3167,66 @@ abstract class AppLocalizations {
   /// **'The sound could not be played'**
   String get sound_play_failed;
 
+  /// No description provided for @sound_player_previous.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous file'**
+  String get sound_player_previous;
+
+  /// No description provided for @sound_player_next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next file'**
+  String get sound_player_next;
+
+  /// No description provided for @sound_player_pause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get sound_player_pause;
+
+  /// No description provided for @sound_player_random.
+  ///
+  /// In en, this message translates to:
+  /// **'Play like in the game: a file picked by its weight'**
+  String get sound_player_random;
+
+  /// No description provided for @sound_player_close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the player'**
+  String get sound_player_close;
+
+  /// No description provided for @sound_player_apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get sound_player_apply;
+
+  /// No description provided for @sound_player_apply_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this volume and pitch to the file'**
+  String get sound_player_apply_tooltip;
+
+  /// No description provided for @sound_player_reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get sound_player_reset;
+
+  /// No description provided for @sound_player_reset_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the volume and pitch of the file'**
+  String get sound_player_reset_tooltip;
+
+  /// No description provided for @sound_player_tune.
+  ///
+  /// In en, this message translates to:
+  /// **'Try out volume and pitch'**
+  String get sound_player_tune;
+
   /// No description provided for @sound_asset_choose.
   ///
   /// In en, this message translates to:
@@ -3200,8 +3260,13 @@ abstract class AppLocalizations {
   /// No description provided for @sound_file_card_subtitle.
   ///
   /// In en, this message translates to:
-  /// **'{type} · Volume {volume} · Pitch {pitch}'**
-  String sound_file_card_subtitle(String type, String volume, String pitch);
+  /// **'{type} · Volume {volume} · Pitch {pitch} · Weight {weight}'**
+  String sound_file_card_subtitle(
+    String type,
+    String volume,
+    String pitch,
+    int weight,
+  );
 
   /// No description provided for @font_char_label.
   ///

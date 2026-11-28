@@ -9,17 +9,25 @@ import 'package:stelaris/api/state/factory/sound/selected_sound_state.dart';
 import 'package:stelaris/feature/asset/loading/asset_library.dart';
 import 'package:stelaris/feature/base/page_header.dart';
 import 'package:stelaris/feature/base/empty_data_widget.dart';
+import 'package:stelaris/feature/base/snackbar/info_bar.dart';
 import 'package:stelaris/feature/model/model_grid.dart';
 import 'package:stelaris/feature/sound/card/sound_file_card.dart';
 import 'package:stelaris/feature/sound/modal/sound_file_modal_helper.dart';
 import 'package:stelaris/feature/sound/playback/sound_decoder.dart';
-import 'package:stelaris/feature/sound/playback/sound_file_player.dart';
+import 'package:stelaris/feature/sound/playback/sound_file_play_button.dart';
 import 'package:stelaris/feature/sound/playback/sound_playback_controller.dart';
 import 'package:stelaris/feature/sound/playback/sound_player.dart';
+import 'package:stelaris/feature/sound/playback/sound_player_bar.dart';
+import 'package:stelaris/util/dispatch_ext.dart';
 import 'package:stelaris/util/l10n_ext.dart';
 
 class SoundFileEntryPage extends StatefulWidget {
-  const SoundFileEntryPage({this.playback, this.soundAssetNames, super.key});
+  const SoundFileEntryPage({
+    this.playback,
+    this.soundAssetNames,
+    this.shortcutsEnabled = true,
+    super.key,
+  });
 
   /// Plays the files; when null the page keeps its own over
   /// [ApiService.soundFileLoader] and the browser's audio.
@@ -28,6 +36,9 @@ class SoundFileEntryPage extends StatefulWidget {
   /// The display names of the sound assets of a project by their id; when
   /// null they are read from [AssetLibrary.shared].
   final Future<Map<String, String>> Function(String projectId)? soundAssetNames;
+
+  /// Whether the keys play the files, see [SoundPlayerBar.shortcutsEnabled].
+  final bool shortcutsEnabled;
 
   @override
   State<SoundFileEntryPage> createState() => _SoundFileEntriesState();
@@ -140,6 +151,20 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
               vm.hasNoFiles
                   ? const Flexible(child: EmptyDataWidget())
                   : Expanded(child: _buildGrid(vm)),
+              if (_projectId case final projectId?)
+                SoundPlayerBar(
+                  controller: _playback,
+                  projectId: projectId,
+                  sources: vm.sources.where(_isPlayable).toList(),
+                  titleOf: (source) =>
+                      _assetNames[source.assetId] ?? source.name,
+                  onPlay: (source, {from = Duration.zero}) => _runPlayback(
+                    (projectId) =>
+                        _playback.play(projectId, source, from: from),
+                  ),
+                  onApply: _apply,
+                  shortcutsEnabled: widget.shortcutsEnabled,
+                ),
             ],
           ),
         );
@@ -147,10 +172,11 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
     );
   }
 
+  String? get _projectId =>
+      StoreProvider.state<AppState>(context).selectedProject?.id;
+
   Widget _buildGrid(SelectedSoundView vm) {
-    final projectId = StoreProvider.state<AppState>(context)
-        .selectedProject
-        ?.id;
+    final projectId = _projectId;
     _loadAssetNamesFor(projectId, vm.sources);
     return ModelGrid<SoundFileSource>(
       items: vm.sources,
@@ -165,9 +191,11 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
         controller: _playback,
         projectId: _isPlayable(source) ? projectId : null,
         source: source,
-        builder: (context, waveformSettled) => SoundFileCard(
+        builder: (context, waveformSettled, isCurrent) => SoundFileCard(
           source: source,
           assetName: _assetNames[source.assetId],
+          length: _playback.readWaveformOf(source)?.duration,
+          highlighted: isCurrent,
           loading:
               projectId != null &&
               (!waveformSettled || _isAssetNameLoading(source)),
@@ -175,12 +203,11 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
           onDelete: () => _confirmAndDelete(source),
           // Only an uploaded file has audio: an event names another sound
           // event, a file without asset e.g. a vanilla sound.
-          player: projectId != null && _isPlayable(source)
-              ? SoundFilePlayer(
+          playButton: projectId != null && _isPlayable(source)
+              ? SoundFilePlayButton(
                   controller: _playback,
-                  projectId: projectId,
                   source: source,
-                  onToggle: () => _togglePlay(source),
+                  onPressed: () => _togglePlay(source),
                 )
               : null,
         ),
@@ -207,15 +234,19 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
   static bool _isPlayable(SoundFileSource source) =>
       source.type == 'file' && source.assetId != null;
 
-  Future<void> _togglePlay(SoundFileSource source) async {
-    final projectId = StoreProvider.state<AppState>(context)
-        .selectedProject
-        ?.id;
+  Future<void> _togglePlay(SoundFileSource source) =>
+      _runPlayback((projectId) => _playback.toggle(projectId, source));
+
+  /// Runs [playback] in the selected project and reports what goes wrong.
+  Future<void> _runPlayback(
+    Future<void> Function(String projectId) playback,
+  ) async {
+    final projectId = _projectId;
     if (projectId == null) return;
     final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     try {
-      await _playback.toggle(projectId, source);
+      await playback(projectId);
     } on SoundFileUnavailableException catch (e) {
       messenger.showSnackBar(
         SnackBar(content: Text(l10n.sound_play_unavailable(e.key))),
@@ -224,6 +255,26 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
       debugPrint('Sound playback failed: $e');
       messenger.showSnackBar(SnackBar(content: Text(l10n.sound_play_failed)));
     }
+  }
+
+  /// Saves the volume and pitch tried out in the player bar to the file.
+  Future<void> _apply(SoundFileSource updated) async {
+    final (:ok, :error) = await context.dispatchAndCatch(
+      SoundFileUpdateAction(updated),
+    );
+    if (!mounted) return;
+    if (error != null) {
+      context.showErrorSnackBar(error);
+      return;
+    }
+    if (!ok) return;
+    final saved = StoreProvider.state<AppState>(context)
+        .selectedSoundEvent
+        ?.files
+        .items
+        .where((file) => file.id == updated.id)
+        .firstOrNull;
+    _playback.replaceCurrent(saved ?? updated);
   }
 
   Future<void> _confirmAndDelete(SoundFileSource source) async {
@@ -250,8 +301,9 @@ class _SoundFileEntriesState extends State<SoundFileEntryPage>
   }
 }
 
-/// Builds [builder] with whether the waveform of [source] is read or failed,
-/// and only again when that changes, not on every change of [controller].
+/// Builds [builder] with whether the waveform of [source] is read or failed
+/// and whether it is the file in the player bar, and only again when one of
+/// them changes, not on every change of [controller].
 ///
 /// Starts reading the waveform; without a [projectId] there is none to wait
 /// for.
@@ -267,7 +319,8 @@ class _WaveformSettled extends StatefulWidget {
   final SoundPlaybackController controller;
   final String? projectId;
   final SoundFileSource source;
-  final Widget Function(BuildContext context, bool settled) builder;
+  final Widget Function(BuildContext context, bool settled, bool isCurrent)
+  builder;
 
   @override
   State<_WaveformSettled> createState() => _WaveformSettledState();
@@ -275,6 +328,7 @@ class _WaveformSettled extends StatefulWidget {
 
 class _WaveformSettledState extends State<_WaveformSettled> {
   late bool _settled;
+  late bool _isCurrent;
 
   @override
   void initState() {
@@ -303,7 +357,10 @@ class _WaveformSettledState extends State<_WaveformSettled> {
       widget.projectId == null ||
       widget.controller.isWaveformSettled(widget.source);
 
+  bool get _isCurrentNow => widget.controller.current == widget.source;
+
   void _read() {
+    _isCurrent = _isCurrentNow;
     _settled = _settledNow;
     if (_settled) return;
     widget.controller.waveformOf(widget.projectId!, widget.source).ignore();
@@ -311,9 +368,16 @@ class _WaveformSettledState extends State<_WaveformSettled> {
 
   void _onPlayback() {
     final settled = _settledNow;
-    if (settled != _settled) setState(() => _settled = settled);
+    final isCurrent = _isCurrentNow;
+    if (settled != _settled || isCurrent != _isCurrent) {
+      setState(() {
+        _settled = settled;
+        _isCurrent = isCurrent;
+      });
+    }
   }
 
   @override
-  Widget build(BuildContext context) => widget.builder(context, _settled);
+  Widget build(BuildContext context) =>
+      widget.builder(context, _settled, _isCurrent);
 }

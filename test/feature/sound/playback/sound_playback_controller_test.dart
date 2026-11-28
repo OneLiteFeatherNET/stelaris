@@ -39,15 +39,22 @@ class _FakeLoader implements SoundFileLoader {
 class _FakePlayer implements SoundPlayer {
   Completer<void>? playing;
   final List<(SoundFile, double, double)> played = [];
+  final List<Duration> playedFrom = [];
+  final List<Duration> seeks = [];
+  final List<(double, double)> adjusts = [];
   int stops = 0;
+  int pauses = 0;
+  int resumes = 0;
 
   @override
   Future<void> play(
     SoundFile file, {
     required double volume,
     required double pitch,
+    Duration from = Duration.zero,
   }) {
     played.add((file, volume, pitch));
+    playedFrom.add(from);
     return (playing = Completer<void>()).future;
   }
 
@@ -60,6 +67,19 @@ class _FakePlayer implements SoundPlayer {
   }
 
   void finish() => playing?.complete();
+
+  @override
+  void pause() => pauses++;
+
+  @override
+  void resume() => resumes++;
+
+  @override
+  void seek(Duration position) => seeks.add(position);
+
+  @override
+  void adjust({required double volume, required double pitch}) =>
+      adjusts.add((volume, pitch));
 
   @override
   Duration position = Duration.zero;
@@ -114,16 +134,30 @@ void main() {
     },
   );
 
-  test('a second toggle of the playing source stops it', () async {
+  test('a second toggle of the playing source pauses it', () async {
     final source = _source('a');
     final done = controller.toggle('p1', source);
     loader.pending['a']!.complete(_file);
     await pumpEventQueue();
 
     await controller.toggle('p1', source);
+
+    expect(player.pauses, 1);
+    expect(player.stops, 0);
+    expect(controller.statusOf(source), SoundPlaybackStatus.paused);
+    controller.stop();
+    await done;
+  });
+
+  test('a toggle of the loading source stops it', () async {
+    final source = _source('a');
+    final done = controller.toggle('p1', source);
+
+    await controller.toggle('p1', source);
+    loader.pending['a']!.complete(_file);
     await done;
 
-    expect(player.stops, 1);
+    expect(player.played, isEmpty);
     expect(controller.statusOf(source), SoundPlaybackStatus.idle);
   });
 
@@ -316,5 +350,209 @@ void main() {
     expect(controller.positionOf(_source('b')), Duration.zero);
     player.finish();
     await done;
+  });
+
+  /// Starts [source] and lets its load arrive, so it plays. Gives what
+  /// waits for the end of the playback; a future itself would be awaited.
+  Future<Future<void> Function()> startPlaying(SoundFileSource source) async {
+    final done = controller.play('p1', source);
+    loader.pending[source.name]!.complete(_file);
+    await pumpEventQueue();
+    return () => done;
+  }
+
+  group('pause', () {
+    test('pauses the playing file and plays it on', () async {
+      final source = _source('a');
+      final done = await startPlaying(source);
+
+      controller.togglePause();
+      expect(player.pauses, 1);
+      expect(controller.status, SoundPlaybackStatus.paused);
+      expect(controller.statusOf(source), SoundPlaybackStatus.paused);
+
+      controller.togglePause();
+      expect(player.resumes, 1);
+      expect(controller.status, SoundPlaybackStatus.playing);
+      player.finish();
+      await done();
+    });
+
+    test('a toggle of the paused file plays it on', () async {
+      final source = _source('a');
+      final done = await startPlaying(source);
+      controller.togglePause();
+
+      await controller.toggle('p1', source);
+
+      expect(player.resumes, 1);
+      expect(player.stops, 0);
+      expect(controller.statusOf(source), SoundPlaybackStatus.playing);
+      player.finish();
+      await done();
+    });
+
+    test('keeps the position of the paused file', () async {
+      final source = _source('a');
+      final done = await startPlaying(source);
+      player.position = const Duration(milliseconds: 400);
+      controller.togglePause();
+
+      expect(controller.positionOf(source), const Duration(milliseconds: 400));
+      controller.stop();
+      await done();
+    });
+
+    test('does nothing while nothing plays', () {
+      controller.togglePause();
+      expect(player.pauses, 0);
+      expect(player.resumes, 0);
+    });
+  });
+
+  group('seek', () {
+    test('plays from where it is asked to', () async {
+      final source = _source('a');
+      final done = controller.play(
+        'p1',
+        source,
+        from: const Duration(milliseconds: 300),
+      );
+      loader.pending['a']!.complete(_file);
+      await pumpEventQueue();
+
+      expect(player.playedFrom, [const Duration(milliseconds: 300)]);
+      player.finish();
+      await done;
+    });
+
+    test('moves the playing and the paused file', () async {
+      final done = await startPlaying(_source('a'));
+      controller.seek(const Duration(seconds: 1));
+      controller.togglePause();
+      controller.seek(const Duration(milliseconds: 200));
+
+      expect(player.seeks, [
+        const Duration(seconds: 1),
+        const Duration(milliseconds: 200),
+      ]);
+      controller.stop();
+      await done();
+    });
+
+    test('does nothing while nothing plays', () {
+      controller.seek(const Duration(seconds: 1));
+      expect(player.seeks, isEmpty);
+    });
+  });
+
+  group('current', () {
+    test('stays once the file ended, until closed', () async {
+      final source = _source('a');
+      expect(controller.current, isNull);
+      final done = await startPlaying(source);
+      player.finish();
+      await done();
+
+      expect(controller.current, source);
+      expect(controller.status, SoundPlaybackStatus.idle);
+
+      controller.close();
+      expect(controller.current, isNull);
+    });
+
+    test('close stops what plays', () async {
+      final done = await startPlaying(_source('a'));
+      controller.close();
+      await done();
+      expect(player.stops, 1);
+    });
+  });
+
+  group('preview', () {
+    test('tries out volume and pitch live without changing the file', () async {
+      final source = _source('a', volume: 0.5, pitch: 1);
+      final done = await startPlaying(source);
+
+      controller.preview(pitch: 1.5);
+      controller.preview(volume: 0.8);
+
+      expect(controller.volumeOf(source), 0.8);
+      expect(controller.pitchOf(source), 1.5);
+      expect(controller.hasPreview, isTrue);
+      expect(player.adjusts, [(0.5, 1.5), (0.8, 1.5)]);
+      expect(source.pitch, 1);
+      player.finish();
+      await done();
+    });
+
+    test('the next play of the file uses it', () async {
+      final source = _source('a');
+      final first = await startPlaying(source);
+      player.finish();
+      await first();
+
+      controller.preview(volume: 0.3, pitch: 2);
+      final second = controller.play('p1', source);
+      await pumpEventQueue();
+
+      expect(player.played.last, (_file, 0.3, 2.0));
+      player.finish();
+      await second;
+    });
+
+    test('playing another file drops it', () async {
+      final a = _source('a');
+      final doneA = await startPlaying(a);
+      controller.preview(pitch: 2);
+
+      final doneB = await startPlaying(_source('b'));
+      await doneA();
+
+      expect(controller.hasPreview, isFalse);
+      expect(controller.pitchOf(a), 1);
+      player.finish();
+      await doneB();
+    });
+
+    test('reset goes back to the values of the file', () async {
+      final source = _source('a', volume: 0.5, pitch: 1.2);
+      final done = await startPlaying(source);
+      controller.preview(volume: 1, pitch: 2);
+
+      controller.resetPreview();
+
+      expect(controller.hasPreview, isFalse);
+      expect(player.adjusts.last, (0.5, 1.2));
+      player.finish();
+      await done();
+    });
+
+    test('a saved file takes the place of the current one', () async {
+      final source = _source('a');
+      final done = await startPlaying(source);
+      controller.preview(pitch: 1.5);
+
+      final saved = source.copyWith(pitch: 1.5);
+      controller.replaceCurrent(saved);
+
+      expect(controller.current, saved);
+      expect(controller.statusOf(saved), SoundPlaybackStatus.playing);
+      expect(controller.hasPreview, isFalse);
+      expect(controller.pitchOf(saved), 1.5);
+      player.finish();
+      await done();
+    });
+
+    test('another file does not take the place of the current one', () async {
+      final source = _source('a');
+      final done = await startPlaying(source);
+
+      controller.replaceCurrent(_source('b'));
+
+      expect(controller.current, source);
+      player.finish();
+      await done();
+    });
   });
 }

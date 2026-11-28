@@ -1709,6 +1709,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sound_play_failed => 'The sound could not be played';
 
   @override
+  String get sound_player_previous => 'Previous file';
+
+  @override
+  String get sound_player_next => 'Next file';
+
+  @override
+  String get sound_player_pause => 'Pause';
+
+  @override
+  String get sound_player_random =>
+      'Play like in the game: a file picked by its weight';
+
+  @override
+  String get sound_player_close => 'Close the player';
+
+  @override
+  String get sound_player_apply => 'Apply';
+
+  @override
+  String get sound_player_apply_tooltip =>
+      'Save this volume and pitch to the file';
+
+  @override
+  String get sound_player_reset => 'Reset';
+
+  @override
+  String get sound_player_reset_tooltip =>
+      'Back to the volume and pitch of the file';
+
+  @override
+  String get sound_player_tune => 'Try out volume and pitch';
+
+  @override
   String get sound_asset_choose => 'Choose uploaded sound';
 
   @override
@@ -1724,8 +1757,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sound_asset_unlink => 'Unlink the uploaded sound';
 
   @override
-  String sound_file_card_subtitle(String type, String volume, String pitch) {
-    return '$type · Volume $volume · Pitch $pitch';
+  String sound_file_card_subtitle(
+    String type,
+    String volume,
+    String pitch,
+    int weight,
+  ) {
+    return '$type · Volume $volume · Pitch $pitch · Weight $weight';
   }
 
   @override

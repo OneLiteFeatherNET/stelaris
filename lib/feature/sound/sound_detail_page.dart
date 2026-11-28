@@ -66,7 +66,7 @@ class SoundDetailPage extends StatelessWidget {
                 child: TabBarView(
                   children: [
                     SoundGeneralPage(),
-                    SoundFileEntryPage(),
+                    _EntriesTab(),
                   ],
                 ),
               ),
@@ -89,4 +89,24 @@ class _SoundDetailFactory
   @override
   _SoundDetailView fromStore() =>
       _SoundDetailView(title: state.selectedSoundEvent?.uiName);
+}
+
+/// The files tab, whose keys play only while it is the selected tab: it
+/// stays alive behind the other one.
+class _EntriesTab extends StatelessWidget {
+  const _EntriesTab();
+
+  static final int _index = SoundDetailPage.tabs.indexWhere(
+    (tab) => tab.id == 'entries',
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = DefaultTabController.of(context);
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) =>
+          SoundFileEntryPage(shortcutsEnabled: controller.index == _index),
+    );
+  }
 }

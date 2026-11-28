@@ -10,8 +10,9 @@ class SoundWaveform {
 
   /// The waveform of [samples] played at [sampleRate], in [buckets] slices.
   ///
-  /// Each peak is the loudest sample of its slice, scaled so the loudest
-  /// slice is 1; a silent file stays at 0.
+  /// Each peak is how loud its slice is on average (its root mean square),
+  /// scaled so the loudest slice is 1; a silent file stays at 0. The loudest
+  /// sample alone would be near 1 in almost every slice of music.
   factory SoundWaveform.fromSamples(
     Float32List samples, {
     required int sampleRate,
@@ -29,11 +30,11 @@ class SoundWaveform {
       final start = b * samples.length ~/ buckets;
       // At least one sample, so a short file still fills every bucket.
       final end = math.max(start + 1, (b + 1) * samples.length ~/ buckets);
-      var peak = 0.0;
+      var sum = 0.0;
       for (var i = start; i < end; i++) {
-        peak = math.max(peak, samples[i].abs());
+        sum += samples[i] * samples[i];
       }
-      peaks[b] = peak;
+      peaks[b] = math.sqrt(sum / (end - start));
     }
     final loudest = peaks.reduce(math.max);
     return SoundWaveform(
@@ -51,4 +52,15 @@ class SoundWaveform {
 
   /// How long the file plays at pitch 1.
   final Duration duration;
+}
+
+/// How long a file of [duration] at pitch 1 plays at [pitch]: as in the
+/// game, the pitch changes the speed too and is clamped to 0.5..2.
+Duration playTimeAt(Duration duration, double pitch) =>
+    duration * (1 / pitch.clamp(0.5, 2.0));
+
+/// [duration] as minutes and seconds, e.g. `1:02`.
+String formatPlayTime(Duration duration) {
+  final seconds = duration.inSeconds;
+  return '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';
 }

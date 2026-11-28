@@ -10,10 +10,23 @@ class _UnsupportedSoundPlayer implements SoundPlayer {
     SoundFile file, {
     required double volume,
     required double pitch,
+    Duration from = Duration.zero,
   }) => Future.error(UnsupportedError('Sound playback needs the web build'));
 
   @override
   void stop() {}
+
+  @override
+  void pause() {}
+
+  @override
+  void resume() {}
+
+  @override
+  void seek(Duration position) {}
+
+  @override
+  void adjust({required double volume, required double pitch}) {}
 
   @override
   Duration get position => Duration.zero;

@@ -18,6 +18,7 @@ class _WebSoundPlayer implements SoundPlayer {
     SoundFile file, {
     required double volume,
     required double pitch,
+    Duration from = Duration.zero,
   }) async {
     stop();
     final blob = web.Blob(
@@ -28,9 +29,10 @@ class _WebSoundPlayer implements SoundPlayer {
     final done = Completer<void>();
     final audio = web.HTMLAudioElement()
       ..src = url
-      ..volume = volume.clamp(0.0, 1.0)
       ..preservesPitch = false
-      ..playbackRate = pitch.clamp(0.5, 2.0);
+      // Before the metadata is there, this is where the playback starts.
+      ..currentTime = _seconds(from);
+    _apply(audio, volume: volume, pitch: pitch);
     audio.onended = ((web.Event _) => _finish(done)).toJS;
     audio.onerror = ((web.Event _) {
       _release(done);
@@ -62,6 +64,44 @@ class _WebSoundPlayer implements SoundPlayer {
     final done = _done;
     if (done != null) _finish(done);
   }
+
+  @override
+  void pause() => _audio?.pause();
+
+  @override
+  void resume() {
+    final audio = _audio;
+    if (audio == null || !audio.paused) return;
+    final done = _done!;
+    audio.play().toDart.catchError((Object error) {
+      _release(done);
+      if (!done.isCompleted) done.completeError(error);
+      return null;
+    });
+  }
+
+  @override
+  void seek(Duration position) => _audio?.currentTime = _seconds(position);
+
+  @override
+  void adjust({required double volume, required double pitch}) {
+    final audio = _audio;
+    if (audio != null) _apply(audio, volume: volume, pitch: pitch);
+  }
+
+  /// A volume above 1 only widens the range in the game, so it plays at full
+  /// volume here; a pitch is clamped like in Minecraft.
+  static void _apply(
+    web.HTMLAudioElement audio, {
+    required double volume,
+    required double pitch,
+  }) {
+    audio
+      ..volume = volume.clamp(0.0, 1.0)
+      ..playbackRate = pitch.clamp(0.5, 2.0);
+  }
+
+  static double _seconds(Duration duration) => duration.inMicroseconds / 1e6;
 
   void _finish(Completer<void> done) {
     _release(done);
