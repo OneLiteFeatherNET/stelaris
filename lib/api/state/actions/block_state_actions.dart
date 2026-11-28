@@ -55,10 +55,9 @@ class RefreshBlockStateAction extends RefreshListAction<BlockStateModel> {
   RefreshBlockStateAction() : super(_modelList);
 }
 
-/// Loads the first page of the blockstates, or the next one when some are
-/// loaded.
+/// Loads the first page of the blockstates when none is loaded.
 class InitBlockStateAction extends InitListAction<BlockStateModel> {
-  InitBlockStateAction() : super(_modelList, LoadMoreBlockStatesAction.new);
+  InitBlockStateAction() : super(_modelList);
 }
 
 /// Appends the next page of the blockstates. While it loads,

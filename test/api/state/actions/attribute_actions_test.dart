@@ -22,6 +22,7 @@ void main() {
     selectedOf: (state) => state.selectedAttribute,
     withSelected: (state, model) => state.copyWith(selectedAttribute: model),
     init: InitAttributeAction.new,
+    loadMore: LoadMoreAttributesAction.new,
     refresh: RefreshAttributeAction.new,
     add: AttributeAddAction.new,
     remove: AttributeRemoveAction.new,

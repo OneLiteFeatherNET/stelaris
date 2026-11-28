@@ -13,6 +13,7 @@ void main() {
     selectedOf: (state) => state.selectedAdvancement,
     withSelected: (state, model) => state.copyWith(selectedAdvancement: model),
     init: InitAdvancementAction.new,
+    loadMore: LoadMoreAdvancementsAction.new,
     refresh: RefreshAdvancementAction.new,
     add: AdvancementAddAction.new,
     remove: AdvancementRemoveAction.new,

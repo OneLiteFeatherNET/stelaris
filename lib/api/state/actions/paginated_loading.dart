@@ -25,26 +25,33 @@ class ModelList<T extends DataModel> {
     size: of(state).requestSize,
     projectId: state.selectedProject?.id,
   );
+
+  /// Requests the first page of the open project and puts it in place of the
+  /// list, unless [currentState] shows another project opened while it
+  /// loaded: the page then belongs to the project that was left.
+  Future<AppState?> replaceWithFirstPage(
+    AppState Function() currentState,
+  ) async {
+    final String? projectId = currentState().selectedProject?.id;
+    final PaginatedResult<T> page = await firstPage(currentState());
+    if (currentState().selectedProject?.id != projectId) return null;
+    return withList(currentState(), page);
+  }
 }
 
-/// Loads the first page of [list] when none is loaded, and the next page
-/// otherwise. The overview dispatches it when it opens.
+/// Loads the first page of [list] when none is loaded. The overview
+/// dispatches it when it opens; further pages are loaded by scrolling, so a
+/// list that already has a page is left alone.
 abstract class InitListAction<T extends DataModel>
     extends ReduxAction<AppState> {
-  InitListAction(this.list, this.loadMore);
+  InitListAction(this.list);
 
   final ModelList<T> list;
 
-  /// Builds the load-more action of the same list.
-  final ReduxAction<AppState> Function() loadMore;
-
   @override
   Future<AppState?> reduce() async {
-    if (list.of(state).items.isEmpty) {
-      return list.withList(state, await list.firstPage(state));
-    }
-    await dispatchAndWait(loadMore());
-    return null;
+    if (list.of(state).items.isNotEmpty) return null;
+    return list.replaceWithFirstPage(() => state);
   }
 }
 
@@ -87,8 +94,7 @@ abstract class RefreshListAction<T extends DataModel>
   final ModelList<T> list;
 
   @override
-  Future<AppState?> reduce() async =>
-      list.withList(state, await list.firstPage(state));
+  Future<AppState?> reduce() => list.replaceWithFirstPage(() => state);
 }
 
 /// What the list actions share when loading a [PaginatedResult] page by page.

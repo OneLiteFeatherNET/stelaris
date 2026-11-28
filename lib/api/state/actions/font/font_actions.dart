@@ -40,9 +40,9 @@ class RefreshFontAction extends RefreshListAction<FontModel> {
   RefreshFontAction() : super(_modelList);
 }
 
-/// Loads the first page of the fonts, or the next one when some are loaded.
+/// Loads the first page of the fonts when none is loaded.
 class InitFontAction extends InitListAction<FontModel> {
-  InitFontAction() : super(_modelList, LoadMoreFontsAction.new);
+  InitFontAction() : super(_modelList);
 }
 
 /// Appends the next page of the fonts. While it loads,

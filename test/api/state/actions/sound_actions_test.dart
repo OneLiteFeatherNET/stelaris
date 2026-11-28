@@ -19,6 +19,7 @@ void main() {
     selectedOf: (state) => state.selectedSoundEvent,
     withSelected: (state, model) => state.copyWith(selectedSoundEvent: model),
     init: InitSoundAction.new,
+    loadMore: LoadMoreSoundEventsAction.new,
     refresh: RefreshSoundAction.new,
     add: SoundAddAction.new,
     remove: SoundRemoveAction.new,

@@ -46,6 +46,7 @@ void main() {
     selectedOf: (state) => state.selectedBlockState,
     withSelected: (state, model) => state.copyWith(selectedBlockState: model),
     init: InitBlockStateAction.new,
+    loadMore: LoadMoreBlockStatesAction.new,
     refresh: RefreshBlockStateAction.new,
     add: BlockStateAddAction.new,
     remove: BlockStateRemoveAction.new,

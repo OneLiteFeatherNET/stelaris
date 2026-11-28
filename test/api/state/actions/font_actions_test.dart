@@ -19,6 +19,7 @@ void main() {
     selectedOf: (state) => state.selectedFont,
     withSelected: (state, model) => state.copyWith(selectedFont: model),
     init: InitFontAction.new,
+    loadMore: LoadMoreFontsAction.new,
     refresh: RefreshFontAction.new,
     add: FontAddAction.new,
     remove: FontRemoveAction.new,

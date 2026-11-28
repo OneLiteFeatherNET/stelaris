@@ -40,10 +40,9 @@ class RefreshAdvancementAction extends RefreshListAction<AdvancementModel> {
   RefreshAdvancementAction() : super(_modelList);
 }
 
-/// Loads the first page of the advancements, or the next one when some are
-/// loaded.
+/// Loads the first page of the advancements when none is loaded.
 class InitAdvancementAction extends InitListAction<AdvancementModel> {
-  InitAdvancementAction() : super(_modelList, LoadMoreAdvancementsAction.new);
+  InitAdvancementAction() : super(_modelList);
 }
 
 /// Appends the next page of the advancements. While it loads,
