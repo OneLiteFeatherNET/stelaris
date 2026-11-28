@@ -58,9 +58,9 @@ class RefreshItemAction extends RefreshListAction<ItemModel> {
   RefreshItemAction() : super(_modelList);
 }
 
-/// Loads the first page of the items, or the next one when some are loaded.
+/// Loads the first page of the items when none is loaded.
 class InitItemAction extends InitListAction<ItemModel> {
-  InitItemAction() : super(_modelList, LoadMoreItemsAction.new);
+  InitItemAction() : super(_modelList);
 }
 
 /// Appends the next page of the items. While it loads,

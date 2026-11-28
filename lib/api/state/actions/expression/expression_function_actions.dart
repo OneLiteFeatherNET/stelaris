@@ -50,11 +50,11 @@ class RefreshExpressionFunctionAction
   RefreshExpressionFunctionAction() : super(_modelList);
 }
 
-/// Loads the first page of the functions, or the next one when some are loaded.
+/// Loads the first page of the functions when none is loaded.
 class InitExpressionFunctionAction
     extends InitListAction<ExpressionFunctionModel> {
   InitExpressionFunctionAction()
-    : super(_modelList, LoadMoreExpressionFunctionsAction.new);
+    : super(_modelList);
 }
 
 /// Appends the next page of the functions. While it loads,

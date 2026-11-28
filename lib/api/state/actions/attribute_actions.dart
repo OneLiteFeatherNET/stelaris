@@ -57,10 +57,9 @@ class RefreshAttributeAction extends RefreshListAction<AttributeModel> {
   RefreshAttributeAction() : super(_modelList);
 }
 
-/// Loads the first page of the attributes, or the next one when some are
-/// loaded.
+/// Loads the first page of the attributes when none is loaded.
 class InitAttributeAction extends InitListAction<AttributeModel> {
-  InitAttributeAction() : super(_modelList, LoadMoreAttributesAction.new);
+  InitAttributeAction() : super(_modelList);
 }
 
 /// Appends the next page of the attributes. While it loads,

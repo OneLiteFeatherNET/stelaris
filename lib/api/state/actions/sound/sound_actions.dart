@@ -40,10 +40,9 @@ class RefreshSoundAction extends RefreshListAction<SoundEventModel> {
   RefreshSoundAction() : super(_modelList);
 }
 
-/// Loads the first page of the sound events, or the next one when some are
-/// loaded.
+/// Loads the first page of the sound events when none is loaded.
 class InitSoundAction extends InitListAction<SoundEventModel> {
-  InitSoundAction() : super(_modelList, LoadMoreSoundEventsAction.new);
+  InitSoundAction() : super(_modelList);
 }
 
 /// Appends the next page of the sound events. While it loads,

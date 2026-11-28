@@ -40,10 +40,9 @@ class RefreshExpressionAction extends RefreshListAction<ExpressionModel> {
   RefreshExpressionAction() : super(_modelList);
 }
 
-/// Loads the first page of the expressions, or the next one when some are
-/// loaded.
+/// Loads the first page of the expressions when none is loaded.
 class InitExpressionAction extends InitListAction<ExpressionModel> {
-  InitExpressionAction() : super(_modelList, LoadMoreExpressionsAction.new);
+  InitExpressionAction() : super(_modelList);
 }
 
 /// Appends the next page of the expressions. While it loads,
