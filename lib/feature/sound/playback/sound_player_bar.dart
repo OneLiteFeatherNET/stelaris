@@ -371,6 +371,11 @@ class _TuneMenu extends StatelessWidget {
   /// Slider values keep to two decimals, as typed into the file's dialog.
   static double _round(double value) => (value * 100).roundToDouble() / 100;
 
+  static const EdgeInsets _padding = EdgeInsets.fromLTRB(16, 8, 16, 8);
+  static const double _contentWidth = 320;
+
+  /// The menu is as wide as its content, with no padding of its own sideways.
+  static const double _menuWidth = _contentWidth + 32;
 
   @override
   Widget build(BuildContext context) {
@@ -383,12 +388,19 @@ class _TuneMenu extends StatelessWidget {
         .map((label) => _textWidth(context, label, labelStyle))
         .reduce(max);
     return MenuAnchor(
-      alignmentOffset: const Offset(0, 8),
+      // Its end lines up with the end of the button, so it opens towards the
+      // page instead of being pushed against the edge of the window.
+      style: const MenuStyle(
+        alignment: AlignmentDirectional.bottomEnd,
+        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 8)),
+      ),
+      alignmentOffset: const Offset(-_menuWidth, 8),
       menuChildren: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          key: const Key('sound_player_tune_menu'),
+          padding: _padding,
           child: SizedBox(
-            width: 320,
+            width: _contentWidth,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
