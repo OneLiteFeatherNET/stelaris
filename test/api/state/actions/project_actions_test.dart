@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/actions/project/project_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
+import 'package:stelaris/api/state/expression_validation_state.dart';
 import 'package:stelaris_models/stelaris_models.dart';
 
 import '../../../support/fake_http_client_adapter.dart';
@@ -111,6 +112,32 @@ void main() {
         expect(store.state.selectedSoundEvent, isNull);
       },
     );
+
+    test('clears the components of the selected item and the check of the '
+        'formula, which belong to the project that was left', () {
+      const projectB = Project(
+        id: 'proj-b',
+        displayName: 'Project B',
+        key: 'PROJ_B',
+      );
+      final store = Store<AppState>(
+        initialState: const AppState(
+          selectedItemComponents: [
+            ItemComponentDto(componentKey: 'minecraft:max_stack_size', value: 1),
+          ],
+          expressionValidation: ExpressionValidationState(
+            expression: 'a',
+            variables: ['a'],
+            validation: ExpressionValidation(valid: true),
+          ),
+        ),
+      );
+
+      store.dispatchSync(SelectProjectAction(projectB));
+
+      expect(store.state.selectedItemComponents, isEmpty);
+      expect(store.state.expressionValidation, isNull);
+    });
   });
 
   group('AddProjectAction', () {
