@@ -425,6 +425,42 @@ void main() {
     expect(waveformPainter(tester).shownPeaks, [0.2, 1, 0.5]);
   });
 
+  testWidgets('the tune menu keeps a gap to the bar', (tester) async {
+    await pumpBar(tester);
+    await start(tester, a);
+
+    await tester.tap(find.byKey(const Key('sound_player_tune')));
+    await settle(tester);
+
+    final bar = tester.getRect(find.byKey(const Key('sound_player_bar')));
+    expect(
+      tester.getRect(find.byKey(const Key('sound_player_tune_menu'))).bottom,
+      closeTo(bar.top - 8, 1),
+    );
+  });
+
+  testWidgets('the tune menu closes on escape and on a tap outside', (
+    tester,
+  ) async {
+    await pumpBar(tester);
+    await start(tester, a);
+    final menu = find.byKey(const Key('sound_player_tune_menu'));
+
+    await tester.tap(find.byKey(const Key('sound_player_tune')));
+    await settle(tester);
+    expect(menu, findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await settle(tester);
+    expect(menu, findsNothing);
+
+    await tester.tap(find.byKey(const Key('sound_player_tune')));
+    await settle(tester);
+    expect(menu, findsOneWidget);
+    await tester.tapAt(const Offset(20, 20));
+    await settle(tester);
+    expect(menu, findsNothing);
+  });
+
   testWidgets('the time and the slider values fit their room in one line', (
     tester,
   ) async {
