@@ -40,6 +40,7 @@ void main() {
         find.byKey(const Key('settings_end_tile_heart')),
       );
       expect(heart.icon, StelarisIcons.heart);
+      expect(heart.color, Colors.red);
       expect(find.textContaining('❤'), findsNothing);
       expect(find.textContaining('\u0000'), findsNothing);
     });
