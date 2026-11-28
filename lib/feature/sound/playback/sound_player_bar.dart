@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
@@ -628,19 +629,11 @@ class _SeekableWaveformState extends State<_SeekableWaveform> {
                       onHorizontalDragCancel: waveform == null
                           ? null
                           : onScrubCancel,
-                      child: RepaintBoundary(
-                        child: CustomPaint(
-                          size: const Size.fromHeight(32),
-                          painter: SoundWaveformPainter(
-                            peaks: waveform?.peaks ?? const [],
-                            duration: waveform?.duration,
-                            position: position,
-                            hover: _hover,
-                            played: colorScheme.primary,
-                            unplayed: colorScheme.outlineVariant,
-                            marker: colorScheme.onSurface,
-                          ),
-                        ),
+                      child: _WaveformPaint(
+                        peaks: waveform?.peaks ?? const [],
+                        duration: waveform?.duration,
+                        position: position,
+                        hover: _hover,
                       ),
                     ),
                   );
@@ -664,6 +657,97 @@ class _SeekableWaveformState extends State<_SeekableWaveform> {
           ],
         );
       },
+    );
+  }
+}
+
+/// The bars of a waveform that grow into new [peaks], e.g. once they are
+/// read or another file plays, from what was shown before.
+class _WaveformPaint extends StatefulWidget {
+  const _WaveformPaint({
+    required this.peaks,
+    required this.duration,
+    required this.position,
+    required this.hover,
+  });
+
+  final List<double> peaks;
+  final Duration? duration;
+  final ValueListenable<Duration> position;
+  final ValueListenable<double?> hover;
+
+  @override
+  State<_WaveformPaint> createState() => _WaveformPaintState();
+}
+
+class _WaveformPaintState extends State<_WaveformPaint>
+    with SingleTickerProviderStateMixin {
+  static const Duration _duration = Duration(milliseconds: 250);
+
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: _duration,
+  );
+  late final Animation<double> _transition = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeOutCubic,
+  );
+
+  /// What the bars grow from: flat at first.
+  List<double> _previous = const [];
+  bool _grown = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Not in initState, which can't read the media query yet.
+    if (_grown) return;
+    _grown = true;
+    _grow();
+  }
+
+  @override
+  void didUpdateWidget(_WaveformPaint oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (listEquals(oldWidget.peaks, widget.peaks)) return;
+    // From where the bars are now, also halfway through growing.
+    _previous = lerpPeaks(_previous, oldWidget.peaks, _transition.value);
+    _grow();
+  }
+
+  void _grow() {
+    final animate = !(MediaQuery.maybeDisableAnimationsOf(context) ?? false);
+    if (!animate || widget.peaks.isEmpty && _previous.isEmpty) {
+      _controller.value = 1;
+    } else {
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return RepaintBoundary(
+      child: CustomPaint(
+        size: const Size.fromHeight(32),
+        painter: SoundWaveformPainter(
+          peaks: widget.peaks,
+          previous: _previous,
+          transition: _transition,
+          duration: widget.duration,
+          position: widget.position,
+          hover: widget.hover,
+          played: colorScheme.primary,
+          unplayed: colorScheme.outlineVariant,
+          marker: colorScheme.onSurface,
+        ),
+      ),
     );
   }
 }
