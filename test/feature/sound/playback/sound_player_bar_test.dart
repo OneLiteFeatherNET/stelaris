@@ -369,6 +369,22 @@ void main() {
     expect(hover(), isNull);
   });
 
+  testWidgets('the tune menu ends where its button ends', (tester) async {
+    await pumpBar(tester);
+    await start(tester, a);
+
+    await tester.tap(find.byKey(const Key('sound_player_tune')));
+    await settle(tester);
+
+    expect(
+      tester.getRect(find.byKey(const Key('sound_player_tune_menu'))).right,
+      closeTo(
+        tester.getRect(find.byKey(const Key('sound_player_tune'))).right,
+        1,
+      ),
+    );
+  });
+
   testWidgets('the time and the slider values fit their room in one line', (
     tester,
   ) async {
