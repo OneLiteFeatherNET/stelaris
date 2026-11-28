@@ -947,11 +947,11 @@ abstract class AppLocalizations {
   /// **'Explore the wiki for assistance'**
   String get settings_about_help_body;
 
-  /// No description provided for @settings_end_tile_footer.
+  /// {heart} is replaced by a heart icon.
   ///
   /// In en, this message translates to:
-  /// **'© {year} Onelitefeather • Made with ❤ by the team'**
-  String settings_end_tile_footer(String year);
+  /// **'© {year} Onelitefeather • Made with {heart} by the team'**
+  String settings_end_tile_footer(String year, String heart);
 
   /// No description provided for @welcome_to_stelaris.
   ///

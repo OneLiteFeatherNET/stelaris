@@ -202,10 +202,14 @@
   "settings_about_help_title": "Help",
   "settings_about_help_body": "Explore the wiki for assistance",
 
-  "settings_end_tile_footer": "© {year} Onelitefeather • Made with ❤ by the team",
+  "settings_end_tile_footer": "© {year} Onelitefeather • Made with {heart} by the team",
   "@settings_end_tile_footer": {
+    "description": "{heart} is replaced by a heart icon.",
     "placeholders": {
       "year": {
+        "type": "String"
+      },
+      "heart": {
         "type": "String"
       }
     }
