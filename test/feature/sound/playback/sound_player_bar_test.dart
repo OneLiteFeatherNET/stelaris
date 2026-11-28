@@ -4,6 +4,8 @@ library;
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -13,6 +15,7 @@ import 'package:stelaris/feature/sound/playback/sound_playback_controller.dart';
 import 'package:stelaris/feature/sound/playback/sound_player.dart';
 import 'package:stelaris/feature/sound/playback/sound_player_bar.dart';
 import 'package:stelaris/feature/sound/playback/sound_waveform.dart';
+import 'package:stelaris/feature/sound/playback/sound_waveform_painter.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
@@ -335,6 +338,55 @@ void main() {
         )
         .left;
     expect(sliderLeft('sound_player_pitch'), sliderLeft('sound_player_volume'));
+  });
+
+  testWidgets('a line follows the mouse over the waveform', (tester) async {
+    await pumpBar(tester);
+    await start(tester, a);
+
+    double? hover() => (tester
+                .widget<CustomPaint>(
+                  find.descendant(
+                    of: find.byKey(const Key('sound_player_waveform')),
+                    matching: find.byType(CustomPaint),
+                  ),
+                )
+                .painter!
+            as SoundWaveformPainter)
+        .hover!
+        .value;
+
+    final box = tester.getRect(find.byKey(const Key('sound_player_waveform')));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    addTearDown(mouse.removePointer);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(Offset(box.left + box.width / 4, box.center.dy));
+    await tester.pump();
+    expect(hover(), closeTo(0.25, 0.01));
+
+    await mouse.moveTo(Offset.zero);
+    await tester.pump();
+    expect(hover(), isNull);
+  });
+
+  testWidgets('the time and the slider values fit their room in one line', (
+    tester,
+  ) async {
+    await pumpBar(tester);
+    await start(tester, a);
+    await tester.tap(find.byKey(const Key('sound_player_tune')));
+    await settle(tester);
+
+    void expectFits(Finder text) {
+      final paragraph = tester.renderObject<RenderParagraph>(text);
+      expect(
+        paragraph.getMaxIntrinsicWidth(double.infinity),
+        lessThanOrEqualTo(paragraph.size.width),
+      );
+    }
+
+    expectFits(find.byKey(const Key('sound_player_time')));
+    expectFits(find.text('1.00').last);
   });
 
   testWidgets('the pitch is tried out live, then applied or reset', (
