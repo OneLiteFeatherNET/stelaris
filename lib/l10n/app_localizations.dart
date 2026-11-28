@@ -983,6 +983,30 @@ abstract class AppLocalizations {
   /// **'Open Project'**
   String get project_selection_open_button;
 
+  /// No description provided for @project_selection_unavailable_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Server not reachable'**
+  String get project_selection_unavailable_title;
+
+  /// No description provided for @project_selection_unavailable_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Stelaris could not reach its server. Check that the backend is running, then try again.'**
+  String get project_selection_unavailable_message;
+
+  /// No description provided for @project_selection_unavailable_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get project_selection_unavailable_retry;
+
+  /// No description provided for @project_selection_loading_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading projects'**
+  String get project_selection_loading_label;
+
   /// No description provided for @dialog_project_create_title.
   ///
   /// In en, this message translates to:
