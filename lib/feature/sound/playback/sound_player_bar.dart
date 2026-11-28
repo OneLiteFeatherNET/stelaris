@@ -371,21 +371,6 @@ class _TuneMenu extends StatelessWidget {
   /// Slider values keep to two decimals, as typed into the file's dialog.
   static double _round(double value) => (value * 100).roundToDouble() / 100;
 
-  static double _textWidth(
-    BuildContext context,
-    String text,
-    TextStyle? style,
-  ) {
-    final painter = TextPainter(
-      text: TextSpan(text: text, style: style),
-      textDirection: Directionality.of(context),
-      textScaler: MediaQuery.textScalerOf(context),
-      maxLines: 1,
-    )..layout();
-    final width = painter.width;
-    painter.dispose();
-    return width.ceilToDouble();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -498,11 +483,29 @@ class _PlayPauseButton extends StatelessWidget {
   }
 }
 
+/// How wide [text] lays out in one line in [style].
+double _textWidth(BuildContext context, String text, TextStyle? style) {
+  final painter = TextPainter(
+    text: TextSpan(text: text, style: style),
+    textDirection: Directionality.of(context),
+    textScaler: MediaQuery.textScalerOf(context),
+    maxLines: 1,
+  )..layout();
+  final width = painter.width;
+  painter.dispose();
+  return width.ceilToDouble();
+}
+
+/// [text] with every digit as a zero, to measure the room any value of its
+/// length takes.
+String _zeroed(String text) => text.replaceAll(RegExp('[0-9]'), '0');
+
 typedef _OnSeek = void Function(SoundWaveform waveform, double fraction);
 
 /// The waveform of the current file with its time; a tap jumps there, a drag
-/// moves along and jumps where it lets go.
-class _SeekableWaveform extends StatelessWidget {
+/// moves along and jumps where it lets go. A line follows the mouse to show
+/// where.
+class _SeekableWaveform extends StatefulWidget {
   const _SeekableWaveform({
     required this.future,
     required this.initial,
@@ -526,18 +529,49 @@ class _SeekableWaveform extends StatelessWidget {
   final VoidCallback onScrubCancel;
 
   @override
+  State<_SeekableWaveform> createState() => _SeekableWaveformState();
+}
+
+class _SeekableWaveformState extends State<_SeekableWaveform> {
+  /// Where the mouse is along the waveform, from 0 to 1; null outside.
+  final ValueNotifier<double?> _hover = ValueNotifier(null);
+
+  @override
+  void dispose() {
+    _hover.dispose();
+    super.dispose();
+  }
+
+  String _time(Duration played, Duration total) =>
+      '${formatPlayTime(playTimeAt(played, widget.pitch))} / '
+      '${formatPlayTime(playTimeAt(total, widget.pitch))}';
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final timeStyle = theme.textTheme.bodySmall?.copyWith(
       color: colorScheme.onSurfaceVariant,
-      fontFeatures: const [FontFeature.tabularFigures()],
     );
+    final onSeek = widget.onSeek;
+    final onScrub = widget.onScrub;
+    final onScrubEnd = widget.onScrubEnd;
+    final onScrubCancel = widget.onScrubCancel;
+    final position = widget.position;
     return FutureBuilder<SoundWaveform>(
-      future: future,
-      initialData: initial,
+      future: widget.future,
+      initialData: widget.initial,
       builder: (context, snapshot) {
         final waveform = snapshot.data;
+        // As wide as the longest time of this file, so the waveform keeps
+        // its width while the time runs.
+        final timeWidth = _textWidth(
+          context,
+          waveform == null
+              ? '0:00 / 0:00'
+              : _zeroed(_time(waveform.duration, waveform.duration)),
+          timeStyle,
+        );
         return Row(
           children: [
             Expanded(
@@ -549,6 +583,12 @@ class _SeekableWaveform extends StatelessWidget {
                     cursor: waveform == null
                         ? MouseCursor.defer
                         : SystemMouseCursors.click,
+                    onHover: waveform == null
+                        ? null
+                        : (event) => _hover.value = fraction(
+                            event.localPosition,
+                          ).clamp(0.0, 1.0),
+                    onExit: (_) => _hover.value = null,
                     child: GestureDetector(
                       key: const Key('sound_player_waveform'),
                       behavior: HitTestBehavior.opaque,
@@ -583,8 +623,10 @@ class _SeekableWaveform extends StatelessWidget {
                             peaks: waveform?.peaks ?? const [],
                             duration: waveform?.duration,
                             position: position,
+                            hover: _hover,
                             played: colorScheme.primary,
                             unplayed: colorScheme.outlineVariant,
+                            marker: colorScheme.onSurface,
                           ),
                         ),
                       ),
@@ -594,15 +636,17 @@ class _SeekableWaveform extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            ValueListenableBuilder<Duration>(
-              valueListenable: position,
-              builder: (context, played, _) => Text(
-                waveform == null
-                    ? '–:––'
-                    : '${formatPlayTime(playTimeAt(played, pitch))} / '
-                          '${formatPlayTime(playTimeAt(waveform.duration, pitch))}',
-                key: const Key('sound_player_time'),
-                style: timeStyle,
+            SizedBox(
+              width: timeWidth,
+              child: ValueListenableBuilder<Duration>(
+                valueListenable: position,
+                builder: (context, played, _) => Text(
+                  waveform == null ? '–:––' : _time(played, waveform.duration),
+                  key: const Key('sound_player_time'),
+                  style: timeStyle,
+                  maxLines: 1,
+                  softWrap: false,
+                ),
               ),
             ),
           ],
@@ -638,6 +682,13 @@ class _ValueSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final valueStyle = theme.textTheme.bodySmall;
+    // As wide as the largest value, so the slider keeps its length.
+    final valueWidth = _textWidth(
+      context,
+      _zeroed(max.toStringAsFixed(2)),
+      valueStyle,
+    );
     return Row(
       children: [
         SizedBox(
@@ -655,12 +706,13 @@ class _ValueSlider extends StatelessWidget {
           ),
         ),
         SizedBox(
-          width: 36,
+          width: valueWidth,
           child: Text(
             value.toStringAsFixed(2),
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontFeatures: const [FontFeature.tabularFigures()],
-            ),
+            style: valueStyle,
+            textAlign: TextAlign.end,
+            maxLines: 1,
+            softWrap: false,
           ),
         ),
       ],
