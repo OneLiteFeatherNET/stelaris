@@ -72,6 +72,10 @@ class _SoundPlayerBarState extends State<SoundPlayerBar>
   final ValueNotifier<Duration> _position = ValueNotifier(Duration.zero);
   bool _applying = false;
 
+  /// Where a drag along the waveform would let go; while set, only the
+  /// waveform and the time follow it, the file seeks once at the end.
+  double? _scrubbing;
+
   SoundPlaybackController get _controller => widget.controller;
 
   @override
@@ -109,6 +113,7 @@ class _SoundPlayerBarState extends State<SoundPlayerBar>
   }
 
   void _syncPosition() {
+    if (_scrubbing != null) return;
     final current = _controller.current;
     _position.value = current == null
         ? Duration.zero
@@ -187,23 +192,38 @@ class _SoundPlayerBarState extends State<SoundPlayerBar>
   }
 
   /// Jumps to [fraction] of [waveform]; a file that doesn't play starts
-  /// there, unless [start] is false, as while dragging.
-  void _seek(
-    SoundFileSource current,
-    SoundWaveform waveform,
-    double fraction, {
-    bool start = true,
-  }) {
+  /// there.
+  void _seek(SoundFileSource current, SoundWaveform waveform, double fraction) {
     final position = waveform.duration * fraction.clamp(0.0, 1.0);
     switch (_controller.status) {
       case SoundPlaybackStatus.playing || SoundPlaybackStatus.paused:
         _controller.seek(position);
         _syncPosition();
-      case SoundPlaybackStatus.idle when start:
+      case SoundPlaybackStatus.idle:
         _play(current, from: position);
-      case _:
+      case SoundPlaybackStatus.loading:
         break;
     }
+  }
+
+  /// Moves the shown position along a drag, without seeking yet.
+  void _scrub(SoundWaveform waveform, double fraction) {
+    final clamped = fraction.clamp(0.0, 1.0);
+    _scrubbing = clamped;
+    _position.value = waveform.duration * clamped;
+  }
+
+  /// Seeks where the drag let go, like a tap there.
+  void _endScrub(SoundFileSource current, SoundWaveform waveform) {
+    final fraction = _scrubbing;
+    _scrubbing = null;
+    if (fraction == null) return;
+    _seek(current, waveform, fraction);
+  }
+
+  void _cancelScrub() {
+    _scrubbing = null;
+    _syncPosition();
   }
 
   Future<void> _apply(SoundFileSource current) async {
@@ -290,8 +310,11 @@ class _SoundPlayerBarState extends State<SoundPlayerBar>
                     initial: _controller.readWaveformOf(current),
                     position: _position,
                     pitch: _controller.pitchOf(current),
-                    onSeek: (waveform, fraction, {start = true}) =>
-                        _seek(current, waveform, fraction, start: start),
+                    onSeek: (waveform, fraction) =>
+                        _seek(current, waveform, fraction),
+                    onScrub: _scrub,
+                    onScrubEnd: (waveform) => _endScrub(current, waveform),
+                    onScrubCancel: _cancelScrub,
                   ),
                 ),
               ),
@@ -347,11 +370,32 @@ class _TuneMenu extends StatelessWidget {
   /// Slider values keep to two decimals, as typed into the file's dialog.
   static double _round(double value) => (value * 100).roundToDouble() / 100;
 
+  static double _textWidth(
+    BuildContext context,
+    String text,
+    TextStyle? style,
+  ) {
+    final painter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: Directionality.of(context),
+      textScaler: MediaQuery.textScalerOf(context),
+      maxLines: 1,
+    )..layout();
+    final width = painter.width;
+    painter.dispose();
+    return width.ceilToDouble();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     // A volume above 1 only widens the range in the game.
     final maxVolume = max<double>(1, current.volume);
+    final labelStyle = Theme.of(context).textTheme.labelMedium;
+    // Both sliders start where the longer label ends.
+    final labelWidth = [l10n.sound_pitch, l10n.sound_volume]
+        .map((label) => _textWidth(context, label, labelStyle))
+        .reduce(max);
     return MenuAnchor(
       alignmentOffset: const Offset(0, 8),
       menuChildren: [
@@ -366,6 +410,7 @@ class _TuneMenu extends StatelessWidget {
                 _ValueSlider(
                   key: const Key('sound_player_pitch'),
                   label: l10n.sound_pitch,
+                  labelWidth: labelWidth,
                   value: controller.pitchOf(current),
                   min: 0.5,
                   max: 2,
@@ -376,6 +421,7 @@ class _TuneMenu extends StatelessWidget {
                 _ValueSlider(
                   key: const Key('sound_player_volume'),
                   label: l10n.sound_volume,
+                  labelWidth: labelWidth,
                   value: controller.volumeOf(current),
                   min: 0,
                   max: maxVolume,
@@ -468,14 +514,10 @@ class _PlayPauseButton extends StatelessWidget {
   }
 }
 
-typedef _OnSeek = void Function(
-  SoundWaveform waveform,
-  double fraction, {
-  bool start,
-});
+typedef _OnSeek = void Function(SoundWaveform waveform, double fraction);
 
 /// The waveform of the current file with its time; a tap jumps there, a drag
-/// moves along.
+/// moves along and jumps where it lets go.
 class _SeekableWaveform extends StatelessWidget {
   const _SeekableWaveform({
     required this.future,
@@ -483,6 +525,9 @@ class _SeekableWaveform extends StatelessWidget {
     required this.position,
     required this.pitch,
     required this.onSeek,
+    required this.onScrub,
+    required this.onScrubEnd,
+    required this.onScrubCancel,
   });
 
   final Future<SoundWaveform> future;
@@ -492,6 +537,9 @@ class _SeekableWaveform extends StatelessWidget {
   /// The pitch it plays with, for the times as they play in the game.
   final double pitch;
   final _OnSeek onSeek;
+  final _OnSeek onScrub;
+  final void Function(SoundWaveform waveform) onScrubEnd;
+  final VoidCallback onScrubCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -526,13 +574,24 @@ class _SeekableWaveform extends StatelessWidget {
                               waveform,
                               fraction(details.localPosition),
                             ),
-                      onHorizontalDragUpdate: waveform == null
+                      onHorizontalDragStart: waveform == null
                           ? null
-                          : (details) => onSeek(
+                          : (details) => onScrub(
                               waveform,
                               fraction(details.localPosition),
-                              start: false,
                             ),
+                      onHorizontalDragUpdate: waveform == null
+                          ? null
+                          : (details) => onScrub(
+                              waveform,
+                              fraction(details.localPosition),
+                            ),
+                      onHorizontalDragEnd: waveform == null
+                          ? null
+                          : (_) => onScrubEnd(waveform),
+                      onHorizontalDragCancel: waveform == null
+                          ? null
+                          : onScrubCancel,
                       child: RepaintBoundary(
                         child: CustomPaint(
                           size: const Size.fromHeight(32),
@@ -573,6 +632,7 @@ class _SeekableWaveform extends StatelessWidget {
 class _ValueSlider extends StatelessWidget {
   const _ValueSlider({
     required this.label,
+    required this.labelWidth,
     required this.value,
     required this.min,
     required this.max,
@@ -582,6 +642,9 @@ class _ValueSlider extends StatelessWidget {
   });
 
   final String label;
+
+  /// The width of the longest label, so the sliders line up.
+  final double labelWidth;
   final double value;
   final double min;
   final double max;
@@ -593,7 +656,10 @@ class _ValueSlider extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        Text(label, style: theme.textTheme.labelMedium),
+        SizedBox(
+          width: labelWidth,
+          child: Text(label, style: theme.textTheme.labelMedium),
+        ),
         Expanded(
           child: Slider(
             value: value.clamp(min, max),
