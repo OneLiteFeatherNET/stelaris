@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:stelaris/api/api_service.dart';
 import 'package:stelaris/api/state/actions/item_actions.dart';
 import 'package:stelaris/api/state/app_state.dart';
 import 'package:stelaris/api/util/navigation.dart';
@@ -11,6 +12,8 @@ import 'package:stelaris/feature/model/model_detail_actions.dart';
 import 'package:stelaris/l10n/app_localizations.dart';
 import 'package:stelaris/l10n/app_localizations_delegates.dart';
 import 'package:stelaris_models/stelaris_models.dart';
+
+import '../../support/held_http_client_adapter.dart';
 
 void main() {
   const item = ItemModel(id: 'item-1', uiName: 'Ruby Sword', key: 'ruby');
@@ -100,6 +103,36 @@ void main() {
       ),
     );
     expect(save.onPressed, isNotNull);
+  });
+
+  testWidgets('save shows that it saves while the section is saved, also '
+      'when the save was started elsewhere', (tester) async {
+    await pump(
+      tester,
+      const AppState(
+        selectedItem: item,
+        unsavedChanges: NavigationEntry.items,
+      ),
+    );
+    final backend = HeldHttpClientAdapter();
+    ApiService().itemApi.apiClient.dio.httpClientAdapter = backend;
+    PageHeaderAction save() => tester.widget<PageHeaderAction>(
+      find.ancestor(
+        of: find.text('Save'),
+        matching: find.byType(PageHeaderAction),
+      ),
+    );
+
+    // As the unsaved changes dialog does, not through the button.
+    store.dispatch(ItemDatabaseUpdate());
+    // A connector hears of the store through a stream, a frame later.
+    await tester.pump();
+    await tester.pump();
+    expect(save().loading, isTrue);
+
+    backend.release({'id': 'item-1', 'uiName': 'Ruby Sword', 'key': 'ruby'});
+    await tester.pumpAndSettle();
+    expect(save().loading, isFalse);
   });
 
   testWidgets('info opens the model info dialog', (tester) async {
